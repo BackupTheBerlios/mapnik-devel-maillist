@@ -1,0 +1,84 @@
+From czarek.tarnowski at gmail.com  Fri Dec  9 16:00:32 2011
+From: czarek.tarnowski at gmail.com (Czarek Tarnowski)
+Date: Fri, 9 Dec 2011 16:00:32 +0100
+Subject: [Mapnik-devel] Patch for Building Symbolizer
+Message-ID: <CALXM1e13gE+9Ft2t54U4Go66kL6dntL84yc-y_OkV8TVNdDd1w@mail.gmail.com>
+
+Hello All,
+
+I've prepared patch for building symbolizer that allows the height
+parameter to be expression. Please provide any comments.
+
+Where I could find any document how I could commit in easier manner to
+trunk? Basically, a year ago we fork from mapnik trunk and implemented
+couple of new features, you can check them on maps.tomtom.com, now we
+would like to commit some of those back to trunk. We know that number
+of our features are already there so it might take a while to identify
+those valuable. Nevertheless we would like to commit and know your
+process.
+
+Thanks in advance for your response.
+
+Best Regards
+Cezary Tarnowski
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: building_symbolizer.patch
+Type: text/x-diff
+Size: 6011 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111209/d7bf72c9/attachment.patch>
+
+From artem at mapnik.org  Fri Dec  9 17:00:36 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 9 Dec 2011 16:00:36 +0000
+Subject: [Mapnik-devel] Patch for Building Symbolizer
+In-Reply-To: <CALXM1e13gE+9Ft2t54U4Go66kL6dntL84yc-y_OkV8TVNdDd1w@mail.gmail.com>
+References: <CALXM1e13gE+9Ft2t54U4Go66kL6dntL84yc-y_OkV8TVNdDd1w@mail.gmail.com>
+Message-ID: <CAOoUnzmLQGx7GKD1OX43bdC1XNs4fkaffKGj8TM7F+r2cu6eLQ@mail.gmail.com>
+
+Hi Cezary,
+
+Great! We've moved to github : https://github.com/mapnik
+
+Contributing process is outlined here :
+https://github.com/mapnik/mapnik/blob/master/docs/contributing.markdown
+
+Also, we're using Mapnik-group instead of mailing lists :
+http://mapnik.org/contact/
+
+Thanks!
+
+Artem
+
+
+On 9 December 2011 15:00, Czarek Tarnowski <czarek.tarnowski at gmail.com>wrote:
+
+> Hello All,
+>
+> I've prepared patch for building symbolizer that allows the height
+> parameter to be expression. Please provide any comments.
+>
+> Where I could find any document how I could commit in easier manner to
+> trunk? Basically, a year ago we fork from mapnik trunk and implemented
+> couple of new features, you can check them on maps.tomtom.com, now we
+> would like to commit some of those back to trunk. We know that number
+> of our features are already there so it might take a while to identify
+> those valuable. Nevertheless we would like to commit and know your
+> process.
+>
+> Thanks in advance for your response.
+>
+> Best Regards
+> Cezary Tarnowski
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111209/5e03211c/attachment.html>
+

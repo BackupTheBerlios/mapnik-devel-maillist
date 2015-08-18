@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS common.py patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20common.py%20patch&In-Reply-To=%3CC248F175-BF18-46AF-A97C-C1C35545F94B%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000600.html">
+   <LINK REL="Next"  HREF="000602.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS common.py patch</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20common.py%20patch&In-Reply-To=%3CC248F175-BF18-46AF-A97C-C1C35545F94B%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] WMS common.py patch">blake at hailmail.net
+       </A><BR>
+    <I>Tue Apr 15 18:45:08 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000600.html">[Mapnik-devel] INSTALL readme patch
+</A></li>
+        <LI>Next message: <A HREF="000602.html">[Mapnik-devel] Mapnik WMS setup
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#601">[ date ]</a>
+              <a href="thread.html#601">[ thread ]</a>
+              <a href="subject.html#601">[ subject ]</a>
+              <a href="author.html#601">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Trying to get the WMS server running from svn.
+
+The attached patch fixes two problems with syntax in common.py that  
+caused import errors for me:
+1). The unused rawdata import
+2). A missing parens on line 286
+
+
+I'm now getting errors in my mapFactory.py module where the file is  
+not found using the Layer syntax of:
+
+Layer(name='myshp', type='shape', file='/path/to/shape') as per :<A HREF="http://trac.mapnik.org/changeset/169">http://trac.mapnik.org/changeset/169</A>
+
+Is this syntax still supported?
+
+Jumping into a python interpreter on my local machine I get:
+
+ &gt;&gt;&gt; lyr = Layer(name='world_borders',type='shape',file='/Users/spring/ 
+Downloads/world_borders/world_borders')
+Traceback (most recent call last):
+   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+Boost.Python.ArgumentError: Python argument types in
+     Layer.__init__(Layer, str, str, str)
+did not match C++ signature:
+     __init__(_object*, std::string)
+     __init__(_object*, std::string, std::string)
+ &gt;&gt;&gt; lyr = Layer('myshp')
+ &gt;&gt;&gt; lyr.type = Layer('shape')
+ &gt;&gt;&gt; lyr.file = Layer('/Users/spring/Downloads/world_borders/ 
+world_borders')
+
+
+Dane
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: common.patch
+Type: application/octet-stream
+Size: 1071 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.obj</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment-0001.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000600.html">[Mapnik-devel] INSTALL readme patch
+</A></li>
+	<LI>Next message: <A HREF="000602.html">[Mapnik-devel] Mapnik WMS setup
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#601">[ date ]</a>
+              <a href="thread.html#601">[ thread ]</a>
+              <a href="subject.html#601">[ subject ]</a>
+              <a href="author.html#601">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,766 @@
+From gravitystorm at gmail.com  Sun Oct  3 23:16:44 2010
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Sun, 3 Oct 2010 22:16:44 +0100
+Subject: [Mapnik-devel] Steve Chilton's presentation from Day 1 of
+ Mapnik code sprint
+In-Reply-To: <C74058E5-19FD-40ED-8483-249E2231F349@stamen.com>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>
+	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+	<4C9E48E8.4040800@xs4all.nl>
+	<85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F@stamen.com>
+	<4C9E5A45.9000609@xs4all.nl>
+	<C74058E5-19FD-40ED-8483-249E2231F349@stamen.com>
+Message-ID: <AANLkTikTZ-1CaLza_bmOYgRvzTgwGCpWVJQOYo7oQQrj@mail.gmail.com>
+
+On Mon, Sep 27, 2010 at 4:44 PM, Michal Migurski <mike at stamen.com> wrote:
+> On Sep 25, 2010, at 1:23 PM, Lennard wrote:
+>
+>> On 25-9-2010 21:53, Michal Migurski wrote:
+>>
+>>> I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+>>
+>> Cascadenik can also only address it by creating dozens of layers, for each possible layer=*. I'd like to see variables and loops become a possibility in the stylesheet, so I can iterate over the layer=* tags, by calling the same styles but with different layer=* values in the datasource.
+>
+> I'm not sure how comfortable I am mucking with the layers and data sources - Cascadenik *could* create dozens of layers but if I understand correctly, that would cause the same geometry to be pulled out of the data source numerous times.
+
+The situation being worked on at the Hack Weekend was multiple styles
+per layer, and fixing that apparently didn't make much difference (on
+linux) due to OS and/or DB caching. So if the data is fetched and
+rendered many times immediately that would be best - perhaps it can be
+arranged so for N layers there are N rendering buffers, and the lines
+are drawn on each buffer before being composited at the end. <Layer
+buffer="[layer]" maxbuffer="5" minbuffer="-5" defaultbuffer="0"> or
+something, in OSM terms.
+
+Care of course needs to be taken in stylesheet design, since I've
+already had to explain elsewhere the difference between top-down-view
+layering vs cartographic-choice layering!
+
+Cheers,
+Andy
+
+
+From csongor.nemes at gmail.com  Tue Oct 12 12:25:26 2010
+From: csongor.nemes at gmail.com (Csongor Nemes)
+Date: Tue, 12 Oct 2010 13:25:26 +0300
+Subject: [Mapnik-devel] Area center calculation
+Message-ID: <AANLkTimU_ffn8XeQGWzmoPrPgV9PNR8AUEPADgkxZp+y@mail.gmail.com>
+
+Hi,
+
+I am contacting you regarding the calculation of centers of areas in OSM.
+
+Our product, OpenMaps (currently available on the iPhone and the iPod
+touch), is the only one which lets you tap on POIs on the map. We use the
+default OSM map as the default map type in our app, but the user can change
+to OpenCycleMap and OpenPisteMap as well; also the user can add custom map
+types (e.g. OSM Osmarender). We need to know the exact location of the
+symbol inside an area (currently we use an algorithm which doesn't always
+match the rendered symbol's location). The best solution (from our
+perspective) would be to request the calculated center from OSM, but I'm not
+sure that it's possible. Otherwise we will implement the algorithm. If I'm
+not mistaken slightly different algorithms are implemented in different
+renderers. We are interested in the Mapnik version for now. Point me in the
+right direction, please; where can I find a description of the algorithm and
+which source files contain the implementation?
+
+We don't plan to maintain our own tile server in the near future. Also, I
+learned that there was some discussion about making the centering more
+intelligent, and it is possible that at some point the icon will be moved a
+bit additionally to find free space; hence we would like to have a general
+solution in the long term.
+
+Thank you,
+Csongor Nemes,
+IZE, Ltd.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101012/1c9622f5/attachment.html>
+
+From dane at dbsgeo.com  Tue Oct 12 22:47:52 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 12 Oct 2010 13:47:52 -0700
+Subject: [Mapnik-devel] Area center calculation
+In-Reply-To: <AANLkTimU_ffn8XeQGWzmoPrPgV9PNR8AUEPADgkxZp+y@mail.gmail.com>
+References: <AANLkTimU_ffn8XeQGWzmoPrPgV9PNR8AUEPADgkxZp+y@mail.gmail.com>
+Message-ID: <71D478F6-3F1F-4F69-A088-D66390D57EDD@dbsgeo.com>
+
+
+On Oct 12, 2010, at 3:25 AM, Csongor Nemes wrote:
+
+> Hi,
+> 
+> I am contacting you regarding the calculation of centers of areas in OSM.
+> 
+
+Hello Csongor,
+
+Yes, I am aware of your application. I've yet to try it because it requires 4.0 I'm resisting upgrading to the 4.0 iOS as I have heard it is quite unstable of older iphones, but someday...
+
+> Our product, OpenMaps (currently available on the iPhone and the iPod touch), is the only one which lets you tap on POIs on the map. We use the default OSM map as the default map type in our app, but the user can change to OpenCycleMap and OpenPisteMap as well; also the user can add custom map types (e.g. OSM Osmarender). We need to know the exact location of the symbol inside an area (currently we use an algorithm which doesn't always match the rendered symbol's location).
+
+What algorithm do you use? Can you post an example?
+
+How are you getting the actual coordinates of the area in the first place?
+
+> The best solution (from our perspective) would be to request the calculated center from OSM, but I'm not sure that it's possible.
+
+This seems like a good route - to ask the same server which rendered the tiles to tell you where the exact features are that were rendered.
+
+> Otherwise we will implement the algorithm. If I'm not mistaken slightly different algorithms are implemented in different renderers.
+
+I would also presume so. And each different stylesheet used for a given renderer is potentially going to show different POI's with different symbols of potentially different sizes - all of which impact which ones are placed and where.
+
+> We are interested in the Mapnik version for now.
+
+Well, as I allude to above I don't think this issue is as simple as the algorithm, but certainly click-ability of features is important and the algorithm will make a difference.
+
+> Point me in the right direction, please; where can I find a description of the algorithm and which source files contain the implementation?
+
+Mapnik uses a centroid calculation that can be viewed here:
+
+http://trac.mapnik.org/browser/trunk/include/mapnik/geometry.hpp#L218
+
+> 
+> We don't plan to maintain our own tile server in the near future. Also, I learned that there was some discussion about making the centering more intelligent, and it is possible that at some point the icon will be moved a bit additionally to find free space;
+
+yes, this is certainly a possibility longer term.
+
+> hence we would like to have a general solution in the long term.
+
+I think the general or long term solution is to ask the server the for the exact x,y or bbox of rendered POIs. Hermann Kraus is the Mapnik developer that has given this quite a bit of thought, and in Mapnik trunk there is support he has added for outputting GeoJSON from Mapnik that will provide this information to be served along with tiles. 
+
+Cheers,
+
+Dane
+
+
+
+From richard at weait.com  Wed Oct 13 16:48:03 2010
+From: richard at weait.com (Richard Weait)
+Date: Wed, 13 Oct 2010 10:48:03 -0400
+Subject: [Mapnik-devel] [Mapnik-users] Code Sprints: Wrap one up and
+	start another
+In-Reply-To: <201009281100.40349.ivan@sanchezortega.es>
+References: <AANLkTimEn0ctOf7Ogg920MnSCFVCoZUkRg2uJzhPyenT@mail.gmail.com>
+	<201009281100.40349.ivan@sanchezortega.es>
+Message-ID: <AANLkTik1rFPAttvSaj0vm+A6WqZScjy0QR7vXksoWD5N@mail.gmail.com>
+
+The first Mapnik Code Sprint is a few weeks behind us now.  If you
+participated in the first Mapnik Code Sprint: Committers and
+Cartographers, or if you are interested in future code sprints, please
+participate in the following short survey.  This will help us plan the
+next sprint.  The survey will take you as little as 2 minutes.  Five
+if you are feeling loquacious.
+
+http://weait.com/content/post-mcs01-survey
+
+
+From csongor.nemes at gmail.com  Mon Oct 18 20:48:00 2010
+From: csongor.nemes at gmail.com (Csongor Nemes)
+Date: Mon, 18 Oct 2010 21:48:00 +0300
+Subject: [Mapnik-devel] Area center calculation
+In-Reply-To: <71D478F6-3F1F-4F69-A088-D66390D57EDD@dbsgeo.com>
+References: <AANLkTimU_ffn8XeQGWzmoPrPgV9PNR8AUEPADgkxZp+y@mail.gmail.com>
+	<71D478F6-3F1F-4F69-A088-D66390D57EDD@dbsgeo.com>
+Message-ID: <AANLkTin4PbvaP6UHmR7n-=P_tGpDRW6wVqysuvtdh4pM@mail.gmail.com>
+
+Thank you for your reply.
+
+We use this algorithm:
+http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon .
+We get the actual coordinates through the OSM XAPI, we request the way's
+tags and the nodes forming the way.
+
+I didn't reply sooner, because I wanted to test the new algorithm and OSM
+had some problems for a few days. It works perfectly. For now it is a good
+enough solution, thank you for the help again.
+
+On Tue, Oct 12, 2010 at 11:47 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+
+>
+> On Oct 12, 2010, at 3:25 AM, Csongor Nemes wrote:
+>
+> > Hi,
+> >
+> > I am contacting you regarding the calculation of centers of areas in OSM.
+> >
+>
+> Hello Csongor,
+>
+> Yes, I am aware of your application. I've yet to try it because it requires
+> 4.0 I'm resisting upgrading to the 4.0 iOS as I have heard it is quite
+> unstable of older iphones, but someday...
+>
+> > Our product, OpenMaps (currently available on the iPhone and the iPod
+> touch), is the only one which lets you tap on POIs on the map. We use the
+> default OSM map as the default map type in our app, but the user can change
+> to OpenCycleMap and OpenPisteMap as well; also the user can add custom map
+> types (e.g. OSM Osmarender). We need to know the exact location of the
+> symbol inside an area (currently we use an algorithm which doesn't always
+> match the rendered symbol's location).
+>
+> What algorithm do you use? Can you post an example?
+>
+> How are you getting the actual coordinates of the area in the first place?
+>
+> > The best solution (from our perspective) would be to request the
+> calculated center from OSM, but I'm not sure that it's possible.
+>
+> This seems like a good route - to ask the same server which rendered the
+> tiles to tell you where the exact features are that were rendered.
+>
+> > Otherwise we will implement the algorithm. If I'm not mistaken slightly
+> different algorithms are implemented in different renderers.
+>
+> I would also presume so. And each different stylesheet used for a given
+> renderer is potentially going to show different POI's with different symbols
+> of potentially different sizes - all of which impact which ones are placed
+> and where.
+>
+> > We are interested in the Mapnik version for now.
+>
+> Well, as I allude to above I don't think this issue is as simple as the
+> algorithm, but certainly click-ability of features is important and the
+> algorithm will make a difference.
+>
+> > Point me in the right direction, please; where can I find a description
+> of the algorithm and which source files contain the implementation?
+>
+> Mapnik uses a centroid calculation that can be viewed here:
+>
+> http://trac.mapnik.org/browser/trunk/include/mapnik/geometry.hpp#L218
+>
+> >
+> > We don't plan to maintain our own tile server in the near future. Also, I
+> learned that there was some discussion about making the centering more
+> intelligent, and it is possible that at some point the icon will be moved a
+> bit additionally to find free space;
+>
+> yes, this is certainly a possibility longer term.
+>
+> > hence we would like to have a general solution in the long term.
+>
+> I think the general or long term solution is to ask the server the for the
+> exact x,y or bbox of rendered POIs. Hermann Kraus is the Mapnik developer
+> that has given this quite a bit of thought, and in Mapnik trunk there is
+> support he has added for outputting GeoJSON from Mapnik that will provide
+> this information to be served along with tiles.
+>
+> Cheers,
+>
+> Dane
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101018/637276ea/attachment.html>
+
+From herm at scribus.info  Wed Oct 27 17:16:17 2010
+From: herm at scribus.info (Hermann Kraus)
+Date: Wed, 27 Oct 2010 17:16:17 +0200
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+Message-ID: <op.vk8p1fpwi35s77@sl500.localnetwork>
+
+Hello!
+
+I'm working on adding multiple placements to TextSymbolizer and would like  
+to discuss the best way to do this.
+What I am trying to do is: When a label can't be placed at the intended  
+position other positions (or font sizes) are tried.
+
+Now the question is how to design the user interface (which might  
+influence the implementation):
+
+Option a)
+<TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+     <AlternatePlacement dx="..." dy="..." />
+     <AlternatePlacement dx="..." dy="..." />
+     <AlternatePlacement dx="..." dy="..." size="..." />
+</TextSymbolizer>
+The default values would stay in the TextSymbolizer tag but they could be  
+overriden by AlternatePlacement tags.
+
+Option b)
+<TextSymbolizer fill="...">
+     <Placement dx="..." dy="..." size="..." />
+     <Placement dx="..." dy="..." size="..." />
+     <Placement dx="..." dy="..." size="..." />
+</TextSymbolizer>
+All placement values are specified in special Placement tags.
+
+Option c)
+Something completely different.
+
+For all options a simplified version could be added to automate generating  
+the list placement e.g. <AutoPlacment dx="..." dy="..."  
+position="top,bottom,right,left"> which would change the sign of the dx,  
+dy values automatically.
+
+The next question is: Which options are needed. On my list are dx, dy,  
+size, wrap_width, character_spacing. But others might be useful too. It  
+might be possible to use the "name" field which would allow pulling a  
+short version of the string from the database. However this might be  
+difficult to implement.
+
+Thanks for your feedback.
+
+Hermann
+
+
+
+From ldp at xs4all.nl  Wed Oct 27 22:45:21 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Wed, 27 Oct 2010 22:45:21 +0200
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <op.vk8p1fpwi35s77@sl500.localnetwork>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork>
+Message-ID: <4CC88F61.2070702@xs4all.nl>
+
+On 27-10-2010 17:16, Hermann Kraus wrote:
+
+> Option c)
+> Something completely different.
+
+c) I've mentioned a few times before (on IRC, as recently as the code 
+sprint) that I would like to see symbolizers return information about 
+whether they could be placed, and that there could be an 'else' 
+construction to call other symbolizers upon that. This would also enable 
+your AlternatePlacement proposal.
+
+<TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+<Else previousplacement="false">
+   <TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+</Else>
+<Else previousplacement="false">
+   <TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+</Else>
+<Else previousplacement="false">
+   <TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+</Else>
+</TextSymbolizer>
+
+Although you would then appear to need to have a fully qualified 
+TextSymbolizer in the Else, I could imagine that the symbolizers in the 
+else construction could inherit from the first symbolizer, mimicing the 
+syntax from your option a.
+
+It's not only the TextSymbolizer that could do with alternate 
+placements. Point/ShieldSymbolizer could likewise benefit, as would the 
+new MarkerSymbolizer.
+
+
+-- 
+Lennard
+
+
+From robert.coup at koordinates.com  Thu Oct 28 00:22:23 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Thu, 28 Oct 2010 11:22:23 +1300
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <4CC88F61.2070702@xs4all.nl>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork> <4CC88F61.2070702@xs4all.nl>
+Message-ID: <AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+
+Hey folks,
+
+My $5 worth...
+
+On Thu, Oct 28, 2010 at 9:45 AM, Lennard <ldp at xs4all.nl> wrote:
+
+> On 27-10-2010 17:16, Hermann Kraus wrote:
+>
+>  Option c)
+>> Something completely different.
+>>
+>
+> c) I've mentioned a few times before (on IRC, as recently as the code
+> sprint) that I would like to see symbolizers return information about
+> whether they could be placed, and that there could be an 'else' construction
+> to call other symbolizers upon that. This would also enable your
+> AlternatePlacement proposal.
+
+
+All the options proposed seem ridiculously verbose in the simple case (and
+in a complex case too):
+
+Stepping back, I think we need to end up specifying:
+
+ - vertical-align: top, middle, bottom, baseline(?)
+ - horizontal-align: left, center, right
+These two form the "anchor" - the closest corner on the label to our
+"target" location.
+
+ - dx
+ - dy
+These two specify the distance from the "target" (tx,ty) to the anchor
+point.
+
+I'm thinking these could be summarised into:
+ - placement: offset(default),center,n,s,e,w,ne,se,nw,sw,any -- setting h+v
+alignment & the anchor position. You could go with CSS-style "left top,
+center middle, right bottom, etc" but it seems a lot more verbose. "any"
+would be a shortcut for everything except offset in a "sane" order.
+ - dx,dy
+
+an "offset" placement would do the existing behavior - dx & dy become an
+offset used to move the label from center.
+That leads to:
+<TextSymbolizer placement="point" placement_options="any" dx="50" dy="50"
+/>
+
+For example, placement_options="center,e,ne,se" would try and do (in order):
+ 1. vertical-align=center, horiz-align=center, x=tx, y=ty
+ 2. vertical-align=center, horiz-align=left, x=tx+dx, y=ty
+ 3. vertical-align=bottom, horiz-align=left, x=tx+dx, y=ty+dy
+ 4. vertical-align=top, horiz-align=left, x=tx+dx, y=ty-dy
+
+Not sure what should happen if you specify vertical-alignment alongside
+placement_options... I'd guess nothing except when it's testing the "offset"
+placement.
+
+I think it would be ideal to have max-dx+max-dy/radius rather than dx+dy to
+define a rectangle/circle where any placement would be valid, then try and
+find the closest one, but given the unlimited potential placements in such
+an area it seems too hard to make it work. I don't particularly like it, but
+you could do something along the lines of dx="10,20,20,30,30"
+dy="10,20,30,20,30" to allow trying "further away". That would do the
+placement_options for each of:
+ 1. tx,ty
+ 2. tx?10,ty?10
+ 3. tx?20,ty?20
+ 4. tx?20,ty?30
+ 5. tx?30,ty?20
+ 6. tx?30,ty?30
+
+Does that cover the practical use case?
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101028/b1f4e698/attachment.html>
+
+From robert.coup at koordinates.com  Thu Oct 28 00:25:03 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Thu, 28 Oct 2010 11:25:03 +1300
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork> <4CC88F61.2070702@xs4all.nl>
+	<AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+Message-ID: <AANLkTimLjM49WG=Abx8eSTHO4BvXNdaccjRpFkw1O8UB@mail.gmail.com>
+
+On Thu, Oct 28, 2010 at 11:22 AM, Robert Coup
+<robert.coup at koordinates.com>wrote:
+
+>
+> Does that cover the practical use case?
+>
+
+I don't think we want to set horizontal alignment. Just treat all the
+"alignment" options in my post as "which point on the text box boundary
+becomes the anchor".
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101028/93537b2f/attachment.html>
+
+From ldp at xs4all.nl  Thu Oct 28 19:54:44 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Thu, 28 Oct 2010 19:54:44 +0200
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork>	<4CC88F61.2070702@xs4all.nl>
+	<AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+Message-ID: <4CC9B8E4.2040301@xs4all.nl>
+
+On 28-10-2010 0:22, Robert Coup wrote:
+
+> Does that cover the practical use case?
+
+Not all. As I argued, this should not be limited to TextSymbolizer, and 
+not limited to certain arguments of TextSymbolizer. If a symbolizer, any 
+symbolizer that can be dropped due to collisions, returns whether it 
+could be placed or not, and you could act upon that, it would give you 
+maximum freedom.
+
+The "center,e,ne,se" syntax has been proposed long ago. There was a 
+russian map site that had a working patch, and an updated version is on 
+trac. Obviously, having such a placement list is much more terse than my 
+Else construction, but they are not completely alike, and we could have 
+both.
+
+Also, in addition to an Else rule, I can also think of use cases for an 
+opposite case, where a subsequent symbolizer will only be attempted when 
+a previous one *has* been placed.
+
+-- 
+Lennard
+
+
+From herm at scribus.info  Sat Oct 30 02:47:22 2010
+From: herm at scribus.info (Hermann Kraus)
+Date: Sat, 30 Oct 2010 02:47:22 +0200
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <4CC88F61.2070702@xs4all.nl>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork> <4CC88F61.2070702@xs4all.nl>
+Message-ID: <op.vlc5s7lli35s77@sl500.localnetwork>
+
+On Wed, 27 Oct 2010 22:45:21 +0200, Lennard <ldp at xs4all.nl> wrote:
+> c) I've mentioned a few times before (on IRC, as recently as the code  
+> sprint) that I would like to see symbolizers return information about  
+> whether they could be placed, and that there could be an 'else'  
+> construction to call other symbolizers upon that. This would also enable  
+> your AlternatePlacement proposal.
+
+I've thought about this, too. However I think it is not the best solution.  
+While it is flexible there are the following problems:
+- configuration files become large and complicated
+- it doesn't provide significant improvement over adding placement  
+functionality to symbolizers
+- it requires a lot of code changes
+- it doesn't help with PointSymbolizer, etc. There you would have to  
+define hundreds of rules just to allow moving a point some pixels in each  
+direction.
+
+It could be added, but it needs a lot of work which I think is better  
+invested in making the most common use cases easy.
+
+> It's not only the TextSymbolizer that could do with alternate  
+> placements. Point/ShieldSymbolizer could likewise benefit, as would the  
+> new MarkerSymbolizer.
+
+Next problem: How should this work with MarkersSymbolizer? Does it return  
+"true" when all markers were drawn, when 50% were drawn, or when at least  
+one was drawn. It's not that easy to get the symbolizer return value you  
+would like.
+
+Hermann
+
+
+From dane at dbsgeo.com  Sun Oct 31 23:39:02 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sun, 31 Oct 2010 15:39:02 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik in FOSS4G benchmark
+In-Reply-To: <AANLkTimL1jUUhu4GczuawkwMrFriR84wrZ5gDu40NeSM@mail.gmail.com>
+References: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+	<AANLkTimL1jUUhu4GczuawkwMrFriR84wrZ5gDu40NeSM@mail.gmail.com>
+Message-ID: <A0551612-BD3B-4785-B5FA-C3A200A3F258@dbsgeo.com>
+
+
+On Oct 30, 2010, at 6:25 AM, John Mitchell wrote:
+
+> I noticed in the FOSS4G benchmark, or "WMS Shootout" tests that
+> Mapnik/paleoserver did quite well.
+
+Yes, really just Mapnik however. The server should not have too much consequence on rendering speeds for tests like those in the FOSS4G 2010 benchmarks, if written well. This is because the datasets were large and disk io and rendering take up most time.
+
+The main reason I wrote Paleoserver was as a mechanism to test different rendering approaches within Mapnik (shared map object vs one map per thread), and to test how mapnik scaled under variable size thread pools. Paleoserver made it easy to test these things, and consequently helped me understand where to make improvements in Mapnik core that could benefit all servers written on top of Mapnik.
+
+The added benefit is that I though it would also be faster than the ogcserver, but I've learned that is not the case (see below).
+
+>  In the below email you mentioned
+> that you were also going to test Mapnik/WMS implementation from
+> Geofabrik (mod_mapnik_wms), but I did not notice any mention of
+> results from mod_mapnik_wms.
+
+Yes, that was my intention. But I ran out of time to do proper tests of mod_mapnik_wms in time for the FOSS4G event.
+
+However, following the event I did quickly run mod_mapnik_wms and ogcserver through the shapefile and postgis "non-reprojected" tests.
+
+For shapefiles mod_mapnik_wms results were exactly the same as paleoserver under high load, but slightly faster under low to moderate load. I can't report anything re: postgis because I ran into a connection synchronization problem between mod_mapnik_wms and mapnik (trunk). I need to find time to dig into that problem and am not sure when I will have that time.
+
+I also tested the ogcserver using mod_wsgi, and the results were nearly equivalent to mod_mapnik_wms/paleoserver, which again points to the fact that the speeds we are seeing are overwhelmingly related to Mapnik core, not the server implementation.
+
+I think we would need to do benchmarks with much smaller datasets to tease out significant differences in the servers.
+
+> Also how would the not reprojected vector rendering performance of WMS
+> Mapnik/paleoserver compare to the the protocol that openstreetmap.org
+> uses?
+
+Good question. You mean WMS vs Tiles rendered on the fly and not cached? I don't know, and its hard to say how you could test that correctly, because most tiled implementations are rendering metatiles. But, I'll certainly keep it in mind for the future.
+
+> 
+> Thanks,
+> 
+> John
+> 
+> On 7/30/10, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>> Just a reminder that I've stepped up to put mapnik through the paces in the
+>> FOSS4G benchmark, or "WMS Shootout".
+>> 
+>> http://wiki.osgeo.org/wiki/Benchmarking_2010
+>> 
+>> This is a friendly competition, and in past years has resulted in many new
+>> fixes and code innovations for the MapServer and GeoServer teams that have
+>> competed. They also seemed to create a good vibe of collaboration, which I
+>> admired.
+>> 
+>> I figured it would benefit the Mapnik project to go through the same process
+>> and learn from the comparison. My work on projection code optimization came
+>> from my first week testing
+>> (https://lists.berlios.de/pipermail/mapnik-devel/2010-July/001199.html).
+>> Basically I knew that the WMS load tests that will be placed on mapnik will
+>> be numerous and I wanted to see whether requests/sec increased significantly
+>> if the server was run with more potential threads. I found that it didn't,
+>> until I removed and fixed up some of the thread safety code around proj4.
+>> 
+>> Anyway, if you are interested in helping test, supporting on any other
+>> level, or have questions, just get in touch.
+>> 
+>> In the coming weeks the actual benchmarking server will finish being set
+>> fully up with the same data and styles to be run against each software teams
+>> builds. The WMS spec was chosen as a reasonable way to load a server with
+>> random bounding box requests to test raw rendering speed under different
+>> styling scenarios. I plan to test both the newly released WMS implementation
+>> from Geofabrik (mod_mapnik_wms)[1] and a yet-un-released boost::asio-based
+>> server I have been working on (aka. paleoserver). For those that are
+>> interested all the styles and scripts I create along the way will be
+>> available in the osgeo svn [3].
+>> 
+>> Cheers,
+>> 
+>> Dane
+>> 
+>> 
+>> [1] http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+>> [2] http://github.com/springmeyer/paleoserver
+>> [3] http://svn.osgeo.org/osgeo/foss4g/benchmarking
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>> 
+> 
+> 
+> -- 
+> John J. Mitchell
+
+
+
+From hermr2d2 at googlemail.com  Wed Oct 27 03:26:34 2010
+From: hermr2d2 at googlemail.com (Hermann Kraus)
+Date: Wed, 27 Oct 2010 03:26:34 +0200
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+Message-ID: <op.vk7nmjq2ltbbtz@sl500.localnetwork>
+
+Hello!
+
+I'm working on adding multiple placements to TextSymbolizer and would like  
+to discuss the best way to do this.
+What I am trying to do is: When a label can't be placed at the intended  
+position other positions (or font sizes) are tried.
+
+Now the question is how to design the user interface (which might  
+influence the implementation):
+
+Option a)
+<TextSymbolizer dx="..." dy="..." size="..." fill="..." ... >
+     <AlternatePlacement dx="..." dy="..." />
+     <AlternatePlacement dx="..." dy="..." />
+     <AlternatePlacement dx="..." dy="..." size="..." />
+</TextSymbolizer>
+The default values would stay in the TextSymbolizer tag but they could be  
+overriden by AlternatePlacement tags.
+
+Option b)
+<TextSymbolizer fill="...">
+     <Placement dx="..." dy="..." size="..." />
+     <Placement dx="..." dy="..." size="..." />
+     <Placement dx="..." dy="..." size="..." />
+</TextSymbolizer>
+All placement values are specified in special Placement tags.
+
+Option c)
+Something completely different.
+
+For all options a simplified version could be added to automate generating  
+the list placement e.g. <AutoPlacment dx="..." dy="..."  
+position="top,bottom,right,left"> which would change the sign of the dx,  
+dy values automatically.
+
+The next question is: Which options are needed. On my list are dx, dy,  
+size, wrap_width, character_spacing. But others might be useful too. It  
+might be possible to use the "name" field which would allow pulling a  
+short version of the string from the database. However this might be  
+difficult to implement.
+
+Thanks for your feedback.
+
+Hermann
+
+
+From mitchelljj98 at gmail.com  Sat Oct 30 15:25:50 2010
+From: mitchelljj98 at gmail.com (John Mitchell)
+Date: Sat, 30 Oct 2010 09:25:50 -0400
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik in FOSS4G benchmark
+In-Reply-To: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+References: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+Message-ID: <AANLkTimL1jUUhu4GczuawkwMrFriR84wrZ5gDu40NeSM@mail.gmail.com>
+
+I noticed in the FOSS4G benchmark, or "WMS Shootout" tests that
+Mapnik/paleoserver did quite well.  In the below email you mentioned
+that you were also going to test Mapnik/WMS implementation from
+Geofabrik (mod_mapnik_wms), but I did not notice any mention of
+results from mod_mapnik_wms.
+Also how would the not reprojected vector rendering performance of WMS
+Mapnik/paleoserver compare to the the protocol that openstreetmap.org
+uses?
+
+Thanks,
+
+John
+
+On 7/30/10, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Just a reminder that I've stepped up to put mapnik through the paces in the
+> FOSS4G benchmark, or "WMS Shootout".
+>
+> http://wiki.osgeo.org/wiki/Benchmarking_2010
+>
+> This is a friendly competition, and in past years has resulted in many new
+> fixes and code innovations for the MapServer and GeoServer teams that have
+> competed. They also seemed to create a good vibe of collaboration, which I
+> admired.
+>
+> I figured it would benefit the Mapnik project to go through the same process
+> and learn from the comparison. My work on projection code optimization came
+> from my first week testing
+> (https://lists.berlios.de/pipermail/mapnik-devel/2010-July/001199.html).
+> Basically I knew that the WMS load tests that will be placed on mapnik will
+> be numerous and I wanted to see whether requests/sec increased significantly
+> if the server was run with more potential threads. I found that it didn't,
+> until I removed and fixed up some of the thread safety code around proj4.
+>
+> Anyway, if you are interested in helping test, supporting on any other
+> level, or have questions, just get in touch.
+>
+> In the coming weeks the actual benchmarking server will finish being set
+> fully up with the same data and styles to be run against each software teams
+> builds. The WMS spec was chosen as a reasonable way to load a server with
+> random bounding box requests to test raw rendering speed under different
+> styling scenarios. I plan to test both the newly released WMS implementation
+> from Geofabrik (mod_mapnik_wms)[1] and a yet-un-released boost::asio-based
+> server I have been working on (aka. paleoserver). For those that are
+> interested all the styles and scripts I create along the way will be
+> available in the osgeo svn [3].
+>
+> Cheers,
+>
+> Dane
+>
+>
+> [1] http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+> [2] http://github.com/springmeyer/paleoserver
+> [3] http://svn.osgeo.org/osgeo/foss4g/benchmarking
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+
+-- 
+John J. Mitchell
+
+

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C4B9DFC11.9010202%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001094.html">
+   <LINK REL="Next"  HREF="001099.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C4B9DFC11.9010202%40gmail.com%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Mon Mar 15 10:21:21 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001094.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+        <LI>Next message: <A HREF="001099.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1095">[ date ]</a>
+              <a href="thread.html#1095">[ thread ]</a>
+              <a href="subject.html#1095">[ subject ]</a>
+              <a href="author.html#1095">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>W dniu 15.03.2010 10:01, Artem Pavlenko pisze:
+&gt;<i> Yes, it did. On trunk I get:
+</I>&gt;<i> 
+</I>&gt;<i> grep -rn 'boost/unordered_map.hpp' --include=*.{cpp,hpp} .
+</I>&gt;<i> ./include/mapnik/hextree.hpp:32:#include &lt;boost/unordered_map.hpp&gt;
+</I>&gt;<i> ./include/mapnik/image_cache.hpp:35:#include &lt;boost/unordered_map.hpp&gt;
+</I>&gt;<i> 
+</I>&gt;<i> You should be able to use std::tr1::unordered_map (GCC) as a replacement.
+</I>&gt;<i> 
+</I>
+Not sure if using tr1 won't break builds in some enviroments.
+
+I just committed fix to 0.7.1-dev branch, using simple stl:map in case
+of boost&lt;1.36, so that it works, just few % slower (not including mapnik
+rendering, just png saving).
+<A HREF="http://trac.mapnik.org/changeset/1694">http://trac.mapnik.org/changeset/1694</A>
+
+Trunk already needs higher version of boost, so it doesn't need it.
+
+-- 
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001094.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+	<LI>Next message: <A HREF="001099.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1095">[ date ]</a>
+              <a href="thread.html#1095">[ thread ]</a>
+              <a href="subject.html#1095">[ subject ]</a>
+              <a href="author.html#1095">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

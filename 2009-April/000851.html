@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.6.0 released
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3Cd6cb3ab10904071630x55da794at7eb0241f0d09fe9b%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000850.html">
+   <LINK REL="Next"  HREF="000852.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.6.0 released</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3Cd6cb3ab10904071630x55da794at7eb0241f0d09fe9b%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.6.0 released">beau at beaugunderson.com
+       </A><BR>
+    <I>Wed Apr  8 01:30:42 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000850.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+        <LI>Next message: <A HREF="000852.html">[Mapnik-devel] Mapnik Buildbot (was: Re:  Mapnik 0.6.0 released)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#851">[ date ]</a>
+              <a href="thread.html#851">[ thread ]</a>
+              <a href="subject.html#851">[ subject ]</a>
+              <a href="author.html#851">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ah, apparently BuildBot (Python/Twisted) is the gold standard. It seems like
+it might be easy to setup and apply to the Mapnik build process--and it
+would be easy to add more slaves on other architectures too. I will try
+implementing this tonight.
+
+
+- Beau
+
+On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;wrote:
+
+&gt;<i> I have a FreeBSD server that could be used as a buildbot/smoketest server;
+</I>&gt;<i> is there a widely-used, lightweight system (Python-based preferred) that
+</I>&gt;<i> someone could recommend for setting that up?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - Beau
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; I did the initial port to Autotools because more as one year ago
+</I>&gt;&gt;<i> &gt; mapnik didn't build with Debian out of the box. I had to create many
+</I>&gt;&gt;<i> &gt; boost symlinks by hand.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Maybe that was because I was doing something
+</I>&gt;&gt;<i> &gt; wrong.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, boost library names are pretty complex and our SCons
+</I>&gt;&gt;<i> implementation for finding them (needed and) has improved quite a bit.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, autodetection of boost library names when boost has been
+</I>&gt;&gt;<i> installed from source (and the install process did not create any
+</I>&gt;&gt;<i> symlinks) still could benefit from improvement and I plan to work on
+</I>&gt;&gt;<i> this in trunk before 0.7.0.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Another reason was the support for pkg-config that the rest of
+</I>&gt;&gt;<i> &gt; my builds use.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> BTW, we are now commonly using built in pkg-config support with Scons
+</I>&gt;&gt;<i> to locate a number of dependencies.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Also the pkg-config --uninstalled function that allows
+</I>&gt;&gt;<i> &gt; to link again libraries in place without installing them. This saves a
+</I>&gt;&gt;<i> &gt; lot of time.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hm, I'm unfamiliar with this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Now as I did the port to Autotools I don't like to throw
+</I>&gt;&gt;<i> &gt; it away. Many distributions use the ./configure &amp;&amp; make &amp;&amp; make
+</I>&gt;&gt;<i> &gt; install
+</I>&gt;&gt;<i> &gt; way to easy create packages (e.g. gentoo).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I agree, and I'm glad you've started documenting it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; But I don't like to vote against scons. If you don't like to switch
+</I>&gt;&gt;<i> &gt; I'll be happy if you simply let the autotools files in SVN for me.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cool.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> So I guess we just need to remove the Autotools stuff when we package
+</I>&gt;&gt;<i> releases.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/8809cf2b/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/8809cf2b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000850.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+	<LI>Next message: <A HREF="000852.html">[Mapnik-devel] Mapnik Buildbot (was: Re:  Mapnik 0.6.0 released)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#851">[ date ]</a>
+              <a href="thread.html#851">[ thread ]</a>
+              <a href="subject.html#851">[ subject ]</a>
+              <a href="author.html#851">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

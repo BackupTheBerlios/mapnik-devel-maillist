@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Strange results with grid renderer and images where width != height
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Strange%20results%20with%20grid%20renderer%20and%20images%0A%20where%20width%20%21%3D%20height&In-Reply-To=%3C4DF9B224.4040806%40web.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001423.html">
+   <LINK REL="Next"  HREF="001425.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Strange results with grid renderer and images where width != height</H1>
+    <B>Simon Kammerer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Strange%20results%20with%20grid%20renderer%20and%20images%0A%20where%20width%20%21%3D%20height&In-Reply-To=%3C4DF9B224.4040806%40web.de%3E"
+       TITLE="[Mapnik-devel] Strange results with grid renderer and images where width != height">simon.kammerer at web.de
+       </A><BR>
+    <I>Thu Jun 16 09:35:00 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001423.html">[Mapnik-devel] Strange results with grid renderer and images	where width != height
+</A></li>
+        <LI>Next message: <A HREF="001425.html">[Mapnik-devel] Strange results with grid renderer and images	where width != height
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1424">[ date ]</a>
+              <a href="thread.html#1424">[ thread ]</a>
+              <a href="subject.html#1424">[ subject ]</a>
+              <a href="author.html#1424">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+On 06/15/2011 07:25 PM, Dane Springmeyer wrote:
+&gt;&gt;&gt;<i> Example:
+</I>&gt;&gt;&gt;<i> <A HREF="http://188.138.24.13/grid_renderer.png">http://188.138.24.13/grid_renderer.png</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hmm, yes, I've only tested so far with width == height. Looks like a bug, nice catch. I'll see what I can do.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Actually, I can't replicate this problem. Different width/height values see to work fine in my tests.
+</I>&gt;<i>
+</I>&gt;<i> Can you describe a bit more about what your code is doing?
+</I>&gt;<i>
+</I>
+Isolate features from grid_utf = grid.encode(resolution=1), then do some 
+simple border tracing. My isolation and tracing code is ugly and 
+complicated for now, so I've made a simple demo to show my problem.
+
+The following code works with the gridsforkids example data and rebuilds 
+the map from grid_utf = grid.encode(resolution=1).
+
+With width == height, both images look the same, with width != height, 
+the rebuild image is kind of stretched.
+
+trunk revision is 2974.
+
+
+
+import mapnik2
+import Image
+import ImageDraw
+
+m = mapnik2.Map(200,400)
+mapnik2.load_map(m,'stylesheet.xml')
+
+# go to italy
+tile = mapnik2.Box2d(1113194.91, 4838471.40, 2226389.82, 6413524.59)
+m.zoom_to_box(tile)
+
+# render image
+im = mapnik2.Image(m.width, m.height)
+mapnik2.render(m,im)
+im.save(&quot;/tmp/grid.png&quot;)
+
+# render grid
+grid = mapnik2.Grid(m.width, m.height)
+mapnik2.render_layer(m,grid,layer=0,fields=['POP2005','NAME'])
+grid_utf = grid.encode(resolution=1)
+
+#build image from grid
+testimage = Image.new(&quot;RGB&quot;,(m.width, m.height))
+draw = ImageDraw.Draw(testimage)
+
+for row in range(0, len(grid_utf['grid'])):
+
+     line = grid_utf['grid'][row]
+
+     for col in range(0, len(line)):
+
+         v = ord(line[col])
+         draw.point((col,row), fill=&quot;rgb(%s,%s,%s)&quot; % (v,v,v))
+
+
+testimage.save('/tmp/gridtest.png')
+
+
+
+
+
+
+
+
+Simon
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001423.html">[Mapnik-devel] Strange results with grid renderer and images	where width != height
+</A></li>
+	<LI>Next message: <A HREF="001425.html">[Mapnik-devel] Strange results with grid renderer and images	where width != height
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1424">[ date ]</a>
+              <a href="thread.html#1424">[ thread ]</a>
+              <a href="subject.html#1424">[ subject ]</a>
+              <a href="author.html#1424">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

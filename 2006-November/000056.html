@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Map tiling patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20tiling%20patch&In-Reply-To=%3C4561099D.9050302%40onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000055.html">
+   <LINK REL="Next"  HREF="000057.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Map tiling patch</H1>
+    <B>Robert Coup</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20tiling%20patch&In-Reply-To=%3C4561099D.9050302%40onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] Map tiling patch">robert.coup at onetrackmind.co.nz
+       </A><BR>
+    <I>Mon Nov 20 02:49:17 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000055.html">[Mapnik-devel] Map tiling patch
+</A></li>
+        <LI>Next message: <A HREF="000057.html">[Mapnik-devel] Map constructor does not enfoce min/max size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Toby Collett wrote:
+&gt;<i> The attached patch allows for a selected pixel region within an extent
+</I>&gt;<i> to be rendered. This allows for a large extent (larger than can be
+</I>&gt;<i> rendered into a single image in memory) to be rendered out as tiles.
+</I>&gt;<i> Since the full extent is used for the placement calculations text
+</I>&gt;<i> crossing tile boundaries will be consistent.
+</I>&gt;<i>
+</I>&gt;<i> This method is a little inefficient when a large number of labels need
+</I>&gt;<i> placed, an improved method would be to cache these placements between
+</I>&gt;<i> tiles, but the attached is a start.
+</I>&gt;<i>   
+</I>Another way to use this code more efficiently is to render large tiles 
+(eg. 2048x2048)
+then slice them using ImageMagick/PIL/etc to the size you require (eg. 
+256x256).
+
+Rob :)
+
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Mobile +64-21-572 632
+Web <A HREF="http://www.onetrackmind.co.nz">http://www.onetrackmind.co.nz</A> 
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000055.html">[Mapnik-devel] Map tiling patch
+</A></li>
+	<LI>Next message: <A HREF="000057.html">[Mapnik-devel] Map constructor does not enfoce min/max size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#56">[ date ]</a>
+              <a href="thread.html#56">[ thread ]</a>
+              <a href="subject.html#56">[ subject ]</a>
+              <a href="author.html#56">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

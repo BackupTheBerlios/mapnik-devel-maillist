@@ -1,0 +1,133 @@
+From pavlenko at berlios.de  Wed Feb  1 16:04:28 2006
+From: pavlenko at berlios.de (Artem Pavlenko)
+Date: Wed, 01 Feb 2006 15:04:28 +0000
+Subject: [Mapnik-devel] new release 0.2.5a
+Message-ID: <43E0CDFC.2010102@users.berlios.de>
+
+Dear all,
+
+I'm very pleased to announce mapnik's new release. We've been working 
+hard to get here. The main focus of this release is to provide a better 
+user experience while installing mapnik, which hopefully will bring more 
+people on board. I know, there is room for further improvements but this 
+is a step in the right direction. This release offers:
+
+   1. new build system
+   2. new INSTALLATION INSTRUCTIONS
+      <http://mapnik.org/documentation/install/>
+   3. new symbolizers (polygon/line patterns)
+   4. lots of fixes.
+
+Big thanks go to Jean-Fran?ois Doyon, who in his spare time, refactored 
+mapnik's source tree and wrote a better build system using SCons.
+Enjoy!
+
+Artem Pavlenko
+
+
+
+
+
+From artem at pavlenko.uklinux.net  Tue Feb  7 21:04:35 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 07 Feb 2006 20:04:35 +0000
+Subject: [Mapnik-devel] mapnik development
+Message-ID: <43E8FD53.9070208@pavlenko.uklinux.net>
+
+Dear List,
+
+Just some news about present and future developments:
+
+Jean-Francois Doyon has developed *new*  building scripts for mapnik. 
+Very cool! We're planning to add support for more platforms and toolkits.
+
+I re-worked mapnik's feature processing pipeline and as a result we can 
+have multiple back-ends. At the moment only the AGG renderer is 
+implemented but writing a new one should be very straightforward. For 
+those interested in implementation details have a look at: 
+lookhttp://svn.berlios.de/wsvn/mapnik/trunk/include/feature_style_processor.hpp?op=file&rev=0&sc=0
+
+New design based on CRTP (Curiously Recurring Template  Pattern) e.g.
+
+struct MyCoolRenderer : public feature_style_processor<MyCoolRenderer>
+
+{
+
+    void process( xxx_symbolizer &const sym,Feature const& feature) 
+
+    {         
+
+    }
+
+};
+
+
+Also symbolizers are simple POD objects and not related to each other. 
+In fact there are no virtual functions at all which is good  :-) .  
+Symbolizers are managed in boost::variant type and static visitation is 
+used to dispatch calls to relevant 'process' methods in the Derived 
+class. One improvement would be to 'trick' the compiler into generating 
+missing methods from implementation to make it even more user-friendly.  
+Any suggestions?
+
+Do not hesitate to ask questions, request features etc etc
+All the best
+Artem Pavlenko
+
+  
+ 
+  
+
+
+From pavlenko at berlios.de  Tue Feb  7 21:05:02 2006
+From: pavlenko at berlios.de (Artem Pavlenko)
+Date: Tue, 07 Feb 2006 20:05:02 +0000
+Subject: [Mapnik-devel] mapnik development
+Message-ID: <43E8FD6E.7090000@users.berlios.de>
+
+Dear List,
+
+Just some news about present and future developments:
+
+Jean-Francois Doyon has developed *new*  building scripts for mapnik.
+Very cool! We're planning to add support for more platforms and toolkits.
+
+I re-worked mapnik's feature processing pipeline and as a result we can
+have multiple back-ends. At the moment only the AGG renderer is
+implemented but writing a new one should be very straightforward. For
+those interested in implementation details have a look at:
+lookhttp://svn.berlios.de/wsvn/mapnik/trunk/include/feature_style_processor.hpp?op=file&rev=0&sc=0
+
+New design based on CRTP (Curiously Recurring Template  Pattern) e.g.
+
+struct MyCoolRenderer : public feature_style_processor<MyCoolRenderer>
+
+{
+
+    void process( xxx_symbolizer &const sym,Feature const& feature)
+
+    {
+
+    }
+
+};
+
+
+Also symbolizers are simple POD objects and not related to each other.
+In fact there are no virtual functions at all which is good  :-) .
+Symbolizers are managed in boost::variant type and static visitation is
+used to dispatch calls to relevant 'process' methods in the Derived
+class. One improvement would be to 'trick' the compiler into generating
+missing methods from implementation to make it even more user-friendly.
+Any suggestions?
+
+Do not hesitate to ask questions, request features etc etc
+All the best
+Artem Pavlenko
+
+
+
+
+
+
+

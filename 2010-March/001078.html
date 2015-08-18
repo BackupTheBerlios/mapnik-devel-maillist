@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3C4B420E4877773244A5DE388033C7E8002F154F118F%40MS1.geoeye.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001079.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem</H1>
+    <B>Simpson Brad-C-Lockheed</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3C4B420E4877773244A5DE388033C7E8002F154F118F%40MS1.geoeye.com%3E"
+       TITLE="[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem">Simpson.Brad at geoeye.com
+       </A><BR>
+    <I>Tue Mar  9 01:02:25 CET 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001079.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1078">[ date ]</a>
+              <a href="thread.html#1078">[ thread ]</a>
+              <a href="subject.html#1078">[ subject ]</a>
+              <a href="author.html#1078">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane,
+
+I attached the output of scons (running with the ignore errors option) and the script I used to build Mapnik.  The build script is essentially the scons output after a set of group edits, plus adding some echo statements to track progress.  Perhaps this could be of help to the developers.
+
+I have a couple more issues:
+
+[1]  I noticed Mapnik will encounter a segment violation if the xml I provide has errors.  Since you can't catch segment violations in a try-catch block, does Mapnik provide a way of checking xml before trying to render it?
+
+[2]  I'm using the LinePatterSymbolizer to render railroad tracks.  It actually looks pretty good.  However, I had to use a tiff file for the pattern instead of a png file.  The png file resulted in no output, and no error.  When I switched to the tiff file I got the expected result.  Is this a known Mapnik problem?  [I believe I'm generating png files correctly since they work with the PointSymbolizer correctly, plus I'm generating the railroad tiff file from a png file.]
+
+Brad
+
+From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+Sent: Friday, February 26, 2010 11:17 AM
+To: Simpson Brad-C-Lockheed
+Cc: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+
+Hi Brad,
+
+On Feb 25, 2010, at 2:45 PM, Simpson Brad-C-Lockheed wrote:
+
+
+Hi Dane,
+
+Good suggestion about building under Linux to see if the same problems occur.  It turns out I built Mapnik under Linux when I was first evaluating it.  However, none of the initial work involved Mico.
+
+Okay, good to know.
+
+
+In fact, we may not have the source to Mico v2.3.7 in order to build it under Linux.  [Mico was supplied to us on our HP-UX systems pre-built.]  Perhaps I can find it on the web.  We are going to have a meeting Monday, however, to discuss upgrading to a newer multithreaded version of Mico.  So all of this may be overcome by events.
+
+Okay, I hope that these possibilities can help you out.
+
+
+
+Regarding using SCons to build Mapnik under HP-UX, unfortunately I lost the notes on the modifications to the SCons directories [over zealous during code cleanup].  I had to make changes to various files in the scons/scons-local-1.2.0/SCons area.  Even though the gnu compiler was installed, scons was trying to use the aCC compiler.
+
+Ah, okay, this sounds similar to SCons bug that I've also seen affect Solaris. In the future you could try installing the latest SCons on your system and then instead of running the &quot;local&quot; scons just do:
+
+scons configure &amp;&amp; scons install
+
+Our local copy is just for convenience and perhaps the latest scons sources have addressed this issue.
+
+
+I fixed the compiler choice, but the arguments for compilation and linking had unrecognized options.
+
+Okay, which may be a problem with some of the flags in our Scons implementation specific to Mapnik.
+
+
+  After playing with it for a bit and getting frustrated, I finally decided to build with the ignore errors options.  I  saved all the commands into a file, made group edits, and ended up with a working build script.  I can send a copy of this script if desired.
+
+Sure, it would be a good reference at the least. I won't  have access to an HP-UX machine to test anytime soon, but perhaps others might benefit.
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: build
+Type: application/octet-stream
+Size: 70595 bytes
+Desc: build
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.obj</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sconsBuild.log
+Type: application/octet-stream
+Size: 67587 bytes
+Desc: sconsBuild.log
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment-0001.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment-0001.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001079.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1078">[ date ]</a>
+              <a href="thread.html#1078">[ thread ]</a>
+              <a href="subject.html#1078">[ subject ]</a>
+              <a href="author.html#1078">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

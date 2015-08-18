@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik viewer and OSM rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3Cyek3aqv9flt.fsf%40dellow.uk.cyberscience.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000547.html">
+   <LINK REL="Next"  HREF="000551.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik viewer and OSM rendering</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3Cyek3aqv9flt.fsf%40dellow.uk.cyberscience.com%3E"
+       TITLE="[Mapnik-devel] Mapnik viewer and OSM rendering">tom at compton.nu
+       </A><BR>
+    <I>Thu Mar 13 09:45:50 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000547.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+        <LI>Next message: <A HREF="000551.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#548">[ date ]</a>
+              <a href="thread.html#548">[ thread ]</a>
+              <a href="subject.html#548">[ subject ]</a>
+              <a href="author.html#548">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">47D8A4D4.9010909 at onetrackmind.co.nz</A>&gt;
+        Ben Moores &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ben.moores at onetrackmind.co.nz</A>&gt; wrote:
+
+&gt;<i> Hi, I've been doing some work adding PDF output to mapnik. It's still a 
+</I>&gt;<i> work in progress, around 90% done and was going to be released when 
+</I>&gt;<i> finished.
+</I>
+You do know that I committed support for PDF rendering using cairo
+a few weeks ago I assume?
+
+&gt;<i> - I've used a patched wxPdfDoc for the pdf rendering.
+</I>&gt;<i> - Most symbolizers are implemented.
+</I>
+I'm guessing not LinePatternSymbolizer ;-)
+
+&gt;<i> - Tried to make it as a separate library to mapnik, but had to subclass 
+</I>&gt;<i> some of the symbolizers. Mostly this was adding output sizes to images, 
+</I>&gt;<i> since pixels don't correspond to page measurements.
+</I>
+I have (currently) just treated cairo units (which are points
+for PDF surfaces) as equivalent to pixels. I think that isn't
+quite right as cairo is using points (72dpi) and mapnik assumes
+a value of about 90dpi IIRC.
+
+&gt;<i> - Implemented PDF layers, so you can turn things on and off.
+</I>
+I haven't done that, but if cairo offers a way to declare layers
+it should be easy enough - it's the first I've heard of it to be
+honest.
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000547.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+	<LI>Next message: <A HREF="000551.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#548">[ date ]</a>
+              <a href="thread.html#548">[ thread ]</a>
+              <a href="subject.html#548">[ subject ]</a>
+              <a href="author.html#548">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

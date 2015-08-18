@@ -1,0 +1,1247 @@
+From dane at dbsgeo.com  Wed May  4 03:25:05 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 3 May 2011 18:25:05 -0700
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+	<AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+Message-ID: <463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+
+Maxime,
+
+I've just merged into trunk the awesome work by Ben Moores and Rob Coup:
+
+https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107
+
+I notice you have a few stale forks of mapnik on github. Can you take a look at this work and make sure it captures the fixes you also had in mind?
+
+Dane
+
+
+On Nov 11, 2010, at 1:13 PM, Maxime Dupuis wrote:
+
+> Hi Robert,
+> 
+> I'll file the bug either tonight or tomorrow morning and I'll attach a geotiff I had problems with.
+> 
+> Do you have any written plans for the refactor? How you plan to do things code wise? Do you have a ETA for that refactor?
+> 
+> Also, how can I help? I'd be more than happy to assist you guys in that process.
+> 
+> Thanks!
+> -MD
+> 
+> On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup <robert.coup at koordinates.com> wrote:
+> Hi Maxime,
+> 
+> On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis <maxime.dupuis at ecometrica.org> wrote:
+> 
+> This is my first message on the dev mailing list, so bare with me. :)
+> 
+> Welcome :)
+>  
+> I started using mapnik only a month ago and I had to use the new gdal Raster Colorizer to colormap a geotif.
+> 
+> I'm glad you figured it out! Dane & Nino & I spent a wee bit of time a couple of weeks back looking at how to simplify the RasterColorizer declaration so it's more flexible and a whole lot simpler :)
+>  
+> The problem, I think, lies in the way the band data is read and stored in memory. When mapnik calls gdal's RasterIO() method, it asks for data in GDT_Byte and stores it in the image_data_32's pData_ attribute. That attribute's pointer, however, is retrived as a pointer of unsigned chars (which makes sense since it asks gdal for GDT_Byte data) while it's really a pointer of unsigned ints.
+>  
+>  
+> Also, I looked at how qgis did it, because I had no problem colormapping with it and I came up to the conclusion that the best way for mapnik to do color mapping is to use the ImageData template as, well, a template rather than use the typdef image_data_32 everywhere. But I'm not the best person to judge that as I'm not involved in mapnik's development.
+> 
+> Can you file a ticket and assign it to me (rcoup), preferably attaching an example image & xml file? When I refactor the colorizer I'll make sure we're doing sane things with non-byte data, and I'll check that your case works too. 
+> 
+> Thanks,
+> 
+> Rob :)
+> 
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110503/2cb69859/attachment.html>
+
+From roel.vanhout at gmail.com  Wed May  4 09:13:12 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Wed, 4 May 2011 09:13:12 +0200
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+	<AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+	<463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+Message-ID: <BANLkTimZWVW+NyWrABi8tNioeZSvDEw_eg@mail.gmail.com>
+
+Is there more documentation on this feature than the wiki page that is
+linked to from the github page
+(https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer)? If
+no, I have some questions (I've only been on mapnik-devel since early
+this year so I may have missed previous discussion on this, sorry
+about that):
+
+- Why are only GDAL plugins supported? Are there more such
+dependencies where rendering depends on the data source type, and if
+so are they being kept track of, and is there a plan how to eliminate
+them?
+- Does color blending work in RGB space and RGB space only? If so, the
+linear mode (btw may I suggest calling this 'blending-mode' or
+something more descriptive than 'mode') is (in my experience) not
+going to be very useful I'm afraid. We've had quite bad experiences
+with making maps informative with RGB linear interpolation, to the
+point where we (at my company) changed the default to HSL and as far
+as I remember have never used RGB again because all maps came out
+better using HSL.
+- The documentation/wiki page talks about 'stops' and stop colors,
+which I think in the end describes a multi-color gradient, right? I
+think it would be better to describe the functionality in those terms,
+as I think it's more intuitive. Also it would match better with other
+places in mapnik where gradients are used; there could be one central
+place where how gradients work in Mapnik is described in abstract form
+and only additions that are specific for some use cases would need to
+be described separately.
+- What does the 'epsilon' parameter do? It says it's used for fuzzing
+the color, but how does that work?
+
+
+cheers,
+
+roel
+
+
+On Wed, May 4, 2011 at 3:25 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Maxime,
+> I've just merged into trunk the awesome work by Ben Moores and Rob Coup:
+> https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107
+> I notice you have a few stale forks of mapnik on github. Can you take a look
+> at this work and make sure it captures the fixes you also had in mind?
+> Dane
+>
+> On Nov 11, 2010, at 1:13 PM, Maxime Dupuis wrote:
+>
+> Hi Robert,
+> I'll file the bug either tonight or tomorrow morning and I'll attach a
+> geotiff I had problems with.
+> Do you have any written plans for the refactor? How you plan to do things
+> code wise? Do you have a ETA for that refactor?
+> Also, how can I help? I'd be more than happy to assist you guys in that
+> process.
+> Thanks!
+> -MD
+> On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup <robert.coup at koordinates.com>
+> wrote:
+>>
+>> Hi Maxime,
+>>
+>> On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis
+>> <maxime.dupuis at ecometrica.org> wrote:
+>>>
+>>> This is my first message on the dev mailing list, so bare with me. :)
+>>
+>> Welcome :)
+>>
+>>>
+>>> I started using mapnik only a month ago and I had to use the new gdal
+>>> Raster Colorizer to colormap a geotif.
+>>
+>> I'm glad you figured it out! Dane & Nino & I spent a wee bit of time a
+>> couple of weeks back looking at how to simplify the RasterColorizer
+>> declaration so it's more flexible and a whole lot simpler :)
+>>
+>>>
+>>> The problem, I think, lies in the way the band data is read and stored in
+>>> memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+>>> GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+>>> attribute's pointer, however, is retrived as a pointer of unsigned chars
+>>> (which makes sense since it asks gdal for GDT_Byte data) while it's really a
+>>> pointer of unsigned ints.
+>>
+>>
+>>
+>>>
+>>> Also, I looked at how qgis did it, because I had no problem colormapping
+>>> with it and I came up to the conclusion that the best way for mapnik to do
+>>> color mapping is to use the ImageData template as, well, a template rather
+>>> than use the typdef image_data_32 everywhere. But I'm not the best person to
+>>> judge that as I'm not involved in mapnik's development.
+>>
+>> Can you file a ticket and assign it to me (rcoup), preferably attaching an
+>> example image & xml file? When I refactor the colorizer I'll make sure we're
+>> doing sane things with non-byte data, and I'll check that your case works
+>> too.
+>> Thanks,
+>> Rob :)
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From maxime.dupuis at ecometrica.ca  Fri May  6 17:04:11 2011
+From: maxime.dupuis at ecometrica.ca (Maxime Dupuis)
+Date: Fri, 06 May 2011 11:04:11 -0400
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+	<AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+	<463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+Message-ID: <4DC40DEB.9080909@ecometrica.ca>
+
+Hi Dane,
+
+I took a look at the changeset; seems promising!
+
+I don't have time today to check if everything works perfectly for what 
+we had in mind, but I'll be sure to report bugs if I find any.
+
+Thanks, awesome work!
+Max
+
+
+On 11-05-03 09:25 PM, Dane Springmeyer wrote:
+> Maxime,
+>
+> I've just merged into trunk the awesome work by Ben Moores and Rob Coup:
+>
+> https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107
+>
+> I notice you have a few stale forks of mapnik on github. Can you take 
+> a look at this work and make sure it captures the fixes you also had 
+> in mind?
+>
+> Dane
+>
+>
+> On Nov 11, 2010, at 1:13 PM, Maxime Dupuis wrote:
+>
+>> Hi Robert,
+>>
+>> I'll file the bug either tonight or tomorrow morning and I'll attach 
+>> a geotiff I had problems with.
+>>
+>> Do you have any written plans for the refactor? How you plan to do 
+>> things code wise? Do you have a ETA for that refactor?
+>>
+>> Also, how can I help? I'd be more than happy to assist you guys in 
+>> that process.
+>>
+>> Thanks!
+>> -MD
+>>
+>> On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup 
+>> <robert.coup at koordinates.com <mailto:robert.coup at koordinates.com>> wrote:
+>>
+>>     Hi Maxime,
+>>
+>>     On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis
+>>     <maxime.dupuis at ecometrica.org
+>>     <mailto:maxime.dupuis at ecometrica.org>> wrote:
+>>
+>>
+>>         This is my first message on the dev mailing list, so bare
+>>         with me. :)
+>>
+>>
+>>     Welcome :)
+>>
+>>         I started using mapnik only a month ago and I had to use the
+>>         new gdal Raster Colorizer to colormap a geotif.
+>>
+>>
+>>     I'm glad you figured it out! Dane & Nino & I spent a wee bit of
+>>     time a couple of weeks back looking at how to simplify the
+>>     RasterColorizer declaration so it's more flexible and a whole lot
+>>     simpler :)
+>>
+>>         The problem, I think, lies in the way the band data is read
+>>         and stored in memory. When mapnik calls gdal's RasterIO()
+>>         method, it asks for data in GDT_Byte and stores it in the
+>>         image_data_32's pData_ attribute. That attribute's pointer,
+>>         however, is retrived as a pointer of unsigned chars (which
+>>         makes sense since it asks gdal for GDT_Byte data) while it's
+>>         really a pointer of unsigned ints.
+>>
+>>         Also, I looked at how qgis did it, because I had no problem
+>>         colormapping with it and I came up to the conclusion that the
+>>         best way for mapnik to do color mapping is to use the
+>>         ImageData template as, well, a template rather than use the
+>>         typdef image_data_32 everywhere. But I'm not the best person
+>>         to judge that as I'm not involved in mapnik's development.
+>>
+>>
+>>     Can you file a ticket and assign it to me (rcoup), preferably
+>>     attaching an example image & xml file? When I refactor the
+>>     colorizer I'll make sure we're doing sane things with non-byte
+>>     data, and I'll check that your case works too.
+>>
+>>     Thanks,
+>>
+>>     Rob :)
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de <mailto:Mapnik-devel at lists.berlios.de>
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110506/b1e7877c/attachment.html>
+
+From robert.coup at koordinates.com  Sun May  8 11:32:50 2011
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Sun, 8 May 2011 21:32:50 +1200
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <BANLkTimZWVW+NyWrABi8tNioeZSvDEw_eg@mail.gmail.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+	<AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+	<463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+	<BANLkTimZWVW+NyWrABi8tNioeZSvDEw_eg@mail.gmail.com>
+Message-ID: <BANLkTinEQL-a17PXTCnJD7hV3s+S=pZajw@mail.gmail.com>
+
+Hi Roel,
+
+[Dane/Artem - can we get auto-reply-to-list set for this mailing list?]
+
+On Wed, May 4, 2011 at 7:13 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+
+> Is there more documentation on this feature than the wiki page that is
+> linked to from the github page
+> (https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer)? If
+> no, I have some questions (I've only been on mapnik-devel since early
+> this year so I may have missed previous discussion on this, sorry
+> about that):
+>
+
+Not a huge amount more. Dane and Nino and I came up with the specs in
+October after the GSoC summit and Ben implemented them as a project for
+Koordinates. The key goal was to get something that solved more use cases
+than the old RasterColorizer, and that was easier for a user to get their
+head around.
+
+
+> - Why are only GDAL plugins supported? Are there more such
+> dependencies where rendering depends on the data source type, and if
+> so are they being kept track of, and is there a plan how to eliminate
+> them?
+>
+
+Quickest results? It's not particularly difficult to extend it to the other
+raster plugins, and I'd like to see this happen.
+
+
+> - Does color blending work in RGB space and RGB space only? If so, the
+> linear mode (btw may I suggest calling this 'blending-mode' or
+> something more descriptive than 'mode') is (in my experience) not
+> going to be very useful I'm afraid. We've had quite bad experiences
+> with making maps informative with RGB linear interpolation, to the
+> point where we (at my company) changed the default to HSL and as far
+> as I remember have never used RGB again because all maps came out
+> better using HSL.
+>
+
+Any examples of RGB vs HSL? RGB is used for everything else in Mapnik...
+adding support for HSL could be a good addition, and again I suspect
+wouldn't be overly difficult.
+
+
+> - The documentation/wiki page talks about 'stops' and stop colors,
+> which I think in the end describes a multi-color gradient, right? I
+> think it would be better to describe the functionality in those terms,
+> as I think it's more intuitive. Also it would match better with other
+> places in mapnik where gradients are used; there could be one central
+> place where how gradients work in Mapnik is described in abstract form
+> and only additions that are specific for some use cases would need to
+> be described separately.
+>
+
+The docs will have to move into the Mapnik wiki - github was Ben's scratch
+space. Happy for contributions/suggestions :)
+
+
+> - What does the 'epsilon' parameter do? It says it's used for fuzzing
+> the color, but how does that work?
+>
+
+If you have specific values you want to render (eg. 12=red), but your
+dataset uses floating-point for storage it gets messy. I'll need to dig out
+where the requirement came from, but there was a real and relatively common
+use case for it.
+
+Rob :)
+-- 
+Koordinates Ltd.
+PO Box 1604, Shortland St, Auckland 1140, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://koordinates.com/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110508/571c9dd0/attachment.html>
+
+From roel.vanhout at gmail.com  Sun May  8 13:32:23 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Sun, 8 May 2011 13:32:23 +0200
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <BANLkTinEQL-a17PXTCnJD7hV3s+S=pZajw@mail.gmail.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+	<AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+	<463ADC92-3283-4547-9F5D-8E4D66D089C6@dbsgeo.com>
+	<BANLkTimZWVW+NyWrABi8tNioeZSvDEw_eg@mail.gmail.com>
+	<BANLkTinEQL-a17PXTCnJD7hV3s+S=pZajw@mail.gmail.com>
+Message-ID: <BANLkTimbV3UV7LnddEkcAz1WujLLES6pjg@mail.gmail.com>
+
+Hi Rob,
+
+Thanks, I'll see if I can dig up the old document I once wrote where I
+investigated continuous maps in RGB vs HSL color spaces. Our main use
+case at the time was also height maps, it had pretty pictures and all,
+I hope I can find it :)
+
+I was asking about the docs because I'm keeping track of things I'm
+doing re: building mapnik, and I hope to collate things into one
+bigger, more comprehensive manual/organized wiki at some point
+(although GSoC is focused on coding so I can't spend too much time on
+it in that context). Since I missed that from the wiki page I figured
+I'd ask and have it documented in the mailing list archives before it
+disappears from people's minds :)
+
+cheers,
+
+roel
+
+
+On Sun, May 8, 2011 at 11:32 AM, Robert Coup
+<robert.coup at koordinates.com> wrote:
+> Hi Roel,
+>
+> [Dane/Artem - can we get auto-reply-to-list set for this mailing list?]
+>
+> On Wed, May 4, 2011 at 7:13 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+>>
+>> Is there more documentation on this feature than the wiki page that is
+>> linked to from the github page
+>> (https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer)? If
+>> no, I have some questions (I've only been on mapnik-devel since early
+>> this year so I may have missed previous discussion on this, sorry
+>> about that):
+>
+> Not a huge amount more. Dane and Nino and I came up with the specs in
+> October after the GSoC summit and Ben implemented them as a project for
+> Koordinates. The key goal was to get something that solved more use cases
+> than the old RasterColorizer, and that was easier for a user to get their
+> head around.
+>
+>>
+>> - Why are only GDAL plugins supported? Are there more such
+>> dependencies where rendering depends on the data source type, and if
+>> so are they being kept track of, and is there a plan how to eliminate
+>> them?
+>
+> Quickest results? It's not particularly difficult to extend it to the other
+> raster plugins, and I'd like to see this happen.
+>
+>>
+>> - Does color blending work in RGB space and RGB space only? If so, the
+>> linear mode (btw may I suggest calling this 'blending-mode' or
+>> something more descriptive than 'mode') is (in my experience) not
+>> going to be very useful I'm afraid. We've had quite bad experiences
+>> with making maps informative with RGB linear interpolation, to the
+>> point where we (at my company) changed the default to HSL and as far
+>> as I remember have never used RGB again because all maps came out
+>> better using HSL.
+>
+> Any examples of RGB vs HSL? RGB is used for everything else in Mapnik...
+> adding support for HSL could be a good addition, and again I suspect
+> wouldn't be overly difficult.
+>
+>>
+>> - The documentation/wiki page talks about 'stops' and stop colors,
+>> which I think in the end describes a multi-color gradient, right? I
+>> think it would be better to describe the functionality in those terms,
+>> as I think it's more intuitive. Also it would match better with other
+>> places in mapnik where gradients are used; there could be one central
+>> place where how gradients work in Mapnik is described in abstract form
+>> and only additions that are specific for some use cases would need to
+>> be described separately.
+>
+> The docs will have to move into the Mapnik wiki - github was Ben's scratch
+> space. Happy for contributions/suggestions :)
+>
+>>
+>> - What does the 'epsilon' parameter do? It says it's used for fuzzing
+>> the color, but how does that work?
+>
+> If you have specific values you want to render (eg. 12=red), but your
+> dataset uses floating-point for storage it gets messy. I'll need to dig out
+> where the requirement came from, but there was a real and relatively common
+> use case for it.
+> Rob :)
+> --
+> Koordinates Ltd.
+> PO Box 1604, Shortland St, Auckland 1140, New Zealand
+> Phone +64-9-966 0433 Fax +64-9-969 0045
+> Web http://koordinates.com/
+>
+
+
+From rakib114 at gmail.com  Sun May  8 14:33:11 2011
+From: rakib114 at gmail.com (Rakib Solaimani)
+Date: Sun, 8 May 2011 18:33:11 +0600
+Subject: [Mapnik-devel] Creating a choropleth map of USA
+Message-ID: <BANLkTi=kj2LK7jn8_j_ETU=4ud=KMnbieg@mail.gmail.com>
+
+Hi,
+
+I want to create a choropleth map of USA using mapnik in C++ environment. I
+am successfully run the demo map provided by mapnik.
+Now I want to make a customize map (e.g. Unemployment Trend by CBSA in USA).
+Please guide me how can I do that. I read mapnik
+tutorial about rule, feature etc but I am confuse how can I integrate all of
+these.
+
+With best regards,
+Rakib
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110508/1bf012fa/attachment.html>
+
+From manel.clos at ajgirona.cat  Mon May  9 14:00:02 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Mon, 9 May 2011 14:00:02 +0200
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+	<64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+
+Hi all,
+
+In order to solve some OGCServer bugs[1][2], I've added some new configuration into ogcserver.conf:
+
+[map]
+wms_srs = EPSG:23031
+wms_name = __all__
+wms_title = Top Layer Title
+wms_abstract = Top Layer Abstract
+
+[layer_countries]
+wms_srs = EPSG:23031
+
+In this example the layer "countries" is assigned a specific epsg code so you can use a custom projection (one using +nadgrids for example) in the srs attribute. It is really not needed here, because all layers will inherit the map's wms_srs which has the same value.
+
+I think this fits the approach Dane suggested (info in config file instead of modifying Mapnik's XML). The drawback of this method is that it only works for named layers.
+
+
+I'll be doing something like this to support layer groups:
+
+[map]
+wms_groups = streets, buildings
+
+[group_streets]
+wms_title = Streets
+wms_layers = streets_layer1, streets_layer1_labels
+wms_name = streets
+
+
+[1] Incorrect SRS in layer: https://github.com/mapnik/OGCServer/issues/11
+[2] Top Layer "__all__" name: https://github.com/mapnik/OGCServer/issues/14
+
+
+> -----Mensaje original-----
+> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+> Enviado el: s?bado, 22 de enero de 2011 0:02
+> Para: Clos Crespo, Manel
+> CC: <mapnik-devel at lists.berlios.de>
+> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>
+> Hi manel. Yes, great, a ticket to discuss sounds good. I'm not
+> convinced all these features can/should be added to the existing map
+> XML format. What about an XML or json document that ogcserver could
+> load that points to one or more maps and describes how to group maps
+> or the layers within them?
+>
+> --- \o/ ---
+> Sent from my phone
+>
+> On Jan 15, 2011, at 3:58 PM, <manel.clos at ajgirona.cat> wrote:
+>
+> > Hi all,
+> >
+> > Here are some ideas about improving Mapnik XML to better
+> support WMS
+> > functionality.
+> >
+> > Support Layers within Layers (Layer Group)
+> > - Properties are inherited
+> > - You can draw / request a Layer Group that has a name
+> > - title: used in GetCapabilities to better describe layers in the
+> > group
+> >
+> > Toplevel Map element in mapfile should have some more
+> Layer's proper
+> > ties.
+> > - name: request top level layer (Map) to draw / request all layers
+> > (get rid of the __all__ trick in OGCServer in the long term, but
+> > support it for compatibility)
+> > - title: use it in GetCapabilities
+> >
+> > If this is ok I'll create a ticket and hopefully have it ready for
+> > Mapnik 2.0.
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From herm at scribus.info  Tue May 17 15:09:33 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Tue, 17 May 2011 15:09:33 +0200
+Subject: [Mapnik-devel] GSoC - TextSymbolizers
+Message-ID: <op.vvmmt7yki35s77@nx7400.uni-regensburg.de>
+
+Hi!
+
+I'm working on improving TextSymoblizer output as my summer of code  
+project this year. As one subproject I will add formating capabilities.  
+One important question was how to make it stylable using CSS. While I'm  
+not sure about the exact syntax to use I think the following internal  
+representation will be useful:
+
+- Parse the text into a list of tokens which are processed one by one.
+- Token types:
+  o Text token (plain text)
+  o Value token (access db fields)
+  o Format token (change font, etc.)
+  o End token (undo last format token)
+- Format tokens return the new format. They can either contain direct  
+formating instructions ("make this text bold") or references to styles  
+(which in turn contain formating instructions). During processing the  
+current feature is also passed to the token, so formating can depend on  
+fields in the data set.
+
+I think this idea is both very flexible and also easy to implement and  
+extend.
+
+
+Does this sound good or does anybody have ideas for improvement?
+
+Regards,
+
+Hermann
+
+
+From dieterdreist at gmail.com  Tue May 17 16:09:51 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Tue, 17 May 2011 16:09:51 +0200
+Subject: [Mapnik-devel] GSoC - TextSymbolizers
+In-Reply-To: <op.vvmmt7yki35s77@nx7400.uni-regensburg.de>
+References: <op.vvmmt7yki35s77@nx7400.uni-regensburg.de>
+Message-ID: <BANLkTikr046CD3h5O=b5VhyoBWZicLgMkg@mail.gmail.com>
+
+2011/5/17 Hermann Kraus <herm at scribus.info>:
+> Hi!
+>
+> I'm working on improving TextSymoblizer output as my summer of code project
+> this year. As one subproject I will add formating capabilities. One
+> important question was how to make it stylable using CSS. While I'm not sure
+> about the exact syntax to use I think the following internal representation
+> will be useful:
+>
+> - Parse the text into a list of tokens which are processed one by one.
+> - Token types:
+> ?o Text token (plain text)
+> ?o Value token (access db fields)
+> ?o Format token (change font, etc.)
+> ?o End token (undo last format token)
+> - Format tokens return the new format. They can either contain direct
+> formating instructions ("make this text bold") or references to styles
+> (which in turn contain formating instructions). During processing the
+> current feature is also passed to the token, so formating can depend on
+> fields in the data set.
+>
+> I think this idea is both very flexible and also easy to implement and
+> extend.
+>
+>
+
+
+
+What I miss most is the ability to underline text.
+
+cheers,
+Martin
+
+
+From lars at ahlzen.com  Wed May 25 00:51:18 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Tue, 24 May 2011 18:51:18 -0400
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+Message-ID: <4DDC3666.9070806@ahlzen.com>
+
+Hi!
+
+I'm seeing intermittent crashes using the Cairo backend (to a standard 
+ImageSurface), with both 0.7.1, 0.7.2-dev and trunk, and on different 
+hardware.
+
+The example below is from mapnik-trunk r2926 built against cairo 1.10.2 
+and pixman 0.22.0 (though I've tried several different versions of both).
+
+Judging by the output, the issue may be in cairo or pixman, so perhaps 
+this is the wrong place, but I though I should check here first. Any 
+thoughts? Open a ticket?
+
+- Lars
+
+
+*** glibc detected *** python: double free or corruption (!prev): 
+0x0000000002cbe7c0 ***
+======= Backtrace: =========
+/lib/libc.so.6(+0x774b6)[0x7f474fe614b6]
+/lib/libc.so.6(cfree+0x73)[0x7f474fe67c83]
+/home/lars/mapnik-test/lib/libpixman-1.so.0(pixman_image_unref+0x93)[0x7f474c1d8923]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x27b1b)[0x7f474c45ab1b]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x28cdc)[0x7f474c45bcdc]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x2a9dd)[0x7f474c45d9dd]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x2b150)[0x7f474c45e150]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x48854)[0x7f474c47b854]
+/home/lars/mapnik-test/lib/libcairo.so.2(+0x20e1a)[0x7f474c453e1a]
+/home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke_preserve+0x1b)[0x7f474c44aa4b]
+/home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke+0x9)[0x7f474c44aa79]
+/usr/lib/libcairomm-1.0.so.1(_ZN5Cairo7Context6strokeEv+0xd)[0x7f47487361dd]
+/home/lars/mapnik-test/lib/libmapnik2.so.2.0(_ZN6mapnik19cairo_renderer_base7processERKNS_15line_symbolizerERKNS_7featureINS_8geometryINS_6vertexIdLi2EEENS_13vertex_vectorEEEN5boost10shared_ptrINS_6rasterEEEEERKNS_14proj_transformE+0x528)[0x7f474a189088]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE14apply_to_layerERKNS_5layerERS4_RKNS_10projectionEdRSt3setISsSt4lessISsESaISsEE+0x144d)[0x7f474a7ad82d]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE5applyEv+0x150)[0x7f474a7adec0]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_Z7render4RKN6mapnik3MapEP14PycairoSurface+0x9b)[0x7f474a77c76b]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6python6detail12caller_arityILj2EE4implIPFvRKN6mapnik3MapEP14PycairoSurfaceENS0_21default_call_policiesENS_3mpl7vector3IvS8_SA_EEEclEP7_objectSJ_+0xdc)[0x7f474a781a1c]
+/usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python7objects8function4callEP7_objectS4_+0x28e)[0x7f4749ba1d9e]
+/usr/lib/libboost_python-py26.so.1.42.0(+0x31048)[0x7f4749ba2048]
+/usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x53)[0x7f4749ba98c3]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik11value_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df77]
+/usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x2d)[0x7f4749ba989d]
+/home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik12config_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df17]
+/usr/lib/libboost_python-py26.so.1.42.0(_ZN5boost6python21handle_exception_implENS_9function0IvEE+0x33)[0x7f4749ba9693]
+/usr/lib/libboost_python-py26.so.1.42.0(+0x2d948)[0x7f4749b9e948]
+python(PyObject_Call+0x47)[0x41c9d7]
+python(PyEval_EvalFrameEx+0x4888)[0x4a48c8]
+python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+python(PyEval_EvalFrameEx+0x4d19)[0x4a4d59]
+python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+python[0x535b50]
+python(PyObject_Call+0x47)[0x41c9d7]
+python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+python[0x535b50]
+python(PyObject_Call+0x47)[0x41c9d7]
+python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+python[0x535c4d]
+python(PyObject_Call+0x47)[0x41c9d7]
+python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+======= Memory map: ========
+00400000-0061a000 r-xp 00000000 08:01 25822135                           
+/usr/bin/python2.6
+00819000-0081a000 r--p 00219000 08:01 25822135                           
+/usr/bin/python2.6
+0081a000-0087c000 rw-p 0021a000 08:01 25822135                           
+/usr/bin/python2.6
+0087c000-0088b000 rw-p 00000000 00:00 0
+020a3000-04c71000 rw-p 00000000 00:00 0                                  
+[heap]
+7f4714000000-7f47175b5000 rw-p 00000000 00:00 0
+7f47175b5000-7f4718000000 ---p 00000000 00:00 0
+7f47186e4000-7f471877c000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471877c000-7f47187ff000 r--p 00000000 08:01 37894457                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+7f471a2f9000-7f471a391000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471a392000-7f471a415000 r--p 00000000 08:01 37894457                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+7f471a415000-7f471a4a1000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471a4a1000-7f471a52d000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471a52d000-7f471a5c5000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471a5c5000-7f471a651000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471a651000-7f471a6e9000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471a6e9000-7f471a76c000 r--p 00000000 08:01 37894457                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+7f471a76e000-7f471a7fa000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471a7fa000-7f471a892000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471a892000-7f471a91e000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471a91e000-7f471a9b6000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471a9b6000-7f471aa42000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+7f471aa42000-7f471aada000 r--p 00000000 08:01 37894456                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+7f471aada000-7f471ab66000 r--p 00000000 08:01 37894460                   
+/home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttfAborted
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+
+From dane at dbsgeo.com  Wed May 25 01:11:40 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 24 May 2011 19:11:40 -0400
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <4DDC3666.9070806@ahlzen.com>
+References: <4DDC3666.9070806@ahlzen.com>
+Message-ID: <47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+
+Hi Lars,
+
+It looks like memory is being freed by pixman (the rendering library cairo uses) that was already released by cairomm or mapnik. My first hunch is that perhaps your cairomm version got out of sync with your cairo version (cairomm being the C++ bindings we use to cairo).
+
+So, can you provide the exact cairomm version you are running? Also, do you have a simple test case that causes the issue, or at least a description of the type of situation it happens in (e.g. dynamic serving of tiles vs prerendering, etc).
+
+Dane
+
+On May 24, 2011, at 6:51 PM, Lars Ahlzen wrote:
+
+> Hi!
+> 
+> I'm seeing intermittent crashes using the Cairo backend (to a standard ImageSurface), with both 0.7.1, 0.7.2-dev and trunk, and on different hardware.
+> 
+> The example below is from mapnik-trunk r2926 built against cairo 1.10.2 and pixman 0.22.0 (though I've tried several different versions of both).
+> 
+> Judging by the output, the issue may be in cairo or pixman, so perhaps this is the wrong place, but I though I should check here first. Any thoughts? Open a ticket?
+> 
+> - Lars
+> 
+> 
+> *** glibc detected *** python: double free or corruption (!prev): 0x0000000002cbe7c0 ***
+> ======= Backtrace: =========
+> /lib/libc.so.6(+0x774b6)[0x7f474fe614b6]
+> /lib/libc.so.6(cfree+0x73)[0x7f474fe67c83]
+> /home/lars/mapnik-test/lib/libpixman-1.so.0(pixman_image_unref+0x93)[0x7f474c1d8923]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x27b1b)[0x7f474c45ab1b]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x28cdc)[0x7f474c45bcdc]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x2a9dd)[0x7f474c45d9dd]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x2b150)[0x7f474c45e150]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x48854)[0x7f474c47b854]
+> /home/lars/mapnik-test/lib/libcairo.so.2(+0x20e1a)[0x7f474c453e1a]
+> /home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke_preserve+0x1b)[0x7f474c44aa4b]
+> /home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke+0x9)[0x7f474c44aa79]
+> /usr/lib/libcairomm-1.0.so.1(_ZN5Cairo7Context6strokeEv+0xd)[0x7f47487361dd]
+> /home/lars/mapnik-test/lib/libmapnik2.so.2.0(_ZN6mapnik19cairo_renderer_base7processERKNS_15line_symbolizerERKNS_7featureINS_8geometryINS_6vertexIdLi2EEENS_13vertex_vectorEEEN5boost10shared_ptrINS_6rasterEEEEERKNS_14proj_transformE+0x528)[0x7f474a189088]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE14apply_to_layerERKNS_5layerERS4_RKNS_10projectionEdRSt3setISsSt4lessISsESaISsEE+0x144d)[0x7f474a7ad82d]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE5applyEv+0x150)[0x7f474a7adec0]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_Z7render4RKN6mapnik3MapEP14PycairoSurface+0x9b)[0x7f474a77c76b]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6python6detail12caller_arityILj2EE4implIPFvRKN6mapnik3MapEP14PycairoSurfaceENS0_21default_call_policiesENS_3mpl7vector3IvS8_SA_EEEclEP7_objectSJ_+0xdc)[0x7f474a781a1c]
+> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python7objects8function4callEP7_objectS4_+0x28e)[0x7f4749ba1d9e]
+> /usr/lib/libboost_python-py26.so.1.42.0(+0x31048)[0x7f4749ba2048]
+> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x53)[0x7f4749ba98c3]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik11value_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df77]
+> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x2d)[0x7f4749ba989d]
+> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik12config_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df17]
+> /usr/lib/libboost_python-py26.so.1.42.0(_ZN5boost6python21handle_exception_implENS_9function0IvEE+0x33)[0x7f4749ba9693]
+> /usr/lib/libboost_python-py26.so.1.42.0(+0x2d948)[0x7f4749b9e948]
+> python(PyObject_Call+0x47)[0x41c9d7]
+> python(PyEval_EvalFrameEx+0x4888)[0x4a48c8]
+> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+> python(PyEval_EvalFrameEx+0x4d19)[0x4a4d59]
+> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+> python[0x535b50]
+> python(PyObject_Call+0x47)[0x41c9d7]
+> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+> python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+> python[0x535b50]
+> python(PyObject_Call+0x47)[0x41c9d7]
+> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+> python[0x535c4d]
+> python(PyObject_Call+0x47)[0x41c9d7]
+> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+> python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+> ======= Memory map: ========
+> 00400000-0061a000 r-xp 00000000 08:01 25822135                           /usr/bin/python2.6
+> 00819000-0081a000 r--p 00219000 08:01 25822135                           /usr/bin/python2.6
+> 0081a000-0087c000 rw-p 0021a000 08:01 25822135                           /usr/bin/python2.6
+> 0087c000-0088b000 rw-p 00000000 00:00 0
+> 020a3000-04c71000 rw-p 00000000 00:00 0                                  [heap]
+> 7f4714000000-7f47175b5000 rw-p 00000000 00:00 0
+> 7f47175b5000-7f4718000000 ---p 00000000 00:00 0
+> 7f47186e4000-7f471877c000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471877c000-7f47187ff000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+> 7f471a2f9000-7f471a391000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471a392000-7f471a415000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+> 7f471a415000-7f471a4a1000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471a4a1000-7f471a52d000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471a52d000-7f471a5c5000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471a5c5000-7f471a651000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471a651000-7f471a6e9000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471a6e9000-7f471a76c000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+> 7f471a76e000-7f471a7fa000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471a7fa000-7f471a892000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471a892000-7f471a91e000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471a91e000-7f471a9b6000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471a9b6000-7f471aa42000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+> 7f471aa42000-7f471aada000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+> 7f471aada000-7f471ab66000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttfAborted
+> 
+> -- 
+> Lars Ahlzen
+> lars at ahlzen.com
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Thu May 26 15:45:02 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Thu, 26 May 2011 15:45:02 +0200
+Subject: [Mapnik-devel] On Windows support and Visual Studio project files
+Message-ID: <BANLkTikubgNxhqxb1WBgQdX-Zg_KYCO+Ww@mail.gmail.com>
+
+Hi all,
+
+I've spend the last weeks on thinking about how to best accommodate developers
+who want to use Mapnik in their own applications using Visual C++. This seems
+like a narrow goal, but solving that problem will also take care of more general
+issues with building Mapnik on Windows, getting automated builds etc.
+
+Initially I started out with the most basic system, which is to choose one
+version of Visual Studio to support, manually building the project- and
+solution files (the components in Visual Studio that make up the build system)
+and upgrading as the maintainer of that part of Mapnik upgrades. This is the
+initial approach I took when building Mapnik for php_mapnik. It's clear that
+this is not a sustainable solution, as it relies heavily on somebody actively
+maintaining these files and is limited since people use a wide range of version
+of Visual Studio in production (project files can be upgraded, so technically
+one could support the lowest version and let users upgrade themselves; in
+practice this doesn't always work because of details I won't bore you with).
+
+The second approach I investigated was to use the Scons support for generating
+Visual Studio project files. Scons has build targets with which one can make
+these files. Since Mapnik already uses Scons, I was quite excited to find out
+about this and I have been experimenting with it. It's easy to use, but I am
+not convinced any more that going this way is the best solution for Mapnik.
+First, only a subset of functionality is supported in Scons-generated VS files.
+Secondly, there are some quirky things in the generated files that are there
+because the VS files are supposed to be used in a Scons-based build
+environment. My goal is only to use Scons to build an independent environment
+(to stay with the customary way of working on Windows - otherwise we might as
+well say that people should use Scons on Windows and be done with it). Thirdly,
+adapting the Visual Studio parts of Scons isn't all that easy because it's all
+quite integrated with how the rest of Scons works (which is normal when you
+look at their goals, but like I mentioned they are not in line with what I
+think the role of Visual Studio project files for Mapnik should be).
+
+And then there is another issue, which is that if we make project files for
+Mapnik dependencies that are only going to be used by Mapnik, the maintenance
+burden is going to be much higher than it would be if we could share the
+responsibility with other users of those libraries on Windows (I'm talking
+zlib, libpng, Cairo, ...) I have made Windows builds of various project over
+the last year or two, and although I now have everything set up on my machine,
+I feel that many people have to reinvent the wheel and many give up halfway
+through.
+
+So, all these things combined lead me to explore another avenue, which is to
+write a tool that will make, based on a simple description of what files should
+be included in a project file or solution and some configuration options,
+Visual Studio project files for a variety of Visual Studio versions. Such a tool
+would be part of the release/build script which would create project files each
+time new source files are added to the project. Ideally, it would integrate with
+the 'native' build tool like Scons so that it could read the list of files from
+the Scons or make or whatever build files; that way nobody would even have to be
+aware that there are Visual Studio project files being generated for
+the project.
+
+Now there is more to building the mentioned libraries on Windows than
+just making
+the Visual Studio project. Some need to be configured by editing a header (like
+for which core compression implementation to use, assembly or C, for
+zlib); others
+rely on headers generated by the autotools, etc. For Windows, this is quite
+straightforward; it's always known which features are available
+(sizeof() various
+types etc). The tool would have to be able to patch a fresh download of the
+library though so that it will compile, instead of having to rely on people
+reading long steps of what to edit where etc. (like my current build
+instructions on the Wiki are).
+
+I have experimented with such a tool and the initial results are quite
+promising; it's not hard to do and the level of abstraction to support common
+open source libraries is manageable. I have written my prototypes in Python,
+I'm not even sure why any more - I guess because I started with Scons but since
+I don't know anything about Python this has been slowing down development a
+bit. It's no big issue, and I think there are benefits to sticking with Python
+- one, maybe it could share code with Scons one day, secondly Mapnik already
+uses a lot of Python, and thirdly I don't really know what it would be written
+in otherwise. I'm not looking forward to writing a simple tool like this in C++
+and other scripting languages would only make the list of dependencies longer.
+
+Ideally, such a tool would be a project separate from Mapnik, and Mapnik would
+just be able to use it. At the moment though I'm using it within the Mapnik
+source tree, it keeps the focus of the effort on Mapnik and I'd need separate
+projects to build on Windows to make it work for them, too.
+
+So, after all of this ;) , I'd like to solicit some feedback on this
+direction. To make it more concrete, for Mapnik this would mean that there would
+be a directory with some tools and config files to build Mapnik and its
+dependencies. Users would download the source from the original project
+websites (this was another requirement I set) to a predefined location, the
+script would prepare the libraries and generate the project files, and users are
+good to go. With the same effort, the release script could make a zip file with
+all the sources pre-prepared; the user wouldn't even have to run any scripts, so
+he wouldn't need Python installed and can use Mapnik as-is, all automated.
+
+For my planning, this would constitute a bit of a change from the original
+plan. I think it's best I get all dependencies working in this way before
+tackling building Mapnik 2. Not a big deal, and would still all be done before
+Mapnik 2, but still.
+
+What do you think? Thanks.
+
+
+regards,
+
+roel
+
+
+From lars at ahlzen.com  Fri May 27 03:41:12 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Thu, 26 May 2011 21:41:12 -0400
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+Message-ID: <4DDF0138.3040301@ahlzen.com>
+
+On 05/24/2011 07:11 PM, Dane Springmeyer wrote:
+
+> So, can you provide the exact cairomm version you are running? Also, do you have a simple test case that causes the issue, or at least a description of the type of situation it happens in (e.g. dynamic serving of tiles vs prerendering, etc)
+
+I'm using cairomm 1.8.4. I'll try a more recent one and rebuild the 
+whole chain to see if that makes a difference.
+
+I've been using it to render tiles for toposm, and it happens both when 
+pre-rendering tiles and when using TileStache. I'll see if I can 
+replicate it with a simpler map.
+
+Worth noting is that it's not predictable: I can start rendering a set 
+of tiles, have it crash half way through, then start the exact same job 
+again and it completes just fine. Occasionally I'll get a plain segfault 
+with no debug output. First I thought it was a hardware issue, but I see 
+the same behavior on several machines.
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+
+From roel.vanhout at gmail.com  Sun May 29 22:40:54 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Sun, 29 May 2011 22:40:54 +0200
+Subject: [Mapnik-devel] GSoC: Windows build system, week 1
+Message-ID: <BANLkTinnEbTij7+eNHg86nv0M+ntPKJpnw@mail.gmail.com>
+
+Hi all,
+
+
+With the first week of GSoC already over, here's my first status
+report. I'm planning to do one each Sunday evening, I'm curious myself
+though how punctual I'm going to be on that point ;)
+
+- The past week (well the past 4 or 5 weeks actually) I've spend on
+the VS project file generator. It's shaping up now - I've started over
+a couple of times and finally settled on the most simple design, the
+one that I started out with the first time. Specs of project- and
+solution files are done in simple yaml files, processed by the 'vs4os'
+Python program and using the Jinja2 template library rendered into
+their output formats. For now I focus on VS9, other versions could be
+added at some point. The most basic functionality works and I can
+build a couple of the simpler mapnik dependencies (zlib, jpeg,
+libtiff). Although I still think that choosing Python is the right
+choice in the given context, my relative lack of experience with it is
+proving a rather painful stumbling block; for example, I spend the
+whole day today on figuring out how unicode support works in Python in
+general, in Visual Studio and in the template library I use; and how
+to make them work together. Not fun but at least it works now :)
+
+For the coming week I have planned:
+- Clean my source tree / directory layout up and check everything into
+a branch in svn. I haven't made one yet because I need to get my ssh
+key to work and that's a royal pain with putty etc so I've been
+putting it off; I'm also working in an old checkout of the 0.7 branch
+I had laying around so I'm going to need to decide first how that
+should work.
+- Do some communications things: blog post (Dane, how do I log on to
+the Mapnik 'news' section? Can I post to the blog myself somehow?),
+finally upload the minutes from the Skype meeting.
+- Get the other dependencies working - Cairo, and maybe if I'm feeling
+masochistic ICU.
+
+Some other things:
+- About the buildbot, is there a machine somewhere that can serve for
+this? To have a Windows buildbot I'd need a Windows machine - shall I
+just start on a bunch of virtual machines and we'll sort it out later
+or is there something in place for that already?
+- I've been getting some mails / im's from people who are interested
+in using Mapnik on Windows, and php_mapnik, and are starting to find
+my wiki page on it. So that's encouraging :) I'm hoping to attract
+more users with some introduction articles for various websites. So I
+was wondering, does anyone have a simple but nice map that is rendered
+with Mapnik, with a small and free data set, that I can use for
+demonstration purposes? The examples on the Mapnik website are OK but
+either complicated or very specialized, I'd like to find an example
+that needs only a few layers and appeals to a wide audience.
+
+
+cheers,
+
+roel
+
+
+From roel.vanhout at gmail.com  Mon May 30 17:57:09 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 30 May 2011 15:57:09 +0000 (UTC)
+Subject: [Mapnik-devel] Invitation to connect on LinkedIn
+Message-ID: <1386090158.4241506.1306771029046.JavaMail.app@ela4-bed82.prod>
+
+LinkedIn
+------------
+
+   
+I'd like to add you to my professional network on LinkedIn.
+
+- Roel
+
+Roel Vanhout
+Software Engineer at Research Institute for Knowledge Systems (RIKS) 
+Maastricht Area, Netherlands
+
+Confirm that you know Roel Vanhout
+https://www.linkedin.com/e/-76pfyj-goblqb77-6v/isd/3046587191/XE4FF23F/
+
+
+ 
+-- 
+(c) 2011, LinkedIn Corporation
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110530/401e6f30/attachment.html>
+
+From roel.vanhout at gmail.com  Mon May 30 18:05:03 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 30 May 2011 18:05:03 +0200
+Subject: [Mapnik-devel] Invitation to connect on LinkedIn
+In-Reply-To: <1386090158.4241506.1306771029046.JavaMail.app@ela4-bed82.prod>
+References: <1386090158.4241506.1306771029046.JavaMail.app@ela4-bed82.prod>
+Message-ID: <BANLkTikSkcioQEDBOxDhoCpOL6Y2UFho6A@mail.gmail.com>
+
+Sorry about this, LinkedIn tricked me into inviting a whole lot of email
+addresses :(
+
+
+
+
+On Mon, May 30, 2011 at 5:57 PM, Roel Vanhout <roel.vanhout at gmail.com>wrote:
+
+>  LinkedIn
+>
+> I'd like to add you to my professional network on LinkedIn.
+>
+> - Roel
+>   Roel Vanhout
+> Software Engineer at Research Institute for Knowledge Systems (RIKS)
+> Maastricht Area, Netherlands
+>
+> Confirm that you know Roel<https://www.linkedin.com/e/-76pfyj-goblqb77-6v/isd/3046587191/XE4FF23F/EML-invg_59/>
+>
+> ? 2011, LinkedIn Corporation
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110530/5cae00fe/attachment.html>
+
+From dane at dbsgeo.com  Tue May 31 21:59:38 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 31 May 2011 12:59:38 -0700
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <4DDF0138.3040301@ahlzen.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+	<4DDF0138.3040301@ahlzen.com>
+Message-ID: <C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+
+
+On May 26, 2011, at 6:41 PM, Lars Ahlzen wrote:
+
+> On 05/24/2011 07:11 PM, Dane Springmeyer wrote:
+> 
+>> So, can you provide the exact cairomm version you are running? Also, do you have a simple test case that causes the issue, or at least a description of the type of situation it happens in (e.g. dynamic serving of tiles vs prerendering, etc)
+> 
+> I'm using cairomm 1.8.4. I'll try a more recent one and rebuild the whole chain to see if that makes a difference.
+
+Okay, thanks. 
+
+> 
+> I've been using it to render tiles for toposm, and it happens both when pre-rendering tiles and when using TileStache. I'll see if I can replicate it with a simpler map.
+
+Great. let me know if you can, or if you can't so I can gauge when to try to replicate.
+
+> 
+> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+
+Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+
+> Occasionally I'll get a plain segfault with no debug output.
+
+Running the process in gdb and then typing `thread apply all bt` is a great way to get backtraces. Let me know if I can help with this.
+
+> First I thought it was a hardware issue, but I see the same behavior on several machines.
+> 
+> - Lars
+> 
+> -- 
+> Lars Ahlzen
+> lars at ahlzen.com
+> 
+
+
+

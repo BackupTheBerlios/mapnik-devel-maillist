@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch to convert tests to use nose
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20to%20convert%20tests%20to%20use%20nose&In-Reply-To=%3C3ED3DB1D-BBE4-45A7-80A4-C8D8F8FF48CD%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000860.html">
+   <LINK REL="Next"  HREF="000864.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch to convert tests to use nose</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20to%20convert%20tests%20to%20use%20nose&In-Reply-To=%3C3ED3DB1D-BBE4-45A7-80A4-C8D8F8FF48CD%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Patch to convert tests to use nose">blake at hailmail.net
+       </A><BR>
+    <I>Thu Apr  9 01:17:31 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000860.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+        <LI>Next message: <A HREF="000864.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#861">[ date ]</a>
+              <a href="thread.html#861">[ thread ]</a>
+              <a href="subject.html#861">[ subject ]</a>
+              <a href="author.html#861">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks!
+
+Dane
+
+
+On Apr 8, 2009, at 4:10 PM, Beau Gunderson wrote:
+
+&gt;<i> One more thing--nose won't select tests from .py files that are
+</I>&gt;<i> executable by default, so to test you'll have to chmod a-x them or run
+</I>&gt;<i> 'nosetests --exe -v'.
+</I>&gt;<i>
+</I>&gt;<i> Made the ticket you asked for:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/300">http://trac.mapnik.org/ticket/300</A>
+</I>&gt;<i>
+</I>&gt;<i> :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - Beau
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Apr 8, 2009 at 3:55 PM, Dane Springmeyer  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt; wrote:
+</I>&gt;&gt;<i> Beau,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Great stuff. I agree that we need to do whatever we can to make  
+</I>&gt;&gt;<i> writing
+</I>&gt;&gt;<i> tests easier and more effective.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 'nose' may be a good framework.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Would you mind starting a ticket on improving testing and outline  
+</I>&gt;&gt;<i> things you
+</I>&gt;&gt;<i> think would be good to implement?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> In the meantime I'll take a look at checking out nose.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Apr 8, 2009, at 2:56 PM, Beau Gunderson wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Attached is a patch to convert the current tests to use the 'nose'
+</I>&gt;&gt;&gt;<i> testing framework which emulates unittest and is fun to use.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I did this conversion so that testing will be easier (just one  
+</I>&gt;&gt;&gt;<i> easy to
+</I>&gt;&gt;&gt;<i> remember command from the main mapnik directory) and can be easily
+</I>&gt;&gt;&gt;<i> integrated into the buildbot and the SConsruct file.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I hope it also makes it easier for people to contribute tests since
+</I>&gt;&gt;&gt;<i> the format is very easy to understand.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # svn diff | diffstat
+</I>&gt;&gt;&gt;<i> test_load_map.py |  108
+</I>&gt;&gt;&gt;<i> ++++++++++++++++---------------------------------------
+</I>&gt;&gt;&gt;<i> test_save_map.py |   86 +++++++++++++------------------------------
+</I>&gt;&gt;&gt;<i> utilities.py     |    4 ++
+</I>&gt;&gt;&gt;<i> 3 files changed, 63 insertions(+), 135 deletions(-)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> (The code ends up quite a bit smaller!)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Try:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # easy_install nose
+</I>&gt;&gt;&gt;<i> # cd tests/python
+</I>&gt;&gt;&gt;<i> # nosetests -v
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If we change the directory name from 'python' to 'python_tests' then
+</I>&gt;&gt;&gt;<i> nosetests can be run from the top-level mapnik directory (it  
+</I>&gt;&gt;&gt;<i> discovers
+</I>&gt;&gt;&gt;<i> tests based on the module, file, class, and function names).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Also attached is the current output (there are 4 failing tests; the
+</I>&gt;&gt;&gt;<i> ones that deal with db and datasource). They are broken in the
+</I>&gt;&gt;&gt;<i> previous implementation too.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You can read about nose here:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://somethingaboutorange.com/mrl/projects/nose/">http://somethingaboutorange.com/mrl/projects/nose/</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> - Beau
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &lt; 
+</I>&gt;&gt;&gt;<i> test_output 
+</I>&gt;&gt;&gt;<i> .txt 
+</I>&gt;&gt;&gt;<i> &gt; 
+</I>&gt;&gt;&gt;<i> &lt; 
+</I>&gt;&gt;&gt;<i> 040809_new_tests 
+</I>&gt;&gt;&gt;<i> .diff&gt;_______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000860.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+	<LI>Next message: <A HREF="000864.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#861">[ date ]</a>
+              <a href="thread.html#861">[ thread ]</a>
+              <a href="subject.html#861">[ subject ]</a>
+              <a href="author.html#861">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

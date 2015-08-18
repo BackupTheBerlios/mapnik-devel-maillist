@@ -1,0 +1,2281 @@
+From ekkehart at gmx.de  Fri Jan  1 14:53:46 2010
+From: ekkehart at gmx.de (Nop)
+Date: Fri, 01 Jan 2010 14:53:46 +0100
+Subject: [Mapnik-devel] No antialiasing on transparent background?
+Message-ID: <4B3DFE6A.6060002@gmx.de>
+
+
+Hello!
+
+
+I used to do my rendering in one pass on a white, semi-transparent 
+background. The quality of the resulting images was good.
+
+Now I changed to a fully transparent background. Unfortunately, the 
+rendering against transparency is rather ugly. It now seems to be 
+completely without antialiasing, the ways have steps and parts of thin 
+lines are missing.
+
+Example tile of old style:
+http://topo.geofabrik.de/trails/15/17436/11196.png
+
+Same tile on transparent background:
+http://tile.dev.openstreetmap.de/topo/15/17436/11196.png
+
+Mapnik is 0.6.1 with renderd, layers renderd on a full color background 
+with the same installation look good.
+
+Does mapnik have a problem with transparent background? Do I miss a setting?
+
+bye
+	Nop
+
+
+
+
+From ekkehart at gmx.de  Fri Jan  1 14:59:54 2010
+From: ekkehart at gmx.de (Nop)
+Date: Fri, 01 Jan 2010 14:59:54 +0100
+Subject: [Mapnik-devel] Garbled fill patterns in polygons
+Message-ID: <4B3DFFDA.8030605@gmx.de>
+
+
+Hi!
+
+
+I noted another strange pehomenon rendering with mapnik 0.6.1 and 
+renderd. Sometimes the fill pattern looks garbled.
+
+http://topo.openstreetmap.de/topo.html?zoom=15&lat=49.40092&lon=11.5367&layers=BFF0
+
+Alle the polygons in this map are filled with the same PolygonSymbolizer 
+and the same PNG. If you look closely at the large forest, you will note 
+that some tiles show the proper pattern and in some the bits are 
+garbled. It is a single polygon.
+
+I have not observed this when rendering from python scripts.
+
+Any ideas what the reason might be?
+
+bye
+	Nop
+
+
+
+From ldp at xs4all.nl  Fri Jan  1 15:04:10 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Fri, 01 Jan 2010 15:04:10 +0100
+Subject: [Mapnik-devel] No antialiasing on transparent background?
+In-Reply-To: <4B3DFE6A.6060002@gmx.de>
+References: <4B3DFE6A.6060002@gmx.de>
+Message-ID: <4B3E00DA.2020408@xs4all.nl>
+
+Nop wrote:
+
+> Mapnik is 0.6.1 with renderd, layers renderd on a full color background 
+> with the same installation look good.
+> 
+> Does mapnik have a problem with transparent background? Do I miss a setting?
+
+renderd by default uses png256 as the output format. Change the 2 code 
+occurences of 'png256' to 'png'. You will get larger tile sizes, but it 
+won't look ugly over transparent backgrounds.
+
+This is still both a limitation in png256 (less colours, binary 
+transparency) and in the png256 transparency code (which marcin is 
+working on). In fact, there was a commit yesterday for another nagging 
+issue: occasional jagged slanted lines on png256 tiles.
+
+
+-- 
+Lennard
+
+
+From ldp at xs4all.nl  Fri Jan  1 15:06:16 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Fri, 01 Jan 2010 15:06:16 +0100
+Subject: [Mapnik-devel] Garbled fill patterns in polygons
+In-Reply-To: <4B3DFFDA.8030605@gmx.de>
+References: <4B3DFFDA.8030605@gmx.de>
+Message-ID: <4B3E0158.7020002@xs4all.nl>
+
+Nop wrote:
+
+> I noted another strange pehomenon rendering with mapnik 0.6.1 and 
+> renderd. Sometimes the fill pattern looks garbled.
+[...]
+> Any ideas what the reason might be?
+
+It's the bug I alluded to in my previous message, which hopefully was 
+just fixed in SVN: http://trac.mapnik.org/changeset/1503/
+
+You might want to build the 0.7 branch and try it.
+
+-- 
+Lennard
+
+
+From mrudowski1 at gmail.com  Fri Jan  1 15:14:43 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Fri, 01 Jan 2010 15:14:43 +0100
+Subject: [Mapnik-devel] No antialiasing on transparent background?
+In-Reply-To: <4B3E00DA.2020408@xs4all.nl>
+References: <4B3DFE6A.6060002@gmx.de> <4B3E00DA.2020408@xs4all.nl>
+Message-ID: <4B3E0353.3060609@gmail.com>
+
+W dniu 01.01.2010 15:04, Lennard pisze:
+> Nop wrote:
+> 
+>> Mapnik is 0.6.1 with renderd, layers renderd on a full color background 
+>> with the same installation look good.
+>>
+>> Does mapnik have a problem with transparent background? Do I miss a setting?
+> 
+> renderd by default uses png256 as the output format. Change the 2 code 
+> occurences of 'png256' to 'png'. You will get larger tile sizes, but it 
+> won't look ugly over transparent backgrounds.
+> 
+> This is still both a limitation in png256 (less colours, binary 
+> transparency) and in the png256 transparency code (which marcin is 
+> working on). In fact, there was a commit yesterday for another nagging 
+> issue: occasional jagged slanted lines on png256 tiles.
+> 
+> 
+
+Hopefully not for long :)
+http://trac.mapnik.org/ticket/477
+
+What a coincidence, that just yesterday I posted patches/fixes for both
+of Your problems (garbled png256 for low color palette and full
+transparency support form png256) :) Am I a mind reader?
+
+For garbled images (swapped vertical pixel lines), as Leonard noticed it
+is already committed. This is ticket:
+http://trac.mapnik.org/ticket/445
+
+Marcin Rudowski
+
+
+From ekkehart at gmx.de  Fri Jan  1 15:30:22 2010
+From: ekkehart at gmx.de (Nop)
+Date: Fri, 01 Jan 2010 15:30:22 +0100
+Subject: [Mapnik-devel] No antialiasing on transparent background?
+In-Reply-To: <4B3E0353.3060609@gmail.com>
+References: <4B3DFE6A.6060002@gmx.de> <4B3E00DA.2020408@xs4all.nl>
+	<4B3E0353.3060609@gmail.com>
+Message-ID: <4B3E06FE.4060203@gmx.de>
+
+
+Hi!
+
+Am 01.01.2010 15:14, schrieb Marcin Rudowski:
+> What a coincidence, that just yesterday I posted patches/fixes for both
+> of Your problems (garbled png256 for low color palette and full
+> transparency support form png256) :) Am I a mind reader?
+
+Maybe you are. So what else is wrong on the server? :-D
+
+Great news. So basically all I have to do is wait for the 0.7 version 
+and play early adopter?
+
+bye
+	Nop
+
+
+From blake at hailmail.net  Mon Jan  4 19:20:31 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 4 Jan 2010 10:20:31 -0800
+Subject: [Mapnik-devel] New York Code Sprint
+In-Reply-To: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+Message-ID: <930155D0-6876-4BCB-9E50-9CE6D3A2BDAB@hailmail.net>
+
+Paul,
+
+Thanks for this invite!
+
+Any other Mapnik developers interested in attending? I'm going to be  
+checking schedules this week to see if it is possible on my end.
+
+Dane
+
+
+On Dec 16, 2009, at 1:59 PM, Paul Ramsey wrote:
+
+> Fellow members of the C tribe! I hope the holidays find you in good
+> spirits, and that you'll consider joining your other tribe members at
+> the New York Code Sprint early next year:
+>
+> http://wiki.osgeo.org/wiki/New_York_Code_Sprint_2010
+>
+> All details and planning on the wiki page. If you want to join in
+> discussions and get all updates, please subscribe to
+>
+> http://lists.osgeo.org/mailman/listinfo/tosprint
+>
+> Time is of the essence! We are filling our hotel block quickly and
+> have a limited number of spaces in the meeting area.
+>
+> Thanks!
+>
+> Paul
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From ekkehart at gmx.de  Tue Jan  5 00:28:06 2010
+From: ekkehart at gmx.de (Nop)
+Date: Tue, 05 Jan 2010 00:28:06 +0100
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+Message-ID: <4B427986.8080006@gmx.de>
+
+
+Hello!
+
+
+I am currently trying to render Hillshading from raster layers with 
+mapnik 0.6.1. I have successfully rendered the first section of 8x2? 
+from a 45MB GeoTiff. Now I tried to render another section of 10x3? from 
+a 102 MB GeoTiff and this yielded a MemoryError.
+
+This was much to my surprise, I was told that mapnik could handle 
+several 10x10? images of the same resolution and I am far from that 
+size. Opening a 100MB image should not be a problem.
+
+I am running a WinXP64 machien with 6GB of memory, 4GB of free physical 
+memory at that time. Python is 2.5. The image loads fine in other 
+software. If I replace the layer with a smaller image it works. I did 
+not observe python allocating visible amounts of memory in process monitor.
+
+Any ideas what the problem is and what to do about it?
+
+
+bye
+	Nop
+
+
+
+
+From blake at hailmail.net  Tue Jan  5 00:40:01 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 4 Jan 2010 15:40:01 -0800
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <4B427986.8080006@gmx.de>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+	<4B427986.8080006@gmx.de>
+Message-ID: <CB1EEC80-E34C-4C05-BD21-2BD1CBF982EC@hailmail.net>
+
+Nop,
+
+Are you loading using the 'raster' datasource or the 'gdal' datasource?
+
+Until the 0.7 is release (which has support for gdal overviews when  
+using the 'gdal' plugin - http://trac.mapnik.org/ticket/54) you should  
+stick to the 'raster' plugin.
+
+Dane
+
+
+On Jan 4, 2010, at 3:28 PM, Nop wrote:
+
+>
+> Hello!
+>
+>
+> I am currently trying to render Hillshading from raster layers with
+> mapnik 0.6.1. I have successfully rendered the first section of 8x2?
+> from a 45MB GeoTiff. Now I tried to render another section of 10x3?  
+> from
+> a 102 MB GeoTiff and this yielded a MemoryError.
+>
+> This was much to my surprise, I was told that mapnik could handle
+> several 10x10? images of the same resolution and I am far from that
+> size. Opening a 100MB image should not be a problem.
+>
+> I am running a WinXP64 machien with 6GB of memory, 4GB of free  
+> physical
+> memory at that time. Python is 2.5. The image loads fine in other
+> software. If I replace the layer with a smaller image it works. I did
+> not observe python allocating visible amounts of memory in process  
+> monitor.
+>
+> Any ideas what the problem is and what to do about it?
+>
+>
+> bye
+> 	Nop
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From ekkehart at gmx.de  Tue Jan  5 00:57:18 2010
+From: ekkehart at gmx.de (Nop)
+Date: Tue, 05 Jan 2010 00:57:18 +0100
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <CB1EEC80-E34C-4C05-BD21-2BD1CBF982EC@hailmail.net>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+	<4B427986.8080006@gmx.de>
+	<CB1EEC80-E34C-4C05-BD21-2BD1CBF982EC@hailmail.net>
+Message-ID: <4B42805E.8080209@gmx.de>
+
+
+Hi!
+
+Am 05.01.2010 00:40, schrieb Dane Springmeyer:
+> Are you loading using the 'raster' datasource or the 'gdal' datasource?
+>
+> Until the 0.7 is release (which has support for gdal overviews when
+> using the 'gdal' plugin - http://trac.mapnik.org/ticket/54) you should
+> stick to the 'raster' plugin.
+
+<Parameter name="type">gdal</Parameter>
+
+This means gdal, I guess. It's just a takeover from someone's working 
+example.
+
+So what does this mean?
+- does "gdal" have a problem with large images?
+- what are the practical limits now and in 0.7?
+- can I just replace "gdal" by "raster"? What does this mean 
+technically, what is the difference?
+- in 0.7, will I need to do some preprocessing for the image?
+
+thanks
+	Nop
+
+
+From blake at hailmail.net  Tue Jan  5 01:11:09 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 4 Jan 2010 16:11:09 -0800
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <4B42805E.8080209@gmx.de>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+	<4B427986.8080006@gmx.de>
+	<CB1EEC80-E34C-4C05-BD21-2BD1CBF982EC@hailmail.net>
+	<4B42805E.8080209@gmx.de>
+Message-ID: <EA669977-6AF1-4F72-92E7-1D081AD67ACA@hailmail.net>
+
+On Jan 4, 2010, at 3:57 PM, Nop wrote:
+
+>
+> Hi!
+>
+> Am 05.01.2010 00:40, schrieb Dane Springmeyer:
+>> Are you loading using the 'raster' datasource or the 'gdal'  
+>> datasource?
+>>
+>> Until the 0.7 is release (which has support for gdal overviews when
+>> using the 'gdal' plugin - http://trac.mapnik.org/ticket/54) you  
+>> should
+>> stick to the 'raster' plugin.
+>
+> <Parameter name="type">gdal</Parameter>
+>
+> This means gdal, I guess. It's just a takeover from someone's  
+> working example.
+>
+
+Yes, that means 'gdal', so try switching it to 'raster'. But, note  
+that the 'raster' plugin is not able to read the extents automatically  
+and needs them to be manually specified (more details below).
+
+> So what does this mean?
+
+Good questions :) See below...
+
+> - does "gdal" have a problem with large images?
+
+GDAL as a library generally excels at reading large images. However,  
+our implementation of the GDAL plugin requires that overviews be built  
+for fast access when images are large, and this is first supported in  
+the upcoming 0.7 release.
+
+> - what are the practical limits now and in 0.7?
+
+I've not tested the practical size limits without overviews, but that  
+is a good question. My effort has been focused on development of the  
+overviews support, because with overviews + GDAL compiled with BIGTIFF  
+support (for rasters over 4BG) there are no known practical limits to  
+raster size.
+
+> - can I just replace "gdal" by "raster"? What does this mean  
+> technically, what is the difference?
+
+Yes, but you'll need to provide the raster extents.
+
+See http://trac.mapnik.org/wiki/Raster and http://trac.mapnik.org/wiki/GDAL 
+  for more details.
+
+> - in 0.7, will I need to do some preprocessing for the image?
+>
+
+Yes, you will need to build overviews before rendering, using the  
+'gdaladdo' tool: http://www.gdal.org/gdaladdo.html
+
+> thanks
+> 	Nop
+
+
+
+From mrudowski1 at gmail.com  Tue Jan  5 10:38:52 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Tue, 05 Jan 2010 10:38:52 +0100
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <4B427986.8080006@gmx.de>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+	<4B427986.8080006@gmx.de>
+Message-ID: <4B4308AC.3080501@gmail.com>
+
+W dniu 05.01.2010 00:28, Nop pisze:
+> 
+> Hello!
+> 
+> 
+> I am currently trying to render Hillshading from raster layers with 
+> mapnik 0.6.1. I have successfully rendered the first section of 8x2? 
+> from a 45MB GeoTiff. Now I tried to render another section of 10x3? from 
+> a 102 MB GeoTiff and this yielded a MemoryError.
+> 
+> Any ideas what the problem is and what to do about it?
+> 
+> 
+
+I had problems with memory errors (segmentation fault) when using gdal,
+mod_tile and multiple threads:
+http://trac.mapnik.org/ticket/294
+Adding some delays between thread creation solved this in my case.
+I guess gdal library is using some global variables while reading
+initially tiff files.
+Are You using threads in python?
+Does memory error appear on loading map definition or while rendering?
+Does it occur on each zoom or only on higher "altitudes"(less detailed,
+more area visible)?
+
+I use mapnik 0.6.1 and very old hardware (P IV 2.4 + 800MB RAM) for
+rendering my map. This handles fine those tiff files (on any given zoom
+at most one is used):
+79M	hill_15.tif 4352x4736
+20M	hill_30.tif 8704x9472
+316M	hill_8.tif  17408x18944
+each covering same area between 13?E,48?N and 24?E,52?N only with
+different resolutions.
+
+My biggest successful attempt on that machine(I haven't tried bigger, so
+it's not limit) was 1.1GPix tiff(36410x30740), 1070MB(710MB with LZW) of
+area 25?x14? :
+http://www.mail-archive.com/mapnik-users at lists.berlios.de/msg01147.html
+
+Problem with gdal in mapnik was with downscaling: it needs to read from
+tiff whole rendering region in source resolution to RAM before scaling
+it and producing output image on more overview zoom. This can lead to
+out of memory problem and waste of cpu time, because when downscalling
+only 2 zoom levels, it needs to read and process 16x more pixels then
+output image is. That's why I use smaller versions of same image for
+different zoom levels.
+
+So, huge geotiffs don't require extra memory, only disk storage (1 byte
+per pixel), except while rendering map in resolution much smaller than
+source image, but this can be solved using smaller copies for lower
+levels or geotiff with generated overviews and new mapnik.0.7 (haven't
+tried it yet).
+
+-- 
+Marcin Rudowski
+
+
+From ekkehart at gmx.de  Tue Jan  5 11:35:21 2010
+From: ekkehart at gmx.de (Nop)
+Date: Tue, 05 Jan 2010 11:35:21 +0100
+Subject: [Mapnik-devel] MemoryError rendering with raster layer
+In-Reply-To: <4B4308AC.3080501@gmail.com>
+References: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>	<4B427986.8080006@gmx.de>
+	<4B4308AC.3080501@gmail.com>
+Message-ID: <4B4315E9.6060200@gmx.de>
+
+
+Hi!
+
+Am 05.01.2010 10:38, schrieb Marcin Rudowski:
+> Are You using threads in python?
+> Does memory error appear on loading map definition or while rendering?
+> Does it occur on each zoom or only on higher "altitudes"(less detailed,
+> more area visible)?
+
+I am not using threads. The error occurs on render_to_file(), always on 
+the first call, zoom level 8.
+
+> I use mapnik 0.6.1 and very old hardware (P IV 2.4 + 800MB RAM) for
+> rendering my map. This handles fine those tiff files (on any given zoom
+> at most one is used):
+> 79M	hill_15.tif 4352x4736
+> 20M	hill_30.tif 8704x9472
+> 316M	hill_8.tif  17408x18944
+> each covering same area between 13?E,48?N and 24?E,52?N only with
+> different resolutions.
+
+Well, here it seems to work for <50MB, it crashes with 100MB. Maybe the 
+memory overhead for downscaling from the detailed image to zoom 8 causes 
+the crash.
+
+I broke the rendering area into smaller pieces, but if I understand you 
+correctly, I could also create different TIFs for different zoomlevels.
+
+How does such a setup look in the style file? The image is referenced as 
+data source in the layer, but I belive there are no 
+Min/MaxScaleDenominators allowed there.
+
+thanks
+	Nop
+
+
+From blake at hailmail.net  Tue Jan  5 17:25:20 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 5 Jan 2010 08:25:20 -0800
+Subject: [Mapnik-devel] Win32 binaries and Cairo
+Message-ID: <221E1056-6696-415A-A0FD-012189EAFF4D@hailmail.net>
+
+Artem,
+
+The windows binaries you have been providing don't yet support Cairo -  
+is this something that is planned or is it to much of a time  
+investment to pull off without distinct funding?
+
+A while back, primarily due to now-resolved issues with the Mac  
+Binaries, I started a patch to support Cairo output without needing  
+pycairo, which both reduces that dependency and makes it easier to  
+write to cairo formats for users.
+
+http://trac.mapnik.org/ticket/381
+
+I figure if you are potentially interested in including Cairo support  
+in the windows builds in the near future something like this patch  
+could make that more feasible. I could try to revise the patch to get  
+it into the 0.7 series.
+
+Let me know your thoughts,
+
+Dane
+
+
+From artem at mapnik.org  Tue Jan  5 22:03:22 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 5 Jan 2010 21:03:22 +0000
+Subject: [Mapnik-devel] Win32 binaries and Cairo
+In-Reply-To: <221E1056-6696-415A-A0FD-012189EAFF4D@hailmail.net>
+References: <221E1056-6696-415A-A0FD-012189EAFF4D@hailmail.net>
+Message-ID: <7e70f38d1001051303o316f0ca2y784dcf9a4797e874@mail.gmail.com>
+
+Hi Dane,
+
+Happy new year!
+(inline)
+
+2010/1/5 Dane Springmeyer <blake at hailmail.net>:
+> Artem,
+>
+> The windows binaries you have been providing don't yet support Cairo -
+> is this something that is planned or is it to much of a time
+> investment to pull off without distinct funding?
+
+I don't remember exact problem, but it wasn't straight forward to
+compile cairo and/or cairomm (c++ interface) from source on  windows.
+I'll have a look again, things might've changed.
+>
+> A while back, primarily due to now-resolved issues with the Mac
+> Binaries, I started a patch to support Cairo output without needing
+> pycairo, which both reduces that dependency and makes it easier to
+> write to cairo formats for users.
+>
+> http://trac.mapnik.org/ticket/381
+>
+> I figure if you are potentially interested in including Cairo support
+> in the windows builds in the near future something like this patch
+> could make that more feasible. I could try to revise the patch to get
+> it into the 0.7 series.
+>
+> Let me know your thoughts,
+>
+Great idea! and it will help with win32 build.
+
+Cheers,
+Artem
+
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From blake at hailmail.net  Wed Jan  6 18:45:40 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 6 Jan 2010 09:45:40 -0800
+Subject: [Mapnik-devel] Upcoming 0.7.0 release
+In-Reply-To: <4B2870A3.4060505@shaw.ca>
+References: <B024EB9B-1EB2-4EA8-B1B8-AB1180B727A3@hailmail.net>
+	<4B23B7B6.508@shaw.ca>
+	<2C7FDF76-B9B5-4D45-B07A-E439740EC86F@hailmail.net>
+	<4B252214.3080802@shaw.ca>
+	<6656104B-A250-4C4A-AD59-7114939B266F@hailmail.net>
+	<4B2870A3.4060505@shaw.ca>
+Message-ID: <505F95AA-22CB-4AF9-B6B1-88734055E19E@hailmail.net>
+
+David,
+
+Sorry it took me so long to get back to you on this.  Great  
+explanation, and as you surmised I think the shifts we were seeing are  
+not a regression in the code but rather cases where the defaults were  
+being applied from load_map and being set to BOTTOM rather than  
+middle. Simple really, sorry i missed that.
+So, the patch you send which I am about to apply to fix the defaults  
+for both Shield and Text symbolizer vertical_alignment to MIDDLE does  
+the trick. I will post a bit more info on the ticket here after I apply:
+
+http://trac.mapnik.org/ticket/468
+
+Thanks!
+
+Dane
+
+
+On Dec 15, 2009, at 9:31 PM, David Eastcott wrote:
+
+> Hi Dane,
+>
+> 1.   The default values for vertical alignment have not changed  
+> since r1043 and are still bottom.  However, r1341 did change the  
+> behaviour in a couple ways, see 3 below.
+>
+> Attached is a simple diff against trunk.1496 that changes the  
+> default vertical alignment for both text_symbolizer and  
+> shield_symbolizer to 'MIDDLE'.
+>
+>   There were two files involved:        text_symbolizer.cpp: changed  
+> the variable initializer in two places
+>       load_map.cpp: changed the default value, if not specified, for  
+> both the text and shield symbolizer methods.        I was not sure  
+> if the shield should be changed, but thought they should be  
+> consistent.  I'll let you / Artem decide.
+>
+> 2.  Ticket #468
+>
+>   Can I add comments directly to the ticket, or is it best to  
+> correspond by email?
+>
+> 3.  One of the problems that I encountered with vertical text  
+> placement was its asymmetrical behaviour when using bottom, middle  
+> and top; especially when multiple lines were involved.  The changes  
+> made were to make the placement of text symmetrical, regardless of  
+> text size changes and which alignment option was used.
+> Regardless, I'll have to setup a before and after test environment.   
+> It will be the weekend before I can get back to you on this   
+> However,  could you get more information from ?Colin?
+> a) the exact mapnik xml style text used to render the text  
+> 'brandaussiche' and the image to its right that I am assuming is  
+> related to it.
+> b) if possible, the revision of mapnik used for 'before_good' and  
+> 'after_bad'.
+>
+> From looking at the two images, I am not certain what would be  
+> causing such a large shift; based on the code and the style, a  
+> couple pixels might be expected, but not half the text height.
+>
+> Best regards,
+> Dave
+>
+>
+> Dane Springmeyer wrote:
+>> Hello David,
+>>
+>> Regarding the subtle label placement shift...
+>>
+>> I've created http://trac.mapnik.org/ticket/468 to track the issue.
+>>
+>> It appears that after r1341 the default middle or 'baseline'  
+>> placement is lower, as if it is bottom placement.
+>>
+>> Note the text 'brandaussiche' between these two images that a  
+>> fellow user just created who also noticed the issue:
+>>
+>> http://oerks.net/~colin/before_good.png
+>>
+>> http://oerks.net/~colin/after_bad.png
+>>
+>> He noticed it because it is the same default position as pre http://trac.mapnik.org/changeset/1043 
+>> .
+>>
+>> I'm not terribly familiar with the placement algorithms but I can  
+>> confirm that the middle/baseline placement should be the default,  
+>> and perhaps some of the oddity is coming from the fact that r1043,  
+>> while it apparently fixed the behavior, it did not properly set the  
+>> default value here:
+>>
+>> http://trac.mapnik.org/browser/trunk/src/text_symbolizer.cpp?rev=1043#L89
+>>
+>> to...
+>>
+>> valign_(MIDDLE),
+>>
+>> I just confirmed with Artem by way of chat that this is the desired  
+>> setting, so if you have a chance to look at this soon that would be  
+>> hugely helpful.
+>>
+>> Cheers,
+>>
+>> Dane
+>>
+>>
+>>
+>>
+>
+
+
+
+From blake at hailmail.net  Fri Jan  8 21:34:21 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 8 Jan 2010 12:34:21 -0800
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+	comparing map and layer bounds to support..'
+In-Reply-To: <4B29CB7B.8050005@shaw.ca>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+Message-ID: <A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+
+David,
+
+Thanks for this. I've also been seeing what looks like this behavior  
+recently. I think we need to revert the previous change before the 0.7  
+release, but I've not had time to properly look into it yet. For now I  
+have reopened the ticket:
+
+
+http://trac.mapnik.org/ticket/402
+
+Dane
+
+
+On Dec 16, 2009, at 10:11 PM, David Eastcott wrote:
+
+> Hi Dane,
+>
+> Attached is a file containing an image with the buffer set for  
+> 128px, one for 0px.  I modified the the feature_style_processor.hpp  
+> to produce the following: notice for the 128px set, the buffer  
+> extents are well outside the 'world' and that the mx0 and mx1 values  
+> are not correct even though the return code from prj_trans.forward  
+> says they are valid (which is derived from the return code of  
+> proj4's pj_transform).  Not sure why this would be the case but it  
+> is affecting the algorithm that is being used.
+>
+> buffer 128 pixels
+>
+> Level 0 tile:
+> buffer ext> minx: -4.0075e+07, miny: -4.0075e+07, maxx: 4.0075e+07,  
+> maxy: 4.0075e+07
+> trans valid0: yes, mx0: 0, my0: -4.00322e+07, valid1: yes, mx1: 0,  
+> my1: 4.00322e+07
+> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+> +07, maxy: 1.83759e+07
+>
+>
+> buffer 0 pixels
+>
+> Level 0 tile:
+> buffer ext> minx: -2.00375e+07, miny: -2.00375e+07, maxx: 2.00375e 
+> +07, maxy: 2.00375e+07
+> trans valid0: yes, mx0: -2.00375e+07, my0: -1.99949e+07, valid1:  
+> yes, mx1: 2.00375e+07, my1: 1.99949e+07
+> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+> +07, maxy: 1.83759e+07
+>
+> Best regards,
+> Dave
+>
+> Dane Springmeyer wrote:
+>> David,
+>>
+>> Thanks for this report.  We may need to revert the previous change  
+>> as it was only to benefit the experimental PointDatasource  
+>> implementation.
+>>
+>> Could you give a bit more detail on this?  How do you think bad  
+>> values are being returned while proj is still issuing a good return  
+>> code?
+>>
+>> Also, have you seen?
+>>
+>> http://trac.mapnik.org/ticket/308
+>>
+>> Dane
+>>
+>>
+>> On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+>>
+>>> While upgrading to 1481 from 1347, I came across a problem with my
+>>> google tile generator producing renderings with missing features  
+>>> (Canada
+>>> was missing) at the highest levels (0-4).  Essentially I was  
+>>> building a
+>>> level 0 tile, 256x256px, with a 128px buffer with the 'world'  
+>>> map.  The
+>>> change introduced in trunk version 1348 was causing the projection  
+>>> of
+>>> the buffer extents to the layer extents to produce bad values
+>>> (pr_transform was returning a good return code) and as a result,  
+>>> some of
+>>> the polygons were being omitted from the rendering.
+>>>
+>>> The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0  
+>>> +lon_0=0.0
+>>> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+>>>
+>>> and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+>>> +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+>>>
+>>> There are a number of ways this can be solved outside of mapnik,  
+>>> which I
+>>> have done, but I thought I should pass this on in case others have  
+>>> come
+>>> across it.
+>>>
+>>> This may be an issue for anyone who is using buffered rendering  
+>>> near or
+>>> on the edges of proj4 ability to transform correctly since the  
+>>> values
+>>> used for the buffer extents may be well outside reasonable values.
+>>>
+>>> Best regards,
+>>> Dave
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>
+> <Archive.tar.gz>
+
+
+
+From david.eastcott at shaw.ca  Sat Jan  9 04:30:45 2010
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Fri, 08 Jan 2010 20:30:45 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+ comparing map and layer bounds to support..'
+In-Reply-To: <A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+Message-ID: <4B47F865.10102@shaw.ca>
+
+Dane,
+
+I concur.  That seems best for now until someone who understands proj4 
+internals can devise an appropriate solution.
+
+Dave
+
+
+Dane Springmeyer wrote:
+> David,
+>
+> Thanks for this. I've also been seeing what looks like this behavior 
+> recently. I think we need to revert the previous change before the 0.7 
+> release, but I've not had time to properly look into it yet. For now I 
+> have reopened the ticket:
+>
+>
+> http://trac.mapnik.org/ticket/402
+>
+> Dane
+>
+>
+> On Dec 16, 2009, at 10:11 PM, David Eastcott wrote:
+>
+>> Hi Dane,
+>>
+>> Attached is a file containing an image with the buffer set for 128px, 
+>> one for 0px.  I modified the the feature_style_processor.hpp to 
+>> produce the following: notice for the 128px set, the buffer extents 
+>> are well outside the 'world' and that the mx0 and mx1 values are not 
+>> correct even though the return code from prj_trans.forward says they 
+>> are valid (which is derived from the return code of proj4's 
+>> pj_transform).  Not sure why this would be the case but it is 
+>> affecting the algorithm that is being used.
+>>
+>> buffer 128 pixels
+>>
+>> Level 0 tile:
+>> buffer ext> minx: -4.0075e+07, miny: -4.0075e+07, maxx: 4.0075e+07, 
+>> maxy: 4.0075e+07
+>> trans valid0: yes, mx0: 0, my0: -4.00322e+07, valid1: yes, mx1: 0, 
+>> my1: 4.00322e+07
+>> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 
+>> 2.00374e+07, maxy: 1.83759e+07
+>>
+>>
+>> buffer 0 pixels
+>>
+>> Level 0 tile:
+>> buffer ext> minx: -2.00375e+07, miny: -2.00375e+07, maxx: 
+>> 2.00375e+07, maxy: 2.00375e+07
+>> trans valid0: yes, mx0: -2.00375e+07, my0: -1.99949e+07, valid1: yes, 
+>> mx1: 2.00375e+07, my1: 1.99949e+07
+>> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 
+>> 2.00374e+07, maxy: 1.83759e+07
+>>
+>> Best regards,
+>> Dave
+>>
+>> Dane Springmeyer wrote:
+>>> David,
+>>>
+>>> Thanks for this report.  We may need to revert the previous change 
+>>> as it was only to benefit the experimental PointDatasource 
+>>> implementation.
+>>>
+>>> Could you give a bit more detail on this?  How do you think bad 
+>>> values are being returned while proj is still issuing a good return 
+>>> code?
+>>>
+>>> Also, have you seen?
+>>>
+>>> http://trac.mapnik.org/ticket/308
+>>>
+>>> Dane
+>>>
+>>>
+>>> On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+>>>
+>>>> While upgrading to 1481 from 1347, I came across a problem with my
+>>>> google tile generator producing renderings with missing features 
+>>>> (Canada
+>>>> was missing) at the highest levels (0-4).  Essentially I was 
+>>>> building a
+>>>> level 0 tile, 256x256px, with a 128px buffer with the 'world' map.  
+>>>> The
+>>>> change introduced in trunk version 1348 was causing the projection of
+>>>> the buffer extents to the layer extents to produce bad values
+>>>> (pr_transform was returning a good return code) and as a result, 
+>>>> some of
+>>>> the polygons were being omitted from the rendering.
+>>>>
+>>>> The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 
+>>>> +lon_0=0.0
+>>>> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+>>>>
+>>>> and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+>>>> +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+>>>>
+>>>> There are a number of ways this can be solved outside of mapnik, 
+>>>> which I
+>>>> have done, but I thought I should pass this on in case others have 
+>>>> come
+>>>> across it.
+>>>>
+>>>> This may be an issue for anyone who is using buffered rendering 
+>>>> near or
+>>>> on the edges of proj4 ability to transform correctly since the values
+>>>> used for the buffer extents may be well outside reasonable values.
+>>>>
+>>>> Best regards,
+>>>> Dave
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>>
+>> <Archive.tar.gz>
+>
+>
+
+
+
+From blake at hailmail.net  Sat Jan  9 05:08:32 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 8 Jan 2010 20:08:32 -0800
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+	comparing map and layer bounds to support..'
+In-Reply-To: <4B47F865.10102@shaw.ca>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+	<4B47F865.10102@shaw.ca>
+Message-ID: <79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+
+David,
+
+Thanks for the concurrence :) Ya, I'm not too excited about  
+understanding any more about the proj4 internals.
+
+Bu, I have just read the "relevant literature" on the Mapnik side, and  
+started to keep my notes here: http://trac.mapnik.org/wiki/BoundsClipping 
+.
+
+Based on what I've gleaned (mostly from Jonb and artem) it seems that  
+the answer is to either:
+
+1) revert r1348
+
+or
+
+2) implement a max_extent parameter
+
+The latter seems like a generally good idea. I figure it could either  
+be set manually or read once at startup based on the max extent all  
+all layers (essentially what map.zoom_all() does).
+
+I'm certainly tending toward #1 for the 0.7, but trying to wrap my  
+head around the details for a moment in the hope I can learn something  
+to crack the harder problem of:
+
+http://trac.mapnik.org/ticket/308
+
+Dane
+
+
+On Jan 8, 2010, at 7:30 PM, David Eastcott wrote:
+
+> Dane,
+>
+> I concur.  That seems best for now until someone who understands  
+> proj4 internals can devise an appropriate solution.
+>
+> Dave
+>
+>
+> Dane Springmeyer wrote:
+>> David,
+>>
+>> Thanks for this. I've also been seeing what looks like this  
+>> behavior recently. I think we need to revert the previous change  
+>> before the 0.7 release, but I've not had time to properly look into  
+>> it yet. For now I have reopened the ticket:
+>>
+>>
+>> http://trac.mapnik.org/ticket/402
+>>
+>> Dane
+>>
+>>
+>> On Dec 16, 2009, at 10:11 PM, David Eastcott wrote:
+>>
+>>> Hi Dane,
+>>>
+>>> Attached is a file containing an image with the buffer set for  
+>>> 128px, one for 0px.  I modified the the  
+>>> feature_style_processor.hpp to produce the following: notice for  
+>>> the 128px set, the buffer extents are well outside the 'world' and  
+>>> that the mx0 and mx1 values are not correct even though the return  
+>>> code from prj_trans.forward says they are valid (which is derived  
+>>> from the return code of proj4's pj_transform).  Not sure why this  
+>>> would be the case but it is affecting the algorithm that is being  
+>>> used.
+>>>
+>>> buffer 128 pixels
+>>>
+>>> Level 0 tile:
+>>> buffer ext> minx: -4.0075e+07, miny: -4.0075e+07, maxx: 4.0075e 
+>>> +07, maxy: 4.0075e+07
+>>> trans valid0: yes, mx0: 0, my0: -4.00322e+07, valid1: yes, mx1: 0,  
+>>> my1: 4.00322e+07
+>>> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+>>> +07, maxy: 1.83759e+07
+>>>
+>>>
+>>> buffer 0 pixels
+>>>
+>>> Level 0 tile:
+>>> buffer ext> minx: -2.00375e+07, miny: -2.00375e+07, maxx: 2.00375e 
+>>> +07, maxy: 2.00375e+07
+>>> trans valid0: yes, mx0: -2.00375e+07, my0: -1.99949e+07, valid1:  
+>>> yes, mx1: 2.00375e+07, my1: 1.99949e+07
+>>> layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+>>> +07, maxy: 1.83759e+07
+>>>
+>>> Best regards,
+>>> Dave
+>>>
+>>> Dane Springmeyer wrote:
+>>>> David,
+>>>>
+>>>> Thanks for this report.  We may need to revert the previous  
+>>>> change as it was only to benefit the experimental PointDatasource  
+>>>> implementation.
+>>>>
+>>>> Could you give a bit more detail on this?  How do you think bad  
+>>>> values are being returned while proj is still issuing a good  
+>>>> return code?
+>>>>
+>>>> Also, have you seen?
+>>>>
+>>>> http://trac.mapnik.org/ticket/308
+>>>>
+>>>> Dane
+>>>>
+>>>>
+>>>> On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+>>>>
+>>>>> While upgrading to 1481 from 1347, I came across a problem with my
+>>>>> google tile generator producing renderings with missing features  
+>>>>> (Canada
+>>>>> was missing) at the highest levels (0-4).  Essentially I was  
+>>>>> building a
+>>>>> level 0 tile, 256x256px, with a 128px buffer with the 'world'  
+>>>>> map.  The
+>>>>> change introduced in trunk version 1348 was causing the  
+>>>>> projection of
+>>>>> the buffer extents to the layer extents to produce bad values
+>>>>> (pr_transform was returning a good return code) and as a result,  
+>>>>> some of
+>>>>> the polygons were being omitted from the rendering.
+>>>>>
+>>>>> The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0  
+>>>>> +lon_0=0.0
+>>>>> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+>>>>>
+>>>>> and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+>>>>> +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+>>>>>
+>>>>> There are a number of ways this can be solved outside of mapnik,  
+>>>>> which I
+>>>>> have done, but I thought I should pass this on in case others  
+>>>>> have come
+>>>>> across it.
+>>>>>
+>>>>> This may be an issue for anyone who is using buffered rendering  
+>>>>> near or
+>>>>> on the edges of proj4 ability to transform correctly since the  
+>>>>> values
+>>>>> used for the buffer extents may be well outside reasonable values.
+>>>>>
+>>>>> Best regards,
+>>>>> Dave
+>>>>> _______________________________________________
+>>>>> Mapnik-devel mailing list
+>>>>> Mapnik-devel at lists.berlios.de
+>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>>>
+>>>
+>>> <Archive.tar.gz>
+>>
+>>
+>
+
+
+
+From david.eastcott at shaw.ca  Sun Jan 10 00:02:15 2010
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sat, 09 Jan 2010 16:02:15 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+ comparing map and layer bounds to support..'
+In-Reply-To: <79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+	<4B47F865.10102@shaw.ca>
+	<79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+Message-ID: <4B490AF7.2010701@shaw.ca>
+
+Dane,
+
+Your zoom_all() idea maybe the best solution.  If I understand 
+correctly, you would create a new method which returns an envelope 
+representing the extents of all layers in the map's projection, say 
+'all_extents' (only every needs to be invoked once).  Then in 
+apply_to_layer, use the 'all_extents' value to clip the buffered_extents 
+before transforming to the layer's projection.  The transformed result 
+would most likely be valid and now the test and subsequent clipping of 
+the query bbox should yield good values. I'll give it a try and see what 
+happens.
+
+Depending on when you are planning to release 0.7.0, reverting r1348 is 
+a better choice for now. 
+
+My reasoning is that the original code transforms the layer's extents to 
+the map's projection and is more likely to produce a valid result 
+because the layer's extents most likely valid and transformable.
+
+With the r1348 version, the buffered extents are transformed to the 
+layer's projection and normally this would seem to be ok.  However, 
+since the buffered extents are simply a linear extrapolation of the 
+map's current extents, and if the map's current extents are at or near 
+the valid limits for its projection, then the buffered extents are most 
+likely invalid.  Consequently transforming them to the layer's 
+projection is going to cause unpredictable results.  Hence the bbox 
+limits may be corrupted and valid geometries are dropped (missing).
+
+Anytime a transform is performed, there exists the chance that the 
+result is going to be invalid, there needs to be a way to determine if a 
+transformation is going to yield a valid result and adjust processing as 
+appropriate.  Using proj4 api, the only way I can see to do this is to 
+transform forward and backwards (or backward and forward) and see if the 
+result matches the original.  Its better to affect mapnik's processing 
+than to silently drop features due to a transformation problem.
+
+
+Dave
+
+Dane Springmeyer wrote:
+> David,
+>
+> Thanks for the concurrence :) Ya, I'm not too excited about 
+> understanding any more about the proj4 internals.
+>
+> Bu, I have just read the "relevant literature" on the Mapnik side, and 
+> started to keep my notes here: 
+> http://trac.mapnik.org/wiki/BoundsClipping.
+>
+> Based on what I've gleaned (mostly from Jonb and artem) it seems that 
+> the answer is to either:
+>
+> 1) revert r1348
+>
+> or
+>
+> 2) implement a max_extent parameter
+>
+> The latter seems like a generally good idea. I figure it could either 
+> be set manually or read once at startup based on the max extent all 
+> all layers (essentially what map.zoom_all() does).
+>
+> I'm certainly tending toward #1 for the 0.7, but trying to wrap my 
+> head around the details for a moment in the hope I can learn something 
+> to crack the harder problem of:
+>
+> http://trac.mapnik.org/ticket/308
+>
+> Dane
+>
+
+
+
+From david.eastcott at shaw.ca  Sun Jan 10 03:21:19 2010
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sat, 09 Jan 2010 19:21:19 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+ comparing map and layer bounds to support..'
+In-Reply-To: <4B490AF7.2010701@shaw.ca>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+	<4B47F865.10102@shaw.ca>
+	<79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+	<4B490AF7.2010701@shaw.ca>
+Message-ID: <4B49399F.4020701@shaw.ca>
+
+Dane,
+
+Attached is a patch file against branch/0.7 r1528.  It has the changes 
+needed to clamp/clip the buffered_extents in apply_to_layer.  I tested 
+it with my tile generator using 128px buffering at a google zoom level 
+of 0 and it worked fine with no features lost (especially the ones I 
+reported in a previous email).
+
+This is a quick hack to test the concept and it appears to work.  
+However, someone who knows mapnik better than me, needs to look at it 
+and re-write/adapt it to correctly fit into mapnik.  A few things come 
+to mind: resetting the 'allLayersExtent' values whenever a layer is 
+added or removed or just before a render is initiated; the patch added 
+explicit calls of setAllLayersExtent() at the end of load_map() because 
+that's how I normally use mapnik.
+
+Also, others especially those involved with tickets 308 and 402 need to 
+test it to see if their issues were resolved.
+
+Best regards,
+Dave
+
+
+David Eastcott wrote:
+> Dane,
+>
+> Your zoom_all() idea maybe the best solution.  If I understand 
+> correctly, you would create a new method which returns an envelope 
+> representing the extents of all layers in the map's projection, say 
+> 'all_extents' (only every needs to be invoked once).  Then in 
+> apply_to_layer, use the 'all_extents' value to clip the buffered_extents 
+> before transforming to the layer's projection.  The transformed result 
+> would most likely be valid and now the test and subsequent clipping of 
+> the query bbox should yield good values. I'll give it a try and see what 
+> happens.
+>
+> Depending on when you are planning to release 0.7.0, reverting r1348 is 
+> a better choice for now. 
+>
+> My reasoning is that the original code transforms the layer's extents to 
+> the map's projection and is more likely to produce a valid result 
+> because the layer's extents most likely valid and transformable.
+>
+> With the r1348 version, the buffered extents are transformed to the 
+> layer's projection and normally this would seem to be ok.  However, 
+> since the buffered extents are simply a linear extrapolation of the 
+> map's current extents, and if the map's current extents are at or near 
+> the valid limits for its projection, then the buffered extents are most 
+> likely invalid.  Consequently transforming them to the layer's 
+> projection is going to cause unpredictable results.  Hence the bbox 
+> limits may be corrupted and valid geometries are dropped (missing).
+>
+> Anytime a transform is performed, there exists the chance that the 
+> result is going to be invalid, there needs to be a way to determine if a 
+> transformation is going to yield a valid result and adjust processing as 
+> appropriate.  Using proj4 api, the only way I can see to do this is to 
+> transform forward and backwards (or backward and forward) and see if the 
+> result matches the original.  Its better to affect mapnik's processing 
+> than to silently drop features due to a transformation problem.
+>
+>
+> Dave
+>
+> Dane Springmeyer wrote:
+>   
+>> David,
+>>
+>> Thanks for the concurrence :) Ya, I'm not too excited about 
+>> understanding any more about the proj4 internals.
+>>
+>> Bu, I have just read the "relevant literature" on the Mapnik side, and 
+>> started to keep my notes here: 
+>> http://trac.mapnik.org/wiki/BoundsClipping.
+>>
+>> Based on what I've gleaned (mostly from Jonb and artem) it seems that 
+>> the answer is to either:
+>>
+>> 1) revert r1348
+>>
+>> or
+>>
+>> 2) implement a max_extent parameter
+>>
+>> The latter seems like a generally good idea. I figure it could either 
+>> be set manually or read once at startup based on the max extent all 
+>> all layers (essentially what map.zoom_all() does).
+>>
+>> I'm certainly tending toward #1 for the 0.7, but trying to wrap my 
+>> head around the details for a moment in the hope I can learn something 
+>> to crack the harder problem of:
+>>
+>> http://trac.mapnik.org/ticket/308
+>>
+>> Dane
+>>
+>>     
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik.0.7.1528.diff.tar.gz
+Type: application/x-gzip
+Size: 1579 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100109/f9787b14/attachment.bin>
+
+From blake at hailmail.net  Sun Jan 10 19:15:52 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 10 Jan 2010 10:15:52 -0800
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+	comparing map and layer bounds to support..'
+In-Reply-To: <4B49399F.4020701@shaw.ca>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+	<4B47F865.10102@shaw.ca>
+	<79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+	<4B490AF7.2010701@shaw.ca> <4B49399F.4020701@shaw.ca>
+Message-ID: <B108BCDF-34F7-482C-ADDD-86867F074F6E@hailmail.net>
+
+Hello David,
+
+Great, nice job this is exactly what I was thinking too. With the  
+addition that it might be useful to be able to manually set the bounds  
+to enable skipping the need to iterate all layers.
+
+My thinking is that we should apply this patch to trunk/0.8.0, so we  
+can test edge cases and make sure there is no performance hit using  
+this method. As I mentioned earlier I'm happy to revert the 0.7.0 code  
+to previous behavior for now (for the release).
+
+Does that sound good?
+
+Just noticed I missed you on IRC, sorry. I'm back around now.
+
+Cheers,
+Dane
+
+
+
+On Jan 9, 2010, at 6:21 PM, David Eastcott wrote:
+
+> Dane,
+>
+> Attached is a patch file against branch/0.7 r1528.  It has the  
+> changes needed to clamp/clip the buffered_extents in  
+> apply_to_layer.  I tested it with my tile generator using 128px  
+> buffering at a google zoom level of 0 and it worked fine with no  
+> features lost (especially the ones I reported in a previous email).
+>
+> This is a quick hack to test the concept and it appears to work.   
+> However, someone who knows mapnik better than me, needs to look at  
+> it and re-write/adapt it to correctly fit into mapnik.  A few things  
+> come to mind: resetting the 'allLayersExtent' values whenever a  
+> layer is added or removed or just before a render is initiated; the  
+> patch added explicit calls of setAllLayersExtent() at the end of  
+> load_map() because that's how I normally use mapnik.
+>
+> Also, others especially those involved with tickets 308 and 402 need  
+> to test it to see if their issues were resolved.
+>
+> Best regards,
+> Dave
+>
+>
+> David Eastcott wrote:
+>> Dane,
+>>
+>> Your zoom_all() idea maybe the best solution.  If I understand  
+>> correctly, you would create a new method which returns an envelope  
+>> representing the extents of all layers in the map's projection, say  
+>> 'all_extents' (only every needs to be invoked once).  Then in  
+>> apply_to_layer, use the 'all_extents' value to clip the  
+>> buffered_extents before transforming to the layer's projection.   
+>> The transformed result would most likely be valid and now the test  
+>> and subsequent clipping of the query bbox should yield good values.  
+>> I'll give it a try and see what happens.
+>>
+>> Depending on when you are planning to release 0.7.0, reverting  
+>> r1348 is a better choice for now.
+>> My reasoning is that the original code transforms the layer's  
+>> extents to the map's projection and is more likely to produce a  
+>> valid result because the layer's extents most likely valid and  
+>> transformable.
+>>
+>> With the r1348 version, the buffered extents are transformed to the  
+>> layer's projection and normally this would seem to be ok.  However,  
+>> since the buffered extents are simply a linear extrapolation of the  
+>> map's current extents, and if the map's current extents are at or  
+>> near the valid limits for its projection, then the buffered extents  
+>> are most likely invalid.  Consequently transforming them to the  
+>> layer's projection is going to cause unpredictable results.  Hence  
+>> the bbox limits may be corrupted and valid geometries are dropped  
+>> (missing).
+>>
+>> Anytime a transform is performed, there exists the chance that the  
+>> result is going to be invalid, there needs to be a way to determine  
+>> if a transformation is going to yield a valid result and adjust  
+>> processing as appropriate.  Using proj4 api, the only way I can see  
+>> to do this is to transform forward and backwards (or backward and  
+>> forward) and see if the result matches the original.  Its better to  
+>> affect mapnik's processing than to silently drop features due to a  
+>> transformation problem.
+>>
+>>
+>> Dave
+>>
+>> Dane Springmeyer wrote:
+>>
+>>> David,
+>>>
+>>> Thanks for the concurrence :) Ya, I'm not too excited about  
+>>> understanding any more about the proj4 internals.
+>>>
+>>> Bu, I have just read the "relevant literature" on the Mapnik side,  
+>>> and started to keep my notes here: http://trac.mapnik.org/wiki/BoundsClipping 
+>>> .
+>>>
+>>> Based on what I've gleaned (mostly from Jonb and artem) it seems  
+>>> that the answer is to either:
+>>>
+>>> 1) revert r1348
+>>>
+>>> or
+>>>
+>>> 2) implement a max_extent parameter
+>>>
+>>> The latter seems like a generally good idea. I figure it could  
+>>> either be set manually or read once at startup based on the max  
+>>> extent all all layers (essentially what map.zoom_all() does).
+>>>
+>>> I'm certainly tending toward #1 for the 0.7, but trying to wrap my  
+>>> head around the details for a moment in the hope I can learn  
+>>> something to crack the harder problem of:
+>>>
+>>> http://trac.mapnik.org/ticket/308
+>>>
+>>> Dane
+>>>
+>>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>
+> <mapnik.0.7.1528.diff.tar.gz>
+
+
+
+From david.eastcott at shaw.ca  Sun Jan 10 20:06:35 2010
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sun, 10 Jan 2010 12:06:35 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+ comparing map and layer bounds to support..'
+In-Reply-To: <B108BCDF-34F7-482C-ADDD-86867F074F6E@hailmail.net>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+	<4B29CB7B.8050005@shaw.ca>
+	<A9E55C96-371A-4FBA-86C4-A80D376954AC@hailmail.net>
+	<4B47F865.10102@shaw.ca>
+	<79721B55-2078-485B-91FB-ACBF1F608EDB@hailmail.net>
+	<4B490AF7.2010701@shaw.ca> <4B49399F.4020701@shaw.ca>
+	<B108BCDF-34F7-482C-ADDD-86867F074F6E@hailmail.net>
+Message-ID: <4B4A253B.8090004@shaw.ca>
+
+Hi Dane,
+
+Works for me.
+
+I'll be continuing to test this patch in my environment on 0.7r1528
+
+Dave
+
+Dane Springmeyer wrote:
+> Hello David,
+>
+> Great, nice job this is exactly what I was thinking too. With the 
+> addition that it might be useful to be able to manually set the bounds 
+> to enable skipping the need to iterate all layers.
+>
+> My thinking is that we should apply this patch to trunk/0.8.0, so we 
+> can test edge cases and make sure there is no performance hit using 
+> this method. As I mentioned earlier I'm happy to revert the 0.7.0 code 
+> to previous behavior for now (for the release).
+>
+> Does that sound good?
+>
+> Just noticed I missed you on IRC, sorry. I'm back around now.
+>
+> Cheers,
+> Dane
+>
+>
+
+
+
+From blake at hailmail.net  Mon Jan 11 05:34:00 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 10 Jan 2010 20:34:00 -0800
+Subject: [Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+Message-ID: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+
+Dev-
+
+The Mapnik team is pleased to announce the first release candidate for  
+Mapnik 0.7.0. We are nearing the release of Mapnik 0.7.0 [1], with  
+nearly 70 closed tickets [2], and we would appreciate your review.  If  
+you are able to help, please compile, install, and run the unit tests.  
+Report any problems compiling, any test failures, or any runtime  
+issues with your applications to the mailing list or as Trac tickets.
+
+If anyone runs into problems we'll fix them and issue another release  
+candidate tomorrow.
+
+More detailed instructions below.
+
+Thanks!
+
+Dane
+
+[1] http://trac.mapnik.org/milestone/0.7.0
+[2] http://trac.mapnik.org/query?status=closed&group=resolution&milestone=0.7.0
+
+=======================
+
+Download the sources here:
+
+http://dbsgeo.com/downloads/mapnik/sources/0.7.0-rc1/
+
+Which should produce a tarball called: mapnik_1.7.0-rc1.tar.gz
+
+Unpack the sources:
+
+$ tar xvf mapnik_1.7.0-rc1.tar.gz
+
+Then compile sources and install
+
+$ cd mapnik_0.7.0-rc1/
+$ python scons/scons.py install
+
+Finally, install nose from http://somethingaboutorange.com/mrl/projects/nose/0.11.1/ 
+. Then in the mapnik_0.7.0-rc1 folder run the tests:
+
+$ python tests/run_tests.py
+
+At the end of the verbose output you should get:
+
+'OK (TODO=5)'
+
+
+From dmentre at linux-france.org  Tue Jan 12 13:08:27 2010
+From: dmentre at linux-france.org (David MENTRE)
+Date: Tue, 12 Jan 2010 13:08:27 +0100
+Subject: [Mapnik-devel] MapOSMatic tested with Mapnik 0.7.0-rc1
+Message-ID: <3d13dcfc1001120408h77f3f7jc7978e2eee574ee9@mail.gmail.com>
+
+[ Please keep me in Cc:, I'm not subscribed to -devel at . ]
+
+Hello,
+
+For the record: following Dane Springmeyer request I have tested
+MapOSMatic with Mapnik 0.7.0-rc1 on Ubuntu Jaunty 64 bits platform.
+The rendering in PNG, PDF and SVG seem correct.
+
+Regards,
+d.
+
+
+From artem at mapnik.org  Tue Jan 12 15:04:20 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 12 Jan 2010 14:04:20 +0000
+Subject: [Mapnik-devel] MapOSMatic tested with Mapnik 0.7.0-rc1
+In-Reply-To: <3d13dcfc1001120408h77f3f7jc7978e2eee574ee9@mail.gmail.com>
+References: <3d13dcfc1001120408h77f3f7jc7978e2eee574ee9@mail.gmail.com>
+Message-ID: <7e70f38d1001120604x53011220md6bccf4f38782f0@mail.gmail.com>
+
+Thanks for testing!
+Artem
+
+2010/1/12 David MENTRE <dmentre at linux-france.org>:
+> [ Please keep me in Cc:, I'm not subscribed to -devel at . ]
+>
+> Hello,
+>
+> For the record: following Dane Springmeyer request I have tested
+> MapOSMatic with Mapnik 0.7.0-rc1 on Ubuntu Jaunty 64 bits platform.
+> The rendering in PNG, PDF and SVG seem correct.
+>
+> Regards,
+> d.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From blake at hailmail.net  Wed Jan 13 05:05:20 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 12 Jan 2010 20:05:20 -0800
+Subject: [Mapnik-devel] Mapnik 0.7.0 CHANGELOG review
+Message-ID: <7E39A95C-C85D-44A3-8931-D0F7D25EA4C2@hailmail.net>
+
+Dev-
+
+I've reviewed all tickets and changesets since the 0.6.1 release and  
+updated the CHANGELOG for the 0.7.0:
+
+It is skimmable here: http://trac.mapnik.org/browser/branches/0.7/CHANGELOG
+
+I've also pasted into a Trac page to enable the nice, clickable links:
+
+http://trac.mapnik.org/wiki/Release0.7.0
+
+(I will update this page if anything more changes before release)
+
+Please review and make comments or note any necessary changes.
+
+Even if you see nothing that needs fixing it would be great to have  
+responses on this thread as to whether this is a useful approach and  
+what more we should be doing to track and display info for users and  
+developers.
+
+Cheers,
+
+Dane
+
+
+From david.eastcott at shaw.ca  Wed Jan 13 15:35:37 2010
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Wed, 13 Jan 2010 07:35:37 -0700
+Subject: [Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+In-Reply-To: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+References: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+Message-ID: <4B4DDA39.2070504@shaw.ca>
+
+Compiled, tested on AMD64 - OK for both release and debug.  In midst of 
+generating tile sets (appox 8e06 tiles) and no problems encountered.
+
+Love the gamma attribute for polygon symbolizer, cleaned up xml files 
+but more importantly speeds up the tile generation considerable since I 
+no longer have to outline polygons to get rid of the 'gaps'.
+
+Dave
+
+Dane Springmeyer wrote:
+> Dev-
+>
+> The Mapnik team is pleased to announce the first release candidate for  
+> Mapnik 0.7.0. We are nearing the release of Mapnik 0.7.0 [1], with  
+> nearly 70 closed tickets [2], and we would appreciate your review.  If  
+> you are able to help, please compile, install, and run the unit tests.  
+> Report any problems compiling, any test failures, or any runtime  
+> issues with your applications to the mailing list or as Trac tickets.
+>
+> If anyone runs into problems we'll fix them and issue another release  
+> candidate tomorrow.
+>
+> More detailed instructions below.
+>
+> Thanks!
+>
+> Dane
+>
+> [1] http://trac.mapnik.org/milestone/0.7.0
+> [2] http://trac.mapnik.org/query?status=closed&group=resolution&milestone=0.7.0
+>
+> =======================
+>
+> Download the sources here:
+>
+> http://dbsgeo.com/downloads/mapnik/sources/0.7.0-rc1/
+>
+> Which should produce a tarball called: mapnik_1.7.0-rc1.tar.gz
+>
+> Unpack the sources:
+>
+> $ tar xvf mapnik_1.7.0-rc1.tar.gz
+>
+> Then compile sources and install
+>
+> $ cd mapnik_0.7.0-rc1/
+> $ python scons/scons.py install
+>
+> Finally, install nose from http://somethingaboutorange.com/mrl/projects/nose/0.11.1/ 
+> . Then in the mapnik_0.7.0-rc1 folder run the tests:
+>
+> $ python tests/run_tests.py
+>
+> At the end of the verbose output you should get:
+>
+> 'OK (TODO=5)'
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From blake at hailmail.net  Wed Jan 13 17:15:18 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 13 Jan 2010 08:15:18 -0800
+Subject: [Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+In-Reply-To: <4B4DDA39.2070504@shaw.ca>
+References: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+	<4B4DDA39.2070504@shaw.ca>
+Message-ID: <F72C5343-1B40-4808-B539-80D023D3609A@hailmail.net>
+
+
+On Jan 13, 2010, at 6:35 AM, David Eastcott wrote:
+
+> Compiled, tested on AMD64 - OK for both release and debug.  In midst  
+> of generating tile sets (appox 8e06 tiles) and no problems  
+> encountered.
+>
+> Love the gamma attribute for polygon symbolizer, cleaned up xml  
+> files but more importantly speeds up the tile generation  
+> considerable since I no longer have to outline polygons to get rid  
+> of the 'gaps'.
+>
+
+Great to hear, thanks for the test report!
+
+Wow, already using the gamma fix :) Nice to hear it is also a  
+performance boost!
+
+Dane
+
+
+
+
+From ekkehart at gmx.de  Sat Jan 16 12:48:24 2010
+From: ekkehart at gmx.de (Nop)
+Date: Sat, 16 Jan 2010 12:48:24 +0100
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+Message-ID: <4B51A788.6080601@gmx.de>
+
+
+Hi!
+
+We are trying to establish a rendering chain with mapnik and 
+map_tile/renderd for a topographical hiking map. The rendering basically 
+works fine, but there are certain tiles that cause the renderer to hang 
+with 100% CPU use.
+
+The problem is reproducible, it will always hang on the same tile.
+The SQL database is idle during that time.
+When you request the same tile from the same instance but with a 
+different style sheet, it works.
+When you render the same tile with the same style sheet from a python 
+binding instead, it works.
+
+So it seems that there is something in the style sheet that works in 
+python and fails in C++ bindings. Mapnik version is 0.6.1., server is 
+debian.
+
+Any ideas what might explain this behaviour?
+
+thanks
+	Nop
+
+
+
+From frederik at remote.org  Sat Jan 16 13:23:46 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Sat, 16 Jan 2010 13:23:46 +0100
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <4B51A788.6080601@gmx.de>
+References: <4B51A788.6080601@gmx.de>
+Message-ID: <4B51AFD2.20900@remote.org>
+
+Hi,
+
+ > We are trying to establish a rendering chain with mapnik and
+ > map_tile/renderd for a topographical hiking map. The rendering basically
+ > works fine, but there are certain tiles that cause the renderer to hang
+ > with 100% CPU use.
+
+NB, I have started debugging this situation; it doesn't do any system 
+calls when it does this, and when attaching to the hanging thread with 
+gdb, I see that it seems to be stuck here:
+
+0x00007f41b4ed49ca in 
+agg::renderer_outline_image<agg::renderer_base<agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_plain<agg::rgba8, 
+agg::order_rgba>, agg::row_ptr_cache<unsigned char>, unsigned int> >, 
+agg::line_image_pattern<agg::pattern_filter_bilinear_rgba<agg::rgba8> > 
+ >::line3(agg::line_parameters const&, int, int, int, int) ()
+
+Any idea on how to proceed?
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From artem at mapnik.org  Sat Jan 16 13:57:09 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 16 Jan 2010 12:57:09 +0000
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <4B51AFD2.20900@remote.org>
+References: <4B51A788.6080601@gmx.de> <4B51AFD2.20900@remote.org>
+Message-ID: <7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>
+
+Interesting. Are you using system agg or $(mapnik_src)/agg?
+Artem
+
+2010/1/16 Frederik Ramm <frederik at remote.org>:
+> Hi,
+>
+> ?> We are trying to establish a rendering chain with mapnik and
+> ?> map_tile/renderd for a topographical hiking map. The rendering basically
+> ?> works fine, but there are certain tiles that cause the renderer to hang
+> ?> with 100% CPU use.
+>
+> NB, I have started debugging this situation; it doesn't do any system
+> calls when it does this, and when attaching to the hanging thread with
+> gdb, I see that it seems to be stuck here:
+>
+> 0x00007f41b4ed49ca in
+> agg::renderer_outline_image<agg::renderer_base<agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_plain<agg::rgba8,
+> agg::order_rgba>, agg::row_ptr_cache<unsigned char>, unsigned int> >,
+> agg::line_image_pattern<agg::pattern_filter_bilinear_rgba<agg::rgba8> >
+> ?>::line3(agg::line_parameters const&, int, int, int, int) ()
+>
+> Any idea on how to proceed?
+>
+> Bye
+> Frederik
+>
+> --
+> Frederik Ramm ?## ?eMail frederik at remote.org ?## ?N49?00'09" E008?23'33"
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From frederik at remote.org  Sat Jan 16 15:05:26 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Sat, 16 Jan 2010 15:05:26 +0100
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>
+References: <4B51A788.6080601@gmx.de> <4B51AFD2.20900@remote.org>
+	<7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>
+Message-ID: <4B51C7A6.9070008@remote.org>
+
+Hi,
+
+Artem Pavlenko wrote:
+> Interesting. Are you using system agg or $(mapnik_src)/agg?
+
+It is the standard karmic package, using system agg. There seems to be a 
+difference regarding the line3 implementation. The one in the Mapnik 
+package has
+
+while(abs(sx - lp.x1) + abs(sy - lp.y1) > 1 + lp2.len)
+
+whereas the system file lacks the "1 +" on that line, and the same for 
+the following while loop.
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From frederik at remote.org  Sat Jan 16 15:27:39 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Sat, 16 Jan 2010 15:27:39 +0100
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <4B51C7A6.9070008@remote.org>
+References: <4B51A788.6080601@gmx.de>
+	<4B51AFD2.20900@remote.org>	<7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>
+	<4B51C7A6.9070008@remote.org>
+Message-ID: <4B51CCDB.4080302@remote.org>
+
+Hi,
+
+Frederik Ramm wrote:
+> It is the standard karmic package, using system agg. There seems to be a 
+> difference regarding the line3 implementation. The one in the Mapnik 
+> package has
+> 
+> while(abs(sx - lp.x1) + abs(sy - lp.y1) > 1 + lp2.len)
+> 
+> whereas the system file lacks the "1 +" on that line, and the same for 
+> the following while loop.
+
+I patched the system agg library with the change above (could probably 
+simply have used the Mapnik agg instead), and the problem is gone. 
+Thanks for the idea, I wasn't even aware that there were two different AGGs!
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From jburgess777 at googlemail.com  Sat Jan 16 19:23:40 2010
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 16 Jan 2010 18:23:40 +0000
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <4B51CCDB.4080302@remote.org>
+References: <4B51A788.6080601@gmx.de> <4B51AFD2.20900@remote.org>
+	<7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>
+	<4B51C7A6.9070008@remote.org>  <4B51CCDB.4080302@remote.org>
+Message-ID: <1263666220.3606.7.camel@localhost.localdomain>
+
+On Sat, 2010-01-16 at 15:27 +0100, Frederik Ramm wrote:
+> Hi,
+> 
+> Frederik Ramm wrote:
+> > It is the standard karmic package, using system agg. There seems to be a 
+> > difference regarding the line3 implementation. The one in the Mapnik 
+> > package has
+> > 
+> > while(abs(sx - lp.x1) + abs(sy - lp.y1) > 1 + lp2.len)
+> > 
+> > whereas the system file lacks the "1 +" on that line, and the same for 
+> > the following while loop.
+> 
+> I patched the system agg library with the change above (could probably 
+> simply have used the Mapnik agg instead), and the problem is gone. 
+> Thanks for the idea, I wasn't even aware that there were two different AGGs!
+
+The problem is due to an edge case in the integer math:
+http://lists.berlios.de/pipermail/mapnik-devel/2006-November/000058.html
+
+There are a couple of other fixes in the Mapnik agg tree. There have
+been no new agg releases since 2006.
+
+	Jon
+
+
+
+
+From ldp at xs4all.nl  Sat Jan 16 20:16:21 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Sat, 16 Jan 2010 20:16:21 +0100
+Subject: [Mapnik-devel] Problems with 100% CPU hang
+In-Reply-To: <1263666220.3606.7.camel@localhost.localdomain>
+References: <4B51A788.6080601@gmx.de>
+	<4B51AFD2.20900@remote.org>	<7e70f38d1001160457j66d4964fk203e9e3661e91fd8@mail.gmail.com>	<4B51C7A6.9070008@remote.org>
+	<4B51CCDB.4080302@remote.org>
+	<1263666220.3606.7.camel@localhost.localdomain>
+Message-ID: <4B521085.1030208@xs4all.nl>
+
+Jon Burgess wrote:
+
+> There are a couple of other fixes in the Mapnik agg tree. There have
+> been no new agg releases since 2006.
+
+That doesn't bode well for GPU rendering support. :-)
+
+-- 
+Lennard
+
+
+From blake at hailmail.net  Tue Jan 19 22:28:55 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 19 Jan 2010 13:28:55 -0800
+Subject: [Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+In-Reply-To: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+References: <3FDCD621-CF32-40D8-B39C-64D5776C6B92@hailmail.net>
+Message-ID: <AA014031-F561-4ACF-9FC7-A9576DF529F0@hailmail.net>
+
+
+On Jan 10, 2010, at 8:34 PM, Dane Springmeyer wrote:
+
+> Dev-
+>
+> The Mapnik team is pleased to announce the first release candidate for
+> Mapnik 0.7.0. We are nearing the release of Mapnik 0.7.0 [1], with
+> nearly 70 closed tickets [2], and we would appreciate your review.  If
+> you are able to help, please compile, install, and run the unit tests.
+> Report any problems compiling, any test failures, or any runtime
+> issues with your applications to the mailing list or as Trac tickets.
+>
+> If anyone runs into problems we'll fix them and issue another release
+> candidate tomorrow.
+
+Dev,
+
+No more release candidates are planned and all tickets have been  
+closed against 0.7.0 milestone.
+
+Look for a release announcement soon :) http://mapnik.org/news/
+
+I've already updated all the http://trac.mapnik.org links I can think  
+of - as developers please feel free to follow links as if you were a  
+user and see if you can find any problems or typos.
+
+Dane
+
+
+
+From mike.bresnahan at bestbuy.com  Wed Jan 20 18:25:11 2010
+From: mike.bresnahan at bestbuy.com (Mike Bresnahan)
+Date: Wed, 20 Jan 2010 17:25:11 +0000 (UTC)
+Subject: [Mapnik-devel] Mapnik JNI Undefined symbol
+References: <0dbb9d987210068be37beca646664469.squirrel@webmail.andrew.cmu.edu>
+Message-ID: <loom.20100120T182007-72@post.gmane.org>
+
+Lawrence David Jesper <ldj at ...> writes:
+
+> 
+> Hello,
+> 
+> I've been working on setting up mapnik with java through jni so that I can
+> render the openstreetmap data. I've compiled mapnik using the scons build
+> system successfully, and have run the demo code with no issues.
+> 
+> I then wrote a c++ program (1 main method) that renders a specific part of
+> england (I imported only the data for england due to system restraints).
+> The program runs and generates the image as expected. I've attached the
+> source code below (request_tiles.cpp). I then change the method from a
+> main method to a jni method (request_tiles_jni.cpp), wrote the java method
+> (MapnikNative.java), and generated the h file (request_tiles_jni.h). I
+> compile the java using jdk1.6.0_14 (64 bit) then run the method. It breaks
+> with the following error when it tries to register the data sources:
+> 
+> /home/ljesper/jdk1.6.0_14/bin/java: symbol lookup error:
+> /home/ljesper/bins/mapnik/lib64/mapnik/input/osm.input: undefined symbol:
+> _ZN7icu_4_213UnicodeStringC1ERKS0_
+
+I ran into this same problem on Fedora 9 64bit and solved it by changing the
+link flags of the shape and raster plugins. A diff follows.
+
+
+Index: plugins/input/raster/SConscript
+===================================================================
+--- plugins/input/raster/SConscript	(revision 1516)
++++ plugins/input/raster/SConscript	(working copy)
+@@ -33,12 +33,11 @@
+         )
+ 
+ libraries = []
+-if env['PLATFORM'] == 'Darwin':
+-    libraries.append('mapnik')
+-    libraries.append('icuuc')
+-    libraries.append('icudata')
+-    libraries.append('boost_system%s' % env['BOOST_APPEND'])
+-    libraries.append('boost_filesystem%s' % env['BOOST_APPEND'])
++libraries.append('mapnik')
++libraries.append('icuuc')
++libraries.append('icudata')
++libraries.append('boost_system%s' % env['BOOST_APPEND'])
++libraries.append('boost_filesystem%s' % env['BOOST_APPEND'])
+ 
+ raster_inputdriver = env.SharedLibrary('raster', source=raster_src,
+SHLIBPREFIX='', SHLIBSUFFIX='.input', LIBS=libraries)
+ 
+Index: plugins/input/shape/SConscript
+===================================================================
+--- plugins/input/shape/SConscript	(revision 1516)
++++ plugins/input/shape/SConscript	(working copy)
+@@ -37,14 +37,12 @@
+         )
+ 
+ libraries = ['boost_iostreams%s' % env['BOOST_APPEND']]    
++libraries.append('mapnik')
++libraries.append('icuuc')
++libraries.append('icudata')
++libraries.append('boost_system%s' % env['BOOST_APPEND'])
++libraries.append('boost_filesystem%s' % env['BOOST_APPEND'])
+ 
+-if env['PLATFORM'] == 'Darwin':
+-    libraries.append('mapnik')
+-    libraries.append('icuuc')
+-    libraries.append('icudata')
+-    libraries.append('boost_system%s' % env['BOOST_APPEND'])
+-    libraries.append('boost_filesystem%s' % env['BOOST_APPEND'])
+-
+ if env['SHAPE_MEMORY_MAPPED_FILE']:
+     cxx_flags = '-DSHAPE_MEMORY_MAPPED_FILE'
+ else:
+
+
+
+
+
+From frederik at remote.org  Fri Jan 29 03:06:57 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Fri, 29 Jan 2010 03:06:57 +0100
+Subject: [Mapnik-devel] Endless agg loop with zero-size bbox and dash pattern
+Message-ID: <4B6242C1.2050005@remote.org>
+
+Hi,
+
+    I stumbled across a minor problem by accident. The problem is 
+manifest in 0.6.1 and 0.7 at least. Due to an error in my program, I had 
+Mapnik render something with an empty box (where left==right and 
+top==bottom). Mapnik duly computed
+
+scale=0
+start map processing bbox=Envelope(-8057074,2103547,-8057074,2103547)
+scale denominator = 0
+
+and went on processing its rules and styles. I was using a normal OSM 
+stylesheet, and everything worked normally, except for the "admin-45678" 
+rule which led Mapnik into an endless loop somewhere deep inside agg.
+
+I managed to isolate the problem down to the following style sheet:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map [
+<!ENTITY % entities SYSTEM "inc/entities.xml.inc">
+%entities;
+]>
+<!-- This stylesheet uses features only available in mapnik builds with
+      libxml2 as the XML parser. Furthermore, there are other features
+      that necessitate an upgrade to at least mapnik 0.6.1 -->
+<Map bgcolor="#b5d0d0" srs="&osm2pgsql_projection;">
+   &fontset-settings;
+<Style name="admin-45678">
+     <Rule>
+       <Filter>[admin_level]='4'</Filter>
+       &maxscale_zoom11;
+       <LineSymbolizer>
+         <CssParameter name="stroke">purple</CssParameter>
+         <CssParameter name="stroke-width">3</CssParameter>
+         <CssParameter name="stroke-dasharray">4,3</CssParameter>
+         <CssParameter name="stroke-opacity">0.2</CssParameter>
+       </LineSymbolizer>
+     </Rule>
+</Style>
+<Layer name="admin-45678" status="on" srs="&osm2pgsql_projection;">
+     <StyleName>admin-45678</StyleName>
+     <Datasource>
+       <Parameter name="table">
+       (select way,admin_level from &prefix;_roads where 
+"boundary"='administrative' and admin_level in('4','5','6','7','8')) as 
+admin</Parameter>
+       &datasource-settings;
+     </Datasource>
+</Layer>
+</Map>
+
+It seems that if you run this style on an empty bbox like I did (but 
+make sure that the data query does return something), then agg goes into 
+an endless loop like this:
+
+#0  0x00007fb2f2326162 in agg::vcgen_dash::vertex () from 
+/usr/lib/libmapnik.so.0.6
+#1  0x00007fb2f21da8c6 in 
+agg::conv_adaptor_vcgen<mapnik::coord_transform2<mapnik::CoordTransform, 
+mapnik::geometry<mapnik::vertex<double, 2> > >, agg::vcgen_dash, 
+agg::null_markers>::vertex () from /usr/lib/libmapnik.so.0.6
+#2  0x00007fb2f21e2516 in 
+agg::conv_adaptor_vcgen<agg::conv_dash<mapnik::coord_transform2<mapnik::CoordTransform, 
+mapnik::geometry<mapnik::vertex<double, 2> > >, agg::null_markers>, 
+agg::vcgen_stroke, agg::null_markers>::vertex () from 
+/usr/lib/libmapnik.so.0.6
+#3  0x00007fb2f21e26f6 in 
+agg::rasterizer_scanline_aa<agg::rasterizer_sl_clip<agg::ras_conv_int> 
+ >::add_path<agg::conv_stroke<agg::conv_dash<mapnik::coord_transform2<mapnik::CoordTransform, 
+mapnik::geometry<mapnik::vertex<double, 2> > >, agg::null_markers>, 
+agg::null_markers> > () from /usr/lib/libmapnik.so.0.6
+#4  0x00007fb2f21ecd3b in mapnik::agg_renderer<mapnik::Image32>::process 
+() from /usr/lib/libmapnik.so.0.6
+#5  0x000000000040d4e0 in 
+mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32> 
+ >::apply_to_layer (this=0x7ffffa902280, lay=@0x1baeb00, p=@0x7ffffa902280,
+     proj0=<value optimized out>, scale_denom=0) at 
+/usr/include/boost/variant/variant.hpp:1738
+
+There is probably something about how agg handles the dash pattern that 
+makes it react badly to the zero-size bbox. I have neither time nor 
+nerve to debug this fully (because using an empty bbox is a bug in 
+itself) but if anyone ever encounters a strange tight loop in agg then 
+check your bbox and dash pattern ;-)
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+

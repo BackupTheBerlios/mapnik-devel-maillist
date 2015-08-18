@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Steve%20Chilton%27s%20presentation%20from%0A%09Day%201%20of%20Mapnik%20code%20sprint&In-Reply-To=%3C85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F%40stamen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001273.html">
+   <LINK REL="Next"  HREF="001272.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint</H1>
+    <B>Michal Migurski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Steve%20Chilton%27s%20presentation%20from%0A%09Day%201%20of%20Mapnik%20code%20sprint&In-Reply-To=%3C85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F%40stamen.com%3E"
+       TITLE="[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint">mike at stamen.com
+       </A><BR>
+    <I>Sat Sep 25 21:53:57 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001273.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+        <LI>Next message: <A HREF="001272.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1271">[ date ]</a>
+              <a href="thread.html#1271">[ thread ]</a>
+              <a href="subject.html#1271">[ subject ]</a>
+              <a href="author.html#1271">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>(re-sending this without attached images)
+
+On Sep 25, 2010, at 12:09 PM, Lennard wrote:
+
+&gt;<i> On 25-9-2010 20:49, Michal Migurski wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> 1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+</I>&gt;<i> 
+</I>&gt;<i> When you source all your road/railway/waterway data through a single Layer, that approach works just fine. It's when it's split up among two dozen Layers with even more Styles, where this breaks down. Just witness the multitude of layering issues in OSM's trac.
+</I>
+I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+
+
+&gt;&gt;<i> 4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+</I>&gt;<i> 
+</I>&gt;<i> Just a few days ago, we saw an osm2pgsql patch to include a ST_PointOnSurface geom column. That's handling it at the data source, but mapnik should also be able to calculate this, given a polygon feature.
+</I>
+Agreed!
+
+
+&gt;&gt;<i> 7) variable width: not sure I understand this one
+</I>&gt;<i> 
+</I>&gt;<i> Visualising the OSM width=* tag, for canals for instance.
+</I>
+So this is supported in mapnik as it stands now, with line widths changeable based on the width tag, isn't it?
+
+
+&gt;&gt;<i> 12) nudge icon: different from dx/dy?
+</I>&gt;<i> 
+</I>&gt;<i> Yes: dependent on the placement list. When a symbol won't fit due to previous symbols overlapping where it wants to go, nudge it a bit to try and make it fit.
+</I>
+Oh, I thought this was already a feature of Mapnik, if it isn't it should be! =)
+
+
+&gt;&gt;<i> 16) point and line data: I don't think I understand this one
+</I>&gt;<i> 
+</I>&gt;<i> It has to do with the fact that there is no coupling between rendered features. The example used in earlier presentations was of the grey turning circles we used to have. The challenge in solving that was to find out from a point (highway=turning_circle) what style it had to take, depending on the line that point was on. If the turning circle was on an unclassified road, it had to render to fit on that road, and the same for tertiary, service, living_street. I took the approach of using postgis to find out the relevant information.
+</I>
+Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems:
+
+	<A HREF="http://mike.teczno.com/img/mapnik-butt-caps.png">http://mike.teczno.com/img/mapnik-butt-caps.png</A>
+	<A HREF="http://mike.teczno.com/img/mapnik-square-caps.png">http://mike.teczno.com/img/mapnik-square-caps.png</A>
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mike at stamen.com</A>
+                415.558.1610
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001273.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+	<LI>Next message: <A HREF="001272.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1271">[ date ]</a>
+              <a href="thread.html#1271">[ thread ]</a>
+              <a href="subject.html#1271">[ subject ]</a>
+              <a href="author.html#1271">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

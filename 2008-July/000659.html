@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [patch] fix text placement for strings with no	space
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20fix%20text%20placement%20for%20strings%20with%20no%0A%09space&In-Reply-To=%3Cd82f70760807270408q6feb7e81td354a530132d8c8a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000657.html">
+   <LINK REL="Next"  HREF="000658.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [patch] fix text placement for strings with no	space</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20fix%20text%20placement%20for%20strings%20with%20no%0A%09space&In-Reply-To=%3Cd82f70760807270408q6feb7e81td354a530132d8c8a%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] [patch] fix text placement for strings with no	space">tom at compton.nu
+       </A><BR>
+    <I>Sun Jul 27 13:08:16 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000657.html">[Mapnik-devel] [patch] fix text placement for strings with no space
+</A></li>
+        <LI>Next message: <A HREF="000658.html">[Mapnik-devel] [patch] improve alignment of wrapped text in text	symbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#659">[ date ]</a>
+              <a href="thread.html#659">[ thread ]</a>
+              <a href="subject.html#659">[ subject ]</a>
+              <a href="author.html#659">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2008/7/26 Jon Burgess &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jburgess777 at googlemail.com</A>&gt;:
+
+&gt;<i> If the placement finder for the text symbolizer does not find a space in
+</I>&gt;<i> the string then it fails to set the string_height which stops it
+</I>&gt;<i> rendering.
+</I>&gt;<i>
+</I>&gt;<i> This causes the names for some peak symbols to be missing from the OSM
+</I>&gt;<i> map: <A HREF="http://www.openstreetmap.org/?lat=46.3245&amp;lon=11.5014&amp;zoom=13">http://www.openstreetmap.org/?lat=46.3245&amp;lon=11.5014&amp;zoom=13</A>
+</I>&gt;<i> <A HREF="http://trac.openstreetmap.org/ticket/1073">http://trac.openstreetmap.org/ticket/1073</A>
+</I>&gt;<i>
+</I>&gt;<i> I've also included a trivial cleanup patch which removes an unused
+</I>&gt;<i> variable line_count.
+</I>
+All committed.
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000657.html">[Mapnik-devel] [patch] fix text placement for strings with no space
+</A></li>
+	<LI>Next message: <A HREF="000658.html">[Mapnik-devel] [patch] improve alignment of wrapped text in text	symbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#659">[ date ]</a>
+              <a href="thread.html#659">[ thread ]</a>
+              <a href="subject.html#659">[ subject ]</a>
+              <a href="author.html#659">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik rendering inside an Apache module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C0B5AC0E4-E790-47C1-A312-7979140DDEB5%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000282.html">
+   <LINK REL="Next"  HREF="000277.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik rendering inside an Apache module</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C0B5AC0E4-E790-47C1-A312-7979140DDEB5%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik rendering inside an Apache module">artem at mapnik.org
+       </A><BR>
+    <I>Tue Sep 18 12:42:44 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000282.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+        <LI>Next message: <A HREF="000277.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#273">[ date ]</a>
+              <a href="thread.html#273">[ thread ]</a>
+              <a href="subject.html#273">[ subject ]</a>
+              <a href="author.html#273">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 17 Sep 2007, at 19:24, Jon Burgess wrote:
+
+&gt;<i> I've put together a C implementation of the scripts used to render and
+</I>&gt;<i> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+</I>&gt;<i> run into a scalability issue with Mapnik PostgreSQL connections.
+</I>&gt;<i>
+</I>&gt;<i> I have Apache running with multiple processes and each of these has an
+</I>&gt;<i> instance of the Mapnik renderer. Each Mapnik instance wants to open
+</I>&gt;<i> about 10 connections to the PostgreSQL database. Postgres complains  
+</I>&gt;<i> when
+</I>&gt;<i> I get above 100 connections so this puts a serious limit on the number
+</I>&gt;<i> of Apache processes I can run. In addition Mapnik keeps a pool of idle
+</I>&gt;<i> connections open so even when one httpd is not doing any rendering it
+</I>&gt;<i> can prevent another from getting a new connection.
+</I>&gt;<i>
+</I>&gt;<i> There are a few different ways I can think of to solve this. I  
+</I>&gt;<i> wonder if
+</I>&gt;<i> anyone has any other suggestions on the best way to proceed:-
+</I>&gt;<i>
+</I>&gt;<i> - Increase the number of allowed PostgreSQL connections.
+</I>
+This would help, but this is not a real solution. I suspect that some  
+logic behind connection pooling is not working correctly.
+1-2 connections (the same database) per map object should be enough.  
+Have you tried setting &quot;max_size&quot; (I must change this name to  
+something more informative i.e dbpool_max_size)  to something less  
+then 10?
+
+&gt;<i> - Use a threaded model in Apache.
+</I>
+I would always encourage using threaded model in Apache :). I had  
+best results with multiple map objects (sharing the same DB  
+connections pool) +   apache2 with worker MPM.
+
+&gt;<i> - Spawn a small number of rendering processes and share these between
+</I>&gt;<i> app the Apache processes.
+</I>Sounds like another level of indirection that can be avoided.
+
+&gt;<i> - Use some higher level pooling of PostgreSQL connections (pgpool).
+</I>&gt;<i> - Reduce or eliminate the pooling in Mapnik (e.g. close connections
+</I>&gt;<i> which are idle after a timeout)
+</I>&gt;<i>
+</I>&gt;<i> At the moment I'm favouring the option of spawning off a shared
+</I>&gt;<i> rendering task. Any thoughts?
+</I>
+If my assumption about 'only 1-2 connections per map object are  
+needed' is correct, there is no need for sharing rendering tasks. We  
+should be able to create as many as 50-100 with current  
+postgresql.conf .
+
+But, yes, idle connections needs to be addressed as well :)
+
+Cheers,
+
+Artem
+
+&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/fadd8f55/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/fadd8f55/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000282.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+	<LI>Next message: <A HREF="000277.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#273">[ date ]</a>
+              <a href="thread.html#273">[ thread ]</a>
+              <a href="subject.html#273">[ subject ]</a>
+              <a href="author.html#273">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

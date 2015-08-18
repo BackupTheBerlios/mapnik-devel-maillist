@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Using the osm.xml
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20the%20osm.xml&In-Reply-To=%3CA0861578-AA2F-460E-857D-DEDF7E27ECBD%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000197.html">
+   <LINK REL="Next"  HREF="000202.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Using the osm.xml</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20the%20osm.xml&In-Reply-To=%3CA0861578-AA2F-460E-857D-DEDF7E27ECBD%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Using the osm.xml">artem at mapnik.org
+       </A><BR>
+    <I>Thu Jul 19 13:35:28 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000197.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+        <LI>Next message: <A HREF="000202.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#201">[ date ]</a>
+              <a href="thread.html#201">[ thread ]</a>
+              <a href="subject.html#201">[ subject ]</a>
+              <a href="author.html#201">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Stephan,
+
+On 18 Jul 2007, at 09:18, Stephan Holl wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> Stephan Holl &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">stephan.holl at intevation.de</A>&gt;, [20070716-10:54:49]:
+</I>&gt;<i>
+</I>&gt;&gt;<i> My tries (non-working):
+</I>&gt;&gt;<i> from mapnik.ogcserver.WMS import BaseWMSFactory
+</I>&gt;&gt;<i> from mapnik import *
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> class WMSFactory(BaseWMSFactory):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         def __init__(self):
+</I>&gt;&gt;<i>                 BaseWMSFactory.__init__(self)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 		m = Map(100,100)
+</I>&gt;&gt;<i>                 file = 'mapnik-local.xml'
+</I>&gt;&gt;<i>                 load_map(m,file)
+</I>&gt;&gt;<i>                 self.finalize()
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Do I need to recreate all styles from the map-object and reregister
+</I>&gt;&gt;<i> all my layers like this:
+</I>&gt;&gt;<i> for i in range(len(m.layers)):
+</I>&gt;&gt;<i>   lyr = Layer(m.layers[i].name)
+</I>&gt;&gt;<i>   self.register_layer(lyr, m.layers[i].styles[0])
+</I>&gt;<i>
+</I>&gt;<i> I got further, but stoped with the following error:
+</I>&gt;<i> mod_fcgid: stderr: TypeError: No Python class registered for C++ class
+</I>&gt;<i> boost::variant&lt;mapnik::point_symbolizer, mapnik::line_symbolizer,
+</I>&gt;<i> mapnik::line_pattern_symbolizer, mapnik::polygon_symbolizer,
+</I>&gt;<i> mapnik::polygon_pattern_symbolizer, mapnik::raster_symbolizer,
+</I>&gt;<i> mapnik::shield_symbolizer, mapnik::text_symbolizer,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_,
+</I>&gt;<i> boost::detail::variant::void_, boost::detail::variant::void_&gt; [Wed Jul
+</I>&gt;<i> 18 10:00:14 2007] [warn] mod_fcgid:
+</I>&gt;<i> stderr: /home/osm/osm/mapnik/owsserver/OsmFactory.py in
+</I>&gt;<i> __init__(self=&lt;OsmFactory.WMSFactory instance at 0xb663a50c&gt;)
+</I>&gt;<i>
+</I>&gt;<i> Here is my script:
+</I>&gt;<i>
+</I>&gt;<i> 1 from mapnik.ogcserver.WMS import BaseWMSFactory
+</I>&gt;<i> 2 from mapnik import *
+</I>&gt;<i> 3
+</I>&gt;<i> 4 class WMSFactory(BaseWMSFactory):
+</I>&gt;<i> 5
+</I>&gt;<i> 6  def __init__(self):
+</I>&gt;<i> 7   BaseWMSFactory.__init__(self)
+</I>&gt;<i> [comment-stuff]
+</I>&gt;<i> 26  m = Map(100,100)
+</I>&gt;<i> 27  osmfile='./file.xml'
+</I>&gt;<i> 28  load_map(m,osmfile) 29 30  # loop over the file and grab the  
+</I>&gt;<i> Styles
+</I>&gt;<i> 31  # loop over all layers 32  for i in range(len(m.layers)):
+</I>&gt;<i> 33   # register style-stuff
+</I>&gt;<i> 34   mystyle = m.find_style(m.layers[i].styles[0])
+</I>&gt;<i> 35   styname = 'style_' + str(i)
+</I>&gt;<i> 36   for a in range(len(mystyle.rules)):
+</I>&gt;<i> 37    rl = mystyle.rules[a]
+</I>&gt;<i> 38    rl.filter = mystyle.rules[a].filter
+</I>&gt;<i> 39    rl.max_scale = mystyle.rules[a].max_scale
+</I>&gt;<i> 40    rl.min_scale = mystyle.rules[a].min_scale
+</I>&gt;<i> 42
+</I>&gt;<i> 43    # symbols-stuff
+</I>&gt;<i> 44    for b in range(len(mystyle.rules[a].symbols)):
+</I>&gt;<i> 45     symb = mystyle.rules[a].symbols[b]
+</I>&gt;<i> 46     rl.symbols.append(symb)
+</I>&gt;<i> 47
+</I>&gt;<i> 48   mystyle.rules.append(rl)
+</I>&gt;<i> 49   self.register_style(styname, mystyle)
+</I>&gt;<i> 50
+</I>&gt;<i> 51   # layer stuff
+</I>&gt;<i> 52   lyr = Layer(m.layers[i].name, '+init=epsg:54004')
+</I>&gt;<i> 53   lyr.title = m.layers[i].name
+</I>&gt;<i> 54   lyr.datasource = m.layers[i].datasource
+</I>&gt;<i> 55   lyr.abstract = m.layers[i].name
+</I>&gt;<i> 56   self.register_layer(lyr, styname)
+</I>&gt;<i> 57
+</I>&gt;<i> 58  # Paint the WMS-request
+</I>&gt;<i> 59  self.finalize()
+</I>&gt;<i>
+</I>&gt;<i> It stops somewhere between line 43 and 46. I am not sure if this a bug
+</I>&gt;<i> or only wrong usage of the python interface.
+</I>&gt;<i>
+</I>&gt;<i> Best regrads and thanks for you help
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+It is not a bug but rather missing feature :) Attached is the patch  
+which should help : &#65532;
+Here is my test case:
+
+#!/opt/python/bin/python
+# -*- coding: utf-8 -*-
+from mapnik import *
+
+m = Map(800,600)
+load_map(m,&quot;/Users/artem/projects/viewer/osm.xml&quot;)
+
+for l in m.layers:
+     for style_name in l.styles:
+         s = m.find_style(style_name)
+         for r in s.rules:
+             for sym in r.symbols:
+                 print sym
+
+
+
+Let me know, if this solves the problem and I'll integrate in into  
+main trunk.
+
+Artem
+
+
+&gt;<i> 	Stephan
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: symbolizer.patch
+Type: application/octet-stream
+Size: 504 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.obj</A>&gt;
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment-0001.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment-0001.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000197.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+	<LI>Next message: <A HREF="000202.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#201">[ date ]</a>
+              <a href="thread.html#201">[ thread ]</a>
+              <a href="subject.html#201">[ subject ]</a>
+              <a href="author.html#201">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

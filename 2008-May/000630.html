@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] using the PostGIS connections I already have open
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20using%20the%20PostGIS%20connections%20I%20already%20have%20open&In-Reply-To=%3C483F1242.5000603%40umn.edu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000629.html">
+   <LINK REL="Next"  HREF="000631.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] using the PostGIS connections I already have open</H1>
+    <B>Reid Priedhorsky</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20using%20the%20PostGIS%20connections%20I%20already%20have%20open&In-Reply-To=%3C483F1242.5000603%40umn.edu%3E"
+       TITLE="[Mapnik-devel] using the PostGIS connections I already have open">reid at umn.edu
+       </A><BR>
+    <I>Thu May 29 22:29:54 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000629.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+        <LI>Next message: <A HREF="000631.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#630">[ date ]</a>
+              <a href="thread.html#630">[ thread ]</a>
+              <a href="subject.html#630">[ subject ]</a>
+              <a href="author.html#630">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Martijn van Oosterhout wrote:
+&gt;<i> On Wed, May 28, 2008 at 7:34 PM, Reid Priedhorsky &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">reid at umn.edu</A>&gt; wrote:
+</I>&gt;&gt;<i> All,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is there a way to have mapnik (0.5.1) use the PostGIS connection that I
+</I>&gt;&gt;<i> already have open for other reasons, rather than Mapnik opening its own?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is causing deadlock which is annoying to work around.
+</I>&gt;<i> 
+</I>&gt;<i> You're going to have to be more specific: how are you getting a
+</I>&gt;<i> deadlock? That's not so easy in postgres unless you're doing explicit
+</I>&gt;<i> locking somewhere (which isn't a good idea).
+</I>
+Hi Martin,
+
+Thanks for the reply.
+
+Here is the desired sequence of events and what I think is going on.
+
+1. New transaction; set isolation level serializable.
+
+2. Lock table &quot;foo&quot; (to prevent multiple running copies of the script).
+
+3. A variety of queries, all read-only except updates to table &quot;bar&quot;. 
+These have to be isolation level &quot;serializable&quot; to ensure consistency in 
+the face of other processes updating the database.
+
+4. Generate a bunch of tiles using mapnik, from &quot;bar&quot; and other tables.
+
+5. Commit (releasing lock on &quot;foo&quot;).
+
+I think the deadlock happens because Mapnik opens three separate 
+connections (there are three datasources) to do Step 4. Because my 
+transaction is isolation serializable, these connections wait until the 
+changes to bar are committed; but that happens in Step 5.
+
+The apparent deadlock happens even if I omit the lock on &quot;foo&quot;.
+
+Note that even if there wasn't deadlock, this sequence is bad because 
+the updates to &quot;bar&quot; will not be included in the mapnik tiles (they 
+would be if mapnik used my connection).
+
+Here is my workaround (5 DB connections when one is needed):
+
+1. New connection A; new transaction; set isolation level serializable.
+
+2. New connection B; lock &quot;foo&quot;.
+
+3. Connection A: the queries.
+
+4. Connection A: commit.
+
+5. Generate mapnik tiles (using connections C, D, E).
+
+6. Connection B: commit (releasing lock).
+
+Thanks,
+
+Reid
+
+p.s. No need to CC me; I read the list.
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000629.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+	<LI>Next message: <A HREF="000631.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#630">[ date ]</a>
+              <a href="thread.html#630">[ thread ]</a>
+              <a href="subject.html#630">[ subject ]</a>
+              <a href="author.html#630">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] code bloat issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20code%20bloat%20issue&In-Reply-To=%3CB24A3576-58A9-415C-9B1E-1EFA941FA937%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001474.html">
+   <LINK REL="Next"  HREF="001475.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] code bloat issue</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20code%20bloat%20issue&In-Reply-To=%3CB24A3576-58A9-415C-9B1E-1EFA941FA937%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] code bloat issue">dane at dbsgeo.com
+       </A><BR>
+    <I>Sun Aug 28 05:05:35 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001474.html">[Mapnik-devel] code bloat issue
+</A></li>
+        <LI>Next message: <A HREF="001475.html">[Mapnik-devel] Update on Mapnik GSOC projects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1477">[ date ]</a>
+              <a href="thread.html#1477">[ thread ]</a>
+              <a href="subject.html#1477">[ subject ]</a>
+              <a href="author.html#1477">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Aug 22, 2011, at 1:49 AM, zzsj &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">feverzsj at hotmail.com</A>&gt; wrote:
+
+&gt;<i> hi list:
+</I>&gt;<i> With more and more components using Spirit as parser generator,
+</I>
+Yes. While it adds compile time, the idea is to have faster runtimes, so I feel like this is a worthwhile tradeoff as long as your machine has a modern spec of &gt; 2 cores and 2 gb memory. With that spec Mapnik, with new spirit goodness should take 6-8 minutes to compile which seems absolutely fine. 
+
+&gt;<i> the generated code seems to be dramatically bloated.
+</I>
+I have not seen this to be the case. 
+
+&gt;<i> 
+</I>&gt;<i> For my case:
+</I>&gt;<i> mapnik(trunk) on msvc9/10 generates 800MB pdb file in debug mode and 400MB in release mode,
+</I>
+I have been building osx binaries recently with libmapnik statically compiled against all dependencies (including boost) and that lib totals 8 mb. 
+
+I'm not familiar with pdb files - they are for debugging? Msvc must keep around much more than is needed?
+
+For my development all I tend to need is a release build with the -g flag for gdb, but I like minimal likely more than most. 
+
+&gt;<i> and compiling takes around 20 minutes with 1GB+ ram.
+</I>
+Are you frequently compiling Mapnik? Maybe try clang - is takes 6-8 minutes. 
+
+
+&gt;<i> Any project, even just including those headers, could be blotted to 10MB binary.
+</I>
+Can you provide an example?
+
+&gt;<i> 
+</I>&gt;<i> Not sure if this is the only case for msvc.
+</I>
+It's important we do our best with any compiler. If you could provide some code samples perhaps we could try some flags to hide inlines to reduce sizes. 
+
+&gt;<i> 
+</I>&gt;<i> I think we should place the &quot;boost/spirit&quot; related stuff more carefully, avoiding too many includes in one single unit.
+</I>&gt;<i> 
+</I>&gt;<i> Also as the release note said: Spirit offers BOOST_SPIRIT_NO_PREDEFINED_TERMINALS to prevent instantiations of predefined terminal objects which slows down compile time a lot, as a breaking change in Boost 1.47.0.
+</I>
+Cool. I'll take a look at this, thanks. 
+&gt;<i> 
+</I>&gt;<i> regards, zsj
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001474.html">[Mapnik-devel] code bloat issue
+</A></li>
+	<LI>Next message: <A HREF="001475.html">[Mapnik-devel] Update on Mapnik GSOC projects
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1477">[ date ]</a>
+              <a href="thread.html#1477">[ thread ]</a>
+              <a href="subject.html#1477">[ subject ]</a>
+              <a href="author.html#1477">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

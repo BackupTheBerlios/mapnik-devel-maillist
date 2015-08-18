@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support GSoC's project
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3C62B99B59-3946-4A96-BDA9-AC2766444F3D%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001157.html">
+   <LINK REL="Next"  HREF="001144.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support GSoC's project</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3C62B99B59-3946-4A96-BDA9-AC2766444F3D%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Better Print Support GSoC's project">blake at hailmail.net
+       </A><BR>
+    <I>Wed Apr 28 07:20:12 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001157.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+        <LI>Next message: <A HREF="001144.html">[Mapnik-devel] GSoC/Contribute
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1158">[ date ]</a>
+              <a href="thread.html#1158">[ thread ]</a>
+              <a href="subject.html#1158">[ subject ]</a>
+              <a href="author.html#1158">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 27, 2010, at 9:28 PM, Carlos Enrique L&#243;pez Garc&#233;s wrote:
+
+&gt;<i> Good evening and thanks again for you continuous help.
+</I>&gt;<i>
+</I>
+You're welcome, thanks for the great framing questions below.
+
+&gt;<i> I was wondering if you could tell me something about the development  
+</I>&gt;<i> process that the community follows. Maybe there is a philosophy that  
+</I>&gt;<i> people here like most.
+</I>&gt;<i>
+</I>
+Well put!
+
+&gt;<i> Some of the topics that might help me more are:
+</I>&gt;<i>
+</I>&gt;<i> Documentation: I was reading this page in the wiki <A HREF="http://trac.mapnik.org/wiki/DeveloperTodo">http://trac.mapnik.org/wiki/DeveloperTodo</A> 
+</I>&gt;<i> , and noticed that the community is interested in using DOXYGEN for  
+</I>&gt;<i> documenting the code.
+</I>Personally my development focus so far has been on python api docs,  
+but we certainly need C++ docs. DOXYGEN is well known. Others may have  
+ideas?
+&gt;<i> Unit testing: Is there a C++ framework that the community prefer?  
+</I>&gt;<i> I've used CxxTest, it is a framework similar to JUnit and doesn't  
+</I>&gt;<i> require much effort to install and use. However, it would be fun to  
+</I>&gt;<i> learn some other.
+</I>
+Artem and I have discussed this. I think his idea was using Boost.Test  
+or other methods of writing C++ using boost.
+&gt;<i> Source Control: Here I wanted to ask how will the 'Better Print  
+</I>&gt;<i> Support' project be managed. As a branch perhaps? Furthermore, will  
+</I>&gt;<i> it be managed in the same repository as the Mapnik project?
+</I>Artem as your lead mentor will decide on this. I am aware he is  
+currently using git to manage his commits to mapnik-svn, so if you are  
+interested in git, he could perhaps advise you on this approach.
+&gt;<i> Integration and releases: How often do you expect a development  
+</I>&gt;<i> cycle to last? I've been advised that a good idea might be to  
+</I>&gt;<i> develop small pieces of functionality, integrate them with the rest  
+</I>&gt;<i> of the code and present them to the community and mentor to receive  
+</I>&gt;<i> feedback and then make the necessary changes.
+</I>
+I think for the first pieces (getting scaling working where feasible),  
+this approach sounds great.
+&gt;<i> Design: I am working on a UML diagram in which I'm trying to depict  
+</I>&gt;<i> a general map of the code I've been reading (the renderers mainly).  
+</I>&gt;<i> However, I wanted to ask you if I can be given a copy of design  
+</I>&gt;<i> documents or diagrams you have produced for Mapnik over these years.  
+</I>&gt;<i> The reason I'm doing this is to find the appropriate locations where  
+</I>&gt;<i> the components or objects I will develop should be placed or  
+</I>&gt;<i> interact in.
+</I>
+Good question. I've personally not developed any diagrams (despite  
+being a visual thinker!), but would love to hear how others have  
+approached this. Your question could be a good starting point for  
+discussion.
+
+&gt;<i> Communication: Will there be a preferred communication channel for  
+</I>&gt;<i> discussing ideas (IRC, mailing list, direct e-mail, voice/video  
+</I>&gt;<i> chat)? Furthermore, I think it is mandatory to send reports to track  
+</I>&gt;<i> the progress of the project. Is there a special format you expect?  
+</I>&gt;<i> periodicity (weekly, daily)?
+</I>
+Weekly reports are desired. I think a combination of the blog you have  
+started plus the mapnik-devel mailing list should work well for now.  
+We will let you know about format details/need for voice/video chat in  
+the coming weeks.
+
+&gt;<i>
+</I>&gt;<i> I don't ask about the code style, because I've been getting familiar  
+</I>&gt;<i> with it. There are also some coding standards I found here: <A HREF="http://trac.mapnik.org/wiki/DeveloperTopics">http://trac.mapnik.org/wiki/DeveloperTopics</A> 
+</I>&gt;<i> . However, if there is any resource you think I should read, please  
+</I>&gt;<i> let me know.
+</I>
+That reminds me, we really need to fix the tabs/spaces issue in trunk  
+asap :).
+
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Carlos L&#243;pez
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/f4cd2e55/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/f4cd2e55/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001157.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+	<LI>Next message: <A HREF="001144.html">[Mapnik-devel] GSoC/Contribute
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1158">[ date ]</a>
+              <a href="thread.html#1158">[ thread ]</a>
+              <a href="subject.html#1158">[ subject ]</a>
+              <a href="author.html#1158">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

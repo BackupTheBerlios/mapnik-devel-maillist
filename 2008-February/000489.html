@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Segmentation fault when running rundemo.py
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C9e1245754f.tom%40loxley.compton.nu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000488.html">
+   <LINK REL="Next"  HREF="000491.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Segmentation fault when running rundemo.py</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C9e1245754f.tom%40loxley.compton.nu%3E"
+       TITLE="[Mapnik-devel] Segmentation fault when running rundemo.py">tom at compton.nu
+       </A><BR>
+    <I>Fri Feb 22 20:52:54 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000488.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+        <LI>Next message: <A HREF="000491.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#489">[ date ]</a>
+              <a href="thread.html#489">[ thread ]</a>
+              <a href="subject.html#489">[ subject ]</a>
+              <a href="author.html#489">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">47BF1B82.8030200 at gmail.com</A>&gt;
+          Justin Bronn &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jbronn at gmail.com</A>&gt; wrote:
+
+&gt;<i> Artem,
+</I>&gt;<i> 
+</I>&gt;<i> &gt; I don't have access to OS X 10.5 and I can not reproduce this on 10.4
+</I>&gt;<i> &gt; It would be very useful if someone could rebuild Mapnik with
+</I>&gt;<i> &gt; optimization and debug flags enabled : -O2 -g  -DDEBUG
+</I>&gt;<i> &gt; and find what is causing this segmentation fault.
+</I>&gt;<i> 
+</I>&gt;<i> The attached patch for filter_factory.hpp fixes the segfault problem for
+</I>&gt;<i> non-debug builds on my installation of 10.5 (Leopard). The patch
+</I>&gt;<i> requires no changing of the compilation flags.
+</I>&gt;<i> 
+</I>&gt;<i> I'm still perplexed as to why it would work in the first place even when
+</I>&gt;<i> DEBUG was set -- any ideas?
+</I>
+Well what was the cause of the segv? and how does your patch fix it?
+
+It looks like all you're doing is casting away const, but as const
+is not normally enforced at run time I don't see how that helps...
+
+The only time changing a const object will segv is when it is a
+compile time constant and has been placed in an RO section of the
+resulting executable, and in that case casting away const won't
+help in the slightest - it will just stop the compiler warning
+about you trying to change a const object.
+
+Casting away const like that should be a major red flag anyway
+as it isn't something you should normally be doing at all.
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000488.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+	<LI>Next message: <A HREF="000491.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#489">[ date ]</a>
+              <a href="thread.html#489">[ thread ]</a>
+              <a href="subject.html#489">[ subject ]</a>
+              <a href="author.html#489">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

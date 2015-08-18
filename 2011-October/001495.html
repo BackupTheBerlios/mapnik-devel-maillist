@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] three patches
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3C8D1EC375-0C7C-434F-B301-1AB7EF716119%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001494.html">
+   <LINK REL="Next"  HREF="001496.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] three patches</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3C8D1EC375-0C7C-434F-B301-1AB7EF716119%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] three patches">dane at dbsgeo.com
+       </A><BR>
+    <I>Wed Oct 12 19:56:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001494.html">[Mapnik-devel] three patches
+</A></li>
+        <LI>Next message: <A HREF="001496.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1495">[ date ]</a>
+              <a href="thread.html#1495">[ thread ]</a>
+              <a href="subject.html#1495">[ subject ]</a>
+              <a href="author.html#1495">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Artem/Matt
+
+What do you think about keeping master as the development line for the next stable release: 2.0.1, and create
+a branch for 2.1?. So Matt's pull requests would go into that 2.1 branch, or simple wait until after 2.1 is released
+and master is ready for the push on 2.1 and ready to accept new features?
+
+This is why I branched for the addition of the new CSV plugin and have queued it up as a pull request, 
+(<A HREF="https://github.com/mapnik/mapnik/pull/912">https://github.com/mapnik/mapnik/pull/912</A>) thinking I would just wait to hit the button to merge after 2.0.1 is out.
+
+I guess the alternative would be equally easy: to branch now for 2.0.1 and simply `git cherry-pick` the stable fixes we
+need for 2.0.1 as they land in master (which would likely be released as 2.1 or 3.x depending on how exciting things get).
+
+Dane
+
+* note: 37 open issues for the stable 2.0.1: <A HREF="https://github.com/mapnik/mapnik/issues?milestone=14&amp;state=open">https://github.com/mapnik/mapnik/issues?milestone=14&amp;state=open</A>
+
+
+On Oct 12, 2011, at 1:55 AM, Artem Pavlenko wrote:
+
+&gt;<i> Great, thanks, Matt!
+</I>&gt;<i> Will merge into master asap.
+</I>&gt;<i> Artem
+</I>&gt;<i> 
+</I>&gt;<i> On 12 October 2011 00:44, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+</I>&gt;&gt;<i> Matt,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Looks like some awesome work. I'm excited to say (since we're now live at
+</I>&gt;&gt;<i> <A HREF="https://github.com/mapnik/mapnik/">https://github.com/mapnik/mapnik/</A>) that I'd love to see each of these as pull requests :)
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> for your delectation*, three patches for fixes/enhancements we've
+</I>&gt;&gt;&gt;<i> developed at MapQuest:
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+</I>&gt;&gt;&gt;<i> placement along a line. it seems what was happening previously was
+</I>&gt;&gt;&gt;<i> that the label box was being expanded to the size of the shield and
+</I>&gt;&gt;&gt;<i> being used to place text. however, this was not giving the right
+</I>&gt;&gt;&gt;<i> answer where dx/dy were being used. the patch expands line placement
+</I>&gt;&gt;&gt;<i> to include &quot;additional boxes&quot;, i.e: when searching for a line
+</I>&gt;&gt;&gt;<i> placement it checks that some boxes offset from the position can be
+</I>&gt;&gt;&gt;<i> placed.
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> mapnik_expose-label-collision-detector.patch: this exposes the label
+</I>&gt;&gt;&gt;<i> collision detector (4!?) via python and adds a new
+</I>&gt;&gt;&gt;<i> render_with_detector function to allow the detector to be passed into
+</I>&gt;&gt;&gt;<i> the rendering process which means you can keep the detector between
+</I>&gt;&gt;&gt;<i> render invocations. possible uses include clearing out areas of the
+</I>&gt;&gt;&gt;<i> map you know you'll want to render something in later (e.g: key /
+</I>&gt;&gt;&gt;<i> label / compass rose) or to get some layers as a separate image to be
+</I>&gt;&gt;&gt;<i> composited later. this patch only does this for the agg renderer,
+</I>&gt;&gt;&gt;<i> although it should be pretty simple to extend to the other renderers.
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+</I>&gt;&gt;&gt;<i> plugin which can pull raster data from a constant-stride tile grid on
+</I>&gt;&gt;&gt;<i> disk. this may be of use to anyone with very large background images
+</I>&gt;&gt;&gt;<i> to composite in. the motivation was that it be more compact and faster
+</I>&gt;&gt;&gt;<i> than including all the rasters, each with its own entry, when they're
+</I>&gt;&gt;&gt;<i> in a rectangular grid anyway.
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> enjoy!
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> cheers,
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> matt
+</I>&gt;&gt;&gt;<i> 
+</I>&gt;&gt;&gt;<i> *: and in this transitional period, probably not worth attempting to
+</I>&gt;&gt;&gt;<i> put into SVN - i'm happy to submit these as pull requests once
+</I>&gt;&gt;&gt;<i> Mapnik's in github.
+</I>&gt;&gt;&gt;<i> &lt;mapnik_add-multi-tile-policy.patch&gt;&lt;mapnik_expose-label-collision-detector.patch&gt;&lt;mapnik_shield-placement-bug.patch&gt;_______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001494.html">[Mapnik-devel] three patches
+</A></li>
+	<LI>Next message: <A HREF="001496.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1495">[ date ]</a>
+              <a href="thread.html#1495">[ thread ]</a>
+              <a href="subject.html#1495">[ subject ]</a>
+              <a href="author.html#1495">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

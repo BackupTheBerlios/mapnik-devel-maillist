@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik and reprojection of shapefiles
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3Cb215ec5f0709120411s44fbcd9r471f96d38c57a649%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000246.html">
+   <LINK REL="Next"  HREF="000248.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik and reprojection of shapefiles</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3Cb215ec5f0709120411s44fbcd9r471f96d38c57a649%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik and reprojection of shapefiles">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Wed Sep 12 13:11:13 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000246.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+        <LI>Next message: <A HREF="000248.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#247">[ date ]</a>
+              <a href="thread.html#247">[ thread ]</a>
+              <a href="subject.html#247">[ subject ]</a>
+              <a href="author.html#247">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 12/09/2007, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+&gt;<i> No, we cannot use world extent , many projections only work on a small
+</I>&gt;<i> region i.e Transverse  Mercator (NatGrid, UTM). In fact Mercator will choke
+</I>&gt;<i> on longitudes -90,90 .
+</I>&gt;<i>
+</I>&gt;<i> To solve this properly we need some way of querying every projection for
+</I>&gt;<i> valid bounds. I couldn't see anything helpful in proj4. I might be missing
+</I>&gt;<i> something.
+</I>&gt;<i>
+</I>
+I'm not convinced that projecting the extent is necessarily valid for
+some projections, i.e. the code assumes:
+
+extent(Project(shape)).minx == Project(extent(shape).minx)
+extent(Project(shape)).miny == Project(extent(shape).miny)
+etc.
+
+This may be true for some simple projections like latlong &amp; mercator
+where NS/EW are always at right angles but I imagine this rapid falls
+down when a rectangle bounding box becomes some curved shape in the
+other projection.
+
+-- 
+    Jon
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000246.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+	<LI>Next message: <A HREF="000248.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#247">[ date ]</a>
+              <a href="thread.html#247">[ thread ]</a>
+              <a href="subject.html#247">[ subject ]</a>
+              <a href="author.html#247">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

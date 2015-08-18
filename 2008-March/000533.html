@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] OSM plugin update - now using libxml2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20OSM%20plugin%20update%20-%20now%20using%20libxml2&In-Reply-To=%3C353A1883-3460-43C6-978D-D97699622656%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000532.html">
+   <LINK REL="Next"  HREF="000534.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] OSM plugin update - now using libxml2</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20OSM%20plugin%20update%20-%20now%20using%20libxml2&In-Reply-To=%3C353A1883-3460-43C6-978D-D97699622656%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] OSM plugin update - now using libxml2">artem at mapnik.org
+       </A><BR>
+    <I>Sun Mar  9 11:14:18 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000532.html">[Mapnik-devel] OSM plugin update - now using libxml2
+</A></li>
+        <LI>Next message: <A HREF="000534.html">[Mapnik-devel] [PATCH]: Build for PPC64
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#533">[ date ]</a>
+              <a href="thread.html#533">[ thread ]</a>
+              <a href="subject.html#533">[ subject ]</a>
+              <a href="author.html#533">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 2 Mar 2008, at 13:26, Nick Whitelegg wrote:
+
+&gt;<i>
+</I>&gt;<i> Just committed an update to the OSM plugin. It's now using libxml2,  
+</I>&gt;<i> not expat.
+</I>&gt;<i> I still couldn't get the SAX parser to work without crashing but  
+</I>&gt;<i> then found
+</I>&gt;<i> that the recommended SAX-like interface to libxml2 is the  
+</I>&gt;<i> XMLTextReader
+</I>&gt;<i> interface anyhow, which osm2pgsql also uses, so switched to using  
+</I>&gt;<i> that.
+</I>
+
+I had a chance to build and run osm plug-in.  Great!
+
+I'm yet to look properly at implementation details, but I have some  
+ideas on how to improve performance. I'll get back  on this.
+
+Thanks again, Nick!
+
+Artem
+
+&gt;<i>
+</I>&gt;<i> Nick
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000532.html">[Mapnik-devel] OSM plugin update - now using libxml2
+</A></li>
+	<LI>Next message: <A HREF="000534.html">[Mapnik-devel] [PATCH]: Build for PPC64
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#533">[ date ]</a>
+              <a href="thread.html#533">[ thread ]</a>
+              <a href="subject.html#533">[ subject ]</a>
+              <a href="author.html#533">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

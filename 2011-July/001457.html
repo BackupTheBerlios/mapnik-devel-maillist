@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Midterm GSOC meeting notes
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Midterm%20GSOC%20meeting%20notes&In-Reply-To=%3CAE99536D-97AA-4D76-999E-797129EDED33%40stamen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001456.html">
+   <LINK REL="Next"  HREF="001458.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Midterm GSOC meeting notes</H1>
+    <B>Michal Migurski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Midterm%20GSOC%20meeting%20notes&In-Reply-To=%3CAE99536D-97AA-4D76-999E-797129EDED33%40stamen.com%3E"
+       TITLE="[Mapnik-devel] Midterm GSOC meeting notes">mike at stamen.com
+       </A><BR>
+    <I>Thu Jul 21 07:55:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001456.html">[Mapnik-devel] Midterm GSOC meeting notes
+</A></li>
+        <LI>Next message: <A HREF="001458.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1457">[ date ]</a>
+              <a href="thread.html#1457">[ thread ]</a>
+              <a href="subject.html#1457">[ subject ]</a>
+              <a href="author.html#1457">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for writing and sending this!
+
+-mike.
+
+On Jul 20, 2011, at 3:21 PM, Dane Springmeyer wrote:
+
+&gt;<i> The GSOC midterm passed this week and each student did a great job of writing up progress at <A HREF="http://mapnik.org/news/.">http://mapnik.org/news/.</A>
+</I>&gt;<i> 
+</I>&gt;<i> We also had a GSOC group meeting today including: Colin, Hermann, Roel, Artem, Rob, and I.
+</I>&gt;<i> 
+</I>&gt;<i> I took notes on a few things that came up which might not be covered in each blog post.
+</I>&gt;<i> 
+</I>&gt;<i> -- Hermann / Text Placement --
+</I>&gt;<i> 
+</I>&gt;<i> * Herm had a great time at SOTM and met many people interesting in leveraging his work on MetaWriters (his GSOC project from last year), which he presented on.
+</I>&gt;<i> * The MetaWriters slides as PDF are at <A HREF="http://sotm-eu.org/slides/58_HermannKraus_vortrag.pdf">http://sotm-eu.org/slides/58_HermannKraus_vortrag.pdf</A> and the video is at <A HREF="http://matterhorn.zserv.tuwien.ac.at/engage/ui/watch.html?id=Unscheduled-lecturetube-ei7-1310807022250">http://matterhorn.zserv.tuwien.ac.at/engage/ui/watch.html?id=Unscheduled-lecturetube-ei7-1310807022250</A>
+</I>&gt;<i> * Andy Allen did a nice talk on advanced map design his slide on &quot;Text Processing&quot; can be solved with Hermann's current work on alternative text placement (<A HREF="http://sotm-eu.org/slides/51_AndyAllen_Carto2.pdf">http://sotm-eu.org/slides/51_AndyAllen_Carto2.pdf</A>)
+</I>&gt;<i> * Herms next steps include adding some example XML and tests for his placement work and then starting to focus on text formatting: bold, italic, underline support.
+</I>&gt;<i> * Herm also mentioned that issues of Unicode support in Mapnik were raised at SOTM and he is going to look into whether he might be able to fix some of these issues (<A HREF="http://trac.mapnik.org/wiki/InternationalText">http://trac.mapnik.org/wiki/InternationalText</A>)  if they are related to his text formatting work.
+</I>&gt;<i> 
+</I>&gt;<i> -- Colin / Carto C++ --
+</I>&gt;<i> 
+</I>&gt;<i> * Colin says the generator (mapnik xml -&gt; carto css) is about 90% complete, so he does not plan more work
+</I>&gt;<i> * Focus now is on the parser (carto css -&gt; mapnik map).
+</I>&gt;<i> * Currently nearly full parsing support is implemented, but not yet conversion to mapnik objects
+</I>&gt;<i> * An interesting discussion came up around maybe using boost multi-map or multi-index to store symbolizers instead of the current vector of variants, which might make conversion from css to mapnik easier and faster (followups will happen at Colin's github repo: <A HREF="https://github.com/rundel/carto-parser/issues">https://github.com/rundel/carto-parser/issues</A>
+</I>&gt;<i> 
+</I>&gt;<i> -- Roel / Windows --
+</I>&gt;<i> 
+</I>&gt;<i> * Roel took the blue sky approach of trying to fully automate the builds of all mapnik dependencies. He has mapnik2 compiles nearly working on Windows so has focused on python tools to automate the setup of all dependencies. The target audience is developers (but just users of mapnik) who will want/need to compile mapnik dependencies themselves to either write applications for windows or stay up to date.
+</I>&gt;<i> * Hopefully in 2 weeks a Mapnik2 binary may be available
+</I>&gt;<i> * Also, final tweaks to the build system will happen over the next couple weeks to make it possible for other people with a windows environment to help test the setup
+</I>&gt;<i> * The idea came up of Roel creating a Windows Virtual Machine with VirtualBox and then distributing that for others to test (to avoid full setup).
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+----------------------------------------------------------------
+michal migurski- <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mike at stamen.com</A>
+                 415.558.1610
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001456.html">[Mapnik-devel] Midterm GSOC meeting notes
+</A></li>
+	<LI>Next message: <A HREF="001458.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1457">[ date ]</a>
+              <a href="thread.html#1457">[ thread ]</a>
+              <a href="subject.html#1457">[ subject ]</a>
+              <a href="author.html#1457">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

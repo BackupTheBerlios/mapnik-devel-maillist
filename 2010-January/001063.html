@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Endless agg loop with zero-size bbox and dash pattern
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Endless%20agg%20loop%20with%20zero-size%20bbox%20and%20dash%20pattern&In-Reply-To=%3C4B6242C1.2050005%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001062.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Endless agg loop with zero-size bbox and dash pattern</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Endless%20agg%20loop%20with%20zero-size%20bbox%20and%20dash%20pattern&In-Reply-To=%3C4B6242C1.2050005%40remote.org%3E"
+       TITLE="[Mapnik-devel] Endless agg loop with zero-size bbox and dash pattern">frederik at remote.org
+       </A><BR>
+    <I>Fri Jan 29 03:06:57 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001062.html">[Mapnik-devel] Mapnik JNI Undefined symbol
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1063">[ date ]</a>
+              <a href="thread.html#1063">[ thread ]</a>
+              <a href="subject.html#1063">[ subject ]</a>
+              <a href="author.html#1063">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+    I stumbled across a minor problem by accident. The problem is 
+manifest in 0.6.1 and 0.7 at least. Due to an error in my program, I had 
+Mapnik render something with an empty box (where left==right and 
+top==bottom). Mapnik duly computed
+
+scale=0
+start map processing bbox=Envelope(-8057074,2103547,-8057074,2103547)
+scale denominator = 0
+
+and went on processing its rules and styles. I was using a normal OSM 
+stylesheet, and everything worked normally, except for the &quot;admin-45678&quot; 
+rule which led Mapnik into an endless loop somewhere deep inside agg.
+
+I managed to isolate the problem down to the following style sheet:
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE Map [
+&lt;!ENTITY % entities SYSTEM &quot;inc/entities.xml.inc&quot;&gt;
+%entities;
+]&gt;
+&lt;!-- This stylesheet uses features only available in mapnik builds with
+      libxml2 as the XML parser. Furthermore, there are other features
+      that necessitate an upgrade to at least mapnik 0.6.1 --&gt;
+&lt;Map bgcolor=&quot;#b5d0d0&quot; srs=&quot;&amp;osm2pgsql_projection;&quot;&gt;
+   &amp;fontset-settings;
+&lt;Style name=&quot;admin-45678&quot;&gt;
+     &lt;Rule&gt;
+       &lt;Filter&gt;[admin_level]='4'&lt;/Filter&gt;
+       &amp;maxscale_zoom11;
+       &lt;LineSymbolizer&gt;
+         &lt;CssParameter name=&quot;stroke&quot;&gt;purple&lt;/CssParameter&gt;
+         &lt;CssParameter name=&quot;stroke-width&quot;&gt;3&lt;/CssParameter&gt;
+         &lt;CssParameter name=&quot;stroke-dasharray&quot;&gt;4,3&lt;/CssParameter&gt;
+         &lt;CssParameter name=&quot;stroke-opacity&quot;&gt;0.2&lt;/CssParameter&gt;
+       &lt;/LineSymbolizer&gt;
+     &lt;/Rule&gt;
+&lt;/Style&gt;
+&lt;Layer name=&quot;admin-45678&quot; status=&quot;on&quot; srs=&quot;&amp;osm2pgsql_projection;&quot;&gt;
+     &lt;StyleName&gt;admin-45678&lt;/StyleName&gt;
+     &lt;Datasource&gt;
+       &lt;Parameter name=&quot;table&quot;&gt;
+       (select way,admin_level from &prefix;_roads where 
+&quot;boundary&quot;='administrative' and admin_level in('4','5','6','7','8')) as 
+admin&lt;/Parameter&gt;
+       &amp;datasource-settings;
+     &lt;/Datasource&gt;
+&lt;/Layer&gt;
+&lt;/Map&gt;
+
+It seems that if you run this style on an empty bbox like I did (but 
+make sure that the data query does return something), then agg goes into 
+an endless loop like this:
+
+#0  0x00007fb2f2326162 in agg::vcgen_dash::vertex () from 
+/usr/lib/libmapnik.so.0.6
+#1  0x00007fb2f21da8c6 in 
+agg::conv_adaptor_vcgen&lt;mapnik::coord_transform2&lt;mapnik::CoordTransform, 
+mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt; &gt;, agg::vcgen_dash, 
+agg::null_markers&gt;::vertex () from /usr/lib/libmapnik.so.0.6
+#2  0x00007fb2f21e2516 in 
+agg::conv_adaptor_vcgen&lt;agg::conv_dash&lt;mapnik::coord_transform2&lt;mapnik::CoordTransform, 
+mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt; &gt;, agg::null_markers&gt;, 
+agg::vcgen_stroke, agg::null_markers&gt;::vertex () from 
+/usr/lib/libmapnik.so.0.6
+#3  0x00007fb2f21e26f6 in 
+agg::rasterizer_scanline_aa&lt;agg::rasterizer_sl_clip&lt;agg::ras_conv_int&gt; 
+ &gt;::add_path&lt;agg::conv_stroke&lt;agg::conv_dash&lt;mapnik::coord_transform2&lt;mapnik::CoordTransform, 
+mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt; &gt;, agg::null_markers&gt;, 
+agg::null_markers&gt; &gt; () from /usr/lib/libmapnik.so.0.6
+#4  0x00007fb2f21ecd3b in mapnik::agg_renderer&lt;mapnik::Image32&gt;::process 
+() from /usr/lib/libmapnik.so.0.6
+#5  0x000000000040d4e0 in 
+mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32&gt; 
+ &gt;::apply_to_layer (this=0x7ffffa902280, lay=@0x1baeb00, p=@0x7ffffa902280,
+     proj0=&lt;value optimized out&gt;, scale_denom=0) at 
+/usr/include/boost/variant/variant.hpp:1738
+
+There is probably something about how agg handles the dash pattern that 
+makes it react badly to the zero-size bbox. I have neither time nor 
+nerve to debug this fully (because using an empty bbox is a bug in 
+itself) but if anyone ever encounters a strange tight loop in agg then 
+check your bbox and dash pattern ;-)
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23'33&quot;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001062.html">[Mapnik-devel] Mapnik JNI Undefined symbol
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1063">[ date ]</a>
+              <a href="thread.html#1063">[ thread ]</a>
+              <a href="subject.html#1063">[ subject ]</a>
+              <a href="author.html#1063">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

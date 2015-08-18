@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C4B992631.6080309%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001089.html">
+   <LINK REL="Next"  HREF="001091.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C4B992631.6080309%40gmail.com%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Thu Mar 11 18:19:45 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001089.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+        <LI>Next message: <A HREF="001091.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1090">[ date ]</a>
+              <a href="thread.html#1090">[ thread ]</a>
+              <a href="subject.html#1090">[ subject ]</a>
+              <a href="author.html#1090">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>W dniu 11.03.2010 17:27, Artem Pavlenko pisze:
+&gt;<i> OK, dynamic arrays on stack are in C99, hence fine with gcc , but vc++
+</I>&gt;<i> doesn't support C99.
+</I>&gt;<i> Artem
+</I>&gt;<i> 
+</I>&gt;<i> On 11 March 2010 16:19, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;&gt;<i> Hi Marcin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm getting a few errors compiling 0.7.1 + your hex-tree patch on
+</I>&gt;&gt;<i> windows.  Basically, vc++ doesn't allow declarations like:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> unsigned limits[TRANSPARENCY_LEVELS+1];
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> where TRANSPARENCY_LEVELS is not static. I'm not sure what size for
+</I>&gt;&gt;<i> the array gcc pick ups in this case but it's seems reasonable
+</I>&gt;&gt;<i> constraint. It can be fixed by using std::vector&lt;&gt; or make the whole
+</I>&gt;&gt;<i> method templated on number of transparency levels etc.
+</I>&gt;&gt;<i> Do you have time to fix this for 0.7.1 release?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>
+
+I thought that declaring TRANSPARENCY_LEVELS as const would be enough
+for such constructions in 21st century compilers ;)
+
+Simple fix is to add:
+  #define MAX_OCTREE_LEVELS 4
+and use it instead of TRANSPARENCY_LEVELS in [] declarations, so that
+all affected arrays will have enough room for all cases of trans_mode,
+and their size will be known at compile time like earlier was. I just
+attached it like that in #477 ticket.
+
+Using std::vector&lt;&gt; unfortunately needs much more changes:
+- declaration of arrays and parameters of reduce_*
+- adding additional copy-constructor to octree
+probably other, I just decided on first solution, when gcc give me few
+hundrets lines of error message across all possible template classes of
+stl/mapnik/boost just to say, octree needs new constructor.
+
+
+-- 
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001089.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+	<LI>Next message: <A HREF="001091.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1090">[ date ]</a>
+              <a href="thread.html#1090">[ thread ]</a>
+              <a href="subject.html#1090">[ subject ]</a>
+              <a href="author.html#1090">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

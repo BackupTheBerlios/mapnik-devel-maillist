@@ -1,0 +1,527 @@
+From carlos.lopez.garces at gmail.com  Thu Jun  3 10:38:03 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Thu, 3 Jun 2010 03:38:03 -0500
+Subject: [Mapnik-devel] Better Print Support Project: Work so far
+Message-ID: <AANLkTimuWswpJdkRcAHO9xH1aldPFWrOUthGLdP3DB4G@mail.gmail.com>
+
+Good evening, how are you?
+
+I just wanted to inform you what I've been doing this week. I haven't
+written code to submit a patch, rather I've been doing some experiments with
+cairo_renderer trying to find the pieces of code that affect the size of
+symbolizers. You can see the results of these experiments here:
+http://redmine.openpapermaps.com/projects/mapnikgsoc/wiki/Attempts as well
+as the descriptions of the changes I made to the code to produce the images
+shown there.
+
+Before yesterday's afternoon, it seemed to me that the best place to apply
+the scale factor was in cairo_context class, since it makes the calls
+directly to Cairo's context. However, after the experiment I ran with the
+text_symbolizer, in which I modified the size of the text inside
+cairo_context::add_text, I realized that some of the adjustments made
+previously in cairo_renderer_base::process(text_symbolizer) were lost,
+specifically those related to collision detection.
+
+The changes I've tried so far mimic in some sense those of the first patch
+of ticket 343 and I've gotten similar results (the thick roads, for
+instance). The thick roads result from the fact that I'm only changing the
+width of the line, but not its length. As the length of lines is determined
+by the position of the points that make up the path of the line, it seemed
+difficult, at first glance, to change the position of these points based on
+the scale factor to then shrink or stretch the length, which I assume would
+be done using some technique as the one described here:
+http://www.mathopenref.com/dilate.html.
+
+Therefore, my last thought was that maybe the answer could lie in the use of
+Cairo's operations, specifically the scale transformation, and so I've been
+studying the API with some examples, as my knowledge of Cairo is quite
+limited.
+
+Any advice or feedback is welcome.
+
+Thanks
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100603/49c0d04a/attachment.html>
+
+From carlos.lopez.garces at gmail.com  Sat Jun 12 11:26:07 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Sat, 12 Jun 2010 04:26:07 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+Message-ID: <AANLkTik5lk3oL_T7QyfS3UlypnduEQKSd0zkfFmYI8-x@mail.gmail.com>
+
+Hello everybody, I've been working now with agg_renderer since I found a
+problem with cairo_renderer and building symbolizers I haven't solved yet.
+The scaling of building and text symbolizers (in point placement) was
+relatively straightforward. However to scale polygon symbolizers in the same
+way I did in cairo_renderer I require to make changes in AGG's add_path set
+of functions. Making changes there is a bad idea in my opinion, but I would
+like to know from you if it is a valid approach or has been used before for
+other purposes (I read in its documentation that agg is meant to be
+extended, but I'm sure those extensions are made in some other way).
+
+If you have a chance, please take a look at my implementation:
+http://trac.mapnik.org/changeset/1857. It would be very valuable to me to
+know about the point of view of the community. I committed image of the maps
+I've been rendering with each step I take, so looking at them is a good way
+to see how the implementation works without compiling the examples. The name
+of the files are labeled with the name of the renderer that produced them,
+their size and scale factor applied.
+
+Finally, as you may see in image 'cairo_wb1_800x600x1.png' (
+http://trac.mapnik.org/browser/branches/mapnik_resolution/demo/c%2B%2B/sandbox/scale_building_symbolizer/img/cairo_wb1_800x600x1.png?rev=1857),
+some lines are appearing across the image, which do not show up when
+rendered with agg_renderer. The most probable reason is that I introduced
+some bug when making the changes, but I would like to know if anyone has ran
+into this problem.
+
+Artem, I saw you were also experimenting with scale factor in agg_renderer
+and your comment about discussing the way to expose it to the user with Dane
+Springmeyer and me. Until now, I've just concentrated in making scaling look
+good, but I'll look for alternatives tomorrow. My current implementation is
+to have it as a data member in Map object.
+
+Thanks in advance,
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100612/d38ed312/attachment.html>
+
+From rashadkm at yahoo.com  Mon Jun 14 17:01:16 2010
+From: rashadkm at yahoo.com (Mohammed Rashad)
+Date: Mon, 14 Jun 2010 08:01:16 -0700 (PDT)
+Subject: [Mapnik-devel] mapnik c++
+Message-ID: <316366.87945.qm@web113602.mail.gq1.yahoo.com>
+
+How to use mapnik with c++. anyone please post mapnik c++ examples and tutorials
+
+ --
+Rashad
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100614/6da33f4b/attachment.html>
+
+From artem at mapnik.org  Mon Jun 14 17:06:05 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 14 Jun 2010 16:06:05 +0100
+Subject: [Mapnik-devel] mapnik c++
+In-Reply-To: <316366.87945.qm@web113602.mail.gq1.yahoo.com>
+References: <316366.87945.qm@web113602.mail.gq1.yahoo.com>
+Message-ID: <AANLkTilkloeAxxZY3sUQFNvf3MCyybvuL_UtxmMmWAvP@mail.gmail.com>
+
+Hi Rashad,
+
+Welcome to Mapnik!
+
+Probably, the best place to start with C++ is :
+http://trac.mapnik.org/browser/trunk/demo/c%2B%2B/rundemo.cpp
+If you have some specific questions I suggest you join IRC channel : #mapnik
+
+Regards,
+Artem
+
+On 14 June 2010 16:01, Mohammed Rashad <rashadkm at yahoo.com> wrote:
+
+> How to use mapnik with c++. anyone please post mapnik c++ examples and
+> tutorials
+>
+> --
+> Rashad
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100614/d73c8b08/attachment.html>
+
+From Klug.Stefan at gmx.de  Tue Jun 15 11:41:17 2010
+From: Klug.Stefan at gmx.de (Stefan Klug)
+Date: Tue, 15 Jun 2010 11:41:17 +0200
+Subject: [Mapnik-devel] Some questions on raster_symbolizer, cairo and trunk
+Message-ID: <4C174ABD.3000306@gmx.de>
+
+Hi all,
+
+I'm following the project for some time now, and am currently 
+investigating if it makes sense to port our inhouse map rendering 
+infrastructure to mapnik.
+The current output of our own software can be seen on 
+http://karte.wanderwalter.de/np-sfw/
+
+For our use case there are some things missing on the current 
+raster_symbolizer and I'm evaluating the best way to go.
+Currently I'm a bit undecided between implementing my own input plugin 
+(where I could reuse lots of code) or extending the raster_symbolizer 
+(where it might be easier to give code back to the community). Would be 
+great if someone with deeper mapnik knowledge could give me some hints.
+
+- The wiki notes that mapnik 0.8 will contain some big refactorings 
+which will most likely lead to relatively unstable code. Are these 
+already done and can I expect trunk to be "not extremely unstable" e.g. 
+not breaking everything each day ;-) or should I stick to 0.7?
+
+- How well supported is the cairo renderer now and in the future? I've 
+seen that the raster modes are not supported right now. Is the cairo 
+renderer planned as feature-complete as the agg one or should I stick to 
+the agg renderer? (I personally would like to prefer the cairo renderer)
+
+- Are there already plans or proposals out there on improving the raster 
+symbolizer (like rendering modes, filters etc.) ?
+
+
+Thanks a lot and keep up the great work
+
+Stefan Klug
+
+
+
+
+From artem at mapnik.org  Tue Jun 15 12:39:25 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 15 Jun 2010 11:39:25 +0100
+Subject: [Mapnik-devel] Some questions on raster_symbolizer,
+	cairo and 	trunk
+In-Reply-To: <4C174ABD.3000306@gmx.de>
+References: <4C174ABD.3000306@gmx.de>
+Message-ID: <AANLkTilAARy8HRb-zbG_gQnGGv7XiOjAB0JNtteDJGwn@mail.gmail.com>
+
+Hi Stefan,
+Welcome to Mapnik!
+
+On 15 June 2010 10:41, Stefan Klug <Klug.Stefan at gmx.de> wrote:
+
+> Hi all,
+>
+> I'm following the project for some time now, and am currently investigating
+> if it makes sense to port our inhouse map rendering infrastructure to
+> mapnik.
+> The current output of our own software can be seen on
+> http://karte.wanderwalter.de/np-sfw/
+>
+>
+Nice map.
+
+
+> For our use case there are some things missing on the current
+> raster_symbolizer and I'm evaluating the best way to go.
+> Currently I'm a bit undecided between implementing my own input plugin
+> (where I could reuse lots of code) or extending the raster_symbolizer (where
+> it might be easier to give code back to the community). Would be great if
+> someone with deeper mapnik knowledge could give me some hints.
+>
+
+Sure. I just need to understand more what is missing in current
+raster_symbolizer, could you elaborate a bit more, please.
+
+>
+> - The wiki notes that mapnik 0.8 will contain some big refactorings which
+> will most likely lead to relatively unstable code. Are these already done
+> and can I expect trunk to be "not extremely unstable" e.g. not breaking
+> everything each day ;-) or should I stick to 0.7?
+>
+>
+As a developer you should go for 0.8 (aka mapnik2). It is pretty stable but
+some interfaces might change.
+There is a utility to convert from old to new syntax :
+$(mapnik_src)/utils/upgrade_map_xml/upgrade_map_xml.py
+
+
+- How well supported is the cairo renderer now and in the future? I've seen
+> that the raster modes are not supported right now. Is the cairo renderer
+> planned as feature-complete as the agg one or should I stick to the agg
+> renderer? (I personally would like to prefer the cairo renderer)
+>
+
+Cairo is usually slightly behind AGG in terms of new features, but the plan
+is to keep all backends in sync (if possible). I personally prefer AGG as
+it's more robust.
+
+
+> - Are there already plans or proposals out there on improving the raster
+> symbolizer (like rendering modes, filters etc.) ?
+>
+
+Yes. e.g adding compositing modes as per SVG spec is on my TODO list.
+
+>
+>
+> Thanks a lot and keep up the great work
+>
+
+Thank you!
+
+>
+> Stefan Klug
+>
+
+Artem
+
+
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100615/57ab27cb/attachment.html>
+
+From karx11erx at hotmail.com  Wed Jun 16 15:03:10 2010
+From: karx11erx at hotmail.com (Dietfrid Mali)
+Date: Wed, 16 Jun 2010 15:03:10 +0200
+Subject: [Mapnik-devel] Building mapnik on Windows 7
+Message-ID: <BLU139-W348838298ED1CDD1184001A0DE0@phx.gbl>
+
+
+
+
+Hi,
+
+ 
+
+I am
+currently trying to build mapnik on Windows 7 using a modified Visual Studio
+2008 solution I have found in an experimental mapnik+pdf package. I am using
+that solution with the standard mapnik software package. I have installed the
+required dependencies (tiff, png, jpeg, zlib, proj, icu, boost, ?).
+
+ 
+
+The reasons
+for my trying to build mapnik on Windows are the following:
+
+ 
+
+-         
+I
+want to be able to stay up to date
+
+-         
+I
+want to be able to create 64 bit builds
+
+-         
+I
+want to add cairo and cairo-gl support for Windows to mapnik
+
+ 
+
+The
+compiler complains as follows:
+
+ 
+
+mapnik\include\mapnik\ptree_helpers.hpp(348) : error
+C2039: 'mapnik::get_own' : is not a member of
+'boost::property_tree::basic_ptree<Key,Data>'
+
+ 
+
+This is a
+result of my replacing the boost headers that have come with mapnik with the
+standard boost library. I did this because otherwise the compiler would
+complain about some missing boost header files.
+
+ 
+
+How can I
+resolve this? As there is a Win32 binary of mapnik: Are there any Visual Studio
+(2005 / 2008) solutions and projects available and if so, can I have these?
+
+ 
+
+Dietfrid
+Mali
+
+ 
+
+ 
+
+ 		 	   		  
+_________________________________________________________________
+http://redirect.gimas.net/?n=M1006xHMTL5
+Tsch?ss Werbung im E-Mail-Abbinder!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100616/6b74f185/attachment.html>
+
+From Dietfrid.Mali at ptv.de  Wed Jun 16 14:56:31 2010
+From: Dietfrid.Mali at ptv.de (Dietfrid Mali)
+Date: Wed, 16 Jun 2010 14:56:31 +0200
+Subject: [Mapnik-devel] Building mapnik on Windows 7
+Message-ID: <4CAB7869D8D7BB48B0D30A8779722ABF5C63FCCC@SKA-WN-E25CEX.ptvag.ptv.de>
+
+Hi,
+
+I am currently trying to build mapnik on Windows 7 using a modified Visual Studio 2008 solution I have found in an experimental mapnik+pdf package. I am using that solution with the standard mapnik software package. I have installed the required dependencies (tiff, png, jpeg, zlib, proj, icu, boost, ...).
+
+The reasons for my trying to build mapnik on Windows are the following:
+
+
+-          I want to be able to stay up to date
+
+-          I want to be able to create 64 bit builds
+
+-          I want to add cairo and cairo-gl support for Windows to mapnik
+
+The compiler complains as follows:
+
+mapnik\include\mapnik\ptree_helpers.hpp(348) : error C2039: 'mapnik::get_own' : is not a member of 'boost::property_tree::basic_ptree<Key,Data>'
+
+This is a result of my replacing the boost headers that have come with mapnik with the standard boost library. I did this because otherwise the compiler would complain about some missing boost header files.
+
+How can I resolve this? As there is a Win32 binary of mapnik: Are there any Visual Studio (2005 / 2008) solutions and projects available and if so, can I have these?
+
+Dietfrid Mali
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100616/4914e197/attachment.html>
+
+From lists at brachttal.net  Fri Jun 18 20:03:21 2010
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 18 Jun 2010 20:03:21 +0200
+Subject: [Mapnik-devel] libosmscout
+Message-ID: <20100618200321.19efd548@frodo>
+
+Hello together,
+
+I like to give you a pointer to a library called libosmscout[1]. I used
+Mapnik for some time and where happy with it. But I had no
+out-of-the-box solution to calculate routes on live rendered maps.
+
+Since some time I ported one branch of my application to libosmscout,
+because routing is working really nice.
+
+I'm not complete decided about future usage or maybe writing a facade
+to support both libraries.
+
+Do you know libosmscout? Do you think shared work on the renderer part
+would be possible with the libosmscout project to save some developer
+resources?
+
+regards
+	Andreas
+
+[1] http://libosmscout.sourceforge.net/
+
+
+From hermann.kraus at stud.uni-regensburg.de  Sat Jun 19 02:49:37 2010
+From: hermann.kraus at stud.uni-regensburg.de (Hermann Kraus)
+Date: Sat, 19 Jun 2010 02:49:37 +0200
+Subject: [Mapnik-devel] Summer of code status report
+Message-ID: <op.veiu8ybtd4fa4i@sl500.localhost>
+
+Hello!
+
+Here's my status report for my summer of code project (hit-areas).
+
+I had some problems finding a good way to do the job which I'll explain in
+detail later, first I'll explain the basic idea: The user creates one or
+more metawriter (I didn't find a better name) objects, which handle
+different output formats and assigns these objects to symbolizers. A
+sample XML config could look like this:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map>
+<Map bgcolor="white" srs="+proj=latlong +datum=WGS84">
+     <MetaWriter name="meta test" type="json" file="test.json" />
+
+     <Layer name="Mapnik test" srs="+proj=latlong +datum=WGS84">
+       <StyleName>My Style</StyleName>
+       <Datasource>
+         <Parameter name="type">osm</Parameter>
+         <Parameter name="file">mapnik.osm</Parameter>
+       </Datasource>
+     </Layer>
+
+     <Style name="My Style">
+       <Rule>
+         <PointSymbolizer meta-writer="meta1" meta-output="name: [name]"/>
+       </Rule>
+     </Style>
+</Map>
+
+However this lead to one big problem. The name/object pairs are stored in
+the Map object and I had to resolve names to object references. This can't
+be done at the time an symbolizer is parsed, as I wanted to maintain a
+similar behaviour as styles (a style can be used in a layer before it is
+declared). So had to find another place where to look up the name ->
+object mapping. There were different places which I tried, but they didn't
+work out well:
+
+1. Doing it in the renderer's process() function. This seems like an
+obvious place to do it, but there were two problems: The map object is not
+available in agg_renderer::process() and these functions are called so
+many times it would proably significantly slow down the rendering process
+to look up the mapping every time.
+
+2. feature_style_processor::apply_to_layer() there I tried to do an extra
+pass over all rules before rendering and resolving the names. I already
+had the code ready to do this, however it failed because everything is
+marked "const" there, so symbolizers couldn't store a reference to the
+metawriter. Changing this seems to require a lot of changes which I
+considered bad.
+
+3. Current solution: Add a new call to the map object which resolves the
+names. This function is automatically called after loading an XML config,
+but has to be called manually when constructing the object with C++ or
+Python code.
+
+
+I was also asked to describe my impression of the code and the problems I
+had with it.
+One big problem was that about everything is undocumented and no document
+exists giving a overview.
+
+The most important problem was template usage. In Mapnik everything is a
+template and this makes it hard to get an overview about what is
+happening. If a plain type is used I can check look at the source file of
+this type to understand what it does. But with templates I have to find a
+place where the template parameters are specified first and then look them
+up. And often the template parameters are a typedef for yet another
+template type and I spend a lot of time researching all the parameters.
+
+I have the impression that templates are often used instead of
+inheritance. So one doesn't know which functions have to be supported by a
+ceratain template parameter (also no documentation). One can either read
+the code or just try it. Both is very timeconsuming. With inheritance one
+could look at the base class and know what is done. It could also avoid
+packing all symbolizers together in a boost::variant if they all had a
+common base class with virtual functions.
+
+Compiler errors with templates are very hard to understand. When just one
+or two templates are used it's ok, but with 10 or more is get's
+unreadable. The longest error message I got was about 400kB of text. The
+compiler also has a hard time tracking all these templates and used about
+1.5gb of RAM for a single file and a complete rebuild takes about
+20minutes. And because a lot of functionallity is in header files often a
+single change triggers a full rebuild.
+
+These problems caused some delay for me, but I hope to be able to finally
+provide working code this weekend.
+
+
+Regards,
+
+Hermann
+
+

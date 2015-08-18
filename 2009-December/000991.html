@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Osm input plugin
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Osm%20input%20plugin&In-Reply-To=%3C57C36D18-FF3A-443D-B703-972CC313114F%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000990.html">
+   <LINK REL="Next"  HREF="000992.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Osm input plugin</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Osm%20input%20plugin&In-Reply-To=%3C57C36D18-FF3A-443D-B703-972CC313114F%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Osm input plugin">blake at hailmail.net
+       </A><BR>
+    <I>Tue Dec  1 17:42:42 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000990.html">[Mapnik-devel] Osm input plugin
+</A></li>
+        <LI>Next message: <A HREF="000992.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#991">[ date ]</a>
+              <a href="thread.html#991">[ thread ]</a>
+              <a href="subject.html#991">[ subject ]</a>
+              <a href="author.html#991">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Vlad,
+
+I noticed there are a few sample map styles inside the osm plugin  
+source directory that work with the sample .osm files there.
+
+Try this:
+
+First, install nik2img
+
+Then do:
+
+svn co <A HREF="http://svn.mapnik.org/trunk/plugins/input/osm/">http://svn.mapnik.org/trunk/plugins/input/osm/</A> osm_plugin_code
+cd osm_plugin_code
+nik2img.py test.xml test.png
+
+
+If you have the proper Cairo support built into Mapnik then you can  
+also do:
+
+nik2img.py test.xml test.svg # or .pdf...
+
+Dane
+
+
+
+On Dec 1, 2009, at 8:22 AM, Dane Springmeyer wrote:
+
+&gt;<i> On Nov 30, 2009, at 11:17 PM, Vladislav Shikhov wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hello all,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is mapnik osm input plugin works well or it's still experimental?
+</I>&gt;<i>
+</I>&gt;<i> It is certainly experimental, but would be great to have you testing  
+</I>&gt;<i> it.
+</I>&gt;<i>
+</I>&gt;&gt;<i> Is
+</I>&gt;&gt;<i> there any limitations for input .osm file?
+</I>&gt;<i>
+</I>&gt;<i> Not that I know of, other than you will want to try first with small
+</I>&gt;<i> files.
+</I>&gt;<i>
+</I>&gt;&gt;<i> The problem is that I can't render a .svg from .osm file with python.
+</I>&gt;&gt;<i> (got &quot;Not a map file. Node 'Map' not found&quot; error) with mapnik
+</I>&gt;&gt;<i> installed from ubuntu 9.10 deb repository (it seems it have osm input
+</I>&gt;&gt;<i> plugin.)
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Sounds like you are not using Mapnik correctly. That error means that
+</I>&gt;<i> you are trying to read in invalid XML for the map styles.
+</I>&gt;<i>
+</I>&gt;<i> Perhaps you are confusing the .osm file with the separate, needed, map
+</I>&gt;<i> styles (which are also XML)?
+</I>&gt;<i>
+</I>&gt;<i> Please paste the script you are trying to run.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000990.html">[Mapnik-devel] Osm input plugin
+</A></li>
+	<LI>Next message: <A HREF="000992.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#991">[ date ]</a>
+              <a href="thread.html#991">[ thread ]</a>
+              <a href="subject.html#991">[ subject ]</a>
+              <a href="author.html#991">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

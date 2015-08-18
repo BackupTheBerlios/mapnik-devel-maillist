@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] MySQL Extentions
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MySQL%20Extentions&In-Reply-To=%3C4578351C.3050305%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000082.html">
+   <LINK REL="Next"  HREF="000076.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] MySQL Extentions</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MySQL%20Extentions&In-Reply-To=%3C4578351C.3050305%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] MySQL Extentions">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Thu Dec  7 16:37:00 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000082.html">[Mapnik-devel] MySQL Extentions
+</A></li>
+        <LI>Next message: <A HREF="000076.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#83">[ date ]</a>
+              <a href="thread.html#83">[ thread ]</a>
+              <a href="subject.html#83">[ subject ]</a>
+              <a href="author.html#83">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Aaron,
+
+It would be really nice to have mysql plug-in for Mapnik. From what I 
+can see on their web-site it can be a straight forward implementation 
+based on postgis. MySQL spatial predicates are not as complete as in 
+PostGIS but Mapnik only needs efficient bounding box query at this time. 
+I believe others (qgis etc ) have MySQL support as well.
+
+When I have some time (probably around xmas) I'll get latest MySQL and 
+have a play.
+
+Cheers,
+Artem
+
+Aaron Mitti wrote:
+&gt;<i> All,
+</I>&gt;<i>
+</I>&gt;<i> We're fairly far down the road using PostGIS on top of Postgres, however 
+</I>&gt;<i> for the most part we've strictly been a MySQL business. We currently use 
+</I>&gt;<i> MySQL 4.1, however we've started migrating to MySQL 5.0. One of our 
+</I>&gt;<i> concerns is that we have no one who is a real Postgres expert to maintain 
+</I>&gt;<i> our new Postgres systems.
+</I>&gt;<i>
+</I>&gt;<i> Is anyone familiar enough with MySQL's GIS functionality to know what 
+</I>&gt;<i> difficulties it might have as an input plugin to Mapnik and other linux 
+</I>&gt;<i> GIS tools. (grass, qgis, ogr, gdal, etc).
+</I>&gt;<i>
+</I>&gt;<i> For anyone who doesn't know, as of MySQL 5.0, and more so in 5.1, many 
+</I>&gt;<i> spatial functions have been added that follow the Open Geospatial 
+</I>&gt;<i> Consortium specifications. Here's some more info:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://dev.mysql.com/doc/refman/5.1/en/spatial-extensions.html">http://dev.mysql.com/doc/refman/5.1/en/spatial-extensions.html</A>
+</I>&gt;<i>
+</I>&gt;<i> -Aaron
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Aaron Mitti                         Email: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">amitti at 10east.com</A>
+</I>&gt;<i> Open Systems Engineer               Phone: 904-220-3627
+</I>&gt;<i> 10 East Corp.                         FAX: 904-384-1038
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000082.html">[Mapnik-devel] MySQL Extentions
+</A></li>
+	<LI>Next message: <A HREF="000076.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#83">[ date ]</a>
+              <a href="thread.html#83">[ thread ]</a>
+              <a href="subject.html#83">[ subject ]</a>
+              <a href="author.html#83">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

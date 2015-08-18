@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] text_spacing patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20text_spacing%20patch&In-Reply-To=%3C456CD11D.8000608%40smartrak.biz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000061.html">
+   <LINK REL="Next"  HREF="000067.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] text_spacing patch</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20text_spacing%20patch&In-Reply-To=%3C456CD11D.8000608%40smartrak.biz%3E"
+       TITLE="[Mapnik-devel] text_spacing patch">dave at smartrak.biz
+       </A><BR>
+    <I>Wed Nov 29 01:15:25 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000061.html">[Mapnik-devel] max_char_angle_delta fix
+</A></li>
+        <LI>Next message: <A HREF="000067.html">[Mapnik-devel] label_position_tolerance patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#65">[ date ]</a>
+              <a href="thread.html#65">[ thread ]</a>
+              <a href="subject.html#65">[ subject ]</a>
+              <a href="author.html#65">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The text placement on roads in mapnik liked to place text at the 
+start/end of roads. I've changed it to try and center the text.
+This makes short roads with low amounts of labels look much better.
+
+Check this page for a visual comparison:
+<A HREF="http://localhost.geek.nz/text_spacing/">http://localhost.geek.nz/text_spacing/</A>
+
+I've also added force_odd_labels to text_symbolizer, this makes the text 
+renderer attempt to render an odd amount of labels so that you get one 
+right in the middle of the road.
+
+Dave.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: text_placement.patch
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/d22a0d45/attachment.ksh">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/d22a0d45/attachment.ksh</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000061.html">[Mapnik-devel] max_char_angle_delta fix
+</A></li>
+	<LI>Next message: <A HREF="000067.html">[Mapnik-devel] label_position_tolerance patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#65">[ date ]</a>
+              <a href="thread.html#65">[ thread ]</a>
+              <a href="subject.html#65">[ subject ]</a>
+              <a href="author.html#65">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

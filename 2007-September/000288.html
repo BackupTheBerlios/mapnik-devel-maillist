@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] freetype thread safety
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20freetype%20thread%20safety&In-Reply-To=%3C1190329355.4459.57.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000285.html">
+   <LINK REL="Next"  HREF="000292.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] freetype thread safety</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20freetype%20thread%20safety&In-Reply-To=%3C1190329355.4459.57.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] freetype thread safety">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Fri Sep 21 01:02:35 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000285.html">[Mapnik-devel] Minor patch to improve EOF detectin in shapefile	plugin
+</A></li>
+        <LI>Next message: <A HREF="000292.html">[Mapnik-devel] strict XML branch merged
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#288">[ date ]</a>
+              <a href="thread.html#288">[ thread ]</a>
+              <a href="subject.html#288">[ subject ]</a>
+              <a href="author.html#288">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>My tests with multi-threaded rendering in Mapnik are now crashing within
+freetype. I believe this is because Mapnik has a single freetype library
+instance in the static freetype_engine whereas the docs say...
+
+'For multi-threading applications each thread should have its own
+FT_Library object.'
+
+<A HREF="http://freetype.sourceforge.net/freetype2/docs/reference/ft2-base_interface.html#FT_Library">http://freetype.sourceforge.net/freetype2/docs/reference/ft2-base_interface.html#FT_Library</A>
+
+The attached test program crashes reliably for me. You need a valid map
+and imported OSM planet data for it to work (it uses text at the hard
+coded tile locations, it should equally work with other data as long as
+it causes text to be rendered.).
+
+$ g++ -g -Wall threading2.cpp -o threading2 -I/usr/include/agg2 -I/usr/include/freetype2  -lmapnik
+$ ./threading2 2&gt; /dev/null
+Segmentation fault
+
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: threading2.cpp
+Type: text/x-c++src
+Size: 4378 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070921/d3c03384/attachment.cpp">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070921/d3c03384/attachment.cpp</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000285.html">[Mapnik-devel] Minor patch to improve EOF detectin in shapefile	plugin
+</A></li>
+	<LI>Next message: <A HREF="000292.html">[Mapnik-devel] strict XML branch merged
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#288">[ date ]</a>
+              <a href="thread.html#288">[ thread ]</a>
+              <a href="subject.html#288">[ subject ]</a>
+              <a href="author.html#288">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Changeset 720 and cairo python bindings
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Changeset%20720%20and%20cairo%20python%20bindings&In-Reply-To=%3C6BA6C1C3-2119-480A-8BD9-3820794EA56F%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000670.html">
+   <LINK REL="Next"  HREF="000673.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Changeset 720 and cairo python bindings</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Changeset%20720%20and%20cairo%20python%20bindings&In-Reply-To=%3C6BA6C1C3-2119-480A-8BD9-3820794EA56F%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Changeset 720 and cairo python bindings">blake at hailmail.net
+       </A><BR>
+    <I>Wed Jul 30 03:54:15 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000670.html">[Mapnik-devel] Accessing symbolizer properties with python bindings
+</A></li>
+        <LI>Next message: <A HREF="000673.html">[Mapnik-devel] Changeset 720 and cairo python bindings
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#672">[ date ]</a>
+              <a href="thread.html#672">[ thread ]</a>
+              <a href="subject.html#672">[ subject ]</a>
+              <a href="author.html#672">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On ubuntu 7.10 I cairo builds and the renderer works with svn r 719.
+
+But after changeset <A HREF="http://trac.mapnik.org/changeset/720">http://trac.mapnik.org/changeset/720</A> the render3  
+and render4 functions are lost and I get this traceback:
+
+Python argument types in,     mapnik._mapnik.render(Map,  
+cairo.SVGSurface), did not match C++ signature:,      
+render(mapnik::Map, mapnik::Image32 {lvalue}),     render(mapnik::Map,  
+mapnik::Image32 {lvalue}, unsigned int, unsigned int),   File &quot;/usr/ 
+lib/cgi-bin/mapnikserv.py&quot;,  line 515,  in &lt;module&gt;,      
+generate_file(format),   File &quot;/usr/lib/cgi-bin/mapnikserv.py&quot;,  line  
+318,  in generate_file,     mapnik.render(mapnik_map, surface)
+
+This is my build output:
+
+<A HREF="http://dpaste.com/68352/">http://dpaste.com/68352/</A>
+
+-DHAVE_CAIRO and -DHAVE_PYCAIRO are included.
+
+Is there a need to specify a new cairo flag during the scons process  
+or is the code in changeset 720 not working as expected?
+
+Thanks,
+
+Dane
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000670.html">[Mapnik-devel] Accessing symbolizer properties with python bindings
+</A></li>
+	<LI>Next message: <A HREF="000673.html">[Mapnik-devel] Changeset 720 and cairo python bindings
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#672">[ date ]</a>
+              <a href="thread.html#672">[ thread ]</a>
+              <a href="subject.html#672">[ subject ]</a>
+              <a href="author.html#672">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20ordering%20issue%20between%20png.h%20and%20setjmp.h&In-Reply-To=%3CA77698BB-0B84-4719-A25E-53AFE452C145%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000456.html">
+   <LINK REL="Next"  HREF="000458.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20ordering%20issue%20between%20png.h%20and%20setjmp.h&In-Reply-To=%3CA77698BB-0B84-4719-A25E-53AFE452C145%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jan 30 20:41:34 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000456.html">[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+</A></li>
+        <LI>Next message: <A HREF="000458.html">[Mapnik-devel] r616 incorrect?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#457">[ date ]</a>
+              <a href="thread.html#457">[ thread ]</a>
+              <a href="subject.html#457">[ subject ]</a>
+              <a href="author.html#457">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 30 Jan 2008, at 19:18, Jon Burgess wrote:
+
+&gt;<i> On one machine I'm seeing the following compile failure with the  
+</I>&gt;<i> latest
+</I>&gt;<i> code:
+</I>&gt;<i>
+</I>&gt;<i> g++ -o bindings/python/mapnik_image_view.os -c - 
+</I>&gt;<i> DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL -ansi -Wall  
+</I>&gt;<i> -pthread -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -O2  
+</I>&gt;<i> -finline-functions -Wno-inline -DNDEBUG -fPIC -I/usr/include/ 
+</I>&gt;<i> python2.4 -Iagg/include -Itinyxml -Iinclude -I. -I/usr/include -I/ 
+</I>&gt;<i> usr/include/postgresql -I/usr/local/include -I/usr/include/ 
+</I>&gt;<i> freetype2 bindings/python/mapnik_image_view.cpp
+</I>&gt;<i> In file included from /usr/include/png.h:363,
+</I>&gt;<i>                  from include/mapnik/png_io.hpp:28,
+</I>&gt;<i>                  from bindings/python/mapnik_image_view.cpp:28:
+</I>&gt;<i> /usr/include/pngconf.h:312:10: error: #error png.h already includes  
+</I>&gt;<i> setjmp.h with some additional fixup.
+</I>&gt;<i> scons: *** [bindings/python/mapnik_image_view.os] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Looking through the preprocessor output it seems that setjmp.h gtes
+</I>&gt;<i> included as a side effect of boost/python.hpp and we can not easily  
+</I>&gt;<i> move
+</I>&gt;<i> png_io.hpp above this in the file. The attached patch is not brilliant
+</I>&gt;<i> but seems to work.
+</I>&gt;<i>
+</I>&gt;<i> I suspect the problem only happens with certain combinations of
+</I>&gt;<i> libpng/boost/python versions.
+</I>
+Yes, I had the same problem on Ubuntu 7.10.  But there is no problem  
+building on FC8 or OS X.
+Thanks for the patch.
+Artem
+&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i> &lt;mapnik-png-setjmp- 
+</I>&gt;<i> clash.patch&gt;_______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000456.html">[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+</A></li>
+	<LI>Next message: <A HREF="000458.html">[Mapnik-devel] r616 incorrect?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#457">[ date ]</a>
+              <a href="thread.html#457">[ thread ]</a>
+              <a href="subject.html#457">[ subject ]</a>
+              <a href="author.html#457">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

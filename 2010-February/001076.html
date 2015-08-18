@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3CB5B5EDE0-CF1A-419E-9076-081AF8C41655%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001077.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3CB5B5EDE0-CF1A-419E-9076-081AF8C41655%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem">blake at hailmail.net
+       </A><BR>
+    <I>Fri Feb 26 19:16:33 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001077.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1076">[ date ]</a>
+              <a href="thread.html#1076">[ thread ]</a>
+              <a href="subject.html#1076">[ subject ]</a>
+              <a href="author.html#1076">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Brad,
+
+On Feb 25, 2010, at 2:45 PM, Simpson Brad-C-Lockheed wrote:
+
+&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> Good suggestion about building under Linux to see if the same  
+</I>&gt;<i> problems occur.  It turns out I built Mapnik under Linux when I was  
+</I>&gt;<i> first evaluating it.  However, none of the initial work involved Mico.
+</I>
+Okay, good to know.
+
+&gt;<i> In fact, we may not have the source to Mico v2.3.7 in order to build  
+</I>&gt;<i> it under Linux.  [Mico was supplied to us on our HP-UX systems pre- 
+</I>&gt;<i> built.]  Perhaps I can find it on the web.  We are going to have a  
+</I>&gt;<i> meeting Monday, however, to discuss upgrading to a newer  
+</I>&gt;<i> multithreaded version of Mico.  So all of this may be overcome by  
+</I>&gt;<i> events.
+</I>
+Okay, I hope that these possibilities can help you out.
+
+&gt;<i>
+</I>&gt;<i> Regarding using SCons to build Mapnik under HP-UX, unfortunately I  
+</I>&gt;<i> lost the notes on the modifications to the SCons directories [over  
+</I>&gt;<i> zealous during code cleanup].  I had to make changes to various  
+</I>&gt;<i> files in the scons/scons-local-1.2.0/SCons area.  Even though the  
+</I>&gt;<i> gnu compiler was installed, scons was trying to use the aCC compiler.
+</I>
+Ah, okay, this sounds similar to SCons bug that I've also seen affect  
+Solaris. In the future you could try installing the latest SCons on  
+your system and then instead of running the &quot;local&quot; scons just do:
+
+scons configure &amp;&amp; scons install
+
+Our local copy is just for convenience and perhaps the latest scons  
+sources have addressed this issue.
+
+&gt;<i> I fixed the compiler choice, but the arguments for compilation and  
+</I>&gt;<i> linking had unrecognized options.
+</I>
+Okay, which may be a problem with some of the flags in our Scons  
+implementation specific to Mapnik.
+
+&gt;<i>   After playing with it for a bit and getting frustrated, I finally  
+</I>&gt;<i> decided to build with the ignore errors options.  I  saved all the  
+</I>&gt;<i> commands into a file, made group edits, and ended up with a working  
+</I>&gt;<i> build script.  I can send a copy of this script if desired.
+</I>
+Sure, it would be a good reference at the least. I won't  have access  
+to an HP-UX machine to test anytime soon, but perhaps others might  
+benefit.
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100226/e94a8874/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100226/e94a8874/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001077.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1076">[ date ]</a>
+              <a href="thread.html#1076">[ thread ]</a>
+              <a href="subject.html#1076">[ subject ]</a>
+              <a href="author.html#1076">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

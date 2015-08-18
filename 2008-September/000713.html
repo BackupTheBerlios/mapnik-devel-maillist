@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Building with Boost 1.33
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C52EED900-2351-4298-8BD9-E0E2F185FBE5%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000712.html">
+   <LINK REL="Next"  HREF="000714.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Building with Boost 1.33</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C52EED900-2351-4298-8BD9-E0E2F185FBE5%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Building with Boost 1.33">blake at hailmail.net
+       </A><BR>
+    <I>Sat Sep  6 02:30:43 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000712.html">[Mapnik-devel] Support for a point_datasource -- adding points	dynamically in Python
+</A></li>
+        <LI>Next message: <A HREF="000714.html">[Mapnik-devel] Mapnik weird build error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#713">[ date ]</a>
+              <a href="thread.html#713">[ thread ]</a>
+              <a href="subject.html#713">[ subject ]</a>
+              <a href="author.html#713">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Mateusz,
+
+What a great writeup on that bug, and the process to get Mapnik  
+installed on 7.04.
+
+I've added a few items reflecting your findings to:
+
+<A HREF="http://trac.mapnik.org/wiki/InstallationTroubleshooting">http://trac.mapnik.org/wiki/InstallationTroubleshooting</A>
+and:
+<A HREF="http://trac.mapnik.org/wiki/UbuntuInstallation">http://trac.mapnik.org/wiki/UbuntuInstallation</A>
+
+It is clear we also need to make the build error reporting more useful  
+and robust during the Scons process. I've dipped into the scons code  
+looking at how to do this and will post when I have more time to  
+investigate.
+
+Thanks!
+
+Dane
+
+
+On Aug 26, 2008, at 4:59 AM, Mateusz Loskot wrote:
+
+&gt;<i> Justin Bronn wrote:
+</I>&gt;&gt;<i> Mateusz Loskot wrote:
+</I>&gt;&gt;&gt;<i> Justin,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The libboost_system looks strange to me. There is no such
+</I>&gt;&gt;&gt;<i> package for U7.04.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> That's because boost_system is only a part of Boost 1.35 and above.  
+</I>&gt;&gt;<i> [1]
+</I>&gt;&gt;<i> It's only required to compile Mapnik by certain platforms (Darwin/ 
+</I>&gt;&gt;<i> OSX)
+</I>&gt;&gt;<i> and my patch makes it optional again except for the systems that  
+</I>&gt;&gt;<i> truly
+</I>&gt;&gt;<i> require it.
+</I>&gt;<i>
+</I>&gt;<i> Justin,
+</I>&gt;<i>
+</I>&gt;<i> Understood.
+</I>&gt;<i>
+</I>&gt;<i> BTW, Yesterday Dane suggested to fix symlinks for Boost libs:
+</I>&gt;<i>
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_filesystem.a /usr/lib/ 
+</I>&gt;<i> libboost_filesystem-mt.a
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_filesystem.so
+</I>&gt;<i> /usr/lib/libboost_filesystem-mt.so
+</I>&gt;<i>
+</I>&gt;<i> and as I write below, it is required to fix Boost detection under  
+</I>&gt;<i> Ubuntu
+</I>&gt;<i> 7.04.
+</I>&gt;<i>
+</I>&gt;&gt;<i> Are you running on an x86-64 system?
+</I>&gt;<i>
+</I>&gt;<i> Nope, I use x86-32 of Ubuntu 7.04 under Parallels VM.
+</I>&gt;<i>
+</I>&gt;&gt;<i> That's the only thing I can think
+</I>&gt;&gt;<i> of that changes the default locations, maybe explaining why it's  
+</I>&gt;&gt;<i> working
+</I>&gt;&gt;<i> on my VM and not on your install.  Thus, you may need to be more
+</I>&gt;&gt;<i> explicit in the compile flags to specify the exact Boost locations  
+</I>&gt;&gt;<i> then
+</I>&gt;&gt;<i> (assuming the v2 patch from #90 is applied):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ python scons/scons.py \
+</I>&gt;&gt;<i>   BOOST_TOOLKIT=gcc BOOST_VERSION=1_33_1 \
+</I>&gt;&gt;<i>   BOOST_LIBS=/usr/lib BOOST_INCLUDES=/usr/include
+</I>&gt;<i>
+</I>&gt;<i> I have tried all these flags, without success.
+</I>&gt;<i>
+</I>&gt;&gt;<i> If you're still having trouble, then we'll have to go more in depth  
+</I>&gt;&gt;<i> and
+</I>&gt;&gt;<i> examine the way SCons is detecting the library, and try to  
+</I>&gt;&gt;<i> reproduce why
+</I>&gt;&gt;<i> it's compilation command is failing.
+</I>&gt;<i>
+</I>&gt;<i> Yes, and I've digged it (see below).
+</I>&gt;<i>
+</I>&gt;&gt;<i> SCons tests using a C++ stub like so:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> #include &quot;boost/filesystem/operations.hpp&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> int
+</I>&gt;&gt;<i> main() {
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> return 0;
+</I>&gt;&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> And compiling this test (as fstest.cpp) answered where is the problem,
+</I>&gt;<i> at least partially:
+</I>&gt;<i>
+</I>&gt;<i> $ g++ -Wall -pedantic fstest.cpp
+</I>&gt;<i> /usr/include/pthread.h:285: error: conflicting declaration &#8216;typedef
+</I>&gt;<i> struct pthread_st* pthread_t&#8217;
+</I>&gt;<i> /usr/include/bits/pthreadtypes.h:36: error: &#8216;pthread_t&#8217; has a previous
+</I>&gt;<i> declaration as &#8216;typedef long unsigned int pthread_t&#8217;
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> I've found that this error is caused by conflict/broken
+</I>&gt;<i> packages (see [1] and [2]).
+</I>&gt;<i>
+</I>&gt;<i> [1] <A HREF="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410692">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410692</A>
+</I>&gt;<i> [2] <A HREF="http://tinyurl.com/libpthread-bugs">http://tinyurl.com/libpthread-bugs</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I uninstalled libpthread* stuff and now scons.py for Mapnik goes a few
+</I>&gt;<i> steps further:
+</I>&gt;<i>
+</I>&gt;<i> $ python scons/scons.py DEBUG=y GDAL_INCLUDES=/usr/include
+</I>&gt;<i> GDAL_LIBS=/usr/lib XMLPARSER=libxml2 BOOST_VERSION=1_33_1  
+</I>&gt;<i> BOOST_TOOLSET=gcc
+</I>&gt;<i>
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> Building on Linux ...
+</I>&gt;<i> pkg-config --exists cairomm-1.0
+</I>&gt;<i> Checking for C library m... yes
+</I>&gt;<i> Checking for C library ltdl... yes
+</I>&gt;<i> Checking for C library png... yes
+</I>&gt;<i> Checking for C library tiff... yes
+</I>&gt;<i> Checking for C library z... yes
+</I>&gt;<i> Checking for C library jpeg... yes
+</I>&gt;<i> Checking for C library proj... yes
+</I>&gt;<i> Checking for C library pq... no
+</I>&gt;<i> Checking for C++ library icuuc... yes
+</I>&gt;<i> Checking for C++ library icudata... yes
+</I>&gt;<i> Checking for C++ library gdal... no
+</I>&gt;<i> Checking for C++ library boost_system-mt... no
+</I>&gt;<i> Checking for C++ library boost_filesystem-mt... yes
+</I>&gt;<i> Checking for C++ library boost_regex-mt... no
+</I>&gt;<i> Could not find header or shared library for boost regex, exiting!
+</I>&gt;<i> $
+</I>&gt;<i>
+</I>&gt;<i> As I mentioned, I fixed symlinks to filesystem libraries.
+</I>&gt;<i> So, the report above says now that filesystem has been detected,
+</I>&gt;<i> but not regex though I have *all* Boost packages installed on my  
+</I>&gt;<i> U7.04.
+</I>&gt;<i>
+</I>&gt;<i> OK, apparently another symlinks have to be fixed:
+</I>&gt;<i>
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_regex.a /usr/lib/libboost_regex-mt.a
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_regex.so /usr/lib/libboost_regex-mt.so
+</I>&gt;<i>
+</I>&gt;<i> ### NOTE: Only link to .so required ###
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_iostreams.so /usr/lib/ 
+</I>&gt;<i> libboost_iostreams-mt.so
+</I>&gt;<i>
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_program_options.a
+</I>&gt;<i> /usr/lib/libboost_program_options-mt.a
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_program_options.so
+</I>&gt;<i> /usr/lib/libboost_program_options-mt.so
+</I>&gt;<i>
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_thread.a /usr/lib/libboost_thread-mt.a
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_thread.so /usr/lib/libboost_thread-mt.so
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> After these fixes, scons.py outputs this:
+</I>&gt;<i>
+</I>&gt;<i> $ python scons/scons.py DEBUG=y GDAL_INCLUDES=/usr/include
+</I>&gt;<i> GDAL_LIBS=/usr/lib XMLPARSER=libxml2 BOOST_VERSION=1_33_1  
+</I>&gt;<i> BOOST_TOOLSET=gcc
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> Building on Linux ...
+</I>&gt;<i> pkg-config --exists cairomm-1.0
+</I>&gt;<i> Checking for C library m... yes
+</I>&gt;<i> Checking for C library ltdl... yes
+</I>&gt;<i> Checking for C library png... yes
+</I>&gt;<i> Checking for C library tiff... yes
+</I>&gt;<i> Checking for C library z... yes
+</I>&gt;<i> Checking for C library jpeg... yes
+</I>&gt;<i> Checking for C library proj... yes
+</I>&gt;<i> Checking for C library pq... no
+</I>&gt;<i> Checking for C++ library icuuc... yes
+</I>&gt;<i> Checking for C++ library icudata... yes
+</I>&gt;<i> Checking for C++ library gdal... no
+</I>&gt;<i> Checking for C++ library boost_system-mt... no
+</I>&gt;<i> Checking for C++ library boost_filesystem-mt... yes
+</I>&gt;<i> Checking for C++ library boost_regex-mt... yes
+</I>&gt;<i> Checking for C++ library boost_iostreams-mt... yes
+</I>&gt;<i> Checking for C++ library boost_program_options-mt... yes
+</I>&gt;<i> Checking for C++ library boost_thread-mt... yes
+</I>&gt;<i> Bindings Python version... 2.5
+</I>&gt;<i> Python 2.5 prefix... /usr
+</I>&gt;<i> pkg-config --exists pycairo
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> ...
+</I>&gt;<i> scons: done building targets.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> One note, it seems that scons.py does not check for libboost_python,  
+</I>&gt;<i> so
+</I>&gt;<i> compilation configured as above stopped with linker error:
+</I>&gt;<i>
+</I>&gt;<i> /usr/bin/ld: cannot find -lboost_python-mt
+</I>&gt;<i>
+</I>&gt;<i> Fixing yet another symlink solves the problem:
+</I>&gt;<i>
+</I>&gt;<i> sudo ln -s /usr/lib/libboost_python.so /usr/lib/libboost_python-mt.so
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I have no tried to run Mapnik in any way yet, just tested it  
+</I>&gt;<i> configures
+</I>&gt;<i> and builds without errors. Later on, I will test it in run-time and
+</I>&gt;<i> report if my build works or not :-)
+</I>&gt;<i>
+</I>&gt;<i> Thanks all for your help!
+</I>&gt;<i>
+</I>&gt;<i> Best regards,
+</I>&gt;<i> -- 
+</I>&gt;<i> Mateusz Loskot, <A HREF="http://mateusz.loskot.net">http://mateusz.loskot.net</A>
+</I>&gt;<i> Charter Member of OSGeo, <A HREF="http://osgeo.org">http://osgeo.org</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000712.html">[Mapnik-devel] Support for a point_datasource -- adding points	dynamically in Python
+</A></li>
+	<LI>Next message: <A HREF="000714.html">[Mapnik-devel] Mapnik weird build error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#713">[ date ]</a>
+              <a href="thread.html#713">[ thread ]</a>
+              <a href="subject.html#713">[ subject ]</a>
+              <a href="author.html#713">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

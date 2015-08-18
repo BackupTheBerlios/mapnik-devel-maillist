@@ -1,0 +1,94 @@
+From lauri.kajan at gmail.com  Wed Nov  9 15:55:25 2011
+From: lauri.kajan at gmail.com (Lauri Kajan)
+Date: Wed, 9 Nov 2011 16:55:25 +0200
+Subject: [Mapnik-devel] GeoTiff output?
+Message-ID: <CAKWoFMLcDsAKR0yp4gv+tLXCupP2_CKSt39q=S++PmyOpS0c9g@mail.gmail.com>
+
+Hi all,
+
+I have a process where I need output images in a GeoTiff format.
+
+Is there any plans to include geotiff support to Mapnik?
+Now I have to generate images to png and convert those to geotiff with
+gdal_translate.
+
+Could I create an issue to github?
+
+
+Thanks
+
+-Lauri
+
+
+From dane at developmentseed.org  Wed Nov  9 17:38:02 2011
+From: dane at developmentseed.org (Dane Springmeyer)
+Date: Wed, 9 Nov 2011 08:38:02 -0800
+Subject: [Mapnik-devel] GeoTiff output?
+In-Reply-To: <CAKWoFMLcDsAKR0yp4gv+tLXCupP2_CKSt39q=S++PmyOpS0c9g@mail.gmail.com>
+References: <CAKWoFMLcDsAKR0yp4gv+tLXCupP2_CKSt39q=S++PmyOpS0c9g@mail.gmail.com>
+Message-ID: <6650DF4D-9CBF-41FA-86DE-E01987D78162@dbsgeo.com>
+
+
+On Nov 9, 2011, at 6:55 AM, Lauri Kajan wrote:
+
+> Hi all,
+> 
+> I have a process where I need output images in a GeoTiff format.
+> 
+> Is there any plans to include geotiff support to Mapnik?
+> Now I have to generate images to png and convert those to geotiff with
+> gdal_translate.
+> 
+> Could I create an issue to github?
+> 
+
+Hi Lauri,
+
+Yes, this is a reasonable feature request, and a github issue would be the right place.
+
+Please note whether you are looking for true GeoTiff support, or just what could be accomplished with Tiff+ world file.
+
+> 
+> Thanks
+> 
+> -Lauri
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Wed Nov 30 02:45:29 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 29 Nov 2011 17:45:29 -0800
+Subject: [Mapnik-devel] NOTICE: new,
+	replacement mailing list: http://groups.google.com/group/mapnik
+Message-ID: <2B1EF79D-CACA-4567-B345-8739587592EF@dbsgeo.com>
+
+As you have noticed we've been moving our services around recently (mainly trac -> github). Thanks for your patience as we work things out.
+
+This email is to alert you that we now have a new mailing list, hosted via google groups that will replace (immediately) the two current lists: mapnik-users and mapnik-devel.
+
+You can sign up via http://mapnik.org/contact/ or directly on the groups page [1]. We DO NOT plan to auto-migrate your list subscription.
+
+So, from now on please send emails to this single, new group: both either related to mapnik-usage or mapnik-development.
+
+We are making this move because our current provider, berlios, plans to shut down soon [2]. There is some chance berlios will stay up, but we feel like google groups is a better option either way, and look forward to consolidating email traffic to a single list.
+
+If you forget about this new group and accidentally send an email to mapnik-users at lists.berlios.de or mapnik-devel at lists.berlios.de, I will kindly reply reminding you of the new list. Please feel free to remind others too if you are able to respond before me. 
+
+Thanks,
+
+Dane
+
+[1] http://groups.google.com/group/mapnik
+[2] http://developer.berlios.de/forum/forum.php?forum_id=37450
+
+PS. we have a backup of both mailing lists as mbox files, so if/when berlios shuts down I will plan on posting viewable html archives at mapnik.org. If you are curious you can download mbox archives like:
+
+rsync -av lists.berlios.de::mapnik-users-archive mapnik-users-archive
+
+
+
+

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC - TextSymbolizers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%20-%20TextSymbolizers&In-Reply-To=%3CDC350B18-24C0-4404-AF14-CE425D6D272F%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001405.html">
+   <LINK REL="Next"  HREF="001407.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC - TextSymbolizers</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%20-%20TextSymbolizers&In-Reply-To=%3CDC350B18-24C0-4404-AF14-CE425D6D272F%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] GSoC - TextSymbolizers">dane at dbsgeo.com
+       </A><BR>
+    <I>Sun Jun  5 23:56:47 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001405.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+        <LI>Next message: <A HREF="001407.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1406">[ date ]</a>
+              <a href="thread.html#1406">[ thread ]</a>
+              <a href="subject.html#1406">[ subject ]</a>
+              <a href="author.html#1406">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hermann,
+
+This looks great - apologies for missing responding to this earlier.
+
+As far as a matching CSS syntax, it would be helpful to see what you are thinking for the XML representation, then we can exchange ideas/check that against what it might look like in CSS.
+
+Dane
+
+
+On May 17, 2011, at 6:09 AM, Hermann Kraus wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i> 
+</I>&gt;<i> I'm working on improving TextSymoblizer output as my summer of code project this year. As one subproject I will add formating capabilities. One important question was how to make it stylable using CSS. While I'm not sure about the exact syntax to use I think the following internal representation will be useful:
+</I>&gt;<i> 
+</I>&gt;<i> - Parse the text into a list of tokens which are processed one by one.
+</I>&gt;<i> - Token types:
+</I>&gt;<i> o Text token (plain text)
+</I>&gt;<i> o Value token (access db fields)
+</I>&gt;<i> o Format token (change font, etc.)
+</I>&gt;<i> o End token (undo last format token)
+</I>&gt;<i> - Format tokens return the new format. They can either contain direct formating instructions (&quot;make this text bold&quot;) or references to styles (which in turn contain formating instructions). During processing the current feature is also passed to the token, so formating can depend on fields in the data set.
+</I>&gt;<i> 
+</I>&gt;<i> I think this idea is both very flexible and also easy to implement and extend.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Does this sound good or does anybody have ideas for improvement?
+</I>&gt;<i> 
+</I>&gt;<i> Regards,
+</I>&gt;<i> 
+</I>&gt;<i> Hermann
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001405.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+	<LI>Next message: <A HREF="001407.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1406">[ date ]</a>
+              <a href="thread.html#1406">[ thread ]</a>
+              <a href="subject.html#1406">[ subject ]</a>
+              <a href="author.html#1406">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

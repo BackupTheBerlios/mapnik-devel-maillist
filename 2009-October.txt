@@ -1,0 +1,1848 @@
+From balram.chavan at decos.in  Tue Oct  6 06:39:00 2009
+From: balram.chavan at decos.in (Balram Chavan)
+Date: Tue, 06 Oct 2009 10:09:00 +0530
+Subject: [Mapnik-devel] Worst time taken by Mapnik while rendering map...
+	Please help me!!!
+Message-ID: <fb300571.1ca463e.22342a.4e89@decos.in>
+
+Hi friends, 
+
+Hope you find this mail in good health. 
+
+I have created a map rendering application using Mapnik & Python. I have implemented basic operation on map rendering too. 
+
+The major problem is large time taken by Mapnik to render a map. 
+
+I am rendering a map by firing queries on postgreSql database & assigning this data to various layers of map & finally rendering map by calling function render_to_file(). 
+I have defined various styles & rules function similar to osm.xml style sheet with filter, maxscale & minscale parameters to filter our data at various zoom level. 
+
+When I am rendering map using Europe data & it is taking  time about 5 to 6 minutes for rendering map image. 
+Again whenever I perform some operation like zoom in, zoom out, pan etc ; it takes same amount of time. 
+
+Most people recommended tile server as solution to this problem but  I can?t use tile server. 
+Because I have to provide ?route planning & management? as one of the feature of my project, and I guess this will not be possible using tile server. 
+
+I guessed using ?estimate_extent & extent? parameter in PostGIS function could help me out of this. 
+But when I tried it skipped most of the data from query result and rendered map with very low details. 
+
+Could you please help me out of this problem? 
+Please do provide me some concrete solution for this issue. 
+
+Expecting your helping hands toward me. 
+
+Thanks in Advance 
+
+Balram 
+ 
+
+  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091006/68c9e9f0/attachment.html>
+
+From blake at hailmail.net  Sun Oct 11 21:32:52 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 11 Oct 2009 12:32:52 -0700
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+Message-ID: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+
+Mapnik-dev,
+
+While this list is fairly quiet, we have quite a bit of development  
+activity and discussion on the Trac site via tickets. In many ways I  
+think this is ideal as discussions are logged nicely against issues  
+and not all people subscribe to the mapnik-devel list.
+
+But, it raises the question: Should we cc ticket activity to mapnik- 
+devel so that people subscribed can also follow ticket activity?
+
+Post your vote, + or -.
+
+Thanks,
+
+Dane
+
+
+From dave at smartrak.co.nz  Sun Oct 11 21:38:05 2009
+From: dave at smartrak.co.nz (David Leaver)
+Date: Mon, 12 Oct 2009 08:38:05 +1300
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+In-Reply-To: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+References: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+Message-ID: <4AD2341D.9040108@smartrak.co.nz>
+
+Sounds good to me.
+
+So long as they are tagged so we can differentiate mailing list messages 
+vs Trac messages.
+Either that or another mailing list, mapnik-trac ?
+
+Cheers,
+Dave.
+
+Dane Springmeyer wrote:
+> Mapnik-dev,
+>
+> While this list is fairly quiet, we have quite a bit of development  
+> activity and discussion on the Trac site via tickets. In many ways I  
+> think this is ideal as discussions are logged nicely against issues  
+> and not all people subscribe to the mapnik-devel list.
+>
+> But, it raises the question: Should we cc ticket activity to mapnik- 
+> devel so that people subscribed can also follow ticket activity?
+>
+> Post your vote, + or -.
+>
+> Thanks,
+>
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From amishkovskiy at cloudmade.com  Mon Oct 12 10:09:30 2009
+From: amishkovskiy at cloudmade.com (Andrii V. Mishkovskyi)
+Date: Mon, 12 Oct 2009 11:09:30 +0300
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+In-Reply-To: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+References: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+Message-ID: <547b5ba00910120109k143bc5dfg74245f2825b4fa81@mail.gmail.com>
+
+On Sun, Oct 11, 2009 at 10:32 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+> Mapnik-dev,
+>
+> While this list is fairly quiet, we have quite a bit of development
+> activity and discussion on the Trac site via tickets. In many ways I
+> think this is ideal as discussions are logged nicely against issues
+> and not all people subscribe to the mapnik-devel list.
+>
+> But, it raises the question: Should we cc ticket activity to mapnik-
+> devel so that people subscribed can also follow ticket activity?
+>
+> Post your vote, + or -.
+
++1
+I'd rather see a separate list for that, but I like the general idea.
+On a completely unrelated note I would love to see mapnik-checkins
+list where all the trunk activity would be logged, as it's easier for
+someone like me to follow development of mapnik just by reading diffs.
+
+>
+> Thanks,
+>
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Wbr, Andrii V. Mishkovskyi.
+
+I have the last page code of rocket launch program in NASA written in Lisp:
+)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+
+From artem at mapnik.org  Mon Oct 12 13:14:39 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 12 Oct 2009 12:14:39 +0100
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+In-Reply-To: <4AD2341D.9040108@smartrak.co.nz>
+References: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+	<4AD2341D.9040108@smartrak.co.nz>
+Message-ID: <7e70f38d0910120414g2c888293i3448bfbc2aa1ac45@mail.gmail.com>
+
++1 good idea. We can create a separate list or revive :
+https://lists.berlios.de/pipermail/mapnik-svn/
+Artem
+
+
+2009/10/11 David Leaver <dave at smartrak.co.nz>:
+> Sounds good to me.
+>
+> So long as they are tagged so we can differentiate mailing list messages
+> vs Trac messages.
+> Either that or another mailing list, mapnik-trac ?
+>
+> Cheers,
+> Dave.
+>
+> Dane Springmeyer wrote:
+>> Mapnik-dev,
+>>
+>> While this list is fairly quiet, we have quite a bit of development
+>> activity and discussion on the Trac site via tickets. In many ways I
+>> think this is ideal as discussions are logged nicely against issues
+>> and not all people subscribe to the mapnik-devel list.
+>>
+>> But, it raises the question: Should we cc ticket activity to mapnik-
+>> devel so that people subscribed can also follow ticket activity?
+>>
+>> Post your vote, + or -.
+>>
+>> Thanks,
+>>
+>> Dane
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From igor.podolskiy at ievvwi.uni-stuttgart.de  Mon Oct 12 13:22:58 2009
+From: igor.podolskiy at ievvwi.uni-stuttgart.de (Igor Podolskiy)
+Date: Mon, 12 Oct 2009 13:22:58 +0200
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+In-Reply-To: <4AD2341D.9040108@smartrak.co.nz>
+References: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+	<4AD2341D.9040108@smartrak.co.nz>
+Message-ID: <4AD31192.3080008@ievvwi.uni-stuttgart.de>
+
+Hi,
+> So long as they are tagged so we can differentiate mailing list messages 
+> vs Trac messages.
+> Either that or another mailing list, mapnik-trac ?
+I agree, too.
++1 - if it counts...
+
+Igor
+
+
+From blake at hailmail.net  Mon Oct 12 17:32:57 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 12 Oct 2009 08:32:57 -0700
+Subject: [Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+In-Reply-To: <7e70f38d0910120414g2c888293i3448bfbc2aa1ac45@mail.gmail.com>
+References: <D9AD13E1-D5BA-40C0-8E15-A6078F5D2948@hailmail.net>
+	<4AD2341D.9040108@smartrak.co.nz>
+	<7e70f38d0910120414g2c888293i3448bfbc2aa1ac45@mail.gmail.com>
+Message-ID: <BFD71C22-7607-42A3-A976-404A74FB3E81@hailmail.net>
+
+That sounds good. How about we revive 'mapnik-svn' (maybe rename to  
+'mapnik-code' or something) and send both commits and ticket comments  
+to it?
+
+Dane
+
+
+On Oct 12, 2009, at 4:14 AM, Artem Pavlenko wrote:
+
+> +1 good idea. We can create a separate list or revive :
+> https://lists.berlios.de/pipermail/mapnik-svn/
+> Artem
+>
+>
+> 2009/10/11 David Leaver <dave at smartrak.co.nz>:
+>> Sounds good to me.
+>>
+>> So long as they are tagged so we can differentiate mailing list  
+>> messages
+>> vs Trac messages.
+>> Either that or another mailing list, mapnik-trac ?
+>>
+>> Cheers,
+>> Dave.
+>>
+>> Dane Springmeyer wrote:
+>>> Mapnik-dev,
+>>>
+>>> While this list is fairly quiet, we have quite a bit of development
+>>> activity and discussion on the Trac site via tickets. In many ways I
+>>> think this is ideal as discussions are logged nicely against issues
+>>> and not all people subscribe to the mapnik-devel list.
+>>>
+>>> But, it raises the question: Should we cc ticket activity to mapnik-
+>>> devel so that people subscribed can also follow ticket activity?
+>>>
+>>> Post your vote, + or -.
+>>>
+>>> Thanks,
+>>>
+>>> Dane
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+
+
+
+From blake at hailmail.net  Thu Oct 15 04:42:59 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 14 Oct 2009 19:42:59 -0700
+Subject: [Mapnik-devel] Contributing to Postgres/PostGIS testing framework
+Message-ID: <98E176F7-BC5A-4003-B1B0-92FCADE35ED9@hailmail.net>
+
+So, we've got this great testing framework in trunk now (thanks Beau).
+
+To use it just do:
+
+$ sudo easy_install nose # uses [1]
+$ svn co http://svn.mapnik.org/trunk mapnik
+$ cd mapnik
+$ python tests/run_tests.py # requires you have mapnik installed
+
+... but we've not covering PostGIS yet.
+
+As a GeoDjango user I'm spoiled by this nice PostGIS testing framework  
+[2].
+
+Anyone have experience, time, or interest in writing Mapnik tests  
+against PostGIS?
+
+This would be an excellent thing to have going for the next release.
+
+Dane
+
+[1] http://somethingaboutorange.com/mrl/projects/nose/
+[2] http://geodjango.org/docs/testing.html#postgis
+
+
+From david.eastcott at shaw.ca  Sun Oct 18 15:02:54 2009
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sun, 18 Oct 2009 07:02:54 -0600
+Subject: [Mapnik-devel] Some patches for Shield and Text Symbolizers
+Message-ID: <4ADB11FE.5090505@shaw.ca>
+
+I have attached some changes that I thought would enhance mapnik.  I've 
+generated the diff set against trunk version 1331 and are attached.  I 
+did not attempt to modify the other interface or subsystems (python or 
+cario) to support the new/changed parameters.  If you have any 
+questions, please do not hesitate to contact me.
+
+Best regards,
+Dave
+
+Change log:
+
+1.  Modified Text Symbolizer
+
+    a) corrected line fragment centering (for 2nd and subsequent lines, 
+when line breaks occur).
+
+    b) adjusted vertical alignment calculation so that:
+        i)      middle -> has the center of the text line(s) at the 
+point origin
+        ii)     bottom -> has the text line(s) below the point origin
+        iii)    top -> has the text line(s) above the point origin
+
+    c) added new text_symbolizer attribute: 'wrap_before', value range: 
+true/false, default == false
+
+       allows line breaks at first wrap_char before wrap_width as an 
+alternative to the original
+       which was to create the line break at the first wrap_char after 
+wrap_width
+
+    d) added new text_symbolizer attribute: 'horizontal_alignment', 
+value range: left/middle/right, default == middle
+        i)      left -> has all text line(s) to left of the point origin
+        ii)     middle -> has all text line(s) centered on the the point 
+origin
+        iii)    right -> has all text line(s) to the right of the point 
+origin
+
+        NOTE:   dx, dy position adjustments are applied after alignments 
+and before Justify.
+
+    e) added new text_symbolizer attribute: 'justify_alignment', value 
+range: left/middle/right, default == middle
+        i)      left -> after alignments, has all text line(s) are left 
+justified (left to right reading)
+        ii)     middle -> after alignments, has all text line(s) center 
+justified
+        iii)    right -> after alignments, has all text line(s) right 
+justified (right to left reading)
+
+    f) added new text_symbolizer attribute:  'opacity', value range: 0.0 
+thru 1.0; 1.0 == fully opaque
+
+    g) modified positioning to compensate for both line_spacing and 
+character_spacing, to ensure proper
+       centering of the text envelope.  Also ensure that centering 
+occurs correctly even if no wrapping
+       occurs.  Line spacing is uniform and consistent and compensates 
+for errors between text_size and
+       the actual size (ci.height is inconsistent, depending on case and 
+character); fixes issue with
+       multi-line text where some lines have a slight gap and others are 
+compressed together.
+
+
+2.  Modified shield_symbolizer
+
+    a) added the attributes:
+        i)      allow_overlap
+        ii)     vertical_alignment
+        iii)    horizontal_alignment
+        iv)     justify_alignment
+        v)      wrap_width
+        vi)     wrap_character
+        vii)    wrap_before
+        viii)   text_convert
+        ix)     line_spacing
+        x)      character_spacing
+        xi)     opacity
+
+    b)  added new shield_symbolizer attribute: 'unlock_image', value 
+range: true/false, default == false
+        i)  false == image and text placement behaviour same as before
+        ii) true == image placement independant of text, image is always 
+centered at geometry point, text placed per attributes,
+                    dx/dy only affect text.
+
+        Allows user to create point markers with text, but both the text 
+and image rendering collision detection are done
+        as a pair (they come and go together - solves problem if using 
+point_symbolizer and text_symbolizers where one or the
+        other are omitted due to overlaps, but not both)
+
+    c)  extended choices for the attribute 'placement' to include 
+vertex; effect is limited to the shield_symbolizer
+
+        Allows an attempted placement at every vertex available, gives 
+additional shield placement volume when using line geometry
+
+    d)  ensured that the text placement was not updating the detector 
+unless a shield image was actually placed.
+
+    e)  added new shield_symbolizer attribute: 'no_text', value range: 
+true/false, default = false
+
+        When set true, the text for the feature is ignored ('space' 
+subsituted) so that pure graphic symbols can be used
+        and no text is rendered over top of them.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-1331.tar.gz
+Type: application/x-gzip
+Size: 29520 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091018/33731586/attachment.bin>
+
+From artem at mapnik.org  Mon Oct 19 11:30:33 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 19 Oct 2009 10:30:33 +0100
+Subject: [Mapnik-devel] Some patches for Shield and Text Symbolizers
+In-Reply-To: <4ADB11FE.5090505@shaw.ca>
+References: <4ADB11FE.5090505@shaw.ca>
+Message-ID: <7e70f38d0910190230m62ec02aauecbc4116f49dfebb@mail.gmail.com>
+
+Hi David,
+
+Great, thanks very much for contributing to Mapnik! I applied your
+patch against latest trunk ( r1340 ) and everything builds/runs fine.
+I'm yet to try new parameters, though. I might apply your changes to
+the trunk so we can have a play.
+
+Regards,
+Artem
+
+PS. Please, consider subscribing to mapnik mailing lists
+
+
+2009/10/18 David Eastcott <david.eastcott at shaw.ca>:
+> I have attached some changes that I thought would enhance mapnik. ?I've
+> generated the diff set against trunk version 1331 and are attached. ?I did
+> not attempt to modify the other interface or subsystems (python or cario) to
+> support the new/changed parameters. ?If you have any questions, please do
+> not hesitate to contact me.
+>
+> Best regards,
+> Dave
+>
+> Change log:
+>
+> 1. ?Modified Text Symbolizer
+>
+> ? a) corrected line fragment centering (for 2nd and subsequent lines, when
+> line breaks occur).
+>
+> ? b) adjusted vertical alignment calculation so that:
+> ? ? ? i) ? ? ?middle -> has the center of the text line(s) at the point
+> origin
+> ? ? ? ii) ? ? bottom -> has the text line(s) below the point origin
+> ? ? ? iii) ? ?top -> has the text line(s) above the point origin
+>
+> ? c) added new text_symbolizer attribute: 'wrap_before', value range:
+> true/false, default == false
+>
+> ? ? ?allows line breaks at first wrap_char before wrap_width as an
+> alternative to the original
+> ? ? ?which was to create the line break at the first wrap_char after
+> wrap_width
+>
+> ? d) added new text_symbolizer attribute: 'horizontal_alignment', value
+> range: left/middle/right, default == middle
+> ? ? ? i) ? ? ?left -> has all text line(s) to left of the point origin
+> ? ? ? ii) ? ? middle -> has all text line(s) centered on the the point
+> origin
+> ? ? ? iii) ? ?right -> has all text line(s) to the right of the point origin
+>
+> ? ? ? NOTE: ? dx, dy position adjustments are applied after alignments and
+> before Justify.
+>
+> ? e) added new text_symbolizer attribute: 'justify_alignment', value range:
+> left/middle/right, default == middle
+> ? ? ? i) ? ? ?left -> after alignments, has all text line(s) are left
+> justified (left to right reading)
+> ? ? ? ii) ? ? middle -> after alignments, has all text line(s) center
+> justified
+> ? ? ? iii) ? ?right -> after alignments, has all text line(s) right
+> justified (right to left reading)
+>
+> ? f) added new text_symbolizer attribute: ?'opacity', value range: 0.0 thru
+> 1.0; 1.0 == fully opaque
+>
+> ? g) modified positioning to compensate for both line_spacing and
+> character_spacing, to ensure proper
+> ? ? ?centering of the text envelope. ?Also ensure that centering occurs
+> correctly even if no wrapping
+> ? ? ?occurs. ?Line spacing is uniform and consistent and compensates for
+> errors between text_size and
+> ? ? ?the actual size (ci.height is inconsistent, depending on case and
+> character); fixes issue with
+> ? ? ?multi-line text where some lines have a slight gap and others are
+> compressed together.
+>
+>
+> 2. ?Modified shield_symbolizer
+>
+> ? a) added the attributes:
+> ? ? ? i) ? ? ?allow_overlap
+> ? ? ? ii) ? ? vertical_alignment
+> ? ? ? iii) ? ?horizontal_alignment
+> ? ? ? iv) ? ? justify_alignment
+> ? ? ? v) ? ? ?wrap_width
+> ? ? ? vi) ? ? wrap_character
+> ? ? ? vii) ? ?wrap_before
+> ? ? ? viii) ? text_convert
+> ? ? ? ix) ? ? line_spacing
+> ? ? ? x) ? ? ?character_spacing
+> ? ? ? xi) ? ? opacity
+>
+> ? b) ?added new shield_symbolizer attribute: 'unlock_image', value range:
+> true/false, default == false
+> ? ? ? i) ?false == image and text placement behaviour same as before
+> ? ? ? ii) true == image placement independant of text, image is always
+> centered at geometry point, text placed per attributes,
+> ? ? ? ? ? ? ? ? ? dx/dy only affect text.
+>
+> ? ? ? Allows user to create point markers with text, but both the text and
+> image rendering collision detection are done
+> ? ? ? as a pair (they come and go together - solves problem if using
+> point_symbolizer and text_symbolizers where one or the
+> ? ? ? other are omitted due to overlaps, but not both)
+>
+> ? c) ?extended choices for the attribute 'placement' to include vertex;
+> effect is limited to the shield_symbolizer
+>
+> ? ? ? Allows an attempted placement at every vertex available, gives
+> additional shield placement volume when using line geometry
+>
+> ? d) ?ensured that the text placement was not updating the detector unless a
+> shield image was actually placed.
+>
+> ? e) ?added new shield_symbolizer attribute: 'no_text', value range:
+> true/false, default = false
+>
+> ? ? ? When set true, the text for the feature is ignored ('space'
+> subsituted) so that pure graphic symbols can be used
+> ? ? ? and no text is rendered over top of them.
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From Peter.Spurgeon at camden.gov.uk  Tue Oct 20 17:24:06 2009
+From: Peter.Spurgeon at camden.gov.uk (Spurgeon, Peter)
+Date: Tue, 20 Oct 2009 16:24:06 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+Message-ID: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+
+Hi
+
+ 
+
+When I run rundemo.py on Windows, I get the following error messages: -
+
+ 
+
+Traceback (most recent call last):
+
+  File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+
+    provpoly_lyr.datasource =
+Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries',
+encoding='latin1')
+
+  File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+Shapefile
+
+    return CreateDatasource(keywords)
+
+UserWarning: Could not create datasource. No plugin found for type
+'shape'
+
+ 
+
+ 
+
+Please advise.
+
+
+Regards,
+
+Peter
+
+ 
+
+Peter Spurgeon 
+Corporate GIS Manager
+Camden Corporate ICT
+Organisation Development
+London Borough of Camden
+
+Telephone:   020 7974 5614
+Fax:               020 7974 5860
+Web:             camden.gov.uk <http://www.camden.gov.uk/>  
+
+1st floor
+3 - 5 Cressy Road
+3 - 5 Cressy Road
+London NW3 2ND
+
+Please consider the environment before printing this email.
+
+
+
+
+
+ 
+
+
+This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091020/01708d7a/attachment.html>
+
+From artem at mapnik.org  Tue Oct 20 17:51:52 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 20 Oct 2009 16:51:52 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+Message-ID: <7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+
+Hi Peter,
+
+Could you post content of :
+
+C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+
+Regards,
+Artem
+
+2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> Hi
+>
+>
+>
+> When I run rundemo.py on Windows, I get the following error messages: -
+>
+>
+>
+> Traceback (most recent call last):
+>
+> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>
+> ??? provpoly_lyr.datasource =
+> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>
+> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+> Shapefile
+>
+> ??? return CreateDatasource(keywords)
+>
+> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>
+>
+>
+>
+>
+> Please advise.
+>
+> Regards,
+>
+> Peter
+>
+>
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+> Camden Corporate ICT
+> Organisation Development
+> London Borough of Camden
+>
+> Telephone:???020 7974 5614
+> Fax:???????????????020 7974 5860
+> Web:?????????????camden.gov.uk
+>
+> 1st floor
+> 3 - 5 Cressy Road
+> 3 - 5 Cressy Road
+> London NW3 2ND
+>
+> Please consider the environment before printing this email.
+>
+>
+>
+> This e-mail may contain information which is confidential, legally
+> privileged and/or copyright protected. This e-mail is intended for the
+> addressee only. If you receive this in error, please contact the sender and
+> delete the material from your computer
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From Peter.Spurgeon at camden.gov.uk  Tue Oct 20 18:00:58 2009
+From: Peter.Spurgeon at camden.gov.uk (Spurgeon, Peter)
+Date: Tue, 20 Oct 2009 17:00:58 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+Message-ID: <2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+
+Hi 
+
+Here is the paths.py file
+
+mapniklibpath="c:\mapnik_0_6_1\lib\mapnik"
+inputpluginspath=mapniklibpath + "c:\mapnik_0_6_1\plugins\input"
+fontscollectionpath = mapniklibpath + "\fonts"
+
+
+Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+
+Peter Spurgeon
+Corporate GIS Manager
+
+Telephone: 020 7974 5614
+-----Original Message-----
+From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+Sent: 20 October 2009 16:52
+To: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+
+Hi Peter,
+
+Could you post content of :
+
+C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+
+Regards,
+Artem
+
+2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> Hi
+>
+>
+>
+> When I run rundemo.py on Windows, I get the following error messages: -
+>
+>
+>
+> Traceback (most recent call last):
+>
+> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>
+> ??? provpoly_lyr.datasource =
+> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>
+> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+> Shapefile
+>
+> ??? return CreateDatasource(keywords)
+>
+> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>
+>
+>
+>
+>
+> Please advise.
+>
+> Regards,
+>
+> Peter
+>
+>
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+> Camden Corporate ICT
+> Organisation Development
+> London Borough of Camden
+>
+> Telephone:???020 7974 5614
+> Fax:???????????????020 7974 5860
+> Web:?????????????camden.gov.uk
+>
+> 1st floor
+> 3 - 5 Cressy Road
+> 3 - 5 Cressy Road
+> London NW3 2ND
+>
+> Please consider the environment before printing this email.
+>
+>
+>
+> This e-mail may contain information which is confidential, legally
+> privileged and/or copyright protected. This e-mail is intended for the
+> addressee only. If you receive this in error, please contact the sender and
+> delete the material from your computer
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+_______________________________________________
+Mapnik-devel mailing list
+Mapnik-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+
+
+From artem at mapnik.org  Tue Oct 20 18:11:37 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 20 Oct 2009 17:11:37 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+Message-ID: <7e70f38d0910200911t1d13edaaw3bb966758bee4f57@mail.gmail.com>
+
+2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> Hi
+>
+> Here is the paths.py file
+>
+> mapniklibpath="c:\mapnik_0_6_1\lib\mapnik"
+> inputpluginspath=mapniklibpath + "c:\mapnik_0_6_1\plugins\input"
+
+I think inputpluginspath should be :
+
+inputpluginspath=mapniklibpath + "\input" !!!
+
+Regards,
+Artem
+
+
+
+> fontscollectionpath = mapniklibpath + "\fonts"
+>
+>
+> Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+>
+> Telephone: 020 7974 5614
+> -----Original Message-----
+> From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+> Sent: 20 October 2009 16:52
+> To: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>
+> Hi Peter,
+>
+> Could you post content of :
+>
+> C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+>
+> Regards,
+> Artem
+>
+> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>> Hi
+>>
+>>
+>>
+>> When I run rundemo.py on Windows, I get the following error messages: -
+>>
+>>
+>>
+>> Traceback (most recent call last):
+>>
+>> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>>
+>> ??? provpoly_lyr.datasource =
+>> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>>
+>> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+>> Shapefile
+>>
+>> ??? return CreateDatasource(keywords)
+>>
+>> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>>
+>>
+>>
+>>
+>>
+>> Please advise.
+>>
+>> Regards,
+>>
+>> Peter
+>>
+>>
+>>
+>> Peter Spurgeon
+>> Corporate GIS Manager
+>> Camden Corporate ICT
+>> Organisation Development
+>> London Borough of Camden
+>>
+>> Telephone:???020 7974 5614
+>> Fax:???????????????020 7974 5860
+>> Web:?????????????camden.gov.uk
+>>
+>> 1st floor
+>> 3 - 5 Cressy Road
+>> 3 - 5 Cressy Road
+>> London NW3 2ND
+>>
+>> Please consider the environment before printing this email.
+>>
+>>
+>>
+>> This e-mail may contain information which is confidential, legally
+>> privileged and/or copyright protected. This e-mail is intended for the
+>> addressee only. If you receive this in error, please contact the sender and
+>> delete the material from your computer
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From Peter.Spurgeon at camden.gov.uk  Wed Oct 21 10:46:07 2009
+From: Peter.Spurgeon at camden.gov.uk (Spurgeon, Peter)
+Date: Wed, 21 Oct 2009 09:46:07 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <7e70f38d0910200911t1d13edaaw3bb966758bee4f57@mail.gmail.com>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200911t1d13edaaw3bb966758bee4f57@mail.gmail.com>
+Message-ID: <2D325A41D5528346A1D4376672E5380B9CED95@SVR-EXC-CRS02.lbcamden.net>
+
+I have started the installation process again following the instructions at http://trac.mapnik.org/wiki/WindowsInstallation
+
+When I get to step 6, there is no c:\mapnik_0_6_1\demo\python folder so I can't run rundemo.py
+
+Please advise.
+
+Regards,
+Peter
+
+Peter Spurgeon
+Corporate GIS Manager
+
+Telephone: 020 7974 5614
+-----Original Message-----
+From: artem at mapnik-consulting.com [mailto:artem at mapnik-consulting.com] On Behalf Of Artem Pavlenko
+Sent: 20 October 2009 17:12
+To: Spurgeon, Peter
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+
+2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> Hi
+>
+> Here is the paths.py file
+>
+> mapniklibpath="c:\mapnik_0_6_1\lib\mapnik"
+> inputpluginspath=mapniklibpath + "c:\mapnik_0_6_1\plugins\input"
+
+I think inputpluginspath should be :
+
+inputpluginspath=mapniklibpath + "\input" !!!
+
+Regards,
+Artem
+
+
+
+> fontscollectionpath = mapniklibpath + "\fonts"
+>
+>
+> Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+>
+> Telephone: 020 7974 5614
+> -----Original Message-----
+> From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+> Sent: 20 October 2009 16:52
+> To: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>
+> Hi Peter,
+>
+> Could you post content of :
+>
+> C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+>
+> Regards,
+> Artem
+>
+> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>> Hi
+>>
+>>
+>>
+>> When I run rundemo.py on Windows, I get the following error messages: -
+>>
+>>
+>>
+>> Traceback (most recent call last):
+>>
+>> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>>
+>> ??? provpoly_lyr.datasource =
+>> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>>
+>> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+>> Shapefile
+>>
+>> ??? return CreateDatasource(keywords)
+>>
+>> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>>
+>>
+>>
+>>
+>>
+>> Please advise.
+>>
+>> Regards,
+>>
+>> Peter
+>>
+>>
+>>
+>> Peter Spurgeon
+>> Corporate GIS Manager
+>> Camden Corporate ICT
+>> Organisation Development
+>> London Borough of Camden
+>>
+>> Telephone:???020 7974 5614
+>> Fax:???????????????020 7974 5860
+>> Web:?????????????camden.gov.uk
+>>
+>> 1st floor
+>> 3 - 5 Cressy Road
+>> 3 - 5 Cressy Road
+>> London NW3 2ND
+>>
+>> Please consider the environment before printing this email.
+>>
+>>
+>>
+>> This e-mail may contain information which is confidential, legally
+>> privileged and/or copyright protected. This e-mail is intended for the
+>> addressee only. If you receive this in error, please contact the sender and
+>> delete the material from your computer
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+
+
+From artem at mapnik.org  Wed Oct 21 11:19:19 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 21 Oct 2009 10:19:19 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <2D325A41D5528346A1D4376672E5380B9CED95@SVR-EXC-CRS02.lbcamden.net>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200911t1d13edaaw3bb966758bee4f57@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED95@SVR-EXC-CRS02.lbcamden.net>
+Message-ID: <7e70f38d0910210219o5bd5261cma8afbb7a3393b40a@mail.gmail.com>
+
+Hi Peter,
+
+
+2009/10/21 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> I have started the installation process again following the instructions at http://trac.mapnik.org/wiki/WindowsInstallation
+>
+> When I get to step 6, there is no c:\mapnik_0_6_1\demo\python folder so I can't run rundemo.py
+>
+> Please advise.
+
+Yes, 'mapnik_0_6_1' win32 binaries were released without demo
+directory - this is a known issue (bug). I should get around
+correcting this, but meanwhile you can just copy demo directory from
+0_6_0 release.
+
+Best,
+Artem
+
+
+> Regards,
+> Peter
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+>
+> Telephone: 020 7974 5614
+> -----Original Message-----
+> From: artem at mapnik-consulting.com [mailto:artem at mapnik-consulting.com] On Behalf Of Artem Pavlenko
+> Sent: 20 October 2009 17:12
+> To: Spurgeon, Peter
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>
+> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>> Hi
+>>
+>> Here is the paths.py file
+>>
+>> mapniklibpath="c:\mapnik_0_6_1\lib\mapnik"
+>> inputpluginspath=mapniklibpath + "c:\mapnik_0_6_1\plugins\input"
+>
+> I think inputpluginspath should be :
+>
+> inputpluginspath=mapniklibpath + "\input" !!!
+>
+> Regards,
+> Artem
+>
+>
+>
+>> fontscollectionpath = mapniklibpath + "\fonts"
+>>
+>>
+>> Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+>>
+>> Peter Spurgeon
+>> Corporate GIS Manager
+>>
+>> Telephone: 020 7974 5614
+>> -----Original Message-----
+>> From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+>> Sent: 20 October 2009 16:52
+>> To: mapnik-devel at lists.berlios.de
+>> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>>
+>> Hi Peter,
+>>
+>> Could you post content of :
+>>
+>> C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+>>
+>> Regards,
+>> Artem
+>>
+>> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>>> Hi
+>>>
+>>>
+>>>
+>>> When I run rundemo.py on Windows, I get the following error messages: -
+>>>
+>>>
+>>>
+>>> Traceback (most recent call last):
+>>>
+>>> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>>>
+>>> ??? provpoly_lyr.datasource =
+>>> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>>>
+>>> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+>>> Shapefile
+>>>
+>>> ??? return CreateDatasource(keywords)
+>>>
+>>> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> Please advise.
+>>>
+>>> Regards,
+>>>
+>>> Peter
+>>>
+>>>
+>>>
+>>> Peter Spurgeon
+>>> Corporate GIS Manager
+>>> Camden Corporate ICT
+>>> Organisation Development
+>>> London Borough of Camden
+>>>
+>>> Telephone:???020 7974 5614
+>>> Fax:???????????????020 7974 5860
+>>> Web:?????????????camden.gov.uk
+>>>
+>>> 1st floor
+>>> 3 - 5 Cressy Road
+>>> 3 - 5 Cressy Road
+>>> London NW3 2ND
+>>>
+>>> Please consider the environment before printing this email.
+>>>
+>>>
+>>>
+>>> This e-mail may contain information which is confidential, legally
+>>> privileged and/or copyright protected. This e-mail is intended for the
+>>> addressee only. If you receive this in error, please contact the sender and
+>>> delete the material from your computer
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From Peter.Spurgeon at camden.gov.uk  Wed Oct 21 12:51:44 2009
+From: Peter.Spurgeon at camden.gov.uk (Spurgeon, Peter)
+Date: Wed, 21 Oct 2009 11:51:44 +0100
+Subject: [Mapnik-devel] No plugin found for type 'shape'
+In-Reply-To: <7e70f38d0910210219o5bd5261cma8afbb7a3393b40a@mail.gmail.com>
+References: <2D325A41D5528346A1D4376672E5380B9CED93@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200851i37bd1a55s4ef3f6110c05e3a@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED94@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910200911t1d13edaaw3bb966758bee4f57@mail.gmail.com>
+	<2D325A41D5528346A1D4376672E5380B9CED95@SVR-EXC-CRS02.lbcamden.net>
+	<7e70f38d0910210219o5bd5261cma8afbb7a3393b40a@mail.gmail.com>
+Message-ID: <2D325A41D5528346A1D4376672E5380B9CED96@SVR-EXC-CRS02.lbcamden.net>
+
+Many thanks Artem - it works now.
+
+Regards,
+Peter
+
+Peter Spurgeon
+Corporate GIS Manager
+
+Telephone: 020 7974 5614
+
+-----Original Message-----
+From: artem at mapnik-consulting.com [mailto:artem at mapnik-consulting.com] On Behalf Of Artem Pavlenko
+Sent: 21 October 2009 10:19
+To: Spurgeon, Peter
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+
+Hi Peter,
+
+
+2009/10/21 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+> I have started the installation process again following the instructions at http://trac.mapnik.org/wiki/WindowsInstallation
+>
+> When I get to step 6, there is no c:\mapnik_0_6_1\demo\python folder so I can't run rundemo.py
+>
+> Please advise.
+
+Yes, 'mapnik_0_6_1' win32 binaries were released without demo
+directory - this is a known issue (bug). I should get around
+correcting this, but meanwhile you can just copy demo directory from
+0_6_0 release.
+
+Best,
+Artem
+
+
+> Regards,
+> Peter
+>
+> Peter Spurgeon
+> Corporate GIS Manager
+>
+> Telephone: 020 7974 5614
+> -----Original Message-----
+> From: artem at mapnik-consulting.com [mailto:artem at mapnik-consulting.com] On Behalf Of Artem Pavlenko
+> Sent: 20 October 2009 17:12
+> To: Spurgeon, Peter
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>
+> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>> Hi
+>>
+>> Here is the paths.py file
+>>
+>> mapniklibpath="c:\mapnik_0_6_1\lib\mapnik"
+>> inputpluginspath=mapniklibpath + "c:\mapnik_0_6_1\plugins\input"
+>
+> I think inputpluginspath should be :
+>
+> inputpluginspath=mapniklibpath + "\input" !!!
+>
+> Regards,
+> Artem
+>
+>
+>
+>> fontscollectionpath = mapniklibpath + "\fonts"
+>>
+>>
+>> Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+>>
+>> Peter Spurgeon
+>> Corporate GIS Manager
+>>
+>> Telephone: 020 7974 5614
+>> -----Original Message-----
+>> From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+>> Sent: 20 October 2009 16:52
+>> To: mapnik-devel at lists.berlios.de
+>> Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+>>
+>> Hi Peter,
+>>
+>> Could you post content of :
+>>
+>> C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+>>
+>> Regards,
+>> Artem
+>>
+>> 2009/10/20 Spurgeon, Peter <Peter.Spurgeon at camden.gov.uk>:
+>>> Hi
+>>>
+>>>
+>>>
+>>> When I run rundemo.py on Windows, I get the following error messages: -
+>>>
+>>>
+>>>
+>>> Traceback (most recent call last):
+>>>
+>>> ? File "C:\mapnik_0_6_1\demo\python\rundemo.py", line 59, in <module>
+>>>
+>>> ??? provpoly_lyr.datasource =
+>>> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+>>>
+>>> ? File "C:\mapnik_0_6_1\site-packages\mapnik\__init__.py", line 132, in
+>>> Shapefile
+>>>
+>>> ??? return CreateDatasource(keywords)
+>>>
+>>> UserWarning: Could not create datasource. No plugin found for type 'shape'
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> Please advise.
+>>>
+>>> Regards,
+>>>
+>>> Peter
+>>>
+>>>
+>>>
+>>> Peter Spurgeon
+>>> Corporate GIS Manager
+>>> Camden Corporate ICT
+>>> Organisation Development
+>>> London Borough of Camden
+>>>
+>>> Telephone:???020 7974 5614
+>>> Fax:???????????????020 7974 5860
+>>> Web:?????????????camden.gov.uk
+>>>
+>>> 1st floor
+>>> 3 - 5 Cressy Road
+>>> 3 - 5 Cressy Road
+>>> London NW3 2ND
+>>>
+>>> Please consider the environment before printing this email.
+>>>
+>>>
+>>>
+>>> This e-mail may contain information which is confidential, legally
+>>> privileged and/or copyright protected. This e-mail is intended for the
+>>> addressee only. If you receive this in error, please contact the sender and
+>>> delete the material from your computer
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+
+
+From dom at earth.li  Sun Oct 25 17:05:11 2009
+From: dom at earth.li (Dominic Hargreaves)
+Date: Sun, 25 Oct 2009 16:05:11 +0000
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+Message-ID: <20091025160511.GZ4383@urchin.earth.li>
+
+I've been maintaining Debian packages of mapnik for a while, but I've
+never been a serious user and I think it's probably time to hand this
+off to someone else.
+
+It probably makes sense for this package to be maintained by the Debian
+GIS team aka pkg-grass-devel (AIUI). Do people agree?
+
+I have a private subversion repository used for maintaining the package
+so far which I'm happy to extract the history from, if someone can tell
+me the best place to put this.
+
+Christophe Sauthier (CC'd) has been looking after this package in
+Ubuntu, and has offered to help, but I believe he would need his
+uploads to be sponsored for Debian.
+
+Cheers,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From christophe.sauthier at objectif-libre.com  Sun Oct 25 20:33:45 2009
+From: christophe.sauthier at objectif-libre.com (Christophe Sauthier)
+Date: Sun, 25 Oct 2009 20:33:45 +0100
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+In-Reply-To: <20091025160511.GZ4383@urchin.earth.li>
+References: <20091025160511.GZ4383@urchin.earth.li>
+Message-ID: <780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+
+Dear Dominic, all,
+
+Indeed I have been looking at the package in Ubuntu for a while and
+I'd like to help more by helping on the Debian one too...
+Even if indeed my uploads needs to be sponsored in debian.
+
+So I'd be more than happy to help you and the GIS team on that task.
+
+All the best,
+
+      Christophe
+
+On Sun, Oct 25, 2009 at 5:05 PM, Dominic Hargreaves <dom at earth.li> wrote:
+> I've been maintaining Debian packages of mapnik for a while, but I've
+> never been a serious user and I think it's probably time to hand this
+> off to someone else.
+>
+> It probably makes sense for this package to be maintained by the Debian
+> GIS team aka pkg-grass-devel (AIUI). Do people agree?
+>
+> I have a private subversion repository used for maintaining the package
+> so far which I'm happy to extract the history from, if someone can tell
+> me the best place to put this.
+>
+> Christophe Sauthier (CC'd) has been looking after this package in
+> Ubuntu, and has offered to help, but I believe he would need his
+> uploads to be sponsored for Debian.
+>
+> Cheers,
+> Dominic.
+>
+> --
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+>
+
+
+From dom at earth.li  Sun Oct 25 23:06:17 2009
+From: dom at earth.li (Dominic Hargreaves)
+Date: Sun, 25 Oct 2009 22:06:17 +0000
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+In-Reply-To: <780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+References: <20091025160511.GZ4383@urchin.earth.li>
+	<780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+Message-ID: <20091025220617.GG4383@urchin.earth.li>
+
+On Sun, Oct 25, 2009 at 08:33:45PM +0100, Christophe Sauthier wrote:
+> Indeed I have been looking at the package in Ubuntu for a while and
+> I'd like to help more by helping on the Debian one too...
+> Even if indeed my uploads needs to be sponsored in debian.
+> 
+> So I'd be more than happy to help you and the GIS team on that task.
+
+Thanks,
+
+Please see also the wnpp bug I filed about this, 
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=551281
+
+(I should have included this in my original CC to connect the two
+threads; apologies).
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From frankie at debian.org  Mon Oct 26 07:38:06 2009
+From: frankie at debian.org (Francesco P. Lovergine)
+Date: Mon, 26 Oct 2009 07:38:06 +0100
+Subject: [Mapnik-devel] [DebianGIS-dev] mapnik maintainership in Debian
+In-Reply-To: <20091025220617.GG4383@urchin.earth.li>
+References: <20091025160511.GZ4383@urchin.earth.li>
+	<780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+	<20091025220617.GG4383@urchin.earth.li>
+Message-ID: <20091026063806.GA8255@ba.issia.cnr.it>
+
+On Sun, Oct 25, 2009 at 10:06:17PM +0000, Dominic Hargreaves wrote:
+> > Even if indeed my uploads needs to be sponsored in debian.
+> > 
+
+This is not a problem and I also think other people who are
+interested in OSM related programs can help. Please use
+a common svn or git repository, as available in pkg-grass 
+group.
+
+-- 
+Francesco P. Lovergine
+
+
+From d.paleino at gmail.com  Mon Oct 26 10:17:23 2009
+From: d.paleino at gmail.com (David Paleino)
+Date: Mon, 26 Oct 2009 11:17:23 +0200
+Subject: [Mapnik-devel] Bug#551281: [DebianGIS-dev] mapnik
+	maintainership in Debian
+Message-ID: <200910261017.26383@home.hanskalabs.net>
+
+retitle 551281 ITA: mapnik -- C++/Python toolkit for developing GIS applications
+owner 551281 !
+thanks
+
+Francesco P. Lovergine wrote:
+
+> On Sun, Oct 25, 2009 at 10:06:17PM +0000, Dominic Hargreaves wrote:
+>> > Even if indeed my uploads needs to be sponsored in debian.
+> 
+> This is not a problem and I also think other people who are
+> interested in OSM related programs can help. Please use
+> a common svn or git repository, as available in pkg-grass
+> group.
+
+I'm more than willing to maintain it under the pkg-grass umbrella.
+
+Dominic, if you could publish your SVN repository somewhere, I'll convert it
+to a git repository (if Christophe is ok with that), and push it on
+git.debian.org.
+
+Christophe: I'm a DM, so only the first upload needs a sponsor DD. Afterwards
+I can upload the package directly. I have no problems with Python, but might
+need some help with the C++ part of the package.
+
+Kindly,
+David
+
+-- 
+ . ''`.  Debian maintainer | http://wiki.debian.org/DavidPaleino
+ : :'  : Linuxer #334216 --|-- http://www.hanskalabs.net/
+ `. `'`  GPG: 1392B174 ----|---- http://snipr.com/qa_page
+   `-   2BAB C625 4E66 E7B8 450A C3E1 E6AA 9017 1392 B174
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: This is a digitally signed message part.
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091026/6cae0d38/attachment.pgp>
+
+From dom at earth.li  Thu Oct 29 20:51:51 2009
+From: dom at earth.li (Dominic Hargreaves)
+Date: Thu, 29 Oct 2009 19:51:51 +0000
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+In-Reply-To: <20091025220617.GG4383@urchin.earth.li>
+References: <20091025160511.GZ4383@urchin.earth.li>
+	<780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+	<20091025220617.GG4383@urchin.earth.li>
+Message-ID: <20091029195151.GV4191@urchin.earth.li>
+
+On Sun, Oct 25, 2009 at 10:06:17PM +0000, Dominic Hargreaves wrote:
+> On Sun, Oct 25, 2009 at 08:33:45PM +0100, Christophe Sauthier wrote:
+> > Indeed I have been looking at the package in Ubuntu for a while and
+> > I'd like to help more by helping on the Debian one too...
+> > Even if indeed my uploads needs to be sponsored in debian.
+> > 
+> > So I'd be more than happy to help you and the GIS team on that task.
+> 
+> Thanks,
+> 
+> Please see also the wnpp bug I filed about this, 
+> 
+> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=551281
+> 
+> (I should have included this in my original CC to connect the two
+> threads; apologies).
+
+Thanks to help from the Debian GIS team I have migrated my private
+subversion repository to git, for team maintainership.
+
+It's available at
+
+http://git.debian.org/?p=pkg-grass/mapnik.git
+
+With that off my hands, I plan to take a back seat in mapnik and I'll
+be unsubscribing from -devel after posting this.
+
+Best wishes,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From blake at hailmail.net  Thu Oct 29 23:02:13 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 29 Oct 2009 15:02:13 -0700
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+In-Reply-To: <20091029195151.GV4191@urchin.earth.li>
+References: <20091025160511.GZ4383@urchin.earth.li>
+	<780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+	<20091025220617.GG4383@urchin.earth.li>
+	<20091029195151.GV4191@urchin.earth.li>
+Message-ID: <E075AE9A-F453-4368-A74C-6DEA14BE5455@hailmail.net>
+
+Dominic,
+
+Huge thanks for your extensive work packaging Mapnik and for making it  
+a better project along the way.
+
+- Dane
+
+On Oct 29, 2009, at 12:51 PM, Dominic Hargreaves wrote:
+
+> On Sun, Oct 25, 2009 at 10:06:17PM +0000, Dominic Hargreaves wrote:
+>> On Sun, Oct 25, 2009 at 08:33:45PM +0100, Christophe Sauthier wrote:
+>>> Indeed I have been looking at the package in Ubuntu for a while and
+>>> I'd like to help more by helping on the Debian one too...
+>>> Even if indeed my uploads needs to be sponsored in debian.
+>>>
+>>> So I'd be more than happy to help you and the GIS team on that task.
+>>
+>> Thanks,
+>>
+>> Please see also the wnpp bug I filed about this,
+>>
+>> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=551281
+>>
+>> (I should have included this in my original CC to connect the two
+>> threads; apologies).
+>
+> Thanks to help from the Debian GIS team I have migrated my private
+> subversion repository to git, for team maintainership.
+>
+> It's available at
+>
+> http://git.debian.org/?p=pkg-grass/mapnik.git
+>
+> With that off my hands, I plan to take a back seat in mapnik and I'll
+> be unsubscribing from -devel after posting this.
+>
+> Best wishes,
+> Dominic.
+>
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Fri Oct 30 11:02:32 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 30 Oct 2009 10:02:32 +0000
+Subject: [Mapnik-devel] mapnik maintainership in Debian
+In-Reply-To: <E075AE9A-F453-4368-A74C-6DEA14BE5455@hailmail.net>
+References: <20091025160511.GZ4383@urchin.earth.li>
+	<780a907f0910251233v5a2103dfyaa6a73671990476c@mail.gmail.com>
+	<20091025220617.GG4383@urchin.earth.li>
+	<20091029195151.GV4191@urchin.earth.li>
+	<E075AE9A-F453-4368-A74C-6DEA14BE5455@hailmail.net>
+Message-ID: <7e70f38d0910300302o711283c6q9bbbd44d39b170d9@mail.gmail.com>
+
+Dominic,
+
+Thank you very much for all your work maintaing Mapnik deb pkg!!!
+
+Artem
+
+2009/10/29 Dane Springmeyer <blake at hailmail.net>
+
+> Dominic,
+>
+> Huge thanks for your extensive work packaging Mapnik and for making it
+> a better project along the way.
+>
+> - Dane
+>
+> On Oct 29, 2009, at 12:51 PM, Dominic Hargreaves wrote:
+>
+> > On Sun, Oct 25, 2009 at 10:06:17PM +0000, Dominic Hargreaves wrote:
+> >> On Sun, Oct 25, 2009 at 08:33:45PM +0100, Christophe Sauthier wrote:
+> >>> Indeed I have been looking at the package in Ubuntu for a while and
+> >>> I'd like to help more by helping on the Debian one too...
+> >>> Even if indeed my uploads needs to be sponsored in debian.
+> >>>
+> >>> So I'd be more than happy to help you and the GIS team on that task.
+> >>
+> >> Thanks,
+> >>
+> >> Please see also the wnpp bug I filed about this,
+> >>
+> >> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=551281
+> >>
+> >> (I should have included this in my original CC to connect the two
+> >> threads; apologies).
+> >
+> > Thanks to help from the Debian GIS team I have migrated my private
+> > subversion repository to git, for team maintainership.
+> >
+> > It's available at
+> >
+> > http://git.debian.org/?p=pkg-grass/mapnik.git
+> >
+> > With that off my hands, I plan to take a back seat in mapnik and I'll
+> > be unsubscribing from -devel after posting this.
+> >
+> > Best wishes,
+> > Dominic.
+> >
+> > --
+> > Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> > PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091030/413cade3/attachment.html>
+

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3C69785372-F087-4EB4-AC5D-9BFA0D2AF0CF%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001433.html">
+   <LINK REL="Next"  HREF="001434.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3C69785372-F087-4EB4-AC5D-9BFA0D2AF0CF%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux">dane at dbsgeo.com
+       </A><BR>
+    <I>Wed Jul  6 01:50:47 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001433.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+        <LI>Next message: <A HREF="001434.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1435">[ date ]</a>
+              <a href="thread.html#1435">[ thread ]</a>
+              <a href="subject.html#1435">[ subject ]</a>
+              <a href="author.html#1435">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Okay, tested with NodeJS and Python on Ubuntu Linux and worked perfectly - applied in r3004 and created/closed ticket to track this at <A HREF="http://trac.mapnik.org/ticket/790.">http://trac.mapnik.org/ticket/790.</A>
+
+Thanks Stella.
+
+Dane
+
+On Jul 5, 2011, at 2:37 PM, Dane Springmeyer wrote:
+
+&gt;<i> Stella,
+</I>&gt;<i> 
+</I>&gt;<i> Fantastic, thanks for following through on this, and confirming it works with your JNI tests.
+</I>&gt;<i> 
+</I>&gt;<i> I will look for time to test this on linux with nodejs, and if it works will plan to apply to SVN.
+</I>&gt;<i> 
+</I>&gt;<i> The git mirror should autoupdate (so you can keep your fork in sync), but at this point is just read only.
+</I>&gt;<i> 
+</I>&gt;<i> Dane
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Jul 5, 2011, at 12:56 PM, Stella Laurenzo wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> Hi all,
+</I>&gt;&gt;<i> I've got a fix for the issue I reported where input plugins were not being linked against their dependent libraries (except for on OSX).  I don't know how you are taking commits to SVN, but it is here and attached:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> <A HREF="https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4">https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4</A>
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I only had the dependencies to build the following plugins, so I can't verify the others (although I did make the exact same changes to each).  If others can verify plugin builds not on this list, that would be superb:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> gdal
+</I>&gt;&gt;<i> ogr
+</I>&gt;&gt;<i> postgis
+</I>&gt;&gt;<i> raster
+</I>&gt;&gt;<i> shape
+</I>&gt;&gt;<i> sqlite
+</I>&gt;&gt;<i> To verify, ensure that the plugin links against mapnik2 (ldd plugin.input) and that it loads/functions.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> I verified that everything builds and seems to function with my jni tests on Linux x86_64 (Ubuntu 10.10) and OSX Snow Leopard (32bit).
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Thanks.
+</I>&gt;&gt;<i> - stella
+</I>&gt;&gt;<i> &lt;mapnik2-81f6e45b85b2ed3a38e8.diff&gt;_______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/729a0c05/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/729a0c05/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001433.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+	<LI>Next message: <A HREF="001434.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1435">[ date ]</a>
+              <a href="thread.html#1435">[ thread ]</a>
+              <a href="subject.html#1435">[ subject ]</a>
+              <a href="author.html#1435">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

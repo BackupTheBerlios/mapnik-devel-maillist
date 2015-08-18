@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] r707 and boost_system
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20r707%20and%20boost_system&In-Reply-To=%3C1217280274.3754.6.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000664.html">
+   <LINK REL="Next"  HREF="000657.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] r707 and boost_system</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20r707%20and%20boost_system&In-Reply-To=%3C1217280274.3754.6.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] r707 and boost_system">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Mon Jul 28 23:24:34 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000664.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+        <LI>Next message: <A HREF="000657.html">[Mapnik-devel] [patch] fix text placement for strings with no space
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#665">[ date ]</a>
+              <a href="thread.html#665">[ thread ]</a>
+              <a href="subject.html#665">[ subject ]</a>
+              <a href="author.html#665">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, 2008-07-26 at 00:31 +0100, Tom Hughes wrote:
+&gt;<i> In r707 Artem uncommented a line in SConstruct that makes it require
+</I>&gt;<i> boost_system, but as far as I can see none of the code uses this.
+</I>&gt;<i> Certainly mapnik still compiles without it.
+</I>&gt;<i> 
+</I>
+Setting the last parameter on the line to False makes it optional and,
+as you say, it seems to work fine without it. I've only tested this on
+machines which run boost-1.34.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-boost-system-optional.patch
+Type: text/x-patch
+Size: 516 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080728/a4dbaf82/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080728/a4dbaf82/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000664.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+	<LI>Next message: <A HREF="000657.html">[Mapnik-devel] [patch] fix text placement for strings with no space
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#665">[ date ]</a>
+              <a href="thread.html#665">[ thread ]</a>
+              <a href="subject.html#665">[ subject ]</a>
+              <a href="author.html#665">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

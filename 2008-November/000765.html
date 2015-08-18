@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Overwriting outputs (save_map() vs render_to_file())
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Overwriting%20outputs%20%28save_map%28%29%20vs%20render_to_file%28%29%29&In-Reply-To=%3C0AB318D4-47B9-40EB-83A4-B89B926AAAB3%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000764.html">
+   <LINK REL="Next"  HREF="000766.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Overwriting outputs (save_map() vs render_to_file())</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Overwriting%20outputs%20%28save_map%28%29%20vs%20render_to_file%28%29%29&In-Reply-To=%3C0AB318D4-47B9-40EB-83A4-B89B926AAAB3%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Overwriting outputs (save_map() vs render_to_file())">blake at hailmail.net
+       </A><BR>
+    <I>Fri Nov 14 21:42:01 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000764.html">[Mapnik-devel] Fix/Finished needed to value.hpp for Official	run_demo.py
+</A></li>
+        <LI>Next message: <A HREF="000766.html">[Mapnik-devel] Mapnik viewer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#765">[ date ]</a>
+              <a href="thread.html#765">[ thread ]</a>
+              <a href="subject.html#765">[ subject ]</a>
+              <a href="author.html#765">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Mapnik's render_to_file() (and I assume render_to_tile() as well) is  
+able to overwrite files of the same name, allowing for rerunning basic  
+graphics generation scripts without first deleting previous image  
+output.
+
+It seems as if the save_map() method can't overwrite previous xml  
+output. Should it or is there a reason it can't or should not be  
+allowed to do so?
+
+Dane
+
+  
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000764.html">[Mapnik-devel] Fix/Finished needed to value.hpp for Official	run_demo.py
+</A></li>
+	<LI>Next message: <A HREF="000766.html">[Mapnik-devel] Mapnik viewer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#765">[ date ]</a>
+              <a href="thread.html#765">[ thread ]</a>
+              <a href="subject.html#765">[ subject ]</a>
+              <a href="author.html#765">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

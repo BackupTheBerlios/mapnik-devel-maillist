@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] clipping extents
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20clipping%20extents&In-Reply-To=%3CA813AC2E-ECC9-4CC2-8A78-129BC67C4AC1%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001375.html">
+   <LINK REL="Next"  HREF="001377.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] clipping extents</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20clipping%20extents&In-Reply-To=%3CA813AC2E-ECC9-4CC2-8A78-129BC67C4AC1%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] clipping extents">dane at dbsgeo.com
+       </A><BR>
+    <I>Sat Apr 16 01:48:42 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001375.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+        <LI>Next message: <A HREF="001377.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1376">[ date ]</a>
+              <a href="thread.html#1376">[ thread ]</a>
+              <a href="subject.html#1376">[ subject ]</a>
+              <a href="author.html#1376">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Mapnik-devel,
+
+Short version of this email: start setting the new 'maximum-extent' property on the mapnik.Map object once you upgrade your code to use Mapnik2.
+
+Long version:
+
+A slew of tickets have collected over the past year(s) documenting the struggle of using Mapnik with custom projections or with data in a very different projection than the map.
+
+Basically all the issues boil down to the challenge of how to predictably transform bounding boxes between projections when the map or layer extents may not be valid for a given target projection.
+
+Until now we have controlled out of bounds conditions by back projecting a given layers extents then clipping by the map's extent, which works fine as long the layer's bbox can be handled in the map srs. This is not the case when the map srs may be a local projection but the data is global. So the reverse is a better approach: simply forward project the map extent into the layer srs. But this is likely to fall down when the map extent is invalidly large, e.g at low zoom levels with local data or just when a large buffer_size is used that inflates the map extent beyond valid bounds.
+
+So, after reviewing all the issues inventoried at <A HREF="http://trac.mapnik.org/wiki/BoundsClipping">http://trac.mapnik.org/wiki/BoundsClipping</A> I've concluding that:
+
+ 1) changing behavior to forward the map to the layer srs is more predictable, and faster.
+ 2) and its failure condition has a simple solution/workaround which is having the user provide a valid &quot;maximum-extent&quot; (which is optional by default).
+
+More details at [1]. See also another ticket which offers an alternative solution to setting a maximum-extent [2].
+
+So, the above two changes are now in mapnik trunk and working nicely. My sense is we now have a more robust solution for at least three common scenarios:
+
+1) Users trying make maps in local projections using OSM data (or any other global data) will actually get a map now, rather than a blank tile!
+
+2) Applications that target spherical mercator like Mod_tile, TileStash, Tirex, Tilelive.js, and likely many more in the OSM world can now enforce '-20037508.34, -20037508.34, 20037508.34, 20037508.34' by setting it as a property of the mapnik.Map object. This will ensure fast and predictable bounds are always used when mapnik datasources are queried during rendering.
+
+3) Users using Natural Earth data (or other data with lots of errors where coordinates are above 90 or below -90) will now be able to use the maximum-extent to avoid many/most of the side effects of earlier mapnik versions - which was where very bogus extents were being returned by proj4 (without any error) and naively passed along in the query to a datasource. The result: many features were lost. My solution for this has always been to clip these datasets beforehand [3], and this still I think is the proper approach, but setting the maximum-extent on the mapnik.Map should offer a seabelt to avoid the worse before actually going back to clip the data.
+
+4) Minor, but nice: Users of OSM that only import local extracts can now easily control the max extent of the map (returned by map.zoom_all()) (instead of having to modify the hardcoded layer extents for every postgis layer).
+
+5) Likely other benefits :) And no drawbacks that I am aware of - but let me know.
+
+Dane
+
+[1] <A HREF="http://trac.mapnik.org/wiki/BoundsClipping">http://trac.mapnik.org/wiki/BoundsClipping</A>
+[2]  <A HREF="http://trac.mapnik.org/ticket/751">http://trac.mapnik.org/ticket/751</A>
+[3] <A HREF="http://trac.mapnik.org/wiki/Troubleshooting">http://trac.mapnik.org/wiki/Troubleshooting</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001375.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+	<LI>Next message: <A HREF="001377.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1376">[ date ]</a>
+              <a href="thread.html#1376">[ thread ]</a>
+              <a href="subject.html#1376">[ subject ]</a>
+              <a href="author.html#1376">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

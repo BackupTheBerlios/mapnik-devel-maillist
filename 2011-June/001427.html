@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CBANLkTikHMNu8H_kj%2BnX8q9xbu54C0qMeyA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001426.html">
+   <LINK REL="Next"  HREF="001429.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux</H1>
+    <B>Stella Laurenzo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CBANLkTikHMNu8H_kj%2BnX8q9xbu54C0qMeyA%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux">stella at laurenzo.org
+       </A><BR>
+    <I>Tue Jun 28 08:52:13 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001426.html">[Mapnik-devel] GSoC: Text placement status report
+</A></li>
+        <LI>Next message: <A HREF="001429.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1427">[ date ]</a>
+              <a href="thread.html#1427">[ thread ]</a>
+              <a href="subject.html#1427">[ subject ]</a>
+              <a href="author.html#1427">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Mapnik developers,
+In conjunction with a project I'm working on, I've been building out some
+JNI bindings for mapnik.  They are here:
+<A HREF="https://github.com/stellaeof/mapnik-jni">https://github.com/stellaeof/mapnik-jni</A>
+
+At some point, I'd like to discuss merging this into the core mapnik project
+where I think such things belong, but for now, I've stumbled across a minor
+mystery.  The bindings work perfectly on OSX and fail miserably on Linux.
+ I'm so used to shared library weirdness on OSX, that I was a little bit
+surprised by this since Linux is usually the well behaved citizen in this
+regard.
+
+After an evening of digging I ran across several related threads.  The most
+pertinent is here:
+<A HREF="http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html">http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html</A>
+but
+it was never resolved.
+
+The issue specifically is that I have a shared library libmapnik-jni.so that
+contains the JNI exports and depends on libmapnik2.so.  Everything works
+fine until attempting to load an input plugin.  Upon calling
+datasource_cache::register_datasources(...), the following type of message
+is written to stderr:
+
+Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input
+(dlopen failed - plugin likely has an unsatisfied dependency or incompatible
+ABI)
+
+Then, when calling datasource_cache::create with parameters referencing a
+postgis plugin, the following is written and the process crashes:
+
+/usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error:
+/usr/local/lib/mapnik2/input/postgis.input: undefined symbol:
+_ZN6mapnik5box2dIdEC1Ev
+
+
+Depending on the load order and such different messages and failures can
+occur but these are the gist of it.
+
+While tracking this down, the first thing I noticed was that if I defined
+LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process
+that does all of this, everything works.  This led me to look at the plugins
+themselves and I noticed that the input plugins do not have a library
+dependency on libmapnik2.so.  On OSX they do because things can't be left
+partially linked on that platform, but on Linux mapnik must be assuming that
+in order for a plugin to load, the libmapnik2.so library must already be
+loaded globally.  To test this, I ran the script here in the plugin
+directory:
+<A HREF="https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh">https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh</A>
+
+This just renames each .input file and links a new one that depends on the
+original and libmapnik2.so.  With this done, everything works as it should
+and no warnings are printed when the plugins are loaded.
+
+I believe that the issue is that on the JVM, when a library is loaded (via
+System.load or its cousin System.loadLibrary), dlopen is being called on the
+library without the RTLD_GLOBAL flag.  This is probably a good thing as it
+keeps name collisions to a minimum in JNI libraries.  However, it means that
+when libmapnik2.so goes to dlopen() its input plugins, it results in
+undefined symbols because even though the libmapnik2.so library is resident
+in the process, its symbols have not been exported for all to use.
+
+If I were to file a bug against mapnik, it would be titled &quot;Input plugins
+fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL
+flag&quot;.  There are several solutions:
+   - Include libmapnik2.so as a dependency in mapnik input plugins, similar
+to how my script fixes things up to be after the fact.  This would mirror
+OSX behavior and I do not believe it would have any deleterious effects.
+   - Declare that libmapnik2.so can only be used when explicitly linked to
+or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work
+when loaded directly or indirectly by standard JVMs.
+   - Leave it to someone else (me).  In this case, I suppose I could dlopen
+the JNI library again with the RTLD_GLOBAL flag prior to loading any
+plugins.  The man page says this should work.  Of course, I'd have to find
+the full path to the shared library, which I don't necessarily know, and
+this introduces more failure paths and is a little bit crazy.
+
+Unless if anyone is aware of some issue that I don't know about, I think the
+first option is the best.  It would mean that mapnik would always be able to
+load its input plugins regardless of how itself was loaded.  I'm not at all
+familiar with the mapnik build process to know where to make this change,
+however.
+
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110627/20b97b5c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110627/20b97b5c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001426.html">[Mapnik-devel] GSoC: Text placement status report
+</A></li>
+	<LI>Next message: <A HREF="001429.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1427">[ date ]</a>
+              <a href="thread.html#1427">[ thread ]</a>
+              <a href="subject.html#1427">[ subject ]</a>
+              <a href="author.html#1427">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

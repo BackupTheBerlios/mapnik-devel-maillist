@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python support with autotools
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20support%20with%20autotools&In-Reply-To=%3C20071026230002.6dcecd20%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000323.html">
+   <LINK REL="Next"  HREF="000318.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python support with autotools</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20support%20with%20autotools&In-Reply-To=%3C20071026230002.6dcecd20%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Python support with autotools">lists at brachttal.net
+       </A><BR>
+    <I>Fri Oct 26 23:00:02 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000323.html">[Mapnik-devel] Python support with autotools
+</A></li>
+        <LI>Next message: <A HREF="000318.html">[Mapnik-devel] the missing polygons
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#324">[ date ]</a>
+              <a href="thread.html#324">[ thread ]</a>
+              <a href="subject.html#324">[ subject ]</a>
+              <a href="author.html#324">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Thu, 25 Oct 2007 18:06:09 -0500 schrieb Reid Priedhorsky:
+
+&gt;<i> Artem Pavlenko wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I wonder what problems you're experiencing with SCons build ?
+</I>&gt;<i> 
+</I>&gt;<i> c.f. <A HREF="http://trac.mapnik.org/ticket/22,">http://trac.mapnik.org/ticket/22,</A> but there are a lot of other 
+</I>&gt;<i> build-related tickets as well. Basically, if the build is anything
+</I>&gt;<i> even remotely nonstandard, it's a huge mess. I had to write a shell
+</I>&gt;<i> script to get the build system to put everything in the right place.
+</I>&gt;<i> 
+</I>&gt;<i> I'm still on r484 because I didn't want to face rebuilding.
+</I>&gt;<i> 
+</I>&gt;<i> So, put me down as +1 for scrapping SCons for autotools.
+</I>
+I had the problem also for a long time. The problem was that the
+detection of boost and postgres libraries on Gentoo and Ubuntu didn't
+work. I had to create some links in /usr/lib and to modify the SCons
+file to build it.
+
+BTW: Mapnik builds currently well with autotools and is yet usable. Only
+the python bindings aren't build and installed. But I hope to fix this
+in the next week.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000323.html">[Mapnik-devel] Python support with autotools
+</A></li>
+	<LI>Next message: <A HREF="000318.html">[Mapnik-devel] the missing polygons
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#324">[ date ]</a>
+              <a href="thread.html#324">[ thread ]</a>
+              <a href="subject.html#324">[ subject ]</a>
+              <a href="author.html#324">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

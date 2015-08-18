@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text placement code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3Cc5097ac40801141320i4eeba3a1h8038f9539ca83b9d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000419.html">
+   <LINK REL="Next"  HREF="000421.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text placement code</H1>
+    <B>Robert Coup</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3Cc5097ac40801141320i4eeba3a1h8038f9539ca83b9d%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Text placement code">robert.coup at onetrackmind.co.nz
+       </A><BR>
+    <I>Mon Jan 14 22:20:54 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000419.html">[Mapnik-devel] Text placement code
+</A></li>
+        <LI>Next message: <A HREF="000421.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#420">[ date ]</a>
+              <a href="thread.html#420">[ thread ]</a>
+              <a href="subject.html#420">[ subject ]</a>
+              <a href="author.html#420">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey all,
+
+&gt;<i> It does look like some of this code is currently WIP, anyone have any
+</I>&gt;<i> &gt; plans in relation to text placement?
+</I>&gt;<i>
+</I>&gt;<i> Would be nice to implement certain aspects like 'sharp' angles
+</I>&gt;<i> handling...
+</I>
+
+We wrote some improved text-on-lines placement code that was in the codebase
+12-15 months back - it failed a use case that we never got to see, so one of
+the committers reverted it again. But it worked pretty well on our
+streetmaps.
+
+It adjusted the kerning and glyph angles depending on the glyph size and the
+path geometry to reduce spacing problems such as [1]. It's not up-to-date
+with the current trunk, but if anyone is keen I'm happy to send through the
+current version of the cpp file to give you some inspiration (or scare you
+off - label placement is a messy business).
+
+Cheers,
+
+Rob :)
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web <A HREF="http://www.onetrackmind.co.nz">http://www.onetrackmind.co.nz</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/ddbba59f/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/ddbba59f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000419.html">[Mapnik-devel] Text placement code
+</A></li>
+	<LI>Next message: <A HREF="000421.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#420">[ date ]</a>
+              <a href="thread.html#420">[ thread ]</a>
+              <a href="subject.html#420">[ subject ]</a>
+              <a href="author.html#420">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

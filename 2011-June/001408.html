@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC: Windows build system, week 1
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%201&In-Reply-To=%3CDAC16E32-D062-4B76-8D39-FD285E3CF63D%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001420.html">
+   <LINK REL="Next"  HREF="001411.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC: Windows build system, week 1</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%201&In-Reply-To=%3CDAC16E32-D062-4B76-8D39-FD285E3CF63D%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] GSoC: Windows build system, week 1">dane at dbsgeo.com
+       </A><BR>
+    <I>Mon Jun  6 00:14:45 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001420.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+        <LI>Next message: <A HREF="001411.html">[Mapnik-devel] Mapnik rendering blank image
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1408">[ date ]</a>
+              <a href="thread.html#1408">[ thread ]</a>
+              <a href="subject.html#1408">[ subject ]</a>
+              <a href="author.html#1408">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On May 29, 2011, at 1:40 PM, Roel Vanhout wrote:
+
+&gt;<i> Hi all,
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> With the first week of GSoC already over, here's my first status
+</I>&gt;<i> report. I'm planning to do one each Sunday evening, I'm curious myself
+</I>&gt;<i> though how punctual I'm going to be on that point ;)
+</I>&gt;<i> 
+</I>&gt;<i> - The past week (well the past 4 or 5 weeks actually) I've spend on
+</I>&gt;<i> the VS project file generator. It's shaping up now - I've started over
+</I>&gt;<i> a couple of times and finally settled on the most simple design, the
+</I>&gt;<i> one that I started out with the first time. Specs of project- and
+</I>&gt;<i> solution files are done in simple yaml files, processed by the 'vs4os'
+</I>&gt;<i> Python program and using the Jinja2 template library rendered into
+</I>&gt;<i> their output formats.
+</I>
+Is vs2os something you have written? How well does it look like it can be integrated into SCons?
+
+How does it compare to existing VS support in SCons?
+
+&gt;<i> For now I focus on VS9, other versions could be
+</I>&gt;<i> added at some point. The most basic functionality works and I can
+</I>&gt;<i> build a couple of the simpler mapnik dependencies (zlib, jpeg,
+</I>&gt;<i> libtiff).
+</I>
+Nice.
+
+&gt;<i> Although I still think that choosing Python is the right
+</I>&gt;<i> choice in the given context, my relative lack of experience with it is
+</I>&gt;<i> proving a rather painful stumbling block; for example, I spend the
+</I>&gt;<i> whole day today on figuring out how unicode support works in Python in
+</I>&gt;<i> general, in Visual Studio and in the template library I use; and how
+</I>&gt;<i> to make them work together. Not fun but at least it works now :)
+</I>
+Jump on IRC and ask questions! Also of course unicode is a narly thing in python, hence python 3k.
+
+&gt;<i> 
+</I>&gt;<i> For the coming week I have planned:
+</I>&gt;<i> - Clean my source tree / directory layout up and check everything into
+</I>&gt;<i> a branch in svn. I haven't made one yet because I need to get my ssh
+</I>&gt;<i> key to work and that's a royal pain with putty etc so I've been
+</I>&gt;<i> putting it off;
+</I>
+I've heard this is totally doable with putty, hrm...
+
+When you get it working, please document on the wiki.
+
+&gt;<i> I'm also working in an old checkout of the 0.7 branch
+</I>&gt;<i> I had laying around so I'm going to need to decide first how that
+</I>&gt;<i> should work.
+</I>
+Let me know how we can help.
+
+&gt;<i> - Do some communications things: blog post (Dane, how do I log on to
+</I>&gt;<i> the Mapnik 'news' section?
+</I>&gt;<i> Can I post to the blog myself somehow?),
+</I>
+Yes, I created a login for you. Get in touch by private email with questions.
+
+&gt;<i> finally upload the minutes from the Skype meeting.
+</I>&gt;<i> - Get the other dependencies working - Cairo, and maybe if I'm feeling
+</I>&gt;<i> masochistic ICU.
+</I>
+ICU should come first since it is not optional to Mapnik.
+
+&gt;<i> 
+</I>&gt;<i> Some other things:
+</I>&gt;<i> - About the buildbot, is there a machine somewhere that can serve for
+</I>&gt;<i> this?
+</I>
+Not yet, let's talk about this in the Meeting on Tuesday. I was thinking about trying to leverage Amazon + Windows.
+
+&gt;<i> To have a Windows buildbot I'd need a Windows machine - shall I
+</I>&gt;<i> just start on a bunch of virtual machines and we'll sort it out later
+</I>&gt;<i> or is there something in place for that already?
+</I>
+Yep, I was thinking virtual machines somehow, but let me know what you think is best.
+
+&gt;<i> - I've been getting some mails / im's from people who are interested
+</I>&gt;<i> in using Mapnik on Windows, and php_mapnik, and are starting to find
+</I>&gt;<i> my wiki page on it. So that's encouraging :) I'm hoping to attract
+</I>&gt;<i> more users with some introduction articles for various websites.
+</I>
+Nice!
+
+
+&gt;<i> So I
+</I>&gt;<i> was wondering, does anyone have a simple but nice map that is rendered
+</I>&gt;<i> with Mapnik, with a small and free data set, that I can use for
+</I>&gt;<i> demonstration purposes? The examples on the Mapnik website are OK but
+</I>&gt;<i> either complicated or very specialized, I'd like to find an example
+</I>&gt;<i> that needs only a few layers and appeals to a wide audience.
+</I>
+I would recommend re-sending an email *just* about this request so people are more likely to see it than down here :)
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> cheers,
+</I>&gt;<i> 
+</I>&gt;<i> roel
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001420.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+	<LI>Next message: <A HREF="001411.html">[Mapnik-devel] Mapnik rendering blank image
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1408">[ date ]</a>
+              <a href="thread.html#1408">[ thread ]</a>
+              <a href="subject.html#1408">[ subject ]</a>
+              <a href="author.html#1408">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

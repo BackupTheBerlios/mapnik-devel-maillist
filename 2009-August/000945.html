@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch for improved text rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20improved%20text%20rendering&In-Reply-To=%3C4019A004-E6B9-4022-8492-452664AC7C90%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000944.html">
+   <LINK REL="Next"  HREF="000946.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch for improved text rendering</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20improved%20text%20rendering&In-Reply-To=%3C4019A004-E6B9-4022-8492-452664AC7C90%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Patch for improved text rendering">blake at hailmail.net
+       </A><BR>
+    <I>Tue Aug 18 15:31:36 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000944.html">[Mapnik-devel] Qgis label placement
+</A></li>
+        <LI>Next message: <A HREF="000946.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#945">[ date ]</a>
+              <a href="thread.html#945">[ thread ]</a>
+              <a href="subject.html#945">[ subject ]</a>
+              <a href="author.html#945">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>And I've updated the python bindings with these new options in r1288.
+
+Thanks Jochen!
+
+dane
+
+
+On Jul 20, 2009, at 8:31 AM, Artem Pavlenko wrote:
+
+&gt;<i> Hi Jochen,
+</I>&gt;<i>
+</I>&gt;<i> Excellent stuff, I applied your patch in r1254. Thanks!
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i> 2009/7/19 Jochen Topf &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>&gt;
+</I>&gt;<i> Attached is a patch for some text rendering improvements. The  
+</I>&gt;<i> TextSymbolizer
+</I>&gt;<i> gets the following new parameters:
+</I>&gt;<i>
+</I>&gt;<i> * text_convert=&quot;none|toupper|tolower&quot;
+</I>&gt;<i>  Convert all text to upper/lower case before rendering. &quot;none&quot;  
+</I>&gt;<i> doesn't do
+</I>&gt;<i>  anything with the text and is the default. Works for labels along  
+</I>&gt;<i> lines
+</I>&gt;<i>  or at points.
+</I>&gt;<i>
+</I>&gt;<i> * line_spacing=&quot;&lt;number&gt;&quot;
+</I>&gt;<i>  Add this many pixels space between two lines in text labels that have
+</I>&gt;<i>  been broken into several lines. Default is 0. Doesn't do anything for
+</I>&gt;<i>  labels along lines.
+</I>&gt;<i>
+</I>&gt;<i> * character_spacing=&quot;&lt;number&gt;&quot;
+</I>&gt;<i>  Add this many pixels space between two characters in a text.  
+</I>&gt;<i> Default is 0.
+</I>&gt;<i>  Currently only works for text labels on point geometries. This should
+</I>&gt;<i>  also be implemented for labels along lines, but I'll leave that for
+</I>&gt;<i>  another day.
+</I>&gt;<i>
+</I>&gt;<i> * wrap_character=&quot;&lt;character&gt;&quot;
+</I>&gt;<i>  Instead of breaking text into lines on spaces, use this character.  
+</I>&gt;<i> This
+</I>&gt;<i>  is useful, when you want to make sure that labels are broken at the  
+</I>&gt;<i> right
+</I>&gt;<i>  spot. Note that you'll probably want to make wrap_width small so that
+</I>&gt;<i>  your lines are actually broken, otherwise you'll see the  
+</I>&gt;<i> wrap_character
+</I>&gt;<i>  in the output. Default is ' ' (space). Doesn't do anything for labels
+</I>&gt;<i>  along lines.
+</I>&gt;<i>
+</I>&gt;<i> I have added those parameters to the load_map and save_map functions  
+</I>&gt;<i> and
+</I>&gt;<i> implemented the functionality. I have *not* added this to the python
+</I>&gt;<i> bindings, because I don't know how they work.
+</I>&gt;<i>
+</I>&gt;<i> Jochen
+</I>&gt;<i> --
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090818/df88b2c8/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090818/df88b2c8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000944.html">[Mapnik-devel] Qgis label placement
+</A></li>
+	<LI>Next message: <A HREF="000946.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#945">[ date ]</a>
+              <a href="thread.html#945">[ thread ]</a>
+              <a href="subject.html#945">[ subject ]</a>
+              <a href="author.html#945">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

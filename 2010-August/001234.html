@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%0A%09compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3C4A4659F0-CA5A-4FB7-9D85-1AE5FFAE467A%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001233.html">
+   <LINK REL="Next"  HREF="001237.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%0A%09compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3C4A4659F0-CA5A-4FB7-9D85-1AE5FFAE467A%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow">dane at dbsgeo.com
+       </A><BR>
+    <I>Tue Aug 10 18:44:33 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001233.html">[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow
+</A></li>
+        <LI>Next message: <A HREF="001237.html">[Mapnik-devel] load_map/save_map
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1234">[ date ]</a>
+              <a href="thread.html#1234">[ thread ]</a>
+              <a href="subject.html#1234">[ subject ]</a>
+              <a href="author.html#1234">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Aug 10, 2010, at 8:34 AM, feverzsj wrote:
+
+&gt;<i> Dane Springmeyer wrote:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> zsj,
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Yes, Mapnik trunk uses boost::spirit, which takes an enormous amount of memory to compile grammers for.
+</I>&gt;<i> hi, Dane
+</I>&gt;<i> Have to say compilation with boost::spirit for complex grammar is really painful.
+</I>
+I agree, and we're certainly open to ideas to improve usage of boost::spirit2 to speed things up.
+
+&gt;<i> One of the author has suggested some guidelines here(<A HREF="http://boost-spirit.com/home/articles/doc-addendum/best-practices/">http://boost-spirit.com/home/articles/doc-addendum/best-practices/</A>), but seems not so helpful.
+</I>
+Thanks for this link.
+
+&gt;<i> Comparing to spirit::classic, the compilation time is much longer and memory usage is much higher.
+</I>&gt;<i> Furthermore, I think spirit::classic also has a handy character iterator facility. For example, an icu based iterator can accept any byte stream encoded in icu supported codepage, and feed ucs2 or ucs4 code to the spirit parser. That is much better than the current codepage namespace solution.
+</I>
+Yes, certainly spirit::classic did not have such slow compile times. Hopefully as spirit2 develops the boost devs can improve things (and that blog post give more examples for grammars).
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;&gt;<i> I've never seen compile times over 25 minutes however, for the whole codebase. Normally I see 15-20 minute compile times on a machine with 2GB ram. It also makes sense that filter_factory.cpp takes a longer time to compile that other files at it pulls in #include &lt;mapnik/expression_grammar.hpp&gt; which is the file containing boost::spirit grammers.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> It sounds like msvc8 is much slower than g++ - have you tried compiling with mingw at all?
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Dane
+</I>&gt;<i> Switching to msvc9, compilation of mapnik took about 30 minutes. Seems msvc9 is able to processes complex template more effectively.
+</I>
+That is great news. Also, the clang++ compiler is able to compile Mapnik in around 14 minutes (half the time of gcc) on mac osx. However, it is not quite ready for primetime as it still has a few bugs, particularly on linux.
+
+&gt;<i> Compiling with mingw3.81 from qt creator also took similar time. But the memory usage is still very high.
+</I>&gt;<i> 
+</I>
+Okay, good to know. It would be great if you could document your steps in the wiki a bit? Could you?
+
+dane
+
+&gt;<i> Regards, zsj
+</I>&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001233.html">[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow
+</A></li>
+	<LI>Next message: <A HREF="001237.html">[Mapnik-devel] load_map/save_map
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1234">[ date ]</a>
+              <a href="thread.html#1234">[ thread ]</a>
+              <a href="subject.html#1234">[ subject ]</a>
+              <a href="author.html#1234">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik stuck in recursive loop?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1179178851.23409.138.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000156.html">
+   <LINK REL="Next"  HREF="000158.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik stuck in recursive loop?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1179178851.23409.138.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik stuck in recursive loop?">jburgess at uklinux.net
+       </A><BR>
+    <I>Mon May 14 23:40:51 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000156.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+        <LI>Next message: <A HREF="000158.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#157">[ date ]</a>
+              <a href="thread.html#157">[ thread ]</a>
+              <a href="subject.html#157">[ subject ]</a>
+              <a href="author.html#157">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+
+&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+</I>&gt;<i> &gt; I can see the problem. &quot;ZERO WIDTH NON-JOINER&quot; is an instructive,
+</I>&gt;<i> &gt; non-printable character. Freetype returns zero sized bounding box and
+</I>&gt;<i> &gt; this was triggering 'quad_tree' bug.  Are you building Mapnik with
+</I>&gt;<i> &gt; fibidi support? FRIBIDI=y ?  
+</I>&gt;<i> &gt; 
+</I>
+With BIDI=1 I now get some roads with empty boxes instead of names. 
+Attached is one example which has several roads appearing like &quot;[] &gt; []&quot;
+
+Is this telling me that I am missing the necessary fonts? If so, what
+should I install?
+
+The equivalent tile on the main OSM site has these roads with no names
+<A HREF="http://tile.openstreetmap.org/15/21060/12900.png">http://tile.openstreetmap.org/15/21060/12900.png</A>
+
+	Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 12900.png
+Type: image/png
+Size: 10220 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070514/b3abd92b/attachment.png">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070514/b3abd92b/attachment.png</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000156.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+	<LI>Next message: <A HREF="000158.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#157">[ date ]</a>
+              <a href="thread.html#157">[ thread ]</a>
+              <a href="subject.html#157">[ subject ]</a>
+              <a href="author.html#157">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

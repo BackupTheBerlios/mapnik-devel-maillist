@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.6.0 released
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3CDBB9B41A-24EA-4E68-98E0-691221AEFB35%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000836.html">
+   <LINK REL="Next"  HREF="000839.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.6.0 released</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3CDBB9B41A-24EA-4E68-98E0-691221AEFB35%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.6.0 released">blake at hailmail.net
+       </A><BR>
+    <I>Sun Apr  5 17:49:27 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000836.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+        <LI>Next message: <A HREF="000839.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#838">[ date ]</a>
+              <a href="thread.html#838">[ thread ]</a>
+              <a href="subject.html#838">[ subject ]</a>
+              <a href="author.html#838">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+
+&gt;<i> Am Fri, 3 Apr 2009 12:02:25 -0700 schrieb Dane Springmeyer:
+</I>&gt;<i>
+</I>&gt;<i> Hello Dane,
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Andreas,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Am Thu, 2 Apr 2009 16:28:50 -0700 schrieb Dane Springmeyer:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello Dane,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> do you think it would be possible to release an alternative package
+</I>&gt;&gt;&gt;<i> with the autotools build environment beside the scons version?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 'Beside'? you mean in addition?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Isn't that the way it currently is? Sorry, I'm not very familiar
+</I>&gt;&gt;<i> with autotools. Perhaps you mean to include also a pre-build
+</I>&gt;&gt;<i> 'configure' as well?
+</I>&gt;<i>
+</I>&gt;<i> Yes, the configure script needs to be included. Without the users have
+</I>&gt;<i> to install all the autoconf, automake, libtool stuff.
+</I>&gt;<i>
+</I>&gt;<i> In normal autotools environment you generate the package with &quot;make
+</I>&gt;<i> dist&quot; or &quot;make distcheck&quot;. I could simply add a rule to include the
+</I>&gt;<i> SConstruct files as extra data. Then packaging would be easier. Or two
+</I>&gt;<i> different packages:
+</I>&gt;<i>
+</I>&gt;<i> mapnik_scons-0.6.0.tar.gz
+</I>&gt;<i> mapnik_autotools-0.6.0.tar.gz
+</I>&gt;<i>
+</I>&gt;<i> each with its own build environment. Many ways are possible.
+</I>&gt;<i>
+</I>
+
+Ah, I see - thanks for the explanation. Perhaps Artem or Dominic will  
+have ideas about the best way to package. Your idea of two different  
+packages sounds good to me.
+
+
+&gt;&gt;<i> I would love if you could document how to use the autotools stuff,
+</I>&gt;<i>
+</I>&gt;<i> I started a wiki page for it:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/wiki/BuildingwithAutotools">http://trac.mapnik.org/wiki/BuildingwithAutotools</A>
+</I>&gt;<i>
+</I>&gt;<i> It's only a basic start and I hope more detailed information will be
+</I>&gt;<i> added in the future.
+</I>&gt;<i>
+</I>
+Looks great!
+
+&gt;&gt;<i> both in trunk and how you imagine it working for releases. See:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/ticket/124">http://trac.mapnik.org/ticket/124</A>
+</I>&gt;<i>
+</I>&gt;<i> I didn't know that ticket. The owner is 'andreas'. I'm a little
+</I>&gt;<i> confused. My SVN name is 'andreas', but for some reasons I decided to
+</I>&gt;<i> set my trac name to 'audifahrer'. So is this my ticket?
+</I>&gt;<i>
+</I>
+
+Yes, whoever 'andreas' is on trac matters less - I meant to assign it  
+to you :)
+
+&gt;<i> But anyway my account had no email address. I found out that I own
+</I>&gt;<i> another ticket as 'audifahrer':
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/291">http://trac.mapnik.org/ticket/291</A>
+</I>&gt;<i>
+</I>
+Yes, I just created that yesterday. Do you need help assigning an  
+email to your account?
+
+
+&gt;<i> I changed something with agg yesterday. Thanks. I've to check that.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Then
+</I>&gt;&gt;&gt;<i> people could choose the build environment they like. I've still some
+</I>&gt;&gt;&gt;<i> open points,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Are there tickets for these?
+</I>&gt;<i>
+</I>&gt;<i> No.
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> but I'll fix them in near future.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> How soon?  How about for the 0.6.1 release?
+</I>&gt;<i>
+</I>&gt;<i> One was the python support that I added at latest. But it's not yet
+</I>&gt;<i> complete tested. Another one was the missing utils compile support. I
+</I>&gt;<i> fixed that one also.
+</I>&gt;<i>
+</I>&gt;<i> I think that now all features are supported. What I really need are
+</I>&gt;<i> testers and possible tickets. There are many build combinations and it
+</I>&gt;<i> needs soooo long to build mapnik on my system. :-(
+</I>&gt;<i>
+</I>
+ya.
+
+&gt;&gt;<i> <A HREF="http://trac.mapnik.org/milestone/0.6.1">http://trac.mapnik.org/milestone/0.6.1</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note: I've assigned a date of two months from now purely as a rough
+</I>&gt;&gt;<i> idea of how long it should take to close the existing bug tickets.
+</I>&gt;&gt;<i> Other dev's please let me know your opinions and add thoughts to the
+</I>&gt;&gt;<i> milestone notes.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> And do you think it would be possible to include the kismet plugin
+</I>&gt;&gt;&gt;<i> in the next major release?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> We tagged 0.6.0 from svn, so the Kismet plugin is there, just not
+</I>&gt;&gt;<i> yet part of the SCons build scripts or 'wrapped' with a factory
+</I>&gt;&gt;<i> method in the Python Bindings.
+</I>&gt;<i>
+</I>&gt;<i> Would be great, because I've no knowledge of scons and only medium
+</I>&gt;<i> knowledge of python. I use only the C++ API.
+</I>&gt;<i>
+</I>
+I can do this - it is quite simple. The only work is writing the  
+python docstrings for the options of the kismet plugin.
+
+
+&gt;&gt;<i> These would be the two things in my mind to do next, in addition to
+</I>&gt;&gt;<i> documenting on its own wiki page.
+</I>&gt;<i>
+</I>&gt;<i> Yes, a separate wiki page for kismet would be nice if more information
+</I>&gt;<i> are added.
+</I>&gt;<i>
+</I>&gt;<i> I recorded a video how it looks while driving around. I'll post it on
+</I>&gt;<i> youtube shortly. Maybe I could add a link to the wiki.
+</I>&gt;<i>
+</I>&gt;<i> regards
+</I>&gt;<i> Andreas
+</I>
+
+great, thanks for the update!
+
+Dane
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000836.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+	<LI>Next message: <A HREF="000839.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#838">[ date ]</a>
+              <a href="thread.html#838">[ thread ]</a>
+              <a href="subject.html#838">[ subject ]</a>
+              <a href="author.html#838">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

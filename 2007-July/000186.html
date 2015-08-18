@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS-service of mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3C7DD04850-12C3-4A37-BE07-D518275B8749%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000185.html">
+   <LINK REL="Next"  HREF="000187.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS-service of mapnik</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3C7DD04850-12C3-4A37-BE07-D518275B8749%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] WMS-service of mapnik">artem at mapnik.org
+       </A><BR>
+    <I>Thu Jul  5 22:23:01 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000185.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+        <LI>Next message: <A HREF="000187.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#186">[ date ]</a>
+              <a href="thread.html#186">[ thread ]</a>
+              <a href="subject.html#186">[ subject ]</a>
+              <a href="author.html#186">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Stephan,
+
+
+First thing is to make sure you have working mapnik. Could you verify  
+you can run python demo:
+
+
+$  cd $(mapnik_src)/demo/python
+$  python ./rundemo.py
+
+and you should get two maps on the same directory
+
+Let me know.
+Cheers,
+Artem
+
+On 5 Jul 2007, at 02:56, Jean-Fran&#231;ois Doyon wrote:
+
+&gt;<i> OK, so I go to turn on my Linux box, and it won't boot, so I can't
+</I>&gt;<i> troubleshoot this very much right now, that being said ...
+</I>&gt;<i>
+</I>&gt;<i> I can't see anything wrong with your script at first hand.  In the
+</I>&gt;<i> traceback you show, there seem to be indentation differences, which
+</I>&gt;<i> could confuse Python, though you'd get a different error.
+</I>&gt;<i>
+</I>&gt;<i> The error that matters here is this:
+</I>&gt;<i>
+</I>&gt;<i> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+</I>&gt;<i> mod_fcgid: ArgumentError: Python argument types in
+</I>&gt;<i> mod_fcgid:     Layer.__init__(Layer)
+</I>&gt;<i> mod_fcgid: did not match C++ signature:
+</I>&gt;<i> mod_fcgid:     __init__(_object*, std::string)
+</I>&gt;<i> mod_fcgid:     __init__(_object*, std::string, std::string)
+</I>&gt;<i> mod_fcgid: /opt/mapnik/wms.py in __init__(self=&lt;wms.WMSFactory  
+</I>&gt;<i> instance
+</I>&gt;<i> at 0x2b8690870c68&gt;)
+</I>&gt;<i> mod_fcgid:    15 self.register_style('style1', sty)
+</I>&gt;<i> mod_fcgid:    16
+</I>&gt;<i> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+</I>&gt;<i> 4326')
+</I>&gt;<i> mod_fcgid:    18                 lyr.datasource =
+</I>&gt;<i> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+</I>&gt;<i> mod_fcgid:    19                 lyr.title = 'test'
+</I>&gt;<i> mod_fcgid:    20                 lyr.abstract = 'abstract'
+</I>&gt;<i> mod_fcgid:    21
+</I>&gt;<i> mod_fcgid: lyr undefined, global Shapefile = &lt;function Shapefile at
+</I>&gt;<i> 0x2b8689b70aa0&gt;, file undefined
+</I>&gt;<i> 0x2b8689b70aa0&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> There might be some problem at the boost level, because the signatures
+</I>&gt;<i> and your code look OK.
+</I>&gt;<i>
+</I>&gt;<i> What version of Boost are you using? What Linux distribution?
+</I>&gt;<i>
+</I>&gt;<i> J.F.
+</I>&gt;<i>
+</I>&gt;<i> Stephan Holl wrote:
+</I>&gt;&gt;<i> Hi Mapnik-developers, Jean-Francois Doyon,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I would like to use the ogcserver-wms from mapnik to render OSM-data
+</I>&gt;&gt;<i> also in stock-WMS-desktop-clients.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Therefor I followed the advises closely on[1] but my services dies
+</I>&gt;&gt;<i> with the following error (in apache-errorlog):
+</I>&gt;&gt;<i> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+</I>&gt;&gt;<i> mod_fcgid: ArgumentError: Python argument types in
+</I>&gt;&gt;<i> mod_fcgid:     Layer.__init__(Layer)
+</I>&gt;&gt;<i> mod_fcgid: did not match C++ signature:
+</I>&gt;&gt;<i> mod_fcgid:     __init__(_object*, std::string)
+</I>&gt;&gt;<i> mod_fcgid:     __init__(_object*, std::string, std::string)
+</I>&gt;&gt;<i> mod_fcgid: /opt/mapnik/wms.py in __init__(self=&lt;wms.WMSFactory  
+</I>&gt;&gt;<i> instance
+</I>&gt;&gt;<i> at 0x2b8690870c68&gt;)
+</I>&gt;&gt;<i> mod_fcgid:    15 self.register_style('style1', sty)
+</I>&gt;&gt;<i> mod_fcgid:    16
+</I>&gt;&gt;<i> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+</I>&gt;&gt;<i> 4326')
+</I>&gt;&gt;<i> mod_fcgid:    18                 lyr.datasource =
+</I>&gt;&gt;<i> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+</I>&gt;&gt;<i> world_boundaries_m')
+</I>&gt;&gt;<i> mod_fcgid:    19                 lyr.title = 'test'
+</I>&gt;&gt;<i> mod_fcgid:    20                 lyr.abstract = 'abstract'
+</I>&gt;&gt;<i> mod_fcgid:    21
+</I>&gt;&gt;<i> mod_fcgid: lyr undefined, global Shapefile = &lt;function Shapefile at
+</I>&gt;&gt;<i> 0x2b8689b70aa0&gt;, file undefined
+</I>&gt;&gt;<i> 0x2b8689b70aa0&gt;
+</I>&gt;&gt;<i> mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/ 
+</I>&gt;&gt;<i> cgiserver.py
+</I>&gt;&gt;<i> 0x2b8689b70aa0&gt;in __init__(self=&lt;__main__.WMSHandler object at
+</I>&gt;&gt;<i> 0x2b8689b70aa0&gt;0x2b869086ce90&gt;)
+</I>&gt;&gt;<i> mod_fcgid:    44         except ImportError:
+</I>&gt;&gt;<i> mod_fcgid:    45             raise ServerConfigurationError('The
+</I>&gt;&gt;<i> factory module could not be loaded.')
+</I>&gt;&gt;<i> mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'):
+</I>&gt;&gt;<i> mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+</I>&gt;&gt;<i> 'WMSFactory')()
+</I>&gt;&gt;<i> mod_fcgid:    48         else:
+</I>&gt;&gt;<i> mod_fcgid:    49             raise ServerConfigurationError('The
+</I>&gt;&gt;<i> factory module does not have a WMSFactory class.')
+</I>&gt;&gt;<i> mod_fcgid:    50         if conf.has_option('server', 'debug'):
+</I>&gt;&gt;<i> mod_fcgid: self = &lt;__main__.WMSHandler object at
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;, self.mapfactory undefined, getattr undefined,
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;mapfactorymodule = &lt;module 'wms' from
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;'/opt/mapnik/wms.pyc'&gt;
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;
+</I>&gt;&gt;<i> mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;in run(self=&lt;jon.fcgi.Request object at  
+</I>&gt;&gt;<i> 0x2b8690864a50&gt;)
+</I>&gt;&gt;<i> 0x2b869086ce90&gt;
+</I>&gt;&gt;<i> mod_fcgid:   338       self._init()
+</I>&gt;&gt;<i> mod_fcgid:   339       self.log(2, &quot;Calling handler&quot;)
+</I>&gt;&gt;<i> mod_fcgid:   340       try:
+</I>&gt;&gt;<i> mod_fcgid:   341         handler = self._handler_type()
+</I>&gt;&gt;<i> mod_fcgid:   342       except:
+</I>&gt;&gt;<i> mod_fcgid:   343         self.traceback()
+</I>&gt;&gt;<i> mod_fcgid:   344       else:
+</I>&gt;&gt;<i> mod_fcgid: handler undefined, self = &lt;jon.fcgi.Request object at
+</I>&gt;&gt;<i> 0x2b8690864a50&gt;, self._handler_type = &lt;class '__main__.WMSHandler'&gt; ~
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is my wms.py-script (with only one layer for now):
+</I>&gt;&gt;<i> from mapnik.ogcserver.WMS import BaseWMSFactory
+</I>&gt;&gt;<i> from mapnik import *
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> class WMSFactory(BaseWMSFactory):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         def __init__(self):
+</I>&gt;&gt;<i>                 BaseWMSFactory.__init__(self)
+</I>&gt;&gt;<i>                 sty = Style()
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>                 rl = Rule()
+</I>&gt;&gt;<i>                 rl.symbols.append(PolygonSymbolizer(Color 
+</I>&gt;&gt;<i> (248,216,136)))
+</I>&gt;&gt;<i>                 rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+</I>&gt;&gt;<i>                 sty.rules.append( rl )
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>                 self.register_style('style1', sty)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>                 lyr = Layer('world', '+init=epsg:4326')
+</I>&gt;&gt;<i>                 lyr.datasource =
+</I>&gt;&gt;<i> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+</I>&gt;&gt;<i> world_boundaries_m')
+</I>&gt;&gt;<i> lyr.title = 'test' lyr.abstract = 'abstract'
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>                 self.register_layer(lyr, 'style1')
+</I>&gt;&gt;<i>                 self.finalize()
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I already posted that one on OSM-dev, but Artem told me to repost  
+</I>&gt;&gt;<i> that
+</I>&gt;&gt;<i> here.
+</I>&gt;&gt;<i> Perhaps someone could give me a hint how to solve this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As someone on OSM-dev pointed out that an object is needed for a  
+</I>&gt;&gt;<i> layer
+</I>&gt;&gt;<i> to initialize instead a string. Is there a documentation of the
+</I>&gt;&gt;<i> python-bindings?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for any pointers. I really appreciate it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Best
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 	Stephan
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070705/f38114b7/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070705/f38114b7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000185.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+	<LI>Next message: <A HREF="000187.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#186">[ date ]</a>
+              <a href="thread.html#186">[ thread ]</a>
+              <a href="subject.html#186">[ subject ]</a>
+              <a href="author.html#186">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

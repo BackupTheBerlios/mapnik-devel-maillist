@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Style variation (feature visibility) depending on	feature density
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Style%20variation%20%28feature%20visibility%29%20depending%20on%0A%09feature%20density&In-Reply-To=%3C4D2B8CE1.1010703%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001311.html">
+   <LINK REL="Next"  HREF="001309.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Style variation (feature visibility) depending on	feature density</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Style%20variation%20%28feature%20visibility%29%20depending%20on%0A%09feature%20density&In-Reply-To=%3C4D2B8CE1.1010703%40remote.org%3E"
+       TITLE="[Mapnik-devel] Style variation (feature visibility) depending on	feature density">frederik at remote.org
+       </A><BR>
+    <I>Mon Jan 10 23:49:05 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001311.html">[Mapnik-devel] compiling on windows
+</A></li>
+        <LI>Next message: <A HREF="001309.html">[Mapnik-devel] Style variation (feature visibility) depending on feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1308">[ date ]</a>
+              <a href="thread.html#1308">[ thread ]</a>
+              <a href="subject.html#1308">[ subject ]</a>
+              <a href="author.html#1308">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+    I wonder if anyone has invested some thought, or even code, into 
+ways to control feature visibility depending on how much data there 
+actually is.
+
+For example, on the standard OpenStreetMap map, pubs are shown from zoom 
+level 16 on. Which is ok for a place that has lots of pubs like this
+
+<A HREF="http://www.openstreetmap.org/?lat=51.51502&amp;lon=-0.10676&amp;zoom=16&amp;layers=M">http://www.openstreetmap.org/?lat=51.51502&amp;lon=-0.10676&amp;zoom=16&amp;layers=M</A>
+
+but would it not be great for the weary traveller to know, from a much 
+earlier zoom level, that the village of Thompson has a pub while nearby, 
+larger, Watton doesn't?
+
+<A HREF="http://www.openstreetmap.org/?lat=52.552&amp;lon=0.8356&amp;zoom=13&amp;layers=M">http://www.openstreetmap.org/?lat=52.552&amp;lon=0.8356&amp;zoom=13&amp;layers=M</A>
+
+Or, another example: If you look at the large empty triangle between the 
+  towns of Gumdag, Serdar, and Gyzyletrek on this map (zoom level 9):
+
+<A HREF="http://www.openstreetmap.org/?lat=38.564&amp;lon=55.331&amp;zoom=9&amp;layers=M">http://www.openstreetmap.org/?lat=38.564&amp;lon=55.331&amp;zoom=9&amp;layers=M</A>
+
+... you would never guess that lots of long-distance desert tracks 
+criss-cross this area because they only come in at zoom level 13. And 
+rightly so, because you would certainly not want the tracks on this zoom 
+level 13 map to appear any sooner:
+
+<A HREF="http://www.openstreetmap.org/?lat=50.3004&amp;lon=8.2687&amp;zoom=13&amp;layers=M">http://www.openstreetmap.org/?lat=50.3004&amp;lon=8.2687&amp;zoom=13&amp;layers=M</A>
+
+
+There are several ways how this could be handled. One is of course 
+OpenStreetMap specific - simply tag the objects in question in some 
+specific way and produce matching (probably quite complicated) style 
+sheets.
+
+Another way would be having region-specific styles. I understand Mapnik2 
+already has some support for that (rendering North America different 
+from the UK). I haven't looked at this closely but I guess it could 
+probably be extended to much smaller units than countries - so one could 
+have some sort of master shapefile that divides up the world in 
+something like 5 different types of area and then use that to make 
+certain decisions in your style sheets.
+
+A third way, and that's coming back to the subject of this post, is 
+trying to find out how dense a certain feature is. I could then write a 
+style file that specifies a min/max scale denominator like we have now, 
+but in addition I'd specify a &quot;max num features per megapixel&quot; or 
+something. That would allow me to say that I want pubs drawn from zoom 
+level 13 on, but only if there are less than 20 per megapixel or so. For 
+some styles, a megapixel kind of rule might completely replace the scale 
+denominator rule.
+
+Of course this third way (and to a lesser degree the first and second) 
+has many problems - first of all, simply counting features might not be 
+enough (there might only be one feature but it might be very large and 
+complex); second, how would one handle transition areas (large image 
+with 100 pubs in the lower left corner); third, it would be horribly 
+taxing on the PostGIS side (&quot;quick, count the number of pubs in this 1 
+million square kilometer area&quot;), and fourth - it may turn out to be a 
+cartographic nightmare - you pan across the map and see a pub in 
+Thompson but none in London.
+
+Maybe I'm just asking too much?
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23'33&quot;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001311.html">[Mapnik-devel] compiling on windows
+</A></li>
+	<LI>Next message: <A HREF="001309.html">[Mapnik-devel] Style variation (feature visibility) depending on feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1308">[ date ]</a>
+              <a href="thread.html#1308">[ thread ]</a>
+              <a href="subject.html#1308">[ subject ]</a>
+              <a href="author.html#1308">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

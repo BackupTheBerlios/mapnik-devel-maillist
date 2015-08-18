@@ -1,0 +1,1639 @@
+From jburgess777 at googlemail.com  Wed Apr  2 01:06:08 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 02 Apr 2008 00:06:08 +0100
+Subject: [Mapnik-devel] Testing 0.5 stable branch (0.5.1 release)
+In-Reply-To: <20080330173420.GV2204@urchin.earth.li>
+References: <20080330173420.GV2204@urchin.earth.li>
+Message-ID: <1207091168.29359.93.camel@localhost.localdomain>
+
+
+On Sun, 2008-03-30 at 18:34 +0100, Dominic Hargreaves wrote:
+> I've prepared what will become mapnik 0.5.1 in subversion as
+> branches/stable/0.5. I'd be grateful if people could test this,
+> especially on non-Linux platforms (Artem, I think it would be good to
+> test win32 builds before tagging, for example).
+
+I'd be a little nervous about the merge candidate #657. This breaks the
+current osm.xml style file
+https://lists.berlios.de/pipermail/mapnik-devel/2008-February/000500.html 
+
+At some point I'll try to tweak the osm.xml style to work with the
+Mapnik SVN by moving the building polygons off into another style so
+that the ElseFilter can be used instead of: <> ''.
+
+	Jon
+
+
+
+
+
+
+From dom at earth.li  Wed Apr  2 01:11:32 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Wed, 2 Apr 2008 00:11:32 +0100
+Subject: [Mapnik-devel] Testing 0.5 stable branch (0.5.1 release)
+In-Reply-To: <1207091168.29359.93.camel@localhost.localdomain>
+References: <20080330173420.GV2204@urchin.earth.li>
+	<1207091168.29359.93.camel@localhost.localdomain>
+Message-ID: <20080401231132.GC2204@urchin.earth.li>
+
+On Wed, Apr 02, 2008 at 12:06:08AM +0100, Jon Burgess wrote:
+
+> I'd be a little nervous about the merge candidate #657. This breaks the
+> current osm.xml style file
+> https://lists.berlios.de/pipermail/mapnik-devel/2008-February/000500.html 
+> 
+> At some point I'll try to tweak the osm.xml style to work with the
+> Mapnik SVN by moving the building polygons off into another style so
+> that the ElseFilter can be used instead of: <> ''.
+
+Okay; it's off the merge list for now :)
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From blake at hailmail.net  Fri Apr  4 19:55:38 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 4 Apr 2008 10:55:38 -0700
+Subject: [Mapnik-devel] GeoDjango Datasource for Mapnik
+In-Reply-To: <b3b5e5690804020808s17b9c826i30daeb31661ab9d3@mail.gmail.com>
+References: <b3b5e5690804011254u7337449bu2a66485ba8c9be40@mail.gmail.com>
+	<a4c775140804020330h1a71e184rbdef94180762d77b@mail.gmail.com>
+	<b3b5e5690804020808s17b9c826i30daeb31661ab9d3@mail.gmail.com>
+Message-ID: <FB4C5F71-C0CB-4991-A718-748D4D330777@hailmail.net>
+
+I've been using geodjango lately and am very excited about the  
+possibilities of the project. I'm curious about the potential/interest  
+for a django datasource in Mapnik. Have any mapnik users/devs given  
+thought to this?
+
+Integration of Mapnik as WMS into geodjango is something that should/ 
+will likely happen on the django side, of course. But I am  
+particularly interested in using Mapnik to generate static map  
+graphics directly through the python bindings. In this sense I figure  
+it would be slick to enable Mapnik to read django queryset objects  
+directly. How feasible would this be? Could the existing WKB reader be  
+used to hook directly to the geodango.wkb?
+
+I've already managed to get mapnik working in my django projects  
+(using Newforms-Admin) by converting single geodjango objects to the  
+necessary format to send to the mapnik PostGIS datasource.
+
+It's a hack along the lines of what is pasted below.
+
+I'm interested in better ways.
+
+Thanks,
+Dane
+
+# example using from django admin models and mapnik to build a map  
+thumbnail for a given geometry.
+
+from mapnik import *
+from django.contrib.gis import admin
+from django_project.django_app.models import MyGeoAdminModel
+from django_settings import DATABASE_HOST, DATABASE_USER,  
+DATABASE_PASSWORD, DATABASE_NAME
+
+def get_mapnik_sql(self):
+     '''
+     Get Raw SQL for django object
+     '''
+     cols, sql, args = self._get_sql_clause()
+     raw_sql = "(SELECT %s %s) as django_table" % (', '.join(cols),  
+sql % tuple(args))
+     unquoted_sql = raw_sql.replace('"', '')
+     return unquoted_sql
+
+#Instantiate the mapnik stuff
+m = Map(60,30,"+proj=latlong +datum=WGS84")
+....snip ... making map styles, rules, layers...
+lyr = Layer('Django_Layer')
+
+#Grab the django object
+geodjango_object = MyGeoAdminModel.objects.filter(id=self.id)
+
+# Turn a django object into the SQL needed for the PostGIS driver
+mapnik_query = get_mapnik_sql(geodjango_object)
+lyr.datasource =  
+PostGIS 
+(host 
+= 
+DATABASE_HOST 
+,user 
+= 
+DATABASE_USER 
+,password=DATABASE_PASSWORD,dbname=DATABASE_NAME,table=mapnik_query)
+
+#Save the map to the filesystem
+m.zoom_to_box(lyr.envelope())
+mapname = 'static/mapnik/%s.png' % self.id
+render_to_file(m,mapname,'png')
+
+
+
+From jbronn at gmail.com  Sat Apr  5 19:17:06 2008
+From: jbronn at gmail.com (Justin Bronn)
+Date: Sat, 05 Apr 2008 12:17:06 -0500
+Subject: [Mapnik-devel] GeoDjango Datasource for Mapnik
+In-Reply-To: <FB4C5F71-C0CB-4991-A718-748D4D330777@hailmail.net>
+References: <b3b5e5690804011254u7337449bu2a66485ba8c9be40@mail.gmail.com>	<a4c775140804020330h1a71e184rbdef94180762d77b@mail.gmail.com>	<b3b5e5690804020808s17b9c826i30daeb31661ab9d3@mail.gmail.com>
+	<FB4C5F71-C0CB-4991-A718-748D4D330777@hailmail.net>
+Message-ID: <47F7B412.9090309@gmail.com>
+
+Dane & Mapnik Developers:
+
+ > I've been using geodjango lately and am very excited about the
+ > possibilities of the project. I'm curious about the potential/interest
+ > for a django datasource in Mapnik. Have any mapnik users/devs given
+ > thought to this?
+
+As lead developer of GeoDjango, this is something that I definitely have 
+interest in.  However, rather than coding a a "GeoDjango" datasource and 
+including it in Mapnik, I think the better route would be to create 
+utility routines/classes in GeoDjango that interface with the Mapnik 
+Python API.  Using configuration information from Django's `settings.py` 
+(as you did in your example), and geographic model metadata it's 
+entirely possible to feed the right information into the Mapnik's 
+existing API (e.g., instantiating the existing `PostGIS` Mapnik data 
+source with the right info).  Only if we run into problems interfacing 
+with the Mapnik API on our end, should we then request reasonable 
+additions/modifications.
+
+There are many exciting combinations of Mapnik + GeoDjango I can think of :)
+
+ > Integration of Mapnik as WMS into geodjango is something that should/
+ > will likely happen on the django side, of course.
+
+I like the idea of having GeoDjango WMS views powered by Mapnik.  What's 
+prevented me thus far from implementing them is a license conflict -- 
+GeoDjango is BSD and the `ogcserver` Mapnik Python components are 
+licensed under the LGPL.  Would the Mapnik developers consider 
+relicensing _only_ portions of the `ogcserver` Python code to BSD so I 
+may modify and include it GeoDjango?  More specifically, I'm interested 
+in `wms111.py`, `wms130.py`, and `common.py`.
+
+Best Regards,
+-Justin
+
+
+From ben.moores at onetrackmind.co.nz  Sun Apr  6 03:37:44 2008
+From: ben.moores at onetrackmind.co.nz (Ben Moores)
+Date: Sun, 06 Apr 2008 13:37:44 +1200
+Subject: [Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re:
+ Mapnik viewer and OSM rendering)
+In-Reply-To: <4177AF40-4B79-45B9-B607-9AE98EBD107B@mapnik.org>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+	<47DAD566.9070302@onetrackmind.co.nz>
+	<A0E76703-65CE-4956-9291-A1F5A4905535@mapnik.org>
+	<47DB0F43.8060506@onetrackmind.co.nz>
+	<4177AF40-4B79-45B9-B607-9AE98EBD107B@mapnik.org>
+Message-ID: <47F82968.9030008@onetrackmind.co.nz>
+
+Hi, I've had time to commit the wxpdfdoc pdf output into an experimental 
+branch. You can find it in /branches/experimental-pdf/
+
+
+notes:
+  - I haven't updated scons, since I never could get it working on 
+windows. The new files are in /pdf/, /include/pdf/, /demo/pdf/, and 
+/bindings/python
+  - I have included my patches to wxpdfdoc in /thirdparty/wxpdfdoc-patch
+  - Build instructions are in /msvc/readme.txt
+  - A visual studio solution/projects for all of mapnik (agg, mapnik, 
+input plugins, python bindings, pdf demo) is included in /msvc/.
+  - A c++ demo is included in /demo/pdf
+
+
+Have a look and see what you think, I don't have much time for working 
+on this any more, but you might see some features you like:
+  - turning on/off map layers in the pdf
+  - laying out the map on a page (e.g. no full page output) so you can add
+	+ grids
+	+ overlay images (including pdfs)
+	+ scale bars
+	+ borders around the map
+
+
+
+
+Thanks
+
+Ben
+
+
+
+
+
+From lists at brachttal.net  Sun Apr  6 08:47:28 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 6 Apr 2008 08:47:28 +0200
+Subject: [Mapnik-devel] Mapnik direct OSM support
+In-Reply-To: <OF966887CB.3124151E-ON802573FB.006631D7-802573FB.00671EFA@solent-university.ac.uk>
+References: <OF966887CB.3124151E-ON802573FB.006631D7-802573FB.00671EFA@solent-university.ac.uk>
+Message-ID: <20080406084728.66f79b8a@frodo.mittelerde>
+
+Am Tue, 26 Feb 2008 18:46:21 +0000 schrieb Nick Whitelegg:
+
+> Hello Artem (and anyone else),
+> 
+> I believe I've now implemented all code necessary to add direct OSM 
+> support to Mapnik. I've implemented an .osm XML parser, an
+> osm_dataset class representing a complete OSM dataset, and
+> implemented osm_datasource and osm_featureset classes inheriting from
+> mapnik::datasource and mapnik::featureset.
+> 
+> What I'd just like to check now is how I make the library a plugin.
+> From my examination of the Mapnik directory layout, I just need to
+> turn my code into a shared library and then place it under the 
+> /usr/local/lib/mapnik/input directory with a name of "osm.input". As
+> long as the name() method of mapnik_datasource returns "osm", and I
+> use "osm" in the Mapnik XML file where I'd normally use "postgis" or
+> "shape", it looks like this should work.
+
+Hello,
+
+you added a Makefile and libMakefile. At least the Makefile will be
+overwritten if I add the Makefile.am. Is it O.k. for you if I remove
+both files from SVN in favor of the proper autotools stuff?
+
+If not I'll rename it to Makefile.example. BTW: I think the example
+should be placed in demo directory. Is it O.k. for you if I change that?
+
+regards
+Andreas
+
+
+From tom at compton.nu  Sun Apr  6 09:34:31 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sun, 06 Apr 2008 08:34:31 +0100
+Subject: [Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re:
+	Mapnik viewer and OSM rendering)
+In-Reply-To: <47F82968.9030008@onetrackmind.co.nz>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org> 
+	<47DAD566.9070302@onetrackmind.co.nz>
+	<A0E76703-65CE-4956-9291-A1F5A4905535@mapnik.org>
+	<47DB0F43.8060506@onetrackmind.co.nz> 
+	<4177AF40-4B79-45B9-B607-9AE98EBD107B@mapnik.org>
+	<47F82968.9030008@onetrackmind.co.nz>
+Message-ID: <f940aa8b4f.tom@loxley.compton.nu>
+
+In message <47F82968.9030008 at onetrackmind.co.nz>
+          Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+
+>   - laying out the map on a page (e.g. no full page output) so you can add
+> 	+ grids
+> 	+ overlay images (including pdfs)
+> 	+ scale bars
+> 	+ borders around the map
+
+This stuff is nice, but should probably be done at a general level
+rather than in one specific renderer.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From snecklifter at gmail.com  Sun Apr  6 23:04:45 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Sun, 6 Apr 2008 22:04:45 +0100
+Subject: [Mapnik-devel] Patch broke text labels
+Message-ID: <364d303b0804061404u527a090ey8d5d7e3c7351112@mail.gmail.com>
+
+Hi guys,
+
+(Going on-list with this as I see its been reverted in trunk also.)
+
+I'm sorry to see my patch broke text labels. Any further information
+on where exactly the fault lies appreciated.
+
+Cheers
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From dom at earth.li  Mon Apr  7 00:00:17 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Sun, 6 Apr 2008 23:00:17 +0100
+Subject: [Mapnik-devel] Patch broke text labels
+In-Reply-To: <364d303b0804061404u527a090ey8d5d7e3c7351112@mail.gmail.com>
+References: <364d303b0804061404u527a090ey8d5d7e3c7351112@mail.gmail.com>
+Message-ID: <20080406220017.GM2204@urchin.earth.li>
+
+On Sun, Apr 06, 2008 at 10:04:45PM +0100, Christopher Brown wrote:
+
+> (Going on-list with this as I see its been reverted in trunk also.)
+> 
+> I'm sorry to see my patch broke text labels. Any further information
+> on where exactly the fault lies appreciated.
+
+Hi Chris,
+
+Haven't really digged into this yet as my primary goal was to get 0.5.1
+released (I had intended to do so a week ago) and it was mostly cosmetic
+(at this stage) the impact of leaving it out was low.
+
+We haven't forgotten about it though :)
+
+Cheers,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From ben.moores at onetrackmind.co.nz  Mon Apr  7 06:04:01 2008
+From: ben.moores at onetrackmind.co.nz (Ben Moores)
+Date: Mon, 07 Apr 2008 16:04:01 +1200
+Subject: [Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re:
+ Mapnik viewer and OSM rendering)
+In-Reply-To: <f940aa8b4f.tom@loxley.compton.nu>
+References: <200803122345.11584.nick@hogweed.org>	<47D8A4D4.9010909@onetrackmind.co.nz>	<2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+	<47DAD566.9070302@onetrackmind.co.nz>	<A0E76703-65CE-4956-9291-A1F5A4905535@mapnik.org>	<47DB0F43.8060506@onetrackmind.co.nz>
+	<4177AF40-4B79-45B9-B607-9AE98EBD107B@mapnik.org>	<47F82968.9030008@onetrackmind.co.nz>
+	<f940aa8b4f.tom@loxley.compton.nu>
+Message-ID: <47F99D31.3070800@onetrackmind.co.nz>
+
+Tom Hughes wrote:
+> In message <47F82968.9030008 at onetrackmind.co.nz>
+>           Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+> 
+>>   - laying out the map on a page (e.g. no full page output) so you can add
+>> 	+ grids
+>> 	+ overlay images (including pdfs)
+>> 	+ scale bars
+>> 	+ borders around the map
+> 
+> This stuff is nice, but should probably be done at a general level
+> rather than in one specific renderer.
+> 
+> Tom
+> 
+yep, it would.  I just needed something quick for what I was working on.
+
+Another thing I never got time to do was automatic legend generation. It 
+should be easy to pull out the major layers/styles and have a 
+description of what they are in a table.
+
+Ben
+
+
+
+From dieterdreist at gmail.com  Thu Apr 10 14:35:26 2008
+From: dieterdreist at gmail.com (Martin Koppenhoefer)
+Date: Thu, 10 Apr 2008 14:35:26 +0200
+Subject: [Mapnik-devel] Problems in Mapnik
+Message-ID: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+
+Hi developpers,
+
+I'm a big fan of the mapnik render engine, but suffering a bit because
+of some deficits still immanent. As I couldn't put a
+Mapnik-Ticket in the trac, I'm trying to contact you via Email.
+
+The most serious issue IMHO is the missing squares. Mapnik unlike
+Osmarender renders highways that are tagged with area=yes just with
+outlines. As squares are very important for the grafical appearance /
+for orientation, this should be very nice to have also in Mapnik.
+This is also a problem for buildings, that share nodes with
+surrounding areas and by now are cut by overlappings from
+highway-outlines that should be areas instead.
+
+I don't know, but I seem to remember, that some of the features listed
+down here once have been in the Maps, anyway, at the moment they
+aren't but would be really nice to have.
+
+There are some features missing, that I would love to have in Mapnik,
+the following amenities:
+- pharmacy
+- drinking_water (there is a icon here, which is according to this page
+PD: http://wiki.openstreetmap.org/index.php/Talk:Proposed_features/Potable_Water:
+http://www.blm.gov/nstc/mapstandards/downloads/inter.pdf number 37)
+- telephone
+- theatre
+- cinema
+- university
+- fuel
+- arts-centre
+- fountain
+
+and also historic:
+-monument
+-ruins
+-archaeological_site
+
+and man_made:
+- lighthouse
+- tower
+
+railway:
+- subway_entrance
+
+shop:
+- bicycle
+- book (is still a proposed feature, unlike all the others mentioned above)
+
+also I suggest to put bicycle-paths generally above streets in the
+render, as they are dottet lines and allow to see the streets that lie
+underneath in cases, where bicycle paths follow the street in a narrow
+distance. For areas instead, this should not apply, as squares are
+often represented as highway =pedestrian, area = yes, with highway=
+<some car accessible street> running over it to show the actual
+traffic possibilities.
+
+Some days before I also experienced a problem with churches, who would
+on highest zoom level display only the icon whilst one zoomlevel below
+show also the name, but today, this wasn't there any more, so maybe
+it's already corrected (but still some churches don't even show their
+name on any zoom level).
+
+of course it would also be great to have relations in a more advanced
+way, but this will be more work to implement, I guess. (e.g. someone
+put all river segments in Rome into one relation (41,8014855
+12,3865226) with the result, that it doesn't appear on the map any
+more).
+
+best wishes and thanks for any reply,
+
+Martin
+
+
+From nickblack1 at gmail.com  Thu Apr 10 19:47:10 2008
+From: nickblack1 at gmail.com (Nick Black)
+Date: Thu, 10 Apr 2008 20:47:10 +0300
+Subject: [Mapnik-devel] Problems in Mapnik
+In-Reply-To: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+References: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+Message-ID: <223020e60804101047n43a5db95q5cf50c312e0c6538@mail.gmail.com>
+
+Martin,
+
+None of this really relates to mapnik as such, its to do with the
+mapnik style file used by openstreetmap.  I've forwarded your message
+to dev at openstreetmap.org who should be able to help out.
+
+Cheers,
+
+
+On Thu, Apr 10, 2008 at 3:35 PM, Martin Koppenhoefer
+<dieterdreist at gmail.com> wrote:
+> Hi developpers,
+>
+>  I'm a big fan of the mapnik render engine, but suffering a bit because
+>  of some deficits still immanent. As I couldn't put a
+>  Mapnik-Ticket in the trac, I'm trying to contact you via Email.
+>
+>  The most serious issue IMHO is the missing squares. Mapnik unlike
+>  Osmarender renders highways that are tagged with area=yes just with
+>  outlines. As squares are very important for the grafical appearance /
+>  for orientation, this should be very nice to have also in Mapnik.
+>  This is also a problem for buildings, that share nodes with
+>  surrounding areas and by now are cut by overlappings from
+>  highway-outlines that should be areas instead.
+>
+>  I don't know, but I seem to remember, that some of the features listed
+>  down here once have been in the Maps, anyway, at the moment they
+>  aren't but would be really nice to have.
+>
+>  There are some features missing, that I would love to have in Mapnik,
+>  the following amenities:
+>  - pharmacy
+>  - drinking_water (there is a icon here, which is according to this page
+>  PD: http://wiki.openstreetmap.org/index.php/Talk:Proposed_features/Potable_Water:
+>  http://www.blm.gov/nstc/mapstandards/downloads/inter.pdf number 37)
+>  - telephone
+>  - theatre
+>  - cinema
+>  - university
+>  - fuel
+>  - arts-centre
+>  - fountain
+>
+>  and also historic:
+>  -monument
+>  -ruins
+>  -archaeological_site
+>
+>  and man_made:
+>  - lighthouse
+>  - tower
+>
+>  railway:
+>  - subway_entrance
+>
+>  shop:
+>  - bicycle
+>  - book (is still a proposed feature, unlike all the others mentioned above)
+>
+>  also I suggest to put bicycle-paths generally above streets in the
+>  render, as they are dottet lines and allow to see the streets that lie
+>  underneath in cases, where bicycle paths follow the street in a narrow
+>  distance. For areas instead, this should not apply, as squares are
+>  often represented as highway =pedestrian, area = yes, with highway=
+>  <some car accessible street> running over it to show the actual
+>  traffic possibilities.
+>
+>  Some days before I also experienced a problem with churches, who would
+>  on highest zoom level display only the icon whilst one zoomlevel below
+>  show also the name, but today, this wasn't there any more, so maybe
+>  it's already corrected (but still some churches don't even show their
+>  name on any zoom level).
+>
+>  of course it would also be great to have relations in a more advanced
+>  way, but this will be more work to implement, I guess. (e.g. someone
+>  put all river segments in Rome into one relation (41,8014855
+>  12,3865226) with the result, that it doesn't appear on the map any
+>  more).
+>
+>  best wishes and thanks for any reply,
+>
+>  Martin
+>  _______________________________________________
+>  Mapnik-devel mailing list
+>  Mapnik-devel at lists.berlios.de
+>  https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Nick Black
+--------------------------------
+http://www.blacksworld.net
+
+
+From tom at compton.nu  Thu Apr 10 20:12:19 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 10 Apr 2008 19:12:19 +0100
+Subject: [Mapnik-devel] Problems in Mapnik
+In-Reply-To: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+References: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+Message-ID: <7cfdf38d4f.tom@loxley.compton.nu>
+
+In message <7acdb3650804100535wd0cc6c9o67ffe073d2019d14 at mail.gmail.com>
+          "Martin Koppenhoefer" <dieterdreist at gmail.com> wrote:
+
+> I'm a big fan of the mapnik render engine, but suffering a bit because
+> of some deficits still immanent. As I couldn't put a
+> Mapnik-Ticket in the trac, I'm trying to contact you via Email.
+> 
+> The most serious issue IMHO is the missing squares. Mapnik unlike
+> Osmarender renders highways that are tagged with area=yes just with
+> outlines. As squares are very important for the grafical appearance /
+> for orientation, this should be very nice to have also in Mapnik.
+> This is also a problem for buildings, that share nodes with
+> surrounding areas and by now are cut by overlappings from
+> highway-outlines that should be areas instead.
+
+These (and your other issues) are not problems with the mapnik
+engine, they are problems (if you agree that they are problems
+at all) with the stylesheet used by OpenStreetMap for it's mapnik
+rendering.
+
+The correct place to report them is on the osm lists, or even
+better in the osm trac (but be aware that there are already tickets
+for at least some of your requests).
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Tue Apr 15 03:47:08 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 14 Apr 2008 18:47:08 -0700
+Subject: [Mapnik-devel] INSTALL readme patch
+In-Reply-To: <7cfdf38d4f.tom@loxley.compton.nu>
+References: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+	<7cfdf38d4f.tom@loxley.compton.nu>
+Message-ID: <E7171D79-DD89-4943-B170-1CB760127452@hailmail.net>
+
+I just got around to reinstalling mapnik on an Ubuntu machine and  
+noticed a few things out of date in the current svn (r693) readme on  
+installing mapnik, most notably the scons options and the projection  
+example syntax.
+
+I touched up the document, added a Quickstart section, and have  
+attached a patch.
+
+Cheers,
+
+Dane
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: INSTALL.patch
+Type: application/octet-stream
+Size: 7780 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080414/195c0de8/attachment.obj>
+-------------- next part --------------
+
+
+From artem at mapnik.org  Tue Apr 15 09:25:27 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 15 Apr 2008 08:25:27 +0100
+Subject: [Mapnik-devel] INSTALL readme patch
+In-Reply-To: <E7171D79-DD89-4943-B170-1CB760127452@hailmail.net>
+References: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+	<7cfdf38d4f.tom@loxley.compton.nu>
+	<E7171D79-DD89-4943-B170-1CB760127452@hailmail.net>
+Message-ID: <5A010643-587D-4AAD-9970-5B4A1DC7E77D@mapnik.org>
+
+
+On 15 Apr 2008, at 02:47, Dane Springmeyer wrote:
+
+> I just got around to reinstalling mapnik on an Ubuntu machine and  
+> noticed a few things out of date in the current svn (r693) readme on  
+> installing mapnik, most notably the scons options and the projection  
+> example syntax.
+>
+> I touched up the document, added a Quickstart section, and have  
+> attached a patch.
+>
+> Cheers,
+>
+> Dane
+
+Hi Dane,
+Applied in r694. Thanks!
+Artem
+>
+>
+> <INSTALL.patch>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Tue Apr 15 18:45:08 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 15 Apr 2008 09:45:08 -0700
+Subject: [Mapnik-devel] WMS common.py patch
+In-Reply-To: <5A010643-587D-4AAD-9970-5B4A1DC7E77D@mapnik.org>
+References: <7acdb3650804100535wd0cc6c9o67ffe073d2019d14@mail.gmail.com>
+	<7cfdf38d4f.tom@loxley.compton.nu>
+	<E7171D79-DD89-4943-B170-1CB760127452@hailmail.net>
+	<5A010643-587D-4AAD-9970-5B4A1DC7E77D@mapnik.org>
+Message-ID: <C248F175-BF18-46AF-A97C-C1C35545F94B@hailmail.net>
+
+Trying to get the WMS server running from svn.
+
+The attached patch fixes two problems with syntax in common.py that  
+caused import errors for me:
+1). The unused rawdata import
+2). A missing parens on line 286
+
+
+I'm now getting errors in my mapFactory.py module where the file is  
+not found using the Layer syntax of:
+
+Layer(name='myshp', type='shape', file='/path/to/shape') as per :http://trac.mapnik.org/changeset/169
+
+Is this syntax still supported?
+
+Jumping into a python interpreter on my local machine I get:
+
+ >>> lyr = Layer(name='world_borders',type='shape',file='/Users/spring/ 
+Downloads/world_borders/world_borders')
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+Boost.Python.ArgumentError: Python argument types in
+     Layer.__init__(Layer, str, str, str)
+did not match C++ signature:
+     __init__(_object*, std::string)
+     __init__(_object*, std::string, std::string)
+ >>> lyr = Layer('myshp')
+ >>> lyr.type = Layer('shape')
+ >>> lyr.file = Layer('/Users/spring/Downloads/world_borders/ 
+world_borders')
+
+
+Dane
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: common.patch
+Type: application/octet-stream
+Size: 1071 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment.obj>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/14ef2bbd/attachment-0001.html>
+
+From blake at hailmail.net  Wed Apr 16 06:04:48 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 15 Apr 2008 21:04:48 -0700
+Subject: [Mapnik-devel] Mapnik WMS setup
+In-Reply-To: <13f95b630802160927g3c496b47t7f0832d8f94eb36a@mail.gmail.com>
+References: <13f95b630802160745n4141ff7ahac8421e53611e92e@mail.gmail.com>
+	<E8F52439-2732-491A-A3DE-5C182CDC9BDC@mapnik.org>
+	<16CBF43D-F190-42C6-BC65-38FC684B76F9@mapnik.org>
+	<13f95b630802160927g3c496b47t7f0832d8f94eb36a@mail.gmail.com>
+Message-ID: <EF9AC50A-85E0-4F80-9A6C-25118CE019BA@hailmail.net>
+
+I'm working to get the WMS server running on Ubuntu with svn r.694.
+
+I've run into OGCexceptions as the ogcserver can't find the default  
+style. Also, since it seems that the default style is optional, I  
+tried removing it. But then I get a WMS error that the image/png  
+parameter is unknown. Same error if I try with image/jpeg.
+
+I may be doing something wrong in either my script setup or my URL  
+string. If so, I'm hoping that someone can point out what needs fixing.
+
+However, I have a hunch that at least in terms of the image error,  
+that this changeset may have broken the python bindings ability to  
+render images via wms: http://trac.mapnik.org/changeset/618
+Could it be that on in mapnik_image.cpp this code needs to be amended  
+to take into account the image string 'image/png' or PIL_TYPE_MAPPING  
+'PNG' coming from the WMS?
+
+if (format == "png") save_as_png(ss,im.data());
+else if (format == "png256") save_as_png256(ss,im.data());
+else if (format == "jpeg") save_as_jpeg(ss,85,im.data());
+
+Anyway...configuration and errors below...
+
+Thanks,
+Dane
+
+
+-----------------------
+
+I'm using mod_fcgi which points to mapnikserv.py at http://www.salishseamap.net/mapnik/mapnikserv.py
+Then mapnikserv.py points to ogcserver.conf which points to world_wms.py
+
+### mapnikserv.py ###
+
+#!/usr/bin/python
+
+from mapnik.ogcserver.cgiserver import Handler
+import jon.fcgi as fcgi
+
+class WMSHandler(Handler):
+     configpath = '/home/dane/wms/ogcserver.conf'
+
+fcgi.Server({fcgi.FCGI_RESPONDER: WMSHandler}).run()
+
+
+### ogcserver.conf ###
+module=world_wms
+epsg=4326
+
+
+### world_wms.py ###
+
+#!/usr/bin/python
+
+from mapnik.ogcserver.WMS import BaseWMSFactory
+from mapnik import *
+
+class WMSFactory(BaseWMSFactory):
+   def __init__(self):
+     BaseWMSFactory.__init__(self)
+     sty = Style()
+     rl = Rule()
+     rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+     rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+     sty.rules.append( rl )
+     self.register_style('s', sty)
+
+     lyr = Layer('world','+init=epsg:4326')
+     lyr.title = 'World Borders'
+     lyr.abstract = 'World Test'
+     lyr.queryable = True
+     lyr.datasource = Shapefile(file='/home/dane/wms/world_borders')
+     lyr.styles.append('s') # Note: tried with and without this line
+
+     self.register_layer(lyr,'s')
+     self.finalize()
+
+
+...then since everything seems to be working and no errors appear in  
+the apache logs I try these urls:
+
+### wms test url ###
+http://www.salishseamap.net/mapnik/mapnikserv.py?VERSION=1.1.1&REQUEST=GetMap&LAYERS=world&FORMAT=image/png&SRS=EPSG:4326&STYLES=s&BBOX=-180,-90,180,90&EXCEPTIONS=application/vnd.ogc.se_xml&width=600&height=300
+
+### apache logs ###
+
+[Tue Apr 15 21:57:56 2008] [notice] FastCGI: process manager  
+initialized (pid 4006)
+[Tue Apr 15 21:57:56 2008] [notice] mod_python: Creating 8 session  
+mutexes based on 150 max processes and 0 max threads.
+[Tue Apr 15 21:57:56 2008] [notice] mod_python: using mutex_directory / 
+tmp
+[Tue Apr 15 21:57:56 2008] [notice] Apache/2.2.4 (Ubuntu) DAV/2 SVN/ 
+1.4.4 mod_fastcgi/2.4.2 mod_ssl/2.2.4 OpenSSL/0.9.8e mod_python/3.3.1  
+Python/2.5.1 mod_wsgi/2.0c5-TRUNK configured -- resuming normal  
+operations
+registered datasource : raster
+registered datasource : shape
+registered datasource : gdal
+registered datasource : postgis
+size = 2
+file=/home/dane/wms/world_borders
+type=shape
+Envelope(-180,-90,180,83.62359600000001)
+file_length=3332172
+shape_type=5
+datasource=0x81b2088 type=1
+
+
+### WMS response ###
+OGCException: ('Invalid style "s" requested for layer "world".',  
+'StyleNotDefined')
+
+
+
+then I tried this url....
+
+### wms test url with layer parameter blank ###
+
+http://www.salishseamap.net/mapnik/mapnikserv.py?VERSION=1.1.1&REQUEST=GetMap&LAYERS=world&FORMAT=image/png&SRS=EPSG:4326&STYLES=&BBOX=-180,-90,180,90&EXCEPTIONS=application/vnd.ogc.se_xml&width=600&height=300
+
+### apache logs ###
+
+size = 2
+file=/home/dane/wms/world_borders
+type=shape
+Envelope(-180,-90,180,83.62359600000001)
+file_length=3332172
+shape_type=5
+datasource=0x8399f30 type=1
+scale=0.6
+start map processing bbox=Envelope(-180,-90,180,90)
+scale denominator = 2.38542e+08
+start layer processing : world
+datasource = 0x8399f30
+ENCODING = utf-8
+  total shapes read=3784
+ENCODING = utf-8
+  total shapes read=3784
+end layer processing
+end map processing
+2.47 s
+
+
+### WMS response ###
+RuntimeError: unknown format: image/png
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080415/3c2707df/attachment.html>
+
+From pankur at yahoo-inc.com  Wed Apr 16 07:20:00 2008
+From: pankur at yahoo-inc.com (Paul Ankur)
+Date: Wed, 16 Apr 2008 14:20:00 +0900
+Subject: [Mapnik-devel] Mapnik
+Message-ID: <B1C244F58EE9F443929235933B0725E82B95ADA036@KR1-EX07VS02.ds.corp.yahoo.com>
+
+
+Hi All
+
+I am a yahoo7 engineer and for the past few months I have been playing around with mapnik. I have been passively going through the mailing lists from time to time.
+
+Just wanted to drop a line to say that I would like to contribute towards development and am going to keep my eyes and ears open for something that I could work on
+
+
+Thanks once again
+Ankur Paul
+Software Engineer
+
+IM: paul.ankur
+[cid:image001.gif at 01C89FD1.7007A6B0]
+
+
+Check out the new Yahoo!7 TV Guide, the only TV Guide you'll ever need: www.yahoo7.com.au/tvguide<http://www.yahoo7.com.au/tvguide>
+
+
+CONFIDENTIAL COMMUNICATION: This email message and any attachments are confidential. Please do not distribute without authorisation.  If you are not the intended recipient or have received this message by error, please let me know and delete it from your records.  Thank you for your cooperation.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080416/8957eb26/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: image001.gif
+Type: image/gif
+Size: 2325 bytes
+Desc: image001.gif
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080416/8957eb26/attachment.gif>
+
+From artem.mapnik at googlemail.com  Wed Apr 16 09:59:59 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 16 Apr 2008 08:59:59 +0100
+Subject: [Mapnik-devel] Mapnik
+In-Reply-To: <B1C244F58EE9F443929235933B0725E82B95ADA036@KR1-EX07VS02.ds.corp.yahoo.com>
+References: <B1C244F58EE9F443929235933B0725E82B95ADA036@KR1-EX07VS02.ds.corp.yahoo.com>
+Message-ID: <D0D62B6C-5B5E-40F1-8EC2-BFE9C393F027@mapnik.org>
+
+
+On 16 Apr 2008, at 06:20, Paul Ankur wrote:
+>
+> Hi All
+>
+> I am a yahoo7 engineer and for the past few months I have been  
+> playing around with mapnik. I have been passively going through the  
+> mailing lists from time to time.
+>
+> Just wanted to drop a line to say that I would like to contribute  
+> towards development and am going to keep my eyes and ears open for  
+> something that I could work on
+
+Hi Ankur Paul,
+
+Welcome to Mapnik community!
+
+Cheers
+Artem
+
+>
+>
+> Thanks once again
+> Ankur Paul
+> Software Engineer
+>
+> IM: paul.ankur
+> <image001.gif>
+>
+>
+> Check out the new Yahoo!7 TV Guide, the only TV Guide you?ll ever  
+> need: www.yahoo7.com.au/tvguide
+>
+>
+> CONFIDENTIAL COMMUNICATION: This email message and any attachments  
+> are confidential. Please do not distribute without authorisation.   
+> If you are not the intended recipient or have received this message  
+> by error, please let me know and delete it from your records.  Thank  
+> you for your cooperation.
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080416/e732176a/attachment.html>
+
+From bz at datenkueche.com  Fri Apr 18 16:25:57 2008
+From: bz at datenkueche.com (Bernhard Zwischenbrugger)
+Date: Fri, 18 Apr 2008 16:25:57 +0200
+Subject: [Mapnik-devel] i18n - I get angry !!
+Message-ID: <4808AF75.2070705@datenkueche.com>
+
+I invested many hours to draw a initial map of Laos und Cambodia.
+
+In both countries it is possible to buy maps with English writing system 
+- but NO maps with local writing system are available.
+A cambodian map (english letters) is available at every guesthouse, 
+restaurant,... in Seam Reap and Phnom Penh for free.
+
+If you show the map to local people and ask for way, the people can't 
+help you.
+
+The reason:
+1.) The problem is, that the people have never seen a map of their 
+country. There are no maps at school.
+2.) All maps are in english - made for rich tourists. Local people can't 
+read english.
+
+It could be very cheap to print a map of their country for all the 
+school children in Laos and Cambodia, but if nobody makes this
+map, there is nothing to print.
+
+I started to make the Laos and Cambodia map and used Lao and Khmer 
+writing system for all written things on the map.
+But there are so many problems!
+
+1.) Potlatch shows only rectangles instead of letters.
+2.) tiles at home works if all fonts are installed - but if somebody 
+rerenders the tile, the text is gone. There are also many rendering 
+mistakes even if the font is installed.
+3.) Mapnik doesn't support Chinese, Japanese, Khmer, Thai, Myanmar,...
+
+It would be so easy to install the fonts but the responsible people just 
+don't do it.
+Asian people are a little different. They take care, that you don't 
+loose your face - but they don't use openstreetmap if it is not working.
+
+The result of this mess
+==============
+There are nearly no roads entered in China, Japan, ...
+If there are roads, the work is done by tourists.
+The tourists start to enter the geographical names in english und ignor 
+the local language.
+If the map is in english instead of chinese, japanese, thai, khmer,... 
+the local people will ignor this map - for ever.
+
+Look for example Thailand Chang Mai:
+http://www.openstreetmap.org/?lat=18.78813&lon=98.98849&zoom=16&layers=B0FT
+Everything is english. If there are no tourists - as in 90% of Thailand 
+- there will be no map.
+The same starts in Cambodia, Siam Reap.
+
+Sorry, but that's like in the old colonial days.
+
+If the fonts are installed, there are still many problems to solve. In 
+Lao and Khmer (the languages I can read) there are many rendering 
+problems to solve.
+
+--
+This problem is a CRITICAL problem. The data entered to openstreetmap 
+are wrong. The "name" attribute should be the local name - but if this 
+is not possible, people use english instead - which is simply WRONG!
+
+
+
+How to solve the problem:
+================
+Install the fonts!!!!
+
+
+Bernhard
+
+
+
+From tom at compton.nu  Fri Apr 18 16:53:07 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Fri, 18 Apr 2008 15:53:07 +0100
+Subject: [Mapnik-devel] i18n - I get angry !!
+In-Reply-To: <4808AF75.2070705@datenkueche.com> (Bernhard Zwischenbrugger's
+	message of "Fri\, 18 Apr 2008 16\:25\:57 +0200")
+References: <4808AF75.2070705@datenkueche.com>
+Message-ID: <yekprsn8bak.fsf@dellow.uk.cyberscience.com>
+
+In message <4808AF75.2070705 at datenkueche.com>
+        Bernhard Zwischenbrugger <bz at datenkueche.com> wrote:
+
+> But there are so many problems!
+
+Essentially none of which are really mapnik problems, so please take
+this to an OSM list where it belongs.
+
+> 1.) Potlatch shows only rectangles instead of letters.
+
+You'll need to talk to RichardF about that, but he's on holiday at the
+moment.
+
+> 2.) tiles at home works if all fonts are installed - but if somebody 
+> rerenders the tile, the text is gone. There are also many rendering 
+> mistakes even if the font is installed.
+
+So offer to help improve the software. Don't just demand that somebody
+else fixes it - that isn't how this open thing works.
+
+One major problem with T at H will be that it is hard to ensure that
+everybody that is rendering tiles has the same fonts installed.
+
+> 3.) Mapnik doesn't support Chinese, Japanese, Khmer, Thai, Myanmar,...
+
+Well it does actually if you give it a font that has the necessary
+characters.
+
+> It would be so easy to install the fonts but the responsible people just 
+> don't do it
+
+If if was that easy we would have done it. Do you really think that
+we're just doing this to annoy you? No of course we're not - it's a
+hard problem and there are a limited number of people working on 
+these things.
+
+Now if you can name me a font that has support for all the above
+characters and all the ones we already have then I'm sure we will
+gladly look at using it. As far as we know such a font does not
+exist.
+
+Which leads me to the one place where there is a genuine issue
+with the mapnik software (and hence the only thing that is actually
+on topic for this list) and that is that there is (currently) no
+support for fallback fonts in mapnik, so you can't give it a list
+of fonts to try when looking for a character.
+
+Hence at the moment we have to choose one font that has the best
+range of coverage.
+
+> If the fonts are installed, there are still many problems to solve. In 
+> Lao and Khmer (the languages I can read) there are many rendering 
+> problems to solve.
+
+As far as I know, at least for the mapnik layer, the other text
+related issues (shaping, right-to-left text, etc) should be solved
+in the current mapnik code, but please correct me if I'm wrong.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From bz at datenkueche.com  Sat Apr 19 03:11:56 2008
+From: bz at datenkueche.com (Bernhard Zwischenbrugger)
+Date: Sat, 19 Apr 2008 03:11:56 +0200
+Subject: [Mapnik-devel] font comparison tool
+Message-ID: <480946DC.1070704@datenkueche.com>
+
+Hi all
+
+mapnik has the problem that there is no font fallback implemented.
+
+SVG in Firefox 2.0 has the same problem.
+
+This gives the possibility to compare fonts using firefox.
+I made a small script that generates utf-8 characters:
+
+http://jabberworld.org/font/
+You can browse using the red forward, backward buttons.
+
+source code:
+http://jabberworld.org/font/fonttest.phps
+
+
+-----
+The font "code2000" has all the characters that are used at the moment 
+in openstreetmap/mapnik.
+PLUS many other fonts like chinese, japanese, thai, khmer, ...
+
+Font download here:
+http://www.*code2000*.net/
+----
+
+If mapnik can use only ONE font I think it should use code2000. The 
+fontsize is sometimes a little different - but that's life.
+
+Bernhard
+
+
+From tom at compton.nu  Sat Apr 19 11:19:58 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sat, 19 Apr 2008 10:19:58 +0100
+Subject: [Mapnik-devel] font comparison tool
+In-Reply-To: <480946DC.1070704@datenkueche.com>
+References: <480946DC.1070704@datenkueche.com>
+Message-ID: <72c665924f.tom@loxley.compton.nu>
+
+In message <480946DC.1070704 at datenkueche.com>
+          Bernhard Zwischenbrugger <bz at datenkueche.com> wrote:
+
+> mapnik has the problem that there is no font fallback implemented.
+
+Agreed.
+
+> SVG in Firefox 2.0 has the same problem.
+> 
+> This gives the possibility to compare fonts using firefox.
+> I made a small script that generates utf-8 characters:
+> 
+> http://jabberworld.org/font/
+> You can browse using the red forward, backward buttons.
+> 
+> source code:
+> http://jabberworld.org/font/fonttest.phps
+> 
+> 
+> -----
+> The font "code2000" has all the characters that are used at the moment
+> in openstreetmap/mapnik.
+> PLUS many other fonts like chinese, japanese, thai, khmer, ...
+> 
+> Font download here:
+> http://www.*code2000*.net/
+> ----
+>
+> If mapnik can use only ONE font I think it should use code2000. The
+> fontsize is sometimes a little different - but that's life.
+
+That's very interesting information, but once again you have confused
+the mapnik with the OSM implementation of mapnik.
+
+Mapnik will let you use any font you want, but only one font for any
+given rendering rule.
+
+So mapnik has not imposed any choice of font on OSM and the question
+of which font to use is one for the OSM lists not here, so I'm copying
+this to the OSM dev list.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From kleptog at gmail.com  Sat Apr 19 14:56:43 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sat, 19 Apr 2008 14:56:43 +0200
+Subject: [Mapnik-devel] curves
+In-Reply-To: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+Message-ID: <2fc2c5f10804190556i3814c253qb59dede0b3e8d694@mail.gmail.com>
+
+On Thu, Jan 3, 2008 at 5:16 PM, Artem Pavlenko
+<artem.mapnik at googlemail.com> wrote:
+>  Perhaps, not well know fact but Mapnik can render bezier curves. The
+>  reason it is not being used is the lack of support for curves in
+>  common GEO formats.
+>  I'm adding support for on-fly 'smooth' polygons/lines , which can be
+>  controlled by providing smooth parameter (0.0 - 2.0)  i.e:
+
+Is this available somewhere, I'm not finding it in SVN.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From r.blum at gmx.net  Mon Apr 21 04:03:38 2008
+From: r.blum at gmx.net (Robert Blum)
+Date: Sun, 20 Apr 2008 19:03:38 -0700
+Subject: [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,
+	patches attached
+Message-ID: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+
+Hi guys!
+
+Just spent the better part of an afternoon trying to install mapnik on  
+OSX 10.5, and ran into a couple of issues
+
+* It'd be nice if the installation instructions mentioned that you  
+need the python25 variant of boost. It's obvious in hindsight, but  
+nobody should be forced to compile boost twice unless they committed  
+heinous crimes ;)
+
+* libtiff does not live in the assumed directory. I'm not sure if this  
+is a Leopard only issue, or due to previous use of fink/darwinports.  
+Anyway, patch for new location is attached. I'm not sure how to modify  
+scons to do this conditionally, so I have to leave that to somebody  
+else to sort out.
+
+* src/unicode.cpp has a mistaken assumption about constness for iconv.  
+Patch attached.
+
+* On OSX, site-packages go into a completely different path than the  
+original python libraries. Sigh. That means PYTHON_PREFIX is not  
+enough to find proper locations. Another fix is attached. This *SHOULD  
+NOT* affect other python installations on other systems, but I haven't  
+tested it. (Lack of other systems).
+
+Once all those patches are applied, I can indeed build and install  
+mapnik. 'import * from mapnik' does not fail, either.
+
+However, running the simple test example fails with this message:
+
+Traceback (most recent call last):
+   File "test.py", line 4, in <module>
+     m = Map(600,300,"+proj=latlong +datum=WGS84")
+TypeError: __init__() should return None, not 'NoneType'
+
+I'm at a loss there - never worked with boost.python, so I'm not sure  
+what's going on. Any ideas?
+
+  - Robert
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: python_prefix.patch
+Type: application/octet-stream
+Size: 1011 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment.obj>
+-------------- next part --------------
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: libtiff.patch
+Type: application/octet-stream
+Size: 1058 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0001.obj>
+-------------- next part --------------
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: unicode.patch
+Type: application/octet-stream
+Size: 552 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0002.obj>
+-------------- next part --------------
+
+
+
+
+From kleptog at gmail.com  Mon Apr 21 10:02:09 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Mon, 21 Apr 2008 10:02:09 +0200
+Subject: [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,
+	patches attached
+In-Reply-To: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+References: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+Message-ID: <2fc2c5f10804210102m4aefa82ctac659fe0b45f2e62@mail.gmail.com>
+
+On Mon, Apr 21, 2008 at 4:03 AM, Robert Blum <r.blum at gmx.net> wrote:
+>  * It'd be nice if the installation instructions mentioned that you need the
+> python25 variant of boost. It's obvious in hindsight, but nobody should be
+> forced to compile boost twice unless they committed heinous crimes ;)
+
+Note that it doesn't actually. The wierd thing is that scons happily
+announces it detects python2.4 installed and subsequently fails. This
+is because the dependancy on 2.5 is hardcoded elsewhere. Can't
+remember exactly where, but somewhere in scons you replace 25 with 24
+and it works fine on python2.4 boost.
+
+Yes, it took me a few hours to work that out. It should be possible to
+fix that, but scons is difficult at the best of times.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From kleptog at gmail.com  Mon Apr 21 10:08:53 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Mon, 21 Apr 2008 10:08:53 +0200
+Subject: [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,
+	patches attached
+In-Reply-To: <2fc2c5f10804210102m4aefa82ctac659fe0b45f2e62@mail.gmail.com>
+References: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+	<2fc2c5f10804210102m4aefa82ctac659fe0b45f2e62@mail.gmail.com>
+Message-ID: <2fc2c5f10804210108v601f10deo75986e0589fa525c@mail.gmail.com>
+
+On Mon, Apr 21, 2008 at 10:02 AM, Martijn van Oosterhout
+<kleptog at gmail.com> wrote:
+>  Yes, it took me a few hours to work that out. It should be possible to
+>  fix that, but scons is difficult at the best of times.
+
+Here's a patch that should work, though it needs testing.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-python.patch
+Type: text/x-diff
+Size: 700 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080421/236e9c71/attachment.patch>
+
+From blake at hailmail.net  Tue Apr 22 08:02:19 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 21 Apr 2008 23:02:19 -0700
+Subject: [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,
+	patches attached
+In-Reply-To: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+References: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+Message-ID: <0916D704-F95E-4E9F-86EE-B029793A09E1@hailmail.net>
+
+Hi Robert,
+
+I appreciate your 'difficult journey' as another mac user. There have  
+been a growing number of new folks coming to mapnik on the mac  
+platform, and yes, I agree the platform-specific documentation could  
+be better. I too got hung up originally on that macports boost variant  
+catch.
+
+To try to remedy this I've organized my build notes on this page:
+
+https://trac.mapnik.org/wiki/MacInstallation
+
+It sounds like from your experience you will be able to offer  
+additional refinements and suggestions, so please add anything you can.
+
+In terms of your 'TypeError' you'll find that listed as on unresolved  
+issue on mac install guide. There is another user that has been trying  
+to work past that for a while now and I have not heard of a solution  
+(yet).
+
+https://lists.berlios.de/pipermail/mapnik-users/2008-March/000707.html
+https://lists.berlios.de/pipermail/mapnik-users/2008-April/000813.html
+
+Hopefully one of the core devs will be able to take a look at the  
+issue in closer detail soon. My only hunch is that is has something do  
+do with multiple versions of python/boost installed with fink.
+
+I'd recommend you file a ticket on the trac site (https://trac.mapnik.org/register 
+) for that issue and another separate issues addressed by your patches.
+
+Dane
+
+
+
+
+On Apr 20, 2008, at 7:03 PM, Robert Blum wrote:
+
+> Hi guys!
+>
+> Just spent the better part of an afternoon trying to install mapnik  
+> on OSX 10.5, and ran into a couple of issues
+>
+> * It'd be nice if the installation instructions mentioned that you  
+> need the python25 variant of boost. It's obvious in hindsight, but  
+> nobody should be forced to compile boost twice unless they committed  
+> heinous crimes ;)
+>
+> * libtiff does not live in the assumed directory. I'm not sure if  
+> this is a Leopard only issue, or due to previous use of fink/ 
+> darwinports. Anyway, patch for new location is attached. I'm not  
+> sure how to modify scons to do this conditionally, so I have to  
+> leave that to somebody else to sort out.
+>
+> * src/unicode.cpp has a mistaken assumption about constness for  
+> iconv. Patch attached.
+>
+> * On OSX, site-packages go into a completely different path than the  
+> original python libraries. Sigh. That means PYTHON_PREFIX is not  
+> enough to find proper locations. Another fix is attached. This  
+> *SHOULD NOT* affect other python installations on other systems, but  
+> I haven't tested it. (Lack of other systems).
+>
+> Once all those patches are applied, I can indeed build and install  
+> mapnik. 'import * from mapnik' does not fail, either.
+>
+> However, running the simple test example fails with this message:
+>
+> Traceback (most recent call last):
+>  File "test.py", line 4, in <module>
+>    m = Map(600,300,"+proj=latlong +datum=WGS84")
+> TypeError: __init__() should return None, not 'NoneType'
+>
+> I'm at a loss there - never worked with boost.python, so I'm not  
+> sure what's going on. Any ideas?
+>
+> - Robert
+>
+> <python_prefix.patch>
+>
+> <libtiff.patch>
+>
+> <unicode.patch>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080421/fa6c7414/attachment.html>
+
+From r.blum at gmx.net  Tue Apr 22 08:17:46 2008
+From: r.blum at gmx.net (Robert Blum)
+Date: Mon, 21 Apr 2008 23:17:46 -0700
+Subject: [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,
+	patches attached
+In-Reply-To: <0916D704-F95E-4E9F-86EE-B029793A09E1@hailmail.net>
+References: <FA0CF933-21E0-41F0-B1D4-1810AA714FC6@gmx.net>
+	<0916D704-F95E-4E9F-86EE-B029793A09E1@hailmail.net>
+Message-ID: <47D46FDA-4D1C-429A-9BED-A33E0D36641F@gmx.net>
+
+> I appreciate your 'difficult journey' as another mac user. There  
+> have been a growing number of new folks coming to mapnik on the mac  
+> platform, and yes, I agree the platform-specific documentation could  
+> be better. I too got hung up originally on that macports boost  
+> variant catch.
+
+I'm sorely tempted to create a macport so it's easier for the next  
+person....
+>
+> https://trac.mapnik.org/wiki/MacInstallation
+
+Thanks, I just saw it. I'll post detailed notes including patches on  
+my blog, and I'll definitely refine that page.
+
+(I don't want to go into the why/how of my fixes on the trac, hence  
+the blog)
+
+> In terms of your 'TypeError' you'll find that listed as on  
+> unresolved issue on mac install guide. There is another user that  
+> has been trying to work past that for a while now and I have not  
+> heard of a solution (yet).
+
+Found it. It's a bad python version. The Apple Python frameworks go  
+into /System/Library/Frameworks, while user-installed Python  
+frameworks go into /Library/Frameworks.
+
+The boost port is forced against /System/Library, while mapnik builds  
+against the first available Python library. Workaround - remove the  
+frameworks in /Library/Frameworks/Python.framework
+
+Mapnik is now working fine for me, although documentation is still  
+sparse ;)
+
+> Hopefully one of the core devs will be able to take a look at the  
+> issue in closer detail soon. My only hunch is that is has something  
+> do do with multiple versions of python/boost installed with fink.
+
+Your hunch is absolutely correct.  You can verify it by setting  
+DYLD_PRINT_APIS in the shell environmet before you run a python script.
+
+> I'd recommend you file a ticket on the trac site (https://trac.mapnik.org/register 
+> ) for that issue and another separate issues addressed by your  
+> patches.
+
+If I get around to it, I'll refile the patches. I strongly suggest the  
+developers switch to git or a similar version control system though -  
+that eases submission of patches for both sides.
+
+  - Robert
+
+
+From bz at datenkueche.com  Tue Apr 22 09:32:25 2008
+From: bz at datenkueche.com (Bernhard Zwischenbrugger)
+Date: Tue, 22 Apr 2008 09:32:25 +0200
+Subject: [Mapnik-devel] font comparison tool
+In-Reply-To: <72c665924f.tom@loxley.compton.nu>
+References: <480946DC.1070704@datenkueche.com>
+	<72c665924f.tom@loxley.compton.nu>
+Message-ID: <480D9489.4020600@datenkueche.com>
+
+Chinese, Japanese, Khmer....
+> So mapnik has not imposed any choice of font on OSM and the question
+> of which font to use is one for the OSM lists not here, so I'm copying
+> this to the OSM dev list.
+>
+>   
+I tried to compile mapnik on my computer and found a directory with the 
+dejaVu fonts. Can you give me a hint, how to replace the fonts?
+Do I simple have to copy the code2000 fonts to that directory, or is 
+there something else to do?
+
+Bernhard
+
+
+From tom at compton.nu  Tue Apr 22 09:37:36 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Tue, 22 Apr 2008 08:37:36 +0100
+Subject: [Mapnik-devel] font comparison tool
+In-Reply-To: <480D9489.4020600@datenkueche.com> (Bernhard Zwischenbrugger's
+	message of "Tue\, 22 Apr 2008 09\:32\:25 +0200")
+References: <480946DC.1070704@datenkueche.com>
+	<72c665924f.tom@loxley.compton.nu> <480D9489.4020600@datenkueche.com>
+Message-ID: <yektzhu5ohr.fsf@dellow.uk.cyberscience.com>
+
+In message <480D9489.4020600 at datenkueche.com>
+        Bernhard Zwischenbrugger <bz at datenkueche.com> wrote:
+
+> Chinese, Japanese, Khmer....
+>
+>> So mapnik has not imposed any choice of font on OSM and the question
+>> of which font to use is one for the OSM lists not here, so I'm copying
+>> this to the OSM dev list.
+>
+> I tried to compile mapnik on my computer and found a directory with the 
+> dejaVu fonts. Can you give me a hint, how to replace the fonts?
+> Do I simple have to copy the code2000 fonts to that directory, or is 
+> there something else to do?
+
+No, you don't have to put them there (though it may make things
+easier if you do).
+
+You will need to declare the fonts to mapnik - if they are in the
+mapnik font directory then that will happen automatically if you are
+using the python bindings (but not from C++ code). Otherwise you can
+make a call to mapnik giving it the path to the font you want it to
+register.
+
+Once the fonts are registered by mapnik you can refer to them by
+name in rendering rules in your stylesheet.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+

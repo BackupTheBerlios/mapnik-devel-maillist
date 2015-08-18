@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Shapefile output check
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20output%20check&In-Reply-To=%3C2fc2c5f10802140825i2b989f8nd42597e6abec3a4c%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000476.html">
+   <LINK REL="Next"  HREF="000475.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Shapefile output check</H1>
+    <B>Martijn van Oosterhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20output%20check&In-Reply-To=%3C2fc2c5f10802140825i2b989f8nd42597e6abec3a4c%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Shapefile output check">kleptog at gmail.com
+       </A><BR>
+    <I>Thu Feb 14 17:25:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000476.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+        <LI>Next message: <A HREF="000475.html">[Mapnik-devel] Shapefile output check
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#472">[ date ]</a>
+              <a href="thread.html#472">[ thread ]</a>
+              <a href="subject.html#472">[ subject ]</a>
+              <a href="author.html#472">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Several times I've noticed that shapeindex doesn't notice if the
+outputting fails  i.e. you get a file of zero size. I don't know much
+about C++ but I think the following should at least cause it to bail
+what that happens (usually disk full).
+
+Thanks in advance,
+-- 
+Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shapeindex.patch
+Type: text/x-patch
+Size: 500 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080214/6b969454/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080214/6b969454/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000476.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+	<LI>Next message: <A HREF="000475.html">[Mapnik-devel] Shapefile output check
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#472">[ date ]</a>
+              <a href="thread.html#472">[ thread ]</a>
+              <a href="subject.html#472">[ subject ]</a>
+              <a href="author.html#472">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

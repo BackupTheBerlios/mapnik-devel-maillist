@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mac 10.4 build problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem&In-Reply-To=%3CB2F10182-0A16-41F5-8CF3-EEAD45F72B26%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000403.html">
+   <LINK REL="Next"  HREF="000401.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mac 10.4 build problem</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem&In-Reply-To=%3CB2F10182-0A16-41F5-8CF3-EEAD45F72B26%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mac 10.4 build problem">artem at mapnik.org
+       </A><BR>
+    <I>Fri Jan 11 10:52:30 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000403.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+        <LI>Next message: <A HREF="000401.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#409">[ date ]</a>
+              <a href="thread.html#409">[ thread ]</a>
+              <a href="subject.html#409">[ subject ]</a>
+              <a href="author.html#409">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+On 10 Jan 2008, at 00:30, Dane Springmeyer wrote:
+
+&gt;<i> I'm running Mac OS 10.4.11 and attempting to build mapnik with scons
+</I>
+I'm running 10.4.11, too.
+&gt;<i> from the current SVN trunk
+</I>&gt;<i>
+</I>&gt;<i> I get a error with libtool and libiconv:
+</I>&gt;<i>
+</I>&gt;<i> ld: Undefined symbols:
+</I>&gt;<i> _libiconv
+</I>&gt;<i> _libiconv_close
+</I>&gt;<i> _libiconv_open
+</I>&gt;<i> /usr/bin/libtool: internal link edit command failed
+</I>&gt;<i> scons: *** [src/libmapnik.dylib] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i> spring:~/mapnik/trunk
+</I>&gt;<i>
+</I>&gt;<i> and I see a warning just above it:
+</I>&gt;<i>
+</I>&gt;<i> ./boost/property_tree/detail/ptree_implementation.hpp:800: warning:
+</I>&gt;<i> 'tmp$value_' may be used uninitialized in this function
+</I>
+This warning is OK.
+&gt;<i>
+</I>&gt;<i> i've got libiconv in /usr/libs/ and /usr/local/libs/
+</I>
+
+I think this is the problem. Make sure you're linking to the one in / 
+usr/lib:
+
+ls -l /usr/lib/libiconv.*
+lrwxr-xr-x   1 root  wheel       16 Sep  6 16:07 /usr/lib/libiconv. 
+2.2.0.dylib -&gt; libiconv.2.dylib
+-rw-r--r--   1 root  wheel  1986536 Nov 19 17:11 /usr/lib/libiconv. 
+2.dylib
+lrwxr-xr-x   1 root  wheel       20 Sep  6 16:07 /usr/lib/ 
+libiconv.dylib -&gt; libiconv.2.2.0.dylib
+-rw-r--r--   1 root  wheel      786 Sep 11  2006 /usr/lib/libiconv.la
+
+Cheers
+Artem
+
+&gt;<i>
+</I>&gt;<i> -dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000403.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+	<LI>Next message: <A HREF="000401.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#409">[ date ]</a>
+              <a href="thread.html#409">[ thread ]</a>
+              <a href="subject.html#409">[ subject ]</a>
+              <a href="author.html#409">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster issue with Mapnik 2 ?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20issue%20with%20Mapnik%202%20%3F&In-Reply-To=%3C4E9ECE2C.2030908%40laposte.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001502.html">
+   <LINK REL="Next"  HREF="001504.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster issue with Mapnik 2 ?</H1>
+    <B>Krysst</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20issue%20with%20Mapnik%202%20%3F&In-Reply-To=%3C4E9ECE2C.2030908%40laposte.net%3E"
+       TITLE="[Mapnik-devel] Raster issue with Mapnik 2 ?">krysstaufe.1 at laposte.net
+       </A><BR>
+    <I>Wed Oct 19 15:18:36 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001502.html">[Mapnik-devel] Raster issue with Mapnik 2 ?
+</A></li>
+        <LI>Next message: <A HREF="001504.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1503">[ date ]</a>
+              <a href="thread.html#1503">[ thread ]</a>
+              <a href="subject.html#1503">[ subject ]</a>
+              <a href="author.html#1503">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+First, sorry for posting in &quot;Release plan for mapnik 2.0.1 and 2.1.x&quot;, I 
+don't understand what I did...
+
+Second, thank you for the answer. I'm gonna do some tests with GDAL 1.8 
+before posting a ticket.
+
+Regards.
+
+
+Le 19/10/2011 13:08, Artem Pavlenko a &#233;crit :
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Internally mapnik expects pixels to be square, so this sounds like a
+</I>&gt;<i> gdal.input issue, also latest gdal version 1.8.1 might work
+</I>&gt;<i> (untested).  Please, create an issue on
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://github.com/mapnik/mapnik/issues?sort=created&amp;direction=desc&amp;state=open">https://github.com/mapnik/mapnik/issues?sort=created&amp;direction=desc&amp;state=open</A>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for reporting this!
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i> On 19 October 2011 01:10, Krysst&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">krysstaufe.1 at laposte.net</A>&gt;  wrote:
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I need your opinion on this issue.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --------------------------
+</I>&gt;&gt;<i> -- THE PROBLEM ---
+</I>&gt;&gt;<i> --------------------------
+</I>&gt;&gt;<i> First, the normal rendering under mapnik 0.7.1 :
+</I>&gt;&gt;<i> <A HREF="http://francetopo.fr/mapnik2/mapnik0.7.1.jpg">http://francetopo.fr/mapnik2/mapnik0.7.1.jpg</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Then, the abnormal rendering under mapnik 2 :
+</I>&gt;&gt;<i> <A HREF="http://francetopo.fr/mapnik2/mapnik2.jpg">http://francetopo.fr/mapnik2/mapnik2.jpg</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The &quot;explanation&quot; :
+</I>&gt;&gt;<i> <A HREF="http://francetopo.fr/mapnik2/mapnik2b.jpg">http://francetopo.fr/mapnik2/mapnik2b.jpg</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> What you see on these pictures :
+</I>&gt;&gt;<i> * soil ocupation (the green) is vector data from OpenStreetMap : all correct
+</I>&gt;&gt;<i> * relief shadowing comes from Geotiffs : correct at the top of the picture,
+</I>&gt;&gt;<i> more and more fucked up as you go down... till there is nothing left to
+</I>&gt;&gt;<i> rasterize (the no shadow band), and then starts again with a correct line
+</I>&gt;&gt;<i> and so on.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -----------------------
+</I>&gt;&gt;<i> -- MY SETTING ---
+</I>&gt;&gt;<i> -----------------------
+</I>&gt;&gt;<i> The raster dataset producing the relief shadowing is composed of four
+</I>&gt;&gt;<i> 2Gbytes GeoTiff, combined under a gdal VRT.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I use a french specific projection (Lambert 93 - EPSG:2154) :
+</I>&gt;&gt;<i> srs=&quot;+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000
+</I>&gt;&gt;<i> +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My vector&amp;  raster datas already are in EPSG:2154, so is there no
+</I>&gt;&gt;<i> re-projection at all during the rendering process.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I compiled mapnik 2 binaries with these libraries (debian SID) :
+</I>&gt;&gt;<i> * proj4 4.7.0.1,
+</I>&gt;&gt;<i> * gdal 1.7.3-6,
+</I>&gt;&gt;<i> * geos 3.2.2-3.
+</I>&gt;&gt;<i> * libboost 1.46.1-7
+</I>&gt;&gt;<i> * python 2.6
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --------------------------------------------------
+</I>&gt;&gt;<i> -- WHAT I TRIED UNSUCCESSFULLY ---
+</I>&gt;&gt;<i> --------------------------------------------------
+</I>&gt;&gt;<i> * mapnik 2 binaries : from the debian SID repository and compiled by myself
+</I>&gt;&gt;<i> * mapnik driver : raster and gdal
+</I>&gt;&gt;<i> * format : tiff + tfw, geotiff, png, gdal vrt...
+</I>&gt;&gt;<i> * tiled and not tiled geotiff
+</I>&gt;&gt;<i> * band and pixel interleave
+</I>&gt;&gt;<i> * generate the rasters with OL+tilecache and with nik2img
+</I>&gt;&gt;<i> * bicubic, lanczos scaling method
+</I>&gt;&gt;<i> * cut the Geotiffs in smaller files (5000x5000 in place of 25000x25000)
+</I>&gt;&gt;<i> * ...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ----------------------------
+</I>&gt;&gt;<i> -- WHAT WORKED ---
+</I>&gt;&gt;<i> ----------------------------
+</I>&gt;&gt;<i> Changing the pixel size of my raster dataset to a square one !
+</I>&gt;&gt;<i> Original dataset had a pixel size of 21.000208352291551m x
+</I>&gt;&gt;<i> 23.158451421093591m, if I resample it to 21m x 21m, it seems to work
+</I>&gt;&gt;<i> perfectly.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> ---------------------------
+</I>&gt;&gt;<i> -- MY QUESTIONS ---
+</I>&gt;&gt;<i> ---------------------------
+</I>&gt;&gt;<i> What do you think is the problem : GDAL ? Mapnik 2 ? Do I need to open a
+</I>&gt;&gt;<i> ticket ?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for your help.
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001502.html">[Mapnik-devel] Raster issue with Mapnik 2 ?
+</A></li>
+	<LI>Next message: <A HREF="001504.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1503">[ date ]</a>
+              <a href="thread.html#1503">[ thread ]</a>
+              <a href="subject.html#1503">[ subject ]</a>
+              <a href="author.html#1503">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

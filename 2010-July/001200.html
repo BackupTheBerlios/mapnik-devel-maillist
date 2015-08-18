@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] C++ tests
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20tests&In-Reply-To=%3C3918BB56-7C2C-40D9-9E29-164EECBCF8F9%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001199.html">
+   <LINK REL="Next"  HREF="001201.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] C++ tests</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20tests&In-Reply-To=%3C3918BB56-7C2C-40D9-9E29-164EECBCF8F9%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] C++ tests">dane at dbsgeo.com
+       </A><BR>
+    <I>Sat Jul 17 02:04:40 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001199.html">[Mapnik-devel] Mapnik BoF at SotM
+</A></li>
+        <LI>Next message: <A HREF="001201.html">[Mapnik-devel] Next Mapnik release: 0.7.2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1200">[ date ]</a>
+              <a href="thread.html#1200">[ thread ]</a>
+              <a href="subject.html#1200">[ subject ]</a>
+              <a href="author.html#1200">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>We've discussed writing C++ tests for some time, but so far we've been only utilizing the python nosetests.
+
+I had a distinct need the other day as a way to test the behavior of a recursive font registration function [1].
+
+In short I hope the font registration function (mostly nicked from tirex) can be used both by mod_tile, tirex, the mapnik viewer, and other C++ apps using Mapnik. I needed one for a server I'm starting to write and I noticed each had their own implementation.
+
+Hence, I looked for a simple testing method, found BOOST_TEST, and gave it a spin. You can see the results here:
+
+<A HREF="http://trac.mapnik.org/browser/trunk/tests/cpp_tests/font_registration_test.cpp">http://trac.mapnik.org/browser/trunk/tests/cpp_tests/font_registration_test.cpp</A>
+Added in: <A HREF="http://trac.mapnik.org/changeset/2029">http://trac.mapnik.org/changeset/2029</A>
+
+I'm hoping that others may critique, and begin to offer up their own tests.
+
+Currently the way I've set that directory up is that any cpp file that ends with '_test.cpp' will be automatically compiled.
+
+And then the program can be run from the command line like:
+
+$ tests/cpp_tests/font_registration_test
+
+Ideally we could find a smart way to build the test environment relative to the test directory instead of the project root, but this worked for now.
+
+- Dane
+
+[1] <A HREF="http://trac.mapnik.org/changeset/2026">http://trac.mapnik.org/changeset/2026</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001199.html">[Mapnik-devel] Mapnik BoF at SotM
+</A></li>
+	<LI>Next message: <A HREF="001201.html">[Mapnik-devel] Next Mapnik release: 0.7.2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1200">[ date ]</a>
+              <a href="thread.html#1200">[ thread ]</a>
+              <a href="subject.html#1200">[ subject ]</a>
+              <a href="author.html#1200">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

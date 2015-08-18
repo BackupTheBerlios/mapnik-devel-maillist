@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on Mac OS?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C16e8cf860702251458r5fb36460u98576a193c7fd0ba%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000124.html">
+   <LINK REL="Next"  HREF="000128.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on Mac OS?</H1>
+    <B>Tom Carden</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C16e8cf860702251458r5fb36460u98576a193c7fd0ba%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compiling on Mac OS?">tom at tom-carden.co.uk
+       </A><BR>
+    <I>Sun Feb 25 23:58:57 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000124.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+        <LI>Next message: <A HREF="000128.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 25/02/07, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">pavlenko at users.berlios.de</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> I was thinking about something very simple. Just to see if scons can build
+</I>&gt;<i> shared library at all on Mac:
+</I>&gt;<i>
+</I>&gt;<i> test.hpp :
+</I>&gt;<i>
+</I>&gt;<i> #ifndef TEST_HPP
+</I>&gt;<i> #define TEST_HPP
+</I>&gt;<i> void fun ();
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> test.cpp:
+</I>&gt;<i>
+</I>&gt;<i> #include &lt;iostream&gt;
+</I>&gt;<i> #include &quot;test.hpp&quot;
+</I>&gt;<i>
+</I>&gt;<i> void fun()
+</I>&gt;<i> {
+</I>&gt;<i>         std::cout &lt;&lt; &quot;fun called\n&quot;;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> SConscript:
+</I>&gt;<i>
+</I>
+SConstruct?
+
+&gt;<i> SharedLibrary ('test',['test.cpp'])
+</I>&gt;<i>
+</I>
+With scons copied from mapnik folder...
+
+tom% python scons/scons.py                            scons: Reading
+SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -dynamiclib -o libtest.dylib test.os
+scons: done building targets.
+tom% ls
+SConstruct      libtest.dylib   scons           test.cpp
+test.hpp        test.os
+
+&gt;<i> Other things we can try Boost.Build.v2 ( I use sometimes).  I suspect bjam
+</I>&gt;<i> might have a better support for mac.
+</I>&gt;<i>
+</I>
+tom% port search boost-build
+boost-build                    devel/boost-build 2.0-m10      Build
+system for large project software construction
+
+It's there if you want me to try it.  I don't know anything about bjam though.
+
+HTH,
+
+Tom.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000124.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+	<LI>Next message: <A HREF="000128.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

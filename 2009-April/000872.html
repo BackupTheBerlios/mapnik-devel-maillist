@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Drawing inverted polygons
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Drawing%20inverted%20polygons&In-Reply-To=%3Cb658f7060904210111la598c22id8e1c3e9661a3a80%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000871.html">
+   <LINK REL="Next"  HREF="000869.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Drawing inverted polygons</H1>
+    <B>Oleg Shaniuk</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Drawing%20inverted%20polygons&In-Reply-To=%3Cb658f7060904210111la598c22id8e1c3e9661a3a80%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Drawing inverted polygons">oshaniuk at cloudmade.com
+       </A><BR>
+    <I>Tue Apr 21 10:11:26 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000871.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+        <LI>Next message: <A HREF="000869.html">[Mapnik-devel] Mapnik+Oracle
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#872">[ date ]</a>
+              <a href="thread.html#872">[ thread ]</a>
+              <a href="subject.html#872">[ subject ]</a>
+              <a href="author.html#872">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+Thanks for tip - I'll try it. So, I can use this function to invert
+shapefiles? - Import into DB -&gt; export via ST_DIFFERENCE?
+
+--
+
+RO
+
+On Mon, Apr 20, 2009 at 7:00 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;wrote:
+
+&gt;<i> Hey Oleg,
+</I>&gt;<i>
+</I>&gt;<i> Sorry I missed responding to this earlier, but the answer is no AFAIK.
+</I>&gt;<i>
+</I>&gt;<i> Aside from assigning a map background color and then 'cutting' out that
+</I>&gt;<i> color with polygon fill, there is no support for filling outer space of a
+</I>&gt;<i> polygon.  What is your use case? Is it possible to dynamically run a postgis
+</I>&gt;<i> query that calculates an inverse polygon shape of this outer space given
+</I>&gt;<i> your setup? You could do this by using the ST_DIFFERENCE function against a
+</I>&gt;<i> bounding rectangle that covers your whole map and the polygon you want to
+</I>&gt;<i> clip out.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Apr 13, 2009, at 2:32 AM, Oleg Shaniuk wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Hello to all
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I didn't get in with new mapnik's drawing possibilities - is it possible
+</I>&gt;&gt;<i> draw polygons in inverted manner - keep inner space of polygon transparent,
+</I>&gt;&gt;<i> draw borders  and fill outer space? Does new RasterSymbolizer can do it? Is
+</I>&gt;&gt;<i> it possible at all?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> RO
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090421/05c960ed/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090421/05c960ed/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000871.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+	<LI>Next message: <A HREF="000869.html">[Mapnik-devel] Mapnik+Oracle
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#872">[ date ]</a>
+              <a href="thread.html#872">[ thread ]</a>
+              <a href="subject.html#872">[ subject ]</a>
+              <a href="author.html#872">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

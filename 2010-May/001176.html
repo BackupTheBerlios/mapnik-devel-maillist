@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support GSoC's project
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3C63496C34-2DBA-4575-93BB-0002D736B8FE%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001175.html">
+   <LINK REL="Next"  HREF="001177.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support GSoC's project</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3C63496C34-2DBA-4575-93BB-0002D736B8FE%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Better Print Support GSoC's project">blake at hailmail.net
+       </A><BR>
+    <I>Thu May 27 16:45:53 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001175.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+        <LI>Next message: <A HREF="001177.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1176">[ date ]</a>
+              <a href="thread.html#1176">[ thread ]</a>
+              <a href="subject.html#1176">[ subject ]</a>
+              <a href="author.html#1176">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Carlos,
+
+Basic shortcomings:
+
+1) Needs to be updated to work with Mapnik2 (lots of changes so it would likely be easiest to start from scratch rather than trying to apply the patch to trunk)
+
+2) Has hardcoded assumptions about Mapnik's assumed pixel size (.00028 meters) and conversion to inches .
+
+  * My thought is that you should, for now, remove any notion of resolution and rather just start with a raw scale_factor that can be passed by the user from the XML mapfile into the rendering pipeline - this would be a good first step for testing, and resolution assumptions (the therefore units) can come next.
+  * Also a key limitation currently: what if pixels are of dynamic size or width != height? <A HREF="http://trac.mapnik.org/ticket/196.">http://trac.mapnik.org/ticket/196.</A> Thinking through this now will be beneficial for design. 
+
+3) Yes, the way that road casings are traditionally done with multiple overlapping lines (multiple symbolizers in XML) make scaling and maintaining the right look tricky. But, I'd say don't worry about this after you've got the basics working against trunk.
+
+4) One global scale factor may not be enough for users. I think you should consider how to potentially allow users to pass scale factors that may differently affect fonts vs. symbols vs. lines, etc. I've not given much thought to this yet, so I'd be interested to see how you think this could be done cleanly, both in terms of the interface exposed to the user and internally.
+
+Dane
+
+On May 26, 2010, at 9:24 PM, Carlos Enrique L&#243;pez Garc&#233;s wrote:
+
+&gt;<i> Good evening, I was wondering if anyone who applied the patch of ticket 343 and analyzed the code could tell me about its shortcomings (things you noticed in the maps when rendered). From the comments of the ticket I see that it has some minor issues like thick road casings. I haven't seen this myself because I haven't run the test script submitted by Mr. Springmeyer; I'm waiting for the world boundaries files to download (<A HREF="http://wiki.openstreetmap.org/wiki/Mapnik">http://wiki.openstreetmap.org/wiki/Mapnik</A>) to be able to do it.
+</I>&gt;<i> 
+</I>&gt;<i> Any comment is greatly welcome.
+</I>&gt;<i> 
+</I>&gt;<i> Thanks
+</I>&gt;<i> 
+</I>&gt;<i> Carlos L&#243;pez
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/1467e312/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/1467e312/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001175.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+	<LI>Next message: <A HREF="001177.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1176">[ date ]</a>
+              <a href="thread.html#1176">[ thread ]</a>
+              <a href="subject.html#1176">[ subject ]</a>
+              <a href="author.html#1176">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with local projections and worldwide	data extent
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%0A%09data%20extent&In-Reply-To=%3CB8EEE122-62DA-4372-BE8D-851B8AFF2D1D%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001133.html">
+   <LINK REL="Next"  HREF="001131.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with local projections and worldwide	data extent</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%0A%09data%20extent&In-Reply-To=%3CB8EEE122-62DA-4372-BE8D-851B8AFF2D1D%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Problem with local projections and worldwide	data extent">dbsgeo at gmail.com
+       </A><BR>
+    <I>Fri Apr  2 06:33:58 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001133.html">[Mapnik-devel] Problem with local projections and worldwide data extent
+</A></li>
+        <LI>Next message: <A HREF="001131.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1134">[ date ]</a>
+              <a href="thread.html#1134">[ thread ]</a>
+              <a href="subject.html#1134">[ subject ]</a>
+              <a href="author.html#1134">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Great stuff Frederik! I look forward to talking a look at this patch.  
+Afaik we've done nothing new yet around max extent in trunk so should  
+apply easy.
+
+Let me know if I can help at all re: compile pain with 0.8. In the  
+meantime patches against 0.7.x are absolutely fine and I can help with  
+porting to trunk.
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Apr 1, 2010, at 2:27 PM, Frederik Ramm &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Dane Springmeyer wrote:
+</I>&gt;&gt;&gt;<i> Will I be able to fix it by simply changing the code to project  
+</I>&gt;&gt;&gt;<i> the map extent into the data source extent and *then* find out if  
+</I>&gt;&gt;&gt;<i> there is an intersection?
+</I>&gt;&gt;<i> Yes that seems like it should work nicer in this case.
+</I>&gt;&gt;&gt;<i> Or have you been down that road already and encountered a  
+</I>&gt;&gt;&gt;<i> different problem?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes. For most cases the layer extent is a more reliable clipping  
+</I>&gt;&gt;<i> extent to use as the map extent (when zoomed out on an application)  
+</I>&gt;&gt;<i> can easiely extent past the range of reprojectable coords.
+</I>&gt;<i>
+</I>&gt;<i> I have now modified the feature_style_processor.hpp (against 0.7.1)  
+</I>&gt;<i> to first try the current method (backward project layer extent into  
+</I>&gt;<i> map projection), but if that doesn't work, then forward project the  
+</I>&gt;<i> map extent into the layer projection, to determine the bounding box  
+</I>&gt;<i> intersection. Works like a charm for my particular itch, and as far  
+</I>&gt;<i> as I can see doesn't break anything either.
+</I>&gt;<i>
+</I>&gt;<i> Possible drawback is a little less than optimal performance for  
+</I>&gt;<i> those cases that didn't work at all before - because the backward  
+</I>&gt;<i> projection is always tried first even if the system could  
+</I>&gt;<i> theoretically (somehow) find out that it doesn't make sense trying it.
+</I>&gt;<i>
+</I>&gt;<i> Apologies for not sticking my patch to the correct ticket in trac,  
+</I>&gt;<i> but none of the open ones on the BoundsClipping page actually seemed  
+</I>&gt;<i> to match (but I could swear there was a ticket about this, a while  
+</I>&gt;<i> ago). Also, I saw that my patch will not easily apply to 0.8 because  
+</I>&gt;<i> a new custom max_extent mechanism has been added; someone will have  
+</I>&gt;<i> to adapt my patch to 0.8 as I am currently unable to compile 0.8 and  
+</I>&gt;<i> would rather not submit untested stuff.
+</I>&gt;<i>
+</I>&gt;<i> Patch (for current 0.7.1 SVN) attached.
+</I>&gt;<i>
+</I>&gt;<i> Bye
+</I>&gt;<i> Frederik
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23 
+</I>&gt;<i> '33&quot;
+</I>&gt;<i> --- feature_style_processor.hpp	2010-03-10 21:40:34.000000000 +0100 + 
+</I>&gt;<i> ++ feature_style_processor.hpp.fixed	2010-04-01 23:12:11.000000000  
+</I>&gt;<i> +0200 @@ -126,30 +126,75 @@ proj_transform prj_trans(proj0,proj1);  
+</I>&gt;<i> Envelope layer_ext = lay.envelope(); + + // have to determine  
+</I>&gt;<i> whether there is an intersection between the map + // and the layer  
+</I>&gt;<i> extent. since both may have different projections,  
+</I>&gt;<i> +               // one must be reprojected to match the other. this  
+</I>&gt;<i> is not something + // that always works, e.g. if layer extent = full  
+</I>&gt;<i> earth and map uses + // a projection only defined for a small area,  
+</I>&gt;<i> then projecting the layer + // to map's projection will not work. it  
+</I>&gt;<i> can also happen the other way + // round. thus we try both. + + //  
+</I>&gt;<i> first try to back project layer's extent into main map projection  
+</I>&gt;<i> double lx0 = layer_ext.minx(); double ly0 = layer_ext.miny(); double  
+</I>&gt;<i> lz0 = 0.0; double lx1 = layer_ext.maxx(); double ly1 = layer_ext.maxy 
+</I>&gt;<i> (); double lz1 = 0.0; - // back project layers extent into main map  
+</I>&gt;<i> projection - prj_trans.backward(lx0,ly0,lz0); - prj_trans.backward 
+</I>&gt;<i> (lx1,ly1,lz1); - - // if no intersection then nothing to do for  
+</I>&gt;<i> layer - if ( lx0 &gt; ext.maxx() || lx1 &lt; ext.minx() || ly0 &gt; ext.maxy 
+</I>&gt;<i> () || ly1 &lt; ext.miny() ) + if (prj_trans.backward(lx0,ly0,lz0) &amp;&amp;  
+</I>&gt;<i> prj_trans.backward(lx1,ly1,lz1)) { - return; - } + // if no  
+</I>&gt;<i> intersection then nothing to do for layer + if ( lx0 &gt; ext.maxx() ||  
+</I>&gt;<i> lx1 &lt; ext.minx() || ly0 &gt; ext.maxy() || ly1 &lt; ext.miny() ) +  
+</I>&gt;<i> { +#ifdef MAPNIK_DEBUG + std::clog &lt;&lt; &quot;no intersection with layer &quot;  
+</I>&gt;<i> &lt;&lt; lay.name() &lt;&lt; &quot; (backward projected)&quot; &lt;&lt; std::endl; +#endif +  
+</I>&gt;<i> return; + } - // clip query bbox - lx0 = std::max(ext.minx(),lx0); -  
+</I>&gt;<i> ly0 = std::max(ext.miny(),ly0); - lx1 = std::min(ext.maxx(),lx1); -  
+</I>&gt;<i> ly1 = std::min(ext.maxy(),ly1); + // clip query bbox + lx0 = std::max 
+</I>&gt;<i> (ext.minx(),lx0); + ly0 = std::max(ext.miny(),ly0); + lx1 = std::min 
+</I>&gt;<i> (ext.maxx(),lx1); + ly1 = std::min(ext.maxy(),ly1); -  
+</I>&gt;<i> prj_trans.forward(lx0,ly0,lz0); - prj_trans.forward(lx1,ly1,lz1); +  
+</I>&gt;<i> prj_trans.forward(lx0,ly0,lz0); + prj_trans.forward(lx1,ly1,lz1);  
+</I>&gt;<i> + } + // else, if backward projecting layer's extent to map's  
+</I>&gt;<i> projection didn't work, + // forward project map's extent to layer's  
+</I>&gt;<i> projection + else + { + lx0 = ext.minx(); + ly0 = ext.miny(); + lz0  
+</I>&gt;<i> = 0.0; + lx1 = ext.maxx(); + ly1 = ext.maxy(); + lz1 = 0.0; + if (! 
+</I>&gt;<i> (prj_trans.forward(lx0, ly0, lz0) &amp;&amp; prj_trans.forward(lx1, ly1,  
+</I>&gt;<i> lz1))) + { + // this is bad; we can neither project the layer to map  
+</I>&gt;<i> nor map to layer. +#ifdef MAPNIK_DEBUG + std::clog &lt;&lt; &quot;cannot render  
+</I>&gt;<i> layer &quot; &lt;&lt; lay.name() &lt;&lt; &quot;: neither forward nor backward projection  
+</I>&gt;<i> works&quot; &lt;&lt; std::endl; +#endif + return; + } + if ( lx0 &gt;  
+</I>&gt;<i> layer_ext.maxx() || lx1 &lt; layer_ext.minx() || ly0 &gt; layer_ext.maxy()  
+</I>&gt;<i> || ly1 &lt; layer_ext.miny() ) + { +#ifdef MAPNIK_DEBUG + std::clog &lt;&lt;  
+</I>&gt;<i> &quot;no intersection with layer &quot; &lt;&lt; lay.name() &lt;&lt; &quot; (forward  
+</I>&gt;<i> projected)&quot; &lt;&lt; std::endl; +#endif + return; + } + + // clip query  
+</I>&gt;<i> bbox + lx0 = std::max(layer_ext.minx(),lx0); + ly0 = std::max 
+</I>&gt;<i> (layer_ext.miny(),ly0); + lx1 = std::min(layer_ext.maxx(),lx1); +  
+</I>&gt;<i> ly1 = std::min(layer_ext.maxy(),ly1); + } + Envelope bbox 
+</I>&gt;<i> (lx0,ly0,lx1,ly1); double resolution = m_.getWidth()/ 
+</I>&gt;<i> m_.getCurrentExtent().width();
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001133.html">[Mapnik-devel] Problem with local projections and worldwide data extent
+</A></li>
+	<LI>Next message: <A HREF="001131.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1134">[ date ]</a>
+              <a href="thread.html#1134">[ thread ]</a>
+              <a href="subject.html#1134">[ subject ]</a>
+              <a href="author.html#1134">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

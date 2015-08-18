@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] composition methods for point symbols
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3Cda9d28170901121530w78aa4e2fu903e238b1ca20fbc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000779.html">
+   <LINK REL="Next"  HREF="000781.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] composition methods for point symbols</H1>
+    <B>Brian Quinion</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3Cda9d28170901121530w78aa4e2fu903e238b1ca20fbc%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] [PATCH] composition methods for point symbols">openstreetmap at brian.quinion.co.uk
+       </A><BR>
+    <I>Tue Jan 13 00:30:56 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000779.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+        <LI>Next message: <A HREF="000781.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#780">[ date ]</a>
+              <a href="thread.html#780">[ thread ]</a>
+              <a href="subject.html#780">[ subject ]</a>
+              <a href="author.html#780">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Jan 12, 2009 at 11:14 PM, Artem Pavlenko
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem.mapnik at googlemail.com</A>&gt; wrote:
+&gt;<i> Hi Brian,
+</I>&gt;<i> I started experimenting with compositing mode using AGG
+</I>&gt;<i> : <A HREF="http://trac.mapnik.org/wiki/Compositing">http://trac.mapnik.org/wiki/Compositing</A>
+</I>&gt;<i> I wonder if you had a chance to compare your implementation etc.
+</I>
+Like your test case :-)
+
+I got part way through writing a reply and got interrupted never to
+return... anyway:
+
+&gt;<i> Also, AGG library (which is used by mapnik) has compositing implementation
+</I>&gt;<i> compatible with SVG 1.2 :
+</I>
+I've had a look through and I think the that only one that has a
+direct equivalent is COMPOSITION_METHOD_COPY which is effectively
+comp_op_src_over.  All the methods I've defined are performed in the
+hsl colour domain which gives them at least subtlety different results
+however COMPOSITION_METHOD_COLORIZE3 is nearly comp_op_multiply and
+COMPOSITION_METHOD_COLORIZE1 is nearly comp_op_darken (Colour burn)
+and I think for most practical purposes they will produce similar
+enough results.
+
+None of the others seems to have a direct equivalent but half of them
+where included for completeness.  HUE, SAT &amp; LUM are probably the only
+real losses.
+
+&gt;<i> I just wonder if perhaps using/extending AGG would be a better path for
+</I>&gt;<i> adding compositing support in Mapnik?
+</I>
+I can see the point but I tend to get lost in the agg templates - I
+started to try to work out what was required which is what delayed my
+reply!
+
+However given what you've already done with your samples I'm guessing
+I'll be able to extend it from there.  If you commit the code so far I
+can re-write my patch to extend agg instead.  I've no idea if they
+will want it upsteam - after all there will be no direct equivalent in
+SVG.
+
+--
+ Brian
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000779.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+	<LI>Next message: <A HREF="000781.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#780">[ date ]</a>
+              <a href="thread.html#780">[ thread ]</a>
+              <a href="subject.html#780">[ subject ]</a>
+              <a href="author.html#780">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

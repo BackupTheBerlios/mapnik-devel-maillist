@@ -1,0 +1,623 @@
+From dane at dbsgeo.com  Thu Aug  4 01:25:46 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 3 Aug 2011 16:25:46 -0700
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+In-Reply-To: <2F19511F7CD4CA46BFCC94318F67336C17BF0FAA@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+References: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+	<2F19511F7CD4CA46BFCC94318F67336C17BF0FAA@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+Message-ID: <9EEDFFA7-C34F-4819-92FB-5D224867113A@dbsgeo.com>
+
+Nat, are you one linux or windows or?
+
+Also, Mapnik2/current trunk should support non-case sensitive font registration, so this will be fixed for the next release.
+
+Dane
+
+
+On Jul 30, 2011, at 1:50 AM, Evatt, Nathaniel wrote:
+
+> Hi there, 
+> 
+> I figured it out.  In the process of trying find a way to post the font files I realized that the font files that Mapnik didn't register had a .TTF file extension instead of .ttf.  I was able to work around the problem by simply renaming the file to .ttf
+> 
+> Thanks for the help
+> 
+> -Nat
+> ________________________________________
+> From: Dane Springmeyer [dane at dbsgeo.com]
+> Sent: Friday, July 29, 2011 8:02 PM
+> To: Evatt, Nathaniel
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+> 
+> Nat,
+> 
+> Can you post the font files somewhere that are not working?
+> 
+> Dane
+> 
+> 
+> On Jul 29, 2011, at 7:44 AM, Evatt, Nathaniel wrote:
+> 
+>> Hi there,
+>> 
+>> I am trying to register some customized fonts with Mapnik using the web pages:
+>> 
+>> http://weait.com/content/add-fonts-your-openstreetmap-server
+>> 
+>> and
+>> 
+>> http://trac.mapnik.org/wiki/UsingCustomFonts
+>> 
+>> I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+>> 
+>> I am using mapnik-0.7.1 if this matters.
+>> 
+>> Thanks,
+>> Nat
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+
+From dane at dbsgeo.com  Thu Aug  4 01:38:32 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 3 Aug 2011 16:38:32 -0700
+Subject: [Mapnik-devel] Renaming opacity to text-opacity/shield-opacity
+In-Reply-To: <op.vzh0iz0ai35s77@nx7400.uni-regensburg.de>
+References: <op.vzh0iz0ai35s77@nx7400.uni-regensburg.de>
+Message-ID: <3B2BB730-3770-47A2-88B8-41515DC7AD3F@dbsgeo.com>
+
+
+On Jul 31, 2011, at 12:31 PM, Hermann Kraus wrote:
+
+> Hi!
+> 
+> In ShieldSymbolizer there are two options
+> opacity	(Default 1.0) - opacity of the image used for the shield
+> text-opacity	(Default 1.0) - opacity of the text placed on top of the shield
+> and in TextSymbolizer there is
+> opacity
+> 
+> So we have two symbolizers which share 99% of their options, but one option has a different meaning but the same name.
+> 
+> I therefore propose to change "opacity" to "shield-opacity" in ShieldSymbolizer.
+
+Sure, seems reasonable to me to avoid the ambiguity of knowing which it refers to.
+
+> and to "text-opactity" in TextSymbolizer.
+
+Hmm, that would require moving also to fill-opacity, point-opacity, etc right to stay consistent in the case of when opacity refers to just a single aspect of the symbolizer?
+
+> We already have done large changes to the XML format in mapnik2 so it should be no big deal to add this change, too.
+
+Yes.
+
+> 
+> I also noticed that the option "force_odd_labels" is neither parsed nor saved in mapnik2. Is that intentional?
+
+I doubt it, nice catch. Never understood the value of that option - do you?
+
+> 
+> vertical-alignment and orientation were not saved by save_map(), but I fixed that one in my branch.
+
+Great, can you also fix in trunk?
+
+> 
+> 
+> Hermann
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From nathaniel.evatt.10 at ucl.ac.uk  Thu Aug  4 10:42:39 2011
+From: nathaniel.evatt.10 at ucl.ac.uk (Evatt, Nathaniel)
+Date: Thu, 4 Aug 2011 08:42:39 +0000
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+In-Reply-To: <9EEDFFA7-C34F-4819-92FB-5D224867113A@dbsgeo.com>
+References: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+	<2F19511F7CD4CA46BFCC94318F67336C17BF0FAA@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<9EEDFFA7-C34F-4819-92FB-5D224867113A@dbsgeo.com>
+Message-ID: <2F19511F7CD4CA46BFCC94318F67336C17BF1070@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+
+Hi Dane, 
+
+I am running Windows, which might be causing some of the problem.  
+
+I also haven't made the switch to Mapnik2 yet, but that will be great to see this aspect working.  Thanks for the follow up.  
+
+-Nat
+
+
+
+
+
+________________________________________
+From: Dane Springmeyer [dane at dbsgeo.com]
+Sent: Thursday, August 04, 2011 12:25 AM
+To: Evatt, Nathaniel
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+
+Nat, are you one linux or windows or?
+
+Also, Mapnik2/current trunk should support non-case sensitive font registration, so this will be fixed for the next release.
+
+Dane
+
+
+On Jul 30, 2011, at 1:50 AM, Evatt, Nathaniel wrote:
+
+> Hi there,
+>
+> I figured it out.  In the process of trying find a way to post the font files I realized that the font files that Mapnik didn't register had a .TTF file extension instead of .ttf.  I was able to work around the problem by simply renaming the file to .ttf
+>
+> Thanks for the help
+>
+> -Nat
+> ________________________________________
+> From: Dane Springmeyer [dane at dbsgeo.com]
+> Sent: Friday, July 29, 2011 8:02 PM
+> To: Evatt, Nathaniel
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+>
+> Nat,
+>
+> Can you post the font files somewhere that are not working?
+>
+> Dane
+>
+>
+> On Jul 29, 2011, at 7:44 AM, Evatt, Nathaniel wrote:
+>
+>> Hi there,
+>>
+>> I am trying to register some customized fonts with Mapnik using the web pages:
+>>
+>> http://weait.com/content/add-fonts-your-openstreetmap-server
+>>
+>> and
+>>
+>> http://trac.mapnik.org/wiki/UsingCustomFonts
+>>
+>> I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+>>
+>> I am using mapnik-0.7.1 if this matters.
+>>
+>> Thanks,
+>> Nat
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From dane at dbsgeo.com  Thu Aug  4 16:55:47 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 4 Aug 2011 07:55:47 -0700
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+In-Reply-To: <2F19511F7CD4CA46BFCC94318F67336C17BF1070@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+References: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+	<2F19511F7CD4CA46BFCC94318F67336C17BF0FAA@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<9EEDFFA7-C34F-4819-92FB-5D224867113A@dbsgeo.com>
+	<2F19511F7CD4CA46BFCC94318F67336C17BF1070@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+Message-ID: <3F85C52C-8420-41F4-B240-85A77503D513@dbsgeo.com>
+
+
+On Aug 4, 2011, at 1:42 AM, Evatt, Nathaniel wrote:
+
+> Hi Dane, 
+> 
+> I am running Windows, which might be causing some of the problem.  
+> 
+> I also haven't made the switch to Mapnik2 yet, but that will be great to see this aspect working.  Thanks for the follow up.  
+> 
+
+Okay, thanks, follow this ticket for updates on this: http://trac.mapnik.org/ticket/606
+
+> -Nat
+> 
+> 
+> 
+> 
+> 
+> ________________________________________
+> From: Dane Springmeyer [dane at dbsgeo.com]
+> Sent: Thursday, August 04, 2011 12:25 AM
+> To: Evatt, Nathaniel
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+> 
+> Nat, are you one linux or windows or?
+> 
+> Also, Mapnik2/current trunk should support non-case sensitive font registration, so this will be fixed for the next release.
+> 
+> Dane
+> 
+> 
+> On Jul 30, 2011, at 1:50 AM, Evatt, Nathaniel wrote:
+> 
+>> Hi there,
+>> 
+>> I figured it out.  In the process of trying find a way to post the font files I realized that the font files that Mapnik didn't register had a .TTF file extension instead of .ttf.  I was able to work around the problem by simply renaming the file to .ttf
+>> 
+>> Thanks for the help
+>> 
+>> -Nat
+>> ________________________________________
+>> From: Dane Springmeyer [dane at dbsgeo.com]
+>> Sent: Friday, July 29, 2011 8:02 PM
+>> To: Evatt, Nathaniel
+>> Cc: mapnik-devel at lists.berlios.de
+>> Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+>> 
+>> Nat,
+>> 
+>> Can you post the font files somewhere that are not working?
+>> 
+>> Dane
+>> 
+>> 
+>> On Jul 29, 2011, at 7:44 AM, Evatt, Nathaniel wrote:
+>> 
+>>> Hi there,
+>>> 
+>>> I am trying to register some customized fonts with Mapnik using the web pages:
+>>> 
+>>> http://weait.com/content/add-fonts-your-openstreetmap-server
+>>> 
+>>> and
+>>> 
+>>> http://trac.mapnik.org/wiki/UsingCustomFonts
+>>> 
+>>> I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+>>> 
+>>> I am using mapnik-0.7.1 if this matters.
+>>> 
+>>> Thanks,
+>>> Nat
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+> 
+
+
+
+From rundel at gmail.com  Sat Aug  6 00:37:45 2011
+From: rundel at gmail.com (Colin Rundel)
+Date: Fri, 5 Aug 2011 18:37:45 -0400
+Subject: [Mapnik-devel] GSoC Update - carto parsing
+Message-ID: <65CEF488-1B6B-4380-AB7F-C2AE94FB8E2D@gmail.com>
+
+Hi everyone,
+
+So a quick update on where progress stands with the carto parser. Since the midterm blog post support for handling of styles, rules, and all symbolizers has been added which brings us close to supporting the core carto language. The next week will focus on completing this by adding support for filter expressions as there are some subtle but significant differences between the mapnik and carto grammars.  
+
+After this the final push will be to add in carto's dynamtic features like variables and mixins. Up to date code is available on github for anyone interested in trying it out and bug testing.
+
+-Colin
+
+From herm at scribus.info  Sun Aug  7 00:51:41 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Sun, 07 Aug 2011 00:51:41 +0200
+Subject: [Mapnik-devel] GSoC - Text placement and formating
+Message-ID: <op.vztdsfq6i35s77@nx7400.uni-regensburg.de>
+
+Hello!
+
+Last week I worked on fixing several problem with my text placement code
+and now it should really work well (r3060 to r3070).
+Now I'm working on text formating, the parser is already working (r3071 to
+r3073), however I have run into problems doing formating in a thread safe
+way and avoiding extremely complex code.
+
+The solution I have chosen (but it might change when I run into further
+problems):
+- class text_processor takes the parsed formating list and then for each
+feature it produces a list of (text_properties, UnicodeString) pairs
+(class processed_text).
+- text_processor is shared across threads, but processed_text is thread
+local.
+- processed_text is then used to find placements and produce an list of
+absolute text positions.
+- This list is used by the renderer to produce the actual image.
+
+This should keep code complexity at each step low, so it should not become
+overly complicated unmaintainable code even if more features are added.
+
+One such feature is the possibility to change styles based on feature
+properties. It could be used for something like coloring city names
+different depending on the population.
+
+Hermann
+
+
+From stella at laurenzo.org  Thu Aug 11 03:18:09 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Wed, 10 Aug 2011 18:18:09 -0700
+Subject: [Mapnik-devel] Heatmaps and thoughts on extension points
+Message-ID: <CAH8pnHZ6Sx3Ft08xniOkOoiwWRR8sqTMjgApE2A0zid-9sxadA@mail.gmail.com>
+
+Hi all,
+
+I've been playing with generating heatmap (and other raster) layers
+directly from within Mapnik instead of relying on the mish-mash of
+tools that seem to typically brought to bear to accomplish these types
+of things.  The work is here:
+
+   https://github.com/stellaeof/mapnik-rasterizers
+
+While the approach does basically work, it left me pondering extension
+points for Mapnik beyond the current input datasources.  What I really
+wanted was something like one of the following but I ended up settling
+for a raster datasource for lack of any other option:
+
+   1. Some kind of a "Layer Plugin" that would give me access to more
+of the render state and just hand off to me to take it all from there.
+   2. Some kind of pluggable symbolizer that has life-cycle methods
+that let me manage some state across an entire featureset and then
+lets me access the rendering context whenever I want to in order to
+paint my output.
+
+I know why these types of things would be bad from the perspective
+that Mapnik works hard to shield the data manipulation bits from the
+backend rendering bits (agg/cairo, et al).  I'm not sure how we could
+satisfy both concerns or whether there is enough other use cases to
+justify such thoughts.  I figured I'd throw it out there for
+discussion, though.
+
+The key thing about this type of output is that you need all of the
+data for an area before you start to paint.  In that way it acts more
+like an aggregate function vs a set returning function.  Once you've
+tabulated all of the data, you transform it globally and then colorize
+it.  The overall approach is all contained in the
+heatmap_datasource.cpp file in the heatmap_datasource::rasterize
+method.
+
+Does anyone have thoughts on a better way to approach this kind of problem?
+
+- stella
+
+
+From ssilbaugh at 42six.com  Mon Aug 15 22:11:01 2011
+From: ssilbaugh at 42six.com (Sean Silbaugh)
+Date: Mon, 15 Aug 2011 16:11:01 -0400
+Subject: [Mapnik-devel] Mapnik and Tilecache "No module named Mapnik"
+Message-ID: <CAG7XFZ3B0AEKjkrbh0HSs9=JOnxYeuPKgaHaRXhEd6DMdyHohQ@mail.gmail.com>
+
+Hello everyone,
+
+I am trying to get Tilecache to host tiles created by Mapnik in an attempt
+to get a WMS supported by Mapnik on Windows XP.  Currently, I am using
+Apache and cgi to host tilecache.  When I access "
+http://localhost/cgi-bin/tilecache-2.11/tilecache.cgi/1.0.0/basic/0/0/0.png"
+and also "0/0/1" I get a plain blue tile, but any other zoom levels I get an
+error that says:
+
+An error occurred: No module named mapnik
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Service.py", line 343,
+in cgiHandler
+    format, image = service.dispatchRequest( params, path_info, req_method,
+host )
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Service.py", line 208,
+in dispatchRequest
+    return self.renderTile(tile, params.has_key('FORCE'))
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Service.py", line 138,
+in renderTile
+    data = layer.render(tile, force=force)
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Layer.py", line 436,
+in render
+    image = self.renderMetaTile(metatile, tile)
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Layer.py", line 396,
+in renderMetaTile
+    data = self.renderTile(metatile)
+  File "C:\Program Files\Apache Software
+Foundation\Apache2.2\cgi-bin\tilecache-2.11\TileCache\Layers\Mapnik.py",
+line 27, in renderTile
+    import mapnik
+
+I installed Mapnik using OSGeo4W but I had to edit the system PATH variable
+to get it to work.  The path variable is
+"C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Python26;C:\Python26\Tools\Scripts;C:\mapnik-0.7.1\lib;C:\WMS\mapnik-0.7.1\lib;C:\WMS\proj\bin;C:\Python26\Scripts;"
+and the Pythonpath is "C:\mapnik-0.7.1\python\2.6\site-packages;"
+
+Thanks in advance for any help,
+Sean
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110815/965683a9/attachment.html>
+
+From herm at scribus.info  Tue Aug 16 02:30:58 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Tue, 16 Aug 2011 02:30:58 +0200
+Subject: [Mapnik-devel] GSoC - Text formating
+Message-ID: <op.vz96dwxvi35s77@nx7400.uni-regensburg.de>
+
+Hello!
+
+Last week I was working on finishing the text formating code.
+After having a close look at placement_finder.cpp and considering  
+reimplementing it I decided it would work with only minor changes and so  
+kept it. Now each char has an associated set of properties which is passed  
+all the way through the formating and placement code till it reaches the  
+rendering code.
+
+Rendering works now, but it is only implemented for AGG. I will implement  
+support for other renderers soon. This should not be a problem as I  
+reduced the complexity of the rendering function. (117 vs. 43 lines) Most  
+code that is common to all renders is now moved out of this function.
+
+I also updated the TextSymbolizer documentation in the wiki  
+(http://trac.mapnik.org/wiki/TextSymbolizer) because some options were  
+undocumentend or wrong.
+
+The new TextSymbolizer syntax looks like this:
+<TextSymbolizer face-name="DejaVu Sans Book" size="16" placement="point"  
+dx="0" dy="8" fill="blue" >
+'default color'<Format fill="red">' red text '</Format>[name]<Format  
+fill="green">' green'<Format bold="true" size="20">' large '</Format>'text  
+'</Format>'normal text again'
+</TextSymbolizer>
+
+name option is removed and all the text goes to the content section. While  
+I think my code should not be merged for mapnik2 to avoid further delays I  
+think a compatibility layer should be added.
+So <TextSymbolizer name="abc" /> and <TextSymbolizer>abc</TextSymbolizer>  
+are both valid but the first one print a deprecation warning.
+
+Hermann
+
+
+From feverzsj at hotmail.com  Mon Aug 22 10:49:22 2011
+From: feverzsj at hotmail.com (zzsj)
+Date: Mon, 22 Aug 2011 16:49:22 +0800
+Subject: [Mapnik-devel] code bloat issue
+Message-ID: <SNT143-ds1250031A2A28046494B80FCE2F0@phx.gbl>
+
+hi list:
+With more and more components using Spirit as parser generator, the generated code seems to be dramatically bloated.
+
+For my case:
+mapnik(trunk) on msvc9/10 generates 800MB pdb file in debug mode and 400MB in release mode, and compiling takes around 20 minutes with 1GB+ ram.
+Any project, even just including those headers, could be blotted to 10MB binary.
+
+Not sure if this is the only case for msvc.
+
+I think we should place the "boost/spirit" related stuff more carefully, avoiding too many includes in one single unit.
+
+Also as the release note said: Spirit offers BOOST_SPIRIT_NO_PREDEFINED_TERMINALS to prevent instantiations of predefined terminal objects which slows down compile time a lot, as a breaking change in Boost 1.47.0.
+
+regards, zsj
+
+From dane at dbsgeo.com  Thu Aug 25 17:03:55 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 25 Aug 2011 08:03:55 -0700
+Subject: [Mapnik-devel] Update on Mapnik GSOC projects
+Message-ID: <5BF21580-EF53-4460-BAC5-DFFC5C1E01B9@dbsgeo.com>
+
+The Google Summer of Code season wraps up this week, so I'd like to brief everyone on the overall progress.
+
+You will hear directly from each student in the next week on the details of their work in a post on mapnik.org/news, but I will offer my high level take here.
+
+We had three projects, one which will not be completed (at this time) and two which have approached near completion.
+
+1. Windows build system
+
+This one unfortunately had to be put on hold because Roel had some important family issues to attend to. Roel had a very successful first half of the project and you can read about his project and thinking on his midterm post [1], but had to drop out for the second half.
+
+I know there is a big community of mapnik (and potential) mapnik users who were excited about this effort and the possibility of easy and frequent windows builds. Hopefully in the future we could consider funding, as a community, the completion of this project.
+
+2. Carto CSS support in mapnik core
+
+Colin has written both a carto-generator (take existing mapnik xml and produce CSS), and a carto-parser (parse CSS directly into a mapnik Map without an intermediate XML step). The carto generator is to the point that it *almost* produces valid CSS for the osm.xml, which is incredible. His main efforts during the second half have been on the carto parser and supporting, evaluating, and implementing all the syntax which is supported. All the action for this project has been on github up to this point [2]  but we have also created a milestone to start discussing what it will take to merge into trunk, and when [3].
+
+3. Advanced text placement and formatting
+
+Hermann has been working in a branch of mapnik, making an incredible set of improvements and even refactoring some of the most complex and narly bits of mapnik's placement code. He has recently added the ability to format text differently within an existing text string and has added support for his multiple placement fallbacks to the ShieldSymbolizer [4]. We also have a new milestone for thinking through getting this work into trunk [5].
+
+Thanks to Google for supporting this amazing program this year and most of all to the students and mentors (Rob Coup and Artem Pavlenko) that worked so hard to make this an incredible summer.
+
+Dane
+ 
+[1] http://mapnik.org/news/2011/jul/17/gsoc_windows_build_system_halfway/
+[2] https://github.com/rundel/carto-parser
+[3] http://trac.mapnik.org/milestone/GSOC%20Carto%20C%2B%2B
+[4] http://trac.mapnik.org/log/branches/textplacement
+[5] http://trac.mapnik.org/milestone/GSOC%20Text%20Placement
+
+From dane at dbsgeo.com  Sun Aug 28 04:45:30 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 27 Aug 2011 19:45:30 -0700
+Subject: [Mapnik-devel] Git versioning
+Message-ID: <88870748-767C-4412-8DA7-95882D186EFC@dbsgeo.com>
+
+Devel-
+
+I'm using git and github quite a bit these days and ever since setting up a read only mapnik trunk mirror I've seen the positive benefits for other devs, many of you on this list. 
+
+I'd like to propose we move the official repo to github. The main benefit im seeking is a better issue tracker and githubs has really reached an excellent place now. 
+
+I  propose someone volunteers to lead this conversion. Amd it takes place immediately after the mapnik 2 release. If you are interested please reply here or to me directly. 
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+From dane at dbsgeo.com  Sun Aug 28 05:05:35 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 27 Aug 2011 20:05:35 -0700
+Subject: [Mapnik-devel] code bloat issue
+In-Reply-To: <SNT143-ds1250031A2A28046494B80FCE2F0@phx.gbl>
+References: <SNT143-ds1250031A2A28046494B80FCE2F0@phx.gbl>
+Message-ID: <B24A3576-58A9-415C-9B1E-1EFA941FA937@dbsgeo.com>
+
+
+On Aug 22, 2011, at 1:49 AM, zzsj <feverzsj at hotmail.com> wrote:
+
+> hi list:
+> With more and more components using Spirit as parser generator,
+
+Yes. While it adds compile time, the idea is to have faster runtimes, so I feel like this is a worthwhile tradeoff as long as your machine has a modern spec of > 2 cores and 2 gb memory. With that spec Mapnik, with new spirit goodness should take 6-8 minutes to compile which seems absolutely fine. 
+
+> the generated code seems to be dramatically bloated.
+
+I have not seen this to be the case. 
+
+> 
+> For my case:
+> mapnik(trunk) on msvc9/10 generates 800MB pdb file in debug mode and 400MB in release mode,
+
+I have been building osx binaries recently with libmapnik statically compiled against all dependencies (including boost) and that lib totals 8 mb. 
+
+I'm not familiar with pdb files - they are for debugging? Msvc must keep around much more than is needed?
+
+For my development all I tend to need is a release build with the -g flag for gdb, but I like minimal likely more than most. 
+
+> and compiling takes around 20 minutes with 1GB+ ram.
+
+Are you frequently compiling Mapnik? Maybe try clang - is takes 6-8 minutes. 
+
+
+> Any project, even just including those headers, could be blotted to 10MB binary.
+
+Can you provide an example?
+
+> 
+> Not sure if this is the only case for msvc.
+
+It's important we do our best with any compiler. If you could provide some code samples perhaps we could try some flags to hide inlines to reduce sizes. 
+
+> 
+> I think we should place the "boost/spirit" related stuff more carefully, avoiding too many includes in one single unit.
+> 
+> Also as the release note said: Spirit offers BOOST_SPIRIT_NO_PREDEFINED_TERMINALS to prevent instantiations of predefined terminal objects which slows down compile time a lot, as a breaking change in Boost 1.47.0.
+
+Cool. I'll take a look at this, thanks. 
+> 
+> regards, zsj
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+

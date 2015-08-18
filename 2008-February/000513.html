@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] comping mapnik viewer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20comping%20mapnik%20viewer&In-Reply-To=%3Cb3b5e5690802260633u663a905ax2e16b119049e9929%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000503.html">
+   <LINK REL="Next"  HREF="000515.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] comping mapnik viewer</H1>
+    <B>Xin</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20comping%20mapnik%20viewer&In-Reply-To=%3Cb3b5e5690802260633u663a905ax2e16b119049e9929%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] comping mapnik viewer">xin at zenpow.com
+       </A><BR>
+    <I>Tue Feb 26 15:33:21 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000503.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+        <LI>Next message: <A HREF="000515.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#513">[ date ]</a>
+              <a href="thread.html#513">[ thread ]</a>
+              <a href="subject.html#513">[ subject ]</a>
+              <a href="author.html#513">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Artem,
+
+Thank you for the quick reply.
+
+I managed to compile Viewer. But when I open my map definition file, I get
+this error:
+
+Could not create datasource. No plugin found for type 'shape' in layer
+'world-1'
+
+As you can see, my map definition uses shape files. This definition works
+fine with generate_image.py.
+
+A snippet from main.cpp:
+   datasource_cache::instance()-&gt;register_datasources(&quot;/home/xin/src/mapnik-
+0.5.0/plugins/input&quot;);
+
+   freetype_engine::register_font(&quot;/home/xin/src/mapnik-0.5.0/fonts/dejavu-
+ttf-2.14/DejaVuSans.ttf&quot;);
+   freetype_engine::register_font(&quot;/home/xin/src/mapnik-0.5.0/fonts/dejavu-
+ttf-2.14/DejaVuSans-Bold.ttf&quot;);
+   freetype_engine::register_font(&quot;/home/xin/src/mapnik-0.5.0/fonts/dejavu-
+ttf-2.14/DejaVuSansMono.ttf&quot;);
+
+I compiled Mapnik too so that plugins/input has the lib files. ls
+plugins/input :
+
+gdal  Makefile.am  postgis  raster  shape
+
+ls plugins/input/shape:
+dbffile.cpp   SConscript            shapefile.cpp
+shape_index_featureset.cpp  shape_io.hpp
+dbffile.hpp   shape.cpp             shapefile.hpp
+shape_index_featureset.hpp  shape_io.os
+dbffile.os    shape_featureset.cpp  shapefile.o
+shape_index_featureset.os   shape.os
+dbf_test.cpp  shape_featureset.hpp  shapefile.os   shape.input
+shp_index.hpp
+Makefile.am   shape_featureset.os   shape.hpp      shape_io.cpp
+
+What do you think?
+
+Thanks,
+Xin
+
+On 25/02/2008, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+&gt;<i>
+</I>&gt;<i> Hi Xin,
+</I>&gt;<i>
+</I>&gt;<i> Hi List,
+</I>&gt;<i>
+</I>&gt;<i> I would like to use map viewer to aid me in developing my XML file. It
+</I>&gt;<i> would be really useful to see changes straight away, for different zoom
+</I>&gt;<i> levels without having to generate the tiles first.
+</I>&gt;<i>
+</I>&gt;<i> I found these previous threads. Although useful, they did not answer my
+</I>&gt;<i> question of how to compile.
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/mapnik-devel/2008-January/000408.html">https://lists.berlios.de/pipermail/mapnik-devel/2008-January/000408.html</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/pipermail/mapnik-users/2007-August/000418.html">https://lists.berlios.de/pipermail/mapnik-users/2007-August/000418.html</A>
+</I>&gt;<i>
+</I>&gt;<i> Does anyone know how to compile this?
+</I>&gt;<i>
+</I>&gt;<i> Any help is much appreciated.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The viewer is a qt4 application, so first  make sure you have qt4 properly
+</I>&gt;<i> installed on your system ( including dev )
+</I>&gt;<i> 1. modify viewer.pro to match your system (include, lib directories)
+</I>&gt;<i> 2. modify main.cpp to have correct paths mapnik's  plug-ins and fonts dirs
+</I>&gt;<i> 3. qmake
+</I>&gt;<i> 4. make
+</I>&gt;<i>
+</I>&gt;<i> You could try loading your xml files :
+</I>&gt;<i>
+</I>&gt;<i> ./viewer your.xml
+</I>&gt;<i>
+</I>&gt;<i> or
+</I>&gt;<i>
+</I>&gt;<i> ./viewer your.xml  -1,50,1,52
+</I>&gt;<i>
+</I>&gt;<i> or
+</I>&gt;<i>
+</I>&gt;<i> ./viewer   + and open *.xml from file menu
+</I>&gt;<i>
+</I>&gt;<i> HTH
+</I>&gt;<i> Cheers
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Xin
+</I>&gt;<i>  _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080226/742d0dae/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080226/742d0dae/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000503.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+	<LI>Next message: <A HREF="000515.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#513">[ date ]</a>
+              <a href="thread.html#513">[ thread ]</a>
+              <a href="subject.html#513">[ subject ]</a>
+              <a href="author.html#513">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

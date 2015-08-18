@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20ordering%20issue%20between%20png.h%20and%20setjmp.h&In-Reply-To=%3C1201720710.3412.174.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000455.html">
+   <LINK REL="Next"  HREF="000457.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20ordering%20issue%20between%20png.h%20and%20setjmp.h&In-Reply-To=%3C1201720710.3412.174.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Wed Jan 30 20:18:30 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000455.html">[Mapnik-devel] [patch] compile fix for: append() takes exactly one	argument
+</A></li>
+        <LI>Next message: <A HREF="000457.html">[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#456">[ date ]</a>
+              <a href="thread.html#456">[ thread ]</a>
+              <a href="subject.html#456">[ subject ]</a>
+              <a href="author.html#456">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On one machine I'm seeing the following compile failure with the latest
+code:
+
+g++ -o bindings/python/mapnik_image_view.os -c -DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL -ansi -Wall -pthread -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -O2 -finline-functions -Wno-inline -DNDEBUG -fPIC -I/usr/include/python2.4 -Iagg/include -Itinyxml -Iinclude -I. -I/usr/include -I/usr/include/postgresql -I/usr/local/include -I/usr/include/freetype2 bindings/python/mapnik_image_view.cpp
+In file included from /usr/include/png.h:363,
+                 from include/mapnik/png_io.hpp:28,
+                 from bindings/python/mapnik_image_view.cpp:28:
+/usr/include/pngconf.h:312:10: error: #error png.h already includes setjmp.h with some additional fixup.
+scons: *** [bindings/python/mapnik_image_view.os] Error 1
+scons: building terminated because of errors.
+
+
+Looking through the preprocessor output it seems that setjmp.h gtes
+included as a side effect of boost/python.hpp and we can not easily move
+png_io.hpp above this in the file. The attached patch is not brilliant
+but seems to work.
+
+I suspect the problem only happens with certain combinations of
+libpng/boost/python versions.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-png-setjmp-clash.patch
+Type: text/x-patch
+Size: 909 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080130/06a82708/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080130/06a82708/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000455.html">[Mapnik-devel] [patch] compile fix for: append() takes exactly one	argument
+</A></li>
+	<LI>Next message: <A HREF="000457.html">[Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#456">[ date ]</a>
+              <a href="thread.html#456">[ thread ]</a>
+              <a href="subject.html#456">[ subject ]</a>
+              <a href="author.html#456">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

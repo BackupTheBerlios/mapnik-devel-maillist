@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Filter for Null columns in osm.xml?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Filter%20for%20Null%20columns%20in%20osm.xml%3F&In-Reply-To=%3C1204064204.3480.221.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000509.html">
+   <LINK REL="Next"  HREF="000524.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Filter for Null columns in osm.xml?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Filter%20for%20Null%20columns%20in%20osm.xml%3F&In-Reply-To=%3C1204064204.3480.221.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Filter for Null columns in osm.xml?">jburgess at uklinux.net
+       </A><BR>
+    <I>Tue Feb 26 23:16:44 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000509.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+        <LI>Next message: <A HREF="000524.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#518">[ date ]</a>
+              <a href="thread.html#518">[ thread ]</a>
+              <a href="subject.html#518">[ subject ]</a>
+              <a href="author.html#518">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Mon, 2008-02-25 at 19:20 +0000, Artem Pavlenko wrote:
+&gt;<i> On 24 Feb 2008, at 19:22, Jon Burgess wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; The bug fix for the handling of NULL columns in r657 has broken  
+</I>&gt;<i> &gt; part of
+</I>&gt;<i> &gt; the osm.xml style file. The broken part is an attempts to render
+</I>&gt;<i> &gt; specific fills for certain building types with a fallback for all  
+</I>&gt;<i> &gt; other
+</I>&gt;<i> &gt; cases where building is non-null.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &lt;Filter&gt;[railway] = 'station' or [building] = 'station'&lt;/Filter&gt;
+</I>&gt;<i> &gt; ... railway station style
+</I>&gt;<i> &gt; &lt;Filter&gt;[building] = 'supermarket'&lt;/Filter&gt;
+</I>&gt;<i> &gt; ... supermarket style
+</I>&gt;<i> &gt; &lt;Filter&gt;[building] &lt;&gt; 'station' and [building] &lt;&gt;  
+</I>&gt;<i> &gt; 'supermarket' and [building] &lt;&gt; ''&lt;/Filter&gt;
+</I>&gt;<i> &gt; ... style for all other building types
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; We can not easily use an ElseFilter for this since this style has lots
+</I>&gt;<i> &gt; of other things being rendered not just buildings.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Is there another way to specify a filter equivalent to the SQL &quot;is not
+</I>&gt;<i> &gt; null&quot;, or should &quot;[building] &lt;&gt; ''&quot; be working for this? This used to
+</I>&gt;<i> &gt; work before the NULL column fix.
+</I>&gt;<i> 
+</I>&gt;<i> There are couple ways to solve this :
+</I>&gt;<i> 1. introduce &quot;null&quot; value as a special case.
+</I>&gt;<i> 2. amend SQL statement to include &quot;.. char_length(building) as  
+</I>&gt;<i> len...&quot; and construct filter like:
+</I>&gt;<i> [building] &lt;&gt; 'station' and [building] &lt;&gt; 'supermarket'  
+</I>&gt;<i> and [len] &gt; 0 ; ''
+</I>&gt;<i> 
+</I>
+
+I don't think running char_leng() on the column will do what you want. I
+think the result of this is a NULL too...
+
+gis=&gt; select char_length(NULL)&gt;0 as len;
+ len
+---
+
+(1 row)
+
+The only test which works is an &quot;is null&quot; one. I think we'd need to add
+something like &quot;'building' is null as building_null&quot;.
+
+gis=&gt; select 'foo' is NULL as building_null;
+ building_null
+---------------
+ f
+(1 row)
+
+gis=&gt; select NULL is NULL as building_null;
+ building_null
+---------------
+ t
+(1 row)
+
+
+&gt;<i> There're probably other ways to handle this case.
+</I>&gt;<i> 
+</I>&gt;<i> Generally I don't think it is that great to have so many columns  
+</I>&gt;<i> which are NULLs in OSM schema and use those NULLs for data filtering.  
+</I>&gt;<i> We should probably split data into multiple logical tables and even  
+</I>&gt;<i> 'flatten' data by introducing some sort of numeric feature code :
+</I>&gt;<i> 
+</I>&gt;<i> [fcode] = 123123
+</I>&gt;<i> 
+</I>&gt;<i> and lookup table
+</I>&gt;<i> 
+</I>&gt;<i> fcode       |  desc
+</I>&gt;<i> ------------------
+</I>&gt;<i> 123123   |  supermarche
+</I>&gt;<i> 123124   |  station
+</I>
+I think Postgres is quite efficient at dealing with nul values, but I
+have to agree that now that we have 40 columns we may be wasting some
+space. I don't know just how compact Postgres stores its data, in theory
+it might be possible for it to store each of these nul columns in a
+single bit (followed by data for all the non-null columns).
+
+If we introduce feature codes like these then I would hope they could be
+entirely hidden by the software. I would personally not want to manually
+translate to/from features codes when updating the osm.xml file.
+
+&gt;<i> On related note,  should we have 'boolean' type for values?
+</I>
+We need to be careful since there are some not-quite boolean types in
+use in OSM, e.g. oneway=0/1/-1. Maybe we code remove the -1 by reversing
+the way direction during import.
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000509.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+	<LI>Next message: <A HREF="000524.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#518">[ date ]</a>
+              <a href="thread.html#518">[ thread ]</a>
+              <a href="subject.html#518">[ subject ]</a>
+              <a href="author.html#518">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

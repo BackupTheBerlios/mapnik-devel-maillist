@@ -1,0 +1,1155 @@
+From rainer.spittel at terralink.co.nz  Fri May  9 02:42:56 2008
+From: rainer.spittel at terralink.co.nz (Rainer Spittel)
+Date: Fri, 09 May 2008 00:42:56 -0000
+Subject: [Mapnik-devel] Using the GPU to render the images
+Message-ID: <12B8F225666F99489CEFA8B3F261540CFAAF62@geneva.local.terralink>
+
+Hi,
+ 
+  I got an old Linux server here with a nice Nvidia graphics card. I
+installed Ubuntu 8.0 64bit and got the nvidia graphic card drivers
+working. 
+ 
+  I wonder if there is a change that mapnik uses the GPU to render the
+images instead of the CPU?
+ 
+Cheers
+Rainer
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080509/889e9967/attachment.html>
+
+From beau at beaugunderson.com  Tue May 27 00:39:45 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Mon, 26 May 2008 16:39:45 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+Message-ID: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+
+I'd like to have a go at implementing fallback fonts for Mapnik (this has
+come up a few times over at OSM from what I can tell... Chinese/Japanese
+characters render as boxes because DejaVu fonts don't support them and
+Mapnik can't fall back to a font that does).
+
+My question is basically how the list of fonts should be implemented in the
+XML storage format and in Python.
+
+Is face_name="Font1,Font2,Font3" acceptable?
+
+I.e.:
+
+   <TextSymbolizer name="NAME" face_name="DejaVu Sans Bold,Some Other
+UTF-8 Font,Yet Another UTF-8 Font" size="7" fill="black" />
+
+
+Should you be able to specify a list object in Python? (A list of face name
+strings)
+
+
+Thanks,
+
+Beau
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080526/eab1430b/attachment.html>
+
+From tom at compton.nu  Tue May 27 00:54:36 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 26 May 2008 23:54:36 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+Message-ID: <4649bea54f.tom@loxley.compton.nu>
+
+In message <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b at mail.gmail.com>
+          "Beau Gunderson" <beau at beaugunderson.com> wrote:
+
+> My question is basically how the list of fonts should be implemented in the
+> XML storage format and in Python.
+> 
+> Is face_name="Font1,Font2,Font3" acceptable?
+> 
+> I.e.:
+> 
+>    <TextSymbolizer name="NAME" face_name="DejaVu Sans Bold,Some Other
+> UTF-8 Font,Yet Another UTF-8 Font" size="7" fill="black" />
+> 
+> 
+> Should you be able to specify a list object in Python? (A list of face name
+> strings)
+
+My thought was that you should probably be able to define a font
+set in XML and then refer to that set rather than a face in the
+text symbolizer.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From tom at compton.nu  Tue May 27 00:53:33 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 26 May 2008 23:53:33 +0100
+Subject: [Mapnik-devel] Using the GPU to render the images
+In-Reply-To: <12B8F225666F99489CEFA8B3F261540CFAAF62@geneva.local.terralink>
+References: <12B8F225666F99489CEFA8B3F261540CFAAF62@geneva.local.terralink>
+Message-ID: <e830bea54f.tom@loxley.compton.nu>
+
+In message <12B8F225666F99489CEFA8B3F261540CFAAF62 at geneva.local.terralink>
+          "Rainer Spittel" <rainer.spittel at terralink.co.nz> wrote:
+
+>   I wonder if there is a change that mapnik uses the GPU to render the
+> images instead of the CPU?
+
+No.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From beau at beaugunderson.com  Tue May 27 01:44:27 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Mon, 26 May 2008 17:44:27 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <4649bea54f.tom@loxley.compton.nu>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+Message-ID: <d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+
+More questions already. :)
+
+1. Should FontSet be a top-level element like Layer and Style?
+2. I noticed that other XML nodes are usually referenced from nodes and not
+attributes, i.e.:
+
+   <Layer>
+    <StyleName>style-name</StyleName>
+   </Layer>
+
+instead of...
+
+   <Layer stylename="style-name" />
+
+Should this be continued for TextSymbolizer? I.e.,
+
+   <TextSymbolizer name="NAME" size="15" fill="black">
+    <FontSetName>font-set-name</FontSetName>
+   </TextSymbolizer>
+
+
+Thanks,
+
+Beau
+
+On Mon, May 26, 2008 at 4:54 PM, Tom Hughes <tom at compton.nu> wrote:
+
+> In message <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b at mail.gmail.com>
+>           "Beau Gunderson" <beau at beaugunderson.com> wrote:
+>
+> > My question is basically how the list of fonts should be implemented in
+> the
+> > XML storage format and in Python.
+> >
+> > Is face_name="Font1,Font2,Font3" acceptable?
+> >
+> > I.e.:
+> >
+> >    <TextSymbolizer name="NAME" face_name="DejaVu Sans Bold,Some Other
+> > UTF-8 Font,Yet Another UTF-8 Font" size="7" fill="black" />
+> >
+> >
+> > Should you be able to specify a list object in Python? (A list of face
+> name
+> > strings)
+>
+> My thought was that you should probably be able to define a font
+> set in XML and then refer to that set rather than a face in the
+> text symbolizer.
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080526/6c3fd66d/attachment.html>
+
+From kleptog at gmail.com  Tue May 27 08:36:07 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Tue, 27 May 2008 08:36:07 +0200
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+Message-ID: <2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+
+On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson <beau at beaugunderson.com> wrote:
+> More questions already. :)
+>
+> 1. Should FontSet be a top-level element like Layer and Style?
+
+I'd say yes.
+
+> 2. I noticed that other XML nodes are usually referenced from nodes and not
+> attributes, i.e.:
+>
+>    <Layer>
+>     <StyleName>style-name</StyleName>
+>    </Layer>
+>
+> instead of...
+>
+>    <Layer stylename="style-name" />
+
+This is different. A layer can have multiple styles, hence the latter
+way would not work.
+
+> Should this be continued for TextSymbolizer? I.e.,
+>
+>    <TextSymbolizer name="NAME" size="15" fill="black">
+>     <FontSetName>font-set-name</FontSetName>
+>    </TextSymbolizer>
+
+I'd say stick to fontset="name", unless you want to support the text
+symbolizer having multiple fontsets? I also object on the ground that
+TextSyboliser currently has no content and adding will make the file
+more unreadable than it already is. Using an attribute fits better.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From beau at beaugunderson.com  Tue May 27 08:38:14 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 27 May 2008 00:38:14 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+Message-ID: <d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+
+Excellent, both make sense and I've gone ahead and started.
+
+Should have a patch ready in the next couple of days depending on how much
+coding time I get.
+
+
+Beau
+
+On Tue, May 27, 2008 at 12:36 AM, Martijn van Oosterhout <kleptog at gmail.com>
+wrote:
+
+> On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson <beau at beaugunderson.com>
+> wrote:
+> > More questions already. :)
+> >
+> > 1. Should FontSet be a top-level element like Layer and Style?
+>
+> I'd say yes.
+>
+> > 2. I noticed that other XML nodes are usually referenced from nodes and
+> not
+> > attributes, i.e.:
+> >
+> >    <Layer>
+> >     <StyleName>style-name</StyleName>
+> >    </Layer>
+> >
+> > instead of...
+> >
+> >    <Layer stylename="style-name" />
+>
+> This is different. A layer can have multiple styles, hence the latter
+> way would not work.
+>
+> > Should this be continued for TextSymbolizer? I.e.,
+> >
+> >    <TextSymbolizer name="NAME" size="15" fill="black">
+> >     <FontSetName>font-set-name</FontSetName>
+> >    </TextSymbolizer>
+>
+> I'd say stick to fontset="name", unless you want to support the text
+> symbolizer having multiple fontsets? I also object on the ground that
+> TextSyboliser currently has no content and adding will make the file
+> more unreadable than it already is. Using an attribute fits better.
+>
+> Have a nice day,
+> --
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/48bc2197/attachment.html>
+
+From beau at beaugunderson.com  Tue May 27 18:05:10 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 27 May 2008 10:05:10 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+Message-ID: <d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+
+I lied, it's "ready" now!
+
+A couple of caveats--the indentation is hosed because I haven't configured
+my vim to match the Mapnik spec yet (seems like it's 4 spaces, tabs never
+used?) and this is my first try at using C++ in 5 years or so, and probably
+the most complex thing I've tried in the realm of C++. I will fix the
+indentation and remove the debug prints before providing a final patch.
+There are also a bunch of extraneous changes (spacing or tabs changed) that
+I'll remove from the final patch.
+
+That said, it works with my example so it can't be THAT bad--but someone
+competent should look at this and give me some feedback as I'm sure there
+are some optimizations and/or things to make it "fit" a little better that
+could be done.
+
+The patch is available here if someone wants to take a gander:
+
+   http://www.beaugunderson.com/fallback_fonts.diff
+
+The syntax I went with is this (the extra 'face_name' is there because my
+patch hasn't made it optional yet!):
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map>
+<Map srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+ <FontSet name="my-fonts">
+  <Font face_name="DejaVu Sans Book" />
+  <Font face_name="DejaVu Sans Bold" />
+  <Font face_name="TSC FMing S TT Regular" />
+ </FontSet>
+
+ <Style name="font-test">
+  <Rule>
+   <TextSymbolizer name="NAME" face_name="DejaVu Sans Book"
+fontset_name="my-fonts" size="15" fill="black" />
+  </Rule>
+ </Style>
+
+ <Layer name="font-test" status="on" srs="+proj=longlat +ellps=WGS84
++datum=WGS84 +no_defs">
+  <StyleName>font-test</StyleName>
+   <Datasource>
+    <Parameter name="type">shape</Parameter>
+    <Parameter name="file">Font_Test</Parameter>
+   </Datasource>
+  </Layer>
+</Map>
+
+The shapefile I'm using has some Chinese names in it and can be accessed
+here along with the simple Python script to generate a map from it:
+
+   http://www.beaugunderson.com/mapnik_test/
+
+The fonts are available at:
+
+   ftp://cle.linux.org.tw/pub2/fonts/ttf/unicode/twinbridge/
+
+Sidenote: I don't quite understand the magic that happens when you specify a
+face name--it only seems to work for the names contained within the TTF
+files themselves and not when specifying a filename.
+
+
+Thanks,
+
+Beau
+
+On Tue, May 27, 2008 at 12:38 AM, Beau Gunderson <beau at beaugunderson.com>
+wrote:
+
+> Excellent, both make sense and I've gone ahead and started.
+>
+> Should have a patch ready in the next couple of days depending on how much
+> coding time I get.
+>
+>
+> Beau
+>
+>
+> On Tue, May 27, 2008 at 12:36 AM, Martijn van Oosterhout <
+> kleptog at gmail.com> wrote:
+>
+>> On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson <beau at beaugunderson.com>
+>> wrote:
+>> > More questions already. :)
+>> >
+>> > 1. Should FontSet be a top-level element like Layer and Style?
+>>
+>> I'd say yes.
+>>
+>> > 2. I noticed that other XML nodes are usually referenced from nodes and
+>> not
+>> > attributes, i.e.:
+>> >
+>> >    <Layer>
+>> >     <StyleName>style-name</StyleName>
+>> >    </Layer>
+>> >
+>> > instead of...
+>> >
+>> >    <Layer stylename="style-name" />
+>>
+>> This is different. A layer can have multiple styles, hence the latter
+>> way would not work.
+>>
+>> > Should this be continued for TextSymbolizer? I.e.,
+>> >
+>> >    <TextSymbolizer name="NAME" size="15" fill="black">
+>> >     <FontSetName>font-set-name</FontSetName>
+>> >    </TextSymbolizer>
+>>
+>> I'd say stick to fontset="name", unless you want to support the text
+>> symbolizer having multiple fontsets? I also object on the ground that
+>> TextSyboliser currently has no content and adding will make the file
+>> more unreadable than it already is. Using an attribute fits better.
+>>
+>> Have a nice day,
+>> --
+>> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/e2e4bdcb/attachment.html>
+
+From beau at beaugunderson.com  Tue May 27 18:09:44 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 27 May 2008 10:09:44 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+Message-ID: <d6cb3ab10805270909i37a80aafn6a7ba7736a87b8d1@mail.gmail.com>
+
+Oops, you'll need:
+
+http://www.beaugunderson.com/font_set.cpp
+http://www.beaugunderson.com/font_set.hpp
+
+as well.
+
+On Tue, May 27, 2008 at 10:05 AM, Beau Gunderson <beau at beaugunderson.com>
+wrote:
+
+> I lied, it's "ready" now!
+>
+> A couple of caveats--the indentation is hosed because I haven't configured
+> my vim to match the Mapnik spec yet (seems like it's 4 spaces, tabs never
+> used?) and this is my first try at using C++ in 5 years or so, and probably
+> the most complex thing I've tried in the realm of C++. I will fix the
+> indentation and remove the debug prints before providing a final patch.
+> There are also a bunch of extraneous changes (spacing or tabs changed) that
+> I'll remove from the final patch.
+>
+> That said, it works with my example so it can't be THAT bad--but someone
+> competent should look at this and give me some feedback as I'm sure there
+> are some optimizations and/or things to make it "fit" a little better that
+> could be done.
+>
+> The patch is available here if someone wants to take a gander:
+>
+>    http://www.beaugunderson.com/fallback_fonts.diff
+>
+> The syntax I went with is this (the extra 'face_name' is there because my
+> patch hasn't made it optional yet!):
+>
+> <?xml version="1.0" encoding="utf-8"?>
+> <!DOCTYPE Map>
+> <Map srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+>  <FontSet name="my-fonts">
+>   <Font face_name="DejaVu Sans Book" />
+>   <Font face_name="DejaVu Sans Bold" />
+>   <Font face_name="TSC FMing S TT Regular" />
+>  </FontSet>
+>
+>  <Style name="font-test">
+>   <Rule>
+>    <TextSymbolizer name="NAME" face_name="DejaVu Sans Book"
+> fontset_name="my-fonts" size="15" fill="black" />
+>   </Rule>
+>  </Style>
+>
+>  <Layer name="font-test" status="on" srs="+proj=longlat +ellps=WGS84
+> +datum=WGS84 +no_defs">
+>   <StyleName>font-test</StyleName>
+>    <Datasource>
+>     <Parameter name="type">shape</Parameter>
+>     <Parameter name="file">Font_Test</Parameter>
+>    </Datasource>
+>   </Layer>
+> </Map>
+>
+> The shapefile I'm using has some Chinese names in it and can be accessed
+> here along with the simple Python script to generate a map from it:
+>
+>    http://www.beaugunderson.com/mapnik_test/
+>
+> The fonts are available at:
+>
+>    ftp://cle.linux.org.tw/pub2/fonts/ttf/unicode/twinbridge/
+>
+> Sidenote: I don't quite understand the magic that happens when you specify
+> a face name--it only seems to work for the names contained within the TTF
+> files themselves and not when specifying a filename.
+>
+>
+> Thanks,
+>
+> Beau
+>
+>
+> On Tue, May 27, 2008 at 12:38 AM, Beau Gunderson <beau at beaugunderson.com>
+> wrote:
+>
+>> Excellent, both make sense and I've gone ahead and started.
+>>
+>> Should have a patch ready in the next couple of days depending on how much
+>> coding time I get.
+>>
+>>
+>> Beau
+>>
+>>
+>> On Tue, May 27, 2008 at 12:36 AM, Martijn van Oosterhout <
+>> kleptog at gmail.com> wrote:
+>>
+>>> On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson <beau at beaugunderson.com>
+>>> wrote:
+>>> > More questions already. :)
+>>> >
+>>> > 1. Should FontSet be a top-level element like Layer and Style?
+>>>
+>>> I'd say yes.
+>>>
+>>> > 2. I noticed that other XML nodes are usually referenced from nodes and
+>>> not
+>>> > attributes, i.e.:
+>>> >
+>>> >    <Layer>
+>>> >     <StyleName>style-name</StyleName>
+>>> >    </Layer>
+>>> >
+>>> > instead of...
+>>> >
+>>> >    <Layer stylename="style-name" />
+>>>
+>>> This is different. A layer can have multiple styles, hence the latter
+>>> way would not work.
+>>>
+>>> > Should this be continued for TextSymbolizer? I.e.,
+>>> >
+>>> >    <TextSymbolizer name="NAME" size="15" fill="black">
+>>> >     <FontSetName>font-set-name</FontSetName>
+>>> >    </TextSymbolizer>
+>>>
+>>> I'd say stick to fontset="name", unless you want to support the text
+>>> symbolizer having multiple fontsets? I also object on the ground that
+>>> TextSyboliser currently has no content and adding will make the file
+>>> more unreadable than it already is. Using an attribute fits better.
+>>>
+>>> Have a nice day,
+>>> --
+>>> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>>>
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/eb632b9e/attachment.html>
+
+From kleptog at gmail.com  Tue May 27 18:17:28 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Tue, 27 May 2008 18:17:28 +0200
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+Message-ID: <2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+
+On Tue, May 27, 2008 at 6:05 PM, Beau Gunderson <beau at beaugunderson.com> wrote:
+> That said, it works with my example so it can't be THAT bad--but someone
+> competent should look at this and give me some feedback as I'm sure there
+> are some optimizations and/or things to make it "fit" a little better that
+> could be done.
+>
+> The patch is available here if someone wants to take a gander:
+>
+>    http://www.beaugunderson.com/fallback_fonts.diff
+
+Colour me impressed. My feeble C++ knowledge tells me it looks ok. I
+can take care of the formatting if you want. I think a simple
+search/replace of tab with four spaces should do it.
+
+There's just the one little hack bit about font info, is that related
+to the kerning stuff or is it something unimportant?
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From beau at beaugunderson.com  Tue May 27 18:21:59 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 27 May 2008 10:21:59 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+Message-ID: <d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+
+Yes, there is that hack... I'll need someone who actually knows more about
+that section of code to comment I think.
+
+As it stands, it won't affect "regular" font rendering so at least it's not
+a regression (because there was only support for 1 font in the past).
+
+
+Beau
+
+On Tue, May 27, 2008 at 10:17 AM, Martijn van Oosterhout <kleptog at gmail.com>
+wrote:
+
+> On Tue, May 27, 2008 at 6:05 PM, Beau Gunderson <beau at beaugunderson.com>
+> wrote:
+> > That said, it works with my example so it can't be THAT bad--but someone
+> > competent should look at this and give me some feedback as I'm sure there
+> > are some optimizations and/or things to make it "fit" a little better
+> that
+> > could be done.
+> >
+> > The patch is available here if someone wants to take a gander:
+> >
+> >    http://www.beaugunderson.com/fallback_fonts.diff
+>
+> Colour me impressed. My feeble C++ knowledge tells me it looks ok. I
+> can take care of the formatting if you want. I think a simple
+> search/replace of tab with four spaces should do it.
+>
+> There's just the one little hack bit about font info, is that related
+> to the kerning stuff or is it something unimportant?
+>
+> Have a nice day,
+> --
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/ae46e6f1/attachment.html>
+
+From reid at umn.edu  Wed May 28 19:34:12 2008
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Wed, 28 May 2008 12:34:12 -0500
+Subject: [Mapnik-devel] using the PostGIS connections I already have open
+Message-ID: <483D9794.7060402@umn.edu>
+
+All,
+
+Is there a way to have mapnik (0.5.1) use the PostGIS connection that I 
+already have open for other reasons, rather than Mapnik opening its own?
+
+This is causing deadlock which is annoying to work around.
+
+Thanks,
+
+Reid
+
+
+From kleptog at gmail.com  Wed May 28 20:47:30 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Wed, 28 May 2008 20:47:30 +0200
+Subject: [Mapnik-devel] using the PostGIS connections I already have open
+In-Reply-To: <483D9794.7060402@umn.edu>
+References: <483D9794.7060402@umn.edu>
+Message-ID: <2fc2c5f10805281147p5ff1c343u6b7935f4fff4c10f@mail.gmail.com>
+
+On Wed, May 28, 2008 at 7:34 PM, Reid Priedhorsky <reid at umn.edu> wrote:
+> All,
+>
+> Is there a way to have mapnik (0.5.1) use the PostGIS connection that I
+> already have open for other reasons, rather than Mapnik opening its own?
+>
+> This is causing deadlock which is annoying to work around.
+
+You're going to have to be more specific: how are you getting a
+deadlock? That's not so easy in postgres unless you're doing explicit
+locking somewhere (which isn't a good idea).
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From reid at umn.edu  Thu May 29 22:29:54 2008
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Thu, 29 May 2008 15:29:54 -0500
+Subject: [Mapnik-devel] using the PostGIS connections I already have open
+In-Reply-To: <2fc2c5f10805281147p5ff1c343u6b7935f4fff4c10f@mail.gmail.com>
+References: <483D9794.7060402@umn.edu>
+	<2fc2c5f10805281147p5ff1c343u6b7935f4fff4c10f@mail.gmail.com>
+Message-ID: <483F1242.5000603@umn.edu>
+
+Martijn van Oosterhout wrote:
+> On Wed, May 28, 2008 at 7:34 PM, Reid Priedhorsky <reid at umn.edu> wrote:
+>> All,
+>>
+>> Is there a way to have mapnik (0.5.1) use the PostGIS connection that I
+>> already have open for other reasons, rather than Mapnik opening its own?
+>>
+>> This is causing deadlock which is annoying to work around.
+> 
+> You're going to have to be more specific: how are you getting a
+> deadlock? That's not so easy in postgres unless you're doing explicit
+> locking somewhere (which isn't a good idea).
+
+Hi Martin,
+
+Thanks for the reply.
+
+Here is the desired sequence of events and what I think is going on.
+
+1. New transaction; set isolation level serializable.
+
+2. Lock table "foo" (to prevent multiple running copies of the script).
+
+3. A variety of queries, all read-only except updates to table "bar". 
+These have to be isolation level "serializable" to ensure consistency in 
+the face of other processes updating the database.
+
+4. Generate a bunch of tiles using mapnik, from "bar" and other tables.
+
+5. Commit (releasing lock on "foo").
+
+I think the deadlock happens because Mapnik opens three separate 
+connections (there are three datasources) to do Step 4. Because my 
+transaction is isolation serializable, these connections wait until the 
+changes to bar are committed; but that happens in Step 5.
+
+The apparent deadlock happens even if I omit the lock on "foo".
+
+Note that even if there wasn't deadlock, this sequence is bad because 
+the updates to "bar" will not be included in the mapnik tiles (they 
+would be if mapnik used my connection).
+
+Here is my workaround (5 DB connections when one is needed):
+
+1. New connection A; new transaction; set isolation level serializable.
+
+2. New connection B; lock "foo".
+
+3. Connection A: the queries.
+
+4. Connection A: commit.
+
+5. Generate mapnik tiles (using connections C, D, E).
+
+6. Connection B: commit (releasing lock).
+
+Thanks,
+
+Reid
+
+p.s. No need to CC me; I read the list.
+
+
+
+
+From kleptog at gmail.com  Thu May 29 23:48:31 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 29 May 2008 23:48:31 +0200
+Subject: [Mapnik-devel] using the PostGIS connections I already have open
+In-Reply-To: <483F1242.5000603@umn.edu>
+References: <483D9794.7060402@umn.edu>
+	<2fc2c5f10805281147p5ff1c343u6b7935f4fff4c10f@mail.gmail.com>
+	<483F1242.5000603@umn.edu>
+Message-ID: <2fc2c5f10805291448g21ec19f7yddbe045ca4731f0a@mail.gmail.com>
+
+On Thu, May 29, 2008 at 10:29 PM, Reid Priedhorsky <reid at umn.edu> wrote:
+> 1. New transaction; set isolation level serializable.
+
+When you say deadlock do you really mean serialisation failure? And
+are you sure you need it to be serialisable?
+
+> 3. A variety of queries, all read-only except updates to table "bar".
+> These have to be isolation level "serializable" to ensure consistency in
+> the face of other processes updating the database.
+
+The downside of isolation level serializable is that you have to be
+prepared to retry your changes in case of failure. Do you have a loop
+to handle this?
+
+> Note that even if there wasn't deadlock, this sequence is bad because
+> the updates to "bar" will not be included in the mapnik tiles (they
+> would be if mapnik used my connection).
+
+Right. What I'm not sure about is whether mapnik can even work with
+only one connection, given you can only do one query at a time through
+one connection, so if mapnik wants to do multiple it's got a problem
+(internally it pools connections).
+
+> Here is my workaround (5 DB connections when one is needed):
+
+Your workaround seems ok to me, btw.
+
+> p.s. No need to CC me; I read the list.
+
+Hmm, could you set Mail-Followup-To to reflect this, thanks.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From kleptog at gmail.com  Fri May 30 12:45:40 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Fri, 30 May 2008 12:45:40 +0200
+Subject: [Mapnik-devel] using the PostGIS connections I already have open
+In-Reply-To: <483F6FBE.5040702@reidster.net>
+References: <483D9794.7060402@umn.edu>
+	<2fc2c5f10805281147p5ff1c343u6b7935f4fff4c10f@mail.gmail.com>
+	<483F1242.5000603@umn.edu>
+	<2fc2c5f10805291448g21ec19f7yddbe045ca4731f0a@mail.gmail.com>
+	<483F6FBE.5040702@reidster.net>
+Message-ID: <2fc2c5f10805300345v18627b43l3271ff97bece394@mail.gmail.com>
+
+On Fri, May 30, 2008 at 5:08 AM, Reid Priedhorsky <reid at reidster.net> wrote:
+>> When you say deadlock do you really mean serialisation failure?
+>
+> Nothing is erroring out, if that's what you mean. Postgres doesn't detect
+> deadlock but it sure seems like deadlock to me.
+
+Ah, you have an process "idle in transaction" which means it's not a
+deadlock since that transaction could commit. A deadlock implies there
+is no way out, which there is in this case.
+
+> Yes, because I need repeatable reads and to avoid phantom reads.
+
+Ok, though it's not clear to me why you need serialisation on top of
+the explicit locking you're doing but I suppose you have a reason.
+
+>> Right. What I'm not sure about is whether mapnik can even work with
+>> only one connection, given you can only do one query at a time through
+>> one connection, so if mapnik wants to do multiple it's got a problem
+>> (internally it pools connections).
+>
+> Huh. I actually have threading turned off and currently don't miss it,
+> though that could change.
+
+It has nothing to do with threading, you might want to do multiple
+queries at once in one thread.
+
+Something odd though, on my installation I have quite a few layers and
+yet it opens only one connection to the database, which makes me
+curious as to why it's opening multiple for you. Perhaps you are
+connecting to different database with different usernames?
+
+> Yeah, me too. It works fine. It just seems inelegant to have multiple,
+> differing views of the database within a single thread of control.
+
+You don't say how you are driving mapnik, but given Mapnik has a
+connection manager, wouldn't it be easier to allocate your connections
+via that? Or alter the connection manager to do what you want.
+
+I'm afraid that's the best I can do given the limited information you
+have provided. What you want is possible, but not standard...
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From beau at beaugunderson.com  Sat May 31 08:45:51 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Sat, 31 May 2008 00:45:51 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+Message-ID: <d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+
+I've gotten farther on this patch (cleaned things up, fixed formatting,
+added logic to require either face_name or fontset_name but not neither or
+both) but I'm at a new stumbling block and need some opinions.
+
+It appears the "hack" I last spoke of currently breaks layout for fonts like
+Chinese if they are fallen back to. It works, but the characters are all
+smooshed together.
+
+I think the fix for this is to make get_string_info aware of the faces used
+(i.e. have it do fallback as well) and then change the struct returned to
+include an array of spacing data for the different faces and update the
+consumers of that info struct to be able to loop through it for each
+character and space accordingly.
+
+Sound OK?
+
+
+Beau
+
+On Tue, May 27, 2008 at 10:21 AM, Beau Gunderson <beau at beaugunderson.com>
+wrote:
+
+> Yes, there is that hack... I'll need someone who actually knows more about
+> that section of code to comment I think.
+>
+> As it stands, it won't affect "regular" font rendering so at least it's not
+> a regression (because there was only support for 1 font in the past).
+>
+>
+> Beau
+>
+>
+> On Tue, May 27, 2008 at 10:17 AM, Martijn van Oosterhout <
+> kleptog at gmail.com> wrote:
+>
+>> On Tue, May 27, 2008 at 6:05 PM, Beau Gunderson <beau at beaugunderson.com>
+>> wrote:
+>> > That said, it works with my example so it can't be THAT bad--but someone
+>> > competent should look at this and give me some feedback as I'm sure
+>> there
+>> > are some optimizations and/or things to make it "fit" a little better
+>> that
+>> > could be done.
+>> >
+>> > The patch is available here if someone wants to take a gander:
+>> >
+>> >    http://www.beaugunderson.com/fallback_fonts.diff
+>>
+>> Colour me impressed. My feeble C++ knowledge tells me it looks ok. I
+>> can take care of the formatting if you want. I think a simple
+>> search/replace of tab with four spaces should do it.
+>>
+>> There's just the one little hack bit about font info, is that related
+>> to the kerning stuff or is it something unimportant?
+>>
+>> Have a nice day,
+>> --
+>> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/8f6c078f/attachment.html>
+
+From beau at beaugunderson.com  Sat May 31 08:54:30 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Sat, 31 May 2008 00:54:30 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+Message-ID: <d6cb3ab10805302354k3315b66exce87ece4adb966df@mail.gmail.com>
+
+Never mind, should have looked harder. I think this is actually a fix in
+character_dimensions...
+
+On Sat, May 31, 2008 at 12:45 AM, Beau Gunderson <beau at beaugunderson.com>
+wrote:
+
+> I've gotten farther on this patch (cleaned things up, fixed formatting,
+> added logic to require either face_name or fontset_name but not neither or
+> both) but I'm at a new stumbling block and need some opinions.
+>
+> It appears the "hack" I last spoke of currently breaks layout for fonts
+> like Chinese if they are fallen back to. It works, but the characters are
+> all smooshed together.
+>
+> I think the fix for this is to make get_string_info aware of the faces used
+> (i.e. have it do fallback as well) and then change the struct returned to
+> include an array of spacing data for the different faces and update the
+> consumers of that info struct to be able to loop through it for each
+> character and space accordingly.
+>
+> Sound OK?
+>
+>
+> Beau
+>
+>
+> On Tue, May 27, 2008 at 10:21 AM, Beau Gunderson <beau at beaugunderson.com>
+> wrote:
+>
+>> Yes, there is that hack... I'll need someone who actually knows more about
+>> that section of code to comment I think.
+>>
+>> As it stands, it won't affect "regular" font rendering so at least it's
+>> not a regression (because there was only support for 1 font in the past).
+>>
+>>
+>> Beau
+>>
+>>
+>> On Tue, May 27, 2008 at 10:17 AM, Martijn van Oosterhout <
+>> kleptog at gmail.com> wrote:
+>>
+>>> On Tue, May 27, 2008 at 6:05 PM, Beau Gunderson <beau at beaugunderson.com>
+>>> wrote:
+>>> > That said, it works with my example so it can't be THAT bad--but
+>>> someone
+>>> > competent should look at this and give me some feedback as I'm sure
+>>> there
+>>> > are some optimizations and/or things to make it "fit" a little better
+>>> that
+>>> > could be done.
+>>> >
+>>> > The patch is available here if someone wants to take a gander:
+>>> >
+>>> >    http://www.beaugunderson.com/fallback_fonts.diff
+>>>
+>>> Colour me impressed. My feeble C++ knowledge tells me it looks ok. I
+>>> can take care of the formatting if you want. I think a simple
+>>> search/replace of tab with four spaces should do it.
+>>>
+>>> There's just the one little hack bit about font info, is that related
+>>> to the kerning stuff or is it something unimportant?
+>>>
+>>> Have a nice day,
+>>> --
+>>> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>>>
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/b4b02d5c/attachment.html>
+
+From kleptog at gmail.com  Sat May 31 11:13:38 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sat, 31 May 2008 11:13:38 +0200
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+Message-ID: <2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+
+On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson <beau at beaugunderson.com> wrote:
+> I think the fix for this is to make get_string_info aware of the faces used
+> (i.e. have it do fallback as well) and then change the struct returned to
+> include an array of spacing data for the different faces and update the
+> consumers of that info struct to be able to loop through it for each
+> character and space accordingly.
+
+Perhaps the idea is to make your font list with fallback look like a
+font and export the same interface. That way the fallback is
+abstracted into a single file, rather than everywhere where fonts are
+used...
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From beau at beaugunderson.com  Sat May 31 11:22:10 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Sat, 31 May 2008 03:22:10 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805310221g37ac03b0s45e635ca991b6839@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805310221g37ac03b0s45e635ca991b6839@mail.gmail.com>
+Message-ID: <d6cb3ab10805310222u397d2134w54e0a9ca5a4e4746@mail.gmail.com>
+
+Oops, sending to the list too.
+
+D'oh! Wish I could have had that insight myself! Probably a better idea than
+> what I came up with. :)
+>
+> My latest is here, it works and you can intermix fonts and get the correct
+> spacing now:
+>
+>    http://www.beaugunderson.com/fallback.05.31.2008.diff
+>
+>
+> Beau
+>
+>
+> On Sat, May 31, 2008 at 3:13 AM, Martijn van Oosterhout <kleptog at gmail.com>
+> wrote:
+>
+>> On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson <beau at beaugunderson.com>
+>> wrote:
+>> > I think the fix for this is to make get_string_info aware of the faces
+>> used
+>> > (i.e. have it do fallback as well) and then change the struct returned
+>> to
+>> > include an array of spacing data for the different faces and update the
+>> > consumers of that info struct to be able to loop through it for each
+>> > character and space accordingly.
+>>
+>> Perhaps the idea is to make your font list with fallback look like a
+>> font and export the same interface. That way the fallback is
+>> abstracted into a single file, rather than everywhere where fonts are
+>> used...
+>>
+>> Have a nice day,
+>> --
+>> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/3f2b367d/attachment.html>
+

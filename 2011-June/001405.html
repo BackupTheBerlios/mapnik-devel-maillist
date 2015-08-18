@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cairo backend - Unstable?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C4DEAA308.5000307%40ahlzen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001404.html">
+   <LINK REL="Next"  HREF="001406.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cairo backend - Unstable?</H1>
+    <B>Lars Ahlzen</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C4DEAA308.5000307%40ahlzen.com%3E"
+       TITLE="[Mapnik-devel] Cairo backend - Unstable?">lars at ahlzen.com
+       </A><BR>
+    <I>Sat Jun  4 23:26:32 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001404.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+        <LI>Next message: <A HREF="001406.html">[Mapnik-devel] GSoC - TextSymbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1405">[ date ]</a>
+              <a href="thread.html#1405">[ thread ]</a>
+              <a href="subject.html#1405">[ subject ]</a>
+              <a href="author.html#1405">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 06/03/2011 02:06 PM, Dane Springmeyer wrote:
+&gt;<i> Lars,
+</I>&gt;<i>
+</I>&gt;<i> Yes, I think a race condition here is to blame. As the crash happens in libpixman I've started trying to research if that could be the culprit and found this:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://lists.freedesktop.org/archives/cairo/2010-December/021268.html">http://lists.freedesktop.org/archives/cairo/2010-December/021268.html</A>
+</I>&gt;<i>
+</I>&gt;<i> That seems pretty conclusive to me, which is disturbing (see the reply from Otte). So, I guess this means that until pixman becomes thread safe that cairo PNG rendering needs to be called only from one thread, or tile seeding needs to be done multiprocess.
+</I>
+That seems to be it indeed. Bummer. Guess it's back to single-threaded 
+for now...
+
+Anyway, thanks for taking the time to look into it!
+
+&gt;<i> Or, since AGG is thread safe (without mutexes) we could get your font tricks working with Mapnik's AGG backend :)
+</I>
+That would be nice, since the AGG renderer is usually faster anyway. In 
+fact, I started working on a patch, but (as you mentioned earlier) it's 
+a little less trivial than with Cairo.
+
+- Lars
+
+-- 
+Lars Ahlzen
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001404.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+	<LI>Next message: <A HREF="001406.html">[Mapnik-devel] GSoC - TextSymbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1405">[ date ]</a>
+              <a href="thread.html#1405">[ thread ]</a>
+              <a href="subject.html#1405">[ subject ]</a>
+              <a href="author.html#1405">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

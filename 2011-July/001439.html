@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Two new Mapnik Java Projects
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Two%20new%20Mapnik%20Java%20Projects&In-Reply-To=%3CCAH8pnHZoN6tub1WSbRgGCeDCFPh46%3DvBNW5o8Stj0Tg-5ZYa0w%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001450.html">
+   <LINK REL="Next"  HREF="001441.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Two new Mapnik Java Projects</H1>
+    <B>Stella Laurenzo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Two%20new%20Mapnik%20Java%20Projects&In-Reply-To=%3CCAH8pnHZoN6tub1WSbRgGCeDCFPh46%3DvBNW5o8Stj0Tg-5ZYa0w%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Two new Mapnik Java Projects">stella at laurenzo.org
+       </A><BR>
+    <I>Wed Jul  6 23:38:06 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001450.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+        <LI>Next message: <A HREF="001441.html">[Mapnik-devel] placement-type and placements for shieldsymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1439">[ date ]</a>
+              <a href="thread.html#1439">[ thread ]</a>
+              <a href="subject.html#1439">[ subject ]</a>
+              <a href="author.html#1439">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I've been working on some bits that others may be interested in and I just
+got them out to GitHub.  AFAIK, these are the first non-trivial Java/Mapnik
+integrations using the mapnik-jni bindings that I got out last week.
+
+   - <A HREF="https://github.com/stellaeof/nanomaps-server">https://github.com/stellaeof/nanomaps-server</A>
+   - <A HREF="https://github.com/stellaeof/mapnik-distiller">https://github.com/stellaeof/mapnik-distiller</A>
+   - <A HREF="https://github.com/stellaeof/mapnik-jni">https://github.com/stellaeof/mapnik-jni</A>
+
+
+It shouldn't be too hard to figure out where I was going with things, but to
+say it explicitly, this all came out of some work I have been playing with
+to do the following:
+
+   - Get OSM maps to render reliably and quickly on tiny hardware
+   - Produce tooling that lets me develop map styles against live
+   (unoptimized) databases and then compress it all down for optimized drawing
+   - Produce tooling that lets me arbitrarily and easily reproject OSM data
+   for maps in other projections (I have a client that needs the maps to line
+   up with imagery in a projection I had never even heard of before).
+   - Produce tooling that lets me take a map file and all of its data, strip
+   out unneeded data/layers, and systematically simplify the geometries based
+   on the use case (smaller geometries = much smaller data and faster rendering
+   if the detail is not needed)
+   - Just generally make it easier to get custom maps stood up and deployed
+   - Generally do all of the above without access to hundreds of gigabytes
+   of ram, SSDs in the servers or other such stuff that I just don't have
+
+There is nothing here that very careful and detailed work on map styles and
+data couldn't realize, but what I want is to be able to take the stuff that
+isn't optimized for rendering, hack a map together and then push a button
+labeled &quot;Make it small and fast.&quot;  I think I have largely accomplished that
+with the mapnik-distiller project.
+
+Unfortunately, I rsync'd the wrong directory to my server, so its going to
+be a couple of days before there is a live demo.  But if there was a demo,
+all you would see would be some OSM maps, which I think you've all seen
+before.  :)
+
+Let me know if anyone is interested in any of this work or has ideas.
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110706/71190e7f/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110706/71190e7f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001450.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+	<LI>Next message: <A HREF="001441.html">[Mapnik-devel] placement-type and placements for shieldsymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1439">[ date ]</a>
+              <a href="thread.html#1439">[ thread ]</a>
+              <a href="subject.html#1439">[ subject ]</a>
+              <a href="author.html#1439">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

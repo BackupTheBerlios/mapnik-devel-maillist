@@ -1,0 +1,2342 @@
+From blake at hailmail.net  Fri May  1 18:10:36 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 1 May 2009 09:10:36 -0700
+Subject: [Mapnik-devel] XML relative paths
+In-Reply-To: <8B05D772-C7E1-4E20-B6F6-4CB372185A0B@hailmail.net>
+References: <4F1B8EB8-293E-4199-911D-BEF87A1FF84A@hailmail.net>
+	<93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+	<C2EB353D-0BC8-465E-A079-3792703C5534@hailmail.net>
+	<93db2faf0904281150g3c33ced5u5d5b9914e29a96f6@mail.gmail.com>
+	<8B05D772-C7E1-4E20-B6F6-4CB372185A0B@hailmail.net>
+Message-ID: <67545363-1F79-4D07-A53E-53E34E844F65@hailmail.net>
+
+Okay, committed to trunk...
+
+http://trac.mapnik.org/changeset/1124
+
+The changeset includes some basic tests, and also modifies some of the  
+existing tests to use 'paths_from_xml="false"' in order to (show an  
+example of how to) maintain the previous behavior.
+
+In addition I've also added some tests that highlight the usages of  
+the undocumented <Datasource> and <FileSource> XML features:
+
+(I had no idea these existed until mucking around with load_map.cpp)
+
+https://trac.mapnik.org/browser/trunk/tests/data/good_maps/datasource.xml
+https://trac.mapnik.org/browser/trunk/tests/data/good_maps/filesource.xml
+
+These features were added in http://trac.mapnik.org/changeset/574
+
+These features *should* work the same, whereby if relative paths are  
+used, their base path will be interpreted as relative to the XML file.
+
+Cheers,
+
+Dane
+
+
+On Apr 28, 2009, at 11:54 AM, Dane Springmeyer wrote:
+
+> Great, sound good.
+>
+> Seems like +3 so far based on ticket comments.
+>
+> I'll apply then when I have a moment unless I hear from others.
+>
+> Dane
+>
+>
+> On Apr 28, 2009, at 11:50 AM, kRAkEn/gORe wrote:
+>
+>> oops sorry i oversee that, i though it was by default off :)
+>> no it is ok, i like the new addition !
+>>
+>> p.s. when you are online i have some things to ask you
+>>
+>> cheers !
+>>
+>>
+>> On Tue, Apr 28, 2009 at 6:50 PM, Dane Springmeyer
+>> <blake at hailmail.net> wrote:
+>>> Hi Lucio,
+>>>
+>>> Thanks for the feedback.
+>>>
+>>> So you are +1 as long as it is made the default behavior?
+>>>
+>>> I added the property in the xml ONLY to allow switching back to the
+>>> behavior
+>>> we have now.
+>>>
+>>> Does that sound okay?
+>>>
+>>> Dane
+>>>
+>>>
+>>>
+>>> On Apr 28, 2009, at 9:13 AM, kRAkEn/gORe wrote:
+>>>
+>>>> Hi list,
+>>>> i find it perfect, cause most of the time you will end having your
+>>>> xml
+>>>> mapfile besides your shape files, so you can move everything safely
+>>>> (and kill those absolute paths that are killing the apps everytime
+>>>> you
+>>>> move around things).
+>>>>
+>>>> +1 for applying this directly, BUT should be the default behaviour
+>>>> and
+>>>> definately not use a property in the XML for enabling it !
+>>>>
+>>>> cheers,
+>>>>
+>>>> Lucio
+>>>>
+>>>>
+>>>> On Tue, Apr 28, 2009 at 7:45 AM, Dane Springmeyer <blake at hailmail.net
+>>>>>
+>>>> wrote:
+>>>>>
+>>>>> Dev,
+>>>>>
+>>>>> Anyone use relative paths in their XML mapfiles?
+>>>>>
+>>>>> I personally would use them more frequently if the relative paths
+>>>>> found in the XML were interpreted as relative to the location of
+>>>>> the
+>>>>> XML file itself, rather than the script location actually calling
+>>>>> load_map().
+>>>>>
+>>>>> So, I've proposed a fix to make this possible, and to change the
+>>>>> default behavior:
+>>>>>
+>>>>> http://trac.mapnik.org/ticket/326
+>>>>>
+>>>>> I'd like your feedback before applying to trunk in case I'm
+>>>>> overlooking anything.
+>>>>>
+>>>>> Thanks,
+>>>>> Dane
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> Mapnik-devel mailing list
+>>>>> Mapnik-devel at lists.berlios.de
+>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>>
+>>>
+>>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090501/a15095fa/attachment.html>
+
+From mrudowski1 at gmail.com  Thu May  7 00:31:31 2009
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Thu, 07 May 2009 00:31:31 +0200
+Subject: [Mapnik-devel] Rendering curved paths
+Message-ID: <4A020FC3.10103@gmail.com>
+
+Hi,
+
+Recently, I posted ticket for smoothing paths(polylines/polygons) on the 
+fly:
+http://trac.mapnik.org/ticket/332
+
+Today I submitted some code and example images from my tries. It is long 
+way from being finished and probably could be implemented differently.
+It is basically proof of concept and still lacks lots of functionality 
+(cairo, css, bindings?, ....).
+
+Regards,
+Marcin Rudowski
+
+
+From blake at hailmail.net  Thu May  7 21:08:24 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 7 May 2009 12:08:24 -0700
+Subject: [Mapnik-devel] Rendering curved paths
+In-Reply-To: <4A020FC3.10103@gmail.com>
+References: <4A020FC3.10103@gmail.com>
+Message-ID: <D2597425-26C4-4A8A-98F2-E3C047E4BBB5@hailmail.net>
+
+Marcin,
+
+wow - those examples are amazing.
+
+- dane
+
+On May 6, 2009, at 3:31 PM, Marcin Rudowski wrote:
+
+> Hi,
+>
+> Recently, I posted ticket for smoothing paths(polylines/polygons) on  
+> the
+> fly:
+> http://trac.mapnik.org/ticket/332
+>
+> Today I submitted some code and example images from my tries. It is  
+> long
+> way from being finished and probably could be implemented differently.
+> It is basically proof of concept and still lacks lots of functionality
+> (cairo, css, bindings?, ....).
+>
+> Regards,
+> Marcin Rudowski
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From mrudowski1 at gmail.com  Sun May 10 08:05:02 2009
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Sun, 10 May 2009 08:05:02 +0200
+Subject: [Mapnik-devel] Rendering curved paths
+In-Reply-To: <D2597425-26C4-4A8A-98F2-E3C047E4BBB5@hailmail.net>
+References: <4A020FC3.10103@gmail.com>
+	<D2597425-26C4-4A8A-98F2-E3C047E4BBB5@hailmail.net>
+Message-ID: <4A066E8E.5000703@gmail.com>
+
+Dane Springmeyer wrote:
+> Marcin,
+> 
+> wow - those examples are amazing.
+> 
+
+For now I use my testing layer to watch smoothing effect for my map:
+http://mapa.ump.waw.pl/ump-www/?zoom=16&lat=52.22569&lon=21.05096&layers=00B000T
+It isn't cached and generated on the fly, so can be slow.
+
+You can use it to compare effects with first unmodified Layer in various 
+situations.
+
+It works really nice for arcs, but rectangular building polygons looks 
+funny, like cartoons :) :
+http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.2184&lon=20.98352&layers=00B000T
+Probably my fuzzy logic needs tuning, to reduce effect further for 90 
+degree and below or I need just switch effect off for buildings. But 
+what about round one then:
+http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.23175&lon=21.00556&layers=00B000T
+
+I have problem with my convention of ramps joining two different 
+elevations (half bridge, half normal):
+http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.24761&lon=21.01762&layers=00B000T
+but this is just my problem when converting map from different format 
+and can be adjusted a little in this step.
+
+As mentioned in ticket, I don't smooth polygons starting/ending point 
+and it can be noticeable:
+http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.25619&lon=20.9992&layers=00B000T
+
+For now I have only global smooth flag as map attribute similar to 
+buffer_size or bgcolor, I wonder how to implement it right:
+- cascaded optional attribute of map, layer tags and css nodes in 
+symbolizers?
+- symbolizers only (each rule need modifying)?
+- ???
+
+Other examples:
+http://mapa.ump.waw.pl/ump-www/?zoom=16&lat=52.23719&lon=21.04395&layers=00B000T
+http://mapa.ump.waw.pl/ump-www/?zoom=16&lat=52.28374&lon=20.99128&layers=00B000T
+http://mapa.ump.waw.pl/ump-www/?zoom=16&lat=52.28848&lon=20.9612&layers=00B000T
+http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.23413&lon=21.07888&layers=00B000T
+
+Overall it kicks in nicely without much side effects. After watching map 
+for a while You don't notice, it was anyhow processed, until switched to 
+unmodified version. Then suddenly You see how "edgy" not smoothed 
+version really is :) .
+
+Marcin Rudowski
+
+> On May 6, 2009, at 3:31 PM, Marcin Rudowski wrote:
+> 
+>> Hi,
+>>
+>> Recently, I posted ticket for smoothing paths(polylines/polygons) on the
+>> fly:
+>> http://trac.mapnik.org/ticket/332
+>>
+>> Today I submitted some code and example images from my tries. It is long
+>> way from being finished and probably could be implemented differently.
+>> It is basically proof of concept and still lacks lots of functionality
+>> (cairo, css, bindings?, ....).
+
+
+From cmarqu42 at googlemail.com  Sun May 10 21:24:50 2009
+From: cmarqu42 at googlemail.com (Colin Marquardt)
+Date: Sun, 10 May 2009 21:24:50 +0200
+Subject: [Mapnik-devel] Rendering curved paths
+In-Reply-To: <4A066E8E.5000703@gmail.com>
+References: <4A020FC3.10103@gmail.com>
+	<D2597425-26C4-4A8A-98F2-E3C047E4BBB5@hailmail.net> 
+	<4A066E8E.5000703@gmail.com>
+Message-ID: <814384660905101224w4f010e17qbebb0d916ffe8546@mail.gmail.com>
+
+2009/5/10 Marcin Rudowski <mrudowski1 at gmail.com>:
+> It works really nice for arcs, but rectangular building polygons looks
+> funny, like cartoons :) :
+> http://mapa.ump.waw.pl/ump-www/?zoom=17&lat=52.2184&lon=20.98352&layers=00B000T
+> Probably my fuzzy logic needs tuning, to reduce effect further for 90
+> degree and below or I need just switch effect off for buildings.
+
+IIRC osmarender
+(http://svn.openstreetmap.org/applications/rendering/osmarender) does
+both.
+
+Cheers
+  Colin
+
+
+From blake at hailmail.net  Tue May 12 07:47:44 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 11 May 2009 22:47:44 -0700
+Subject: [Mapnik-devel] Shapefile input and open files on Windows
+Message-ID: <4A768654-9BFE-4D77-A34E-258A0773BA0D@hailmail.net>
+
+So I'm trying to debug a strange thing on windows where a shapefile  
+opened in another application cannot be opened by Mapnik.
+
+I say strange because the problem does not occur on mac and linux -  
+only on windows. But it does make logical sense that opening the same  
+file in two running Python processes may create problems.
+
+Essentially, I've written a Python plugin to QGIS that loops through  
+all active datasources open in QGIS, builds up a Mapnik map, and  
+allows export to XML or rendering in the QGIS canvas.
+
+It works great on mac and linux, but on Windows I get an error like:
+
+ >> shp = Shapefile(file='c:/temp_files/world_borders.shp')
+  got exception ...
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+   File "C:\mapnik_0_6_0\site-packages\mapnik\__init__.py", line 132,  
+in Shapefile
+     return CreateDatasource(keywords)
+RuntimeError: failed opening file: The handle is invalid.
+
+QGIS uses the OGR C++ api to open the shapefile in read/write mode. I  
+assume that the mapnik shapefile input opens read-only.
+
+Anyone have any ideas of potential workarounds?
+
+- Dane
+
+
+From blake at hailmail.net  Tue May 12 17:31:50 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 12 May 2009 08:31:50 -0700
+Subject: [Mapnik-devel] Shapefile input and open files on Windows
+In-Reply-To: <4A768654-9BFE-4D77-A34E-258A0773BA0D@hailmail.net>
+References: <4A768654-9BFE-4D77-A34E-258A0773BA0D@hailmail.net>
+Message-ID: <853F5813-C3A4-4C3C-B5DB-677864154145@hailmail.net>
+
+I've confirmed that QGIS's OGR driver opens with both FILE_SHARE_READ  
+and FILE_SHARE_WRITE and show allow more than one process to open the  
+file for update access at once (thanks to Frank Warmerdam).
+
+So, I figure that something about the way that Mapnik's use of boost  
+is creating the need for exclusive access to the file on windows. If  
+figure this must have to do with our implementation of memory mapped  
+read access to the shapefiles.
+
+The boost docs indicate that a 'mapped_file_source' should be opened  
+for read-only access:
+
+http://www.boost.org/doc/libs/1_38_0/libs/iostreams/doc/classes/mapped_file.html#mapped_file_source
+
+Does this really require exclusive access?
+
+Looking into:
+
+http://www.boost.org/doc/libs/1_39_0/boost/iostreams/device/mapped_file.hpp
+
+seems to indicate that on Windows (depending on compiler version)  
+things may actually be opened in 'app' (append) mode:
+
+     #if BOOST_WORKAROUND(BOOST_MSVC, < 1400) &&  
+defined(BOOST_RWSTD_VER) || \
+         defined(__BORLANDC__) && defined(_CPPLIB_VER)
+         /**/
+         : mode(std::ios_base::openmode(0)),
+So, some leads but I'm not sure where to go from here.
+
+Anyone have thoughts?
+
+Dane
+
+
+On May 11, 2009, at 10:47 PM, Dane Springmeyer wrote:
+
+> So I'm trying to debug a strange thing on windows where a shapefile
+> opened in another application cannot be opened by Mapnik.
+>
+> I say strange because the problem does not occur on mac and linux -
+> only on windows. But it does make logical sense that opening the same
+> file in two running Python processes may create problems.
+>
+> Essentially, I've written a Python plugin to QGIS that loops through
+> all active datasources open in QGIS, builds up a Mapnik map, and
+> allows export to XML or rendering in the QGIS canvas.
+>
+> It works great on mac and linux, but on Windows I get an error like:
+>
+>>> shp = Shapefile(file='c:/temp_files/world_borders.shp')
+>  got exception ...
+> Traceback (most recent call last):
+>   File "<stdin>", line 1, in <module>
+>   File "C:\mapnik_0_6_0\site-packages\mapnik\__init__.py", line 132,
+> in Shapefile
+>     return CreateDatasource(keywords)
+> RuntimeError: failed opening file: The handle is invalid.
+>
+> QGIS uses the OGR C++ api to open the shapefile in read/write mode. I
+> assume that the mapnik shapefile input opens read-only.
+>
+> Anyone have any ideas of potential workarounds?
+>
+> - Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090512/d5e90def/attachment.html>
+
+From artem at mapnik.org  Tue May 12 18:08:37 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 12 May 2009 17:08:37 +0100
+Subject: [Mapnik-devel] Shapefile input and open files on Windows
+In-Reply-To: <853F5813-C3A4-4C3C-B5DB-677864154145@hailmail.net>
+References: <4A768654-9BFE-4D77-A34E-258A0773BA0D@hailmail.net>
+	<853F5813-C3A4-4C3C-B5DB-677864154145@hailmail.net>
+Message-ID: <7e70f38d0905120908n5ca01f2ehb56c55b95f0283ea@mail.gmail.com>
+
+Hi Dane,
+
+You're right, this most likely to do with how mapped files are created
+on diff platforms. I wonder if we should compile shape.input without
+memory mapped files on windows. I think, on win32 all std::fstream's
+implemented as memory mapped files anyway.  We'll need to check this,
+though.
+
+ Artem
+
+2009/5/12 Dane Springmeyer <blake at hailmail.net>:
+> I've confirmed that QGIS's OGR driver opens with both FILE_SHARE_READ and
+> FILE_SHARE_WRITE and show allow more than one process to open the file for
+> update access at once (thanks to Frank Warmerdam).
+> So, I figure that something about the way that Mapnik's use of boost is
+> creating the need for exclusive access to the file on windows. If figure
+> this must have to do with our implementation of memory mapped read access to
+> the shapefiles.
+> The boost docs indicate that a 'mapped_file_source' should be opened for
+> read-only access:
+> http://www.boost.org/doc/libs/1_38_0/libs/iostreams/doc/classes/mapped_file.html#mapped_file_source
+> Does this really require exclusive access?
+> Looking into:
+> http://www.boost.org/doc/libs/1_39_0/boost/iostreams/device/mapped_file.hpp
+> seems to indicate that on Windows (depending on compiler version) things may
+> actually be opened in 'app' (append) mode:
+>
+>     #if BOOST_WORKAROUND(BOOST_MSVC, < 1400) && defined(BOOST_RWSTD_VER) ||
+> \
+>         defined(__BORLANDC__) && defined(_CPPLIB_VER)
+>         /**/
+>         : mode(std::ios_base::openmode(0)),
+>
+> So, some leads but I'm not sure where to go from here.
+> Anyone have thoughts?
+> Dane
+>
+> On May 11, 2009, at 10:47 PM, Dane Springmeyer wrote:
+>
+> So I'm trying to debug a strange thing on windows where a shapefile
+> opened in another application cannot be opened by Mapnik.
+>
+> I say strange because the problem does not occur on mac and linux -
+> only on windows. But it does make logical sense that opening the same
+> file in two running Python processes may create problems.
+>
+> Essentially, I've written a Python plugin to QGIS that loops through
+> all active datasources open in QGIS, builds up a Mapnik map, and
+> allows export to XML or rendering in the QGIS canvas.
+>
+> It works great on mac and linux, but on Windows I get an error like:
+>
+> shp = Shapefile(file='c:/temp_files/world_borders.shp')
+>
+> ?got exception ...
+> Traceback (most recent call last):
+> ??File "<stdin>", line 1, in <module>
+> ??File "C:\mapnik_0_6_0\site-packages\mapnik\__init__.py", line 132,
+> in Shapefile
+> ????return CreateDatasource(keywords)
+> RuntimeError: failed opening file: The handle is invalid.
+>
+> QGIS uses the OGR C++ api to open the shapefile in read/write mode. I
+> assume that the mapnik shapefile input opens read-only.
+>
+> Anyone have any ideas of potential workarounds?
+>
+> - Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From blake at hailmail.net  Tue May 12 19:37:42 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 12 May 2009 10:37:42 -0700
+Subject: [Mapnik-devel] Shapefile input and open files on Windows
+In-Reply-To: <7e70f38d0905120908n5ca01f2ehb56c55b95f0283ea@mail.gmail.com>
+References: <4A768654-9BFE-4D77-A34E-258A0773BA0D@hailmail.net>
+	<853F5813-C3A4-4C3C-B5DB-677864154145@hailmail.net>
+	<7e70f38d0905120908n5ca01f2ehb56c55b95f0283ea@mail.gmail.com>
+Message-ID: <BAA9898E-6B4B-4A99-99CE-40168B9FA9C2@hailmail.net>
+
+Artem,
+
+Okay, good to know.
+
+Compiling the ogr plugin on windows would probably also offer a  
+workaround to allowing shared access of shapefiles on windows.
+It seems the ogr plugin is not included in the windows binaries, right?
+
+Dane
+
+
+On May 12, 2009, at 9:08 AM, Artem Pavlenko wrote:
+
+> Hi Dane,
+>
+> You're right, this most likely to do with how mapped files are created
+> on diff platforms. I wonder if we should compile shape.input without
+> memory mapped files on windows. I think, on win32 all std::fstream's
+> implemented as memory mapped files anyway.  We'll need to check this,
+> though.
+>
+> Artem
+>
+> 2009/5/12 Dane Springmeyer <blake at hailmail.net>:
+>> I've confirmed that QGIS's OGR driver opens with both  
+>> FILE_SHARE_READ and
+>> FILE_SHARE_WRITE and show allow more than one process to open the  
+>> file for
+>> update access at once (thanks to Frank Warmerdam).
+>> So, I figure that something about the way that Mapnik's use of  
+>> boost is
+>> creating the need for exclusive access to the file on windows. If  
+>> figure
+>> this must have to do with our implementation of memory mapped read  
+>> access to
+>> the shapefiles.
+>> The boost docs indicate that a 'mapped_file_source' should be  
+>> opened for
+>> read-only access:
+>> http://www.boost.org/doc/libs/1_38_0/libs/iostreams/doc/classes/mapped_file.html#mapped_file_source
+>> Does this really require exclusive access?
+>> Looking into:
+>> http://www.boost.org/doc/libs/1_39_0/boost/iostreams/device/mapped_file.hpp
+>> seems to indicate that on Windows (depending on compiler version)  
+>> things may
+>> actually be opened in 'app' (append) mode:
+>>
+>>    #if BOOST_WORKAROUND(BOOST_MSVC, < 1400) &&  
+>> defined(BOOST_RWSTD_VER) ||
+>> \
+>>        defined(__BORLANDC__) && defined(_CPPLIB_VER)
+>>        /**/
+>>        : mode(std::ios_base::openmode(0)),
+>>
+>> So, some leads but I'm not sure where to go from here.
+>> Anyone have thoughts?
+>> Dane
+>>
+>> On May 11, 2009, at 10:47 PM, Dane Springmeyer wrote:
+>>
+>> So I'm trying to debug a strange thing on windows where a shapefile
+>> opened in another application cannot be opened by Mapnik.
+>>
+>> I say strange because the problem does not occur on mac and linux -
+>> only on windows. But it does make logical sense that opening the same
+>> file in two running Python processes may create problems.
+>>
+>> Essentially, I've written a Python plugin to QGIS that loops through
+>> all active datasources open in QGIS, builds up a Mapnik map, and
+>> allows export to XML or rendering in the QGIS canvas.
+>>
+>> It works great on mac and linux, but on Windows I get an error like:
+>>
+>> shp = Shapefile(file='c:/temp_files/world_borders.shp')
+>>
+>>  got exception ...
+>> Traceback (most recent call last):
+>>   File "<stdin>", line 1, in <module>
+>>   File "C:\mapnik_0_6_0\site-packages\mapnik\__init__.py", line 132,
+>> in Shapefile
+>>     return CreateDatasource(keywords)
+>> RuntimeError: failed opening file: The handle is invalid.
+>>
+>> QGIS uses the OGR C++ api to open the shapefile in read/write mode. I
+>> assume that the mapnik shapefile input opens read-only.
+>>
+>> Anyone have any ideas of potential workarounds?
+>>
+>> - Dane
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+
+
+
+From blake at hailmail.net  Wed May 13 17:59:16 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 13 May 2009 08:59:16 -0700
+Subject: [Mapnik-devel] Segfault in gdal.input when opening shared file
+Message-ID: <677A8310-0676-479F-BF46-C0375B1896BD@hailmail.net>
+
+Dev,
+
+Another issue in the same realm as the shapefile one on windows,  
+whereby Mapnik fails to open for read access a raster when already  
+open in QGIS.
+
+But, this is on Mac OSX rather than windows and prompts a crash rather  
+than just the inability to handle the file.
+
+So in a python interpreter I can do:
+
+ >>> Gdal(file='raster.png')
+size = 2
+file=raster.png
+type=gdal
+datasource=0x344b30 type=1
+<mapnik.Datasource object at 0x2347b0>
+
+without a problem.... But then I open that same raster in QGIS and try  
+to open again in Mapnik via Python and I get a segfault:
+
+ >>> g = Gdal(file='raster.png')
+size = 2
+file=raster.png
+type=gdal
+datasource=0x344920 type=1
+Segmentation fault
+
+Backtrace below...
+
+Dane
+
+
+
+Process:         Python [2722]
+Path:            /System/Library/Frameworks/Python.framework/Versions/ 
+2.5/Resources/Python.app/Contents/MacOS/Python
+Identifier:      Python
+Version:         ??? (???)
+Code Type:       X86 (Native)
+Parent Process:  bash [2711]
+
+Date/Time:       2009-05-13 08:45:14.110 -0700
+OS Version:      Mac OS X 10.5.6 (9G55)
+Report Version:  6
+
+Exception Type:  EXC_BAD_ACCESS (SIGSEGV)
+Exception Codes: KERN_INVALID_ADDRESS at 0x00000000702e796f
+Crashed Thread:  0
+
+Thread 0 Crashed:
+0   ???                           	0x702e796f 0 + 1882093935
+1   gdal.input                    	0x0450dece  
+boost::detail::sp_counted_impl_p<GDALDataset>::dispose() + 20  
+(sp_counted_impl.hpp:78)
+2   _mapnik.so                    	0x0100ea94  
+boost::detail::sp_counted_base::release() + 56  
+(sp_counted_base_gcc_x86.hpp:146)
+3   _mapnik.so                    	0x0100ead4  
+boost::detail::shared_count::~shared_count() + 28 (shared_count.hpp:221)
+4   _mapnik.so                    	0x010241d5  
+boost::detail::shared_count::~shared_count() + 17 (shared_count.hpp:221)
+5   gdal.input                    	0x04508c60  
+boost::shared_ptr<GDALDataset>::~shared_ptr() + 20 (shared_ptr.hpp:160)
+6   gdal.input                    	0x04508c73  
+boost::shared_ptr<GDALDataset>::~shared_ptr() + 17 (shared_ptr.hpp:160)
+7   gdal.input                    	0x04509664  
+boost::shared_ptr<GDALDataset>::reset() + 46 (shared_ptr.hpp:377)
+8   gdal.input                    	0x04507844  
+gdal_datasource::~gdal_datasource() + 64 (gdal_datasource.cpp:72)
+9   libmapnik.dylib               	0x01d933ee  
+mapnik::datasource_deleter::operator()(mapnik::datasource*) + 30  
+(datasource.hpp:116)
+10  libmapnik.dylib               	0x01d994c8  
+boost::detail::sp_counted_impl_pd<mapnik::datasource*,  
+mapnik::datasource_deleter>::dispose() + 30 (sp_counted_impl.hpp:144)
+11  _mapnik.so                    	0x0100ea94  
+boost::detail::sp_counted_base::release() + 56  
+(sp_counted_base_gcc_x86.hpp:146)
+12  _mapnik.so                    	0x0100ead4  
+boost::detail::shared_count::~shared_count() + 28 (shared_count.hpp:221)
+13  _mapnik.so                    	0x010241d5  
+boost::detail::shared_count::~shared_count() + 17 (shared_count.hpp:221)
+14  _mapnik.so                    	0x0100f25c  
+boost::shared_ptr<mapnik::datasource>::~shared_ptr() + 20  
+(shared_ptr.hpp:160)
+15  _mapnik.so                    	0x01027889  
+boost::shared_ptr<mapnik::datasource>::~shared_ptr() + 17  
+(shared_ptr.hpp:160)
+16  _mapnik.so                    	0x0101df66  
+boost 
+::python 
+::objects::pointer_holder<boost::shared_ptr<mapnik::datasource>,  
+mapnik::datasource>::~pointer_holder() + 44 (pointer_holder.hpp:55)
+17  _mapnik.so                    	0x0101dfcb  
+boost 
+::python 
+::objects::pointer_holder<boost::shared_ptr<mapnik::datasource>,  
+mapnik::datasource>::~pointer_holder() + 17 (pointer_holder.hpp:55)
+18  ...python-xgcc40-mt-1_39.dylib	0x005f7190 instance_dealloc + 48
+19  org.python.python             	0x0015ebfd PyType_GenericNew + 1365
+20  org.python.python             	0x0014870f PyDict_New + 1286
+21  org.python.python             	0x00148c94 PyDict_SetItem + 255
+22  org.python.python             	0x0018dd52 PyEval_EvalFrameEx + 11024
+23  org.python.python             	0x00191173 PyEval_EvalCodeEx + 1638
+24  org.python.python             	0x00191260 PyEval_EvalCode + 87
+25  org.python.python             	0x001a883c PyErr_Display + 1896
+26  org.python.python             	0x001aa4ab  
+PyRun_InteractiveOneFlags + 523
+27  org.python.python             	0x001aa5f9  
+PyRun_InteractiveLoopFlags + 216
+28  org.python.python             	0x001aaa2b PyRun_AnyFileExFlags + 85
+29  org.python.python             	0x001b5a57 Py_Main + 3095
+30  org.python.pythonapp          	0x00001fca 0x1000 + 4042
+
+Thread 0 crashed with X86 Thread State (32-bit):
+   eax: 0x00344c00  ebx: 0x04507811  ecx: 0x0033db74  edx: 0x702e796f
+   edi: 0x002347b0  esi: 0x002347c8  ebp: 0xbfffe158  esp: 0xbfffe13c
+    ss: 0x0000001f  efl: 0x00010202  eip: 0x702e796f   cs: 0x00000017
+    ds: 0x0000001f   es: 0x0000001f   fs: 0x00000000   gs: 0x00000037
+   cr2: 0x702e796f
+
+Binary Images:
+     0x1000 -     0x1ffe  org.python.pythonapp 2.5.0 (2.5.0a0)  
+<b18c2cacaea2bb935507a96c4f9f5ac9> /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/Resources/Python.app/Contents/MacOS/Python
+    0xbb000 -    0xbbffe  dl.so ??? (???)  
+<0230ae2a8e1b986c9915b929d796bf8b> /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/lib/python2.5/lib-dynload/dl.so
+   0x119000 -   0x1e5feb  org.python.python 2.5 (2.5)  
+<e3e29c285d1e5e1b56aa4a9db6f11348> /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/Python
+   0x272000 -   0x299ffc +readline.so ??? (???)  
+<c2d7fbb9908185b4c732cf74991b00bd> /Library/Python/2.5/site-packages/ 
+readline-2.5.1-py2.5-macosx-10.5-i386.egg/readline.so
+   0x2ac000 -   0x2b6fff +libboost_thread-xgcc40-mt-1_39.dylib ???  
+(???) <f44b48b19bd03af5454904c084abe3d1> /usr/local/lib/ 
+libboost_thread-xgcc40-mt-1_39.dylib
+   0x2cb000 -   0x2d5ff2 +libcairomm-1.0.1.dylib ??? (???) /opt/local/ 
+lib/libcairomm-1.0.1.dylib
+   0x2e2000 -   0x2e7fe7 +libltdl.7.dylib ??? (???) /opt/local/lib/ 
+libltdl.7.dylib
+   0x2ec000 -   0x2eeffb +libboost_system-xgcc40-mt-1_39.dylib ???  
+(???) <a62a476e8875db8030bf223339a3ecac> /usr/local/lib/ 
+libboost_system-xgcc40-mt-1_39.dylib
+   0x2f4000 -   0x2f4ff1 +libXau.6.dylib ??? (???)  
+<afb29c74c7922980363d41d64bf0e75d> /usr/X11/lib/libXau.6.dylib
+   0x2f9000 -   0x2fbfef +libXdmcp.6.dylib ??? (???)  
+<d74e4318e331e2dfc669982ea5364b89> /usr/X11/lib/libXdmcp.6.dylib
+   0x500000 -   0x5c0ffb +com.kyngchaos.UnixImageIO 1.0.29  
+(UnixImageIO 1.0.29) <2bb05fd563367f1447de07c18af2e489> /Library/ 
+Frameworks/UnixImageIO.framework/Versions/B/UnixImageIO
+   0x5e6000 -   0x618ff3 +libboost_python-xgcc40-mt-1_39.dylib ???  
+(???) <92abc5200bb0738a5c79c7246bf80b92> /usr/local/lib/ 
+libboost_python-xgcc40-mt-1_39.dylib
+   0x65d000 -   0x73ffff +libicuuc.38.dylib ??? (???) /opt/local/lib/ 
+libicuuc.38.dylib
+   0x781000 -   0x7e5feb +libcairo.2.dylib ??? (???) /opt/local/lib/ 
+libcairo.2.dylib
+  0x1000000 -  0x126ffff +_mapnik.so ??? (???)  
+<78e03941f327a45bfe7179616df2552e> /Library/Python/2.5/site-packages/ 
+mapnik/_mapnik.so
+  0x1d6f000 -  0x1f87fff +libmapnik.dylib ??? (???)  
+<c4baf669dd79f9929e72bfc4ebb9f114> /usr/local/lib/libmapnik.dylib
+  0x2707000 -  0x31dcfff +libicudata.38.dylib ??? (???) /opt/local/lib/ 
+libicudata.38.dylib
+  0x31df000 -  0x3263ff2 +libboost_regex-xgcc40-mt-1_39.dylib ???  
+(???) <ecfea55bf42803fded699b58b89e59c6> /usr/local/lib/libboost_regex- 
+xgcc40-mt-1_39.dylib
+  0x32d2000 -  0x32d9fed +libgcc_s.1.dylib ??? (???) /usr/local/lib/ 
+libgcc_s.1.dylib
+  0x32fc000 -  0x336cfe9 +libfreetype.6.dylib ??? (???) /opt/local/lib/ 
+libfreetype.6.dylib
+  0x3380000 -  0x3482fef +libxml2.2.dylib ??? (???) /opt/local/lib/ 
+libxml2.2.dylib
+  0x34b4000 -  0x35abff0 +libiconv.2.dylib ??? (???) /opt/local/lib/ 
+libiconv.2.dylib
+  0x35b8000 -  0x35c8ffd +libz.1.dylib ??? (???) /opt/local/lib/libz. 
+1.dylib
+  0x35cd000 -  0x35fdfff +libproj.0.dylib ??? (???)  
+<ad70ca6819111eff0093d167037b4dc4> /usr/local/lib/libproj.0.dylib
+  0x3617000 -  0x3622ffb +libboost_filesystem-xgcc40-mt-1_39.dylib ???  
+(???) <6a67f6fc06e4000fbc120a636a4509cf> /usr/local/lib/ 
+libboost_filesystem-xgcc40-mt-1_39.dylib
+  0x3635000 -  0x363bff3 +libboost_iostreams-xgcc40-mt-1_39.dylib ???  
+(???) <e87129289f838cf7640b8724e74c5d5a> /usr/local/lib/ 
+libboost_iostreams-xgcc40-mt-1_39.dylib
+  0x3645000 -  0x366affb +libboost_program_options-xgcc40- 
+mt-1_39.dylib ??? (???) <3c3b825cbb9500e720fc244086a17a43> /usr/local/ 
+lib/libboost_program_options-xgcc40-mt-1_39.dylib
+  0x36a0000 -  0x3b94fe2 +libgdal.1.dylib ??? (???)  
+<40b751a835b41090532c96c1c6959755> /usr/local/lib/libgdal.1.dylib
+  0x3e70000 -  0x3e8bff3 +libpq.5.dylib ??? (???)  
+<563eacc00f16bb2bef2b2d1fe0d1a814> /usr/local/pgsql/lib/libpq.5.dylib
+  0x3e95000 -  0x3f60ffb +libsqlite3.0.dylib ??? (???)  
+<b97181bd2a7a27961742d4b025577286> /usr/local/lib/libsqlite3.0.dylib
+  0x3f79000 -  0x4065fe7 +libX11.6.dylib ??? (???)  
+<5bf24ae81d33440feafffaffc3e676bf> /usr/X11/lib/libX11.6.dylib
+  0x4087000 -  0x40bafef +libpixman-1.0.dylib ??? (???) /opt/local/lib/ 
+libpixman-1.0.dylib
+  0x40c4000 -  0x40e9fff +libfontconfig.1.dylib ??? (???) /opt/local/ 
+lib/libfontconfig.1.dylib
+  0x40f3000 -  0x410ffe3 +libexpat.1.dylib ??? (???) /opt/local/lib/ 
+libexpat.1.dylib
+  0x4117000 -  0x4136feb +libpng12.0.dylib ??? (???) /opt/local/lib/ 
+libpng12.0.dylib
+  0x413d000 -  0x4142fff +libXrender.1.dylib ??? (???) /opt/local/lib/ 
+libXrender.1.dylib
+  0x4146000 -  0x424cfef +libX11.6.dylib ??? (???) /opt/local/lib/ 
+libX11.6.dylib
+  0x426c000 -  0x426cffe +libXau.6.dylib ??? (???) /opt/local/lib/ 
+libXau.6.dylib
+  0x4270000 -  0x4272fef +libXdmcp.6.dylib ??? (???) /opt/local/lib/ 
+libXdmcp.6.dylib
+  0x4276000 -  0x4282ff7 +libgeos_c.1.dylib ??? (???)  
+<fa40607f2cc0b8e0f227948d3a7ff859> /usr/local/lib/libgeos_c.1.dylib
+  0x4292000 -  0x4355ffb +libgeos-3.1.0.dylib ??? (???)  
+<208535908320f5423e0ed4f27bb962b3> /usr/local/lib/libgeos-3.1.0.dylib
+  0x4464000 -  0x4480fe3 +libexpat.1.dylib ??? (???)  
+<dfe35dc54c2e45adefbdab90ae282eaa> /usr/local/lib/libexpat.1.dylib
+  0x448e000 -  0x44bbfff +libcurl.4.dylib ??? (???) /opt/local/lib/ 
+libcurl.4.dylib
+  0x44ca000 -  0x44d3fff +_cairo.so ??? (???)  
+<ab1fe7f1b9912ab3759ee988643ff5a5> /Library/Python/2.5/site-packages/ 
+cairo/_cairo.so
+  0x44e1000 -  0x44e6ffc +libSM.6.dylib ??? (???)  
+<a8695f5f928d13828139ccade3112049> /usr/X11/lib/libSM.6.dylib
+  0x44ec000 -  0x44fdfff +libICE.6.dylib ??? (???)  
+<a63895d54cb639921ba635fccdda1834> /usr/X11/lib/libICE.6.dylib
+  0x4506000 -  0x4526fff +gdal.input ??? (???)  
+<2e6c36f89e2d278456a2ee9cc66f562c> /usr/local/lib/mapnik/input/ 
+gdal.input
+  0x4576000 -  0x4593ffb +kismet.input ??? (???)  
+<e1f1bb0ed57f29bfc4d398a678aaeac3> /usr/local/lib/mapnik/input/ 
+kismet.input
+  0x45ed000 -  0x4616ffb +ogr.input ??? (???)  
+<1c17ecd3629234d5ace3fe91fff4815e> /usr/local/lib/mapnik/input/ogr.input
+  0x468a000 -  0x46b6fff +osm.input ??? (???)  
+<4d9560a14a47ba21438763f519874643> /usr/local/lib/mapnik/input/osm.input
+  0x4729000 -  0x475afff +postgis.input ??? (???)  
+<b3c58e96e87b98b60e707392fa4cd4d0> /usr/local/lib/mapnik/input/ 
+postgis.input
+  0x47da000 -  0x47f3ffb +raster.input ??? (???)  
+<c88bed07a1ba4a74c20d266ff6996cce> /usr/local/lib/mapnik/input/ 
+raster.input
+  0x483a000 -  0x486efff +shape.input ??? (???)  
+<5f65048e62138e7fa36cb4a545d48f87> /usr/local/lib/mapnik/input/ 
+shape.input
+  0x48f6000 -  0x4920ffb +sqlite.input ??? (???)  
+<6b8c14d7bbc9b34a70e9b403bc4d165c> /usr/local/lib/mapnik/input/ 
+sqlite.input
+0x8fe00000 - 0x8fe2db43  dyld 97.1 (???)  
+<100d362e03410f181a34e04e94189ae5> /usr/lib/dyld
+0x905f1000 - 0x90758ff3  libSystem.B.dylib ??? (???)  
+<d68880dfb1f8becdbdac6928db1510fb> /usr/lib/libSystem.B.dylib
+0x90913000 - 0x909c5ffb  libcrypto.0.9.7.dylib ??? (???)  
+<69bc2457aa23f12fa7d052601d48fa29> /usr/lib/libcrypto.0.9.7.dylib
+0x90a37000 - 0x90b6fff7  libicucore.A.dylib ??? (???)  
+<18098dcf431603fe47ee027a60006c85> /usr/lib/libicucore.A.dylib
+0x90bfb000 - 0x90c2aff7  libncurses.5.4.dylib ??? (???)  
+<3b2ac2ca8190942b6b81d2a7012ea859> /usr/lib/libncurses.5.4.dylib
+0x9156e000 - 0x91592feb  libssl.0.9.7.dylib ??? (???)  
+<c7359b7ab32b5f8574520746e10a41cc> /usr/lib/libssl.0.9.7.dylib
+0x9166c000 - 0x9167affd  libz.1.dylib ??? (???)  
+<5ddd8539ae2ebfd8e7cc1c57525385c7> /usr/lib/libz.1.dylib
+0x91e38000 - 0x91f18fff  libobjc.A.dylib ??? (???)  
+<7b92613fdf804fd9a0a3733a0674c30b> /usr/lib/libobjc.A.dylib
+0x91f36000 - 0x91f42fff  libbz2.1.0.dylib ??? (???)  
+<9ea4fe135c9e52bd0590eec12c738e82> /usr/lib/libbz2.1.0.dylib
+0x91f8a000 - 0x91f8efff  libmathCommon.A.dylib ??? (???) /usr/lib/ 
+system/libmathCommon.A.dylib
+0x91f9d000 - 0x91fa4fe9  libgcc_s.1.dylib ??? (???)  
+<f53c808e87d1184c0f9df63aef53ce0b> /usr/lib/libgcc_s.1.dylib
+0x922ad000 - 0x923a1ff4  libiconv.2.dylib ??? (???)  
+<c508c60fafca17824c0017b2e4369802> /usr/lib/libiconv.2.dylib
+0x93422000 - 0x93431fff  libsasl2.2.dylib ??? (???)  
+<bb7971ca2f609c070f87786a93d1041e> /usr/lib/libsasl2.2.dylib
+0x93c9b000 - 0x93cc6fe7  libauto.dylib ??? (???)  
+<42d8422dc23a18071869fdf7b5d8fab5> /usr/lib/libauto.dylib
+0x93d8e000 - 0x93f5cff3  com.apple.security 5.0.4 (34102)  
+<55dda7486df4e8e1d61505be16f83a1c> /System/Library/Frameworks/ 
+Security.framework/Versions/A/Security
+0x94313000 - 0x94446fff  com.apple.CoreFoundation 6.5.5 (476.17)  
+<4a70c8dbb582118e31412c53dc1f407f> /System/Library/Frameworks/ 
+CoreFoundation.framework/Versions/A/CoreFoundation
+0x95a50000 - 0x95b00fff  edu.mit.Kerberos 6.0.12 (6.0.12)  
+<685cc018c133668d0d3ac6a1cb63cff9> /System/Library/Frameworks/ 
+Kerberos.framework/Versions/A/Kerberos
+0x963db000 - 0x9640dfff  com.apple.LDAPFramework 1.4.5 (110)  
+<cc04500cf7b6edccc75bb3fe2973f72c> /System/Library/Frameworks/ 
+LDAP.framework/Versions/A/LDAP
+0x9640e000 - 0x9646bffb  libstdc++.6.dylib ??? (???)  
+<04b812dcec670daa8b7d2852ab14be60> /usr/lib/libstdc++.6.dylib
+0x9682b000 - 0x96849fff  libresolv.9.dylib ??? (???)  
+<a8018c42930596593ddf27f7c20fe7af> /usr/lib/libresolv.9.dylib
+0xfffe8000 - 0xfffebfff  libobjc.A.dylib ??? (???) /usr/lib/ 
+libobjc.A.dylib
+0xffff0000 - 0xffff1780  libSystem.B.dylib ??? (???) /usr/lib/ 
+libSystem.B.dylib
+
+
+
+
+From blake at hailmail.net  Wed May 13 18:16:35 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 13 May 2009 09:16:35 -0700
+Subject: [Mapnik-devel] Segfault in gdal.input when opening shared file
+In-Reply-To: <677A8310-0676-479F-BF46-C0375B1896BD@hailmail.net>
+References: <677A8310-0676-479F-BF46-C0375B1896BD@hailmail.net>
+Message-ID: <396362E9-59EB-49AA-86E0-3B46FAFA9047@hailmail.net>
+
+Okay, so I just reverted my svn build to r1130 and am experiencing no  
+crashing now:
+
+http://trac.mapnik.org/changeset/1131
+http://trac.mapnik.org/changeset/1132
+
+By the look of them, seems like these changes would have helped in  
+this situation, but something must not quite be working.
+
+Kunitoki, do you have QGIS? I'll see if I can replication on linux.
+
+- Dane
+
+
+
+From craig.destigter at koordinates.com  Wed May 13 23:18:16 2009
+From: craig.destigter at koordinates.com (Craig de Stigter)
+Date: Thu, 14 May 2009 09:18:16 +1200
+Subject: [Mapnik-devel] SVG-based symbolizers
+Message-ID: <e260aad40905131418w21c416afv70baf9a40ebf58f0@mail.gmail.com>
+
+We've been looking at implementing ticket
+320<http://trac.mapnik.org/ticket/320>to add SVG symbolizers. I
+wondered if anyone else has feedback before we go
+ahead and write code? Here's the plan:
+
+   1. Read SVG symbols:
+      - SVG parsing using Gnome's librsvg <http://librsvg.sourceforge.net/>
+   2. Image rendering abstraction to get away from
+ImageData?<http://trac.mapnik.org/wiki/ImageData>32
+   (the current "symbol" data class):
+      - Something like an
+AbstractImage?<http://trac.mapnik.org/wiki/AbstractImage>class,
+wrapping width, height and rendering functions (
+      ImageData? <http://trac.mapnik.org/wiki/ImageData>32 and
+VectorImage?<http://trac.mapnik.org/wiki/VectorImage>can derive from
+this)
+      - Make calls to point_symbolizer.get_image() return an
+AbstractImage?<http://trac.mapnik.org/wiki/AbstractImage>(i.e. a
+      VectorImage? <http://trac.mapnik.org/wiki/VectorImage> for SVG
+      symbolizers, and a ImageData? <http://trac.mapnik.org/wiki/ImageData>32
+      for raster symbolizers)
+   3. Actually render the vector data:
+      - Overload Mapnik's cairo_context::add_image() for
+VectorImage?<http://trac.mapnik.org/wiki/VectorImage>to render the
+abstracted image as a cairo surface instead of raster data.
+      librsvg can already draw into a cairo surface.
+      - Initially make the AGG renderer rely on Cairo for SVG rendering. If
+      someone really wants to make this cleaner they could extend librsvg to
+      render to AGG. That looks like too much work for little gain at
+the moment.
+      So, we could:
+         - Render a surface using Cairo
+         - Rasterize surface and pass it back to AGG as an
+ImageData?<http://trac.mapnik.org/wiki/ImageData>32
+
+
+This means:
+
+   - SVG symbol support would depend on both librsvg and cairo
+   - It'd be a backwards-compatible extension of the existing way to use
+   images, by adding support for type=SVG in addition to existing PNG support.
+   - It'll apply to both point and shield symbolizers
+
+
+
+Thanks and regards
+
+Craig de Stigter
+
+-- 
+Koordinates Ltd
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://www.koordinates.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090514/5ba4434f/attachment.html>
+
+From kunitoki at gmail.com  Thu May 14 15:03:40 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Thu, 14 May 2009 15:03:40 +0200
+Subject: [Mapnik-devel] Segfault in gdal.input when opening shared file
+In-Reply-To: <267BFC47-38BE-4088-A58D-97A9A38F691A@hailmail.net>
+References: <677A8310-0676-479F-BF46-C0375B1896BD@hailmail.net>
+	<396362E9-59EB-49AA-86E0-3B46FAFA9047@hailmail.net>
+	<93db2faf0905131526i3af95271y63d07b8cc2aa1595@mail.gmail.com>
+	<267BFC47-38BE-4088-A58D-97A9A38F691A@hailmail.net>
+Message-ID: <93db2faf0905140603q3f4681e8g54fed051c6e79f40@mail.gmail.com>
+
+Ok i added a parameter to select how the gdal dataset should be opened
+(the parameter is "shared", but could be renamed to something more
+intellegible).
+
+
+From kunitoki at gmail.com  Thu May 14 16:37:46 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Thu, 14 May 2009 16:37:46 +0200
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+Message-ID: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+
+Hi, i've been deploying mapnik in some servers of mine, and i
+discovered that mostly the default installed version of libsqlite3 is
+compiled by distro packagers without RTREE indexing by default, thus
+requiring to recompile sqlite from sources for enabling the features
+we need (mainly the RTREE feature).
+
+Then i came upon here:
+
+    http://www.sqlite.org/amalgamation.html
+
+and i found this to be a very convenient way of embedding sqlite in a
+project, so to be sure to have all the features we need compiled in.
+
+Also, this would enable sqlite even on platforms that don't have it by
+default (windows flavours for example).
+
+Lucio
+
+
+From blake at hailmail.net  Thu May 14 17:11:37 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 14 May 2009 08:11:37 -0700
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+In-Reply-To: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+References: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+Message-ID: <50759D12-4BA3-4410-A8B8-4EF36B3964F0@hailmail.net>
+
++1
+
+Dane
+
+
+On May 14, 2009, at 7:37 AM, kRAkEn/gORe wrote:
+
+> Hi, i've been deploying mapnik in some servers of mine, and i
+> discovered that mostly the default installed version of libsqlite3 is
+> compiled by distro packagers without RTREE indexing by default, thus
+> requiring to recompile sqlite from sources for enabling the features
+> we need (mainly the RTREE feature).
+>
+> Then i came upon here:
+>
+>    http://www.sqlite.org/amalgamation.html
+>
+> and i found this to be a very convenient way of embedding sqlite in a
+> project, so to be sure to have all the features we need compiled in.
+>
+> Also, this would enable sqlite even on platforms that don't have it by
+> default (windows flavours for example).
+>
+> Lucio
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Thu May 14 17:12:10 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 14 May 2009 08:12:10 -0700
+Subject: [Mapnik-devel] Segfault in gdal.input when opening shared file
+In-Reply-To: <93db2faf0905140603q3f4681e8g54fed051c6e79f40@mail.gmail.com>
+References: <677A8310-0676-479F-BF46-C0375B1896BD@hailmail.net>
+	<396362E9-59EB-49AA-86E0-3B46FAFA9047@hailmail.net>
+	<93db2faf0905131526i3af95271y63d07b8cc2aa1595@mail.gmail.com>
+	<267BFC47-38BE-4088-A58D-97A9A38F691A@hailmail.net>
+	<93db2faf0905140603q3f4681e8g54fed051c6e79f40@mail.gmail.com>
+Message-ID: <234CB5DF-2E1D-4912-BD24-B4E7B544EFD3@hailmail.net>
+
+Great Lucio,
+
+Thanks sounds like a good plan.
+
+- Dane
+
+On May 14, 2009, at 6:03 AM, kRAkEn/gORe wrote:
+
+> Ok i added a parameter to select how the gdal dataset should be opened
+> (the parameter is "shared", but could be renamed to something more
+> intellegible).
+>
+> From what i read the GdalOpenShared is available only from version
+> 1.6.0, so i'm doing a bit of #ifdef around that, to allow the use of
+> previous version of gdal too.
+>
+> Let me know any consideration on the matter...
+>
+> Cheers
+>
+> Lucio
+>
+>
+> On Thu, May 14, 2009 at 1:14 AM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Hey Lucio,
+>>
+>> On May 13, 2009, at 3:26 PM, kRAkEn/gORe wrote:
+>>
+>>> hi, i thought it was a good thing to favour GdalOpenShared instead  
+>>> of
+>>> GdalOpen when using the same dataset a lot of times in the same
+>>> application and used mapnik in a headless server serving multiple  
+>>> maps
+>>> with the same rasters all along (and tiling).
+>>
+>>
+>> I think I surely is, but perhaps the problem lies in that not until  
+>> gdal 1.6
+>> (i think I read something about that) will the behavior be  
+>> predicatable...
+>>
+>> or that QGIS opens in non-shared mode and the combination is  
+>> dangerous?
+>>
+>> I can predictably get crashes like the below when opening as Shared  
+>> from
+>> mapnik, but things work fine with the previous code.
+>>
+>>> Never had any problems
+>>> with that.
+>>
+>> I bet it is the combo of shared and non-shared access...
+>>
+>>> I don't have qgis here but it will be not a problem to
+>>> install it and test it besides using gdal.input with my changes.
+>>
+>> Okay, great. Keep in mind that QGIS requires python 2.5 so mapnik  
+>> will also
+>> need to be (re) compiled against that for you to try within the  
+>> QGIS python
+>> console.
+>>
+>> Should work fine either way outside of QGIS console.
+>>
+>>> I'll
+>>> do next days to come, and do some more pushing to the plugins, gdal,
+>>> ogr, oracle and sqlite as i see them quite behind their shape/raster
+>>> counterpart.
+>>>
+>> Great.
+>>
+>>> Probably we will need to provide a gdal's datasource parameter to
+>>> control the kind of function to favour, shared or not shared ?
+>>>
+>>
+>> This was my thought as well! Have the default not be shared, but be  
+>> able to
+>> turn it on...
+>>
+>> And here is the crash...
+>>
+>>
+>> - dane
+>>
+>> Thread 0 Crashed:
+>> 0   gdal.input                          0x146eaa4b  
+>> gdal_featureset::next() +
+>> 347
+>> 1   _mapnik.so                          0x12381561
+>> mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>>> ::apply_to_layer(mapnik::Layer const&,
+>> mapnik::agg_renderer<mapnik::Image32>&, mapnik::projection const&,  
+>> double) +
+>> 2145
+>> 2   _mapnik.so                          0x12377e4f  
+>> render2(mapnik::Map
+>> const&, mapnik::Image32&) + 335
+>> 3   _mapnik.so                          0x1237e4df
+>> boost 
+>> ::python 
+>> ::objects::caller_py_function_impl<boost::python::detail::caller<void
+>> (*)(mapnik::Map const&, mapnik::Image32&),
+>> boost::python::default_call_policies, boost::mpl::vector3<void,  
+>> mapnik::Map
+>> const&, mapnik::Image32&> > >::operator()(_object*, _object*) + 191
+>> 4   ...python-xgcc40-mt-1_39.dylib      0x12120e74
+>> boost::python::objects::function::call(_object*, _object*) const +  
+>> 468
+>> 5   ...python-xgcc40-mt-1_39.dylib      0x121226e5
+>> boost 
+>> ::detail 
+>> ::function::void_function_ref_invoker0<boost::python::objects:: 
+>> (anonymous
+>> namespace)::bind_return,
+>> void>::invoke(boost::detail::function::function_buffer&) + 37
+>> 6   ...python-xgcc40-mt-1_39.dylib      0x12129719
+>> boost::function0<void>::operator()() const + 41
+>> 7   ...python-xgcc40-mt-1_39.dylib      0x12128b0c
+>> boost::python::detail::exception_handler::operator() 
+>> (boost::function0<void>
+>> const&) const + 204
+>> 8   _mapnik.so                          0x123795b4
+>> boost 
+>> ::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool,
+>> boost::python::detail::translate_exception<mapnik::config_error, void
+>> (*)(mapnik::config_error const&)>, boost::_bi::list3<boost::arg<1>,
+>> boost::arg<2>, boost::_bi::value<void (*)(mapnik::config_error  
+>> const&)> > >,
+>> bool, boost::python::detail::exception_handler const&,
+>> boost::function0<void>
+>> const&>::invoke(boost::detail::function::function_buffer&,
+>> boost::python::detail::exception_handler const&,  
+>> boost::function0<void>
+>> const&) + 36
+>> 9   ...python-xgcc40-mt-1_39.dylib      0x12128bdf
+>> boost::python::handle_exception_impl(boost::function0<void>) + 63
+>> 10  ...python-xgcc40-mt-1_39.dylib      0x1211eb62 function_call + 98
+>> 11  org.python.python                   0x11278505 PyObject_Call + 50
+>> 12  org.python.python                   0x112e6832  
+>> PyEval_EvalFrameEx +
+>> 17904
+>> 13  org.python.python                   0x112e8173  
+>> PyEval_EvalCodeEx + 1638
+>> 14  org.python.python                   0x11292488  
+>> PyFunction_SetClosure +
+>> 2667
+>> 15  org.python.python                   0x11278505 PyObject_Call + 50
+>> 16  org.python.python                   0x11280e3a PyMethod_New +  
+>> 2457
+>> 17  org.python.python                   0x11278505 PyObject_Call + 50
+>> 18  org.python.python                   0x112e182d
+>> PyEval_CallObjectWithKeywords + 211
+>> 19  sip.so                              0x1118051f  
+>> sip_api_invoke_slot + 410
+>> 20  QtCore.so                           0x1138d4ef
+>> PyQtProxy::invokeSlot(_sipSlotConnection const&, void**) + 117
+>> 21  QtCore.so                           0x1139adaa
+>> PyQtProxy::unislot(void**) + 134
+>> 22  QtCore.so                           0x1139d62e
+>> PyQtProxy::qt_metacall(QMetaObject::Call, int, void**) + 242
+>> 23  QtCore                              0x00320420
+>> QMetaObject::activate(QObject*, int, int, void**) + 528
+>> 24  libqgis_gui.1.0.dylib               0x0069448e
+>> QgsMapCanvas::renderComplete(QPainter*) + 62
+>> 25  libqgis_gui.1.0.dylib               0x0067e593  
+>> QgsMapCanvas::refresh() +
+>> 163
+>> 26  gui.so                              0x11f4b48e  
+>> meth_QgsMapCanvas_refresh
+>> + 110
+>> 27  org.python.python                   0x112e651e  
+>> PyEval_EvalFrameEx +
+>> 17116
+>> 28  org.python.python                   0x112e6700  
+>> PyEval_EvalFrameEx +
+>> 17598
+>> 29  org.python.python                   0x112e8173  
+>> PyEval_EvalCodeEx + 1638
+>> 30  org.python.python                   0x11292488  
+>> PyFunction_SetClosure +
+>> 2667
+>> 31  org.python.python                   0x11278505 PyObject_Call + 50
+>> 32  org.python.python                   0x11280e3a PyMethod_New +  
+>> 2457
+>> 33  org.python.python                   0x11278505 PyObject_Call + 50
+>> 34  org.python.python                   0x112e182d
+>> PyEval_CallObjectWithKeywords + 211
+>> 35  sip.so                              0x1118051f  
+>> sip_api_invoke_slot + 410
+>> 36  QtCore.so                           0x1138d4ef
+>> PyQtProxy::invokeSlot(_sipSlotConnection const&, void**) + 117
+>> 37  QtCore.so                           0x1139adaa
+>> PyQtProxy::unislot(void**) + 134
+>> 38  QtCore.so                           0x1139d62e
+>> PyQtProxy::qt_metacall(QMetaObject::Call, int, void**) + 242
+>> 39  QtCore                              0x00320420
+>> QMetaObject::activate(QObject*, int, int, void**) + 528
+>> 40  QtGui                               0x009c5bb6  
+>> QAction::activated(int) +
+>> 70
+>> 41  QtGui                               0x009c77a8
+>> QAction::activate(QAction::ActionEvent) + 184
+>> 42  QtGui                               0x00e17bb6
+>> QToolButton::nextCheckState() + 38
+>> 43  QtGui                               0x00d476ba
+>> QAbstractButtonPrivate::click() + 74
+>> 44  QtGui                               0x00d47940
+>> QAbstractButton::mouseReleaseEvent(QMouseEvent*) + 128
+>> 45  QtGui                               0x00e17afc
+>> QToolButton::mouseReleaseEvent(QMouseEvent*) + 28
+>> 46  QtGui                               0x00a14978  
+>> QWidget::event(QEvent*) +
+>> 3736
+>> 47  QtGui                               0x00d48103
+>> QAbstractButton::event(QEvent*) + 83
+>> 48  QtGui                               0x00e17938
+>> QToolButton::event(QEvent*) + 24
+>> 49  QtGui                               0x009ccc1f
+>> QApplicationPrivate::notify_helper(QObject*, QEvent*) + 191
+>> 50  QtGui                               0x009ced4d
+>> QApplication::notify(QObject*, QEvent*) + 1309
+>> 51  libqgis_core.1.0.dylib              0x0137aa4c
+>> QgsApplication::notify(QObject*, QEvent*) + 46
+>> 52  QtCore                              0x0030ed01
+>> QCoreApplication::notifyInternal(QObject*, QEvent*) + 145
+>> 53  QtGui                               0x00a2571b
+>> QApplicationPrivate::globalEventProcessor(OpaqueEventHandlerCallRef*,
+>> OpaqueEventRef*, void*) + 5771
+>> 54  com.apple.HIToolbox                 0x923e2143
+>> DispatchEventToHandlers(EventTargetRec*, OpaqueEventRef*,  
+>> HandlerCallRec*) +
+>> 1181
+>> 55  com.apple.HIToolbox                 0x923e157d
+>> SendEventToEventTargetInternal(OpaqueEventRef*,  
+>> OpaqueEventTargetRef*,
+>> HandlerCallRec*) + 405
+>> 56  com.apple.HIToolbox                 0x923fded2  
+>> SendEventToEventTarget +
+>> 52
+>> 57  com.apple.HIToolbox                 0x924100a8
+>> ToolboxEventDispatcherHandler(OpaqueEventHandlerCallRef*,  
+>> OpaqueEventRef*,
+>> void*) + 1208
+>> 58  com.apple.HIToolbox                 0x923e24fc
+>> DispatchEventToHandlers(EventTargetRec*, OpaqueEventRef*,  
+>> HandlerCallRec*) +
+>> 2134
+>> 59  com.apple.HIToolbox                 0x923e157d
+>> SendEventToEventTargetInternal(OpaqueEventRef*,  
+>> OpaqueEventTargetRef*,
+>> HandlerCallRec*) + 405
+>> 60  com.apple.HIToolbox                 0x923fded2  
+>> SendEventToEventTarget +
+>> 52
+>> 61  QtGui                               0x00a20521
+>> qt_mac_send_event(QFlags<QEventLoop::ProcessEventsFlag>,  
+>> OpaqueEventRef*,
+>> OpaqueWindowPtr*) + 97
+>> 62  QtGui                               0x00a2eb62
+>> QEventDispatcherMac 
+>> ::processEvents(QFlags<QEventLoop::ProcessEventsFlag>) +
+>> 658
+>> 63  QtCore                              0x0030e2c1
+>> QEventLoop::processEvents(QFlags<QEventLoop::ProcessEventsFlag>) + 65
+>> 64  QtCore                              0x0030e38d
+>> QEventLoop::exec(QFlags<QEventLoop::ProcessEventsFlag>) + 157
+>> 65  QtCore                              0x00312331  
+>> QCoreApplication::exec()
+>> + 161
+>> 66  org.qgis.qgis                       0x0000a09b main + 8177
+>> 67  org.qgis.qgis                       0x00007936 start + 54
+>>
+>>
+>>
+>>
+>>> Lucio
+>>>
+>>>
+>>> On Wed, May 13, 2009 at 6:16 PM, Dane Springmeyer <blake at hailmail.net 
+>>> >
+>>> wrote:
+>>>>
+>>>> Okay, so I just reverted my svn build to r1130 and am  
+>>>> experiencing no
+>>>> crashing now:
+>>>>
+>>>> http://trac.mapnik.org/changeset/1131
+>>>> http://trac.mapnik.org/changeset/1132
+>>>>
+>>>> By the look of them, seems like these changes would have helped in
+>>>> this situation, but something must not quite be working.
+>>>>
+>>>> Kunitoki, do you have QGIS? I'll see if I can replication on linux.
+>>>>
+>>>> - Dane
+>>>>
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>
+>>
+
+
+
+From kunitoki at gmail.com  Thu May 14 17:38:49 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Thu, 14 May 2009 17:38:49 +0200
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+In-Reply-To: <4A0C369A.8040507@compton.nu>
+References: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+	<4A0C369A.8040507@compton.nu>
+Message-ID: <93db2faf0905140838l3c083a19q7c1c1477eaa55d74@mail.gmail.com>
+
+Ok, that should be selectable.
+
+But in Fedora they are using system AGG library instead of the one
+internal to mapnik trunk ? Or they are deploying unacceptable
+libraries ?
+
+Lucio
+
+
+On Thu, May 14, 2009 at 5:19 PM, Tom Hughes <tom at compton.nu> wrote:
+> kRAkEn/gORe wrote:
+>
+>> Hi, i've been deploying mapnik in some servers of mine, and i
+>> discovered that mostly the default installed version of libsqlite3 is
+>> compiled by distro packagers without RTREE indexing by default, thus
+>> requiring to recompile sqlite from sources for enabling the features
+>> we need (mainly the RTREE feature).
+>>
+>> Then i came upon here:
+>>
+>> ? ?http://www.sqlite.org/amalgamation.html
+>>
+>> and i found this to be a very convenient way of embedding sqlite in a
+>> project, so to be sure to have all the features we need compiled in.
+>
+> Note that for Fedora at least it will not be acceptable for the packaged
+> version of mapnik to be built like this, so please make sure you retain the
+> option to link with an external sqlite.
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+>
+
+
+From tom at compton.nu  Thu May 14 17:42:33 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 14 May 2009 16:42:33 +0100
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+In-Reply-To: <93db2faf0905140838l3c083a19q7c1c1477eaa55d74@mail.gmail.com>
+References: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>	
+	<4A0C369A.8040507@compton.nu>
+	<93db2faf0905140838l3c083a19q7c1c1477eaa55d74@mail.gmail.com>
+Message-ID: <4A0C3BE9.3020004@compton.nu>
+
+kRAkEn/gORe wrote:
+> Ok, that should be selectable.
+> 
+> But in Fedora they are using system AGG library instead of the one
+> internal to mapnik trunk ? Or they are deploying unacceptable
+> libraries ?
+
+They are using system AGG which is why I added a config option to use 
+the system AGG library.
+
+Likewise for the included XML parser libary and the fonts that ship with 
+mapnik - those are not used in the Fedora package.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Thu May 14 17:54:24 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 14 May 2009 08:54:24 -0700
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+In-Reply-To: <4A0C3BE9.3020004@compton.nu>
+References: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>	
+	<4A0C369A.8040507@compton.nu>
+	<93db2faf0905140838l3c083a19q7c1c1477eaa55d74@mail.gmail.com>
+	<4A0C3BE9.3020004@compton.nu>
+Message-ID: <5DD30394-7124-46D1-8FAD-C4AD4768C942@hailmail.net>
+
+
+On May 14, 2009, at 8:42 AM, Tom Hughes wrote:
+
+> kRAkEn/gORe wrote:
+>> Ok, that should be selectable.
+>>
+>> But in Fedora they are using system AGG library instead of the one
+>> internal to mapnik trunk ? Or they are deploying unacceptable
+>> libraries ?
+>
+> They are using system AGG which is why I added a config option to use
+> the system AGG library.
+>
+> Likewise for the included XML parser libary and the fonts that ship  
+> with
+> mapnik - those are not used in the Fedora package.
+>
+> Tom
+
+Yes, same for debian systems. The packaged AGG seems to work fine,  
+although we have made a few changes locally:
+
+http://trac.mapnik.org/changeset/395
+http://trac.mapnik.org/changeset/525
+http://trac.mapnik.org/changeset/1054
+
+So, Lucio maintaining the ability (within Scons) to build against both  
+an internal and external sqlite3 is a must.
+
+But the option to build against an internal RTree supported version is  
+good thing in my mind.
+
+- Dane
+
+
+
+
+From tom at compton.nu  Thu May 14 17:19:54 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 14 May 2009 16:19:54 +0100
+Subject: [Mapnik-devel] considering using amalgamation for sqlite plugin
+In-Reply-To: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+References: <93db2faf0905140737i25b258d1gfe7a69327134f6c9@mail.gmail.com>
+Message-ID: <4A0C369A.8040507@compton.nu>
+
+kRAkEn/gORe wrote:
+
+> Hi, i've been deploying mapnik in some servers of mine, and i
+> discovered that mostly the default installed version of libsqlite3 is
+> compiled by distro packagers without RTREE indexing by default, thus
+> requiring to recompile sqlite from sources for enabling the features
+> we need (mainly the RTREE feature).
+> 
+> Then i came upon here:
+> 
+>     http://www.sqlite.org/amalgamation.html
+> 
+> and i found this to be a very convenient way of embedding sqlite in a
+> project, so to be sure to have all the features we need compiled in.
+
+Note that for Fedora at least it will not be acceptable for the packaged 
+version of mapnik to be built like this, so please make sure you retain 
+the option to link with an external sqlite.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From kunitoki at gmail.com  Thu May 14 18:25:50 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Thu, 14 May 2009 18:25:50 +0200
+Subject: [Mapnik-devel] problems committing
+Message-ID: <93db2faf0905140925of21c398jd8e5178827c1873e@mail.gmail.com>
+
+I have some problems when i try to commit.
+
+I had to go back to SVN version 1.5.6 cause of some neon problems in
+my system here.
+i re-checked out the mapnik trunk with the new SVN, ssh-add the
+private key, but when i try to commit it says i need to give it a
+password, even if i change the user to 'kunitoki'.
+
+What shoud i do ?
+
+Lucio
+
+
+From tom at compton.nu  Thu May 14 19:00:23 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 14 May 2009 18:00:23 +0100
+Subject: [Mapnik-devel] SVG-based symbolizers
+In-Reply-To: <e260aad40905131418w21c416afv70baf9a40ebf58f0@mail.gmail.com>
+References: <e260aad40905131418w21c416afv70baf9a40ebf58f0@mail.gmail.com>
+Message-ID: <4A0C4E27.7070001@compton.nu>
+
+Craig de Stigter wrote:
+
+>     * SVG symbol support would depend on both librsvg and cairo
+>     * It'd be a backwards-compatible extension of the existing way to
+>       use images, by adding support for type=SVG in addition to existing
+>       PNG support.
+>     * It'll apply to both point and shield symbolizers
+
+Note that for shield symbolizers it would be nice to have some way to 
+tell mapnik to scale the shield to fit around the text. Obviously this 
+means some way of indicating what part of the image is intended to 
+contain the text.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From kaisersoulei at gmail.com  Sun May 17 04:03:52 2009
+From: kaisersoulei at gmail.com (Harry Gomez)
+Date: Sat, 16 May 2009 21:03:52 -0500
+Subject: [Mapnik-devel] Boost Install
+Message-ID: <d65fceb50905161903u41fdc663le6922569f03b6fee@mail.gmail.com>
+
+Hello everyone,
+
+I am new to mapnik development and I am having trouble installing Boost.
+
+I followed the instructions on the site for Windows installation and
+when I finally write
+
+from mapnik iomport * in Python I get the following error:
+
+"ImportError: DLL load failed: This application has failed to start
+because the application configuration is incorrect. Reinstalling the
+application may fix this problem."
+
+The mapnik site states that if we do get an error to reinstall boost.
+I had not done so, I downloaded boost but can get it to work. I am
+using Visaul Studio 6 on Windows Xp sp2. Please let me know what I
+need to do to get my Mapnik up and running.
+
+Thank you in advance.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090516/7c2ff4b2/attachment.html>
+
+From blake at hailmail.net  Sun May 17 19:56:03 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 17 May 2009 10:56:03 -0700
+Subject: [Mapnik-devel] Where2.0 Mapnik code sprint?
+Message-ID: <01C7825D-58B8-4A8A-8704-959472F76528@hailmail.net>
+
+Anyone who's going to be at Where2.0/WhereCamp this coming week  
+interested in getting together to sprint on Mapnik 0.6.1?
+
+Dane
+
+
+
+From kunitoki at gmail.com  Sun May 17 21:13:50 2009
+From: kunitoki at gmail.com (Lucio Asnaghi)
+Date: Sun, 17 May 2009 21:13:50 +0200
+Subject: [Mapnik-devel] Where2.0 Mapnik code sprint?
+In-Reply-To: <01C7825D-58B8-4A8A-8704-959472F76528@hailmail.net>
+References: <01C7825D-58B8-4A8A-8704-959472F76528@hailmail.net>
+Message-ID: <2882A37F-F922-415D-AD90-6FAF49EA783D@gmail.com>
+
+If it will be in italy, for sure ! But i guess...
+
+
+
+
+On 17/mag/09, at 19:56, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Anyone who's going to be at Where2.0/WhereCamp this coming week
+> interested in getting together to sprint on Mapnik 0.6.1?
+>
+> Dane
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From blake at hailmail.net  Sun May 17 21:41:24 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 17 May 2009 12:41:24 -0700
+Subject: [Mapnik-devel] Where2.0 Mapnik code sprint?
+In-Reply-To: <2882A37F-F922-415D-AD90-6FAF49EA783D@gmail.com>
+References: <01C7825D-58B8-4A8A-8704-959472F76528@hailmail.net>
+	<2882A37F-F922-415D-AD90-6FAF49EA783D@gmail.com>
+Message-ID: <08A0F913-89E9-4C7C-A8CC-07D976A5C129@hailmail.net>
+
+Lucio,
+
+If we can turn a few folks out it will surely be worth it to launch a  
+skype video session or something similar. (Let me know if you have any  
+preference for tools).
+
+To facilitate that I'll push for finding a time before 2-3 pm San Fran  
+time (~10 pm UTC) if possible.
+
+Dane
+
+
+On May 17, 2009, at 12:13 PM, Lucio Asnaghi wrote:
+
+> If it will be in italy, for sure ! But i guess...
+>
+>
+>
+>
+> On 17/mag/09, at 19:56, Dane Springmeyer <blake at hailmail.net> wrote:
+>
+>> Anyone who's going to be at Where2.0/WhereCamp this coming week
+>> interested in getting together to sprint on Mapnik 0.6.1?
+>>
+>> Dane
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From oshaniuk at cloudmade.com  Wed May 20 18:09:43 2009
+From: oshaniuk at cloudmade.com (Oleg Shaniuk)
+Date: Wed, 20 May 2009 19:09:43 +0300
+Subject: [Mapnik-devel] SRTM data support in mapnik
+In-Reply-To: <b658f7060905200758l77336288u2e9eac31b1b16ff3@mail.gmail.com>
+References: <b658f7060905200758l77336288u2e9eac31b1b16ff3@mail.gmail.com>
+Message-ID: <b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+
+ Hi All,
+
+I'm going to share the SRTM plugin for Mapnik which allows to use NASA's
+srtm data as source and colourize it via style xml, which, though, requires
+adding some symbolizers to mapnik source.
+
+The plugin still needs a lot of work - it has pretty bad performance,
+especially for big bboxes, but we thought it would be useful to release it
+anyway. Hopefully it will be of use for the hill shading features planned
+for release 0.7
+
+So, we presenting it "as is"
+
+The code originally written by Matt Amos (matt at cloudmade.com). I've made few
+fixes to it.
+
+Please feel free to ask questions about the code structure or algorithms.
+
+Diff is attached and valid for mapnik trunk revision 1150
+
+*New Files:
+
+SRTM plugin
+*
+
+plugins/input/srtm/SConscript
+
+plugins/input/srtm/srtm_datasource.hpp
+
+plugins/input/srtm/srtm_datasource.cpp
+
+plugins/input/srtm/srtm_featureset.hpp
+
+plugins/input/srtm/srtm_featureset.cpp
+
+*
+*
+
+*
+include/mapnik*
+
+include/mapnik/colour_map.hpp
+
+include/mapnik/height_field_symbolizer.hpp
+
+*
+src*
+
+src/colour_map.cpp
+
+src/height_field_symbolizer.cpp
+
+
+
+*Mapnik changes:*
+
+*include/mapnik/polygon_symbolizer.hpp*
+
+- added *polygon_value_symbloizer* class
+
+Symbolizer for polygons with a colour mapped to one of their properties.
+
+*include/mapnik/value.hpp*
+
+ - added static_visitor for double
+
+*include/mapnik/cairo_renderer.hpp
+src/cairo_renderer.cpp
+*
+ - added *empty* methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/agg_renderer.hpp
+src/agg_renderer.cpp*
+
+- added methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/rule.hpp*
+
+ - rules for *polygon_value_symbloizer *and* height_field_symbolizer*
+
+*src/load_map.cpp*
+
+ - added methods to parse values for new symbolizers
+
+*src/save_map.cpp*
+
+- added *empty* methods to parse values for new symbolizers
+
+*src/SConscript*
+- added targets: height_field_symbolizer.cpp and colour_map.cpp
+
+*SConstruct*
+- added srtm building by default
+- added libzzip dependency ( for srtm plugin )
+
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090520/20bee63f/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-srtm.patch
+Type: text/x-patch
+Size: 67149 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090520/20bee63f/attachment.bin>
+
+From oshaniuk at cloudmade.com  Thu May 21 10:46:32 2009
+From: oshaniuk at cloudmade.com (Oleg Shaniuk)
+Date: Thu, 21 May 2009 11:46:32 +0300
+Subject: [Mapnik-devel] SRTM data support in mapnik
+In-Reply-To: <b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+References: <b658f7060905200758l77336288u2e9eac31b1b16ff3@mail.gmail.com> 
+	<b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+Message-ID: <b658f7060905210146o69df1fbdv4201c6441f543749@mail.gmail.com>
+
+ Hi All,
+
+I'm going to share the SRTM plugin for Mapnik which allows to use NASA's
+srtm data as source and colourize it via style xml, which, though, requires
+adding some symbolizers to mapnik source.
+
+The plugin still needs a lot of work - it has pretty bad performance,
+especially for big bboxes, but we thought it would be useful to release it
+anyway. Hopefully it will be of use for the hill shading features planned
+for release 0.7
+
+So, we presenting it "as is"
+
+The code originally written by Matt Amos (matt at cloudmade.com). I've made few
+fixes to it.
+
+Please feel free to ask questions about the code structure or algorithms.
+
+Diff is will be attached to next message, and valid for mapnik trunk
+revision 1150
+
+
+*New Files:
+
+SRTM plugin
+*
+
+plugins/input/srtm/SConscript
+
+plugins/input/srtm/srtm_datasource.hpp
+
+plugins/input/srtm/srtm_datasource.cpp
+
+plugins/input/srtm/srtm_featureset.hpp
+
+plugins/input/srtm/srtm_featureset.cpp
+
+*
+*
+
+*
+include/mapnik*
+
+include/mapnik/colour_map.hpp
+
+include/mapnik/height_field_symbolizer.hpp
+
+*
+src*
+
+src/colour_map.cpp
+
+src/height_field_symbolizer.cpp
+
+
+
+*Mapnik changes:*
+
+*include/mapnik/polygon_symbolizer.hpp*
+
+- added *polygon_value_symbloizer* class
+
+Symbolizer for polygons with a colour mapped to one of their properties.
+
+*include/mapnik/value.hpp*
+
+ - added static_visitor for double
+
+*include/mapnik/cairo_renderer.hpp
+src/cairo_renderer.cpp
+*
+ - added *empty* methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/agg_renderer.hpp
+src/agg_renderer.cpp*
+
+- added methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/rule.hpp*
+
+ - rules for *polygon_value_symbloizer *and* height_field_symbolizer*
+
+*src/load_map.cpp*
+
+ - added methods to parse values for new symbolizers
+
+*src/save_map.cpp*
+
+- added *empty* methods to parse values for new symbolizers
+
+*src/SConscript*
+- added targets: height_field_symbolizer.cpp and colour_map.cpp
+
+*SConstruct*
+- added srtm building by default
+- added libzzip dependency ( for srtm plugin )
+
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090521/e12f6fe3/attachment.html>
+
+From blake at hailmail.net  Thu May 21 18:27:46 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 21 May 2009 09:27:46 -0700
+Subject: [Mapnik-devel] SRTM data support in mapnik
+In-Reply-To: <b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+References: <b658f7060905200758l77336288u2e9eac31b1b16ff3@mail.gmail.com>
+	<b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+Message-ID: <1FC0838C-457F-4240-B744-6E2BD22A12B5@hailmail.net>
+
+On May 20, 2009, at 9:09 AM, Oleg Shaniuk wrote:
+
+> Hi All,
+>
+> I'm going to share the SRTM plugin for Mapnik which allows to use  
+> NASA's srtm data as source and colourize it via style xml, which,  
+> though, requires adding some symbolizers to mapnik source.
+>
+
+Oleg, this is a great contribution, thanks to you and Matt for posting!
+
+> The plugin still needs a lot of work - it has pretty bad  
+> performance, especially for big bboxes, but we thought it would be  
+> useful to release it anyway.
+
+What was the general reasoning for a separate plugin rather than  
+reading in the SRTM via the GDAL or Raster plugins?
+
+> Hopefully it will be of use for the hill shading features planned  
+> for release 0.7
+
+The hillshading features were included in the previous 0.6.0 release,  
+so if this patch works against trunk we should be able to readily test  
+the two together.
+
+>
+>
+> So, we presenting it "as is"
+>
+> The code originally written by Matt Amos (matt at cloudmade.com). I've  
+> made few fixes to it.
+>
+> Please feel free to ask questions about the code structure or  
+> algorithms.
+>
+> Diff is attached and valid for mapnik trunk revision 1150
+>
+> New Files:
+>
+> SRTM plugin
+> plugins/input/srtm/SConscript
+> plugins/input/srtm/srtm_datasource.hpp
+> plugins/input/srtm/srtm_datasource.cpp
+> plugins/input/srtm/srtm_featureset.hpp
+> plugins/input/srtm/srtm_featureset.cpp
+>
+>
+>
+> include/mapnik
+> include/mapnik/colour_map.hpp
+> include/mapnik/height_field_symbolizer.hpp
+>
+>
+> src
+> src/colour_map.cpp
+> src/height_field_symbolizer.cpp
+>
+>
+>
+> Mapnik changes:
+>
+> include/mapnik/polygon_symbolizer.hpp
+>
+> - added polygon_value_symbloizer class
+>
+> Symbolizer for polygons with a colour mapped to one of their  
+> properties.
+>
+> include/mapnik/value.hpp
+>
+>  - added static_visitor for double
+>
+> include/mapnik/cairo_renderer.hpp
+> src/cairo_renderer.cpp
+>
+>  - added empty methods for drawing polygon_value_symbloizer and  
+> height_field_symbolizer
+>
+> include/mapnik/agg_renderer.hpp
+> src/agg_renderer.cpp
+>
+> - added methods for drawing polygon_value_symbloizer and  
+> height_field_symbolizer
+>
+> include/mapnik/rule.hpp
+>
+>  - rules for polygon_value_symbloizer and height_field_symbolizer
+>
+> src/load_map.cpp
+>
+>  - added methods to parse values for new symbolizers
+>
+> src/save_map.cpp
+>
+> - added empty methods to parse values for new symbolizers
+>
+> src/SConscript
+> - added targets: height_field_symbolizer.cpp and colour_map.cpp
+>
+> SConstruct
+> - added srtm building by default
+> - added libzzip dependency ( for srtm plugin )
+>
+> --
+> RO
+>
+> <mapnik-srtm.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090521/3ebc6417/attachment.html>
+
+From blake at hailmail.net  Thu May 21 19:04:16 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 21 May 2009 10:04:16 -0700
+Subject: [Mapnik-devel] Map resolution and scaling for high-res output
+Message-ID: <37E6F8E9-76CB-4A67-9BC5-E515158AAC4E@hailmail.net>
+
+I've been pondering this issue of scaling font sizes, line widths, and  
+symbols for high resolution output from Mapnik. Essentially  
+maintaining readable and consistent output without having to maintain  
+or edit your stylesheets at variable print resolutions.
+
+I've now had a chance to take a stab at this problem and attached to http://trac.mapnik.org/ticket/343 
+  is a alpha patch ready for testing and feedback.
+
+Dane
+
+
+
+From oshaniuk at cogniance.com  Fri May 22 13:59:00 2009
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Fri, 22 May 2009 14:59:00 +0300
+Subject: [Mapnik-devel] SRTM data support in mapnik
+In-Reply-To: <1FC0838C-457F-4240-B744-6E2BD22A12B5@hailmail.net>
+References: <b658f7060905200758l77336288u2e9eac31b1b16ff3@mail.gmail.com>
+	<b658f7060905200909i3fb3d9fcu65c121de61b48581@mail.gmail.com>
+	<1FC0838C-457F-4240-B744-6E2BD22A12B5@hailmail.net>
+Message-ID: <CD6574E0-CB79-493E-B2FE-995A2ECBC896@cogniance.com>
+
+Hi Dane,
+
+The idea of creating separate plugin was taken to make SRTM as fully  
+separate and independent datasource which can be developed without  
+affecting other datasources and, respectively, keep mapnik running  
+anyway...
+
+--
+RO
+
+On May 21, 2009, at 7:27 PM, Dane Springmeyer wrote:
+
+> On May 20, 2009, at 9:09 AM, Oleg Shaniuk wrote:
+>
+>> Hi All,
+>>
+>> I'm going to share the SRTM plugin for Mapnik which allows to use  
+>> NASA's srtm data as source and colourize it via style xml, which,  
+>> though, requires adding some symbolizers to mapnik source.
+>>
+>
+> Oleg, this is a great contribution, thanks to you and Matt for  
+> posting!
+>
+>> The plugin still needs a lot of work - it has pretty bad  
+>> performance, especially for big bboxes, but we thought it would be  
+>> useful to release it anyway.
+>
+> What was the general reasoning for a separate plugin rather than  
+> reading in the SRTM via the GDAL or Raster plugins?
+>
+>> Hopefully it will be of use for the hill shading features planned  
+>> for release 0.7
+>
+> The hillshading features were included in the previous 0.6.0  
+> release, so if this patch works against trunk we should be able to  
+> readily test the two together.
+>
+>>
+>>
+>> So, we presenting it "as is"
+>>
+>> The code originally written by Matt Amos (matt at cloudmade.com). I've  
+>> made few fixes to it.
+>>
+>> Please feel free to ask questions about the code structure or  
+>> algorithms.
+>>
+>> Diff is attached and valid for mapnik trunk revision 1150
+>>
+>> New Files:
+>>
+>> SRTM plugin
+>> plugins/input/srtm/SConscript
+>> plugins/input/srtm/srtm_datasource.hpp
+>> plugins/input/srtm/srtm_datasource.cpp
+>> plugins/input/srtm/srtm_featureset.hpp
+>> plugins/input/srtm/srtm_featureset.cpp
+>>
+>>
+>>
+>> include/mapnik
+>> include/mapnik/colour_map.hpp
+>> include/mapnik/height_field_symbolizer.hpp
+>>
+>>
+>> src
+>> src/colour_map.cpp
+>> src/height_field_symbolizer.cpp
+>>
+>>
+>>
+>> Mapnik changes:
+>>
+>> include/mapnik/polygon_symbolizer.hpp
+>>
+>> - added polygon_value_symbloizer class
+>>
+>> Symbolizer for polygons with a colour mapped to one of their  
+>> properties.
+>>
+>> include/mapnik/value.hpp
+>>
+>>  - added static_visitor for double
+>>
+>> include/mapnik/cairo_renderer.hpp
+>> src/cairo_renderer.cpp
+>>
+>>  - added empty methods for drawing polygon_value_symbloizer and  
+>> height_field_symbolizer
+>>
+>> include/mapnik/agg_renderer.hpp
+>> src/agg_renderer.cpp
+>>
+>> - added methods for drawing polygon_value_symbloizer and  
+>> height_field_symbolizer
+>>
+>> include/mapnik/rule.hpp
+>>
+>>  - rules for polygon_value_symbloizer and height_field_symbolizer
+>>
+>> src/load_map.cpp
+>>
+>>  - added methods to parse values for new symbolizers
+>>
+>> src/save_map.cpp
+>>
+>> - added empty methods to parse values for new symbolizers
+>>
+>> src/SConscript
+>> - added targets: height_field_symbolizer.cpp and colour_map.cpp
+>>
+>> SConstruct
+>> - added srtm building by default
+>> - added libzzip dependency ( for srtm plugin )
+>>
+>> --
+>> RO
+>>
+>> <mapnik-srtm.patch>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090522/08d167fb/attachment.html>
+
+From kaisersoulei at gmail.com  Sun May 24 05:54:03 2009
+From: kaisersoulei at gmail.com (Harry Gomez)
+Date: Sat, 23 May 2009 22:54:03 -0500
+Subject: [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in
+	Windows XP pro
+Message-ID: <d65fceb50905232054n44efdb1bx9f82a9f92b68dda3@mail.gmail.com>
+
+Hello,I was having problems installing mapnik on my PC. I had followed the
+wiki instructions to a T(atleast I thought). I had downloaded Mapnik 0.6.0
+and Python 2.5. I installed Python and Mapnik 0.6.0 and set up the system
+variables but I didnt get it to work. I later installed Visual Studio 6 to
+but mapnik still did not work.
+?
+How did I get this to work, I did the following:
+-I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)-Got rid of
+all the system and user variables I had set up.
+I installed the following programs in order:
+-Visual C++ 9
+-Python 2.5 and set up the Pythonpath
+-unzipped Mapnik to the correct folder nad set up both the system and user
+variables.
+
+After I did this I followed the trac wiki guide to install Mapnik and
+everything worked. I am not quite sure what was wrong but I guess that the
+system variables were being pointing to the wrong files and installing the
+programs in the order I did and set up the system variables as I installed
+the programs helped solve this.(I probably had a typo at first, who know I
+just know that now it works!!!)
+Take care and keep up the good work.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090523/0e34d5c2/attachment.html>
+
+From juweiping at gmail.com  Sun May 24 06:21:26 2009
+From: juweiping at gmail.com (=?utf-8?B?6Z6g5Lyf5bmzKEpvc2VwaCk=?=)
+Date: Sun, 24 May 2009 12:21:26 +0800
+Subject: [Mapnik-devel]
+	=?utf-8?q?Solution_to_problems_Installing_Mapnik_0?=
+	=?utf-8?q?=2E6=2E0_inWindows_XP_pro?=
+Message-ID: <200905241221233307985@gmail.com>
+
+Hi,
+
+Please see the attachment jpg picture.
+
+At runtime,the mapnik depend on some dll.if all dependent is ok,follow:
+
+set env:
+
+PATH: add %mapnik_0_6_0_root%\lib 
+
+to use python binding,set PYTHONPATH to %mapnik_0_6_0_root%\site-packages 
+
+and modify the site-packages\mapnik\paths.py,set "mapniklibpath" to right path.
+
+
+
+
+
+
+
+
+???? Harry Gomez 
+????? 2009-05-24  12:01:01 
+???? mapnik-devel 
+??? 
+??? [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 inWindows XP pro 
+ 
+Hello,
+I was having problems installing mapnik on my PC. I had followed the wiki instructions to a T(atleast I thought). I had downloaded Mapnik 0.6.0 and Python 2.5. I installed Python and Mapnik 0.6.0 and set up the system variables but I didnt get it to work. I later installed Visual Studio 6 to but mapnik still did not work.
+?
+How did I get this to work, I did the following:
+-I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)
+-Got rid of all the system and user variables I had set up.
+I installed the following programs in order:
+-Visual C++ 9
+-Python 2.5 and set up the Pythonpath
+-unzipped Mapnik to the correct folder nad set up both the system and user variables.
+
+
+After I did this I followed the trac wiki guide to install Mapnik and everything worked. I am not quite sure what was wrong but I guess that the system variables were being pointing to the wrong files and installing the programs in the order I did and set up the system variables as I installed the programs helped solve this.(I probably had a typo at first, who know I just know that now it works!!!)
+Take care and keep up the good work.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik moudles.jpg
+Type: image/jpeg
+Size: 51219 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.jpg>
+

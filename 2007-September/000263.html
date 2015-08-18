@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem rendering interlaced PNG?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20rendering%20interlaced%20PNG%3F&In-Reply-To=%3C1189891243.27050.101.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000266.html">
+   <LINK REL="Next"  HREF="000264.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem rendering interlaced PNG?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20rendering%20interlaced%20PNG%3F&In-Reply-To=%3C1189891243.27050.101.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Problem rendering interlaced PNG?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sat Sep 15 23:20:43 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000266.html">[Mapnik-devel] Wrong date?
+</A></li>
+        <LI>Next message: <A HREF="000264.html">[Mapnik-devel] Problem rendering interlaced PNG?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Someone just updated one of the OSM map symbols with an interlaced PNG
+file and this was not rendering properly on the map. I opened the file
+in Gimp and saved it as a non-interlaced image and it now renders fine.
+Could Mapnik have an issue with interlaced PNG images?
+
+This one was broken:
+$ file symbols/peak.png
+symbols/peak.png: PNG image data, 8 x 8, 8-bit/color RGBA, interlaced
+
+
+These two both work OK:
+symbols/peak2.png: PNG image data, 8 x 8, 8-bit/color RGBA, non-interlaced
+symbols/peak3.png: PNG image data, 8 x 8, 1-bit colormap, non-interlaced
+
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000266.html">[Mapnik-devel] Wrong date?
+</A></li>
+	<LI>Next message: <A HREF="000264.html">[Mapnik-devel] Problem rendering interlaced PNG?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#263">[ date ]</a>
+              <a href="thread.html#263">[ thread ]</a>
+              <a href="subject.html#263">[ subject ]</a>
+              <a href="author.html#263">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik stuck in recursive loop?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1178922865.28551.54.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000148.html">
+   <LINK REL="Next"  HREF="000151.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik stuck in recursive loop?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1178922865.28551.54.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik stuck in recursive loop?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sat May 12 00:34:25 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000148.html">[Mapnik-devel] Fw: Clearing label cache in mapnik
+</A></li>
+        <LI>Next message: <A HREF="000151.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#149">[ date ]</a>
+              <a href="thread.html#149">[ thread ]</a>
+              <a href="subject.html#149">[ subject ]</a>
+              <a href="author.html#149">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've found that Mapnik is segfaulting while trying to render some OSM
+tiles with the latest planet dump. The stack trace has hundreds of
+frames which all look very similar - it looks to me like this algorithm
+is stuck in a recursive loop and has overflowed the stack:
+
+(gdb) bt 10
+#0  0x00002aaab0c53ee0 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+</I>    ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+#1  0x00002aaab0c54302 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+</I>    box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/quad_tree.hpp:179
+#2  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+</I>    box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/quad_tree.hpp:189
+#3  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+</I>    box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/quad_tree.hpp:189
+#4  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+</I>    box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/quad_tree.hpp:189
+#5  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+</I>    box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/quad_tree.hpp:189
+#6  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+</I>    box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/quad_tree.hpp:189
+#7  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+</I>    box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/quad_tree.hpp:189
+#8  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+</I>    box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/quad_tree.hpp:189
+#9  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+&gt;::<i>do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+</I>
+
+This happens when I do the following command with the latest
+planet.osm/osm2pgsql/mapnik/osm.xml
+
+$ echo 10531 6454 14 | ./render_from_list.py
+14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+35.639441068973944)
+Segmentation fault
+
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000148.html">[Mapnik-devel] Fw: Clearing label cache in mapnik
+</A></li>
+	<LI>Next message: <A HREF="000151.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#149">[ date ]</a>
+              <a href="thread.html#149">[ thread ]</a>
+              <a href="subject.html#149">[ subject ]</a>
+              <a href="author.html#149">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

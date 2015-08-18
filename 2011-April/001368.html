@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Shapefile memory and file handle optimizations
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20memory%20and%20file%20handle%20optimizations&In-Reply-To=%3C4A60D6BE-2F6E-42B8-B78C-ED5775A38CE7%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001367.html">
+   <LINK REL="Next"  HREF="001369.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Shapefile memory and file handle optimizations</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20memory%20and%20file%20handle%20optimizations&In-Reply-To=%3C4A60D6BE-2F6E-42B8-B78C-ED5775A38CE7%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Shapefile memory and file handle optimizations">dane at dbsgeo.com
+       </A><BR>
+    <I>Wed Apr  6 19:47:31 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001367.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+        <LI>Next message: <A HREF="001369.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1368">[ date ]</a>
+              <a href="thread.html#1368">[ thread ]</a>
+              <a href="subject.html#1368">[ subject ]</a>
+              <a href="author.html#1368">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+One of the early positive outcomes of the FOSS4G 2010 WMS shootout last year was a major speed improvement to the shapefile driver. I found that Mapnik's first results were faster than all other servers for PostGIS but much slower for shapefiles under high load (tests were made using up to 64 concurrent requests).
+
+So, Artem looked through the shapefile driver and noticed that for each request we re-opened and closed the boost::iostream memory mapped files of the shapefile (.shp, .dbf, index). By creating the shape_io object at datasource initialization and re-using for each request rendering speeds increased dramatically [1].
+
+But, this created a new problem: running out of file handles. For every shapefile datasource 3 handles are created for the .shp,.dbf, and .index. And because a mapnik.Map object is not designed to be shared between threads (nor are datasource objects) multi-threaded servers (like mod_tile and paleoserver) need to make N copies of the map per N threads. So, this can quickly max out the systems ulimit -n if you are using a map with more than 5-10 shapefiles.
+
+Here is the ticket for this issue: <A HREF="http://trac.mapnik.org/ticket/725">http://trac.mapnik.org/ticket/725</A>
+
+So, the task was to find a way to limit the usage of open file handles to use less memory while keeping the same high performance. Artem and I have been discussing this issue over the last several months, and today Artem committed an excellent fix [2] to leverage boost::interprocess [3] for a shared cache of &quot;mapped regions&quot;, allowing only one shapefile file handle to be used. I've confirmed that performance is on par with the previous methods while memory usage is way down (when creating many rendering threads).
+
+Fantastic work Artem!
+
+Dane
+
+[1] <A HREF="http://trac.mapnik.org/changeset/2188">http://trac.mapnik.org/changeset/2188</A>
+[2] <A HREF="http://trac.mapnik.org/changeset/2750">http://trac.mapnik.org/changeset/2750</A>
+[3] <A HREF="http://www.boost.org/doc/libs/1_46_0/doc/html/interprocess.html">http://www.boost.org/doc/libs/1_46_0/doc/html/interprocess.html</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001367.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+	<LI>Next message: <A HREF="001369.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1368">[ date ]</a>
+              <a href="thread.html#1368">[ thread ]</a>
+              <a href="subject.html#1368">[ subject ]</a>
+              <a href="author.html#1368">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

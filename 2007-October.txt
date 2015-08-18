@@ -1,0 +1,2048 @@
+From lists at brachttal.net  Tue Oct  2 22:06:29 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 2 Oct 2007 22:06:29 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+	<20070921192144.03f416d6@frodo.mittelerde>
+	<C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+	<20070926213057.219b0f67@frodo.mittelerde>
+	<9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+Message-ID: <20071002220629.3f4a1813@frodo.mittelerde>
+
+Am Wed, 26 Sep 2007 23:07:36 +0200 schrieb David Siegel:
+
+> Hi,
+> 
+> On 26.09.2007, at 21:30, Andreas Volz wrote:
+> 
+> --- snip ---
+> 
+> >> The changes I checked in last night probably broke the autoconf
+> >> build. Could you take a look at it and add the necessary bits and
+> >> pieces to support libxml2?
+> >
+> > I'll look into it. Is libxml2 optional or a minimum requirement?
+> 
+> It's optional. If libxml2 is used define HAVE_LIBXML2 (at least for  
+> load_map.cpp). If it's not used don't build libxml2_loader.cpp.
+
+Ok, should I enable this as default? Is it better than the default XML
+reader?
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Wed Oct  3 13:19:30 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 3 Oct 2007 13:19:30 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+	<20070921192144.03f416d6@frodo.mittelerde>
+	<C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+	<20070926213057.219b0f67@frodo.mittelerde>
+	<9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+Message-ID: <20071003131930.61bc66ec@frodo.mittelerde>
+
+Am Wed, 26 Sep 2007 23:07:36 +0200 schrieb David Siegel:
+
+> Hi,
+> 
+> On 26.09.2007, at 21:30, Andreas Volz wrote:
+> 
+> --- snip ---
+> 
+> >> The changes I checked in last night probably broke the autoconf
+> >> build. Could you take a look at it and add the necessary bits and
+> >> pieces to support libxml2?
+> >
+> > I'll look into it. Is libxml2 optional or a minimum requirement?
+> 
+> It's optional. If libxml2 is used define HAVE_LIBXML2 (at least for  
+> load_map.cpp). If it's not used don't build libxml2_loader.cpp.
+
+Should be fixed now. But I couldn't try it on this computer. I'll do
+that this afternoon.
+
+regards
+Andreas
+
+
+From david at artcom.de  Thu Oct  4 22:12:15 2007
+From: david at artcom.de (David Siegel)
+Date: Thu, 4 Oct 2007 22:12:15 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <20071002220629.3f4a1813@frodo.mittelerde>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+	<20070921192144.03f416d6@frodo.mittelerde>
+	<C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+	<20070926213057.219b0f67@frodo.mittelerde>
+	<9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+	<20071002220629.3f4a1813@frodo.mittelerde>
+Message-ID: <2051CEC6-9F06-4601-A895-EDDD612BBA94@artcom.de>
+
+
+On 02.10.2007, at 22:06, Andreas Volz wrote:
+
+> Am Wed, 26 Sep 2007 23:07:36 +0200 schrieb David Siegel:
+>
+>> Hi,
+>>
+>> On 26.09.2007, at 21:30, Andreas Volz wrote:
+>>
+>> --- snip ---
+>>
+>>>> The changes I checked in last night probably broke the autoconf
+>>>> build. Could you take a look at it and add the necessary bits and
+>>>> pieces to support libxml2?
+>>>
+>>> I'll look into it. Is libxml2 optional or a minimum requirement?
+>>
+>> It's optional. If libxml2 is used define HAVE_LIBXML2 (at least for
+>> load_map.cpp). If it's not used don't build libxml2_loader.cpp.
+>
+> Ok, should I enable this as default? Is it better than the default XML
+> reader?
+
+
+On 25.09.2007, at 23:24, David Siegel wrote:
+>
+> Mapnik now supports libxml2. This allows the use of XML entities to
+> define color-sets, db parameters or icon directories. It even can be
+> used to split a single map file into multiple parts.
+>
+
+Yes, it has additional features. But to keep it consistent with the  
+scons build tinyxml should be the default, at least for now.
+
+Cheers,
+	d.
+
+
+From david at artcom.de  Mon Oct  8 18:41:35 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 8 Oct 2007 18:41:35 +0200
+Subject: [Mapnik-devel] New XML format was:  strict XML branch merged
+In-Reply-To: <67E795E4-C630-45D1-A273-AC8861BF5EEC@mapnik.org>
+References: <2DE06909-1779-498F-A776-EB037B7C1901@artcom.de>
+	<67E795E4-C630-45D1-A273-AC8861BF5EEC@mapnik.org>
+Message-ID: <01F062D3-11D3-4937-9EF9-C95CE9D765D2@artcom.de>
+
+
+On 30.09.2007, at 01:38, Artem Pavlenko wrote:
+
+--- snip ---
+
+> Also I'm thinking about modifying XML to be more like svg (??) I  
+> realized SLD spec which was the basis for current syntax has  
+> limitations.
+> I'll post some ideas when I'm back home (I'm still getting back  
+> from foss4g)
+
+Looking forward to it. I was going to suggest some file format  
+changes too:
+
+1. Rename <CssParameter/> to <Parameter/>. No need to distinguish  
+between datasource and symbolizer parameters.
+
+2. Currently some symbolizers use child nodes to collect parameters,  
+some use attributes. I think it would be better to use one pattern  
+only. I currently prefer the child node solution.
+
+3. Remove 'type', 'width' and 'height' attributes from symbolizers  
+that have an image.
+
+4. I like
+	<Datasource type="postgis">
+		<Parameter/>
+	</Datasource>
+better than
+	<Datasource>
+		<Parameter name="type">postgis</Parameter>
+		<Parameter/>
+	</Datasource>
+
+5. Rename Layer's 'status' attribute to something more expressive  
+like 'visible'.
+
+Some might be irrelevant with your new format. Thought I'd post them  
+anyway.
+
+Cheers,
+	d.
+
+
+
+
+From david at artcom.de  Mon Oct  8 22:27:05 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 8 Oct 2007 22:27:05 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <20070917231716.52e5a38f@frodo.mittelerde>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+Message-ID: <4E96383E-02B3-4633-84D9-C24862B45A70@artcom.de>
+
+
+On 17.09.2007, at 23:17, Andreas Volz wrote:
+
+> Hello,
+>
+> some days ago I compiled mapnik with autotools. I used the libagg from
+> my distribution. But today after a SVN update i got this compiler  
+> error:
+>
+--- snip ---
+>
+> Are there some latest changes that forces Mapnik to use the included
+> libagg source? Or where is the problem?
+>
+
+The problem was a change of the default for agg::rendering_buffer  
+between agg version 2.4 and 2.5. I think I found the right way to fix  
+this in a portable manner.
+
+Cheers,
+	d.
+
+
+From artem at mapnik.org  Mon Oct  8 23:17:49 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 8 Oct 2007 22:17:49 +0100
+Subject: [Mapnik-devel] New XML format was:  strict XML branch merged
+In-Reply-To: <01F062D3-11D3-4937-9EF9-C95CE9D765D2@artcom.de>
+References: <2DE06909-1779-498F-A776-EB037B7C1901@artcom.de>
+	<67E795E4-C630-45D1-A273-AC8861BF5EEC@mapnik.org>
+	<01F062D3-11D3-4937-9EF9-C95CE9D765D2@artcom.de>
+Message-ID: <3F49A69F-240F-4AB5-AECA-968F50780300@mapnik.org>
+
+Hi David,
+
+>
+> On 30.09.2007, at 01:38, Artem Pavlenko wrote:
+>
+> --- snip ---
+>
+>> Also I'm thinking about modifying XML to be more like svg (??) I  
+>> realized SLD spec which was the basis for current syntax has  
+>> limitations.
+>> I'll post some ideas when I'm back home (I'm still getting back  
+>> from foss4g)
+>
+> Looking forward to it. I was going to suggest some file format  
+> changes too:
+>
+> 1. Rename <CssParameter/> to <Parameter/>. No need to distinguish  
+> between datasource and symbolizer parameters.
+
+Well, I after playing with SVG for a few days I'm thinking about  
+doing away with <CssParameter/> all together and use attributes  
+instread :
+
+<PolygonSymbolizer fill="#ff0000" fill-opacity="0.5" />
+
+Now we can define schema which would enforce correct attributes -  
+PolygonSymbolizer is a tag with two attributes : fill and fill- 
+opacity, anything else is not allowed. <Parameter> approach doesn't  
+provide this. This is OK for an dynamic type such as <Datasource>,  
+but symbolizers are concrete classes.
+
+>
+> 2. Currently some symbolizers use child nodes to collect  
+> parameters, some use attributes. I think it would be better to use  
+> one pattern only. I currently prefer the child node solution.
+
+Yes, see above.
+>
+> 3. Remove 'type', 'width' and 'height' attributes from symbolizers  
+> that have an image.
+
+Yes, good idea. Maybe still have optional x0,y0,width,height  
+attributes to be able to 'cut' rectangular shape from an image??
+>
+> 4. I like
+> 	<Datasource type="postgis">
+> 		<Parameter/>
+> 	</Datasource>
+> better than
+> 	<Datasource>
+> 		<Parameter name="type">postgis</Parameter>
+> 		<Parameter/>
+> 	</Datasource>
+>
+
+Yes, I like it too.
+
+> 5. Rename Layer's 'status' attribute to something more expressive  
+> like 'visible'.
+
+Yep.
+>
+> Some might be irrelevant with your new format. Thought I'd post  
+> them anyway.
+>
+
+> Cheers,
+> 	d.
+>
+
+Artem
+
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071008/8c68893e/attachment.html>
+
+From perrygeo at gmail.com  Sat Oct 13 22:08:46 2007
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Sat, 13 Oct 2007 13:08:46 -0700
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+Message-ID: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+
+I'm running Ubuntu 7.10 and have successfully (or so I thought)
+installed mapnik (svn revision 550). My few test cases using the
+python bindings are working fine but the included python demo has some
+problems:
+
+> python rundemo.py
+size = 3
+encoding=latin1
+file=../data/boundaries
+type=shape
+size = 2
+file=../data/qcdrainage
+type=shape
+size = 2
+file=../data/ontdrainage
+type=shape
+size = 2
+file=../data/boundaries_l
+type=shape
+size = 2
+file=../data/roads
+type=shape
+Traceback (most recent call last):
+  File "rundemo.py", line 185, in <module>
+    roads34_rule_stk.line_cap = line_cap.ROUND_CAP
+Boost.Python.ArgumentError: Python argument types in
+    None.None(Stroke, mapnik._mapnik.line_cap)
+did not match C++ signature:
+    None(mapnik::stroke {lvalue}, mapnik::enumeration<mapnik::line_cap_enum, 3>)
+
+
+I'm not sure if this is a problem with the install or the demo itself.
+Any thought?
+
+-- 
+Matthew T. Perry
+http://www.perrygeo.net
+
+"Never ascribe to malice, that which can be adequately explained by
+incompetence."
+
+
+From artem at mapnik.org  Sat Oct 13 23:35:11 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 13 Oct 2007 22:35:11 +0100
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+In-Reply-To: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+References: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+Message-ID: <8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+
+Matt,
+
+This is a problem with  Python bindings in r550, not installation.  I  
+haven't investigated properly, but I think enumeration wrappers are  
+causing this.
+It should be straight forward to fix by providing explicit conversion  
+from enum to wrapper type in mapnik_stroke.cpp.
+I'm away and I won't be able to fix this till next Wednesday. David  
+Siegel implemented  those wrappers as well as libxml map loader.  David,
+could you look into this?
+
+Regards
+Artem
+
+
+On 13 Oct 2007, at 21:08, Matthew Perry wrote:
+
+> I'm running Ubuntu 7.10 and have successfully (or so I thought)
+> installed mapnik (svn revision 550). My few test cases using the
+> python bindings are working fine but the included python demo has some
+> problems:
+>
+>> python rundemo.py
+> size = 3
+> encoding=latin1
+> file=../data/boundaries
+> type=shape
+> size = 2
+> file=../data/qcdrainage
+> type=shape
+> size = 2
+> file=../data/ontdrainage
+> type=shape
+> size = 2
+> file=../data/boundaries_l
+> type=shape
+> size = 2
+> file=../data/roads
+> type=shape
+> Traceback (most recent call last):
+>   File "rundemo.py", line 185, in <module>
+>     roads34_rule_stk.line_cap = line_cap.ROUND_CAP
+> Boost.Python.ArgumentError: Python argument types in
+>     None.None(Stroke, mapnik._mapnik.line_cap)
+> did not match C++ signature:
+>     None(mapnik::stroke {lvalue},  
+> mapnik::enumeration<mapnik::line_cap_enum, 3>)
+>
+>
+> I'm not sure if this is a problem with the install or the demo itself.
+> Any thought?
+>
+> -- 
+> Matthew T. Perry
+> http://www.perrygeo.net
+>
+> "Never ascribe to malice, that which can be adequately explained by
+> incompetence."
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071013/beb6d713/attachment.html>
+
+From david at artcom.de  Sun Oct 14 16:03:33 2007
+From: david at artcom.de (David Siegel)
+Date: Sun, 14 Oct 2007 16:03:33 +0200
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+In-Reply-To: <8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+References: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+	<8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+Message-ID: <C67EDF30-B941-4DBD-966E-35FC1B8BB455@artcom.de>
+
+Hi, Artem,
+Hi Matt,
+
+fixed in revision 551
+
+I was certain this would be handled by implicit conversion, but I  
+didn't test it. Sorry. Apparently boost pythons enum_ wrapper  
+converts the value to long at some point loosing the type  
+information. I checked in a workaround that resolves the issue by  
+allowing implicit conversion from long. This isn't the best solution  
+because it makes the enumeration wrapper less strict. The best way to  
+fix this is to write a generic binding helper for enumeration  
+wrappers. I will take a look into it.
+
+Cheers,
+	david (agnat)
+
+On 13.10.2007, at 23:35, Artem Pavlenko wrote:
+
+> Matt,
+>
+> This is a problem with  Python bindings in r550, not installation.   
+> I haven't investigated properly, but I think enumeration wrappers  
+> are causing this.
+> It should be straight forward to fix by providing explicit  
+> conversion from enum to wrapper type in mapnik_stroke.cpp.
+> I'm away and I won't be able to fix this till next Wednesday. David  
+> Siegel implemented  those wrappers as well as libxml map loader.   
+> David,
+> could you look into this?
+>
+> Regards
+> Artem
+>
+>
+> On 13 Oct 2007, at 21:08, Matthew Perry wrote:
+>
+>> I'm running Ubuntu 7.10 and have successfully (or so I thought)
+>> installed mapnik (svn revision 550). My few test cases using the
+>> python bindings are working fine but the included python demo has  
+>> some
+>> problems:
+>>
+>>> python rundemo.py
+>> size = 3
+>> encoding=latin1
+>> file=../data/boundaries
+>> type=shape
+>> size = 2
+>> file=../data/qcdrainage
+>> type=shape
+>> size = 2
+>> file=../data/ontdrainage
+>> type=shape
+>> size = 2
+>> file=../data/boundaries_l
+>> type=shape
+>> size = 2
+>> file=../data/roads
+>> type=shape
+>> Traceback (most recent call last):
+>>   File "rundemo.py", line 185, in <module>
+>>     roads34_rule_stk.line_cap = line_cap.ROUND_CAP
+>> Boost.Python.ArgumentError: Python argument types in
+>>     None.None(Stroke, mapnik._mapnik.line_cap)
+>> did not match C++ signature:
+>>     None(mapnik::stroke {lvalue},  
+>> mapnik::enumeration<mapnik::line_cap_enum, 3>)
+>>
+>>
+>> I'm not sure if this is a problem with the install or the demo  
+>> itself.
+>> Any thought?
+>>
+>> -- 
+>> Matthew T. Perry
+>> http://www.perrygeo.net
+>>
+>> "Never ascribe to malice, that which can be adequately explained by
+>> incompetence."
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> Artem Pavlenko
+> http://mapnik.org
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Wed Oct 17 17:43:47 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 17 Oct 2007 16:43:47 +0100
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+In-Reply-To: <C67EDF30-B941-4DBD-966E-35FC1B8BB455@artcom.de>
+References: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+	<8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+	<C67EDF30-B941-4DBD-966E-35FC1B8BB455@artcom.de>
+Message-ID: <8C8DA37B-2B95-48A4-B911-88AFB218B0B6@mapnik.org>
+
+
+On 14 Oct 2007, at 15:03, David Siegel wrote:
+
+> Hi, Artem,
+> Hi Matt,
+>
+> fixed in revision 551
+>
+> I was certain this would be handled by implicit conversion, but I  
+> didn't test it. Sorry. Apparently boost pythons enum_ wrapper  
+> converts the value to long at some point loosing the type  
+> information. I checked in a workaround that resolves the issue by  
+> allowing implicit conversion from long. This isn't the best  
+> solution because it makes the enumeration wrapper less strict. The  
+> best way to fix this is to write a generic binding helper for  
+> enumeration wrappers. I will take a look into it.
+>
+> Cheers,
+> 	david (agnat)
+
+
+Thanks, David!
+
+I was thinking about reflecting enumerations in Python. Here is  
+approach that doesn't make enumeration wrapper less strict in c++:
+
+
+template <typename T>
+struct mapnik_enumeration_to_python
+{
+       static PyObject* convert(T const& v)
+       {
+          return ::PyInt_FromLong(v);
+       }
+};
+
+
+
+void export_stroke ()
+{
+     using namespace mapnik;
+     using namespace boost::python;
+
+
+     enum_<line_cap_enum>("line_cap")
+         .value("BUTT_CAP",BUTT_CAP)
+         .value("SQUARE_CAP",SQUARE_CAP)
+         .value("ROUND_CAP",ROUND_CAP)
+         ;
+     enum_<line_join_enum>("line_join")
+         .value("MITER_JOIN",MITER_JOIN)
+         .value("MITER_REVERT_JOIN",MITER_REVERT_JOIN)
+         .value("ROUND_JOIN",ROUND_JOIN)
+         .value("BEVEL_JOIN",BEVEL_JOIN)
+         ;
+
+     implicitly_convertible<line_join_enum,line_join_e>();
+     implicitly_convertible<line_cap_enum,line_cap_e>();
+
+      
+to_python_converter<line_join_e,mapnik_enumeration_to_python<line_join_e 
+ > >();
+      
+to_python_converter<line_cap_e,mapnik_enumeration_to_python<line_cap_e>  
+ >();
+
+.............
+
+
+to_python converter can be implemented to be more useful, at the  
+moment it just converts to PyInt.
+
+Let me know your thoughts?
+
+Regards
+Artem
+
+>
+> On 13.10.2007, at 23:35, Artem Pavlenko wrote:
+>
+>> Matt,
+>>
+>> This is a problem with  Python bindings in r550, not  
+>> installation.  I haven't investigated properly, but I think  
+>> enumeration wrappers are causing this.
+>> It should be straight forward to fix by providing explicit  
+>> conversion from enum to wrapper type in mapnik_stroke.cpp.
+>> I'm away and I won't be able to fix this till next Wednesday.  
+>> David Siegel implemented  those wrappers as well as libxml map  
+>> loader.  David,
+>> could you look into this?
+>>
+>> Regards
+>> Artem
+>>
+>>
+>> On 13 Oct 2007, at 21:08, Matthew Perry wrote:
+>>
+>>> I'm running Ubuntu 7.10 and have successfully (or so I thought)
+>>> installed mapnik (svn revision 550). My few test cases using the
+>>> python bindings are working fine but the included python demo has  
+>>> some
+>>> problems:
+>>>
+>>>> python rundemo.py
+>>> size = 3
+>>> encoding=latin1
+>>> file=../data/boundaries
+>>> type=shape
+>>> size = 2
+>>> file=../data/qcdrainage
+>>> type=shape
+>>> size = 2
+>>> file=../data/ontdrainage
+>>> type=shape
+>>> size = 2
+>>> file=../data/boundaries_l
+>>> type=shape
+>>> size = 2
+>>> file=../data/roads
+>>> type=shape
+>>> Traceback (most recent call last):
+>>>   File "rundemo.py", line 185, in <module>
+>>>     roads34_rule_stk.line_cap = line_cap.ROUND_CAP
+>>> Boost.Python.ArgumentError: Python argument types in
+>>>     None.None(Stroke, mapnik._mapnik.line_cap)
+>>> did not match C++ signature:
+>>>     None(mapnik::stroke {lvalue},  
+>>> mapnik::enumeration<mapnik::line_cap_enum, 3>)
+>>>
+>>>
+>>> I'm not sure if this is a problem with the install or the demo  
+>>> itself.
+>>> Any thought?
+>>>
+>>> -- 
+>>> Matthew T. Perry
+>>> http://www.perrygeo.net
+>>>
+>>> "Never ascribe to malice, that which can be adequately explained by
+>>> incompetence."
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071017/89caa21e/attachment.html>
+
+From artem at mapnik.org  Thu Oct 18 10:23:16 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 18 Oct 2007 09:23:16 +0100
+Subject: [Mapnik-devel] [Mapnik-users] New MacPort
+In-Reply-To: <8c58fcec0710090954q56e1c13cgcdc3c85c48a6cbe0@mail.gmail.com>
+References: <8c58fcec0709251420u17834235he6d936e8088a9a77@mail.gmail.com>
+	<9055F197-2343-48DA-836F-6C01B15478A5@mapnik.org>
+	<8c58fcec0710081725k42ddca48y1d7963b662c3ea7f@mail.gmail.com>
+	<873FF29A-133C-40A0-B970-A5CCD20C1D06@mapnik.org>
+	<8c58fcec0710090954q56e1c13cgcdc3c85c48a6cbe0@mail.gmail.com>
+Message-ID: <3B1AABCE-6FF5-40E2-A06B-BCB3A795B0D8@mapnik.org>
+
+Hi Paul,
+
+Thanks for your effort! I'm new to MacPorts.
+I followed instructions and here're some feedback :
+
+1. patch-SConstruct is not needed for the latest svn trunk
+2. With only port:boost in depends_libs , build fails because boost- 
+python is missing
+     There's no way to specify a particular variant in depends_lib  ??
+3. If I 'port'  boost +python24 independently I get to the end of the  
+build , but boost_python is wrongly linked against python2.3  
+(installed by default on 10.4.x)
+4. The whole process takes quite a while (building all boost libs,  
+proj4, gdal etc). Maybe splitting boost into individual libraries   
+would be a better approach :
+
+	port:boost-headers
+         port:boost-filesystem
+         port:boost-python
+         port:boost-regex
+         port:boost-thread
+
+
+Cheers,
+Artem
+
+On 9 Oct 2007, at 17:54, Paul Smith wrote:
+
+> Hi Artem,
+>
+> On 10/9/07, Artem Pavlenko <artem at mapnik.org> wrote:
+>> Not, yet. Do I need to install some utilities? port? I'll give it  
+>> a try
+>
+> You need MacPorts <http://www.macports.org/>, then download the port
+> file from the Trac ticket here:
+>
+> http://trac.macports.org/projects/macports/ticket/12784
+>
+> Then follow the directions here for installing a local port:
+>
+> http://geeklair.net/new_macports_guide/#development.local-repositories
+>
+> Cheers,
+> -Paul
+>
+>> On 25 Sep 2007, at 22:20, Paul Smith wrote:
+>> I submitted a new port to MacPorts of Mapnik:
+>>
+>> http://trac.macports.org/projects/macports/ticket/12784
+>>
+>> Hopefully this will make it a little easier for OS X users to get  
+>> up and
+>> running with Mapnik.
+>>
+>> Feedback welcome. I'm interested in others' success/failure  
+>> because I've had
+>> difficulty building the port. _mapnik.so winds up being linked  
+>> against the
+>> OS X Framework Python (as reported by `otool -L`), instead of the  
+>> Python
+>> binary and libs installed under /opt/local. I'm not sure how the  
+>> port will
+>> react to various Python environments.
+>>
+>> I also built the port against an arbitrary snapshot of the SVN  
+>> repo (r526),
+>> because that's what I was working against at the time, and it  
+>> seemed better
+>> than 0.4.0, which I couldn't get to build on my machine.
+>>
+>> -Paul
+>>
+>>
+>> Hi Paul,
+>>
+>> I'm still in the US, hence very slow to reply.  MacPorts  sounds   
+>> good.
+>> You're right, latest svn trunk is much better then 0.4:)
+>> I'll check it out when I'm back to Oxford.
+>> Cheers,
+>> Artem
+>>
+>> --
+>> Paul Smith
+>> http://www.pauladamsmith.com/
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>>
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>> --
+>> Paul Smith
+>> http://www.pauladamsmith.com/
+>>
+>>
+>>
+>>
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+>>
+>>
+>
+>
+> -- 
+> Paul Smith
+> http://www.pauladamsmith.com/
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071018/5e758892/attachment.html>
+
+From jburgess777 at googlemail.com  Fri Oct 19 00:26:38 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 18 Oct 2007 23:26:38 +0100
+Subject: [Mapnik-devel] Problem with polygon rendering
+Message-ID: <1192746398.11002.3.camel@localhost.localdomain>
+
+It seems that the layer bounding box projection change which was added
+in r522 breaks the rendering of some polygons, e.g. tile
+15/5256/11433.png in the OSM data set. 
+
+This currently looks fine on the OSM slippy map but this is only because
+the renderer is still using the r519 code. Locally I have the current
+SVN Mapnik and the green park is not rendered. Chris Schmidt also sees
+this on the labs.metacarta.com map.
+
+The attached patch fixes this for me by backing out the rev 522 change.
+
+I instrumented the code to compare the broken and good(OK) bbox and
+resolution calculations for each layer processed when rendering the
+above tile:
+
+** A good projection, no problems with this layer 
+
+Broken: Envelope(-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.081539502)
+BK resolution: 0.209323
+OK:     Envelope(-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.081539502)
+OK resolution: 0.209323
+
+
+** A bad layer. This one is massively different between the old and new code
+
+Broken: Envelope(-13607625.52344022,6021590.096634368,-9971418.999999998,6024036.081539502)
+BK res: 0.000140806 
+OK:     Envelope(-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.081539502)
+OK res: 0.209323
+
+
+Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: polygon-fix-revert-r522.patch
+Type: text/x-patch
+Size: 1754 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071018/ef136a6b/attachment.bin>
+
+From crschmidt at metacarta.com  Fri Oct 19 02:47:09 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Thu, 18 Oct 2007 20:47:09 -0400
+Subject: [Mapnik-devel] Problem with polygon rendering
+In-Reply-To: <1192746398.11002.3.camel@localhost.localdomain>
+References: <1192746398.11002.3.camel@localhost.localdomain>
+Message-ID: <20071019004709.GA27192@metacarta.com>
+
+On Thu, Oct 18, 2007 at 11:26:38PM +0100, Jon Burgess wrote:
+> It seems that the layer bounding box projection change which was added
+> in r522 breaks the rendering of some polygons, e.g. tile
+> 15/5256/11433.png in the OSM data set. 
+> 
+> This currently looks fine on the OSM slippy map but this is only because
+> the renderer is still using the r519 code. Locally I have the current
+> SVN Mapnik and the green park is not rendered. Chris Schmidt also sees
+> this on the labs.metacarta.com map.
+> 
+> The attached patch fixes this for me by backing out the rev 522 change.
+
+I have applied Jon's patch to the Mapnik running on Hypercube, and can
+confirm that it fixes the problem that I saw after updating to SVN.
+(Thanks Jon!)
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Fri Oct 19 11:58:54 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 19 Oct 2007 10:58:54 +0100
+Subject: [Mapnik-devel] Problem with polygon rendering
+In-Reply-To: <1192746398.11002.3.camel@localhost.localdomain>
+References: <1192746398.11002.3.camel@localhost.localdomain>
+Message-ID: <84D91BCF-6543-41AB-9A4A-FF2DFA787501@mapnik.org>
+
+Hi Jon,
+
+> It seems that the layer bounding box projection change which was added
+> in r522 breaks the rendering of some polygons, e.g. tile
+> 15/5256/11433.png in the OSM data set.
+>
+> This currently looks fine on the OSM slippy map but this is only  
+> because
+> the renderer is still using the r519 code. Locally I have the current
+> SVN Mapnik and the green park is not rendered. Chris Schmidt also sees
+> this on the labs.metacarta.com map.
+>
+> The attached patch fixes this for me by backing out the rev 522  
+> change.
+>
+> I instrumented the code to compare the broken and good(OK) bbox and
+> resolution calculations for each layer processed when rendering the
+> above tile:
+>
+> ** A good projection, no problems with this layer
+>
+> Broken: Envelope 
+> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+> 9502)
+> BK resolution: 0.209323
+> OK:     Envelope 
+> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+> 9502)
+> OK resolution: 0.209323
+>
+>
+> ** A bad layer. This one is massively different between the old and  
+> new code
+>
+> Broken: Envelope 
+> (-13607625.52344022,6021590.096634368,-9971418.999999998,6024036.08153 
+> 9502)
+> BK res: 0.000140806
+> OK:     Envelope 
+> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+> 9502)
+> OK res: 0.209323
+>
+>
+
+What do you mean by broken bounding box? I don't think there's a  
+problem with current approach (r522) as far as underlying data is  
+within *valid* extent.
+I'd like to replicate the above problem, could you provide more  
+information?
+
+Artem
+
+> Jon
+>
+> <polygon-fix-revert- 
+> r522.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/52486c9a/attachment.html>
+
+From artem at mapnik.org  Fri Oct 19 12:14:10 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 19 Oct 2007 11:14:10 +0100
+Subject: [Mapnik-devel] Problem with polygon rendering
+In-Reply-To: <20071019004709.GA27192@metacarta.com>
+References: <1192746398.11002.3.camel@localhost.localdomain>
+	<20071019004709.GA27192@metacarta.com>
+Message-ID: <7BE369B1-8208-439E-A391-E5C60A50086C@mapnik.org>
+
+
+On 19 Oct 2007, at 01:47, Christopher Schmidt wrote:
+
+> On Thu, Oct 18, 2007 at 11:26:38PM +0100, Jon Burgess wrote:
+>> It seems that the layer bounding box projection change which was  
+>> added
+>> in r522 breaks the rendering of some polygons, e.g. tile
+>> 15/5256/11433.png in the OSM data set.
+>>
+>> This currently looks fine on the OSM slippy map but this is only  
+>> because
+>> the renderer is still using the r519 code. Locally I have the current
+>> SVN Mapnik and the green park is not rendered. Chris Schmidt also  
+>> sees
+>> this on the labs.metacarta.com map.
+>>
+>> The attached patch fixes this for me by backing out the rev 522  
+>> change.
+>
+> I have applied Jon's patch to the Mapnik running on Hypercube, and can
+> confirm that it fixes the problem that I saw after updating to SVN.
+> (Thanks Jon!)
+
+
+Are you using old world_boundaries? If so, the problem is with proj4  
+not be able to project 'out-of-valid-extent' polygons (fair enough).
+I don't think logic (in Mapnik) is wrong , everything should work  
+fine is  data is valid. When I created shorelne_{a,l}.shp I didn't  
+clip outer tiles(polygons) to valid mercator extent, hence proj4 is  
+returning wrong results.
+
+Cheers
+Artem
+
+
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/b871a9f6/attachment.html>
+
+From lists at brachttal.net  Fri Oct 19 18:55:59 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 19 Oct 2007 18:55:59 +0200
+Subject: [Mapnik-devel] Python support with autotools
+Message-ID: <20071019185559.4e095521@frodo.mittelerde>
+
+Hello,
+
+As you've maybe noticed I added a autotools build system to compile
+mapnik. I don't know who regular build mapnik with it. But currently it
+lacks the python support. I'm not very familiar with python libraries.
+So could someone assist me to add the python support for the autotools
+build? I looked into the scons files, but there're still some questions.
+
+I've some problems with the scons build on my system. So could someone
+send me a list of the files and their location after installing mapnik?
+Then I could do it the same in autotools.
+
+regards
+Andreas
+
+
+From david at artcom.de  Fri Oct 19 23:56:43 2007
+From: david at artcom.de (David Siegel)
+Date: Fri, 19 Oct 2007 23:56:43 +0200
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+In-Reply-To: <8C8DA37B-2B95-48A4-B911-88AFB218B0B6@mapnik.org>
+References: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+	<8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+	<C67EDF30-B941-4DBD-966E-35FC1B8BB455@artcom.de>
+	<8C8DA37B-2B95-48A4-B911-88AFB218B0B6@mapnik.org>
+Message-ID: <2FF4D7AF-7D0B-40DE-BD63-1B0C5F197CFA@artcom.de>
+
+Hi,
+
+On 17.10.2007, at 17:43, Artem Pavlenko wrote:
+
+
+>
+> I was thinking about reflecting enumerations in Python. Here is  
+> approach that doesn't make enumeration wrapper less strict in c++:
+>
+>
+> template <typename T>
+> struct mapnik_enumeration_to_python
+> {
+>       static PyObject* convert(T const& v)
+>       {
+>          return ::PyInt_FromLong(v);
+>       }
+> };
+>
+>
+>
+> void export_stroke ()
+> {
+>     using namespace mapnik;
+>     using namespace boost::python;
+>
+>
+>     enum_<line_cap_enum>("line_cap")
+>         .value("BUTT_CAP",BUTT_CAP)
+>         .value("SQUARE_CAP",SQUARE_CAP)
+>         .value("ROUND_CAP",ROUND_CAP)
+>         ;
+>     enum_<line_join_enum>("line_join")
+>         .value("MITER_JOIN",MITER_JOIN)
+>         .value("MITER_REVERT_JOIN",MITER_REVERT_JOIN)
+>         .value("ROUND_JOIN",ROUND_JOIN)
+>         .value("BEVEL_JOIN",BEVEL_JOIN)
+>         ;
+>
+>     implicitly_convertible<line_join_enum,line_join_e>();
+>     implicitly_convertible<line_cap_enum,line_cap_e>();
+>
+>      
+> to_python_converter<line_join_e,mapnik_enumeration_to_python<line_join 
+> _e> >();
+>      
+> to_python_converter<line_cap_e,mapnik_enumeration_to_python<line_cap_e 
+> > >();
+>
+> .............
+>
+>
+> to_python converter can be implemented to be more useful, at the  
+> moment it just converts to PyInt.
+>
+> Let me know your thoughts?
+>
+
+Good stuff! That is exactly what I was looking for. I'm just starting  
+to learn boost::python. With the conversion to long the following  
+python code fails:
+
+some_stroke = Stroke()
+some_stroke.line_cap = line_cap.ROUND_CAP
+
+other_stroke = Stroke()
+other_stroke.line_cap = some_stroke.line_cap
+
+I think I found a way to get the conversion to python right. I just  
+need to clean it up a little. With this little wrapper-wrapper-thingy  
+(is that a meta-wrapper?)  we could reduce the binding code for  
+mapnik::enumeration to:
+
+enumeration_<line_cap>();
+
+I'll check in the "long version" first, because making it a one-liner  
+requires a little renaming. In C++ line_cap_e would change to  
+line_cap.  In XML format the identifiers would change to the upper- 
+case version used in C++ and python. I'll annotate the code a bit.  
+Please have a look and tell me what you think.
+
+Cheers,
+	david
+
+
+From artem at mapnik.org  Sat Oct 20 00:35:04 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 19 Oct 2007 23:35:04 +0100
+Subject: [Mapnik-devel] Python argument types did not match C++ signature
+In-Reply-To: <2FF4D7AF-7D0B-40DE-BD63-1B0C5F197CFA@artcom.de>
+References: <5383fa5e0710131308n7049c791p517d82ddbf16a716@mail.gmail.com>
+	<8991364E-E4AA-4830-AEDF-18FA9922696F@mapnik.org>
+	<C67EDF30-B941-4DBD-966E-35FC1B8BB455@artcom.de>
+	<8C8DA37B-2B95-48A4-B911-88AFB218B0B6@mapnik.org>
+	<2FF4D7AF-7D0B-40DE-BD63-1B0C5F197CFA@artcom.de>
+Message-ID: <1817FA0E-DF47-4DAE-BDA4-538DACF5D43E@mapnik.org>
+
+
+On 19 Oct 2007, at 22:56, David Siegel wrote:
+
+> Hi,
+>
+> On 17.10.2007, at 17:43, Artem Pavlenko wrote:
+>
+>
+>>
+>> I was thinking about reflecting enumerations in Python. Here is  
+>> approach that doesn't make enumeration wrapper less strict in c++:
+>>
+>>
+>> template <typename T>
+>> struct mapnik_enumeration_to_python
+>> {
+>>       static PyObject* convert(T const& v)
+>>       {
+>>          return ::PyInt_FromLong(v);
+>>       }
+>> };
+>>
+>>
+>>
+>> void export_stroke ()
+>> {
+>>     using namespace mapnik;
+>>     using namespace boost::python;
+>>
+>>
+>>     enum_<line_cap_enum>("line_cap")
+>>         .value("BUTT_CAP",BUTT_CAP)
+>>         .value("SQUARE_CAP",SQUARE_CAP)
+>>         .value("ROUND_CAP",ROUND_CAP)
+>>         ;
+>>     enum_<line_join_enum>("line_join")
+>>         .value("MITER_JOIN",MITER_JOIN)
+>>         .value("MITER_REVERT_JOIN",MITER_REVERT_JOIN)
+>>         .value("ROUND_JOIN",ROUND_JOIN)
+>>         .value("BEVEL_JOIN",BEVEL_JOIN)
+>>         ;
+>>
+>>     implicitly_convertible<line_join_enum,line_join_e>();
+>>     implicitly_convertible<line_cap_enum,line_cap_e>();
+>>
+>>      
+>> to_python_converter<line_join_e,mapnik_enumeration_to_python<line_joi 
+>> n_e> >();
+>>      
+>> to_python_converter<line_cap_e,mapnik_enumeration_to_python<line_cap_ 
+>> e> >();
+>>
+>> .............
+>>
+>>
+>> to_python converter can be implemented to be more useful, at the  
+>> moment it just converts to PyInt.
+>>
+>> Let me know your thoughts?
+>>
+>
+> Good stuff! That is exactly what I was looking for. I'm just  
+> starting to learn boost::python. With the conversion to long the  
+> following python code fails:
+>
+> some_stroke = Stroke()
+> some_stroke.line_cap = line_cap.ROUND_CAP
+>
+> other_stroke = Stroke()
+> other_stroke.line_cap = some_stroke.line_cap
+>
+> I think I found a way to get the conversion to python right. I just  
+> need to clean it up a little. With this little wrapper-wrapper- 
+> thingy (is that a meta-wrapper?)  we could reduce the binding code  
+> for mapnik::enumeration to:
+>
+> enumeration_<line_cap>();
+>
+> I'll check in the "long version" first, because making it a one- 
+> liner requires a little renaming. In C++ line_cap_e would change to  
+> line_cap.  In XML format the identifiers would change to the upper- 
+> case version used in C++ and python. I'll annotate the code a bit.  
+> Please have a look and tell me what you think.
+>
+> Cheers,
+> 	david
+>
+
+Sounds good!
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/9b4f5882/attachment.html>
+
+From artem at mapnik.org  Mon Oct 22 22:20:25 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 22 Oct 2007 21:20:25 +0100
+Subject: [Mapnik-devel] the missing polygons
+In-Reply-To: <1193083469.22800.64.camel@localhost.localdomain>
+References: <1192837811.11002.46.camel@localhost.localdomain>
+	<1192841702.11002.61.camel@localhost.localdomain>
+	<DACE6ED5-B281-49BE-B1EA-46CC38C18E06@mapnik.org>
+	<1193083469.22800.64.camel@localhost.localdomain>
+Message-ID: <D8231DBE-C48B-4112-A0A7-35D6C35BECFD@mapnik.org>
+
+
+On 22 Oct 2007, at 21:04, Jon Burgess wrote:
+
+> On Mon, 2007-10-22 at 19:35 +0100, Artem Pavlenko wrote:
+>>
+>> On 20 Oct 2007, at 01:55, Jon Burgess wrote:
+>>
+>>>> gis=> select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+>>>> estimated_extent('planet_osm_polygon','way') as ext) as tmp;
+>>>>    xmin   |     ymin     |   xmax   |   ymax
+>>>> ----------+--------------+----------+----------
+>>>>  -9971419 | -594031.0625 | 10706760 | 11333172
+>>>>
+>>>>
+>>>> ==> Postgis extent:
+>>>> Envelope(-9971419,-594031.0625,10706760,11333172)
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> gis=> select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+>>>> extent("way") as ext from "planet_osm_polygon") as tmp;
+>>>>    xmin    |    ymin    |   xmax   |   ymax
+>>>> -----------+------------+----------+----------
+>>>>  -17568720 | -6845024.5 | 19767786 | 11401454
+>>>>
+>>>>
+>>>> ==> Postgis extent:
+>>>> Envelope(-17568720,-6845024.5,19767786,11401454)
+>>>>
+>>>>
+>>>> I've not looked into estimated_extent() is derived but it is
+>>>> clearly a very bad estimate in this case.
+>>>>
+>>>>
+>>>> Jon
+>>>>
+>>>>
+>>>
+>>>
+>>> I get very similar results from the Posgres install on tile:
+>>>
+>>>
+>>> gis=> select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+>>> estimated_extent('planet_osm_polygon','way') as ext) as tmp;
+>>>    xmin   |     ymin      |   xmax   |  ymax
+>>> ----------+---------------+----------+---------
+>>>  -9973436 | -474337.90625 | 10707879 | 9982616
+>>> (1 row)
+>>>
+>>>
+>>> gis=> select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+>>> extent("way") as ext from "planet_osm_polygon") as tmp;
+>>>    xmin    |    ymin    |   xmax   |   ymax
+>>> -----------+------------+----------+----------
+>>>  -17568720 | -6845024.5 | 19767786 | 11401454
+>>> (1 row)
+>>>
+>>>
+>>> Artem: Do the estimated extents look more accurate in your DB?
+>>
+>>
+>>
+>>
+>> Well, not always. I get very strange result after :
+>> "reindex;" ,"vacuum analyze;"
+>>
+> I get different estimated extents each time I run analyze as well.
+>
+> It seems you can increase the number of data points gathered during  
+> the
+> analyze by doing 'alter table planet_osm_polygon alter column way SET
+> STATISTICS 1000;' and then running 'analyze planet_osm_polygon'.  
+> Setting
+> it to 1000 (which is the maximum) still does not give an estimated
+> extent still does not covers all the data.
+>
+
+Hmm..
+>>
+>>> Setting all the flags in osm.xml to the Postgis layers to
+>>> estimate_extent=false makes the polygons appear again for me. Does
+>>> this
+>>> effect the time it takes to render a tile or just the initial
+>>> startup
+>>> time?
+>>
+>>
+>> Only initial start-up time, as datasource caches extent.
+>
+> It is a shame that there appears to be no way to force the DB to cache
+> the real extent information in place of the estimated extent. In  
+> theory
+> we should only ever have to calculate the real extent once for each
+> planet import.
+>
+Yes.
+> Do you think we should remove the estimated extent parameter from the
+> osm.xml file? It seems to me that this is the way to fix this problem
+> properly. Otherwise we need to remove the clip-to-layer-extent code.
+
+Well, another option would be to allow user defined extent which  
+takes priority over calculated one, similar to raster plug-in:
+
+<Datasource ...>
+	<Parameter name="lox">2134234.5432</Parameter>
+	...
+         ...
+</Datasource>
+
+Or even :
+
+<Datasource ...>
+	<Parameter name="extent">2134234.5432,32143,54325,54325432</Parameter>
+</Datasource>
+
+>
+> Do you think that one of us should follow up my previous post on
+> mapnik-devel to acknowledge the estimated extent as being the  
+> underlying
+> cause of the issue?
+
+Sure, I'm posting to dev as well.
+
+Artem
+>
+>   Jon
+>
+>
+>
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071022/8d866f82/attachment.html>
+
+From artem at mapnik.org  Tue Oct 23 00:57:38 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 22 Oct 2007 23:57:38 +0100
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik.NET and Win32
+In-Reply-To: <471BD5E4.7010905@earlsoft.co.uk>
+References: <471BABED.9000001@earlsoft.co.uk>	<00dd01c81426$93bcdd00$3c0a0a0a@chainring>
+	<471BC7CE.8060602@earlsoft.co.uk> <471BD5E4.7010905@earlsoft.co.uk>
+Message-ID: <C09B8071-BF55-4B5A-A341-465D552C09C6@mapnik.org>
+
+Hi Joe and Dean and everyone interested in building Mapnik on win32,
+
+I just uploaded environment I'm using to build binaries : http:// 
+artem.dev.openstreetmap.org/files/mapnik_win32_build.tar.gz
+
+It's aimed at developers familiar with VC++ and general win32 tricks  
+and it requires quite a few setup steps.
+
+Very briefly :
+1. You'll need a working vc++ environment (I'm using "free" VC++  
+Express + latest Windows platform SDK on Vista).
+2. Install Python  - get win32 installer from Python.org (I use 2.5)
+3. get boost-1.34.1 source and follow instructions how to build on  
+win32 from boost.org. You don't have to build all libraries, just:
+	boost_filesystem
+	boost_thread
+	boost_regex
+	boost_program_options
+	boost_python
+4. Unzip mapnik_win32_build.tar.gz to c:\mapnik , then modify  
+Jamfiles and others to match your environment
+5. in 'thirdparty' directory:
+	bjam --toolset=msvc
+	cd tiff-3.8.2
+	nmake -f Makefile.vc   # Don't forget to update nmake.opt file
+
+	for FreeType2, consult README
+
+
+5. In mapnik directory :
+	'bjam --toolset=msvc --prefix=c:\mapnik_win32_binaries
+
+For postgis.input you'll need to get postgresql source. Then build  
+libpq.dll (see README)
+
+HTH
+Have fun!
+Artem
+
+  	
+On 21 Oct 2007, at 23:42, Dean Earley wrote:
+
+> Dean Earley wrote:
+>> Your final design was pretty much how I was going to implement mine.
+>> Just trying to figure out the API and was hoping for a yay or nay  
+>> before
+>> I got too far :)
+>
+> Artem, is there any info available on building this on Win32?
+> The latest info on the site from June 2006 says "use CMake", and I  
+> can't
+> find anything useful in the source tree.
+> I've seen your test build from April 2007 which seems to work OK as  
+> well.
+>
+> Thanks
+>
+> -- 
+> Dean Earley, Dee (dean at earlsoft.co.uk)
+>
+> irc:    irc://irc.blitzed.org/
+> web:    http://personal.earlsoft.co.uk
+> phone:  +44 (0)780 8369596
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071022/5d6b2b7a/attachment.html>
+
+From jkemp at tricomsystems.net  Tue Oct 23 05:21:53 2007
+From: jkemp at tricomsystems.net (Joe Kemp)
+Date: Mon, 22 Oct 2007 23:21:53 -0400
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik.NET and Win32
+In-Reply-To: <C09B8071-BF55-4B5A-A341-465D552C09C6@mapnik.org>
+References: <471BABED.9000001@earlsoft.co.uk>	<00dd01c81426$93bcdd00$3c0a0a0a@chainring><471BC7CE.8060602@earlsoft.co.uk>
+	<471BD5E4.7010905@earlsoft.co.uk>
+	<C09B8071-BF55-4B5A-A341-465D552C09C6@mapnik.org>
+Message-ID: <029301c81523$dda0ca00$3c0a0a0a@chainring>
+
+Thanks, this gives me a lot to work with.  I failed tonight but will try
+again tomorrow.  I got a mapnik.dll but was unable to compile the
+rundemo.cpp against it.  Got a freetype error compile error and a
+shield_symbolizer linker error.  I have a couple observations that may need
+further research.
+
+ 
+
+1.	I think you need to run bjam release in the thirdparty directory or
+you end up with debug binaries.  Bjam in mapnik seemed to only want release
+binaries in the rsp files.
+2.	You also need to compile proj.  The sln file opened in the VS IDE
+and compiled without any problems (I think).
+
+ 
+
+Thanks again.
+
+  _____  
+
+From: mapnik-users-bounces at lists.berlios.de
+[mailto:mapnik-users-bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+Sent: Monday, October 22, 2007 6:58 PM
+To: Dean Earley; Joe Kemp
+Cc: Mapnik users mailing-list; mapnik-dev
+Subject: Re: [Mapnik-users] Mapnik.NET and Win32
+
+ 
+
+Hi Joe and Dean and everyone interested in building Mapnik on win32,
+
+ 
+
+I just uploaded environment I'm using to build binaries :
+http://artem.dev.openstreetmap.org/files/mapnik_win32_build.tar.gz
+
+ 
+
+It's aimed at developers familiar with VC++ and general win32 tricks and it
+requires quite a few setup steps.
+
+ 
+
+Very briefly :
+
+1. You'll need a working vc++ environment (I'm using "free" VC++ Express +
+latest Windows platform SDK on Vista). 
+
+2. Install Python - get win32 installer from Python.org (I use 2.5) 
+
+3. get boost-1.34.1 source and follow instructions how to build on win32
+from boost.org. You don't have to build all libraries, just:
+
+            boost_filesystem
+
+            boost_thread
+
+            boost_regex
+
+            boost_program_options
+
+            boost_python
+
+4. Unzip mapnik_win32_build.tar.gz to c:\mapnik , then modify Jamfiles and
+others to match your environment
+
+5. in 'thirdparty' directory:
+
+            bjam --toolset=msvc 
+
+            cd tiff-3.8.2
+
+            nmake -f Makefile.vc # Don't forget to update nmake.opt file
+
+ 
+
+            for FreeType2, consult README 
+
+ 
+
+ 
+
+5. In mapnik directory : 
+
+            'bjam --toolset=msvc --prefix=c:\mapnik_win32_binaries
+
+For postgis.input you'll need to get postgresql source. Then build libpq.dll
+(see README)
+
+ 
+
+HTH 
+
+Have fun!
+
+Artem
+
+ 
+
+            
+
+On 21 Oct 2007, at 23:42, Dean Earley wrote:
+
+
+
+
+
+Dean Earley wrote:
+
+Your final design was pretty much how I was going to implement mine.
+
+Just trying to figure out the API and was hoping for a yay or nay before 
+
+I got too far :)
+
+ 
+
+Artem, is there any info available on building this on Win32?
+
+The latest info on the site from June 2006 says "use CMake", and I can't 
+
+find anything useful in the source tree.
+
+I've seen your test build from April 2007 which seems to work OK as well.
+
+ 
+
+Thanks
+
+ 
+
+-- 
+
+Dean Earley, Dee (dean at earlsoft.co.uk)
+
+ 
+
+irc: irc://irc.blitzed.org/
+
+web: http://personal.earlsoft.co.uk
+
+phone: +44 (0)780 8369596
+
+_______________________________________________
+
+Mapnik-users mailing list
+
+Mapnik-users at lists.berlios.de
+
+https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+ 
+
+ 
+
+Artem Pavlenko
+
+http://mapnik.org
+
+ 
+
+
+
+
+
+ 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071022/f666cbd7/attachment.html>
+
+From artem at mapnik.org  Thu Oct 25 11:55:17 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 25 Oct 2007 10:55:17 +0100
+Subject: [Mapnik-devel] Python support with autotools
+In-Reply-To: <20071019185559.4e095521@frodo.mittelerde>
+References: <20071019185559.4e095521@frodo.mittelerde>
+Message-ID: <10F22E96-7B11-4BFA-8D8E-C46D520B34E3@mapnik.org>
+
+Hi Andreas,
+
+You should be able to find all information in $mapnik_src/bindings/ 
+python/SConscript
+
+I wonder what problems you're experiencing with SCons build ?
+
+Cheers
+Artem
+
+On 19 Oct 2007, at 17:55, Andreas Volz wrote:
+
+> Hello,
+>
+> As you've maybe noticed I added a autotools build system to compile
+> mapnik. I don't know who regular build mapnik with it. But  
+> currently it
+> lacks the python support. I'm not very familiar with python libraries.
+> So could someone assist me to add the python support for the autotools
+> build? I looked into the scons files, but there're still some  
+> questions.
+>
+> I've some problems with the scons build on my system. So could someone
+> send me a list of the files and their location after installing  
+> mapnik?
+> Then I could do it the same in autotools.
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071025/4e03633c/attachment.html>
+
+From artem at mapnik.org  Thu Oct 25 12:42:25 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 25 Oct 2007 11:42:25 +0100
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik.NET and Win32
+In-Reply-To: <029301c81523$dda0ca00$3c0a0a0a@chainring>
+References: <471BABED.9000001@earlsoft.co.uk>	<00dd01c81426$93bcdd00$3c0a0a0a@chainring><471BC7CE.8060602@earlsoft.co.uk>
+	<471BD5E4.7010905@earlsoft.co.uk>
+	<C09B8071-BF55-4B5A-A341-465D552C09C6@mapnik.org>
+	<029301c81523$dda0ca00$3c0a0a0a@chainring>
+Message-ID: <C6C653E2-F525-4286-B703-8C728364F205@mapnik.org>
+
+
+On 23 Oct 2007, at 04:21, Joe Kemp wrote:
+
+> Thanks, this gives me a lot to work with.  I failed tonight but  
+> will try again tomorrow.  I got a mapnik.dll but was unable to  
+> compile the rundemo.cpp against it.  Got a freetype error compile  
+> error and a shield_symbolizer linker error.
+>
+
+You need to link to freetype. I cannot check this right now, but  
+there should be Jamfile for building rundemo, too (??)
+> I have a couple observations that may need further research.
+>
+> I think you need to run bjam release in the thirdparty directory or  
+> you end up with debug binaries.  Bjam in mapnik seemed to only want  
+> release binaries in the rsp files.
+
+Correct.
+> You also need to compile proj.  The sln file opened in the VS IDE  
+> and compiled without any problems (I think).
+>
+>
+Yes, I was writing from memory and I missed those bits.  I'm sure  
+there are more gotchas .. I'll have to find time to log into win32  
+more often :)
+Cheers,
+Artem
+> Thanks again.
+>
+> From: mapnik-users-bounces at lists.berlios.de [mailto:mapnik-users- 
+> bounces at lists.berlios.de] On Behalf Of Artem Pavlenko
+> Sent: Monday, October 22, 2007 6:58 PM
+> To: Dean Earley; Joe Kemp
+> Cc: Mapnik users mailing-list; mapnik-dev
+> Subject: Re: [Mapnik-users] Mapnik.NET and Win32
+>
+>
+>
+> Hi Joe and Dean and everyone interested in building Mapnik on win32,
+>
+>
+>
+> I just uploaded environment I'm using to build binaries : http:// 
+> artem.dev.openstreetmap.org/files/mapnik_win32_build.tar.gz
+>
+>
+>
+> It's aimed at developers familiar with VC++ and general win32  
+> tricks and it requires quite a few setup steps.
+>
+>
+>
+> Very briefly :
+>
+> 1. You'll need a working vc++ environment (I'm using "free" VC++  
+> Express + latest Windows platform SDK on Vista).
+>
+> 2. Install Python - get win32 installer from Python.org (I use 2.5)
+>
+> 3. get boost-1.34.1 source and follow instructions how to build on  
+> win32 from boost.org. You don't have to build all libraries, just:
+>
+>             boost_filesystem
+>
+>             boost_thread
+>
+>             boost_regex
+>
+>             boost_program_options
+>
+>             boost_python
+>
+> 4. Unzip mapnik_win32_build.tar.gz to c:\mapnik , then modify  
+> Jamfiles and others to match your environment
+>
+> 5. in 'thirdparty' directory:
+>
+>             bjam --toolset=msvc
+>
+>             cd tiff-3.8.2
+>
+>             nmake -f Makefile.vc # Don't forget to update nmake.opt  
+> file
+>
+>
+>
+>             for FreeType2, consult README
+>
+>
+>
+>
+>
+> 5. In mapnik directory :
+>
+>             'bjam --toolset=msvc --prefix=c:\mapnik_win32_binaries
+>
+> For postgis.input you'll need to get postgresql source. Then build  
+> libpq.dll (see README)
+>
+>
+>
+> HTH
+>
+> Have fun!
+>
+> Artem
+>
+>
+>
+>
+>
+> On 21 Oct 2007, at 23:42, Dean Earley wrote:
+>
+>
+>
+>
+> Dean Earley wrote:
+>
+>> Your final design was pretty much how I was going to implement mine.
+>>
+>> Just trying to figure out the API and was hoping for a yay or nay  
+>> before
+>>
+>> I got too far :)
+>>
+>
+>
+> Artem, is there any info available on building this on Win32?
+>
+> The latest info on the site from June 2006 says "use CMake", and I  
+> can't
+>
+> find anything useful in the source tree.
+>
+> I've seen your test build from April 2007 which seems to work OK as  
+> well.
+>
+>
+>
+> Thanks
+>
+>
+>
+> --
+>
+> Dean Earley, Dee (dean at earlsoft.co.uk)
+>
+>
+>
+> irc: irc://irc.blitzed.org/
+>
+> web: http://personal.earlsoft.co.uk
+>
+> phone: +44 (0)780 8369596
+>
+> _______________________________________________
+>
+> Mapnik-users mailing list
+>
+> Mapnik-users at lists.berlios.de
+>
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+>
+>
+>
+> Artem Pavlenko
+>
+> http://mapnik.org
+>
+>
+>
+>
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071025/18f1c027/attachment.html>
+
+From reid at umn.edu  Fri Oct 26 01:06:09 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Thu, 25 Oct 2007 18:06:09 -0500
+Subject: [Mapnik-devel] Python support with autotools
+In-Reply-To: <10F22E96-7B11-4BFA-8D8E-C46D520B34E3@mapnik.org>
+References: <20071019185559.4e095521@frodo.mittelerde>
+	<10F22E96-7B11-4BFA-8D8E-C46D520B34E3@mapnik.org>
+Message-ID: <47212161.5090103@umn.edu>
+
+Artem Pavlenko wrote:
+>
+> I wonder what problems you're experiencing with SCons build ?
+
+c.f. http://trac.mapnik.org/ticket/22, but there are a lot of other 
+build-related tickets as well. Basically, if the build is anything even 
+remotely nonstandard, it's a huge mess. I had to write a shell script to 
+get the build system to put everything in the right place.
+
+I'm still on r484 because I didn't want to face rebuilding.
+
+So, put me down as +1 for scrapping SCons for autotools.
+
+Reid
+
+
+From lists at brachttal.net  Fri Oct 26 23:00:02 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 26 Oct 2007 23:00:02 +0200
+Subject: [Mapnik-devel] Python support with autotools
+In-Reply-To: <47212161.5090103@umn.edu>
+References: <20071019185559.4e095521@frodo.mittelerde>
+	<10F22E96-7B11-4BFA-8D8E-C46D520B34E3@mapnik.org>
+	<47212161.5090103@umn.edu>
+Message-ID: <20071026230002.6dcecd20@frodo.mittelerde>
+
+Am Thu, 25 Oct 2007 18:06:09 -0500 schrieb Reid Priedhorsky:
+
+> Artem Pavlenko wrote:
+> >
+> > I wonder what problems you're experiencing with SCons build ?
+> 
+> c.f. http://trac.mapnik.org/ticket/22, but there are a lot of other 
+> build-related tickets as well. Basically, if the build is anything
+> even remotely nonstandard, it's a huge mess. I had to write a shell
+> script to get the build system to put everything in the right place.
+> 
+> I'm still on r484 because I didn't want to face rebuilding.
+> 
+> So, put me down as +1 for scrapping SCons for autotools.
+
+I had the problem also for a long time. The problem was that the
+detection of boost and postgres libraries on Gentoo and Ubuntu didn't
+work. I had to create some links in /usr/lib and to modify the SCons
+file to build it.
+
+BTW: Mapnik builds currently well with autotools and is yet usable. Only
+the python bindings aren't build and installed. But I hope to fix this
+in the next week.
+
+regards
+Andreas
+
+

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left	text
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20fix%20rendering%20of%20non-Arabic%20right-to-left%0A%09text&In-Reply-To=%3C1223502081.4091.137.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000750.html">
+   <LINK REL="Next"  HREF="000747.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left	text</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20fix%20rendering%20of%20non-Arabic%20right-to-left%0A%09text&In-Reply-To=%3C1223502081.4091.137.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left	text">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Wed Oct  8 23:41:21 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000750.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000747.html">[Mapnik-devel] [PATCH] fix rendering of non-Arabic	right-to-left text
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>An OSM user recently reported that Hebrew text was not rendering in the
+Mapnik layer. I took a look at the code and found that when Mapnik
+detects RTL text it only gets rendered if it matches the Arabic shaping
+rules. Anything else gets discarded. 
+
+With the attached patch, Hebrew names are now appearing correctly on the
+OSM map, e.g.
+<A HREF="http://www.openstreetmap.org/?lat=32.32298&amp;lon=34.85931&amp;zoom=16&amp;layers=B000FFF">http://www.openstreetmap.org/?lat=32.32298&amp;lon=34.85931&amp;zoom=16&amp;layers=B000FFF</A>
+
+
+	Jon
+
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-hebrew-rtl.patch
+Type: text/x-patch
+Size: 1015 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/06513df1/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/06513df1/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000750.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000747.html">[Mapnik-devel] [PATCH] fix rendering of non-Arabic	right-to-left text
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#746">[ date ]</a>
+              <a href="thread.html#746">[ thread ]</a>
+              <a href="subject.html#746">[ subject ]</a>
+              <a href="author.html#746">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

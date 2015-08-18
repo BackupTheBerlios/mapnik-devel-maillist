@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Announce] kismet input plugin available in SVN
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BAnnounce%5D%20kismet%20input%20plugin%20available%20in%20SVN&In-Reply-To=%3C20090322232825.68c395f1%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000819.html">
+   <LINK REL="Next"  HREF="000821.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Announce] kismet input plugin available in SVN</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BAnnounce%5D%20kismet%20input%20plugin%20available%20in%20SVN&In-Reply-To=%3C20090322232825.68c395f1%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] [Announce] kismet input plugin available in SVN">lists at brachttal.net
+       </A><BR>
+    <I>Sun Mar 22 23:28:25 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000819.html">[Mapnik-devel] Birdview in Mapnik?
+</A></li>
+        <LI>Next message: <A HREF="000821.html">[Mapnik-devel] [Announce] kismet input plugin available in SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#820">[ date ]</a>
+              <a href="thread.html#820">[ thread ]</a>
+              <a href="subject.html#820">[ subject ]</a>
+              <a href="author.html#820">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I've just commited a new input plugin for kismet support. I added a Makefile.am
+for myself. If you need a SConstruct file please add one yourself.
+
+Features:
+---------
+* Connects to a running kismet_server with GPS support activated
+* Displays little WLAN icons on the map.
+
+TODO / Problems:
+----------------
+* Should show WPA/WEP/OPEN WLAN with a different icon
+* Reconnect to kismet_server after disconnect
+* Bounding box envelope isn't used
+* Only shows live found WLAN (no memory/database storage)
+* WGS84-&gt;Mercator conversation is hard coded
+* Not yet tested for Win32
+
+Use this minimal XML to display it. For real cases you should integrate
+it into your big XML:
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE Map&gt;
+&lt;Map bgcolor=&quot;#b5d0d0&quot; srs=&quot;+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over&quot;&gt;
+
+  &lt;Style name=&quot;kismet&quot;&gt;
+    &lt;Rule&gt;
+      &lt;MaxScaleDenominator&gt;2000000&lt;/MaxScaleDenominator&gt;
+      &lt;MinScaleDenominator&gt;100&lt;/MinScaleDenominator&gt;
+      &lt;Filter&gt;[internet_access]='wlan'&lt;/Filter&gt;
+      &lt;PointSymbolizer file = &quot;/home/andreas/src/osm/mapnik/symbols/wlan.png&quot; type=&quot;png&quot; width=&quot;32&quot; height=&quot;32&quot; /&gt;
+      &lt;TextSymbolizer name=&quot;name&quot; face_name=&quot;DejaVu Sans Bold&quot; size=&quot;8&quot; fill=&quot;#636&quot; dy=&quot;-10&quot; halo_radius=&quot;1&quot; wrap_width=&quot;0&quot;/&gt;
+    &lt;/Rule&gt;
+  &lt;/Style&gt;
+
+&lt;!-- Layer --&gt;
+
+  &lt;Layer name=&quot;kismet&quot; status=&quot;on&quot; srs=&quot;+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over&quot;&gt;
+    &lt;StyleName&gt;kismet&lt;/StyleName&gt;
+    &lt;Datasource&gt;
+      &lt;Parameter name=&quot;type&quot;&gt;kismet&lt;/Parameter&gt;
+      &lt;Parameter name=&quot;host&quot;&gt;localhost&lt;/Parameter&gt;
+      &lt;Parameter name=&quot;port&quot;&gt;2501&lt;/Parameter&gt;
+      &lt;Parameter name=&quot;estimate_extent&quot;&gt;false&lt;/Parameter&gt;
+      &lt;Parameter name=&quot;extent&quot;&gt;-20037508,-19929239,20037508,19929239&lt;/Parameter&gt;
+    &lt;/Datasource&gt;
+  &lt;/Layer&gt;
+
+&lt;/Map&gt;
+
+
+You could use this icon if you like. I think it fits well:
+
+<A HREF="http://openclipart.org/people/pinterb7/pinterb7_wlan_accesspoint.svg">http://openclipart.org/people/pinterb7/pinterb7_wlan_accesspoint.svg</A>
+
+Today I drove around for some time in my car and it looks really nice. :-)
+
+My battery was empty before I had a chance to capture a video. But I hope
+to try this again in the next days.
+
+Go out and test the new plugin if you like. I'm really interested in your experiences.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000819.html">[Mapnik-devel] Birdview in Mapnik?
+</A></li>
+	<LI>Next message: <A HREF="000821.html">[Mapnik-devel] [Announce] kismet input plugin available in SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#820">[ date ]</a>
+              <a href="thread.html#820">[ thread ]</a>
+              <a href="subject.html#820">[ subject ]</a>
+              <a href="author.html#820">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

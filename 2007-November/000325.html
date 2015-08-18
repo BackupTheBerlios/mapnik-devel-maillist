@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Making the config file more portable
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Making%20the%20config%20file%20more%20portable&In-Reply-To=%3C2fc2c5f10711101037x176be80fg87043372f1589dde%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000326.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Making the config file more portable</H1>
+    <B>Martijn van Oosterhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Making%20the%20config%20file%20more%20portable&In-Reply-To=%3C2fc2c5f10711101037x176be80fg87043372f1589dde%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Making the config file more portable">kleptog at gmail.com
+       </A><BR>
+    <I>Sat Nov 10 19:37:52 CET 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000326.html">[Mapnik-devel] Making the config file more portable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#325">[ date ]</a>
+              <a href="thread.html#325">[ thread ]</a>
+              <a href="subject.html#325">[ subject ]</a>
+              <a href="author.html#325">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+If any of you have followed the users list you may have noticed I made
+some comments about making it easier to share map files around. The
+problem being the need to include database connection details in
+multiple places, or hardcoding paths. This makes it difficult to share
+the file around as everybody needs to patch many places and so patches
+cannot easily be shared. Attached are a number of patches to simplify
+the situation.
+
+1. The first allows the user to add a &lt;FileSource
+name=&quot;foo&quot;&gt;/home/bar/baz/&lt;/FileSource&gt; to the beginning of the file
+and then in any of the symbolisers you can say:
+
+&lt;FooSymboliser base=&quot;foo&quot; name=&quot;bridge&quot;&gt;
+It it will refer to the file /home/bar/baz/bridge.
+
+2. The second allows you to create Datasource templates at the top
+level, which can be used later in the actual layers like so:
+&lt;Map&gt;
+  &lt;Datasource name=&quot;db&quot;&gt;
+   &lt;Paramaeter name=&quot;host&quot;&gt;/tmp&lt;/Parameter&gt;
+  &lt;/Datasource&gt;
+  &lt;Layer name=&quot;lay&quot;&gt;
+    &lt;Datasource base=&quot;db&quot;&gt;
+      &lt;Parameter name=&quot;table&quot;&gt;points&lt;/Parameter&gt;
+    &lt;/Datasource&gt;
+  &lt;/Layer&gt;
+&lt;/Map&gt;
+
+And the host parameter will be used in the layer.
+
+3. The third adds the &quot;base&quot; parameter to the raster and shape input
+plugins. All it does is specify a path to prefix to the filename prior
+to using it. Together with the above feature it allows things like:
+&lt;Map&gt;
+  &lt;Datasource name=&quot;shapes&quot;&gt;
+   &lt;Paramaeter name=&quot;base&quot;&gt;/home/foo/shapes&lt;/Parameter&gt;
+  &lt;/Datasource&gt;
+  &lt;Layer name=&quot;lay&quot;&gt;
+    &lt;Datasource base=&quot;shapes&quot;&gt;
+      &lt;Parameter name=&quot;file&quot;&gt;places&lt;/Parameter&gt;
+    &lt;/Datasource&gt;
+  &lt;/Layer&gt;
+&lt;/Map&gt;
+
+And it will use the shapefile /home/foo/shapes/places
+
+Please let me know what you think. Thanks in advance,
+-- 
+Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-filesource.patch
+Type: text/x-diff
+Size: 3803 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment.patch</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-template.patch
+Type: text/x-diff
+Size: 3040 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0001.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0001.patch</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-plugins.patch
+Type: text/x-diff
+Size: 1592 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0002.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0002.patch</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000326.html">[Mapnik-devel] Making the config file more portable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#325">[ date ]</a>
+              <a href="thread.html#325">[ thread ]</a>
+              <a href="subject.html#325">[ subject ]</a>
+              <a href="author.html#325">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

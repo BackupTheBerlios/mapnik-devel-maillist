@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Shapefile input and open files on Windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20input%20and%20open%20files%20on%20Windows&In-Reply-To=%3C853F5813-C3A4-4C3C-B5DB-677864154145%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000884.html">
+   <LINK REL="Next"  HREF="000886.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Shapefile input and open files on Windows</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20input%20and%20open%20files%20on%20Windows&In-Reply-To=%3C853F5813-C3A4-4C3C-B5DB-677864154145%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Shapefile input and open files on Windows">blake at hailmail.net
+       </A><BR>
+    <I>Tue May 12 17:31:50 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000884.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+        <LI>Next message: <A HREF="000886.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#885">[ date ]</a>
+              <a href="thread.html#885">[ thread ]</a>
+              <a href="subject.html#885">[ subject ]</a>
+              <a href="author.html#885">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've confirmed that QGIS's OGR driver opens with both FILE_SHARE_READ  
+and FILE_SHARE_WRITE and show allow more than one process to open the  
+file for update access at once (thanks to Frank Warmerdam).
+
+So, I figure that something about the way that Mapnik's use of boost  
+is creating the need for exclusive access to the file on windows. If  
+figure this must have to do with our implementation of memory mapped  
+read access to the shapefiles.
+
+The boost docs indicate that a 'mapped_file_source' should be opened  
+for read-only access:
+
+<A HREF="http://www.boost.org/doc/libs/1_38_0/libs/iostreams/doc/classes/mapped_file.html#mapped_file_source">http://www.boost.org/doc/libs/1_38_0/libs/iostreams/doc/classes/mapped_file.html#mapped_file_source</A>
+
+Does this really require exclusive access?
+
+Looking into:
+
+<A HREF="http://www.boost.org/doc/libs/1_39_0/boost/iostreams/device/mapped_file.hpp">http://www.boost.org/doc/libs/1_39_0/boost/iostreams/device/mapped_file.hpp</A>
+
+seems to indicate that on Windows (depending on compiler version)  
+things may actually be opened in 'app' (append) mode:
+
+     #if BOOST_WORKAROUND(BOOST_MSVC, &lt; 1400) &amp;&amp;  
+defined(BOOST_RWSTD_VER) || \
+         defined(__BORLANDC__) &amp;&amp; defined(_CPPLIB_VER)
+         /**/
+         : mode(std::ios_base::openmode(0)),
+So, some leads but I'm not sure where to go from here.
+
+Anyone have thoughts?
+
+Dane
+
+
+On May 11, 2009, at 10:47 PM, Dane Springmeyer wrote:
+
+&gt;<i> So I'm trying to debug a strange thing on windows where a shapefile
+</I>&gt;<i> opened in another application cannot be opened by Mapnik.
+</I>&gt;<i>
+</I>&gt;<i> I say strange because the problem does not occur on mac and linux -
+</I>&gt;<i> only on windows. But it does make logical sense that opening the same
+</I>&gt;<i> file in two running Python processes may create problems.
+</I>&gt;<i>
+</I>&gt;<i> Essentially, I've written a Python plugin to QGIS that loops through
+</I>&gt;<i> all active datasources open in QGIS, builds up a Mapnik map, and
+</I>&gt;<i> allows export to XML or rendering in the QGIS canvas.
+</I>&gt;<i>
+</I>&gt;<i> It works great on mac and linux, but on Windows I get an error like:
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> shp = Shapefile(file='c:/temp_files/world_borders.shp')
+</I>&gt;<i>  got exception ...
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+</I>&gt;<i>   File &quot;C:\mapnik_0_6_0\site-packages\mapnik\__init__.py&quot;, line 132,
+</I>&gt;<i> in Shapefile
+</I>&gt;<i>     return CreateDatasource(keywords)
+</I>&gt;<i> RuntimeError: failed opening file: The handle is invalid.
+</I>&gt;<i>
+</I>&gt;<i> QGIS uses the OGR C++ api to open the shapefile in read/write mode. I
+</I>&gt;<i> assume that the mapnik shapefile input opens read-only.
+</I>&gt;<i>
+</I>&gt;<i> Anyone have any ideas of potential workarounds?
+</I>&gt;<i>
+</I>&gt;<i> - Dane
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090512/d5e90def/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090512/d5e90def/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000884.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+	<LI>Next message: <A HREF="000886.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#885">[ date ]</a>
+              <a href="thread.html#885">[ thread ]</a>
+              <a href="subject.html#885">[ subject ]</a>
+              <a href="author.html#885">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

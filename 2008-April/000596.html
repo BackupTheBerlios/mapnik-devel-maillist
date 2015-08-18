@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problems in Mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20in%20Mapnik&In-Reply-To=%3C7acdb3650804100535wd0cc6c9o67ffe073d2019d14%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000594.html">
+   <LINK REL="Next"  HREF="000597.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problems in Mapnik</H1>
+    <B>Martin Koppenhoefer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20in%20Mapnik&In-Reply-To=%3C7acdb3650804100535wd0cc6c9o67ffe073d2019d14%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Problems in Mapnik">dieterdreist at gmail.com
+       </A><BR>
+    <I>Thu Apr 10 14:35:26 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000594.html">[Mapnik-devel] Patch broke text labels
+</A></li>
+        <LI>Next message: <A HREF="000597.html">[Mapnik-devel] Problems in Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#596">[ date ]</a>
+              <a href="thread.html#596">[ thread ]</a>
+              <a href="subject.html#596">[ subject ]</a>
+              <a href="author.html#596">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi developpers,
+
+I'm a big fan of the mapnik render engine, but suffering a bit because
+of some deficits still immanent. As I couldn't put a
+Mapnik-Ticket in the trac, I'm trying to contact you via Email.
+
+The most serious issue IMHO is the missing squares. Mapnik unlike
+Osmarender renders highways that are tagged with area=yes just with
+outlines. As squares are very important for the grafical appearance /
+for orientation, this should be very nice to have also in Mapnik.
+This is also a problem for buildings, that share nodes with
+surrounding areas and by now are cut by overlappings from
+highway-outlines that should be areas instead.
+
+I don't know, but I seem to remember, that some of the features listed
+down here once have been in the Maps, anyway, at the moment they
+aren't but would be really nice to have.
+
+There are some features missing, that I would love to have in Mapnik,
+the following amenities:
+- pharmacy
+- drinking_water (there is a icon here, which is according to this page
+PD: <A HREF="http://wiki.openstreetmap.org/index.php/Talk:Proposed_features/Potable_Water:">http://wiki.openstreetmap.org/index.php/Talk:Proposed_features/Potable_Water:</A>
+<A HREF="http://www.blm.gov/nstc/mapstandards/downloads/inter.pdf">http://www.blm.gov/nstc/mapstandards/downloads/inter.pdf</A> number 37)
+- telephone
+- theatre
+- cinema
+- university
+- fuel
+- arts-centre
+- fountain
+
+and also historic:
+-monument
+-ruins
+-archaeological_site
+
+and man_made:
+- lighthouse
+- tower
+
+railway:
+- subway_entrance
+
+shop:
+- bicycle
+- book (is still a proposed feature, unlike all the others mentioned above)
+
+also I suggest to put bicycle-paths generally above streets in the
+render, as they are dottet lines and allow to see the streets that lie
+underneath in cases, where bicycle paths follow the street in a narrow
+distance. For areas instead, this should not apply, as squares are
+often represented as highway =pedestrian, area = yes, with highway=
+&lt;some car accessible street&gt; running over it to show the actual
+traffic possibilities.
+
+Some days before I also experienced a problem with churches, who would
+on highest zoom level display only the icon whilst one zoomlevel below
+show also the name, but today, this wasn't there any more, so maybe
+it's already corrected (but still some churches don't even show their
+name on any zoom level).
+
+of course it would also be great to have relations in a more advanced
+way, but this will be more work to implement, I guess. (e.g. someone
+put all river segments in Rome into one relation (41,8014855
+12,3865226) with the result, that it doesn't appear on the map any
+more).
+
+best wishes and thanks for any reply,
+
+Martin
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000594.html">[Mapnik-devel] Patch broke text labels
+</A></li>
+	<LI>Next message: <A HREF="000597.html">[Mapnik-devel] Problems in Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#596">[ date ]</a>
+              <a href="thread.html#596">[ thread ]</a>
+              <a href="subject.html#596">[ subject ]</a>
+              <a href="author.html#596">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

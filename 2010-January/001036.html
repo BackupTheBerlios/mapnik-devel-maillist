@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] MemoryError rendering with raster layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B4308AC.3080501%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001035.html">
+   <LINK REL="Next"  HREF="001037.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] MemoryError rendering with raster layer</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B4308AC.3080501%40gmail.com%3E"
+       TITLE="[Mapnik-devel] MemoryError rendering with raster layer">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Tue Jan  5 10:38:52 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001035.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+        <LI>Next message: <A HREF="001037.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1036">[ date ]</a>
+              <a href="thread.html#1036">[ thread ]</a>
+              <a href="subject.html#1036">[ subject ]</a>
+              <a href="author.html#1036">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>W dniu 05.01.2010 00:28, Nop pisze:
+&gt;<i> 
+</I>&gt;<i> Hello!
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> I am currently trying to render Hillshading from raster layers with 
+</I>&gt;<i> mapnik 0.6.1. I have successfully rendered the first section of 8x2&#176; 
+</I>&gt;<i> from a 45MB GeoTiff. Now I tried to render another section of 10x3&#176; from 
+</I>&gt;<i> a 102 MB GeoTiff and this yielded a MemoryError.
+</I>&gt;<i> 
+</I>&gt;<i> Any ideas what the problem is and what to do about it?
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+I had problems with memory errors (segmentation fault) when using gdal,
+mod_tile and multiple threads:
+<A HREF="http://trac.mapnik.org/ticket/294">http://trac.mapnik.org/ticket/294</A>
+Adding some delays between thread creation solved this in my case.
+I guess gdal library is using some global variables while reading
+initially tiff files.
+Are You using threads in python?
+Does memory error appear on loading map definition or while rendering?
+Does it occur on each zoom or only on higher &quot;altitudes&quot;(less detailed,
+more area visible)?
+
+I use mapnik 0.6.1 and very old hardware (P IV 2.4 + 800MB RAM) for
+rendering my map. This handles fine those tiff files (on any given zoom
+at most one is used):
+79M	hill_15.tif 4352x4736
+20M	hill_30.tif 8704x9472
+316M	hill_8.tif  17408x18944
+each covering same area between 13&#176;E,48&#176;N and 24&#176;E,52&#176;N only with
+different resolutions.
+
+My biggest successful attempt on that machine(I haven't tried bigger, so
+it's not limit) was 1.1GPix tiff(36410x30740), 1070MB(710MB with LZW) of
+area 25&#176;x14&#176; :
+<A HREF="http://www.mail-archive.com/mapnik-users@lists.berlios.de/msg01147.html">http://www.mail-archive.com/mapnik-users@lists.berlios.de/msg01147.html</A>
+
+Problem with gdal in mapnik was with downscaling: it needs to read from
+tiff whole rendering region in source resolution to RAM before scaling
+it and producing output image on more overview zoom. This can lead to
+out of memory problem and waste of cpu time, because when downscalling
+only 2 zoom levels, it needs to read and process 16x more pixels then
+output image is. That's why I use smaller versions of same image for
+different zoom levels.
+
+So, huge geotiffs don't require extra memory, only disk storage (1 byte
+per pixel), except while rendering map in resolution much smaller than
+source image, but this can be solved using smaller copies for lower
+levels or geotiff with generated overviews and new mapnik.0.7 (haven't
+tried it yet).
+
+-- 
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001035.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+	<LI>Next message: <A HREF="001037.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1036">[ date ]</a>
+              <a href="thread.html#1036">[ thread ]</a>
+              <a href="subject.html#1036">[ subject ]</a>
+              <a href="author.html#1036">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

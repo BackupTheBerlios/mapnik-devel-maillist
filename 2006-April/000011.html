@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Prototype%20WMS%20interface%20to%20Mapnik%20%28cherry_mapnik.py%29&In-Reply-To=%3C5383fa5e0604050020y58815748g2b5db5950ba3cdc1%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000010.html">
+   <LINK REL="Next"  HREF="000012.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)</H1>
+    <B>Matthew Perry</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Prototype%20WMS%20interface%20to%20Mapnik%20%28cherry_mapnik.py%29&In-Reply-To=%3C5383fa5e0604050020y58815748g2b5db5950ba3cdc1%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)">perrygeo at gmail.com
+       </A><BR>
+    <I>Wed Apr  5 09:20:03 CEST 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000010.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+        <LI>Next message: <A HREF="000012.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Well sounds like you got alot further that I have! Let us know where
+we can access the code and I'll take it for a spin. Will this
+eventually become part of the mapnik distribution?
+
+matt
+
+On 4/4/06, Jean-Fran&#231;ois Doyon &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jfdoyon at gmail.com</A>&gt; wrote:
+&gt;<i> Cool!
+</I>&gt;<i>
+</I>&gt;<i> I've been working on a CGI/FastCGI OGC Server for Mapnik the last little
+</I>&gt;<i> while.
+</I>&gt;<i>
+</I>&gt;<i> I have a working WMS 1.3.0, but not client, so I'm going to implement a
+</I>&gt;<i> 1.1.1 very soon now :)
+</I>&gt;<i>
+</I>&gt;<i> It uses jonpy and ElementTree, and is also a framework to facilitate
+</I>&gt;<i> writing other OGC servers (like WFS or WCS).
+</I>&gt;<i>
+</I>&gt;<i> We'll see if I can get something committed tonight :)
+</I>&gt;<i>
+</I>&gt;<i> J.F.
+</I>&gt;<i>
+</I>&gt;<i> Matthew Perry wrote:
+</I>&gt;<i> &gt; Hey mapnikers,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;   So the nice rainy sunday prompted me to resume my trials with
+</I>&gt;<i> &gt; mapnik. I was able to build the latest SVN against the ubuntu 6.04
+</I>&gt;<i> &gt; boost libraries and everything went well. Alot has changed since the
+</I>&gt;<i> &gt; tutorial on the website and that threw me off for a few minutes until
+</I>&gt;<i> &gt; I found the excellent demo script! Beautiful cartography. Beautiful
+</I>&gt;<i> &gt; python.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  I have also been working a bit evaluating python web application
+</I>&gt;<i> &gt; frameworks and cherrypy impressed me with it's ease of use and very
+</I>&gt;<i> &gt; &quot;pythonic&quot; approach.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  So putting the two together, I worked up a simple pseudo-WMS server
+</I>&gt;<i> &gt; as an interface to mapnik. I say pseudo-WMS server because it doesn't
+</I>&gt;<i> &gt; even come close to complying with the WMS spec. The only thing it can
+</I>&gt;<i> &gt; do is handle a simple GetMap request:
+</I>&gt;<i> &gt;  <A HREF="http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400">http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; But for some very simple WMS clients, this is all you need. I set up a
+</I>&gt;<i> &gt; nifty little interactive map using wms-map
+</I>&gt;<i> &gt; (<A HREF="http://wms-map.sourceforge.net/">http://wms-map.sourceforge.net/</A>)  which I'll make public as soon as I
+</I>&gt;<i> &gt; get mapnik installed on a server somewhere.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Cherrypy servers run as standalone servers bound to a specific port
+</I>&gt;<i> &gt; but can optionally be put behind an apache server... Setting up this
+</I>&gt;<i> &gt; WMS server as a standalone should be fairly simple. You'll need the
+</I>&gt;<i> &gt; cherrypy and mapnik python modules to start. There is a createMap()
+</I>&gt;<i> &gt; function that contains all the usual mapnik code which you can tweak
+</I>&gt;<i> &gt; for your specific data. Then there is a WMS class that parses the WMS
+</I>&gt;<i> &gt; requests and passes them off to createMap() which writes an image to
+</I>&gt;<i> &gt; disk and returns the map image to the client. I didn't have alot of
+</I>&gt;<i> &gt; time to spend so this only a proof-of-concept.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; My initial testing against a Mapserver-based WMS (running on the same
+</I>&gt;<i> &gt; machine, same dataset) indicates that for single requests, Mapserver
+</I>&gt;<i> &gt; is only about 15% faster. But for many simultaneous requests (such as
+</I>&gt;<i> &gt; the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+</I>&gt;<i> &gt; is 3-400% faster (!!) under a decent load. Put this behind an apache
+</I>&gt;<i> &gt; server and you could have a fast, solid WMS server with mapnik on the
+</I>&gt;<i> &gt; backend. Plus mapnik's image quality is by far the most impressive of
+</I>&gt;<i> &gt; any map rendering engine i've seen! Here's a screenshot comparing the
+</I>&gt;<i> &gt; WMS clients based on both mapserver and mapnik -
+</I>&gt;<i> &gt; <A HREF="http://perrygeo.net/img/mapserver_mapnik.png">http://perrygeo.net/img/mapserver_mapnik.png</A> (a screenshot of one of
+</I>&gt;<i> &gt; my favorite places in the world. any guesses??). Just look at that
+</I>&gt;<i> &gt; beautiful line work.. did I mention I was impressed?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Attached is the code. Please give the prototype WMS server a shot and
+</I>&gt;<i> &gt; let me know how it goes.  My understanding of both mapnik and cherrypy
+</I>&gt;<i> &gt; is limited so please jump in and make suggestions.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Matt Perry
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">perrygeo at gmail.com</A>
+</I>&gt;<i> &gt; <A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; ------------------------------------------------------------------------
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; #!/usr/bin/env python
+</I>&gt;<i> &gt; &quot;&quot;&quot;
+</I>&gt;<i> &gt;  cherry_mapnik.py
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  Description:
+</I>&gt;<i> &gt;    Proof of concept WMS server using cherrypy as the web framework and
+</I>&gt;<i> &gt;    mapnik as the map rendering engine
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  Author:
+</I>&gt;<i> &gt;    Matthew Perry
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  Last Modified:
+</I>&gt;<i> &gt;    04/02/06
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  License:
+</I>&gt;<i> &gt;    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  Caveat:
+</I>&gt;<i> &gt;    Does not even come close to complying with the WMS spec.
+</I>&gt;<i> &gt;    Only very limited GetMap requests supported
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  Example:
+</I>&gt;<i> &gt;    start the server with &quot;python cherry_mapnik.py&quot;
+</I>&gt;<i> &gt;    point your browser to <A HREF="http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400">http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400</A>
+</I>&gt;<i> &gt; &quot;&quot;&quot;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; import cherrypy, random
+</I>&gt;<i> &gt; from mapnik import *
+</I>&gt;<i> &gt; from cherrypy.lib import cptools
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; def createMap(envelope,mapsize,imagetype,layers):
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     #=========================#
+</I>&gt;<i> &gt;     # System-specific variables
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # The polygon shapefile (minus the .shp extension)
+</I>&gt;<i> &gt;     shpfile  = '/home/perrygeo/data/states/statesp020'
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # The output image directory where mapnik will cache images
+</I>&gt;<i> &gt;     # It really helps to have a cron task to clean out this dir!
+</I>&gt;<i> &gt;     imagedir = '/home/perrygeo/www/tmp'
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     #=========================#
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # Set up the Mapnik Map
+</I>&gt;<i> &gt;     m = Map(mapsize[0],mapsize[1])
+</I>&gt;<i> &gt;     m.background = Color('#525367')
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # Turn on 'states' layer if requested
+</I>&gt;<i> &gt;     if 'states' in layers:
+</I>&gt;<i> &gt;         states_lyr = Layer(name='states', type='shape', file=shpfile)
+</I>&gt;<i> &gt;         states_style = Style()
+</I>&gt;<i> &gt;         states_rule = Rule()
+</I>&gt;<i> &gt;         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+</I>&gt;<i> &gt;         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+</I>&gt;<i> &gt;         states_style.rules.append( states_rule )
+</I>&gt;<i> &gt;         m.append_style('states', states_style)
+</I>&gt;<i> &gt;         states_lyr.styles.append('states')
+</I>&gt;<i> &gt;         m.layers.append(states_lyr)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # Set the BBOX extent
+</I>&gt;<i> &gt;     m.zoom_to_box(envelope)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # Get the proper image type and file extensions
+</I>&gt;<i> &gt;     if imagetype=='png': ext='png'
+</I>&gt;<i> &gt;     if imagetype=='jpeg' or imagetype=='jpg':
+</I>&gt;<i> &gt;       ext='jpg'
+</I>&gt;<i> &gt;       imagetype='jpeg'
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     # Generate an image with random filename
+</I>&gt;<i> &gt;     rand = random.randint(0,90000000)
+</I>&gt;<i> &gt;     prefix = &quot;mapnik_%s&quot; % rand
+</I>&gt;<i> &gt;     path = imagedir + '/'  + prefix + '.' + ext
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     render_to_file(m, path, imagetype)
+</I>&gt;<i> &gt;     return path
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; class WMS:
+</I>&gt;<i> &gt;     def getCapabilities(self):
+</I>&gt;<i> &gt;         xml = '&lt;test&gt;Capabilities not supported yet &lt;/test&gt;'
+</I>&gt;<i> &gt;         return xml
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     def wms(self, *args, **kwargs):
+</I>&gt;<i> &gt;         # WMS spec calls for case insensitive parameter names
+</I>&gt;<i> &gt;         lc = {}
+</I>&gt;<i> &gt;         for k,v in kwargs.iteritems():
+</I>&gt;<i> &gt;             lc[str(k).lower()] = v
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+</I>&gt;<i> &gt;             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+</I>&gt;<i> &gt;             return self.getCapabilities()
+</I>&gt;<i> &gt;         elif lc['request']=='GetMap':
+</I>&gt;<i> &gt;             corners = lc['bbox'].split(',')
+</I>&gt;<i> &gt;             envelope = Envelope(float(corners[0]),float(corners[1]), \
+</I>&gt;<i> &gt;                             float(corners[2]),float(corners[3]))
+</I>&gt;<i> &gt;             imagetype = lc['format'].replace('image/','')
+</I>&gt;<i> &gt;             mapsize=(int( lc['width'] ),int( lc['height'] ))
+</I>&gt;<i> &gt;             layers = lc['layers'].split(',')
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;             path = createMap(envelope,mapsize,imagetype,layers)
+</I>&gt;<i> &gt;             return cptools.serveFile(path)
+</I>&gt;<i> &gt;         else:
+</I>&gt;<i> &gt;            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+</I>&gt;<i> &gt;            return &quot;&lt;test&gt;You gotta request something&lt;/test&gt;&quot;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;     wms.exposed = True
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; if __name__ == '__main__':
+</I>&gt;<i> &gt;     cherrypy.root = WMS()
+</I>&gt;<i> &gt;     cherrypy.config.update({
+</I>&gt;<i> &gt;             'global': {
+</I>&gt;<i> &gt;                 'server.socket_port' : 8080,
+</I>&gt;<i> &gt;                 'server.thread_pool' : 10,
+</I>&gt;<i> &gt;                 'logDebugInfoFilter.on' : False }})
+</I>&gt;<i> &gt;     cherrypy.server.start()
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+
+--
+Matt Perry
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">perrygeo at gmail.com</A>
+<A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000010.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+	<LI>Next message: <A HREF="000012.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#11">[ date ]</a>
+              <a href="thread.html#11">[ thread ]</a>
+              <a href="subject.html#11">[ subject ]</a>
+              <a href="author.html#11">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

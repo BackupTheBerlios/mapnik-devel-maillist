@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Correcting an offset in a layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3Caa4b7a0d0912220833x3481d893t1a5d8a0642a51628%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001022.html">
+   <LINK REL="Next"  HREF="001024.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Correcting an offset in a layer</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3Caa4b7a0d0912220833x3481d893t1a5d8a0642a51628%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Correcting an offset in a layer">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Tue Dec 22 17:33:02 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001022.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+        <LI>Next message: <A HREF="001024.html">[Mapnik-devel] Giving thanks
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1023">[ date ]</a>
+              <a href="thread.html#1023">[ thread ]</a>
+              <a href="subject.html#1023">[ subject ]</a>
+              <a href="author.html#1023">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2009/12/22 Nop &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ekkehart at gmx.de</A>&gt;:
+&gt;<i>
+</I>&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> In my attempts to get the data moved, I made some partial progress. I
+</I>&gt;<i> found that by introducing some false northing parameter in the
+</I>&gt;<i> projection of the contour line layers, I can actually move the contour
+</I>&gt;<i> lines into the proper position.
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately, this does not work for the Raster layer. According to the
+</I>&gt;<i> example I am working from and to the documentation, it does not
+</I>&gt;<i> have/need a projection that I could modify. Is this correct? Is there a
+</I>&gt;<i> way to move the raster layer, too?
+</I>&gt;<i>
+</I>
+I would try
+<A HREF="http://www.gdal.org/gdal_translate.html">http://www.gdal.org/gdal_translate.html</A>
+and pass only -a_ullr  to override position of source geotiff.
+Use gdalinfo to get current ulx uly lrx lry and shift it a little with
+same step (ulx+dx uly+dy ulrx+dx ulry+dy) as needed.
+
+Anyway, strange that You have such problem in the first place.
+
+
+-- 
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001022.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+	<LI>Next message: <A HREF="001024.html">[Mapnik-devel] Giving thanks
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1023">[ date ]</a>
+              <a href="thread.html#1023">[ thread ]</a>
+              <a href="subject.html#1023">[ subject ]</a>
+              <a href="author.html#1023">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

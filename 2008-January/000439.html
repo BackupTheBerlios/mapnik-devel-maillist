@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support	(w/Sun Studio compiler)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20OSX%20Leopard%20and%20OpenSolaris%20Support%0A%09%28w/Sun%20Studio%20compiler%29&In-Reply-To=%3C14B88723-32DA-4FCA-8E74-1C5F4A4D96D6%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000436.html">
+   <LINK REL="Next"  HREF="000441.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support	(w/Sun Studio compiler)</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20OSX%20Leopard%20and%20OpenSolaris%20Support%0A%09%28w/Sun%20Studio%20compiler%29&In-Reply-To=%3C14B88723-32DA-4FCA-8E74-1C5F4A4D96D6%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support	(w/Sun Studio compiler)">artem at mapnik.org
+       </A><BR>
+    <I>Mon Jan 21 21:46:32 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000436.html">[Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support (w/Sun	Studio compiler)
+</A></li>
+        <LI>Next message: <A HREF="000441.html">[Mapnik-devel] Text placement update
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#439">[ date ]</a>
+              <a href="thread.html#439">[ thread ]</a>
+              <a href="subject.html#439">[ subject ]</a>
+              <a href="author.html#439">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Justin,
+
+On 21 Jan 2008, at 17:47, Justin Bronn wrote:
+
+&gt;<i> I just submitted a patch (ticket #63) that adds support for OSX  
+</I>&gt;<i> Leopard
+</I>&gt;<i> and preliminary support for Sun's C++ compiler on Solaris. My  
+</I>&gt;<i> motivation
+</I>&gt;<i> was that the GCC implementation for OpenSolaris has a bug that makes
+</I>&gt;<i> compiling Boost.Python impossible. In the process, I also fixed  
+</I>&gt;<i> bugs to
+</I>&gt;<i> get running on my Leopard install.
+</I>
+Cool! I applied your patch (r603).
+&gt;<i>
+</I>&gt;<i> While the patch will get Mapnik compiled on OpenSolaris, however it
+</I>&gt;<i> segfaults when attempting to run the tests -- but it may help  
+</I>&gt;<i> others get
+</I>&gt;<i> further. The tests run OK when compiled on Leopard.
+</I>&gt;<i>
+</I>
+Have you tried running rundemo.py?  Or something else ? Is sun's  
+compiler based on gcc ?
+You can tell I'm not an expert on Solaris :)
+
+&gt;<i> I built with r598 because compiling with r599 fails with the following
+</I>&gt;<i> error (g++ on Leopard):
+</I>&gt;<i>
+</I>&gt;<i> src/placement_finder.cpp:141: error: &#8216;class
+</I>&gt;<i> mapnik::label_collision_detector4&#8217; has no member named &#8216;extent&#8217;
+</I>&gt;<i>
+</I>My bad, fixed in r602
+&gt;<i> Best Regards,
+</I>&gt;<i> -Justin Bronn
+</I>&gt;<i>
+</I>
+Thanks again
+Artem
+
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000436.html">[Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support (w/Sun	Studio compiler)
+</A></li>
+	<LI>Next message: <A HREF="000441.html">[Mapnik-devel] Text placement update
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#439">[ date ]</a>
+              <a href="thread.html#439">[ thread ]</a>
+              <a href="subject.html#439">[ subject ]</a>
+              <a href="author.html#439">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

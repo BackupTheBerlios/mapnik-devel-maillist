@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about implementing fallback fonts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805270905r8986718v1419bb70e476ea14%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000623.html">
+   <LINK REL="Next"  HREF="000625.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about implementing fallback fonts</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805270905r8986718v1419bb70e476ea14%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about implementing fallback fonts">beau at beaugunderson.com
+       </A><BR>
+    <I>Tue May 27 18:05:10 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000623.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+        <LI>Next message: <A HREF="000625.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#624">[ date ]</a>
+              <a href="thread.html#624">[ thread ]</a>
+              <a href="subject.html#624">[ subject ]</a>
+              <a href="author.html#624">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I lied, it's &quot;ready&quot; now!
+
+A couple of caveats--the indentation is hosed because I haven't configured
+my vim to match the Mapnik spec yet (seems like it's 4 spaces, tabs never
+used?) and this is my first try at using C++ in 5 years or so, and probably
+the most complex thing I've tried in the realm of C++. I will fix the
+indentation and remove the debug prints before providing a final patch.
+There are also a bunch of extraneous changes (spacing or tabs changed) that
+I'll remove from the final patch.
+
+That said, it works with my example so it can't be THAT bad--but someone
+competent should look at this and give me some feedback as I'm sure there
+are some optimizations and/or things to make it &quot;fit&quot; a little better that
+could be done.
+
+The patch is available here if someone wants to take a gander:
+
+   <A HREF="http://www.beaugunderson.com/fallback_fonts.diff">http://www.beaugunderson.com/fallback_fonts.diff</A>
+
+The syntax I went with is this (the extra 'face_name' is there because my
+patch hasn't made it optional yet!):
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE Map&gt;
+&lt;Map srs=&quot;+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&quot;&gt;
+ &lt;FontSet name=&quot;my-fonts&quot;&gt;
+  &lt;Font face_name=&quot;DejaVu Sans Book&quot; /&gt;
+  &lt;Font face_name=&quot;DejaVu Sans Bold&quot; /&gt;
+  &lt;Font face_name=&quot;TSC FMing S TT Regular&quot; /&gt;
+ &lt;/FontSet&gt;
+
+ &lt;Style name=&quot;font-test&quot;&gt;
+  &lt;Rule&gt;
+   &lt;TextSymbolizer name=&quot;NAME&quot; face_name=&quot;DejaVu Sans Book&quot;
+fontset_name=&quot;my-fonts&quot; size=&quot;15&quot; fill=&quot;black&quot; /&gt;
+  &lt;/Rule&gt;
+ &lt;/Style&gt;
+
+ &lt;Layer name=&quot;font-test&quot; status=&quot;on&quot; srs=&quot;+proj=longlat +ellps=WGS84
++datum=WGS84 +no_defs&quot;&gt;
+  &lt;StyleName&gt;font-test&lt;/StyleName&gt;
+   &lt;Datasource&gt;
+    &lt;Parameter name=&quot;type&quot;&gt;shape&lt;/Parameter&gt;
+    &lt;Parameter name=&quot;file&quot;&gt;Font_Test&lt;/Parameter&gt;
+   &lt;/Datasource&gt;
+  &lt;/Layer&gt;
+&lt;/Map&gt;
+
+The shapefile I'm using has some Chinese names in it and can be accessed
+here along with the simple Python script to generate a map from it:
+
+   <A HREF="http://www.beaugunderson.com/mapnik_test/">http://www.beaugunderson.com/mapnik_test/</A>
+
+The fonts are available at:
+
+   <A HREF="ftp://cle.linux.org.tw/pub2/fonts/ttf/unicode/twinbridge/">ftp://cle.linux.org.tw/pub2/fonts/ttf/unicode/twinbridge/</A>
+
+Sidenote: I don't quite understand the magic that happens when you specify a
+face name--it only seems to work for the names contained within the TTF
+files themselves and not when specifying a filename.
+
+
+Thanks,
+
+Beau
+
+On Tue, May 27, 2008 at 12:38 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+wrote:
+
+&gt;<i> Excellent, both make sense and I've gone ahead and started.
+</I>&gt;<i>
+</I>&gt;<i> Should have a patch ready in the next couple of days depending on how much
+</I>&gt;<i> coding time I get.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Beau
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, May 27, 2008 at 12:36 AM, Martijn van Oosterhout &lt;
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; More questions already. :)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 1. Should FontSet be a top-level element like Layer and Style?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'd say yes.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; 2. I noticed that other XML nodes are usually referenced from nodes and
+</I>&gt;&gt;<i> not
+</I>&gt;&gt;<i> &gt; attributes, i.e.:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;    &lt;Layer&gt;
+</I>&gt;&gt;<i> &gt;     &lt;StyleName&gt;style-name&lt;/StyleName&gt;
+</I>&gt;&gt;<i> &gt;    &lt;/Layer&gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; instead of...
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;    &lt;Layer stylename=&quot;style-name&quot; /&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is different. A layer can have multiple styles, hence the latter
+</I>&gt;&gt;<i> way would not work.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &gt; Should this be continued for TextSymbolizer? I.e.,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;    &lt;TextSymbolizer name=&quot;NAME&quot; size=&quot;15&quot; fill=&quot;black&quot;&gt;
+</I>&gt;&gt;<i> &gt;     &lt;FontSetName&gt;font-set-name&lt;/FontSetName&gt;
+</I>&gt;&gt;<i> &gt;    &lt;/TextSymbolizer&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'd say stick to fontset=&quot;name&quot;, unless you want to support the text
+</I>&gt;&gt;<i> symbolizer having multiple fontsets? I also object on the ground that
+</I>&gt;&gt;<i> TextSyboliser currently has no content and adding will make the file
+</I>&gt;&gt;<i> more unreadable than it already is. Using an attribute fits better.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Have a nice day,
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/e2e4bdcb/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/e2e4bdcb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000623.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+	<LI>Next message: <A HREF="000625.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#624">[ date ]</a>
+              <a href="thread.html#624">[ thread ]</a>
+              <a href="subject.html#624">[ subject ]</a>
+              <a href="author.html#624">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

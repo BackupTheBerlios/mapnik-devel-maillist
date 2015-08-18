@@ -1,0 +1,481 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%0A%092005&In-Reply-To=%3CBANLkTimXwqcXJVgL7zJUUVNXhnAEPeyUtg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001373.html">
+   <LINK REL="Next"  HREF="001368.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%0A%092005&In-Reply-To=%3CBANLkTimXwqcXJVgL7zJUUVNXhnAEPeyUtg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Wed Apr  6 15:27:52 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001373.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+        <LI>Next message: <A HREF="001368.html">[Mapnik-devel] Shapefile memory and file handle optimizations
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1367">[ date ]</a>
+              <a href="thread.html#1367">[ thread ]</a>
+              <a href="subject.html#1367">[ subject ]</a>
+              <a href="author.html#1367">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yes, I remember I had a similar issue at first, unfortunately I can't
+remember what I did to solve it...
+
+I think the problem was that rundemo.cpp uses characters outside of
+the 7-bit ascii range for a selector, and that when I removed the
+layer with that in it, that it worked. I don't remember if I got to
+the root cause and fixed it. The easiest way to debug is to add trace
+statements to your rundemo.cpp and see where it crashes.
+
+Otherwise, start with commenting out all layers and only re-enable
+them one by one, until you know which one is causing the issue.
+Something is going OK obviously, otherwise you wouldn't have any
+output.
+
+Or run your application under the debugger, of course - it'll break
+right into where the issue is (it's a simple null pointer dereference
+it seems, with some luck it's on a pointer in your rundemo.cpp itself,
+that should show you what is going wrong very quickly).
+
+When I get home tonight and think about it, I'll look up the
+rundemo.cpp that I used in the end and post it.
+
+
+cheers,
+
+roel
+
+
+On Wed, Apr 6, 2011 at 3:19 PM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt; wrote:
+&gt;<i> Thanks for your reply.
+</I>&gt;<i>
+</I>&gt;<i> Now I successfully build mapnik. I copy plugin_shape.dll&#160; to
+</I>&gt;<i> mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+</I>&gt;<i> rundemo.cpp with following
+</I>&gt;<i>
+</I>&gt;<i> When running I got when it creates the png files and after it got crashed
+</I>&gt;<i> with following. In png files I get only the label but no map..
+</I>&gt;<i> Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+</I>&gt;<i> 0xC0000005: Access violation reading location 0x2bf14c25.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">roel.vanhout at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You probably haven't selected the right runtime for all projects.
+</I>&gt;&gt;<i> Check that the runtime (it's in the project properties under 'C++' I
+</I>&gt;&gt;<i> think, I don't know by heart) is set to 'multi threaded DLL' or
+</I>&gt;&gt;<i> whatever it is you want to use. When multiple projects use different
+</I>&gt;&gt;<i> settings, you get linker errors like this.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> (please use 'reply all' so that the list has a copy for future
+</I>&gt;&gt;<i> reference of other users)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> roel
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Thank for for your early reply.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Now I use boost 1.44. I think I am closing. Now I get following error.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 2&gt;MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'libcmtd.lib'
+</I>&gt;&gt;<i> &gt; conflicts with use of other libs; use /NODEFAULTLIB:library
+</I>&gt;&gt;<i> &gt; 2&gt;MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+</I>&gt;&gt;<i> &gt; conflicts with use of other libs; use /NODEFAULTLIB:library
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::filesystem2::file_status __cdecl
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::status_api(class
+</I>&gt;&gt;<i> &gt; std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt; const &amp;,class
+</I>&gt;&gt;<i> &gt; boost::system::error_code &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">status_api at detail</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVfile_status at 23</A>@ABV?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AAVerror_code at system</A>@3@@Z)
+</I>&gt;&gt;<i> &gt; referenced in function &quot;bool __cdecl boost::filesystem2::exists&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;(class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; const &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (??$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">exists at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA_NABV?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@01@@Z)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_category const &amp; __cdecl
+</I>&gt;&gt;<i> &gt; boost::system::system_category(void)&quot;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">system_category at system</A>@boost@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">YAABVerror_category at 12</A>@XZ) referenced in
+</I>&gt;&gt;<i> &gt; function &quot;public: __thiscall
+</I>&gt;&gt;<i> &gt; boost::system::error_code::error_code(void)&quot;
+</I>&gt;&gt;<i> &gt; (??<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">0error_code at system</A>@boost@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">QAE at XZ</A>)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_code __cdecl
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::dir_itr_increment(void * &amp;,class
+</I>&gt;&gt;<i> &gt; std::basic_string&lt;char,struct std::char_traits&lt;char&gt;,class
+</I>&gt;&gt;<i> &gt; std::allocator&lt;char&gt; &gt; &amp;,class boost::filesystem2::file_status &amp;,class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::file_status &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dir_itr_increment at detail</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at AAPAXAAV</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AAVfile_status at 23</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">2 at Z</A>)
+</I>&gt;&gt;<i> &gt; referenced in function &quot;private: void __thiscall
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_directory_iterator&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;::increment(void)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?increment@?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_directory_iterator at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@AAEXXZ)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_code __cdecl
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::dir_itr_first(void * &amp;,class
+</I>&gt;&gt;<i> &gt; std::basic_string&lt;char,struct std::char_traits&lt;char&gt;,class
+</I>&gt;&gt;<i> &gt; std::allocator&lt;char&gt; &gt; const &amp;,class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt; &amp;,class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::file_status &amp;,class boost::filesystem2::file_status
+</I>&gt;&gt;<i> &gt; &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dir_itr_first at detail</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at AAPAXABV</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AAV67 at AAVfile_status</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">23 at 3</A>@Z)
+</I>&gt;&gt;<i> &gt; referenced in function &quot;private: class boost::system::error_code
+</I>&gt;&gt;<i> &gt; __thiscall
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_directory_iterator&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;::m_init(class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; const &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?m_init@?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_directory_iterator at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@AAE?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at ABV</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@23@@Z)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_code __cdecl
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::not_found_error(void)&quot;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">not_found_error at detail</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at XZ</A>)
+</I>&gt;&gt;<i> &gt; referenced in function &quot;private: class boost::system::error_code
+</I>&gt;&gt;<i> &gt; __thiscall
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_directory_iterator&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;::m_init(class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; const &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?m_init@?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_directory_iterator at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@AAE?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at ABV</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@23@@Z)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_code __cdecl
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::dir_itr_close(void * &amp;)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dir_itr_close at detail</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@YA?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">AVerror_code at system</A>@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">3 at AAPAX</A>@Z)
+</I>&gt;&gt;<i> &gt; referenced in function &quot;public: __thiscall
+</I>&gt;&gt;<i> &gt; boost::filesystem2::detail::dir_itr_imp&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;::~dir_itr_imp&lt;class
+</I>&gt;&gt;<i> &gt; boost::filesystem2::basic_path&lt;class std::basic_string&lt;char,struct
+</I>&gt;&gt;<i> &gt; std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;,struct
+</I>&gt;&gt;<i> &gt; boost::filesystem2::path_traits&gt; &gt;(void)&quot;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; (??1?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dir_itr_imp at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_path at V</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">basic_string at DU</A>?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">char_traits at D</A>@std@@V?$<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">allocator at D</A>@2@@std@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Upath_traits at filesystem2</A>@boost@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">filesystem2 at boost</A>@@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">detail at filesystem2</A>@boost@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">QAE at XZ</A>)
+</I>&gt;&gt;<i> &gt; 2&gt;mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+</I>&gt;&gt;<i> &gt; symbol &quot;class boost::system::error_category const &amp; __cdecl
+</I>&gt;&gt;<i> &gt; boost::system::generic_category(void)&quot;
+</I>&gt;&gt;<i> &gt; (?<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">generic_category at system</A>@boost@@<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">YAABVerror_category at 12</A>@XZ) referenced
+</I>&gt;&gt;<i> &gt; in
+</I>&gt;&gt;<i> &gt; function &quot;void __cdecl boost::system::`dynamic initializer for
+</I>&gt;&gt;<i> &gt; 'posix_category''(void)&quot; (??<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">__Eposix_category at system</A>@boost@@YAXXZ)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">roel.vanhout at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; The latest boost version doesn't work because it uses filesystem v3.
+</I>&gt;&gt;<i> &gt;&gt; In this version, there are no cast operators from filesystem::path to
+</I>&gt;&gt;<i> &gt;&gt; std::string. Either define a preprocessor token to use v2 (don't know
+</I>&gt;&gt;<i> &gt;&gt; which one, it's in the documentation); or use an earlier version (I
+</I>&gt;&gt;<i> &gt;&gt; think 1.44 is the latest that used v2 by default).
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; cheers,
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; roel
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; &gt; Thank you for your kind help.
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; I download mapnik source from your link. I added all the libraries
+</I>&gt;&gt;<i> &gt;&gt; &gt; and
+</I>&gt;&gt;<i> &gt;&gt; &gt; create solution. I took boost-1.46.1.
+</I>&gt;&gt;<i> &gt;&gt; &gt; I tried to follow the link and made a visual studio 2005 project.
+</I>&gt;&gt;<i> &gt;&gt; &gt; Where
+</I>&gt;&gt;<i> &gt;&gt; &gt; I
+</I>&gt;&gt;<i> &gt;&gt; &gt; built it I found several error like these:
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+</I>&gt;&gt;<i> &gt;&gt; &gt; error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1
+</I>&gt;&gt;<i> &gt;&gt; &gt; from
+</I>&gt;&gt;<i> &gt;&gt; &gt; 'boost::filesystem3::path' to 'const std::string &amp;'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Reason: cannot convert from 'boost::filesystem3::path' to
+</I>&gt;&gt;<i> &gt;&gt; &gt; 'const
+</I>&gt;&gt;<i> &gt;&gt; &gt; std::string'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; No user-defined-conversion operator available that can
+</I>&gt;&gt;<i> &gt;&gt; &gt; perform
+</I>&gt;&gt;<i> &gt;&gt; &gt; this conversion, or the operator cannot be called
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+</I>&gt;&gt;<i> &gt;&gt; &gt; error C2039: 'string' : is not a member of
+</I>&gt;&gt;<i> &gt;&gt; &gt; 'boost::filesystem3::directory_entry'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+</I>&gt;&gt;<i> &gt;&gt; &gt; : see declaration of 'boost::filesystem3::directory_entry'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+</I>&gt;&gt;<i> &gt;&gt; &gt; error C2228: left of '.c_str' must have class/struct/union
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+</I>&gt;&gt;<i> &gt;&gt; &gt; error C2039: 'string' : is not a member of
+</I>&gt;&gt;<i> &gt;&gt; &gt; 'boost::filesystem3::directory_entry'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+</I>&gt;&gt;<i> &gt;&gt; &gt; : see declaration of 'boost::filesystem3::directory_entry'
+</I>&gt;&gt;<i> &gt;&gt; &gt; 1&gt;d:\mapnik by
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+</I>&gt;&gt;<i> &gt;&gt; &gt; error C2228: left of '.c_str' must have class/struct/union
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">roel.vanhout at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; I don't recommend trying to get it all to work with pre-build
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; binaries. Most binaries you will find online of third-party
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; libraries
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; do not document with which flags they are build, or with which
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; compiler etc; and if they use different flags, it won't work anyway.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; Although theoretically anything is possible, in practice you're not
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; going to be able to get it to work (things like SECURE_CRT, which
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; manifest to use, etc).
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; I documented how to build from source for all libraries on
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; <A HREF="http://trac.mapnik.org/wiki/BuildingOnWindows">http://trac.mapnik.org/wiki/BuildingOnWindows</A> . It's not for the
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; faint
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; of heart, especially some PITA libraries like icu and libtool. Also
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; check my tickets in trac for some patches to make things build with
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; MSVC. I only recommend spending time on it if you're already
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; experienced with MSVC and troubleshooting building/linking issues
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; with
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; it.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; cheers,
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; roel
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; wrote:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Hi,
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; I am new to mapnik. I successfully installed mapnik but I want it
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; visual
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; studio 2005. So I tried to run the C++ demo on Visual studio
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; project.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; What I
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; did is as follows:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Installation:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; I installed mapnik 0.7.1 with python 2.6 on Vista as per
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; <A HREF="http://trac.mapnik.org/wiki/WindowsInstallation.">http://trac.mapnik.org/wiki/WindowsInstallation.</A>
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; I made a directory D:\mapnik installation for visual studio 2005
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; and
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; copy
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; installation
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2005\mapnik-0.7.1\python\2.6\site-packages
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Third party library:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 1.&#160;&#160;&#160;&#160;&#160;&#160;&#160; freetype-2.4.4
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2.&#160;&#160;&#160;&#160;&#160;&#160;&#160; icu
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 3.&#160;&#160;&#160;&#160;&#160;&#160;&#160; libtool-1.5.26
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 4.&#160;&#160;&#160;&#160;&#160;&#160;&#160; boost_1_46_1
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Procedure:
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 1.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I created a new Win32 Console Application named
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; MapnikApp
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; in
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; the
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; above directory.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I tried to run reundemo.cpp in mapnik-0.7.1. I copied
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; the
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; content
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; of this file to our MapnikApp.cpp
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 3.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I included the following to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Project-&gt;Properties-&gt;C/C++-&gt;General-&gt;Additional Include
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Directories.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2005\mapnik-0.7.1\include
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio 2005\boost_1_46_1
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio 2005\icu\include
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2005\libtool-1.5.26\include
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 2005\freetype-2.4.4\include
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 4.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I added the associate lib directory to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Project-&gt;Properties-&gt;Linker-&gt;General-&gt;Additional Library
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Directories
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 5.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I added all *.lib and *.dll of mapnik-0.7.1\lib to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; project.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 6.&#160;&#160;&#160;&#160;&#160;&#160;&#160; After running the project (debug, win32) I got the
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; following
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Unhandled exception at
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 0x1002cbe5
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; reading
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; location
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;0xcccccccc.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; In Release Win32 I got the following.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; std::exception: vector&lt;T&gt; too long when it tried to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; execute
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; m.insert_style.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; For simplicity I tried to run the following
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; Map m(800,600);
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; m.set_background(color_factory::from_string(&quot;white&quot;));
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; m.zoomToBox(Envelope&lt;double&gt;(1405120.04127408,-247003.813399447,
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; 1706357.31328276,-25098.593149577));
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; Image32 buf(m.getWidth(),m.getHeight());
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; agg_renderer&lt;Image32&gt; ren(m,buf);
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; ren.apply();
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; &#160;I got the following error.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; A buffer overrun has occurred in MapnikApp.exe which has corrupted
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; the
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; program's internal state. Press Break to debug the program or
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Continue
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; to
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; terminate the program.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; I need help how to solve it.
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; With best regards,
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Rakib
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; Mapnik-devel mailing list
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;&gt; &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001373.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+	<LI>Next message: <A HREF="001368.html">[Mapnik-devel] Shapefile memory and file handle optimizations
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1367">[ date ]</a>
+              <a href="thread.html#1367">[ thread ]</a>
+              <a href="subject.html#1367">[ subject ]</a>
+              <a href="author.html#1367">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik and reprojection of shapefiles
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C3A429442-9A0F-40A1-85DF-958737F6C05E%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000242.html">
+   <LINK REL="Next"  HREF="000244.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik and reprojection of shapefiles</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C3A429442-9A0F-40A1-85DF-958737F6C05E%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik and reprojection of shapefiles">artem at mapnik.org
+       </A><BR>
+    <I>Tue Sep 11 13:11:16 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000242.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+        <LI>Next message: <A HREF="000244.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#243">[ date ]</a>
+              <a href="thread.html#243">[ thread ]</a>
+              <a href="subject.html#243">[ subject ]</a>
+              <a href="author.html#243">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 10 Sep 2007, at 20:54, Jon Burgess wrote:
+
+&gt;<i> On Sun, 2007-09-09 at 20:25 +0100, Jon Burgess wrote:
+</I>&gt;&gt;<i> On Sun, 2007-09-09 at 18:56 +0100, Jon Burgess wrote:
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i> 	I've been trying to tidy up the projections used by the OSM  
+</I>&gt;&gt;&gt;<i> google-like
+</I>&gt;&gt;&gt;<i> tiles and I've run into a rendering problem with one of the world
+</I>&gt;&gt;&gt;<i> shapefiles. It looks like the issue occurs when part of the  
+</I>&gt;&gt;&gt;<i> shapefile
+</I>&gt;&gt;&gt;<i> crosses the antimeridian:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.jburgess.uklinux.net/wrap.png">http://www.jburgess.uklinux.net/wrap.png</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This only seems to occur if the map has a different projection to  
+</I>&gt;&gt;&gt;<i> the
+</I>&gt;&gt;&gt;<i> shapefile. Is this a problem with the style, Mapnik or the  
+</I>&gt;&gt;&gt;<i> shapefile?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The shapefiles I'm using are the ones from
+</I>&gt;&gt;&gt;<i> <A HREF="http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2">http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I switch to using the &quot;world_boundaries/world_bnd_m&quot; file the I  
+</I>&gt;&gt;&gt;<i> don't
+</I>&gt;&gt;&gt;<i> see this problem but the map takes much longer to render.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The python script and style I used are attached.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I think I've found a solution to this. I noticed that the boundary of
+</I>&gt;&gt;<i> the problem shapefile was less than 1cm from the extent of the globe
+</I>&gt;&gt;<i> (+-20037508.34m). The shapefile which worked OK had a boundary 11m
+</I>&gt;&gt;<i> smaller.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I loaded the problem shapefile into JUMP and clipped the edges to  
+</I>&gt;&gt;<i> match
+</I>&gt;&gt;<i> the other shapefile and now it seems to render OK. I guess that  
+</I>&gt;&gt;<i> some of
+</I>&gt;&gt;<i> the points previously got pushed over the antimeridian during the
+</I>&gt;&gt;<i> reprojection.
+</I>&gt;<i>
+</I>&gt;<i> I'm still having some difficulties getting Mapnik to produce reliable
+</I>&gt;<i> output when reprojecting shapefiles. Attached is script which produce
+</I>&gt;<i> one set of bad output (using the osm.xml I posted before). A  
+</I>&gt;<i> screenshot
+</I>&gt;<i> is at <A HREF="http://www.jburgess.uklinux.net/wrap2.png">http://www.jburgess.uklinux.net/wrap2.png</A>
+</I>&gt;<i>
+</I>&gt;<i> Although the attached example is a little contrived I'm getting  
+</I>&gt;<i> similar
+</I>&gt;<i> results trying to render tiles using tilecache (it is much harder  
+</I>&gt;<i> to use
+</I>&gt;<i> the tilecache setup as a reproducible example).
+</I>&gt;<i>
+</I>&gt;<i> The debug from Mapnik is below. I think what happens is as follows:-
+</I>&gt;<i> - Due to the 2:1 ratio bounding box, the map.zoom_all() results in a
+</I>&gt;<i> bounding box way beyond the width of the map (+-38,000km).
+</I>&gt;<i> - When this gets reprojected on to the shapefile the bounding box  
+</I>&gt;<i> width
+</I>&gt;<i> is corrupted (aliased) to +-1,500km, hence only the few polygons which
+</I>&gt;<i> are close to the meridian pass the bounding box filter.
+</I>&gt;<i>
+</I>&gt;<i> registered datasource : gdal
+</I>&gt;<i> registered datasource : raster
+</I>&gt;<i> registered datasource : shape
+</I>&gt;<i> registered datasource : postgis
+</I>&gt;<i> Envelope(-20037400,-19971868.87702835,20037400,18418382.13706818)
+</I>&gt;<i> file_length=3335256
+</I>&gt;<i> shape_type=5
+</I>&gt;<i> datasource=0x6ef930 type=1
+</I>&gt;<i>  layer1 - &gt; Envelope 
+</I>&gt;<i> (-20037400,-19971868.87702835,20037400,18418382.13706818)
+</I>&gt;<i>  layer2 - &gt; Envelope 
+</I>&gt;<i> (-20037400,-20014500.81197941,20037400,18460913.07633008)
+</I>&gt;<i> scale=76950.8
+</I>&gt;<i> start map processing bbox=Envelope 
+</I>&gt;<i> (-38475413.88830949,-20014500.81197941,38475413.88830949,18460913.0763 
+</I>&gt;<i> 3008)
+</I>&gt;<i> scale denominator = 2.74824e+08
+</I>&gt;<i> start layer processing : world-1
+</I>&gt;<i> datasource = 0x6ef930
+</I>&gt;<i> Envelope 
+</I>&gt;<i> (-1599602.797268995,-19971868.87702838,1599602.797268997,18418382.1370 
+</I>&gt;<i> 6815)
+</I>&gt;<i> ENCODING = utf-8
+</I>&gt;<i> end layer processing
+</I>&gt;<i> end map processing
+</I>&gt;<i> 0.29 s
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>
+
+Jon,
+
+Thanks a lot for reporting this. I modified feature_style_processor  
+to always clip query's bbox to the layer's extent. This seemed to  
+fixes this issue :
+
+1. Before processing layer, backproject layer's extent into main  
+(map) projection.
+2. Clip query's bbox by this projected extent.
+
+Could you try r522 and let me know if this works for you.
+
+Cheers
+Artem
+
+&gt;<i>
+</I>&gt;<i> &lt;wrap.py&gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070911/e7e9e1b3/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070911/e7e9e1b3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000242.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+	<LI>Next message: <A HREF="000244.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#243">[ date ]</a>
+              <a href="thread.html#243">[ thread ]</a>
+              <a href="subject.html#243">[ subject ]</a>
+              <a href="author.html#243">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

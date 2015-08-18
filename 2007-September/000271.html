@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Compile problem with AGG
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Compile%20problem%20with%20AGG&In-Reply-To=%3C20070917231716.52e5a38f%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000283.html">
+   <LINK REL="Next"  HREF="000275.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Compile problem with AGG</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Compile%20problem%20with%20AGG&In-Reply-To=%3C20070917231716.52e5a38f%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Compile problem with AGG">lists at brachttal.net
+       </A><BR>
+    <I>Mon Sep 17 23:17:16 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000283.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+        <LI>Next message: <A HREF="000275.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#271">[ date ]</a>
+              <a href="thread.html#271">[ thread ]</a>
+              <a href="subject.html#271">[ subject ]</a>
+              <a href="author.html#271">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+some days ago I compiled mapnik with autotools. I used the libagg from
+my distribution. But today after a SVN update i got this compiler error:
+
+agg_renderer.cpp: In constructor
+'mapnik::agg_renderer&lt;T&gt;::agg_renderer(const mapnik::Map&amp;, T&amp;, unsigned
+int, unsigned int) [with T = mapnik::Image32]': agg_renderer.cpp:626:
+instantiated from here agg_renderer.cpp:104: error: no matching
+function for call to
+'agg::pixfmt_alpha_blend_rgba&lt;agg::blender_rgba&lt;agg::rgba8,
+agg::order_rgba&gt;, agg::row_accessor&lt;unsigned char&gt;, unsigned
+int&gt;::pixfmt_alpha_blend_rgba(agg::row_ptr_cache&lt;unsigned
+int&gt;char&gt;&amp;)' /usr/include/agg2/agg_pixfmt_rgba.h:1784: note: candidates
+int&gt;char&gt;are: agg::pixfmt_alpha_blend_rgba&lt;Blender, RenBuf,
+int&gt;char&gt;PixelT&gt;::pixfmt_alpha_blend_rgba(RenBuf&amp;) [with Blender =
+int&gt;char&gt;PixelT&gt;agg::blender_rgba&lt;agg::rgba8, agg::order_rgba&gt;, RenBuf
+int&gt;char&gt;PixelT&gt;= agg::row_accessor&lt;unsigned char&gt;, PixelT = unsigned
+int&gt;char&gt;PixelT&gt;int] /usr/include/agg2/agg_pixfmt_rgba.h:1783:
+int&gt;char&gt;PixelT&gt;note:
+int&gt;char&gt;PixelT&gt;agg::pixfmt_alpha_blend_rgba&lt;Blender, RenBuf,
+int&gt;char&gt;PixelT&gt;PixelT&gt;::pixfmt_alpha_blend_rgba() [with Blender =
+int&gt;char&gt;PixelT&gt;PixelT&gt;agg::blender_rgba&lt;agg::rgba8, agg::order_rgba&gt;,
+int&gt;char&gt;PixelT&gt;PixelT&gt;RenBuf = agg::row_accessor&lt;unsigned char&gt;,
+int&gt;char&gt;PixelT&gt;PixelT&gt;PixelT = unsigned
+int&gt;char&gt;PixelT&gt;PixelT&gt;int] /usr/include/agg2/agg_pixfmt_rgba.h:1763:
+int&gt;char&gt;PixelT&gt;PixelT&gt;note:
+int&gt;char&gt;PixelT&gt;PixelT&gt;agg::pixfmt_alpha_blend_rgba&lt;agg::blender_rgba&lt;agg::rgba8,
+int&gt;char&gt;PixelT&gt;PixelT&gt;agg::order_rgba&gt;, agg::row_accessor&lt;unsigned
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;, unsigned
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;::pixfmt_alpha_blend_rgba(const
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;agg::pixfmt_alpha_blend_rgba&lt;agg::blender_rgba&lt;agg::rgba8,
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;agg::order_rgba&gt;,
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;agg::row_accessor&lt;unsigned char&gt;,
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;unsigned int&gt;&amp;) make[2]: ***
+int&gt;char&gt;PixelT&gt;PixelT&gt;char&gt;int&gt;[libmapnik_la-agg_renderer.lo] Fehler 1
+
+Are there some latest changes that forces Mapnik to use the included
+libagg source? Or where is the problem?
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000283.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+	<LI>Next message: <A HREF="000275.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#271">[ date ]</a>
+              <a href="thread.html#271">[ thread ]</a>
+              <a href="subject.html#271">[ subject ]</a>
+              <a href="author.html#271">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

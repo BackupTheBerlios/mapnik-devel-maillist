@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070915010948.06ef62be%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000258.html">
+   <LINK REL="Next"  HREF="000261.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070915010948.06ef62be%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">lists at brachttal.net
+       </A><BR>
+    <I>Sat Sep 15 01:09:48 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000258.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+        <LI>Next message: <A HREF="000261.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#259">[ date ]</a>
+              <a href="thread.html#259">[ thread ]</a>
+              <a href="subject.html#259">[ subject ]</a>
+              <a href="author.html#259">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Fri, 14 Sep 2007 18:28:55 -0400 schrieb Jean-Francois Doyon:
+
+&gt;<i> Oooh, awsome ... good news on Autoconf (And I worked on the scons  
+</I>&gt;<i> stuff :)
+</I>&gt;<i> 
+</I>&gt;<i> +1 for the .so/dll extensions, and using libtool.
+</I>
+I added the autoconf stuff to SVN. See commit log:
+
++ added GNU autotools build environment
++ raster and gdal input isn't tested. Not working currently...
++ *-input.so plugins created. Change loader in source or link plugin to
+correct place
++ use pkg-config uninstalled feature
+  -&gt; define project root to PKG_CONFIG_PATH to use mapnik without
+installation
++ added various library checks
++ don't install fonts
++ don't use included AGG
+  -&gt; check for a installed libagg
++ Added Makefile for c++ demo
++ don't build any python wrapper stuff
+  -&gt; this follows if all other building works
++ added Anjuta file
+  -&gt; not needed to build anything, but helps much if you use Anjuta
+
+Please try it and report all problems. Remember it's a first start and
+may not compile on your system.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000258.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+	<LI>Next message: <A HREF="000261.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#259">[ date ]</a>
+              <a href="thread.html#259">[ thread ]</a>
+              <a href="subject.html#259">[ subject ]</a>
+              <a href="author.html#259">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

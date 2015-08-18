@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20GDAL%20raster%20rendering&In-Reply-To=%3C0719BE42F22E0A46857DF72644EC5D70691D7B%40pj-exchange.photon.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000643.html">
+   <LINK REL="Next"  HREF="000646.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Mapnik-users] GDAL raster rendering</H1>
+    <B>Matt Hanson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20GDAL%20raster%20rendering&In-Reply-To=%3C0719BE42F22E0A46857DF72644EC5D70691D7B%40pj-exchange.photon.com%3E"
+       TITLE="[Mapnik-devel] [Mapnik-users] GDAL raster rendering">mhanson at photon.com
+       </A><BR>
+    <I>Tue Jun 17 21:42:56 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000643.html">[Mapnik-devel] [Mapnik-users] GDAL raster rendering
+</A></li>
+        <LI>Next message: <A HREF="000646.html">[Mapnik-devel] [Mapnik-users] GDAL raster rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#644">[ date ]</a>
+              <a href="thread.html#644">[ thread ]</a>
+              <a href="subject.html#644">[ subject ]</a>
+              <a href="author.html#644">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ok, I was wrong on several accounts, now in the light of day I'm seeing
+how the code works a lot better.   The problems still there, but it's a
+bit different then I originally thought.
+
+You can pass arbitrary parameters to an input plugin, with the
+parameters class.   So it's very easy to pass in the desired bands upon
+reading the file.
+
+But I was also wrong about when the data is read in - it's read in the
+featureset class which is when it is actually rendered.  But the
+featureset class doesn't have direct access to the datasource, only the
+actual GDALdataset pointer.  But since the GDAL file is opened as
+readonly you can't set the desired bands in the datasource class.
+
+So I need to figure out some way to pass from the datasource onto the
+featureset.   If anyone is familiar with the code enough to know how
+this might be accomplished...?    I'll keep looking, but if that can be
+figured out it's just replacing the rasterband loop in gdal_featureset
+with a few lines to explicitly set the red/green/blue bands.
+
+
+&gt;<i> -----Original Message-----
+</I>&gt;<i> From: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel-bounces at lists.berlios.de</A> [mailto:mapnik-devel-
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">bounces at lists.berlios.de</A>] On Behalf Of Matt Hanson
+</I>&gt;<i> Sent: Tuesday, June 17, 2008 2:45 PM
+</I>&gt;<i> To: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-users at lists.berlios.de</A>; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+</I>&gt;<i> 
+</I>&gt;<i> Hi Tom,
+</I>&gt;<i> 
+</I>&gt;<i> &gt; From: Tom Hughes [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>]
+</I>&gt;<i> &gt; I can't pretend to understand most of this because I don't know
+</I>&gt;<i> &gt; anything about GDAL but I don't see why the fact that a plugin is
+</I>&gt;<i> used
+</I>&gt;<i> should
+</I>&gt;<i> &gt; have any effect on anything.
+</I>&gt;<i> 
+</I>&gt;<i> The problem is that the current plugin architecture doesn't allow the
+</I>&gt;<i> passing of arbitrary fields to the plugin itself.   So, in the case of
+</I>&gt;<i> GDAL you can't set what bands you want to extract for viewing from it.
+</I>&gt;<i> Imagine having a 2GB 128 band hyperspectral image.   Right now you'd
+</I>&gt;<i> have to create 128 single band files in order to allow Mapnik to
+</I>render
+&gt;<i> any possible band.  And that's just for grayscale images.  What if you
+</I>&gt;<i> want to set your RGB bands to 3 other arbitrary bands?
+</I>&gt;<i> 
+</I>&gt;<i> So maybe the solution is just to allow arbitrary arguments to plugins,
+</I>&gt;<i> then the plugins themselves can handle plugin specific options.  In
+</I>&gt;<i> fact, that probably is the much better solution than my previously
+</I>&gt;<i> stated draconian approach of ditching plugins.
+</I>&gt;<i> 
+</I>&gt;<i> &gt; As far as repeated reopening of the file goes, the solution is
+</I>&gt;<i> probably
+</I>&gt;<i> &gt; just some sort of pool/cache in the plugin much as the postgis
+</I>plugin
+&gt;<i> &gt; does for database connections.
+</I>&gt;<i> 
+</I>&gt;<i> Maybe, I'm not familiar with how the postgis plugin works.  If it
+</I>&gt;<i> maintains a connection and retrieves data as needed then that's
+</I>exactly
+&gt;<i> what is needed.  It looks more like the GDAL plugin was quickly put
+</I>&gt;<i> together just to get something able to read all of the GDAL supported
+</I>&gt;<i> formats.  It can probably use a bit of work.    I'll look at the
+</I>&gt;<i> postgis
+</I>&gt;<i> plugin.   I'm pretty new to Mapnik and don't have a full understanding
+</I>&gt;<i> of it so it's very likely I'm missing some really basic things, but
+</I>&gt;<i> that's why I'm posting here.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; That would be a rather radical design change...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; I'd like to do this but it'd likely be a large job and difficult
+</I>&gt;<i> due
+</I>&gt;<i> &gt; to the
+</I>&gt;<i> &gt; &gt; general lack of documentation and comments.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I would suggest that you would want to get Artem's agreement before
+</I>&gt;<i> &gt; starting on such a project - there doesn't seem to be much point if
+</I>&gt;<i> &gt; he has good reasons for the current architecture.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> I'd really like to hear Artem's views on it, or pointers on how to
+</I>&gt;<i> potentially work around the problem, but it's now been over 2 months
+</I>&gt;<i> since his last appearance on these lists. I've also emailed him
+</I>&gt;<i> independently.  He appears to have gone missing.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; For what it's worth it sounds to me like the real solution to your
+</I>&gt;<i> &gt; problem is an extension to the RasterSymbolizer to allow a colour
+</I>&gt;<i> &gt; to be specified to override that which comes from the source raster
+</I>&gt;<i> &gt; data. That's if I've understood the problem correctly.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> If only that would work, but I don't think it will because the styles
+</I>&gt;<i> are applied at too late of a stage - after all the data has been read
+</I>&gt;<i> in
+</I>&gt;<i> and thus after the color bands have been specified (and specified by
+</I>&gt;<i> the
+</I>&gt;<i> file itself rather than the user wanting to read it).
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> &gt; To be honest I think mapnik's real target is rendering of vector
+</I>&gt;<i> &gt; data, which may be why the support for raster data is quite limited.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> I think you're right - the target also seems to be mostly python
+</I>users.
+&gt;<i> Unfortunately it's also the only C++ library to support vector on
+</I>&gt;<i> raster
+</I>&gt;<i> rendering that I've found.   Mapserver and Geoserver do it, but they
+</I>&gt;<i> don't have a stand alone developer library to use that functionality.
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000643.html">[Mapnik-devel] [Mapnik-users] GDAL raster rendering
+</A></li>
+	<LI>Next message: <A HREF="000646.html">[Mapnik-devel] [Mapnik-users] GDAL raster rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#644">[ date ]</a>
+              <a href="thread.html#644">[ thread ]</a>
+              <a href="subject.html#644">[ subject ]</a>
+              <a href="author.html#644">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

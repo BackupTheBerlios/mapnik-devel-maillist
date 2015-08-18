@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Steve%20Chilton%27s%20presentation%20from%20Day%201%20of%0A%20Mapnik%20code%20sprint&In-Reply-To=%3CAANLkTikTZ-1CaLza_bmOYgRvzTgwGCpWVJQOYo7oQQrj%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001276.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Steve Chilton's presentation from Day 1 of Mapnik code sprint</H1>
+    <B>Andy Allan</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Steve%20Chilton%27s%20presentation%20from%20Day%201%20of%0A%20Mapnik%20code%20sprint&In-Reply-To=%3CAANLkTikTZ-1CaLza_bmOYgRvzTgwGCpWVJQOYo7oQQrj%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Steve Chilton's presentation from Day 1 of Mapnik code sprint">gravitystorm at gmail.com
+       </A><BR>
+    <I>Sun Oct  3 23:16:44 CEST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001276.html">[Mapnik-devel] Area center calculation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1275">[ date ]</a>
+              <a href="thread.html#1275">[ thread ]</a>
+              <a href="subject.html#1275">[ subject ]</a>
+              <a href="author.html#1275">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, Sep 27, 2010 at 4:44 PM, Michal Migurski &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mike at stamen.com</A>&gt; wrote:
+&gt;<i> On Sep 25, 2010, at 1:23 PM, Lennard wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 25-9-2010 21:53, Michal Migurski wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cascadenik can also only address it by creating dozens of layers, for each possible layer=*. I'd like to see variables and loops become a possibility in the stylesheet, so I can iterate over the layer=* tags, by calling the same styles but with different layer=* values in the datasource.
+</I>&gt;<i>
+</I>&gt;<i> I'm not sure how comfortable I am mucking with the layers and data sources - Cascadenik *could* create dozens of layers but if I understand correctly, that would cause the same geometry to be pulled out of the data source numerous times.
+</I>
+The situation being worked on at the Hack Weekend was multiple styles
+per layer, and fixing that apparently didn't make much difference (on
+linux) due to OS and/or DB caching. So if the data is fetched and
+rendered many times immediately that would be best - perhaps it can be
+arranged so for N layers there are N rendering buffers, and the lines
+are drawn on each buffer before being composited at the end. &lt;Layer
+buffer=&quot;[layer]&quot; maxbuffer=&quot;5&quot; minbuffer=&quot;-5&quot; defaultbuffer=&quot;0&quot;&gt; or
+something, in OSM terms.
+
+Care of course needs to be taken in stylesheet design, since I've
+already had to explain elsewhere the difference between top-down-view
+layering vs cartographic-choice layering!
+
+Cheers,
+Andy
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001276.html">[Mapnik-devel] Area center calculation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1275">[ date ]</a>
+              <a href="thread.html#1275">[ thread ]</a>
+              <a href="subject.html#1275">[ subject ]</a>
+              <a href="author.html#1275">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

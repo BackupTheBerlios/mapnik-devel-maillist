@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] arabic Rendering in close areas
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20arabic%20Rendering%20in%20close%20areas&In-Reply-To=%3C2fc2c5f10809161350na1044b4x3879bc6b435b78eb%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000721.html">
+   <LINK REL="Next"  HREF="000723.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] arabic Rendering in close areas</H1>
+    <B>Martijn van Oosterhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20arabic%20Rendering%20in%20close%20areas&In-Reply-To=%3C2fc2c5f10809161350na1044b4x3879bc6b435b78eb%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] arabic Rendering in close areas">kleptog at gmail.com
+       </A><BR>
+    <I>Tue Sep 16 22:50:13 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000721.html">[Mapnik-devel] arabic Rendering in close areas
+</A></li>
+        <LI>Next message: <A HREF="000723.html">[Mapnik-devel] arabic Rendering in close areas
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#722">[ date ]</a>
+              <a href="thread.html#722">[ thread ]</a>
+              <a href="subject.html#722">[ subject ]</a>
+              <a href="author.html#722">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Interesting problem. ISTM the fix is in the placement finder and
+working out where the breaks need to be. A quick solution would be to
+simply reverse the order of the rows, if I understand correctly.
+However, I don't quite see how to tell when the text is reight-to-left
+instead of left-to-right... What if you have mixed text?
+
+
+2008/9/14 Mohamed SAAD &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">doude63 at freenet.de</A>&gt;:
+&gt;<i> I have noticed a different rendering with Mapnik when using arabic tag names
+</I>&gt;<i> for linear ways and closed ways
+</I>&gt;<i> example see here
+</I>&gt;<i> <A HREF="http://www.openstreetmap.org/?lat=33.89622&amp;lon=35.48974&amp;zoom=17">http://www.openstreetmap.org/?lat=33.89622&amp;lon=35.48974&amp;zoom=17</A>
+</I>&gt;<i> there is a green area and an Hospital
+</I>&gt;<i> both are tagged
+</I>&gt;<i> name:en Sanayeh Parc
+</I>&gt;<i> name: &#1581;&#1583;&#1610;&#1602;&#1577; &#1575;&#1604;&#1589;&#1606;&#1575;&#1610;&#1593;
+</I>&gt;<i> for the green park
+</I>&gt;<i> and
+</I>&gt;<i> name:en=American University Hospital
+</I>&gt;<i> name=&#1605;&#1587;&#1578;&#1588;&#1601;&#1609; &#1575;&#1604;&#1580;&#1575;&#1605;&#1593;&#1577; &#1575;&#1604;&#1571;&#1605;&#1585;&#1610;&#1603;&#1610;&#1577;
+</I>&gt;<i> around them are normal street tagging e.g. rendered correctly in arabic
+</I>&gt;<i> now the problem is that for those and many other closed areas like buildings,
+</I>&gt;<i> parcs , industry zones etc.. the rendering of arabic is reversed like this
+</I>&gt;<i> if it is tagged &#1605;&#1587;&#1578;&#1588;&#1601;&#1609; &#1575;&#1604;&#1580;&#1575;&#1605;&#1593;&#1577; &#1575;&#1604;&#1571;&#1605;&#1585;&#1610;&#1603;&#1610;&#1577; = American University Hospital in
+</I>&gt;<i> Potlatch then it is rendered on a multiline in the other direction (from left
+</I>&gt;<i> to right ) and thus it is rendered
+</I>&gt;<i> &#1575;&#1604;&#1571;&#1605;&#1585;&#1610;&#1603;&#1610;&#1577;
+</I>&gt;<i> &#1575;&#1604;&#1580;&#1575;&#1605;&#1593;&#1577;
+</I>&gt;<i> &#1605;&#1587;&#1578;&#1588;&#1601;&#1609;
+</I>&gt;<i> and the tag : &#1581;&#1583;&#1610;&#1602;&#1577; &#1575;&#1604;&#1589;&#1606;&#1575;&#1610;&#1593;
+</I>&gt;<i> is rendered
+</I>&gt;<i> &#1575;&#1604;&#1589;&#1606;&#1575;&#1610;&#1593;
+</I>&gt;<i> &#1581;&#1583;&#1610;&#1602;&#1577;
+</I>&gt;<i> is it a problem that somebody can fix ?
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000721.html">[Mapnik-devel] arabic Rendering in close areas
+</A></li>
+	<LI>Next message: <A HREF="000723.html">[Mapnik-devel] arabic Rendering in close areas
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#722">[ date ]</a>
+              <a href="thread.html#722">[ thread ]</a>
+              <a href="subject.html#722">[ subject ]</a>
+              <a href="author.html#722">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

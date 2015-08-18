@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] curves
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20curves&In-Reply-To=%3CCD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000362.html">
+   <LINK REL="Next"  HREF="000368.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] curves</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20curves&In-Reply-To=%3CCD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95%40gmail.com%3E"
+       TITLE="[Mapnik-devel] curves">artem.mapnik at googlemail.com
+       </A><BR>
+    <I>Thu Jan  3 16:16:47 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000362.html">[Mapnik-devel] [OSM-dev] SRTM relief
+</A></li>
+        <LI>Next message: <A HREF="000368.html">[Mapnik-devel] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#367">[ date ]</a>
+              <a href="thread.html#367">[ thread ]</a>
+              <a href="subject.html#367">[ subject ]</a>
+              <a href="author.html#367">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+Perhaps, not well know fact but Mapnik can render bezier curves. The  
+reason it is not being used is the lack of support for curves in  
+common GEO formats.
+I'm adding support for on-fly 'smooth' polygons/lines , which can be  
+controlled by providing smooth parameter (0.0 - 2.0)  i.e:
+
+  &lt;Rule&gt;
+       &lt;Filter&gt;[natural] = 'lake' or [natural] = 'water'&lt;/Filter&gt;
+       &lt;MaxScaleDenominator&gt;5000000&lt;/MaxScaleDenominator&gt;
+       &lt;PolygonSymbolizer&gt;
+         &lt;CssParameter name=&quot;fill&quot;&gt;&amp;water_color;&lt;/CssParameter&gt;
+	&lt;CssParameter name=&quot;smooth&quot;&gt;1.0&lt;/CssParameter&gt;
+      &lt;/PolygonSymbolizer&gt;
+     &lt;/Rule&gt;
+
+It is very fast and you can see the result : <A HREF="http://">http://</A> 
+artem.dev.openstreetmap.org/files/smooth_1.0.png
+(note that text following curve as well)
+
+I know tah has been using bezier curves by pre-processing geometries  
+for while.
+
+What people think about explicitly supporting curves as a part of  
+geometry model? This way we can model the world better.
+
+Thoughts?
+
+Artem
+
+P.S. Are there some hints (tags) in OSM that can be used for to  
+smooth or not?
+Also, are there are examples where it does work well and where it  
+doesn't?
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000362.html">[Mapnik-devel] [OSM-dev] SRTM relief
+</A></li>
+	<LI>Next message: <A HREF="000368.html">[Mapnik-devel] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#367">[ date ]</a>
+              <a href="thread.html#367">[ thread ]</a>
+              <a href="subject.html#367">[ subject ]</a>
+              <a href="author.html#367">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio 2005
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%202005&In-Reply-To=%3CBANLkTikT4S1deZEsQLK3QOP5Giy%3DR7KR5Q%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001363.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio 2005</H1>
+    <B>rakib rakib</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%202005&In-Reply-To=%3CBANLkTikT4S1deZEsQLK3QOP5Giy%3DR7KR5Q%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio 2005">rakib114 at gmail.com
+       </A><BR>
+    <I>Mon Apr  4 10:30:04 CEST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001363.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1361">[ date ]</a>
+              <a href="thread.html#1361">[ thread ]</a>
+              <a href="subject.html#1361">[ subject ]</a>
+              <a href="author.html#1361">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I am new to mapnik. I successfully installed mapnik but I want it to visual
+studio 2005. So I tried to run the C++ demo on Visual studio project. What I
+did is as follows:
+
+*Installation:  *
+
+I installed mapnik 0.7.1 with python 2.6 on Vista as per
+<A HREF="http://trac.mapnik.org/wiki/WindowsInstallation.">http://trac.mapnik.org/wiki/WindowsInstallation.</A>
+
+I made a directory D:\mapnik installation for visual studio 2005 and copy
+mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik installation
+for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+D:\mapnik installation for visual studio
+2005\mapnik-0.7.1\python\2.6\site-packages
+
+
+*Third party library:*
+
+* *
+
+1.        freetype-2.4.4
+
+2.        icu
+
+3.        libtool-1.5.26
+
+4.        boost_1_46_1
+
+
+
+*Procedure:*
+
+* *
+
+1.        I created a new Win32 Console Application named MapnikApp in the
+above directory.
+
+2.        I tried to run reundemo.cpp in mapnik-0.7.1. I copied the content
+of this file to our MapnikApp.cpp
+
+3.        I included the following to
+Project-&gt;Properties-&gt;C/C++-&gt;General-&gt;Additional Include Directories.
+
+        D:\mapnik installation for visual studio 2005\mapnik-0.7.1\include
+
+        D:\mapnik installation for visual studio 2005\boost_1_46_1
+
+        D:\mapnik installation for visual studio 2005\icu\include
+
+        D:\mapnik installation for visual studio 2005\libtool-1.5.26\include
+
+        D:\mapnik installation for visual studio 2005\freetype-2.4.4\include
+
+4.        I added the associate lib directory to
+Project-&gt;Properties-&gt;Linker-&gt;General-&gt;Additional Library Directories
+
+5.        I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+
+6.        After running the project (debug, win32) I got the following
+
+
+
+                                   Unhandled exception at 0x1002cbe5
+(mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading location
+
+
+                                                      0xcccccccc.
+
+
+
+               In Release Win32 I got the following.
+
+               std::exception: vector&lt;T&gt; too long when it tried to execute
+m.insert_style.
+
+
+
+               For simplicity I tried to run the following
+
+
+
+        Map m(800,600);
+
+        m.set_background(color_factory::from_string(&quot;white&quot;));
+
+        m.zoomToBox(Envelope&lt;double&gt;(1405120.04127408,-247003.813399447,
+
+                                     1706357.31328276,-25098.593149577));
+
+
+
+        Image32 buf(m.getWidth(),m.getHeight());
+
+        agg_renderer&lt;Image32&gt; ren(m,buf);
+
+        ren.apply();
+
+
+
+ I got the following error.
+
+A buffer overrun has occurred in MapnikApp.exe which has corrupted the
+program's internal state. Press Break to debug the program or Continue to
+terminate the program.
+
+I need help how to solve it.
+
+With best regards,
+Rakib
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110404/27a9fe3d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110404/27a9fe3d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001363.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1361">[ date ]</a>
+              <a href="thread.html#1361">[ thread ]</a>
+              <a href="subject.html#1361">[ subject ]</a>
+              <a href="author.html#1361">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

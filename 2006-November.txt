@@ -1,0 +1,2941 @@
+From jfdoyon at methane.ca  Wed Nov  1 04:24:31 2006
+From: jfdoyon at methane.ca (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Tue, 31 Oct 2006 22:24:31 -0500
+Subject: [Mapnik-devel] Problem with new TextSymbolizer
+Message-ID: <4548136F.8000202@methane.ca>
+
+Hello,
+
+Trying to update the Python demo, and can't seem to get my point labels 
+to appear :(
+
+I know I need to add the face name,, but after having tried 2 or 3 
+things, still no luck.
+
+This would be the obvious candidate:
+
+popplaces_text_symbolizer = TextSymbolizer('GEONAME', 'Bitstream Vera 
+Sans Roman', 10, Color('black'))
+
+I also tried 'Bitstream Vera Sans' and other variations that made sense, 
+base on this output:
+
+[jdoyon at pcjflinux fonts]$ ftdump Vera.ttf
+There is 1 face in this file.
+
+----- Face number: 0 -----
+
+font name entries
+    family:     Bitstream Vera Sans
+    style:      Roman
+    postscript: BitstreamVeraSans-Roman
+
+font type entries
+    FreeType driver: truetype
+    sfnt wrapped:    yes
+    type:            scalable
+    direction:       horizontal
+    fixed width:     no
+    glyph names:     yes
+    EM size:         2048
+    global BBox:     (-375,-483):(2636,1901)
+    ascent:          1901
+    descent:         -483
+    text height:     2384
+
+charmaps
+    0: platform: 1, encoding: 0
+    1: platform: 3, encoding: 1
+
+The mapnik Python module initializes with that one font registered:
+
+from mapnik import FontEngine
+FontEngine.instance().register_font('%s/Vera.ttf' % fontscollectionpath)
+
+And this seems to work OK (No errors).
+
+It also definitely sees the data:
+
+start layer processing : Populated Places
+datasource = 0x9a61e10
+Envelope(1405120.04127408,-249015.180277767,1706357.31328276,-23087.22627125698)
+  total shapes read=192
+end layer processing
+
+As it always has ... nothing much has changed there in a while ... 
+Though I'll look at this more in detail.
+
+Any idea what I might be missing?
+
+J.F.
+
+
+From toby.collett at onetrackmind.co.nz  Thu Nov  2 22:52:22 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Fri, 03 Nov 2006 10:52:22 +1300
+Subject: [Mapnik-devel] Patch for nicer text placement on lines
+Message-ID: <1162504342.18665.10.camel@torpedo.onetrackmind.co.nz>
+
+Hi,
+The attached patch adds a maximum angle delta for text placement (if the
+angle changes too much between characters it finds an alternate
+placement), this is specified in the max_char_angle_delta property in
+radians (feel free to change it to degrees).
+
+It also improves the text placement around corners trying to minimise
+the distance between the center of the character and the line on each
+side. This is the major portion of the patch. 
+
+Toby Collett
+One Track Mind
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: text_placement.diff
+Type: text/x-patch
+Size: 22630 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061103/0e7c6445/attachment.bin>
+
+From toby.collett at onetrackmind.co.nz  Thu Nov  2 23:10:04 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Fri, 03 Nov 2006 11:10:04 +1300
+Subject: [Mapnik-devel] Patch for nicer text placement on lines
+In-Reply-To: <1162504342.18665.10.camel@torpedo.onetrackmind.co.nz>
+References: <1162504342.18665.10.camel@torpedo.onetrackmind.co.nz>
+Message-ID: <1162505405.18665.15.camel@torpedo.onetrackmind.co.nz>
+
+Hi,
+The first patch had a bug with its default value, use the attached
+instead. Something in the range 0.3->0.7 seems to work pretty well for
+the max_char_angle_delta property, the default behaviour is as in the
+unpatched version, try follow any angle change.
+
+Toby
+On Fri, 2006-11-03 at 10:52 +1300, Toby Collett wrote:
+> Hi,
+> The attached patch adds a maximum angle delta for text placement (if the
+> angle changes too much between characters it finds an alternate
+> placement), this is specified in the max_char_angle_delta property in
+> radians (feel free to change it to degrees).
+> 
+> It also improves the text placement around corners trying to minimise
+> the distance between the center of the character and the line on each
+> side. This is the major portion of the patch. 
+> 
+> Toby Collett
+> One Track Mind
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From toby.collett at onetrackmind.co.nz  Thu Nov  2 23:10:49 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Fri, 03 Nov 2006 11:10:49 +1300
+Subject: [Mapnik-devel] Patch for nicer text placement on lines
+In-Reply-To: <1162505405.18665.15.camel@torpedo.onetrackmind.co.nz>
+References: <1162504342.18665.10.camel@torpedo.onetrackmind.co.nz>
+	<1162505405.18665.15.camel@torpedo.onetrackmind.co.nz>
+Message-ID: <1162505449.18665.17.camel@torpedo.onetrackmind.co.nz>
+
+Too early a start today....here is the new patch actually attached.
+
+On Fri, 2006-11-03 at 11:10 +1300, Toby Collett wrote:
+> Hi,
+> The first patch had a bug with its default value, use the attached
+> instead. Something in the range 0.3->0.7 seems to work pretty well for
+> the max_char_angle_delta property, the default behaviour is as in the
+> unpatched version, try follow any angle change.
+> 
+> Toby
+> On Fri, 2006-11-03 at 10:52 +1300, Toby Collett wrote:
+> > Hi,
+> > The attached patch adds a maximum angle delta for text placement (if the
+> > angle changes too much between characters it finds an alternate
+> > placement), this is specified in the max_char_angle_delta property in
+> > radians (feel free to change it to degrees).
+> > 
+> > It also improves the text placement around corners trying to minimise
+> > the distance between the center of the character and the line on each
+> > side. This is the major portion of the patch. 
+> > 
+> > Toby Collett
+> > One Track Mind
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: text_placement.diff
+Type: text/x-patch
+Size: 22222 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061103/a0cf2899/attachment.bin>
+
+From artem at pavlenko.uklinux.net  Thu Nov  2 23:15:08 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Thu, 02 Nov 2006 22:15:08 +0000
+Subject: [Mapnik-devel] Patch for nicer text placement on lines
+In-Reply-To: <1162505449.18665.17.camel@torpedo.onetrackmind.co.nz>
+References: <1162504342.18665.10.camel@torpedo.onetrackmind.co.nz>	<1162505405.18665.15.camel@torpedo.onetrackmind.co.nz>
+	<1162505449.18665.17.camel@torpedo.onetrackmind.co.nz>
+Message-ID: <454A6DEC.8080005@pavlenko.uklinux.net>
+
+Hi Toby,
+Thanks for your patch. A little bit too late to look into this. round 
+here:). I'll try tomorrow.
+Cheers,
+Artem
+
+Toby Collett wrote:
+> Too early a start today....here is the new patch actually attached.
+>
+> On Fri, 2006-11-03 at 11:10 +1300, Toby Collett wrote:
+>   
+>> Hi,
+>> The first patch had a bug with its default value, use the attached
+>> instead. Something in the range 0.3->0.7 seems to work pretty well for
+>> the max_char_angle_delta property, the default behaviour is as in the
+>> unpatched version, try follow any angle change.
+>>
+>> Toby
+>> On Fri, 2006-11-03 at 10:52 +1300, Toby Collett wrote:
+>>     
+>>> Hi,
+>>> The attached patch adds a maximum angle delta for text placement (if the
+>>> angle changes too much between characters it finds an alternate
+>>> placement), this is specified in the max_char_angle_delta property in
+>>> radians (feel free to change it to degrees).
+>>>
+>>> It also improves the text placement around corners trying to minimise
+>>> the distance between the center of the character and the line on each
+>>> side. This is the major portion of the patch. 
+>>>
+>>> Toby Collett
+>>> One Track Mind
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>       
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>     
+>> ------------------------------------------------------------------------
+>>
+>> Index: include/mapnik/placement_finder.hpp
+>> ===================================================================
+>> --- include/mapnik/placement_finder.hpp	(revision 364)
+>> +++ include/mapnik/placement_finder.hpp	(working copy)
+>> @@ -89,6 +89,8 @@
+>>      int text_ratio;
+>>  
+>>      int label_spacing; // distance between repeated labels on a single geometry
+>> +
+>> +    double max_char_angle_delta;
+>>    };
+>>  
+>>  
+>> @@ -110,6 +112,7 @@
+>>      void update_detector(placement *p);
+>>    
+>>      label_collision_detector3 detector_;
+>> +
+>>    };
+>>    
+>>  }
+>> Index: include/mapnik/text_symbolizer.hpp
+>> ===================================================================
+>> --- include/mapnik/text_symbolizer.hpp	(revision 364)
+>> +++ include/mapnik/text_symbolizer.hpp	(working copy)
+>> @@ -49,6 +49,8 @@
+>>          void set_wrap_width(unsigned ratio);
+>>          unsigned get_label_spacing() const; // spacing between repeated labels on lines
+>>          void set_label_spacing(unsigned spacing);
+>> +        double get_max_char_angle_delta() const; // maximum change in angle between adjacent characters
+>> +        void set_max_char_angle_delta(double angle);
+>>          unsigned get_text_size() const;
+>>          std::string const& get_face_name() const;
+>>          Color const& get_fill() const;
+>> @@ -69,6 +71,7 @@
+>>          unsigned text_ratio_;
+>>          unsigned wrap_width_;
+>>          unsigned label_spacing_;
+>> +        double max_char_angle_delta_;
+>>          Color fill_;
+>>          Color halo_fill_;
+>>          unsigned halo_radius_;
+>> Index: src/placement_finder.cpp
+>> ===================================================================
+>> --- src/placement_finder.cpp	(revision 364)
+>> +++ src/placement_finder.cpp	(working copy)
+>> @@ -41,13 +41,13 @@
+>>  namespace mapnik
+>>  {
+>>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, std::pair<double, double> dimensions_)
+>> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0)
+>> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0)
+>>      {
+>>      }
+>>  
+>>      //For text
+>>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, label_placement_e placement_)
+>> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0)
+>> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0)
+>>      {
+>>      }
+>>    
+>> @@ -162,17 +162,15 @@
+>>          double string_width = string_dimensions.first;
+>>          //    double string_height = string_dimensions.second;
+>>      
+>> +//         for (unsigned int ii = 0; ii < p->info->num_characters(); ++ii)
+>> +//             std::clog << static_cast<char> (p->info->at(ii).character);
+>> +//         std::clog << std::endl;
+>>  
+>> -        std::clog << "trying to place string: ";
+>> -        for (unsigned int ii = 0; ii < p->info->num_characters(); ++ii)
+>> -            std::clog << static_cast<char> (p->info->at(ii).character);
+>> -        std::clog << std::endl;
+>> -
+>>          double distance = p->get_total_distance();
+>>      
+>>          if (string_width > distance)
+>>          {
+>> -            std::clog << "String longer than segment, bailing" << std::endl;
+>> +            //std::clog << "String longer than segment, bailing" << std::endl;
+>>              return false;
+>>          }
+>>  
+>> @@ -192,7 +190,7 @@
+>>          bool FoundPlacement = false;
+>>          for (std::vector<double>::const_iterator itr = ideal_label_distances.begin(); itr < ideal_label_distances.end(); ++itr)
+>>          {
+>> -            std::clog << "Trying to find txt placement at distance: " << *itr << std::endl;
+>> +            //std::clog << "Trying to find txt placement at distance: " << *itr << std::endl;
+>>              for (double i = 0; i < ideal_spacing; i += delta)
+>>              {
+>>                  p->clear_envelopes();
+>> @@ -213,8 +211,8 @@
+>>              }
+>>          }    
+>>      
+>> -        if (FoundPlacement)
+>> -            std::clog << "Found Placement" << string_width << " " << distance << std::endl;
+>> +//         if (FoundPlacement)
+>> +//             std::clog << "Found Placement" << string_width << " " << distance << std::endl;
+>>  
+>>          return FoundPlacement;
+>>      }
+>> @@ -270,6 +268,8 @@
+>>       {
+>>          double new_x, new_y, old_x, old_y;
+>>          unsigned cur_node = 0;
+>> +        double next_char_x = 0;
+>> +        double next_char_y = 0;
+>>  
+>>          double angle = 0.0;
+>>          int orientation = 0;
+>> @@ -285,8 +285,11 @@
+>>          //    double string_width = string_dimensions.first;
+>>          double string_height = string_dimensions.second;
+>>      
+>> +        // find the segment that our text should start on
+>>          p->shape_path.rewind(0);
+>>          p->shape_path.vertex(&new_x,&new_y);
+>> +        old_x = new_x;
+>> +        old_y = new_y;
+>>          for (unsigned i = 0; i < p->geom->num_points() - 1; i++)
+>>          {
+>>              double dx, dy;
+>> @@ -306,60 +309,73 @@
+>>              distance += segment_length;
+>>              if (distance > target_distance)
+>>              {
+>> +                // this segment is greater that the target starting distance so start here
+>>                  p->current_placement.starting_x = new_x - dx*(distance - target_distance)/segment_length;
+>>                  p->current_placement.starting_y = new_y - dy*(distance - target_distance)/segment_length;
+>>      
+>> +                // angle text starts at and orientation
+>>                  angle = atan2(-dy, dx);
+>> +                orientation = fabs(angle) > M_PI/2 ? -1 : 1;
+>>  
+>> -                if (angle > M_PI/2 || angle <= -M_PI/2) {
+>> -                    orientation = -1;
+>> -                }
+>> -                else {
+>> -                    orientation = 1;
+>> -                }
+>> -
+>>                  distance -= target_distance;
+>>              
+>>                  break;
+>>              }
+>>          }
+>>      
+>> +        // now find the placement of each character starting from our initial segment
+>> +        // determined above
+>> +        double last_angle = angle; 
+>>          for (unsigned i = 0; i < p->info->num_characters(); i++)
+>>          {
+>>              character_info ci;
+>>              unsigned c;
+>> +
+>> +            // grab the next character according to the orientation
+>> +            ci = orientation > 0 ? p->info->at(i) : p->info->at(p->info->num_characters() - i - 1);
+>> +            c = ci.character;
+>>      
+>> -            while (distance <= 0) 
+>> +            double angle_delta = 0;
+>> +
+>> +            // if the distance remaining in this segment is less than the character width
+>> +            // move to the next segment
+>> +            if (distance <= ci.width) 
+>>              {
+>> -                double dx, dy;
+>> +                last_angle = angle;
+>> +                while (distance <= ci.width) 
+>> +                {
+>> +                    double dx, dy;
+>> +    
+>> +                    cur_node++;
+>> +                
+>> +                    if (cur_node >= p->geom->num_points()) {
+>> +                        break;
+>> +                    }
+>> +                    
+>> +                    old_x = new_x;
+>> +                    old_y = new_y;
+>>  
+>> -                cur_node++;
+>> -            
+>> -                if (cur_node >= p->geom->num_points()) {
+>> -                    break;
+>> +                    p->shape_path.vertex(&new_x,&new_y);
+>> +    
+>> +                    dx = new_x - old_x;
+>> +                    dy = new_y - old_y;
+>> +    
+>> +                    angle = atan2(-dy, dx );
+>> +                    distance += sqrt(dx*dx+dy*dy);
+>>                  }
+>> -            
+>> -                old_x = new_x;
+>> -                old_y = new_y;
+>> +                // since our rendering angle has changed then check against our
+>> +                // max allowable angle change.
+>> +                angle_delta = last_angle - angle;
+>> +                // normalise between -180 and 180
+>> +                while (angle_delta > M_PI)
+>> +                    angle_delta -= M_PI;
+>> +                while (angle_delta < -M_PI)
+>> +                    angle_delta += M_PI;
+>> +                if (p->max_char_angle_delta > 0 && fabs(angle_delta) > p->max_char_angle_delta)
+>> +                    return false;
+>>  
+>> -                p->shape_path.vertex(&new_x,&new_y);
+>> -
+>> -                dx = new_x - old_x;
+>> -                dy = new_y - old_y;
+>> -
+>> -                angle = atan2(-dy, dx );
+>> -            
+>> -                distance += sqrt(dx*dx+dy*dy);
+>>              }
+>>  
+>> -            if (orientation == -1) {
+>> -                ci = p->info->at(p->info->num_characters() - i - 1);
+>> -            }
+>> -            else
+>> -            {
+>> -                ci = p->info->at(i);
+>> -            }
+>> -            c = ci.character;
+>>  
+>>              Envelope<double> e;
+>>              if (p->has_dimensions)
+>> @@ -367,48 +383,114 @@
+>>                  e.init(x, y, x + p->dimensions.first, y + p->dimensions.second);
+>>              }
+>>  
+>> -            if (orientation == -1) {
+>> -                x = new_x - (distance - ci.width)*cos(angle);
+>> -                y = new_y + (distance - ci.width)*sin(angle);
+>>  
+>> -                //Center the text on the line.
+>> -                x += (((double)string_height/2.0) - 1.0)*cos(angle+M_PI/2);
+>> -                y -= (((double)string_height/2.0) - 1.0)*sin(angle+M_PI/2);
+>> -        
+>> -                if (!p->has_dimensions)
+>> +            double render_angle = angle;
+>> +
+>> +            if (fabs(angle_delta) > 0.05 && i > 0)
+>> +            {
+>> +                // paramatise the new line segment
+>> +                double last_dist_from_line = string_height;
+>> +                double line_origin_x = sqrt(pow(old_x-x,2)+pow(old_y-y,2));
+>> +                double line_origin_y = 0;
+>> +                double closest_lp_x = cos(fabs(angle_delta));
+>> +                double closest_lp_y = sin(fabs(angle_delta));
+>> +
+>> +                // iterate over placement points to find the angle to actually render the letter at
+>> +                for (double pax = 0; pax < string_height/2 && pax < line_origin_x; pax += 0.1)
+>>                  {
+>> -                    e.init(x, y, x + ci.width*cos(angle+M_PI), y - ci.width*sin(angle+M_PI));
+>> -                    e.expand_to_include(x - ci.height*sin(angle+M_PI), y - ci.height*cos(angle+M_PI));
+>> -                    e.expand_to_include(x + (ci.width*cos(angle+M_PI) - ci.height*sin(angle+M_PI)), y - (ci.width*sin(angle+M_PI) + ci.height*cos(angle+M_PI)));
+>> +                    // calculate dependant parameters
+>> +                    double letter_angle = asin(pax/(string_height/2));
+>> +                    double pbx = pax+ci.width*cos(letter_angle);
+>> +                    double pby = ci.width*sin(letter_angle);
+>> +
+>> +                    // find closest point on the new segment
+>> +                    double closest_param = ((pbx - line_origin_x)*closest_lp_x + (pby - line_origin_y)*closest_lp_y)/(closest_lp_x*closest_lp_x + closest_lp_y*closest_lp_y);
+>> +                    double closest_point_x = line_origin_x + closest_param*closest_lp_x;
+>> +                    double closest_point_y = line_origin_y + closest_param*closest_lp_y;
+>> +
+>> +                    // calculate the error between this and the letter
+>> +                    double dist_from_line = sqrt(pow(pbx - closest_point_x,2) + pow(pby - closest_point_y,2));
+>> +
+>> +                    // if  our error is getting worse then stop
+>> +                    if (dist_from_line > last_dist_from_line)
+>> +                    {
+>> +                        double pcx, pcy;
+>> +                        double extra_space = (ci.height/2)*sin(fabs(angle_delta)-letter_angle);
+>> +                        double extra_space_x = extra_space * cos(fabs(angle_delta));
+>> +                        double extra_space_y = extra_space * sin(fabs(angle_delta));
+>> +                        // remove extra distance used in corner
+>> +                        distance -= line_origin_x + closest_param + extra_space;
+>> +
+>> +                        // transform local calculation space to a global position for placement
+>> +                        if (angle_delta < 0)
+>> +                        {
+>> +                            // left turn
+>> +                            render_angle = letter_angle + last_angle;
+>> +                            pcx = 2*pax;
+>> +                            pcy = 0;//-(ci.height/2)*cos(letter_angle);
+>> +                        }
+>> +                        else
+>> +                        {   // right turn
+>> +                            render_angle = -letter_angle + last_angle;
+>> +                            pcx = 0;
+>> +                            pcy = 0;//-(ci.height/2)*cos(letter_angle);
+>> +                        }
+>> +                        double rdx = pcx * cos(-last_angle) - pcy*sin(-last_angle);
+>> +                        double rdy = pcy*cos(-last_angle) + pcx * sin(-last_angle);
+>> +                        x += rdx;
+>> +                        y += rdy;
+>> +                        next_char_x = (ci.width+extra_space_x)*cos(render_angle) - extra_space_y*sin(render_angle);
+>> +                        next_char_y = (ci.width+extra_space_x)*sin(render_angle) + extra_space_y*cos(render_angle);
+>> +
+>> +                        //distance -= 5;
+>> +                        break;
+>> +
+>> +                    }
+>> +                    last_dist_from_line = dist_from_line;
+>>                  }
+>>              }
+>>              else
+>>              {
+>> -                x = new_x - distance*cos(angle);
+>> -                y = new_y + distance*sin(angle);
+>> -
+>> +                x = new_x - (distance)*cos(angle);
+>> +                y = new_y + (distance)*sin(angle);
+>>                  //Center the text on the line.
+>> -                x += (((double)string_height/2.0) - 1.0)*cos(angle-M_PI/2);
+>> -                y -= (((double)string_height/2.0) - 1.0)*sin(angle-M_PI/2);
+>> +                x -= (((double)string_height/2.0) - 1.0)*cos(render_angle+M_PI/2);
+>> +                y += (((double)string_height/2.0) - 1.0)*sin(render_angle+M_PI/2);
+>> +                distance -= ci.width;
+>> +                next_char_x = ci.width*cos(render_angle);
+>> +                next_char_y = ci.width*sin(render_angle);
+>> +            }
+>>  
+>> -                if (!p->has_dimensions)
+>> -                {
+>> -                    e.init(x, y, x + ci.width*cos(angle), y - ci.width*sin(angle));
+>> -                    e.expand_to_include(x - ci.height*sin(angle), y - ci.height*cos(angle));
+>> -                    e.expand_to_include(x + (ci.width*cos(angle) - ci.height*sin(angle)), y - (ci.width*sin(angle) + ci.height*cos(angle)));
+>> -                }
+>> +            double render_x = x;
+>> +            double render_y = y;
+>> +
+>> +            if (!p->has_dimensions)
+>> +            {
+>> +                // put four corners of the letter into envelope
+>> +                e.init(render_x, render_y, render_x + ci.width*cos(render_angle), render_y - ci.width*sin(render_angle));
+>> +                e.expand_to_include(render_x - ci.height*sin(render_angle), render_y - ci.height*cos(render_angle));
+>> +                e.expand_to_include(render_x + (ci.width*cos(render_angle) - ci.height*sin(render_angle)), render_y - (ci.width*sin(render_angle) + ci.height*cos(render_angle)));
+>>              }
+>> -        
+>> +
+>>              if (!detector_.has_placement(e))
+>>              {
+>>                  return false;
+>>              }
+>>          
+>>              p->envelopes.push(e);
+>> +
+>> +            if (orientation < 0)
+>> +            {
+>> +                // rotate in place
+>> +                render_x += ci.width*cos(render_angle) - (string_height-2)*sin(render_angle);
+>> +                render_y -= ci.width*sin(render_angle) + (string_height-2)*cos(render_angle);
+>> +                render_angle += M_PI;
+>> +            }
+>> +
+>>          
+>> -            p->current_placement.path.add_node(c, x - p->current_placement.starting_x, -y + p->current_placement.starting_y, (orientation == -1 ? angle + M_PI : angle));
+>> -        
+>> -            distance -= ci.width;
+>> +            p->current_placement.path.add_node(c, render_x - p->current_placement.starting_x, -render_y + p->current_placement.starting_y, render_angle);
+>> +            x += next_char_x;
+>> +            y -= next_char_y;
+>>          }
+>>          p->placements.push_back(p->current_placement);
+>>  
+>> @@ -434,7 +516,6 @@
+>>                  for (int i = 1; ((wrap_at = string_width/i)/(string_height*i)) > p->text_ratio && (string_width/i) > p->wrap_width; ++i);
+>>              else
+>>                  wrap_at = p->wrap_width;
+>> -            //std::clog << "Wrapping string at" << wrap_at << std::endl;
+>>          }
+>>      
+>>          // work out where our line breaks need to be
+>> @@ -492,7 +573,7 @@
+>>              line_breaks.push_back(p->info->num_characters() + 1);
+>>              line_widths.push_back(string_width);
+>>          }
+>> -    
+>> +        
+>>          p->info->set_dimensions(string_width, string_height);
+>>          
+>>          if (p->geom->type() == LineString)
+>> @@ -527,7 +608,6 @@
+>>              ci = p->info->at(i);
+>>              
+>>              unsigned c = ci.character;
+>> -        
+>>              if (i == index_to_wrap_at)
+>>              {
+>>                  index_to_wrap_at = line_breaks[++line_number];
+>> Index: src/text_symbolizer.cpp
+>> ===================================================================
+>> --- src/text_symbolizer.cpp	(revision 364)
+>> +++ src/text_symbolizer.cpp	(working copy)
+>> @@ -30,18 +30,19 @@
+>>  namespace mapnik
+>>  {
+>>      text_symbolizer::text_symbolizer(std::string const& name, std::string const& face_name, unsigned size,Color const& fill)
+>> -        : name_(name),
+>> +	: name_(name),
+>>            face_name_(face_name),
+>> -          size_(size),
+>> +	  size_(size),
+>>            text_ratio_(0),
+>>            wrap_width_(0),
+>>            label_spacing_(0),
+>> -          fill_(fill),
+>> -          halo_fill_(Color(255,255,255)),
+>> -          halo_radius_(0),
+>> -          label_p_(point_placement),
+>> -          anchor_(0.0,0.5),
+>> -          displacement_(0.0,0.0)  {}
+>> +          max_char_angle_delta_(0),
+>> +	  fill_(fill),
+>> +	  halo_fill_(Color(255,255,255)),
+>> +	  halo_radius_(0),
+>> +	  label_p_(point_placement),
+>> +	  anchor_(0.0,0.5),
+>> +	  displacement_(0.0,0.0)  {}
+>>             
+>>      text_symbolizer::text_symbolizer(text_symbolizer const& rhs)
+>>          : name_(rhs.name_),
+>> @@ -50,6 +51,7 @@
+>>            text_ratio_(rhs.text_ratio_),
+>>            wrap_width_(rhs.wrap_width_),
+>>            label_spacing_(rhs.label_spacing_),
+>> +          max_char_angle_delta_(rhs.max_char_angle_delta_),
+>>            fill_(rhs.fill_),
+>>            halo_fill_(rhs.halo_fill_),
+>>            halo_radius_(rhs.halo_radius_),
+>> @@ -67,6 +69,7 @@
+>>          text_ratio_ = other.text_ratio_;
+>>          wrap_width_ = other.wrap_width_;
+>>          label_spacing_ = other.label_spacing_;
+>> +        max_char_angle_delta_ = other.max_char_angle_delta_;
+>>          fill_ = other.fill_;
+>>          halo_fill_ = other.halo_fill_;
+>>          halo_radius_ = other.halo_radius_;
+>> @@ -108,7 +111,7 @@
+>>  
+>>      unsigned  text_symbolizer::get_label_spacing() const
+>>      {
+>> -    return label_spacing_;
+>> +        return label_spacing_;
+>>      }
+>>  
+>>      void  text_symbolizer::set_label_spacing(unsigned spacing) 
+>> @@ -116,6 +119,16 @@
+>>          label_spacing_ = spacing;
+>>      }
+>>  
+>> +    double text_symbolizer::get_max_char_angle_delta() const
+>> +    {
+>> +        return max_char_angle_delta_;
+>> +    }
+>> +
+>> +    void text_symbolizer::set_max_char_angle_delta(double angle) 
+>> +    {
+>> +        max_char_angle_delta_ = angle;
+>> +    }
+>> +
+>>      unsigned  text_symbolizer::get_text_size() const
+>>      {
+>>          return size_;
+>> Index: src/agg_renderer.cpp
+>> ===================================================================
+>> --- src/agg_renderer.cpp	(revision 364)
+>> +++ src/agg_renderer.cpp	(working copy)
+>> @@ -507,7 +507,8 @@
+>>                      text_placement.text_ratio = sym.get_text_ratio();
+>>                      text_placement.wrap_width = sym.get_wrap_width();
+>>                      text_placement.label_spacing = sym.get_label_spacing();
+>> -                    
+>> +                    text_placement.max_char_angle_delta = sym.get_max_char_angle_delta();
+>> +                  
+>>                      bool found = finder_.find_placements(&text_placement);
+>>                      if (!found) {
+>>                        return;
+>> Index: bindings/python/mapnik/ogcserver/common.py
+>> ===================================================================
+>> --- bindings/python/mapnik/ogcserver/common.py	(revision 364)
+>> +++ bindings/python/mapnik/ogcserver/common.py	(working copy)
+>> @@ -384,4 +384,4 @@
+>>  class Projection(MapnikProjection):
+>>      
+>>      def epsgstring(self):
+>> -        return self.params().split('=')[1].upper()
+>> \ No newline at end of file
+>> +        return self.params().split('=')[1].upper()
+>> Index: bindings/python/mapnik_text_symbolizer.cpp
+>> ===================================================================
+>> --- bindings/python/mapnik_text_symbolizer.cpp	(revision 364)
+>> +++ bindings/python/mapnik_text_symbolizer.cpp	(working copy)
+>> @@ -43,6 +43,9 @@
+>>                        &text_symbolizer::get_halo_fill,
+>>                        return_value_policy<copy_const_reference>()),
+>>                        &text_symbolizer::set_halo_fill)
+>> +        .add_property("halo_radius",
+>> +                      &text_symbolizer::get_halo_radius, 
+>> +                      &text_symbolizer::set_halo_radius)
+>>          .add_property("wrap_width",
+>>                        &text_symbolizer::get_wrap_width,
+>>                        &text_symbolizer::set_wrap_width)
+>> @@ -52,9 +55,9 @@
+>>          .add_property("label_spacing",
+>>                        &text_symbolizer::get_label_spacing,
+>>                        &text_symbolizer::set_label_spacing)
+>> -        .add_property("halo_radius",
+>> -                      &text_symbolizer::get_halo_radius, 
+>> -                      &text_symbolizer::set_halo_radius)
+>> +        .add_property("max_char_angle_delta",
+>> +                      &text_symbolizer::get_max_char_angle_delta,
+>> +                      &text_symbolizer::set_max_char_angle_delta)
+>>          .def("set_label_placement",&text_symbolizer::set_label_placement,
+>>               "Set the placement of the label")
+>>  	;
+>>     
+>> ------------------------------------------------------------------------
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>     
+
+
+From nickblack1 at gmail.com  Mon Nov  6 16:47:30 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Mon, 6 Nov 2006 15:47:30 +0000
+Subject: [Mapnik-devel] Install problem
+Message-ID: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+
+Hello,
+
+My name is Nick, and I've just started using Mapnik, which I'l
+hopefully be using for rendering map data to use in a web-based
+mapping project.
+
+I'm having a couple of problems with compiling and installing Mapnik,
+onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+to do with :
+
+ Checking for main() in C library pq... no
+
+I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+
+/usr/lib/libpq.so
+
+
+After running scons.py and scons.py install , Mapnik appears to
+compile and install ok, but when I run:
+
+>>> from mapnik import *
+registered datasource : raster
+registered datasource : shape
+
+
+So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+I dont have any PostGIS support, but so far as I can tell, Postgres is
+installed in the directories that the scons.py looks in:
+
+:/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+total 140
+drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+-rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+-rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+-rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+-rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+-rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+-rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+-rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+-rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+-rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+
+So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+
+Thanks in advance,
+
+Nick
+
+
+From nickblack1 at gmail.com  Mon Nov  6 16:58:45 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Mon, 6 Nov 2006 15:58:45 +0000
+Subject: [Mapnik-devel] Install problem
+In-Reply-To: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+References: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+Message-ID: <223020e60611060758r4d0fd9b6wd04afe0fee00596f@mail.gmail.com>
+
+Some more info:
+
+The config log shows:
+
+Checking for main() in C library pq... scons:
+`.sconf_temp/conftest_7.c' is up to date.
+(cached): Building ".sconf_temp/conftest_7.o" failed in a previous run.
+scons: *** [.sconf_temp/conftest_7.o] Error 1
+no
+Failed program was:
+1:
+2:
+3:             #include "libpq-fe.h"
+4:
+5:             int
+6:             main() {
+7:             main();
+8:             return 0;
+9:             }
+10:
+11:
+Error message: failed to build test program
+
+$ locate libpq-fe
+/usr/include/postgresql/libpq-fe.h
+/usr/src/postgresql-8.1-8.1.4/postgresql-8.1.4/src/interfaces/libpq/libpq-fe.h
+
+
+
+On 11/6/06, Nick Black <nickblack1 at gmail.com> wrote:
+> Hello,
+>
+> My name is Nick, and I've just started using Mapnik, which I'l
+> hopefully be using for rendering map data to use in a web-based
+> mapping project.
+>
+> I'm having a couple of problems with compiling and installing Mapnik,
+> onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+> to do with :
+>
+>  Checking for main() in C library pq... no
+>
+> I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+>
+> /usr/lib/libpq.so
+>
+>
+> After running scons.py and scons.py install , Mapnik appears to
+> compile and install ok, but when I run:
+>
+> >>> from mapnik import *
+> registered datasource : raster
+> registered datasource : shape
+>
+>
+> So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+> I dont have any PostGIS support, but so far as I can tell, Postgres is
+> installed in the directories that the scons.py looks in:
+>
+> :/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+> total 140
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+> -rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+> -rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+> -rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+> -rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+> -rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+> -rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+> -rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+> -rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+> -rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+>
+> So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+>
+> Thanks in advance,
+>
+> Nick
+>
+
+
+From takubo at saruga-tondara.net  Mon Nov  6 17:13:13 2006
+From: takubo at saruga-tondara.net (Akio Takubo)
+Date: Tue, 7 Nov 2006 01:13:13 +0900
+Subject: [Mapnik-devel] Install problem
+In-Reply-To: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+References: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+Message-ID: <20061107011313.9a636686.takubo@saruga-tondara.net>
+
+Hello NIck, 
+
+I'm also new to mapnik and uses it with ubuntu (or Debian) box. 
+So I also failed to build PostGIS support with same problem at first time.
+Scons with some option may solve your problem.  Try it! 
+ $ python scons/scons.py PGSQL_INCLUDES=/usr/includes/postgresql
+
+Best regards,
+
+   Akio Takubo @ OSGeo-Japan
+    takubo at saruga-tondara.net
+
+On Mon, 6 Nov 2006 15:47:30 +0000
+"Nick Black" <nickblack1 at gmail.com> wrote:
+
+> Hello,
+> 
+> My name is Nick, and I've just started using Mapnik, which I'l
+> hopefully be using for rendering map data to use in a web-based
+> mapping project.
+> 
+> I'm having a couple of problems with compiling and installing Mapnik,
+> onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+> to do with :
+> 
+>  Checking for main() in C library pq... no
+> 
+> I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+> 
+> /usr/lib/libpq.so
+> 
+> 
+> After running scons.py and scons.py install , Mapnik appears to
+> compile and install ok, but when I run:
+> 
+> >>> from mapnik import *
+> registered datasource : raster
+> registered datasource : shape
+> 
+> 
+> So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+> I dont have any PostGIS support, but so far as I can tell, Postgres is
+> installed in the directories that the scons.py looks in:
+> 
+> :/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+> total 140
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+> -rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+> -rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+> -rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+> -rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+> -rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+> -rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+> -rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+> -rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+> -rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+> 
+> So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+> 
+> Thanks in advance,
+> 
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From takubo at saruga-tondara.net  Mon Nov  6 17:15:44 2006
+From: takubo at saruga-tondara.net (Akio Takubo)
+Date: Tue, 7 Nov 2006 01:15:44 +0900
+Subject: [Mapnik-devel] Install problem
+In-Reply-To: <20061107011313.9a636686.takubo@saruga-tondara.net>
+References: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+	<20061107011313.9a636686.takubo@saruga-tondara.net>
+Message-ID: <20061107011544.63719126.takubo@saruga-tondara.net>
+
+Hello again, 
+
+Sorry, I have a mistake last post. 
+>  $ python scons/scons.py PGSQL_INCLUDES=/usr/includes/postgresql
+  $ python scons/scons.py PGSQL_INCLUDES=/usr/include/postgresql
+is correct
+
+  Akio Takubo
+
+
+From artem at pavlenko.uklinux.net  Mon Nov  6 17:17:14 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Mon, 06 Nov 2006 16:17:14 +0000
+Subject: [Mapnik-devel] Install problem
+In-Reply-To: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+References: <223020e60611060747y52991bf7hfc1e346a59953157@mail.gmail.com>
+Message-ID: <454F600A.7080601@pavlenko.uklinux.net>
+
+Hi Nick,
+
+Welcome to Mapnik-devel!
+You'll have to pass PGSQL_INCLUDES=/usr/include/postgresql  and 
+PGSQL_LIBS=/where/is/your/lib  to scons
+
+Cheers,
+Artem
+
+Nick Black wrote:
+> Hello,
+>
+> My name is Nick, and I've just started using Mapnik, which I'l
+> hopefully be using for rendering map data to use in a web-based
+> mapping project.
+>
+> I'm having a couple of problems with compiling and installing Mapnik,
+> onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+> to do with :
+>
+>  Checking for main() in C library pq... no
+>
+> I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+>
+> /usr/lib/libpq.so
+>
+>
+> After running scons.py and scons.py install , Mapnik appears to
+> compile and install ok, but when I run:
+>
+>   
+>>>> from mapnik import *
+>>>>         
+> registered datasource : raster
+> registered datasource : shape
+>
+>
+> So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+> I dont have any PostGIS support, but so far as I can tell, Postgres is
+> installed in the directories that the scons.py looks in:
+>
+> :/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+> total 140
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+> -rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+> -rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+> -rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+> -rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+> -rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+> -rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+> -rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+> -rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+> -rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+>
+> So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+>
+> Thanks in advance,
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From nickblack1 at gmail.com  Tue Nov  7 12:02:01 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Tue, 7 Nov 2006 11:02:01 +0000
+Subject: [Mapnik-devel] Tutorials online
+Message-ID: <223020e60611070302n66c0a347i80a83df96d221c74@mail.gmail.com>
+
+Hello,
+
+When I try to run the online tutorials:
+
+http://mapnik.org/documentation/tutorial_1_hello_world/
+
+I get various errors.  I'm jumping the gun a bit here, but comparing
+the sample code online to the sample code in demo/python/ from SVN, it
+looks as if the online tutorials are using deprecated method calls?
+Is this the case or could there be a problem with my installation?
+
+For example:
+
+from mapnik import *
+s=style()
+r=rule('hello,world! rule')
+r.symbols.append(polygon_symbolizer(color_from_string('#f2eff9')))
+...
+
+Prompts errors from python, complaining about style(), rule() and
+polygon_symbolizer...
+
+Comaring this to the sample code in demo/python :
+
+     69 provpoly_style = Style()
+     73
+     74 provpoly_rule_on = Rule()
+    94 provpoly_rule_on.symbols.append(PolygonSymbolizer(Color(250, 190, 183)))
+
+If this is the case, I'll update the tutotial documentation.
+
+Cheers,
+
+Nick
+
+
+From artem at pavlenko.uklinux.net  Tue Nov  7 12:14:41 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 07 Nov 2006 11:14:41 +0000
+Subject: [Mapnik-devel] Tutorials online
+In-Reply-To: <223020e60611070302n66c0a347i80a83df96d221c74@mail.gmail.com>
+References: <223020e60611070302n66c0a347i80a83df96d221c74@mail.gmail.com>
+Message-ID: <45506AA1.3010402@pavlenko.uklinux.net>
+
+Nick,
+You're absolutely right. Both tutorials are _out of date_. It would be 
+great if you could help updating them to the latest mapnik.
+Cheers,
+Artem
+> Hello,
+>
+> When I try to run the online tutorials:
+>
+> http://mapnik.org/documentation/tutorial_1_hello_world/
+>
+> I get various errors.  I'm jumping the gun a bit here, but comparing
+> the sample code online to the sample code in demo/python/ from SVN, it
+> looks as if the online tutorials are using deprecated method calls?
+> Is this the case or could there be a problem with my installation?
+>
+> For example:
+>
+> from mapnik import *
+> s=style()
+> r=rule('hello,world! rule')
+> r.symbols.append(polygon_symbolizer(color_from_string('#f2eff9')))
+> ...
+>
+> Prompts errors from python, complaining about style(), rule() and
+> polygon_symbolizer...
+>
+> Comaring this to the sample code in demo/python :
+>
+>      69 provpoly_style = Style()
+>      73
+>      74 provpoly_rule_on = Rule()
+>     94 provpoly_rule_on.symbols.append(PolygonSymbolizer(Color(250, 190, 183)))
+>
+> If this is the case, I'll update the tutotial documentation.
+>
+> Cheers,
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From nickblack1 at gmail.com  Tue Nov  7 16:24:35 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Tue, 7 Nov 2006 15:24:35 +0000
+Subject: [Mapnik-devel] Postgis tips
+Message-ID: <223020e60611070724r17747c0t95f80b2a7874d25@mail.gmail.com>
+
+Hi,
+
+I'm trying to render some data from a postgis database using mapnik.
+I have a pretty simple layer that represents roads as linestrings.
+
+I'm kind of stabbing in the dark though with the Python scripting  -
+I'm basing some experiments on the python example in demo/python:
+
+
+gbroads_lyr = Layer('GBRoads')
+gbroads_lyr.datasource =
+Postgis(host='localhost',dbname='dbname',user='user',password='pasword')
+
+are there any tips anyone can give me on using the Python binding to
+render from Postgis?
+
+Cheers,
+
+Nick
+
+
+From robert.coup at onetrackmind.co.nz  Tue Nov  7 21:12:54 2006
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Wed, 08 Nov 2006 09:12:54 +1300
+Subject: [Mapnik-devel] Postgis tips
+In-Reply-To: <223020e60611070724r17747c0t95f80b2a7874d25@mail.gmail.com>
+References: <223020e60611070724r17747c0t95f80b2a7874d25@mail.gmail.com>
+Message-ID: <4550E8C6.1030805@onetrackmind.co.nz>
+
+Nick Black wrote:
+> are there any tips anyone can give me on using the Python binding to
+> render from Postgis?
+>   
+Some random python code that might help:
+
+l_road_3 = Layer('road_3')
+sql = '(SELECT * FROM roads WHERE hierarchy in (\'Local\', 
+\'Connector\')) as linestrings'
+l_road_3.datasource = Datasource(table=sql, type='postgis', 
+host='localhost', dbname='mydatabase', user='myuser', password='mypassword')
+l_road_3.styles.append(s_road_3)
+mymap.layers.append(l_road_3)
+
+If you want polygons then "as polygons" will help. Also, i didn't get 
+mixed geometries working, so I ended up with two queries & two layers...
+
+'(SELECT * FROM river WHERE GeometryType("wkb_geometry") in 
+(\'MULTILINESTRING\', \'LINESTRING\')) as linestrings'
+'(SELECT * FROM river WHERE GeometryType("wkb_geometry") in 
+(\'MULTIPOLYGON\', \'POLYGON\')) as polygons'
+
+HTH,
+
+Rob :)
+
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Mobile +64-21-572 632
+Web http://www.onetrackmind.co.nz 
+
+
+
+
+From jfdoyon at gmail.com  Wed Nov  8 04:34:05 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Tue, 07 Nov 2006 22:34:05 -0500
+Subject: [Mapnik-devel] Tutorials online
+In-Reply-To: <223020e60611070302n66c0a347i80a83df96d221c74@mail.gmail.com>
+References: <223020e60611070302n66c0a347i80a83df96d221c74@mail.gmail.com>
+Message-ID: <4551502D.5080503@gmail.com>
+
+You're better off using the python demo as a "tutorial", it's kind of 
+intended that way really.
+
+It's also kept much more up to date.
+
+Look in demo/python/.
+
+J.F.
+
+Nick Black wrote:
+> Hello,
+>
+> When I try to run the online tutorials:
+>
+> http://mapnik.org/documentation/tutorial_1_hello_world/
+>
+> I get various errors.  I'm jumping the gun a bit here, but comparing
+> the sample code online to the sample code in demo/python/ from SVN, it
+> looks as if the online tutorials are using deprecated method calls?
+> Is this the case or could there be a problem with my installation?
+>
+> For example:
+>
+> from mapnik import *
+> s=style()
+> r=rule('hello,world! rule')
+> r.symbols.append(polygon_symbolizer(color_from_string('#f2eff9')))
+> ...
+>
+> Prompts errors from python, complaining about style(), rule() and
+> polygon_symbolizer...
+>
+> Comaring this to the sample code in demo/python :
+>
+>      69 provpoly_style = Style()
+>      73
+>      74 provpoly_rule_on = Rule()
+>     94 provpoly_rule_on.symbols.append(PolygonSymbolizer(Color(250, 190, 183)))
+>
+> If this is the case, I'll update the tutotial documentation.
+>
+> Cheers,
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From dave at smartrak.biz  Wed Nov  8 04:47:41 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 08 Nov 2006 16:47:41 +1300
+Subject: [Mapnik-devel] Less than 1 line thickness
+Message-ID: <4551535D.7010306@smartrak.biz>
+
+Hi all.
+
+I've been experiencing some strange behavior with lines with thickness 
+<= 1.0 when zoomed out a long way.
+Width 1.0001: http://localhost.geek.nz/lessthan1/width_1.0001.png
+Width 0.8: http://localhost.geek.nz/lessthan1/original_0.8.png
+Width 0.2: http://localhost.geek.nz/lessthan1/original_0.2.png
+
+It would appear that only the longer segments of road are being rendered.
+I found the line renderer code and noticed it has a special case for 
+lines with width <= 1.0
+(Line 238-249, src/agg_renderer.cpp)
+If this statement is removed so the standard rendering code is used 
+instead then it renders correctly even at a large scale:
+Width 0.8: http://localhost.geek.nz/lessthan1/moded_0.8.png
+Width 0.2: http://localhost.geek.nz/lessthan1/moded_0.2.png
+
+Just wondering what this statement is for and whether it is worth 
+removing it since it causes this bad behavior.
+
+Dave.
+
+
+From artem at pavlenko.uklinux.net  Thu Nov  9 10:49:50 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Thu, 09 Nov 2006 09:49:50 +0000
+Subject: [Mapnik-devel] Less than 1 line thickness
+In-Reply-To: <4551535D.7010306@smartrak.biz>
+References: <4551535D.7010306@smartrak.biz>
+Message-ID: <4552F9BE.20606@pavlenko.uklinux.net>
+
+Hi David,
+
+The reason for width<=1.0 test is to use more efficient 
+rasterizer_outline_aa for narrow strokes. But as your example 
+demonstrates it doesn't work as expected. I'd like to investigate 
+further, could you send me a small dataset (shapefile) I can use to 
+replicate this? When zoomed out a long way some vertices fall into the 
+same pixel and rasterizer doesn't handle this correctly (guessing!). 
+
+Cheers,
+Artem
+
+David Leaver wrote:
+> Hi all.
+>
+> I've been experiencing some strange behavior with lines with thickness 
+> <= 1.0 when zoomed out a long way.
+> Width 1.0001: http://localhost.geek.nz/lessthan1/width_1.0001.png
+> Width 0.8: http://localhost.geek.nz/lessthan1/original_0.8.png
+> Width 0.2: http://localhost.geek.nz/lessthan1/original_0.2.png
+>
+> It would appear that only the longer segments of road are being rendered.
+> I found the line renderer code and noticed it has a special case for 
+> lines with width <= 1.0
+> (Line 238-249, src/agg_renderer.cpp)
+> If this statement is removed so the standard rendering code is used 
+> instead then it renders correctly even at a large scale:
+> Width 0.8: http://localhost.geek.nz/lessthan1/moded_0.8.png
+> Width 0.2: http://localhost.geek.nz/lessthan1/moded_0.2.png
+>
+> Just wondering what this statement is for and whether it is worth 
+> removing it since it causes this bad behavior.
+>
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From perrygeo at gmail.com  Sat Nov 11 02:05:48 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Fri, 10 Nov 2006 17:05:48 -0800
+Subject: [Mapnik-devel] Mapnik and OpenLayers Tiles
+Message-ID: <5383fa5e0611101705q336484dej38cac34feb030f57@mail.gmail.com>
+
+Hey guys,
+
+ Just saw that the new OSM homepage has an openlayers interface with
+mapnik tiles behind it. Very nice!
+
+I see that the URLs to the image tiles follow a google-like pattern
+and that the openlayers client can be set up like:
+
+          layer = new OpenLayers.Layer.LikeGoogle( "OSM",
+"http://artem.dev.openstreetmap.org/osm_tiles/", {type:'png'} );
+
+The question is, how is the mapnik tile generation automated? Is there
+a script for this somewhere? Is it using a ka-map style approach where
+a larger image is generated then chopped up to avoid the label edge
+effects?
+
+Looks very promising and I look forward to hearing some more about it!
+-- 
+Matthew T. Perry
+GIS Analyst / Software Engineer
+National Center for Ecological Analysis and Synthesis (NCEAS)
+work: perry at nceas.ucsb.edu
+web: http://www.perrygeo.net
+
+
+From amitti at 10east.com  Sat Nov 11 03:28:45 2006
+From: amitti at 10east.com (Aaron Mitti)
+Date: Fri, 10 Nov 2006 21:28:45 -0500 (EST)
+Subject: [Mapnik-devel] Mapnik and OpenLayers Tiles
+In-Reply-To: <5383fa5e0611101705q336484dej38cac34feb030f57@mail.gmail.com>
+References: <5383fa5e0611101705q336484dej38cac34feb030f57@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0611102113500.1310@amitti1.10east.com>
+
+Matthew,
+
+> a larger image is generated then chopped up to avoid the label edge
+> effects?
+
+We'll have a patch for that sometime next week. It's basically the same 
+logic that text and symbol placement uses, but applied to edges. That 
+means it will avoid the edges and attempt to fit within the next closet 
+spot. That will still have a side effect though. It makes it so nothing 
+can be written through an edge, however it's less of a problem than cut 
+off text and symbols.
+
+It isn't that huge of a problem though. It isn't really practical to run 
+Mapnik for VERY small maps, it performs MUCH better doing large queries 
+and generating larger images, and then doing post processing.
+
+-Aaron
+
+--
+Aaron Mitti                         Email: amitti at 10east.com
+Open Systems Engineer               Phone: 904-220-3627
+10 East Corp.                         FAX: 904-384-1038
+
+On Fri, 10 Nov 2006, Matthew Perry wrote:
+
+> Hey guys,
+>
+> Just saw that the new OSM homepage has an openlayers interface with
+> mapnik tiles behind it. Very nice!
+>
+> I see that the URLs to the image tiles follow a google-like pattern
+> and that the openlayers client can be set up like:
+>
+>          layer = new OpenLayers.Layer.LikeGoogle( "OSM",
+> "http://artem.dev.openstreetmap.org/osm_tiles/", {type:'png'} );
+>
+> The question is, how is the mapnik tile generation automated? Is there
+> a script for this somewhere? Is it using a ka-map style approach where
+> a larger image is generated then chopped up to avoid the label edge
+> effects?
+>
+> Looks very promising and I look forward to hearing some more about it!
+> -- 
+> Matthew T. Perry
+> GIS Analyst / Software Engineer
+> National Center for Ecological Analysis and Synthesis (NCEAS)
+> work: perry at nceas.ucsb.edu
+> web: http://www.perrygeo.net
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From jfdoyon at methane.ca  Sun Nov 12 00:21:16 2006
+From: jfdoyon at methane.ca (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Sat, 11 Nov 2006 18:21:16 -0500
+Subject: [Mapnik-devel] problem with save_map
+Message-ID: <45565AEC.1010309@methane.ca>
+
+Hello,
+
+Trying to use save_map from python, without any luck.
+
+Noted some mistakes in the bindings:
+
++    def("load_map",&load_map,"load Map object from XML");
++    def("save_map",&load_map,"sace Map object to XML");
+
+Which I corrected to say:
+
+     def("load_map",&load_map,"Load Map object from XML");
+     def("save_map",&save_map,"Save Map object to XML");
+
+But I get a symbol undefined at runtime:
+
+[root at pcjflinux python]# python rundemo.py
+
+
+The mapnik library and python bindings must have been compiled and 
+installed successfully before running this script.
+
+
+Traceback (most recent call last):
+   File "rundemo.py", line 24, in ?
+     from mapnik import *
+   File "/usr/lib/python2.3/site-packages/mapnik/__init__.py", line 33, in ?
+     from _mapnik import *
+ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+
+Any ideas?
+
+Thx
+J.F.
+
+
+From artem at pavlenko.uklinux.net  Sun Nov 12 13:26:18 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Sun, 12 Nov 2006 12:26:18 +0000
+Subject: [Mapnik-devel] problem with save_map
+In-Reply-To: <45565AEC.1010309@methane.ca>
+References: <45565AEC.1010309@methane.ca>
+Message-ID: <455712EA.4060804@pavlenko.uklinux.net>
+
+J.F,
+I'll look into this. BTW, save_map doesn't really save anything at the 
+moment.
+Artem.
+> Hello,
+>
+> Trying to use save_map from python, without any luck.
+>
+> Noted some mistakes in the bindings:
+>
+> +    def("load_map",&load_map,"load Map object from XML");
+> +    def("save_map",&load_map,"sace Map object to XML");
+>
+> Which I corrected to say:
+>
+>      def("load_map",&load_map,"Load Map object from XML");
+>      def("save_map",&save_map,"Save Map object to XML");
+>
+> But I get a symbol undefined at runtime:
+>
+> [root at pcjflinux python]# python rundemo.py
+>
+>
+> The mapnik library and python bindings must have been compiled and 
+> installed successfully before running this script.
+>
+>
+> Traceback (most recent call last):
+>    File "rundemo.py", line 24, in ?
+>      from mapnik import *
+>    File "/usr/lib/python2.3/site-packages/mapnik/__init__.py", line 33, in ?
+>      from _mapnik import *
+> ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+> undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+>
+> Any ideas?
+>
+> Thx
+> J.F.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From jfdoyon at gmail.com  Sun Nov 12 16:09:13 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Sun, 12 Nov 2006 10:09:13 -0500
+Subject: [Mapnik-devel] problem with save_map
+In-Reply-To: <455712EA.4060804@pavlenko.uklinux.net>
+References: <45565AEC.1010309@methane.ca>
+	<455712EA.4060804@pavlenko.uklinux.net>
+Message-ID: <45573919.40507@gmail.com>
+
+Oh, never mind then :)
+
+I wanted to play with this, and maybe add the feature to the demo, 
+showing how one can save and reload maps ... but I guess once can't.
+
+So right now one is expected to simply write the XML document first, and 
+THEN load it?
+
+Can you send an example?
+
+J.F.
+
+Artem Pavlenko wrote:
+> J.F,
+> I'll look into this. BTW, save_map doesn't really save anything at the 
+> moment.
+> Artem.
+>   
+>> Hello,
+>>
+>> Trying to use save_map from python, without any luck.
+>>
+>> Noted some mistakes in the bindings:
+>>
+>> +    def("load_map",&load_map,"load Map object from XML");
+>> +    def("save_map",&load_map,"sace Map object to XML");
+>>
+>> Which I corrected to say:
+>>
+>>      def("load_map",&load_map,"Load Map object from XML");
+>>      def("save_map",&save_map,"Save Map object to XML");
+>>
+>> But I get a symbol undefined at runtime:
+>>
+>> [root at pcjflinux python]# python rundemo.py
+>>
+>>
+>> The mapnik library and python bindings must have been compiled and 
+>> installed successfully before running this script.
+>>
+>>
+>> Traceback (most recent call last):
+>>    File "rundemo.py", line 24, in ?
+>>      from mapnik import *
+>>    File "/usr/lib/python2.3/site-packages/mapnik/__init__.py", line 33, in ?
+>>      from _mapnik import *
+>> ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+>> undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+>>
+>> Any ideas?
+>>
+>> Thx
+>> J.F.
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>>   
+>>     
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From artem at pavlenko.uklinux.net  Sun Nov 12 17:27:28 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Sun, 12 Nov 2006 16:27:28 +0000
+Subject: [Mapnik-devel] problem with save_map
+In-Reply-To: <45573919.40507@gmail.com>
+References: <45565AEC.1010309@methane.ca>	<455712EA.4060804@pavlenko.uklinux.net>
+	<45573919.40507@gmail.com>
+Message-ID: <45574B70.4090901@pavlenko.uklinux.net>
+
+Attached is what I used to render Canadian data.
+Artem.
+
+Jean-Fran?ois Doyon wrote:
+> Oh, never mind then :)
+>
+> I wanted to play with this, and maybe add the feature to the demo, 
+> showing how one can save and reload maps ... but I guess once can't.
+>
+> So right now one is expected to simply write the XML document first, and 
+> THEN load it?
+>
+> Can you send an example?
+>
+> J.F.
+>
+> Artem Pavlenko wrote:
+>   
+>> J.F,
+>> I'll look into this. BTW, save_map doesn't really save anything at the 
+>> moment.
+>> Artem.
+>>   
+>>     
+>>> Hello,
+>>>
+>>> Trying to use save_map from python, without any luck.
+>>>
+>>> Noted some mistakes in the bindings:
+>>>
+>>> +    def("load_map",&load_map,"load Map object from XML");
+>>> +    def("save_map",&load_map,"sace Map object to XML");
+>>>
+>>> Which I corrected to say:
+>>>
+>>>      def("load_map",&load_map,"Load Map object from XML");
+>>>      def("save_map",&save_map,"Save Map object to XML");
+>>>
+>>> But I get a symbol undefined at runtime:
+>>>
+>>> [root at pcjflinux python]# python rundemo.py
+>>>
+>>>
+>>> The mapnik library and python bindings must have been compiled and 
+>>> installed successfully before running this script.
+>>>
+>>>
+>>> Traceback (most recent call last):
+>>>    File "rundemo.py", line 24, in ?
+>>>      from mapnik import *
+>>>    File "/usr/lib/python2.3/site-packages/mapnik/__init__.py", line 33, in ?
+>>>      from _mapnik import *
+>>> ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+>>> undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+>>>
+>>> Any ideas?
+>>>
+>>> Thx
+>>> J.F.
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>>>   
+>>>     
+>>>       
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>   
+>>     
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: canada.xml
+Type: text/xml
+Size: 11709 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061112/ac68225a/attachment.xml>
+
+From toby.collett at onetrackmind.co.nz  Mon Nov 13 04:09:17 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Mon, 13 Nov 2006 16:09:17 +1300
+Subject: [Mapnik-devel] more text placement patches
+Message-ID: <1163387357.5147.13.camel@torpedo.onetrackmind.co.nz>
+
+Attached is another patch for text placement, this one controls the
+amount a label will overflow past the end of a path. Also fixes a bunch
+of other quirks that were found in the process.
+
+set the .max_overhang property to control the amount of overhang, this
+defaults to 5.
+
+Toby
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_overhang_patch
+Type: text/x-patch
+Size: 27105 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061113/cd407e8d/attachment.bin>
+
+From toby.collett at onetrackmind.co.nz  Mon Nov 20 02:40:42 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Mon, 20 Nov 2006 14:40:42 +1300
+Subject: [Mapnik-devel] Map tiling patch
+Message-ID: <1163986842.6104.18.camel@torpedo.onetrackmind.co.nz>
+
+Hi,
+The attached patch allows for a selected pixel region within an extent
+to be rendered. This allows for a large extent (larger than can be
+rendered into a single image in memory) to be rendered out as tiles.
+Since the full extent is used for the placement calculations text
+crossing tile boundaries will be consistent.
+
+This method is a little inefficient when a large number of labels need
+placed, an improved method would be to cache these placements between
+tiles, but the attached is a start.
+
+c++ users should simple call the render method with a start X and Y
+coordinate specified, 
+
+for (int TileX = 0;TileX < 5;++TileX)
+{
+	for(int TileY = 0;TileY < 5; ++TileY)
+	{
+		int TileSize=250;
+		int StartX = TileX*TileSize;
+		int StartY = TileY*TileSize;
+		
+		Image32 buf(TileSize,TileSize);
+		agg_renderer<Image32> ren(m,buf,StartX,StartY);
+		
+		ren.apply();
+		char name[324];
+		sprintf(name,"tile_%d_%d.png",TileX,TileY);
+		ImageUtils::save_to_file(name,"png",buf);
+	}
+}
+
+python users should call render_tile_to_file
+
+for y in range(tile_count_y):
+	for x in range(tile_count_x):
+		if not os.path.exists("tiles/%d/%d/" % (map_scale, y)):
+			os.makedirs("tiles/%d/%d/" % (map_scale, y))
+		render_tile_to_file(m, x*tile_size, y*tile_size, tile_size, tile_size,
+'tiles/%d/%d/%d.png' % (map_scale,y,x), 'png')
+
+Enjoy,
+Toby
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_tile.diff
+Type: text/x-patch
+Size: 5309 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061120/9fa5b513/attachment.bin>
+
+From robert.coup at onetrackmind.co.nz  Mon Nov 20 02:49:17 2006
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Mon, 20 Nov 2006 14:49:17 +1300
+Subject: [Mapnik-devel] Map tiling patch
+In-Reply-To: <1163986842.6104.18.camel@torpedo.onetrackmind.co.nz>
+References: <1163986842.6104.18.camel@torpedo.onetrackmind.co.nz>
+Message-ID: <4561099D.9050302@onetrackmind.co.nz>
+
+Toby Collett wrote:
+> The attached patch allows for a selected pixel region within an extent
+> to be rendered. This allows for a large extent (larger than can be
+> rendered into a single image in memory) to be rendered out as tiles.
+> Since the full extent is used for the placement calculations text
+> crossing tile boundaries will be consistent.
+>
+> This method is a little inefficient when a large number of labels need
+> placed, an improved method would be to cache these placements between
+> tiles, but the attached is a start.
+>   
+Another way to use this code more efficiently is to render large tiles 
+(eg. 2048x2048)
+then slice them using ImageMagick/PIL/etc to the size you require (eg. 
+256x256).
+
+Rob :)
+
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Mobile +64-21-572 632
+Web http://www.onetrackmind.co.nz 
+
+
+
+
+From jburgess at uklinux.net  Sun Nov 26 20:01:55 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Sun, 26 Nov 2006 19:01:55 +0000
+Subject: [Mapnik-devel] Map constructor does not enfoce min/max size
+Message-ID: <1164567715.25408.186.camel@localhost.localdomain>
+
+I noticed a minor problem in map.cpp, the following constructor does
+appear to limit the width & height to (MIN_MAPSIZE...MAX_MAPSIZE).
+
+    Map::Map(int width,int height, std::string const& srs)
+        : width_(width),
+          height_(height),
+          srs_(srs),
+          background_(Color(255,255,255)) {}
+
+
+I'm not subscribed to mapnik-devel, the berlios mailing list
+subscription page appears to be broken.
+
+	Jon
+
+
+
+
+From jburgess at uklinux.net  Tue Nov 28 22:25:52 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Tue, 28 Nov 2006 21:25:52 +0000
+Subject: [Mapnik-devel] Infinite loop while rendering OSM map with mapnik
+Message-ID: <1164749152.1719.8.camel@localhost.localdomain>
+
+I have found that mapnik gets stuck in an infinite loop while rendering
+2 particular tiles. I've attached a debugger and found that the code is
+running in the following loop. Given the current values of the inputs,
+this loop will never finish.
+
+agg/include/agg_renderer_outline_image.h
+
+975  while(abs(ex - lp.x2) + abs(ey - lp.y2) > lp2.len)
+976  {
+977      ex = (lp.x2 + ex) >> 1;
+978      ey = (lp.y2 + ey) >> 1;
+979  }
+
+(gdb) p ex
+$1 = 0
+(gdb) p ey
+$2 = 115740
+(gdb) p lp
+$3 = (const agg::line_parameters &) @0x7fff3a85eff4: {x1 = -199, y1 =
+116094, x2 = 1, y2 = 115741, dx = 200, dy = 353, sx = 1, sy = -1,
+  vertical = true, inc = -1, len = 406, octant = 5, static
+s_orthogonal_quadrant = "\000\000\001\001\003\003\002\002",
+  static s_diagonal_quadrant = "\000\001\002\001\000\003\002\003"}
+(gdb) p lp2
+$7 = {x1 = 0, y1 = 115742, x2 = 1, y2 = 115741, dx = 1, dy = 1, sx = 1,
+sy = -1, vertical = true, inc = -1, len = 1, octant = 5,
+  static s_orthogonal_quadrant = "\000\000\001\001\003\003\002\002",
+static s_diagonal_quadrant = "\000\001\002\001\000\003\002\003"}
+(gdb) p lp.x2
+$4 = 1
+(gdb) p lp.y2
+$5 = 115741
+
+Applying the above constants into the loop above gives...
+
+975 while(abs(ex - lp.x2) + abs(ey - lp.y2) > lp2.len)  ... 1+1 > 1
+976 {
+977     ex = (lp.x2 + ex) >> 1;  ... ex = (0+1)/2 = 0
+978     ey = (lp.y2 + ey) >> 1;  ... ey = (115740+115741)/2 = 115740
+979 }
+
+the values of ex and ey never change because they always get rounded
+down to the same values.
+
+
+	Jon
+
+
+
+
+From dave at smartrak.biz  Tue Nov 28 22:38:30 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 29 Nov 2006 10:38:30 +1300
+Subject: [Mapnik-devel] max_char_angle_delta fix
+In-Reply-To: <1164567715.25408.186.camel@localhost.localdomain>
+References: <1164567715.25408.186.camel@localhost.localdomain>
+Message-ID: <456CAC56.5040107@smartrak.biz>
+
+There is a bug in the current max_char_angle_delta code in mapnik.
+When normalizing to between -180 and +180 the value is normalized using 
+only M_PI instead of 2*M_PI, so if the angle of change was 181 degrees, 
+it would be normalized to 1 instead of -179 which it should be.
+This causes road labels to occasionally wrap over onto them self.
+
+Small patch attached to fix this.
+
+Dave.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: max_char_angle_delta.patch
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/1227ab64/attachment.ksh>
+
+From pavlenko at users.berlios.de  Tue Nov 28 22:49:22 2006
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Tue, 28 Nov 2006 21:49:22 +0000
+Subject: [Mapnik-devel] Infinite loop while rendering OSM map with mapnik
+In-Reply-To: <1164749152.1719.8.camel@localhost.localdomain>
+References: <1164749152.1719.8.camel@localhost.localdomain>
+Message-ID: <456CAEE2.20006@users.berlios.de>
+
+Cool! thanks for your report. I had a similar problem but with 
+agg_renderer_outline_aa.h
+
+There are the same loops and my solution was to simply:
+.....
+while(abs(sx - lp.x1) + abs(sy - lp.y1) > 2 * lp2.len
+...
+
+Could you try the above with those tiles and let me know if this works.
+Perhaps,we should submit bug to agg.
+
+Artem
+
+
+Jon Burgess wrote:
+> I have found that mapnik gets stuck in an infinite loop while rendering
+> 2 particular tiles. I've attached a debugger and found that the code is
+> running in the following loop. Given the current values of the inputs,
+> this loop will never finish.
+>
+> agg/include/agg_renderer_outline_image.h
+>
+> 975  while(abs(ex - lp.x2) + abs(ey - lp.y2) > lp2.len)
+> 976  {
+> 977      ex = (lp.x2 + ex) >> 1;
+> 978      ey = (lp.y2 + ey) >> 1;
+> 979  }
+>
+> (gdb) p ex
+> $1 = 0
+> (gdb) p ey
+> $2 = 115740
+> (gdb) p lp
+> $3 = (const agg::line_parameters &) @0x7fff3a85eff4: {x1 = -199, y1 =
+> 116094, x2 = 1, y2 = 115741, dx = 200, dy = 353, sx = 1, sy = -1,
+>   vertical = true, inc = -1, len = 406, octant = 5, static
+> s_orthogonal_quadrant = "\000\000\001\001\003\003\002\002",
+>   static s_diagonal_quadrant = "\000\001\002\001\000\003\002\003"}
+> (gdb) p lp2
+> $7 = {x1 = 0, y1 = 115742, x2 = 1, y2 = 115741, dx = 1, dy = 1, sx = 1,
+> sy = -1, vertical = true, inc = -1, len = 1, octant = 5,
+>   static s_orthogonal_quadrant = "\000\000\001\001\003\003\002\002",
+> static s_diagonal_quadrant = "\000\001\002\001\000\003\002\003"}
+> (gdb) p lp.x2
+> $4 = 1
+> (gdb) p lp.y2
+> $5 = 115741
+>
+> Applying the above constants into the loop above gives...
+>
+> 975 while(abs(ex - lp.x2) + abs(ey - lp.y2) > lp2.len)  ... 1+1 > 1
+> 976 {
+> 977     ex = (lp.x2 + ex) >> 1;  ... ex = (0+1)/2 = 0
+> 978     ey = (lp.y2 + ey) >> 1;  ... ey = (115740+115741)/2 = 115740
+> 979 }
+>
+> the values of ex and ey never change because they always get rounded
+> down to the same values.
+>
+>
+> 	Jon
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From artem at pavlenko.uklinux.net  Tue Nov 28 22:51:23 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 28 Nov 2006 21:51:23 +0000
+Subject: [Mapnik-devel] max_char_angle_delta fix
+In-Reply-To: <456CAC56.5040107@smartrak.biz>
+References: <1164567715.25408.186.camel@localhost.localdomain>
+	<456CAC56.5040107@smartrak.biz>
+Message-ID: <456CAF5B.9060206@pavlenko.uklinux.net>
+
+Dave, thanks!
+I'll apply your patch straight away.
+Artem
+
+David Leaver wrote:
+> There is a bug in the current max_char_angle_delta code in mapnik.
+> When normalizing to between -180 and +180 the value is normalized 
+> using only M_PI instead of 2*M_PI, so if the angle of change was 181 
+> degrees, it would be normalized to 1 instead of -179 which it should be.
+> This causes road labels to occasionally wrap over onto them self.
+>
+> Small patch attached to fix this.
+>
+> Dave.
+> ------------------------------------------------------------------------
+>
+> Index: src/placement_finder.cpp
+> ===================================================================
+> --- src/placement_finder.cpp	(revision 385)
+> +++ src/placement_finder.cpp	(working copy)
+> @@ -373,9 +373,9 @@
+>                  angle_delta = last_angle - angle;
+>                  // normalise between -180 and 180
+>                  while (angle_delta > M_PI)
+> -                    angle_delta -= M_PI;
+> +                    angle_delta -= 2*M_PI;
+>                  while (angle_delta < -M_PI)
+> -                    angle_delta += M_PI;
+> +                    angle_delta += 2*M_PI;
+>                  if (p->max_char_angle_delta > 0 && fabs(angle_delta) > p->max_char_angle_delta*(M_PI/180))
+>                  {
+>                      return false;
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From jburgess at uklinux.net  Tue Nov 28 23:09:48 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Tue, 28 Nov 2006 22:09:48 +0000
+Subject: [Mapnik-devel] assert in dbffile.cpp
+Message-ID: <1164751788.1719.34.camel@localhost.localdomain>
+
+While running a DEBUG=1 build of mapnik I hit the following assert:
+
+void dbf_file::read_header()
+{
+    char c=file_.get();
+    if (c=='\3' || c=='\131')
+    {
+        skip(3);
+        num_records_=read_int();
+***     assert(num_records_>0);  
+
+
+The file in question is the OSM vmap0/water.dbf which has
+num_records_=0. I guess this is valid and this check should be
+"num_records_>=0". 
+
+For reference, here is the hex dump of the file.
+
+
+$ od -A x -t x1 mapnik/vmap0/water.dbf
+000000 03 5f 07 1a 00 00 00 00 21 00 01 00 00 00 00 00
+000010 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000020 0d
+
+
+	Jon
+
+
+
+
+
+
+From artem at pavlenko.uklinux.net  Tue Nov 28 23:18:00 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 28 Nov 2006 22:18:00 +0000
+Subject: [Mapnik-devel] assert in dbffile.cpp
+In-Reply-To: <1164751788.1719.34.camel@localhost.localdomain>
+References: <1164751788.1719.34.camel@localhost.localdomain>
+Message-ID: <456CB598.6040805@pavlenko.uklinux.net>
+
+Jon,
+
+The file is actually invalid. There should be one record corresponding 
+to one geometry in .shp. I managed to created this water.* rectangle 
+somehow:P. But  yes,  think changing assert to >=0 should be fine.
+
+Artem.
+
+Jon Burgess wrote:
+> While running a DEBUG=1 build of mapnik I hit the following assert:
+>
+> void dbf_file::read_header()
+> {
+>     char c=file_.get();
+>     if (c=='\3' || c=='\131')
+>     {
+>         skip(3);
+>         num_records_=read_int();
+> ***     assert(num_records_>0);  
+>
+>
+> The file in question is the OSM vmap0/water.dbf which has
+> num_records_=0. I guess this is valid and this check should be
+> "num_records_>=0". 
+>
+> For reference, here is the hex dump of the file.
+>
+>
+> $ od -A x -t x1 mapnik/vmap0/water.dbf
+> 000000 03 5f 07 1a 00 00 00 00 21 00 01 00 00 00 00 00
+> 000010 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 000020 0d
+>
+>
+> 	Jon
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From jburgess at uklinux.net  Tue Nov 28 23:22:21 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Tue, 28 Nov 2006 22:22:21 +0000
+Subject: [Mapnik-devel] Infinite loop while rendering OSM map with	mapnik
+In-Reply-To: <456CAEE2.20006@users.berlios.de>
+References: <1164749152.1719.8.camel@localhost.localdomain>
+	<456CAEE2.20006@users.berlios.de>
+Message-ID: <1164752541.1719.39.camel@localhost.localdomain>
+
+On Tue, 2006-11-28 at 21:49 +0000, Artem Pavlenko wrote:
+> Cool! thanks for your report. I had a similar problem but with 
+> agg_renderer_outline_aa.h
+> 
+> There are the same loops and my solution was to simply:
+> .....
+> while(abs(sx - lp.x1) + abs(sy - lp.y1) > 2 * lp2.len
+> ...
+> 
+> Could you try the above with those tiles and let me know if this works.
+> Perhaps,we should submit bug to agg.
+> 
+> Artem
+> 
+
+I assume this is what you meant:
+
+-     while(abs(ex - lp.x2) + abs(ey - lp.y2) > lp2.len)
++     while(abs(ex - lp.x2) + abs(ey - lp.y2) > 2 * lp2.len)
+
+
+I tried this and it seems to work fine. I did wonder whether this should
+perhaps be "lp2.len+1" instead, but I have not tried to properly
+understand what the algorithm is trying to achieve.
+
+	Jon
+
+
+
+
+
+From dave at smartrak.biz  Wed Nov 29 01:15:25 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 29 Nov 2006 13:15:25 +1300
+Subject: [Mapnik-devel] text_spacing patch
+In-Reply-To: <1164567715.25408.186.camel@localhost.localdomain>
+References: <1164567715.25408.186.camel@localhost.localdomain>
+Message-ID: <456CD11D.8000608@smartrak.biz>
+
+The text placement on roads in mapnik liked to place text at the 
+start/end of roads. I've changed it to try and center the text.
+This makes short roads with low amounts of labels look much better.
+
+Check this page for a visual comparison:
+http://localhost.geek.nz/text_spacing/
+
+I've also added force_odd_labels to text_symbolizer, this makes the text 
+renderer attempt to render an odd amount of labels so that you get one 
+right in the middle of the road.
+
+Dave.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: text_placement.patch
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/d22a0d45/attachment.ksh>
+
+From jburgess at uklinux.net  Wed Nov 29 01:49:53 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Wed, 29 Nov 2006 00:49:53 +0000
+Subject: [Mapnik-devel] error linking map.cpp since rev. 379
+Message-ID: <1164761393.3536.3.camel@localhost.localdomain>
+
+When compiling SVN rev 379+ I get an error when linking libmapnik.so
+with lots of lines like...
+
+`.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+`.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+
+Any ideas on how to fix this?
+If I revert src/map.cpp back to rev 378 then everything compiles OK.
+
+	Jon
+
+
+
+
+From dave at smartrak.biz  Wed Nov 29 05:41:56 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 29 Nov 2006 17:41:56 +1300
+Subject: [Mapnik-devel] label_position_tolerance patch
+In-Reply-To: <1164567715.25408.186.camel@localhost.localdomain>
+References: <1164567715.25408.186.camel@localhost.localdomain>
+Message-ID: <456D0F94.2050006@smartrak.biz>
+
+As a follow up to my last patch, heres another one :)
+
+I wasn't happy with how mapnik fudges the labels on roads till it finds 
+a place to put them, So I've made the distance it will test over user 
+configurable.
+
+The new property is text_symbolizer.label_position_tolerance
+The default value (0) uses the current behaviour but for any larger 
+values that distance is how much will be scanned over +/- to try place 
+the label. (with the value 1 trying only the initial position)
+The delta scanning distance is also chosen smartly.
+
+I've attached a stand alone patch which will apply on top of my last 
+patch and also a combined patch with both sets of changes in it.
+
+The text rendering of mapnik with these changes on it is 
+vvvvvvvvvveeeeeeeeerrrrrrrryyyyyyyyy nice.
+Thanks everyone who has done work on them :)
+
+Dave.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: label_position_tolerance_and_text_spacing.patch
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment.ksh>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: label_position_tolerance.patch
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment-0001.ksh>
+
+From pavlenko at users.berlios.de  Wed Nov 29 11:46:57 2006
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Wed, 29 Nov 2006 10:46:57 +0000
+Subject: [Mapnik-devel] label_position_tolerance patch
+In-Reply-To: <456D0F94.2050006@smartrak.biz>
+References: <1164567715.25408.186.camel@localhost.localdomain>
+	<456D0F94.2050006@smartrak.biz>
+Message-ID: <456D6521.2050907@users.berlios.de>
+
+David,
+
+I've applied both patches. I'm yet to add new TextSymbolizer params to 
+load_map.cpp.
+Thanks very much!
+Artem
+> As a follow up to my last patch, heres another one :)
+>
+> I wasn't happy with how mapnik fudges the labels on roads till it 
+> finds a place to put them, So I've made the distance it will test over 
+> user configurable.
+>
+> The new property is text_symbolizer.label_position_tolerance
+> The default value (0) uses the current behaviour but for any larger 
+> values that distance is how much will be scanned over +/- to try place 
+> the label. (with the value 1 trying only the initial position)
+> The delta scanning distance is also chosen smartly.
+>
+> I've attached a stand alone patch which will apply on top of my last 
+> patch and also a combined patch with both sets of changes in it.
+>
+> The text rendering of mapnik with these changes on it is 
+> vvvvvvvvvveeeeeeeeerrrrrrrryyyyyyyyy nice.
+> Thanks everyone who has done work on them :)
+>
+> Dave.
+> ------------------------------------------------------------------------
+>
+> Index: include/mapnik/placement_finder.hpp
+> ===================================================================
+> --- include/mapnik/placement_finder.hpp	(revision 388)
+> +++ include/mapnik/placement_finder.hpp	(working copy)
+> @@ -89,6 +89,8 @@
+>      int text_ratio;
+>  
+>      int label_spacing; // distance between repeated labels on a single geometry
+> +    unsigned label_position_tolerance; //distance the label can be moved on the line to fit, if 0 the default is used
+> +	bool force_odd_labels; //Always try render an odd amount of labels
+>  
+>      double max_char_angle_delta;
+>      
+> Index: include/mapnik/text_symbolizer.hpp
+> ===================================================================
+> --- include/mapnik/text_symbolizer.hpp	(revision 388)
+> +++ include/mapnik/text_symbolizer.hpp	(working copy)
+> @@ -53,6 +53,10 @@
+>          void set_wrap_width(unsigned ratio);
+>          unsigned get_label_spacing() const; // spacing between repeated labels on lines
+>          void set_label_spacing(unsigned spacing);
+> +        unsigned get_label_position_tolerance() const; //distance the label can be moved on the line to fit, if 0 the default is used
+> +        void set_label_position_tolerance(unsigned tolerance);
+> +		bool get_force_odd_labels() const; // try render an odd amount of labels
+> +		void set_force_odd_labels(bool force);
+>          double get_max_char_angle_delta() const; // maximum change in angle between adjacent characters
+>          void set_max_char_angle_delta(double angle);
+>          unsigned get_text_size() const;
+> @@ -78,6 +82,8 @@
+>          unsigned text_ratio_;
+>          unsigned wrap_width_;
+>          unsigned label_spacing_;
+> +        unsigned label_position_tolerance_;
+> +        bool force_odd_labels_;
+>          double max_char_angle_delta_;
+>          Color fill_;
+>          Color halo_fill_;
+> Index: src/placement_finder.cpp
+> ===================================================================
+> --- src/placement_finder.cpp	(revision 388)
+> +++ src/placement_finder.cpp	(working copy)
+> @@ -46,13 +46,13 @@
+>  {
+>      //For shields
+>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, std::pair<double, double> dimensions_)
+> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0), avoid_edges(false)
+> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), label_position_tolerance(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+>      {
+>      }
+>  
+>      //For text
+>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, label_placement_e placement_)
+> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0), avoid_edges(false)
+> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), label_position_tolerance(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+>      {
+>      }
+>    
+> @@ -183,20 +183,55 @@
+>          int num_labels = 0;
+>          if (p->label_spacing)
+>              num_labels = static_cast<int> (floor(distance / (p->label_spacing + string_width)));
+> -        if (num_labels == 0)
+> +		if (p->force_odd_labels && num_labels%2 == 0)
+> +			num_labels--;
+> +        if (num_labels <= 0)
+>              num_labels = 1;
+>  
+>          double ideal_spacing = distance/num_labels;
+>          std::vector<double> ideal_label_distances;
+> -        for (double label_pos = string_width/2.0; label_pos < distance - string_width/2.0; label_pos += ideal_spacing)
+> -            ideal_label_distances.push_back(label_pos);
+> +		
+> +		double middle = (distance / 2.0) - (string_width/2.0); //try draw text centered
+> +		
+> +		if (num_labels % 2) //odd amount of labels
+> +		{
+> +			for (int a = 0; a < (num_labels+1)/2; a++)
+> +			{
+> +				ideal_label_distances.push_back(middle - (a*ideal_spacing));
+> +	
+> +				if (a != 0)
+> +					ideal_label_distances.push_back(middle + (a*ideal_spacing));
+> +			}
+> +		}
+> +		else //even amount of labels
+> +		{
+> +			for (int a = 0; a < num_labels/2; a++)
+> +			{
+> +				ideal_label_distances.push_back(middle - (ideal_spacing/2.0) - (a*ideal_spacing));
+> +				ideal_label_distances.push_back(middle + (ideal_spacing/2.0) + (a*ideal_spacing));
+> +			}
+> +		}
+>  
+> -        double delta = ideal_spacing/100.0;
+> +        double delta;
+> +		double tolerance;
+> +
+> +		if (p->label_position_tolerance > 0)
+> +		{
+> +			tolerance = p->label_position_tolerance;
+> +			delta = std::max ( 1.0, p->label_position_tolerance/100.0);
+> +		}
+> +		else
+> +		{
+> +			tolerance = ideal_spacing/2.0;
+> +			delta = ideal_spacing/100.0;
+> +		}
+> +
+> +
+>          bool FoundPlacement = false;
+>          for (std::vector<double>::const_iterator itr = ideal_label_distances.begin(); itr < ideal_label_distances.end(); ++itr)
+>          {
+>              //std::clog << "Trying to find txt placement at distance: " << *itr << std::endl;
+> -            for (double i = 0; i < ideal_spacing/2.0; i += delta)
+> +            for (double i = 0; i < tolerance; i += delta)
+>              {
+>                  p->clear_envelopes();
+>          
+> @@ -431,8 +466,8 @@
+>                  render_y -= ci.width*sin(render_angle) + (string_height-2)*cos(render_angle);
+>                  render_angle += M_PI;
+>              }
+> -
+>          
+> +        
+>              p->current_placement.path.add_node(c, render_x - p->current_placement.starting_x, -render_y + p->current_placement.starting_y, render_angle);
+>              x += next_char_x;
+>              y -= next_char_y;
+> Index: src/text_symbolizer.cpp
+> ===================================================================
+> --- src/text_symbolizer.cpp	(revision 388)
+> +++ src/text_symbolizer.cpp	(working copy)
+> @@ -36,6 +36,8 @@
+>            text_ratio_(0),
+>            wrap_width_(0),
+>            label_spacing_(0),
+> +          label_position_tolerance_(0),
+> +          force_odd_labels_(false),
+>            max_char_angle_delta_(0),
+>  	  fill_(fill),
+>  	  halo_fill_(Color(255,255,255)),
+> @@ -52,6 +54,8 @@
+>            text_ratio_(rhs.text_ratio_),
+>            wrap_width_(rhs.wrap_width_),
+>            label_spacing_(rhs.label_spacing_),
+> +          label_position_tolerance_(rhs.label_position_tolerance_),
+> +          force_odd_labels_(rhs.force_odd_labels_),
+>            max_char_angle_delta_(rhs.max_char_angle_delta_),
+>            fill_(rhs.fill_),
+>            halo_fill_(rhs.halo_fill_),
+> @@ -71,6 +75,8 @@
+>          text_ratio_ = other.text_ratio_;
+>          wrap_width_ = other.wrap_width_;
+>          label_spacing_ = other.label_spacing_;
+> +        label_position_tolerance_ = other.label_position_tolerance_;
+> +        force_odd_labels_ = other.force_odd_labels_;
+>          max_char_angle_delta_ = other.max_char_angle_delta_;
+>          fill_ = other.fill_;
+>          halo_fill_ = other.halo_fill_;
+> @@ -123,6 +129,26 @@
+>          label_spacing_ = spacing;
+>      }
+>  
+> +    unsigned  text_symbolizer::get_label_position_tolerance() const
+> +    {
+> +        return label_position_tolerance_;
+> +    }
+> +
+> +    void  text_symbolizer::set_label_position_tolerance(unsigned tolerance)
+> +    {
+> +        label_position_tolerance_ = tolerance;
+> +    }
+> +
+> +    bool  text_symbolizer::get_force_odd_labels() const
+> +    {
+> +        return force_odd_labels_;
+> +    }
+> +
+> +    void  text_symbolizer::set_force_odd_labels(bool force) 
+> +    {
+> +        force_odd_labels_ = force;
+> +    }
+> +
+>      double text_symbolizer::get_max_char_angle_delta() const
+>      {
+>          return max_char_angle_delta_;
+> Index: src/agg_renderer.cpp
+> ===================================================================
+> --- src/agg_renderer.cpp	(revision 388)
+> +++ src/agg_renderer.cpp	(working copy)
+> @@ -520,6 +520,8 @@
+>                      text_placement.text_ratio = sym.get_text_ratio();
+>                      text_placement.wrap_width = sym.get_wrap_width();
+>                      text_placement.label_spacing = sym.get_label_spacing();
+> +                    text_placement.label_position_tolerance = sym.get_label_position_tolerance();
+> +                    text_placement.force_odd_labels = sym.get_force_odd_labels();
+>                      text_placement.max_char_angle_delta = sym.get_max_char_angle_delta();
+>                      text_placement.avoid_edges = sym.get_avoid_edges();
+>                    
+> Index: bindings/python/mapnik_text_symbolizer.cpp
+> ===================================================================
+> --- bindings/python/mapnik_text_symbolizer.cpp	(revision 388)
+> +++ bindings/python/mapnik_text_symbolizer.cpp	(working copy)
+> @@ -55,6 +55,12 @@
+>          .add_property("label_spacing",
+>                        &text_symbolizer::get_label_spacing,
+>                        &text_symbolizer::set_label_spacing)
+> +        .add_property("label_position_tolerance",
+> +                      &text_symbolizer::get_label_position_tolerance,
+> +                      &text_symbolizer::set_label_position_tolerance)
+> +        .add_property("force_odd_labels",
+> +                      &text_symbolizer::get_force_odd_labels,
+> +                      &text_symbolizer::set_force_odd_labels)
+>          .add_property("max_char_angle_delta",
+>                        &text_symbolizer::get_max_char_angle_delta,
+>                        &text_symbolizer::set_max_char_angle_delta)
+>   
+> ------------------------------------------------------------------------
+>
+> diff -urNp --exclude='*scons*' -r mk2/bindings/python/mapnik_text_symbolizer.cpp mk3/bindings/python/mapnik_text_symbolizer.cpp
+> --- mk2/bindings/python/mapnik_text_symbolizer.cpp	2006-11-29 12:53:42.000000000 +1300
+> +++ mk3/bindings/python/mapnik_text_symbolizer.cpp	2006-11-29 15:22:29.000000000 +1300
+> @@ -55,6 +55,9 @@ void export_text_symbolizer()
+>          .add_property("label_spacing",
+>                        &text_symbolizer::get_label_spacing,
+>                        &text_symbolizer::set_label_spacing)
+> +        .add_property("label_position_tolerance",
+> +                      &text_symbolizer::get_label_position_tolerance,
+> +                      &text_symbolizer::set_label_position_tolerance)
+>          .add_property("force_odd_labels",
+>                        &text_symbolizer::get_force_odd_labels,
+>                        &text_symbolizer::set_force_odd_labels)
+> diff -urNp --exclude='*scons*' -r mk2/include/mapnik/placement_finder.hpp mk3/include/mapnik/placement_finder.hpp
+> --- mk2/include/mapnik/placement_finder.hpp	2006-11-29 12:53:42.000000000 +1300
+> +++ mk3/include/mapnik/placement_finder.hpp	2006-11-29 15:16:37.000000000 +1300
+> @@ -89,6 +89,7 @@ namespace mapnik
+>      int text_ratio;
+>  
+>      int label_spacing; // distance between repeated labels on a single geometry
+> +    unsigned label_position_tolerance; //distance the label can be moved on the line to fit, if 0 the default is used
+>  	bool force_odd_labels; //Always try render an odd amount of labels
+>  
+>      double max_char_angle_delta;
+> diff -urNp --exclude='*scons*' -r mk2/include/mapnik/text_symbolizer.hpp mk3/include/mapnik/text_symbolizer.hpp
+> --- mk2/include/mapnik/text_symbolizer.hpp	2006-11-29 12:53:42.000000000 +1300
+> +++ mk3/include/mapnik/text_symbolizer.hpp	2006-11-29 15:15:58.000000000 +1300
+> @@ -49,6 +49,8 @@ namespace mapnik
+>          void set_wrap_width(unsigned ratio);
+>          unsigned get_label_spacing() const; // spacing between repeated labels on lines
+>          void set_label_spacing(unsigned spacing);
+> +        unsigned get_label_position_tolerance() const; //distance the label can be moved on the line to fit, if 0 the default is used
+> +        void set_label_position_tolerance(unsigned tolerance);
+>  		bool get_force_odd_labels() const; // try render an odd amount of labels
+>  		void set_force_odd_labels(bool force);
+>          double get_max_char_angle_delta() const; // maximum change in angle between adjacent characters
+> @@ -76,6 +78,7 @@ namespace mapnik
+>          unsigned text_ratio_;
+>          unsigned wrap_width_;
+>          unsigned label_spacing_;
+> +        unsigned label_position_tolerance_;
+>          bool force_odd_labels_;
+>          double max_char_angle_delta_;
+>          Color fill_;
+> diff -urNp --exclude='*scons*' -r mk2/src/agg_renderer.cpp mk3/src/agg_renderer.cpp
+> --- mk2/src/agg_renderer.cpp	2006-11-29 12:53:42.000000000 +1300
+> +++ mk3/src/agg_renderer.cpp	2006-11-29 15:21:58.000000000 +1300
+> @@ -520,6 +520,7 @@ namespace mapnik 
+>                      text_placement.text_ratio = sym.get_text_ratio();
+>                      text_placement.wrap_width = sym.get_wrap_width();
+>                      text_placement.label_spacing = sym.get_label_spacing();
+> +                    text_placement.label_position_tolerance = sym.get_label_position_tolerance();
+>                      text_placement.force_odd_labels = sym.get_force_odd_labels();
+>                      text_placement.max_char_angle_delta = sym.get_max_char_angle_delta();
+>                      text_placement.avoid_edges = sym.get_avoid_edges();
+> diff -urNp --exclude='*scons*' -r mk2/src/placement_finder.cpp mk3/src/placement_finder.cpp
+> --- mk2/src/placement_finder.cpp	2006-11-29 13:01:23.000000000 +1300
+> +++ mk3/src/placement_finder.cpp	2006-11-29 17:18:06.000000000 +1300
+> @@ -46,13 +46,13 @@ namespace mapnik
+>  {
+>      //For shields
+>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, std::pair<double, double> dimensions_)
+> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), label_position_tolerance(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+>      {
+>      }
+>  
+>      //For text
+>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, label_placement_e placement_)
+> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), label_position_tolerance(0), force_odd_labels(false), max_char_angle_delta(0.0), avoid_edges(false)
+>      {
+>      }
+>    
+> @@ -212,12 +212,26 @@ namespace mapnik
+>  			}
+>  		}
+>  
+> -        double delta = ideal_spacing/100.0;
+> +        double delta;
+> +		double tolerance;
+> +
+> +		if (p->label_position_tolerance > 0)
+> +		{
+> +			tolerance = p->label_position_tolerance;
+> +			delta = std::max ( 1.0, p->label_position_tolerance/100.0);
+> +		}
+> +		else
+> +		{
+> +			tolerance = ideal_spacing/2.0;
+> +			delta = ideal_spacing/100.0;
+> +		}
+> +
+> +
+>          bool FoundPlacement = false;
+>          for (std::vector<double>::const_iterator itr = ideal_label_distances.begin(); itr < ideal_label_distances.end(); ++itr)
+>          {
+>              //std::clog << "Trying to find txt placement at distance: " << *itr << std::endl;
+> -            for (double i = 0; i < ideal_spacing/2.0; i += delta)
+> +            for (double i = 0; i < tolerance; i += delta)
+>              {
+>                  p->clear_envelopes();
+>          
+> diff -urNp --exclude='*scons*' -r mk2/src/text_symbolizer.cpp mk3/src/text_symbolizer.cpp
+> --- mk2/src/text_symbolizer.cpp	2006-11-29 12:53:42.000000000 +1300
+> +++ mk3/src/text_symbolizer.cpp	2006-11-29 15:21:24.000000000 +1300
+> @@ -36,6 +36,7 @@ namespace mapnik
+>            text_ratio_(0),
+>            wrap_width_(0),
+>            label_spacing_(0),
+> +          label_position_tolerance_(0),
+>            force_odd_labels_(false),
+>            max_char_angle_delta_(0),
+>  	  fill_(fill),
+> @@ -53,6 +54,7 @@ namespace mapnik
+>            text_ratio_(rhs.text_ratio_),
+>            wrap_width_(rhs.wrap_width_),
+>            label_spacing_(rhs.label_spacing_),
+> +          label_position_tolerance_(rhs.label_position_tolerance_),
+>            force_odd_labels_(rhs.force_odd_labels_),
+>            max_char_angle_delta_(rhs.max_char_angle_delta_),
+>            fill_(rhs.fill_),
+> @@ -73,6 +75,7 @@ namespace mapnik
+>          text_ratio_ = other.text_ratio_;
+>          wrap_width_ = other.wrap_width_;
+>          label_spacing_ = other.label_spacing_;
+> +        label_position_tolerance_ = other.label_position_tolerance_;
+>          force_odd_labels_ = other.force_odd_labels_;
+>          max_char_angle_delta_ = other.max_char_angle_delta_;
+>          fill_ = other.fill_;
+> @@ -126,6 +129,16 @@ namespace mapnik
+>          label_spacing_ = spacing;
+>      }
+>  
+> +    unsigned  text_symbolizer::get_label_position_tolerance() const
+> +    {
+> +        return label_position_tolerance_;
+> +    }
+> +
+> +    void  text_symbolizer::set_label_position_tolerance(unsigned tolerance)
+> +    {
+> +        label_position_tolerance_ = tolerance;
+> +    }
+> +
+>      bool  text_symbolizer::get_force_odd_labels() const
+>      {
+>          return force_odd_labels_;
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From artem at pavlenko.uklinux.net  Wed Nov 29 11:51:28 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Wed, 29 Nov 2006 10:51:28 +0000
+Subject: [Mapnik-devel] error linking map.cpp since rev. 379
+In-Reply-To: <1164761393.3536.3.camel@localhost.localdomain>
+References: <1164761393.3536.3.camel@localhost.localdomain>
+Message-ID: <456D6630.4030300@pavlenko.uklinux.net>
+
+Jon ,
+
+Hmm.. I'm not sure. It looks like you have some old object files or some 
+changes didn't get through ? Could you try  "scons ........... install 
+-c"  and then rebuild everything with latest -r389.
+
+Also, what gcc version are you using?
+
+Artem.
+
+> When compiling SVN rev 379+ I get an error when linking libmapnik.so
+> with lots of lines like...
+>
+> `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+> `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+>
+> Any ideas on how to fix this?
+> If I revert src/map.cpp back to rev 378 then everything compiles OK.
+>
+> 	Jon
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From jburgess at uklinux.net  Wed Nov 29 23:53:04 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Wed, 29 Nov 2006 22:53:04 +0000
+Subject: [Mapnik-devel] error linking map.cpp since rev. 379
+In-Reply-To: <456D6630.4030300@pavlenko.uklinux.net>
+References: <1164761393.3536.3.camel@localhost.localdomain>
+	<456D6630.4030300@pavlenko.uklinux.net>
+Message-ID: <1164840784.6198.19.camel@localhost.localdomain>
+
+On Wed, 2006-11-29 at 10:51 +0000, Artem Pavlenko wrote:
+> Jon ,
+> 
+> Hmm.. I'm not sure. It looks like you have some old object files or some 
+> changes didn't get through ? Could you try  "scons ........... install 
+> -c"  and then rebuild everything with latest -r389.
+> 
+> Also, what gcc version are you using?
+
+That was my first thought too, but removing the object files didn't fix
+it. I even did a fresh checkout and the problem still occurred. 
+
+
+If I comment out the line below then the problem disappears but I can't
+figure out the cause:
+   return CoordTransform(width_,height_,currentExtent_);
+
+
+I ran the function name through demangle and it decodes the object as:
+
+mapnik::rule<mapnik::feature<boost::shared_ptr<mapnik::geometry<mapnik::vertex<double, 2> > >, boost::shared_ptr<mapnik::raster> >, mapnik::filter>::rule(mapnik::rule<mapnik::feature<boost::shared_ptr<mapnik::geometry<mapnik::vertex<double, 2> > >, boost::shared_ptr<mapnik::raster> >, mapnik::filter> const&)
+
+
+I'm using an up to date FC5 x86_64 system:
+
+$ g++ -v
+Using built-in specs.
+Target: x86_64-redhat-linux
+Configured with: ../configure --prefix=/usr --mandir=/usr/share/man
+--infodir=/usr/share/info --enable-shared --enable-threads=posix
+--enable-checking=release --with-system-zlib --enable-__cxa_atexit
+--disable-libunwind-exceptions --enable-libgcj-multifile
+--enable-languages=c,c++,objc,obj-c++,java,fortran,ada
+--enable-java-awt=gtk --disable-dssi --enable-plugin
+--with-java-home=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre
+--with-cpu=generic --host=x86_64-redhat-linux
+Thread model: posix
+gcc version 4.1.1 20061011 (Red Hat 4.1.1-30)
+
+
+ binutils-2.17.50.0.3-6.x86_64.rpm
+ gcc-4.1.1-30.x86_64.rpm
+ gcc-c++-4.1.1-30.x86_64.rpm
+ boost-1.33.1-9.fc6.x86_64.rpm
+
+I'll take a look to see if there are any newer or older GCC versions I
+can easily install and try out.
+
+	Jon
+
+
+
+
+From jburgess at uklinux.net  Thu Nov 30 00:14:26 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Wed, 29 Nov 2006 23:14:26 +0000
+Subject: [Mapnik-devel] error linking map.cpp since rev. 379
+In-Reply-To: <456D6630.4030300@pavlenko.uklinux.net>
+References: <1164761393.3536.3.camel@localhost.localdomain>
+	<456D6630.4030300@pavlenko.uklinux.net>
+Message-ID: <1164842066.6198.29.camel@localhost.localdomain>
+
+> 
+> > When compiling SVN rev 379+ I get an error when linking libmapnik.so
+> > with lots of lines like...
+> >
+> > `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+> > `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+> >
+
+It seems that this may be an issue in binutils-2.17
+
+http://ardour.org/building
+http://groups.google.co.uk/group/gnu.gcc.help/browse_thread/thread/d167911efbccb03/4f0991b5a1dbfe73?lnk=st&q=referenced+in+section+defined+in+discarded+section+.gnu.linkonce.r++.gnu.linkonce.t&rnum=1&hl=en#4f0991b5a1dbfe73
+
+	Jon
+
+
+
+
+From jburgess at uklinux.net  Thu Nov 30 02:03:35 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Thu, 30 Nov 2006 01:03:35 +0000
+Subject: [Mapnik-devel] error linking map.cpp since rev. 379 (solved)
+In-Reply-To: <456D6630.4030300@pavlenko.uklinux.net>
+References: <1164761393.3536.3.camel@localhost.localdomain>
+	<456D6630.4030300@pavlenko.uklinux.net>
+Message-ID: <1164848615.6198.36.camel@localhost.localdomain>
+
+On Wed, 2006-11-29 at 10:51 +0000, Artem Pavlenko wrote:
+> Jon ,
+> 
+> Hmm.. I'm not sure. It looks like you have some old object files or some 
+> changes didn't get through ? Could you try  "scons ........... install 
+> -c"  and then rebuild everything with latest -r389.
+> 
+> Also, what gcc version are you using?
+> 
+> Artem.
+> 
+> > When compiling SVN rev 379+ I get an error when linking libmapnik.so
+> > with lots of lines like...
+> >
+> > `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+> > `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' referenced in section `.gnu.linkonce.r._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os: defined in discarded section `.gnu.linkonce.t._ZN6mapnik4ruleINS_7featureIN5boost10shared_ptrINS_8geometryINS_6vertexIdLi2EEEEEEENS3_INS_6rasterEEEEENS_6filterEEC1ERKSD_' of src/map.os
+> >
+> > Any ideas on how to fix this?
+> > If I revert src/map.cpp back to rev 378 then everything compiles OK.
+> >
+
+It appears to be a GCC issue. I updated to the latest fedora development
+versions and the SVN trunk code compiles fine.
+
+The instructions, just in case anyone has the same issue...
+
+# yum --enablerepo=development update gcc gcc-c++
+...
+=============================================================================
+ Package                 Arch       Version          Repository        Size
+=============================================================================
+Updating:
+ gcc                     x86_64     4.1.1-41         development       4.8 M
+ gcc-c++                 x86_64     4.1.1-41         development       3.7 M
+Updating for dependencies:
+...
+
+Then do a clean build.
+
+	Jon
+
+
+
+

@@ -1,0 +1,1009 @@
+From snecklifter at gmail.com  Mon May  3 19:53:46 2010
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Mon, 3 May 2010 18:53:46 +0100
+Subject: [Mapnik-devel] mapnik.so calls exit() directly
+Message-ID: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+
+Hi,
+
+I'm currently updating mapnik for Fedora and error-checking indicates
+that the library calls exit directly, though I cannot immediately find
+where this is. Is this therefore a scons/build bug?
+
+Thanks
+
+-- 
+Christopher Brown
+
+
+From dbsgeo at gmail.com  Mon May  3 23:13:46 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Mon, 3 May 2010 14:13:46 -0700
+Subject: [Mapnik-devel] mapnik.so calls exit() directly
+In-Reply-To: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+References: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+Message-ID: <4FE2A53B-7775-428A-8BBF-7DC4B087DE30@gmail.com>
+
+There is a SCons exit() function that is called in SConstruct, if the  
+configure step does not find required dependencies. Could that be the  
+red herring?
+
+Dane
+
+
+On May 3, 2010, at 10:53 AM, Christopher Brown wrote:
+
+> Hi,
+>
+> I'm currently updating mapnik for Fedora and error-checking indicates
+> that the library calls exit directly, though I cannot immediately find
+> where this is. Is this therefore a scons/build bug?
+>
+> Thanks
+>
+> -- 
+> Christopher Brown
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From jburgess777 at googlemail.com  Mon May  3 23:57:54 2010
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 3 May 2010 22:57:54 +0100
+Subject: [Mapnik-devel] mapnik.so calls exit() directly
+In-Reply-To: <4FE2A53B-7775-428A-8BBF-7DC4B087DE30@gmail.com>
+References: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+	<4FE2A53B-7775-428A-8BBF-7DC4B087DE30@gmail.com>
+Message-ID: <h2wb215ec5f1005031457gf572ab1eif6b0df8dd3523a47@mail.gmail.com>
+
+> On May 3, 2010, at 10:53 AM, Christopher Brown wrote:
+>
+>> Hi,
+>>
+>> I'm currently updating mapnik for Fedora and error-checking indicates
+>> that the library calls exit directly, though I cannot immediately find
+>> where this is. Is this therefore a scons/build bug?
+>>
+>> Thanks
+>>
+>> --
+>> Christopher Brown
+
+The references to exit() seem to be due to the two calls to
+std::exit(1) in include/mapnik/enumeration.hpp, If I comment out those
+lines then there are no longer any references to _exit in the final
+library.
+
+
+-- 
+    Jon
+
+
+From blake at hailmail.net  Thu May  6 22:15:19 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 6 May 2010 13:15:19 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Summer of Code: Support for
+	outputting hit-areas
+In-Reply-To: <op.vavc6aaki35s77@sl500.localhost>
+References: <op.vavc6aaki35s77@sl500.localhost>
+Message-ID: <5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+
+Hello Herm,
+
+I wanted to give some public feedback on your project proposal to help get things started.
+
+Congrats again on your acceptance, and thanks for choosing to work on the Mapnik project.
+
+I hope that you can send more emails to the mapnik-devel list, with questions and comments, and emails to both mapnik-devel and mapnik-users when you have announcements of things to test.
+
+As you lead mentor, I'd like to see you follow our other student, Carlos's project as you work. He, and his mentor Artem, may be looking into writing a custom SVG renderer near the latter part of his project. As you have worked on osmarender, and are also familiar with SVG through your work with the Scribus project/Cairo, I am sure your involvement/advise will be appreciated.
+
+In addition, I'd also like to see you document and share a little more about how you think that the Google Apis clickable labels work.
+I have seen this feature on gmaps, but not taken the time to investigate closely how it works. If you could provide a summary + a few screenshots, then I'm sure this example will help other Mapnik users and developers see the subtle but very nice feature it is, and how it is certainly tied to the intelligence of the tile renderer and not a separate process.
+
+Now, more comments line....
+
+On Apr 8, 2010, at 5:33 PM, Hermann Kraus wrote:
+
+> Hello!
+> 
+> I'm a physics student applying for this year's summer of code. I've written a proposal and would like to get comments from the community. I've attached the proposal to this email. Please comment on it to, so I know if it is good or what could be changed.
+> 
+> Thanks everybody for your help!
+> 
+> Regards,
+> 
+> Hermann Kraus
+> 
+> 
+> Short description
+> -----------------
+> The goal of this project is to implement functionality to output metadata to make certain things on the map clickable. I'll add tools to make the common use cases very easy for the user.
+> 
+
+It will also be good to give thought to how to expose these features in Mapnik's XML stylesheets, so that users can easily decide which layers (or perhaps even styles, if more than style pulls from a layer), are clickable, and with what metadata.
+
+Layer's currently have a queryable="<bool>" parameter which is used to determine whether the feature should be able to be queried from a WMS server that supports GetFeatureInfo. Something similiar to that parameter may be in order. 
+
+Herm, are you familiar with GetFeatureInfo from the WMS spec? If not I would like you to research it, since it is standards based. My understanding is that it is designed to allow feature queryablity without regard to what features would be rendered on a bitmap, so it is a very different thing than your proposal, but an important comparison nontheless.
+
+Mapnik's (unmaintained) ogcserver supports clickable metadata through GetFeatureInfo, although it does not work very well. I have gotten it working with Quantum GIS with this change: http://bitbucket.org/springmeyer/ogcserver/changeset/1f008475c926
+
+> Rationale
+> ---------
+> Having maps with clickable objects makes it easier for the user to obtain information about objects on the map. Since a few month Google Maps enables you to click on a restaurant, tourist attraction, etc. icon on the map and more data is displayed. Currently maps created with Mapnik can't easily do this, because Mapnik only outputs the bitmap data but no information about where features have been placed. If one tries to do it one has to project the clickable features by another program. This is unnecessary work and not always possible.
+
+Absolutely. Been there, and your below ideas offer exciting potential solutions.
+
+> For example when there is no icon but a text label it will be very hard to determine the actual size of the label.
+> I expect this to get worse in the future when Mapnik's placement algorithms get more intelligent.
+
+Yes, very very good observation. We plan to add the ability to logically shift (by certain tolerance) labels around a point in the future (https://trac.mapnik.org/ticket/463), as well as other such improvements whose intelligence would be difficult to impossible to mirror in some separate clickable serverside tool to query features.
+
+> For example it might decide to move a road a few pixel to make place for another road, combine multiple icons into one, ?
+> 
+
+yes, yes..., or shift a line to the side (https://trac.mapnik.org/ticket/180) (though most utility will relate to point placement I assume).
+
+> Motivation
+> ----------
+> I really like Mapnik's clean rendering style and would like to make it even more useful by enabling users to click on features, no matter where Mapnik decided to place them. For example OpenStreetMap would profit much from this change, as there is a lot of information in the database which is not rendered at the moment.
+
+Yes, but good enough start just to make clickable the features that are rendered, so that there additional info (other fields/columns of attribute data) is available (maybe this is what you mean?). A further step could be thinking through pulling in metadata from an object reference of some sort, table, url, etc.
+
+> It could be made available by clicking on objects (just like Google does now).
+
+As per above, hoping that you can provide additional info about how you think Google works currently, how we could do even better :)
+
+> Currently it would be quite complex to do this because a second projection pass by different software would be required and it might break with future improvements in Mapnik (as described above). It also could happen that some features are suppressed during rendering which would still be clickable and therefore confuse the user.
+
+yup, certainly common problems that I have seen which this would solve nicely.
+
+> Why did I choose this project: Looking for a project I also checked Mapnik's open trac tickets and but most things there looked like they wouldn't be suited for a summer of code project. I think this project will really help a lot of users and perhaps some new users will discover Mapnik.
+
+Yes, certainly.
+
+> 
+> Implementation idea
+> -------------------
+> At the point during processing at which an object (line, polygon, text) is actually output to the final image the geometry data is captured together with an user definable object property (object ID, street name, ?) and written to a metadata section. For more complex features post processing might be required that combines features to reduce the amount of data.
+
+Yes, so right now I see this happening inside agg_renderer.cpp or cairo_renderer.cpp + placement_finder.cpp. Perhaps after getting metadata collection working within the actual renderer code, you could think about ways to make it more generic, perhaps through subclassing. Involving Artem Pavlenko in the question of how existing renderers might be extended/designed with this flexibility in mind will be important.
+
+> 
+> Output format
+> -------------
+> I intend to make the output as flexible as possible. Probably there will be different output methods for different needs.
+
+Yes, I see the critical thing as the impl, and the format could be varied.
+
+Ideally it could be lightweight and web friendly, but I am interested in your db ideas below as well. Seems like SQLite might be a good candidate (added benefit of maybe getting ideas from HTML5 web storage methods that use SQLite from within browser).
+
+> Some examples I can think of:
+> - Writing the data to a database (PostGIS, etc.) which is queried when the user clicks somewhere (for large scale projects/many clickable feature per tile). This seems to be the way Google Maps works.
+> - Writing a file with geometry information and some kind of ID (e.g. node/way-ID) or URL for each tile produced (for systems without a database backend).
+> - Writing one big file for the whole area covered with preprocessed description texts, that can be displayed as popup texts. Useful for small or standalone systems without permanent internet connection. This format would probably be directly compatible with OpenLayers vector layer [1].
+> - For SVG output it might be possible to add some more tags to SVG objects which contain IDs. So the geometry is not duplicated.
+> - The project idea page in the wiki lists EXIF as a possible output format. This might be well suited because all data is contained in one file, but it's hard to read EXIF data in JavaScript which is the main platform for clickable maps. I was able to find only one JavaScript EXIF implementation and it doesn't work in all browsers.
+
+Yes, great ideas. They certainly all have benefits. I know the Javascript EXIF may not be compatible with IE, but is could be very slick in the future as support came online (I presume browsers supporting Canvas would also support JS libs that can parse EXIF directly from the image?)
+
+> 
+> Of course the implementation and output formats are open to suggestions.
+> 
+
+Yes. My tendency would be to start with sqlite, as a balance of efficiently and portability, but I am open to suggestions. Something that was file based and could be directly parsed by OpenLayers would also be very useful....
+
+> Deliverables
+> ------------
+> - Patches to add the required functionality
+
+Ideally I'd like to see you work either directly on trunk (after initial patches), or in a branch within mapnik svn.
+
+> - Examples of how to produce clickable maps
+
+Great. Again would be nice to see a write up soon for all Mapnik community to understand concept soon, and you could use Google Maps as an example.
+
+> - Tools to simplify this process and make it available to everyone
+> 
+
+Great, we should discuss this more, try to get ideas of the right implementation.
+
+> 
+> Timeline
+> --------
+> April 26: Accepted student proposals announced on the Google Summer of Code 2010 site.
+> Community Bonding Period:   Students get to know mentors, read documentation, get up to speed to begin working on their projects.
+> 
+> I'll familiarize myself with the Mapnik codebase, discuss the formats, requirements, etc. I expect to start coding during this period already because this is usually a quiet time at university.
+
+Great, I am out of town for the next two weeks in Haiti, so I may not be able to response, but I will check email. Please email the mapnik-devel list with any questions and comments on progress, as you start coding.
+
+I also strongly encourage you to pick a few Trac tickets to work on as well, so allow yourself opportunities to see other parts of the Mapnik code base.
+
+> 
+> May 24: Students begin coding for their GSoC projects;
+
+Great, I will return from Haiti on the 24th.
+
+> 
+> At this point I should be familiar with the code and write the basic implementation (one output format).
+> 
+> I expect to be busy with exams directly before the mid-term evaluation, but they should not last long.
+> 
+> July 12: Mentors and students can begin submitting mid-term evaluations.
+> 
+> I'll have a working code at mid-term. After that date I'll add more advanced output options, configuration options and write documentation.
+> To help users of my code I'll create some examples how to use it with OpenLayers.
+> 
+
+Great.
+
+> August 9:   Suggested 'pencils down' date. Take a week to scrub code, write tests, improve documentation, etc.
+> 
+> All code will be ready, I can do some cleanups afterwards.
+> 
+> August 16:  Firm 'pencils down' date. Mentors, students and organization administrators can begin submitting final evaluations to Google.
+> August 20:  Final evaluation deadline
+> 
+> I expect this timeline to be very conservative and I should have plenty of time if unforeseen difficulties appear. If I'm done earlier I will work on other things related to this project. Examples: Moving icons/text a bit that can't be placed at the position it should go to because there is another icon/text. Or combining multiple icons into one (however I'm not sure this is easily doable as it will take two passes to place icons). These improvements would help to make sure as many features as possible are drawn and therefore maximize the amount of clickable objects shown.
+> 
+
+Okay, looking forward to talking more about label placement if there is time.
+
+
+Cheers!
+
+Dane
+
+From Jukka.Rahkonen at mmmtike.fi  Fri May  7 12:50:49 2010
+From: Jukka.Rahkonen at mmmtike.fi (Rahkonen Jukka)
+Date: Fri, 7 May 2010 13:50:49 +0300
+Subject: [Mapnik-devel] [Mapnik-users] Summer of Code: Support for
+	outputting hit-areas
+In-Reply-To: <5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+References: <op.vavc6aaki35s77@sl500.localhost>
+	<5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+Message-ID: <CC197224AC75CE4DB23F739B16891B8601879B41@tikka.haapa.mmm.fi>
+
+Hi,
+
+> It will also be good to give thought to how to expose these 
+> features in Mapnik's XML stylesheets, so that users can 
+> easily decide which layers (or perhaps even styles, if more 
+> than style pulls from a layer), are clickable, and with what metadata.
+> 
+> Layer's currently have a queryable="<bool>" parameter which 
+> is used to determine whether the feature should be able to be 
+> queried from a WMS server that supports GetFeatureInfo. 
+> Something similiar to that parameter may be in order. 
+> 
+> Herm, are you familiar with GetFeatureInfo from the WMS spec? 
+> If not I would like you to research it, since it is standards 
+> based. My understanding is that it is designed to allow 
+> feature queryablity without regard to what features would be 
+> rendered on a bitmap, so it is a very different thing than 
+> your proposal, but an important comparison nontheless.
+
+I have been experimenting with WMS GetFeatureInfo and with different WMS
+servers and clients. My experience from the server side is that
+Mapserver gives pretty good possibilities for the service provider to
+control GetFeatureInfo, even it is not very easy to find where all the
+controls are in the mapfile.  However, with Mapserver it is possible to
+
+- select if layer is queryable at all (controlled by TEMPLATE keyword
+which can be dummy)
+- offers three outputformats: text/plain, text/html, and gml
+- gml output is disabled by default, is must be turned on by adding a
+key/value pair DUMP TRUE
+- by default the response does not contain any attributes, just a plain
+feature ID
+- attributes to be included must be given as a list after
+"wms_include_items" metadata parameter
+- with gml output it is also possible to include the geometry of the
+queried feature with the response; some clients are utilising this for
+highlighting the feature that was hit on a map
+- hit tolerance can be set to control how close to the exact location of
+the feature the user must click on a map; some tolerance is always
+needed with point and line features
+
+I would say that even if the final aim is to make some tailored query
+system for Mapnik it is worth reading a bit about WMS GetFeatureInfo
+specification, and I think that Mapserver gives a good example of the
+server side controls which are good to have.
+
+Unfortunately I have not found a good GetFeatureInfo client yet.  I have
+been mainly testing with uDig, QGis and OpenJUMP with deeJUMP plugin.
+None of them is parsing the GetCapabilities document for giving a
+possibility to select the INFO_FORMAT. They just send requests without
+INFO_FORMAT at all which makes the WMS server to use the default format,
+which is different for different servers. It is not an error because WMS
+standard does not say anything about default formats, it only says that
+all the supported formats must be published in the GetCapabilities
+document. However, in practise this means goodbye for interoperability
+between different servers.
+
+UDig and QGis do not use the FEATURE_COUNT parameter either. If this
+parameter is not set the WMS server must use the default value 1. It
+means that in case of overlapping areas it is not possible to get info
+from the area that is underneath.  The case is just the same is several
+POIs are having the same coordinates. I think that for practical use the
+query tool should have an option to show a list of at least 10 closest
+features.
+ 
+
+-Jukka Rahkonen-
+
+
+From herm at scribus.info  Sun May  9 02:16:59 2010
+From: herm at scribus.info (Hermann Kraus)
+Date: Sun, 09 May 2010 02:16:59 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Summer of Code: Support for
+	outputting hit-areas
+In-Reply-To: <5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+References: <op.vavc6aaki35s77@sl500.localhost>
+	<5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+Message-ID: <op.vceweibpi35s77@sl500.localhost>
+
+Hello!
+
+On Thu, 06 May 2010 22:15:19 +0200, Dane Springmeyer <blake at hailmail.net>
+wrote:
+> In addition, I'd also like to see you document and share a little more  
+> about how you think that the Google Apis clickable labels work.
+
+As far as I've investigated it so far every click on the map sends a
+request to Google's servers which contains the point the user clicked at
+and returns information about the feature at this position (if any).
+But they also send a list of all visible features, but without details.
+I only looked at network transfers and I'd like to avoid looking at their
+code as this might create potential legal issues.
+One thing I've seen is that google places labels not always above a point
+but sometimes also to the right or left.
+Here is an example:
+http://maps.google.com/maps?f=q&source=s_q&hl=en&sll=37.0625,-95.677068&sspn=36.452734,73.388672&ie=UTF8&ll=52.517226,13.396111&spn=0.006842,0.017917&z=16
+
+I'll try to find such an area on
+the map. It would provide a good example of what this project is about.
+
+> It will also be good to give thought to how to expose these features in  
+> Mapnik's XML stylesheets, so that users can easily decide which layers  
+> (or perhaps even styles, if more than style pulls from a layer), are  
+> clickable, and with what metadata.
+
+I'll try to find a good solution for this, but this can be defined later,  
+when the other code is working and I have more experience how it might be  
+used.
+
+> Layer's currently have a queryable="<bool>" parameter which is used to  
+> determine whether the feature should be able to be queried from a WMS  
+> server that supports GetFeatureInfo. Something similiar to that  
+> parameter may be in order.
+
+I'll have a look at GetFeatureInfo.
+
+> yes, yes..., or shift a line to the side  
+> (https://trac.mapnik.org/ticket/180) (though most utility will relate to  
+> point placement I assume).
+
+There are some line feature which might be worth considering (e.g. famous
+bridges, etc.)
+
+>> At the point during processing at which an object (line, polygon, text)  
+>> is actually output to the final image the geometry data is captured  
+>> together with an user definable object property (object ID, street  
+>> name, ?) and written to a metadata section. For more complex features  
+>> post processing might be required that combines features to reduce the  
+>> amount of data.
+>
+> Yes, so right now I see this happening inside agg_renderer.cpp or  
+> cairo_renderer.cpp + placement_finder.cpp. Perhaps after getting  
+> metadata collection working within the actual renderer code, you could  
+> think about ways to make it more generic, perhaps through subclassing.  
+> Involving Artem Pavlenko in the question of how existing renderers might  
+> be extended/designed with this flexibility in mind will be important.
+
+I try to understand the code a bit and then I'll discuss the way how to  
+code this.
+
+>> - The project idea page in the wiki lists EXIF as a possible output  
+>> format. This might be well suited because all data is contained in one  
+>> file, but it's hard to read EXIF data in JavaScript which is the main  
+>> platform for clickable maps. I was able to find only one JavaScript  
+>> EXIF implementation and it doesn't work in all browsers.
+>
+> Yes, great ideas. They certainly all have benefits. I know the  
+> Javascript EXIF may not be compatible with IE, but is could be very  
+> slick in the future as support came online (I presume browsers  
+> supporting Canvas would also support JS libs that can parse EXIF  
+> directly from the image?)
+
+I haven't found such a lib yet. The autor of the only library I know of  
+writes "So, there are two parts to the problem. First step is to get  
+access to the raw binary data of the JPEG. Now, while it's easy to get to  
+the pixel data using canvas, we don't get any of the data around the  
+actual image, and that's where the interesting parts are hidden."  
+(http://blog.nihilogic.dk/2008/05/reading-exif-data-with-javascript.html)
+
+>> Of course the implementation and output formats are open to suggestions.
+> Yes. My tendency would be to start with sqlite, as a balance of  
+> efficiently and portability, but I am open to suggestions. Something  
+> that was file based and could be directly parsed by OpenLayers would  
+> also be very useful....
+
+I think file based output would be the easiest solution because it can
+be read by any text editor. (This helps debugging). When this works more  
+formats can be added.
+
+Hermann
+
+P.S.: Next messages will go to mapnik-devel only as this is not relevant  
+on the user list.
+
+
+From robert.coup at onetrackmind.co.nz  Sun May  9 14:10:05 2010
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Mon, 10 May 2010 00:10:05 +1200
+Subject: [Mapnik-devel] [Mapnik-users] Summer of Code: Support for
+	outputting hit-areas
+In-Reply-To: <op.vceweibpi35s77@sl500.localhost>
+References: <op.vavc6aaki35s77@sl500.localhost>
+	<5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+	<op.vceweibpi35s77@sl500.localhost>
+Message-ID: <p2jc5097ac41005090510v4da9292r5bdada42f3411162@mail.gmail.com>
+
+Hey folks,
+
+On Sun, May 9, 2010 at 12:16 PM, Hermann Kraus <herm at scribus.info> wrote:
+>
+> As far as I've investigated it so far every click on the map sends a
+> request to Google's servers which contains the point the user clicked at
+> and returns information about the feature at this position (if any).
+
+Last time i looked at how the Wikipedia layer worked: when the user
+hovers the mouse over a map-tile, a request is sent to load the "hit
+areas" for that map tile. That allows the mouse-cursor to change when
+it's over a hit-area, and for a "hit" to be detected when the map is
+clicked (kicking off the request).
+
+> I think file based output would be the easiest solution because it can
+> be read by any text editor. (This helps debugging). When this works more
+> formats can be added.
+>
+
+My votes would be for a DB table populated with the data
+(sqlite/postgis) and a json text file for each map/map-tile. (ideally
+a JSONP-style file with a pre-specified callback so it can be used
+cross-domain, but we can sort out those details later). Once you have
+the json files and rendered map tiles then the client has everything
+it needs.
+
+Rob :)
+
+
+From mike at stamen.com  Sun May  9 21:17:27 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Sun, 9 May 2010 12:17:27 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Summer of Code: Support for
+	outputting hit-areas
+In-Reply-To: <17333601.1273407052364.JavaMail.root@n12>
+References: <op.vavc6aaki35s77@sl500.localhost>
+	<5AE92D9D-E65E-4046-BB77-CD7FDB003324@hailmail.net>
+	<op.vceweibpi35s77@sl500.localhost>
+	<17333601.1273407052364.JavaMail.root@n12>
+Message-ID: <C872A50D-82E2-4137-9FA2-4EDE0967C17A@stamen.com>
+
+On May 9, 2010, at 5:10 AM, Robert Coup wrote:
+
+> Hey folks,
+> 
+> On Sun, May 9, 2010 at 12:16 PM, Hermann Kraus <herm at scribus.info> wrote:
+>> 
+>> As far as I've investigated it so far every click on the map sends a
+>> request to Google's servers which contains the point the user clicked at
+>> and returns information about the feature at this position (if any).
+> 
+> Last time i looked at how the Wikipedia layer worked: when the user
+> hovers the mouse over a map-tile, a request is sent to load the "hit
+> areas" for that map tile. That allows the mouse-cursor to change when
+> it's over a hit-area, and for a "hit" to be detected when the map is
+> clicked (kicking off the request).
+
+Something I've also observed with Google's "measles maps" (e.g. http://teczno.com/s/hr9) is the use of client-side image maps. Each of those tiny spots is a hit area, but the spots are not delivered and positioned as separate images.
+
+
+>> I think file based output would be the easiest solution because it can
+>> be read by any text editor. (This helps debugging). When this works more
+>> formats can be added.
+>> 
+> 
+> My votes would be for a DB table populated with the data
+> (sqlite/postgis) and a json text file for each map/map-tile. (ideally
+> a JSONP-style file with a pre-specified callback so it can be used
+> cross-domain, but we can sort out those details later). Once you have
+> the json files and rendered map tiles then the client has everything
+> it needs.
+
+
+There should be a variety of output possibilities here. JSONP for example would be hard for a normal JSON library to parse, but useful for a browser-based consumer. I recommend shapefile output (every geographic software knows what do with them), comma-or-tab-separated values (easy to view any text editor). WKT for the area would make sense for the text-based output. I could live without XML entirely.
+
+There probably should be two channels of output geometry: image-based output where the point coordinates are relative to the top-left corner of the rendered image, and geographic output where the point coordinates are given in the SRS of the mapnik map.
+
+The interaction between rendered images and tiles is going to be an issue. Mapnik does not have any internal concept of tiles, so generally when it's used with tilecache or mod_tile, a very large metatile is rendered in one go and then sliced up into smaller 256x256 images.
+
+I've not yet really "launched" my Tilestache project (http://tilestache.org) but it might be an excellent test bed for the rendering and delivery of non-image-based tiles in JSON, JSONP, and other forms. I can commit to providing a tile-based output for hit areas to support this GSOC project.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From artem at mapnik.org  Mon May 10 12:33:41 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 10 May 2010 11:33:41 +0100
+Subject: [Mapnik-devel] mapnik.so calls exit() directly
+In-Reply-To: <h2wb215ec5f1005031457gf572ab1eif6b0df8dd3523a47@mail.gmail.com>
+References: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+	<4FE2A53B-7775-428A-8BBF-7DC4B087DE30@gmail.com>
+	<h2wb215ec5f1005031457gf572ab1eif6b0df8dd3523a47@mail.gmail.com>
+Message-ID: <AANLkTiliVwJT3QozYbIBMKHQN5mh7Q3h6GhSbEkdy4JG@mail.gmail.com>
+
+On 3 May 2010 22:57, Jon Burgess <jburgess777 at googlemail.com> wrote:
+
+> > On May 3, 2010, at 10:53 AM, Christopher Brown wrote:
+> >
+> >> Hi,
+> >>
+> >> I'm currently updating mapnik for Fedora and error-checking indicates
+> >> that the library calls exit directly, though I cannot immediately find
+> >> where this is. Is this therefore a scons/build bug?
+> >>
+> >> Thanks
+> >>
+> >> --
+> >> Christopher Brown
+>
+> The references to exit() seem to be due to the two calls to
+> std::exit(1) in include/mapnik/enumeration.hpp, If I comment out those
+> lines then there are no longer any references to _exit in the final
+> library.
+>
+
+Thanks, Jon! We should definitely remove std::exit() calls. We can think
+about another approach to check enumerations at the compile time (boost::mpl
+?).
+
+Artem
+
+>
+>
+> --
+>     Jon
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100510/544e69f8/attachment.html>
+
+From snecklifter at gmail.com  Mon May 10 22:05:33 2010
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Mon, 10 May 2010 21:05:33 +0100
+Subject: [Mapnik-devel] mapnik.so calls exit() directly
+In-Reply-To: <h2wb215ec5f1005031457gf572ab1eif6b0df8dd3523a47@mail.gmail.com>
+References: <y2l364d303b1005031053rcdb251e3x25330f11b222f728@mail.gmail.com>
+	<4FE2A53B-7775-428A-8BBF-7DC4B087DE30@gmail.com>
+	<h2wb215ec5f1005031457gf572ab1eif6b0df8dd3523a47@mail.gmail.com>
+Message-ID: <AANLkTimvo6qE7ppYbSs8wZGbYBGeqvB9eONjgyleuNDq@mail.gmail.com>
+
+On 3 May 2010 22:57, Jon Burgess <jburgess777 at googlemail.com> wrote:
+>> On May 3, 2010, at 10:53 AM, Christopher Brown wrote:
+>>
+>>> Hi,
+>>>
+>>> I'm currently updating mapnik for Fedora and error-checking indicates
+>>> that the library calls exit directly, though I cannot immediately find
+>>> where this is. Is this therefore a scons/build bug?
+>>>
+>>> Thanks
+>>>
+>>> --
+>>> Christopher Brown
+>
+> The references to exit() seem to be due to the two calls to
+> std::exit(1) in include/mapnik/enumeration.hpp, If I comment out those
+> lines then there are no longer any references to _exit in the final
+> library.
+
+Thanks Jon. If there is any chance this could be applied to the 0.7
+branch I'd appreciate it as the Fedora build system is complaining
+about this at the moment.
+
+Regards
+
+
+-- 
+Christopher Brown
+
+
+From boguscoder at gmail.com  Wed May 12 11:23:34 2010
+From: boguscoder at gmail.com (Oleg Bogdanov)
+Date: Wed, 12 May 2010 12:23:34 +0300
+Subject: [Mapnik-devel] rule template
+Message-ID: <AANLkTik5MR1k8YoWRFOO9gGdOU304M-kgpu6dx-GU_Rl@mail.gmail.com>
+
+Hi developers!
+I've tried to get answer in irc channel but failed, so here I am in the dev
+mails.
+I used mapnik for own purposes and decided to became a contributor, if
+possible, in future. That's why at the moment I'm studying mapnik sources
+from bottom to up. Here is my first question:
+
+Why *rule *class is implemented as a template? I can see the only one
+specialization of *rule *across the whole project (aka rule_type) and
+template argument isn't in use at all.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100512/bb8d9ec1/attachment.html>
+
+From artem at mapnik.org  Wed May 12 12:21:56 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 May 2010 11:21:56 +0100
+Subject: [Mapnik-devel] rule template
+In-Reply-To: <AANLkTik5MR1k8YoWRFOO9gGdOU304M-kgpu6dx-GU_Rl@mail.gmail.com>
+References: <AANLkTik5MR1k8YoWRFOO9gGdOU304M-kgpu6dx-GU_Rl@mail.gmail.com>
+Message-ID: <AANLkTildtkUT6ER6jXRGUdtvwbSoyie8ZWvi2FRqfH5n@mail.gmail.com>
+
+Hi Oleg,
+
+Welcome to Mapnik!
+(inline)
+On 12 May 2010 10:23, Oleg Bogdanov <boguscoder at gmail.com> wrote:
+
+> Hi developers!
+> I've tried to get answer in irc channel but failed, so here I am in the dev
+> mails.
+> I used mapnik for own purposes and decided to became a contributor, if
+> possible, in future. That's why at the moment I'm studying mapnik sources
+> from bottom to up. Here is my first question:
+>
+> Why *rule *class is implemented as a template? I can see the only one
+> specialization of *rule *across the whole project (aka rule_type) and
+> template argument isn't in use at all.
+>
+
+Good question. You're right, current implementation doesn't need a template
+version of mapnik::rule. Please, create a ticket on: trac.mapnik.org
+and I'll look into fixing this.
+
+Regards,
+Artem
+
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100512/1ead1868/attachment.html>
+
+From frederik at remote.org  Fri May 14 12:05:06 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Fri, 14 May 2010 12:05:06 +0200
+Subject: [Mapnik-devel] Possible problems with concurrent database requests?
+Message-ID: <4BED2052.6090503@remote.org>
+
+Hi all,
+
+    I am debugging a problem in an Apache module I have written, and 
+which uses Mapnik with a PostGIS data source.
+
+I am seeing sporadic "standard exception: remote end has closed 
+connection unexpectedly" error messages which originate from the libpq 
+library. I can however verify that the PostgreSQL server processes are 
+still alive and don't have any reason to complain.
+
+I have found that the problem *only* occurs if I make multiple 
+concurrent requests against my Apache server and this, in turn, leads to 
+different Mapnik instances using the database at the same time.
+
+This has me puzzled because I'm strictly multi-process; I run Apache in 
+prefork mode and neither does my module do anything with threads. I 
+cannot see anything in the whole design where the different Mapnik 
+instances would somehow have a chance of interfering with each other's 
+database connections - yet my testing points in that direction.
+
+Does anybody have a hunch where to look? Can you think of any reason why 
+two processes using Mapnik and talking to the same PostGIS database 
+would somehow interfere with each other?
+
+The mapnik::datasource_cache does not in any way operate across 
+processes, does it?
+
+Bye
+Frederik
+
+
+
+From frederik at remote.org  Fri May 14 21:44:18 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Fri, 14 May 2010 21:44:18 +0200
+Subject: [Mapnik-devel] Possible problems with concurrent database
+	requests?
+In-Reply-To: <4BED2052.6090503@remote.org>
+References: <4BED2052.6090503@remote.org>
+Message-ID: <4BEDA812.9020704@remote.org>
+
+Hi,
+
+Frederik Ramm wrote:
+> I am seeing sporadic "standard exception: remote end has closed 
+> connection unexpectedly" error messages which originate from the libpq 
+> library. I can however verify that the PostgreSQL server processes are 
+> still alive and don't have any reason to complain.
+
+Turned out it was two different instances of Mapnik attempting to share 
+the same TCP connection with PostgreSQL. Well, not *attempting*, they 
+did share the connection and then became confused by what they received. 
+("huh? I never asked for THAT!") - I had a bug in my module 
+initialisation in Apache.
+
+Thanks for not laughing.
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From blake at hailmail.net  Sat May 15 05:58:30 2010
+From: blake at hailmail.net (Dane Blakely Springmeyer)
+Date: Fri, 14 May 2010 20:58:30 -0700
+Subject: [Mapnik-devel] Possible problems with concurrent database
+ requests?
+In-Reply-To: <4BEDA812.9020704@remote.org>
+References: <4BED2052.6090503@remote.org> <4BEDA812.9020704@remote.org>
+Message-ID: <1273895910.20595.1375172431@webmail.messagingengine.com>
+
+Good digging Frederik. You are already past my depth of research on
+this, but I've hit this error before and flagged for followup as a
+ticket thinking that it might be nice to recover from such at thing.
+However, in your case sounds like the error was a good pointer, so
+default behavior should likely stay the same:
+
+http://trac.mapnik.org/ticket/499
+
+dane
+
+
+On Fri, 14 May 2010 21:44 +0200, "Frederik Ramm" <frederik at remote.org>
+wrote:
+> Hi,
+> 
+> Frederik Ramm wrote:
+> > I am seeing sporadic "standard exception: remote end has closed 
+> > connection unexpectedly" error messages which originate from the libpq 
+> > library. I can however verify that the PostgreSQL server processes are 
+> > still alive and don't have any reason to complain.
+> 
+> Turned out it was two different instances of Mapnik attempting to share 
+> the same TCP connection with PostgreSQL. Well, not *attempting*, they 
+> did share the connection and then became confused by what they received. 
+> ("huh? I never asked for THAT!") - I had a bug in my module 
+> initialisation in Apache.
+> 
+> Thanks for not laughing.
+> 
+> Bye
+> Frederik
+> 
+> -- 
+> Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From boguscoder at gmail.com  Tue May 25 23:01:54 2010
+From: boguscoder at gmail.com (Oleg Bogdanov)
+Date: Wed, 26 May 2010 00:01:54 +0300
+Subject: [Mapnik-devel] common attributes of image_32 and image_data_32
+Message-ID: <AANLkTinuBaJC03EA0Fu4f1BR3vUpl5qYmldQUnHQOO0u@mail.gmail.com>
+
+I think one more bit of perfection may be added to mapnik code:
+image_data_32 is a member of image_32 and both classes have their own
+height\width attribute pair.
+Is not it enough to use image_data_32 h\w from image_32 instance? Is it
+worth patching?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100526/4cea5b9d/attachment.html>
+
+From carlos.lopez.garces at gmail.com  Thu May 27 06:24:33 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Wed, 26 May 2010 23:24:33 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <62B99B59-3946-4A96-BDA9-AC2766444F3D@hailmail.net>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+	<E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+	<w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+	<62B99B59-3946-4A96-BDA9-AC2766444F3D@hailmail.net>
+Message-ID: <AANLkTikZYeUdp_wanqgnboln3MQ8UBLBtIai40KwuFik@mail.gmail.com>
+
+Good evening, I was wondering if anyone who applied the patch of ticket 343
+and analyzed the code could tell me about its shortcomings (things you
+noticed in the maps when rendered). From the comments of the ticket I see
+that it has some minor issues like thick road casings. I haven't seen this
+myself because I haven't run the test script submitted by Mr. Springmeyer;
+I'm waiting for the world boundaries files to download (
+http://wiki.openstreetmap.org/wiki/Mapnik) to be able to do it.
+
+Any comment is greatly welcome.
+
+Thanks
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100526/dbc551ab/attachment.html>
+
+From blake at hailmail.net  Thu May 27 16:45:53 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 27 May 2010 07:45:53 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <AANLkTikZYeUdp_wanqgnboln3MQ8UBLBtIai40KwuFik@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+	<E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+	<w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+	<62B99B59-3946-4A96-BDA9-AC2766444F3D@hailmail.net>
+	<AANLkTikZYeUdp_wanqgnboln3MQ8UBLBtIai40KwuFik@mail.gmail.com>
+Message-ID: <63496C34-2DBA-4575-93BB-0002D736B8FE@hailmail.net>
+
+Hello Carlos,
+
+Basic shortcomings:
+
+1) Needs to be updated to work with Mapnik2 (lots of changes so it would likely be easiest to start from scratch rather than trying to apply the patch to trunk)
+
+2) Has hardcoded assumptions about Mapnik's assumed pixel size (.00028 meters) and conversion to inches .
+
+  * My thought is that you should, for now, remove any notion of resolution and rather just start with a raw scale_factor that can be passed by the user from the XML mapfile into the rendering pipeline - this would be a good first step for testing, and resolution assumptions (the therefore units) can come next.
+  * Also a key limitation currently: what if pixels are of dynamic size or width != height? http://trac.mapnik.org/ticket/196. Thinking through this now will be beneficial for design. 
+
+3) Yes, the way that road casings are traditionally done with multiple overlapping lines (multiple symbolizers in XML) make scaling and maintaining the right look tricky. But, I'd say don't worry about this after you've got the basics working against trunk.
+
+4) One global scale factor may not be enough for users. I think you should consider how to potentially allow users to pass scale factors that may differently affect fonts vs. symbols vs. lines, etc. I've not given much thought to this yet, so I'd be interested to see how you think this could be done cleanly, both in terms of the interface exposed to the user and internally.
+
+Dane
+
+On May 26, 2010, at 9:24 PM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good evening, I was wondering if anyone who applied the patch of ticket 343 and analyzed the code could tell me about its shortcomings (things you noticed in the maps when rendered). From the comments of the ticket I see that it has some minor issues like thick road casings. I haven't seen this myself because I haven't run the test script submitted by Mr. Springmeyer; I'm waiting for the world boundaries files to download (http://wiki.openstreetmap.org/wiki/Mapnik) to be able to do it.
+> 
+> Any comment is greatly welcome.
+> 
+> Thanks
+> 
+> Carlos L?pez
+> 
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/1467e312/attachment.html>
+
+From artem at mapnik.org  Thu May 27 17:03:10 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 May 2010 16:03:10 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <63496C34-2DBA-4575-93BB-0002D736B8FE@hailmail.net>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+	<E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+	<w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+	<62B99B59-3946-4A96-BDA9-AC2766444F3D@hailmail.net>
+	<AANLkTikZYeUdp_wanqgnboln3MQ8UBLBtIai40KwuFik@mail.gmail.com>
+	<63496C34-2DBA-4575-93BB-0002D736B8FE@hailmail.net>
+Message-ID: <AANLkTikkrafbhnTw4DCvcGaSrQdVEN0Ukzxct_DKc9AQ@mail.gmail.com>
+
+Thanks, Dane!
+
+Carlos, also have a look at SVG spec:
+
+http://www.w3.org/TR/SVG/coords.html#Units
+
+Artem
+
+
+2010/5/27 Dane Springmeyer <blake at hailmail.net>
+
+> Hello Carlos,
+>
+> Basic shortcomings:
+>
+> 1) Needs to be updated to work with Mapnik2 (lots of changes so it would
+> likely be easiest to start from scratch rather than trying to apply the
+> patch to trunk)
+>
+> 2) Has hardcoded assumptions about Mapnik's assumed pixel size (.00028
+> meters) and conversion to inches .
+>
+>   * My thought is that you should, for now, remove any notion of resolution
+> and rather just start with a raw scale_factor that can be passed by the user
+> from the XML mapfile into the rendering pipeline - this would be a good
+> first step for testing, and resolution assumptions (the therefore units) can
+> come next.
+>   * Also a key limitation currently: what if pixels are of dynamic size or
+> width != height? http://trac.mapnik.org/ticket/196. Thinking through this
+> now will be beneficial for design.
+>
+> 3) Yes, the way that road casings are traditionally done with multiple
+> overlapping lines (multiple symbolizers in XML) make scaling and maintaining
+> the right look tricky. But, I'd say don't worry about this after you've got
+> the basics working against trunk.
+>
+> 4) One global scale factor may not be enough for users. I think you should
+> consider how to potentially allow users to pass scale factors that may
+> differently affect fonts vs. symbols vs. lines, etc. I've not given much
+> thought to this yet, so I'd be interested to see how you think this could be
+> done cleanly, both in terms of the interface exposed to the user and
+> internally.
+>
+> Dane
+>
+> On May 26, 2010, at 9:24 PM, Carlos Enrique L?pez Garc?s wrote:
+>
+> Good evening, I was wondering if anyone who applied the patch of ticket 343
+> and analyzed the code could tell me about its shortcomings (things you
+> noticed in the maps when rendered). From the comments of the ticket I see
+> that it has some minor issues like thick road casings. I haven't seen this
+> myself because I haven't run the test script submitted by Mr. Springmeyer;
+> I'm waiting for the world boundaries files to download (
+> http://wiki.openstreetmap.org/wiki/Mapnik) to be able to do it.
+>
+> Any comment is greatly welcome.
+>
+> Thanks
+>
+> Carlos L?pez
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/764c99cb/attachment.html>
+

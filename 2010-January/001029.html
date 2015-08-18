@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] No antialiasing on transparent background?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20antialiasing%20on%20transparent%20background%3F&In-Reply-To=%3C4B3E0353.3060609%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001027.html">
+   <LINK REL="Next"  HREF="001030.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] No antialiasing on transparent background?</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20antialiasing%20on%20transparent%20background%3F&In-Reply-To=%3C4B3E0353.3060609%40gmail.com%3E"
+       TITLE="[Mapnik-devel] No antialiasing on transparent background?">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Fri Jan  1 15:14:43 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001027.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+        <LI>Next message: <A HREF="001030.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1029">[ date ]</a>
+              <a href="thread.html#1029">[ thread ]</a>
+              <a href="subject.html#1029">[ subject ]</a>
+              <a href="author.html#1029">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>W dniu 01.01.2010 15:04, Lennard pisze:
+&gt;<i> Nop wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> Mapnik is 0.6.1 with renderd, layers renderd on a full color background 
+</I>&gt;&gt;<i> with the same installation look good.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does mapnik have a problem with transparent background? Do I miss a setting?
+</I>&gt;<i> 
+</I>&gt;<i> renderd by default uses png256 as the output format. Change the 2 code 
+</I>&gt;<i> occurences of 'png256' to 'png'. You will get larger tile sizes, but it 
+</I>&gt;<i> won't look ugly over transparent backgrounds.
+</I>&gt;<i> 
+</I>&gt;<i> This is still both a limitation in png256 (less colours, binary 
+</I>&gt;<i> transparency) and in the png256 transparency code (which marcin is 
+</I>&gt;<i> working on). In fact, there was a commit yesterday for another nagging 
+</I>&gt;<i> issue: occasional jagged slanted lines on png256 tiles.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+Hopefully not for long :)
+<A HREF="http://trac.mapnik.org/ticket/477">http://trac.mapnik.org/ticket/477</A>
+
+What a coincidence, that just yesterday I posted patches/fixes for both
+of Your problems (garbled png256 for low color palette and full
+transparency support form png256) :) Am I a mind reader?
+
+For garbled images (swapped vertical pixel lines), as Leonard noticed it
+is already committed. This is ticket:
+<A HREF="http://trac.mapnik.org/ticket/445">http://trac.mapnik.org/ticket/445</A>
+
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001027.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+	<LI>Next message: <A HREF="001030.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1029">[ date ]</a>
+              <a href="thread.html#1029">[ thread ]</a>
+              <a href="subject.html#1029">[ subject ]</a>
+              <a href="author.html#1029">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Different rendering using python and rendered
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Different%20rendering%20using%20python%20and%20rendered&In-Reply-To=%3C4B2D5E56.9050700%40xs4all.nl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001012.html">
+   <LINK REL="Next"  HREF="001014.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Different rendering using python and rendered</H1>
+    <B>Ldp</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Different%20rendering%20using%20python%20and%20rendered&In-Reply-To=%3C4B2D5E56.9050700%40xs4all.nl%3E"
+       TITLE="[Mapnik-devel] Different rendering using python and rendered">ldp at xs4all.nl
+       </A><BR>
+    <I>Sun Dec 20 00:14:30 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001012.html">[Mapnik-devel] Different rendering using python and rendered
+</A></li>
+        <LI>Next message: <A HREF="001014.html">[Mapnik-devel] Different rendering using python and rendered
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1013">[ date ]</a>
+              <a href="thread.html#1013">[ thread ]</a>
+              <a href="subject.html#1013">[ subject ]</a>
+              <a href="author.html#1013">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Nop wrote:
+
+&gt;<i> In the style file, there are semi-transparent images used in 
+</I>&gt;<i> PolygonPatternSymbolizers. When I render with generate_image oder 
+</I>&gt;<i> generate_tiles, those areas are rendered semi-transparent (as intended).
+</I>&gt;<i> When rendered with renderd, all those areas are drawn solid, only the 
+</I>&gt;<i> semi-transparent background is rendered properly.
+</I>
+Replace the two occurences of 'png256' in the renderd code with 'png'.
+
+In an ideal case, I'd like to be able to set the output format per 
+stylesheet, not globally.
+
+-- 
+Lennard
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001012.html">[Mapnik-devel] Different rendering using python and rendered
+</A></li>
+	<LI>Next message: <A HREF="001014.html">[Mapnik-devel] Different rendering using python and rendered
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1013">[ date ]</a>
+              <a href="thread.html#1013">[ thread ]</a>
+              <a href="subject.html#1013">[ subject ]</a>
+              <a href="author.html#1013">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

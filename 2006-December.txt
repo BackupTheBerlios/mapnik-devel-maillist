@@ -1,0 +1,1814 @@
+From jburgess at uklinux.net  Sun Dec  3 21:24:43 2006
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Sun, 03 Dec 2006 20:24:43 +0000
+Subject: [Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?
+Message-ID: <1165177483.7395.18.camel@localhost.localdomain>
+
+A question was asked on OSM IRC about supporting areas rendered using a
+repeated symbol pattern as a fill. Is that what PolygonPatternSymbolizer
+is for? 
+
+I see there is no entry to support PolygonPatternSymbolizer in
+load_map.cpp, is this an oversight or is the code not ready for use?
+
+	Jon
+
+
+
+
+From artem at pavlenko.uklinux.net  Mon Dec  4 12:33:24 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Mon, 04 Dec 2006 11:33:24 +0000
+Subject: [Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?
+In-Reply-To: <1165177483.7395.18.camel@localhost.localdomain>
+References: <1165177483.7395.18.camel@localhost.localdomain>
+Message-ID: <45740784.2000909@pavlenko.uklinux.net>
+
+I added support for PolygonPatternSymbolizer in load_map.cpp.
+I suggest we use patterns carefully though, it is easy to overload map :).
+
+
+....
+<Rule>
+      <Filter>[leisure] = 'park'</Filter>
+      <MaxScaleDenominator>2000000</MaxScaleDenominator>
+      <PolygonPatternSymbolizer file="/home/artem/pattern2.png" 
+type="png" width="64" height="64"/>
+</Rule>
+....
+
+and resulting map : http://media.mapnik.org/images/polygon_pattern.png
+
+Have lots of fun,
+Artem
+
+Jon Burgess wrote:
+> A question was asked on OSM IRC about supporting areas rendered using a
+> repeated symbol pattern as a fill. Is that what PolygonPatternSymbolizer
+> is for? 
+>
+> I see there is no entry to support PolygonPatternSymbolizer in
+> load_map.cpp, is this an oversight or is the code not ready for use?
+>
+> 	Jon
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From toby.collett at onetrackmind.co.nz  Tue Dec  5 05:35:26 2006
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Tue, 05 Dec 2006 17:35:26 +1300
+Subject: [Mapnik-devel] Text placement patch
+Message-ID: <1165293326.5198.8.camel@torpedo.onetrackmind.co.nz>
+
+Hi,
+Here is another attempt at submitting the patch for smoothing text
+placement around corners. If there are issues with it either compiling
+or conflicting with other features or the output just not looking right
+let me know the details and I will work on it some more.
+
+Unfortunately the patch changes a lot of the placement code and the diff
+is a little hard to follow in places.
+
+Toby
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_text_placement.diff
+Type: text/x-patch
+Size: 26831 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061205/095ee941/attachment.bin>
+
+From perrygeo at gmail.com  Tue Dec  5 22:18:32 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Tue, 5 Dec 2006 13:18:32 -0800
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+Message-ID: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>
+
+Hey folks,
+
+ I'm not able to get python bindings working from revision 405.
+
+>>> import mapnik
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/usr/lib/python2.4/site-packages/mapnik/__init__.py", line 33, in ?
+    from _mapnik import *
+ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+
+I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+start debugging?
+-- 
+Matthew T. Perry
+GIS Analyst / Software Engineer
+National Center for Ecological Analysis and Synthesis (NCEAS)
+work: perry at nceas.ucsb.edu
+web: http://www.perrygeo.net
+
+
+From dave at smartrak.biz  Tue Dec  5 22:24:56 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 06 Dec 2006 10:24:56 +1300
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+In-Reply-To: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>
+References: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>
+Message-ID: <4575E3A8.3070609@smartrak.biz>
+
+What is the ouput of:
+ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+
+Mine (ubuntu 6.10 x86. mapnik rev 405):
+        linux-gate.so.1 =>  (0xffffe000)
+        libmapnik.so => lss (0xb7cd3000)
+        libboost_python-gcc-mt-1_33_1.so.1.33.1 => 
+/usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1 (0xb7c93000)
+        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0xb7bb3000)
+        libm.so.6 => /lib/tls/i686/cmov/libm.so.6 (0xb7b8d000)
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xb7b82000)
+        libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7a4e000)
+        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0xb79e4000)
+        libz.so.1 => /usr/lib/libz.so.1 (0xb79d0000)
+        libltdl.so.3 => /usr/lib/libltdl.so.3 (0xb79c9000)
+        libpng12.so.0 => /usr/lib/libpng12.so.0 (0xb79a6000)
+        libtiff.so.4 => /usr/lib/libtiff.so.4 (0xb7954000)
+        libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0xb7935000)
+        libproj.so.0 => /usr/lib/libproj.so.0 (0xb7905000)
+        libboost_thread-gcc-mt-1_33_1.so.1.33.1 => 
+/usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 (0xb78f9000)
+        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 => 
+/usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 (0xb78e7000)
+        libboost_regex-gcc-mt-1_33_1.so.1.33.1 => 
+/usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1 (0xb7845000)
+        libpython2.4.so.1.0 => /usr/lib/libpython2.4.so.1.0 (0xb7734000)
+        librt.so.1 => /lib/tls/i686/cmov/librt.so.1 (0xb772b000)
+        libpthread.so.0 => /lib/tls/i686/cmov/libpthread.so.0 (0xb7718000)
+        /lib/ld-linux.so.2 (0x80000000)
+        libdl.so.2 => /lib/tls/i686/cmov/libdl.so.2 (0xb7713000)
+        libicui18n.so.34 => /usr/lib/libicui18n.so.34 (0xb75fd000)
+        libicuuc.so.34 => /usr/lib/libicuuc.so.34 (0xb74fb000)
+        libutil.so.1 => /lib/tls/i686/cmov/libutil.so.1 (0xb74f7000)
+        libicudata.so.34 => /usr/lib/libicudata.so.34 (0xb6c82000)
+
+
+Matthew Perry wrote:
+> Hey folks,
+>
+>  I'm not able to get python bindings working from revision 405.
+>
+>   
+>>>> import mapnik
+>>>>         
+> Traceback (most recent call last):
+>   File "<stdin>", line 1, in ?
+>   File "/usr/lib/python2.4/site-packages/mapnik/__init__.py", line 33, in ?
+>     from _mapnik import *
+> ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+> undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+>
+> I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+> start debugging?
+>   
+
+
+
+From perrygeo at gmail.com  Tue Dec  5 22:28:33 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Tue, 5 Dec 2006 13:28:33 -0800
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+In-Reply-To: <4575E3A8.3070609@smartrak.biz>
+References: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>
+	<4575E3A8.3070609@smartrak.biz>
+Message-ID: <5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7@mail.gmail.com>
+
+David,
+
+ Thanks for the quick response. Here's the ldd output ...
+
+$ ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+        libmapnik.so => /usr/local/lib/libmapnik.so (0x00002aaaaada7000)
+        libboost_python-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaaaf01000)
+        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00002aaaab047000)
+        libm.so.6 => /lib/libm.so.6 (0x00002aaaab244000)
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x00002aaaab3ca000)
+        libc.so.6 => /lib/libc.so.6 (0x00002aaaab4d7000)
+        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x00002aaaab710000)
+        libz.so.1 => /usr/local/lib/libz.so.1 (0x00002aaaab88c000)
+        libltdl.so.3 => /usr/lib/libltdl.so.3 (0x00002aaaab9a2000)
+        libpng12.so.0 => /usr/lib/libpng12.so.0 (0x00002aaaabaa9000)
+        libtiff.so.4 => /usr/lib/libtiff.so.4 (0x00002aaaabbce000)
+        libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x00002aaaabd26000)
+        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaabe48000)
+        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaabf55000)
+        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaac065000)
+        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaac1d5000)
+        libpython2.4.so.1.0 => /usr/lib/libpython2.4.so.1.0 (0x00002aaaac36b000)
+        librt.so.1 => /lib/librt.so.1 (0x00002aaaac5aa000)
+        libpthread.so.0 => /lib/libpthread.so.0 (0x00002aaaac6b2000)
+        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+        libdl.so.2 => /lib/libdl.so.2 (0x00002aaaac7c8000)
+        libutil.so.1 => /lib/libutil.so.1 (0x00002aaaac8ca000)
+
+
+On 12/5/06, David Leaver <dave at smartrak.biz> wrote:
+> What is the ouput of:
+> ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+>
+> Mine (ubuntu 6.10 x86. mapnik rev 405):
+>         linux-gate.so.1 =>  (0xffffe000)
+>         libmapnik.so => lss (0xb7cd3000)
+>         libboost_python-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1 (0xb7c93000)
+>         libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0xb7bb3000)
+>         libm.so.6 => /lib/tls/i686/cmov/libm.so.6 (0xb7b8d000)
+>         libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xb7b82000)
+>         libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7a4e000)
+>         libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0xb79e4000)
+>         libz.so.1 => /usr/lib/libz.so.1 (0xb79d0000)
+>         libltdl.so.3 => /usr/lib/libltdl.so.3 (0xb79c9000)
+>         libpng12.so.0 => /usr/lib/libpng12.so.0 (0xb79a6000)
+>         libtiff.so.4 => /usr/lib/libtiff.so.4 (0xb7954000)
+>         libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0xb7935000)
+>         libproj.so.0 => /usr/lib/libproj.so.0 (0xb7905000)
+>         libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 (0xb78f9000)
+>         libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 (0xb78e7000)
+>         libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1 (0xb7845000)
+>         libpython2.4.so.1.0 => /usr/lib/libpython2.4.so.1.0 (0xb7734000)
+>         librt.so.1 => /lib/tls/i686/cmov/librt.so.1 (0xb772b000)
+>         libpthread.so.0 => /lib/tls/i686/cmov/libpthread.so.0 (0xb7718000)
+>         /lib/ld-linux.so.2 (0x80000000)
+>         libdl.so.2 => /lib/tls/i686/cmov/libdl.so.2 (0xb7713000)
+>         libicui18n.so.34 => /usr/lib/libicui18n.so.34 (0xb75fd000)
+>         libicuuc.so.34 => /usr/lib/libicuuc.so.34 (0xb74fb000)
+>         libutil.so.1 => /lib/tls/i686/cmov/libutil.so.1 (0xb74f7000)
+>         libicudata.so.34 => /usr/lib/libicudata.so.34 (0xb6c82000)
+>
+>
+> Matthew Perry wrote:
+> > Hey folks,
+> >
+> >  I'm not able to get python bindings working from revision 405.
+> >
+> >
+> >>>> import mapnik
+> >>>>
+> > Traceback (most recent call last):
+> >   File "<stdin>", line 1, in ?
+> >   File "/usr/lib/python2.4/site-packages/mapnik/__init__.py", line 33, in ?
+> >     from _mapnik import *
+> > ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+> > undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+> >
+> > I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+> > start debugging?
+> >
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+-- 
+Matthew T. Perry
+GIS Analyst / Software Engineer
+National Center for Ecological Analysis and Synthesis (NCEAS)
+work: perry at nceas.ucsb.edu
+web: http://www.perrygeo.net
+
+
+From dave at smartrak.biz  Tue Dec  5 22:50:51 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 06 Dec 2006 10:50:51 +1300
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+In-Reply-To: <5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7@mail.gmail.com>
+References: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>	
+	<4575E3A8.3070609@smartrak.biz>
+	<5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7@mail.gmail.com>
+Message-ID: <4575E9BB.8060602@smartrak.biz>
+
+That looks fine.
+What is the output of:
+ldd /usr/local/lib/libmapnik.so
+
+Are you trying to run the included python demo?
+
+Want to try run the c++ demo? Check the readme.txt for build instructions.
+You'll need to comment out line 240-241 of rundemo.cpp before building 
+as they don't exist atm.
+Then run it with:
+./rundemo /usr/local/lib/mapnik/input/
+
+Dave.
+
+Matthew Perry wrote:
+> David,
+>
+> Thanks for the quick response. Here's the ldd output ...
+>
+> $ ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+>        libmapnik.so => /usr/local/lib/libmapnik.so (0x00002aaaaada7000)
+>        libboost_python-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaaaf01000)
+>        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00002aaaab047000)
+>        libm.so.6 => /lib/libm.so.6 (0x00002aaaab244000)
+>        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x00002aaaab3ca000)
+>        libc.so.6 => /lib/libc.so.6 (0x00002aaaab4d7000)
+>        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x00002aaaab710000)
+>        libz.so.1 => /usr/local/lib/libz.so.1 (0x00002aaaab88c000)
+>        libltdl.so.3 => /usr/lib/libltdl.so.3 (0x00002aaaab9a2000)
+>        libpng12.so.0 => /usr/lib/libpng12.so.0 (0x00002aaaabaa9000)
+>        libtiff.so.4 => /usr/lib/libtiff.so.4 (0x00002aaaabbce000)
+>        libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x00002aaaabd26000)
+>        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaabe48000)
+>        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaabf55000)
+>        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaac065000)
+>        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaac1d5000)
+>        libpython2.4.so.1.0 => /usr/lib/libpython2.4.so.1.0 
+> (0x00002aaaac36b000)
+>        librt.so.1 => /lib/librt.so.1 (0x00002aaaac5aa000)
+>        libpthread.so.0 => /lib/libpthread.so.0 (0x00002aaaac6b2000)
+>        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+>        libdl.so.2 => /lib/libdl.so.2 (0x00002aaaac7c8000)
+>        libutil.so.1 => /lib/libutil.so.1 (0x00002aaaac8ca000)
+>
+>
+> On 12/5/06, David Leaver <dave at smartrak.biz> wrote:
+>> What is the ouput of:
+>> ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+>>
+>> Mine (ubuntu 6.10 x86. mapnik rev 405):
+>>         linux-gate.so.1 =>  (0xffffe000)
+>>         libmapnik.so => lss (0xb7cd3000)
+>>         libboost_python-gcc-mt-1_33_1.so.1.33.1 =>
+>> /usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1 (0xb7c93000)
+>>         libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0xb7bb3000)
+>>         libm.so.6 => /lib/tls/i686/cmov/libm.so.6 (0xb7b8d000)
+>>         libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xb7b82000)
+>>         libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7a4e000)
+>>         libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0xb79e4000)
+>>         libz.so.1 => /usr/lib/libz.so.1 (0xb79d0000)
+>>         libltdl.so.3 => /usr/lib/libltdl.so.3 (0xb79c9000)
+>>         libpng12.so.0 => /usr/lib/libpng12.so.0 (0xb79a6000)
+>>         libtiff.so.4 => /usr/lib/libtiff.so.4 (0xb7954000)
+>>         libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0xb7935000)
+>>         libproj.so.0 => /usr/lib/libproj.so.0 (0xb7905000)
+>>         libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+>> /usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 (0xb78f9000)
+>>         libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+>> /usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 (0xb78e7000)
+>>         libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+>> /usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1 (0xb7845000)
+>>         libpython2.4.so.1.0 => /usr/lib/libpython2.4.so.1.0 (0xb7734000)
+>>         librt.so.1 => /lib/tls/i686/cmov/librt.so.1 (0xb772b000)
+>>         libpthread.so.0 => /lib/tls/i686/cmov/libpthread.so.0 
+>> (0xb7718000)
+>>         /lib/ld-linux.so.2 (0x80000000)
+>>         libdl.so.2 => /lib/tls/i686/cmov/libdl.so.2 (0xb7713000)
+>>         libicui18n.so.34 => /usr/lib/libicui18n.so.34 (0xb75fd000)
+>>         libicuuc.so.34 => /usr/lib/libicuuc.so.34 (0xb74fb000)
+>>         libutil.so.1 => /lib/tls/i686/cmov/libutil.so.1 (0xb74f7000)
+>>         libicudata.so.34 => /usr/lib/libicudata.so.34 (0xb6c82000)
+>>
+>>
+>> Matthew Perry wrote:
+>> > Hey folks,
+>> >
+>> >  I'm not able to get python bindings working from revision 405.
+>> >
+>> >
+>> >>>> import mapnik
+>> >>>>
+>> > Traceback (most recent call last):
+>> >   File "<stdin>", line 1, in ?
+>> >   File "/usr/lib/python2.4/site-packages/mapnik/__init__.py", line 
+>> 33, in ?
+>> >     from _mapnik import *
+>> > ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+>> > undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+>> >
+>> > I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+>> > start debugging?
+>> >
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+
+
+
+From perrygeo at gmail.com  Tue Dec  5 23:08:56 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Tue, 5 Dec 2006 14:08:56 -0800
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+In-Reply-To: <4575E9BB.8060602@smartrak.biz>
+References: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>
+	<4575E3A8.3070609@smartrak.biz>
+	<5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7@mail.gmail.com>
+	<4575E9BB.8060602@smartrak.biz>
+Message-ID: <5383fa5e0612051408n5abe5b8avd2d95ad79164373@mail.gmail.com>
+
+On 12/5/06, David Leaver <dave at smartrak.biz> wrote:
+> That looks fine.
+> What is the output of:
+> ldd /usr/local/lib/libmapnik.so
+>
+
+Looks OK to me ...
+
+$ ldd /usr/local/lib/libmapnik.so
+        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x00002aaaaac1b000)
+        libz.so.1 => /usr/local/lib/libz.so.1 (0x00002aaaaad97000)
+        libltdl.so.3 => /usr/lib/libltdl.so.3 (0x00002aaaaaead000)
+        libpng12.so.0 => /usr/lib/libpng12.so.0 (0x00002aaaaafb4000)
+        libtiff.so.4 => /usr/lib/libtiff.so.4 (0x00002aaaab0d9000)
+        libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x00002aaaab231000)
+        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaab353000)
+        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaab460000)
+        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaab570000)
+        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+/usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaab6e0000)
+        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00002aaaab876000)
+        libm.so.6 => /lib/libm.so.6 (0x00002aaaaba73000)
+        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x00002aaaabbf8000)
+        libc.so.6 => /lib/libc.so.6 (0x00002aaaabd06000)
+        libdl.so.2 => /lib/libdl.so.2 (0x00002aaaabf3f000)
+        librt.so.1 => /lib/librt.so.1 (0x00002aaaac041000)
+        libpthread.so.0 => /lib/libpthread.so.0 (0x00002aaaac14a000)
+        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+
+
+
+> Are you trying to run the included python demo?
+>
+
+At this point I'm just trying to "import mapnik" !
+
+> Want to try run the c++ demo? Check the readme.txt for build instructions.
+> You'll need to comment out line 240-241 of rundemo.cpp before building
+> as they don't exist atm.
+> Then run it with:
+> ./rundemo /usr/local/lib/mapnik/input/
+>
+
+Even commenting out those two lines, rundemo.cpp does not compile.
+There are a bunch of linking errors which I've posted to
+http://ebm.nceas.ucsb.edu/mapping/mapnik_errors.txt
+
+Looks like a boost problem... ?
+-- 
+Matthew T. Perry
+GIS Analyst / Software Engineer
+National Center for Ecological Analysis and Synthesis (NCEAS)
+work: perry at nceas.ucsb.edu
+web: http://www.perrygeo.net
+
+
+From dave at smartrak.biz  Tue Dec  5 23:23:00 2006
+From: dave at smartrak.biz (David Leaver)
+Date: Wed, 06 Dec 2006 11:23:00 +1300
+Subject: [Mapnik-devel] Python bindings failing, revision 405
+In-Reply-To: <5383fa5e0612051408n5abe5b8avd2d95ad79164373@mail.gmail.com>
+References: <5383fa5e0612051318m65e5e63fy4d6db3291a0efd10@mail.gmail.com>	
+	<4575E3A8.3070609@smartrak.biz>	
+	<5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7@mail.gmail.com>	
+	<4575E9BB.8060602@smartrak.biz>
+	<5383fa5e0612051408n5abe5b8avd2d95ad79164373@mail.gmail.com>
+Message-ID: <4575F144.9090405@smartrak.biz>
+
+That error file seems to show that your mapnik compile isn't compiled right.
+
+try clean and rebuild your mapnik dir:
+  cd mapnik
+  svn up
+  python scons/scons.py -c
+  python scons/scons.py install
+
+Other than that I'm not sure.
+
+Dave.
+
+Matthew Perry wrote:
+> On 12/5/06, David Leaver <dave at smartrak.biz> wrote:
+>> That looks fine.
+>> What is the output of:
+>> ldd /usr/local/lib/libmapnik.so
+>>
+>
+> Looks OK to me ...
+>
+> $ ldd /usr/local/lib/libmapnik.so
+>        libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x00002aaaaac1b000)
+>        libz.so.1 => /usr/local/lib/libz.so.1 (0x00002aaaaad97000)
+>        libltdl.so.3 => /usr/lib/libltdl.so.3 (0x00002aaaaaead000)
+>        libpng12.so.0 => /usr/lib/libpng12.so.0 (0x00002aaaaafb4000)
+>        libtiff.so.4 => /usr/lib/libtiff.so.4 (0x00002aaaab0d9000)
+>        libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x00002aaaab231000)
+>        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaab353000)
+>        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaab460000)
+>        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaab570000)
+>        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =>
+> /usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+> (0x00002aaaab6e0000)
+>        libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00002aaaab876000)
+>        libm.so.6 => /lib/libm.so.6 (0x00002aaaaba73000)
+>        libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x00002aaaabbf8000)
+>        libc.so.6 => /lib/libc.so.6 (0x00002aaaabd06000)
+>        libdl.so.2 => /lib/libdl.so.2 (0x00002aaaabf3f000)
+>        librt.so.1 => /lib/librt.so.1 (0x00002aaaac041000)
+>        libpthread.so.0 => /lib/libpthread.so.0 (0x00002aaaac14a000)
+>        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+>
+>
+>
+>> Are you trying to run the included python demo?
+>>
+>
+> At this point I'm just trying to "import mapnik" !
+>
+>> Want to try run the c++ demo? Check the readme.txt for build 
+>> instructions.
+>> You'll need to comment out line 240-241 of rundemo.cpp before building
+>> as they don't exist atm.
+>> Then run it with:
+>> ./rundemo /usr/local/lib/mapnik/input/
+>>
+>
+> Even commenting out those two lines, rundemo.cpp does not compile.
+> There are a bunch of linking errors which I've posted to
+> http://ebm.nceas.ucsb.edu/mapping/mapnik_errors.txt
+>
+> Looks like a boost problem... ?
+
+
+
+From amitti at 10east.com  Thu Dec  7 00:12:33 2006
+From: amitti at 10east.com (Aaron Mitti)
+Date: Wed, 6 Dec 2006 18:12:33 -0500 (EST)
+Subject: [Mapnik-devel] MySQL Extentions
+In-Reply-To: <1165293326.5198.8.camel@torpedo.onetrackmind.co.nz>
+References: <1165293326.5198.8.camel@torpedo.onetrackmind.co.nz>
+Message-ID: <Pine.LNX.4.64.0612061743570.24881@amitti1.10east.com>
+
+All,
+
+We're fairly far down the road using PostGIS on top of Postgres, however 
+for the most part we've strictly been a MySQL business. We currently use 
+MySQL 4.1, however we've started migrating to MySQL 5.0. One of our 
+concerns is that we have no one who is a real Postgres expert to maintain 
+our new Postgres systems.
+
+Is anyone familiar enough with MySQL's GIS functionality to know what 
+difficulties it might have as an input plugin to Mapnik and other linux 
+GIS tools. (grass, qgis, ogr, gdal, etc).
+
+For anyone who doesn't know, as of MySQL 5.0, and more so in 5.1, many 
+spatial functions have been added that follow the Open Geospatial 
+Consortium specifications. Here's some more info:
+
+http://dev.mysql.com/doc/refman/5.1/en/spatial-extensions.html
+
+-Aaron
+
+--
+Aaron Mitti                         Email: amitti at 10east.com
+Open Systems Engineer               Phone: 904-220-3627
+10 East Corp.                         FAX: 904-384-1038
+
+
+From artem at pavlenko.uklinux.net  Thu Dec  7 16:37:00 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Thu, 07 Dec 2006 15:37:00 +0000
+Subject: [Mapnik-devel] MySQL Extentions
+In-Reply-To: <Pine.LNX.4.64.0612061743570.24881@amitti1.10east.com>
+References: <1165293326.5198.8.camel@torpedo.onetrackmind.co.nz>
+	<Pine.LNX.4.64.0612061743570.24881@amitti1.10east.com>
+Message-ID: <4578351C.3050305@pavlenko.uklinux.net>
+
+Aaron,
+
+It would be really nice to have mysql plug-in for Mapnik. From what I 
+can see on their web-site it can be a straight forward implementation 
+based on postgis. MySQL spatial predicates are not as complete as in 
+PostGIS but Mapnik only needs efficient bounding box query at this time. 
+I believe others (qgis etc ) have MySQL support as well.
+
+When I have some time (probably around xmas) I'll get latest MySQL and 
+have a play.
+
+Cheers,
+Artem
+
+Aaron Mitti wrote:
+> All,
+>
+> We're fairly far down the road using PostGIS on top of Postgres, however 
+> for the most part we've strictly been a MySQL business. We currently use 
+> MySQL 4.1, however we've started migrating to MySQL 5.0. One of our 
+> concerns is that we have no one who is a real Postgres expert to maintain 
+> our new Postgres systems.
+>
+> Is anyone familiar enough with MySQL's GIS functionality to know what 
+> difficulties it might have as an input plugin to Mapnik and other linux 
+> GIS tools. (grass, qgis, ogr, gdal, etc).
+>
+> For anyone who doesn't know, as of MySQL 5.0, and more so in 5.1, many 
+> spatial functions have been added that follow the Open Geospatial 
+> Consortium specifications. Here's some more info:
+>
+> http://dev.mysql.com/doc/refman/5.1/en/spatial-extensions.html
+>
+> -Aaron
+>
+> --
+> Aaron Mitti                         Email: amitti at 10east.com
+> Open Systems Engineer               Phone: 904-220-3627
+> 10 East Corp.                         FAX: 904-384-1038
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From eshabtai at gmail.com  Tue Dec 12 10:34:59 2006
+From: eshabtai at gmail.com (Ehud Shabtai)
+Date: Tue, 12 Dec 2006 11:34:59 +0200
+Subject: [Mapnik-devel] PATCH for BIDI labels support
+Message-ID: <b8dc1f520612120134q7700d44bhf21f4b8c9b5ea766@mail.gmail.com>
+
+Hi,
+
+The attached patch adds support for right to left languages by using
+the fribidi library.
+
+I'm not familiar with scons, so I'm not sure I handled the
+modifications correctly.
+
+To enable BIDI support specify BIDI=1 as an option to scons.
+If the BIDI option is omitted, the bidi support will not be compiled.
+
+-- 
+Ehud Shabtai
+http://www.freemap.co.il/map/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_bidi.patch
+Type: text/x-patch
+Size: 2535 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061212/9dfa5d2f/attachment.bin>
+
+From mccreary at crmeng.com  Tue Dec 12 18:29:25 2006
+From: mccreary at crmeng.com (Charles McCreary)
+Date: Tue, 12 Dec 2006 11:29:25 -0600
+Subject: [Mapnik-devel] tiff rendering
+Message-ID: <457EE6F5.8020703@crmeng.com>
+
+I'm trying to render a large LandSat7 tiff image using the svn trunk.
+
+My ultimate objective is to write a wxPython simple map viewer in which 
+various vector layers are overlayed on the satellite image.
+
+My immediate problem is that I cannot render a tiff image. Does anyone 
+have a tiff image and sample code to accomplish this? I understand that 
+I must tile the tiff image as well. What parameters for tiffcp should be 
+used?
+
+Code that does not work (renders just the white background):
+
+from mapnik import *
+# The projection info is taken from the output of listgeo -proj4
+m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+m.background = Color('white')
+landsat7_lyr = Layer('LandSat7')
+
+ds = Raster(format='tiff',
+             lox = '485831.0',
+             loy = '5931526.0',
+             hix = '714791.0',
+             hiy = '6150226.0',
+             file='test.tif')
+landsat7_lyr.datasource = ds
+
+landsat7_style = Style()
+landsat7_rule = Rule()
+sym = RasterSymbolizer()
+landsat7_rule.symbols.append(sym)
+landsat7_style.rules.append(landsat7_rule)
+m.append_style('landsat7 style', landsat7_style)
+landsat7_lyr.styles.append('landsat7_lyr')
+m.layers.append(landsat7_lyr)
+
+m.zoom_to_box(landsat7_lyr.envelope())
+render_to_file(m, 'map_test2.png', 'png')
+
+-- 
+Charles R. McCreary PE
+CRM Engineering Services
+www.crmeng.com
+903.643.3490 - Voice
+903.643.3012 - Facsimile
+
+
+From artem at pavlenko.uklinux.net  Tue Dec 12 18:45:18 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 12 Dec 2006 17:45:18 +0000
+Subject: [Mapnik-devel] tiff rendering
+In-Reply-To: <457EE6F5.8020703@crmeng.com>
+References: <457EE6F5.8020703@crmeng.com>
+Message-ID: <457EEAAE.108@pavlenko.uklinux.net>
+
+At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+mapnik doesn't read projection information from geotilffs.
+
+1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+2.
+.........
+landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 +ellips=GRS80 
++units=m')
+........
+
+If you can put this tiff on ftp server somewhere I'll be able to have a 
+look further.
+
+Regards,
+Artem
+> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+>
+> My ultimate objective is to write a wxPython simple map viewer in which 
+> various vector layers are overlayed on the satellite image.
+>
+> My immediate problem is that I cannot render a tiff image. Does anyone 
+> have a tiff image and sample code to accomplish this? I understand that 
+> I must tile the tiff image as well. What parameters for tiffcp should be 
+> used?
+>
+> Code that does not work (renders just the white background):
+>
+> from mapnik import *
+> # The projection info is taken from the output of listgeo -proj4
+> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+> m.background = Color('white')
+> landsat7_lyr = Layer('LandSat7')
+>
+> ds = Raster(format='tiff',
+>              lox = '485831.0',
+>              loy = '5931526.0',
+>              hix = '714791.0',
+>              hiy = '6150226.0',
+>              file='test.tif')
+> landsat7_lyr.datasource = ds
+>
+> landsat7_style = Style()
+> landsat7_rule = Rule()
+> sym = RasterSymbolizer()
+> landsat7_rule.symbols.append(sym)
+> landsat7_style.rules.append(landsat7_rule)
+> m.append_style('landsat7 style', landsat7_style)
+> landsat7_lyr.styles.append('landsat7_lyr')
+> m.layers.append(landsat7_lyr)
+>
+> m.zoom_to_box(landsat7_lyr.envelope())
+> render_to_file(m, 'map_test2.png', 'png')
+>
+>   
+
+
+From artem at pavlenko.uklinux.net  Tue Dec 12 21:35:06 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 12 Dec 2006 20:35:06 +0000
+Subject: [Mapnik-devel] tiff rendering
+In-Reply-To: <457EF23D.2000008@crmeng.com>
+References: <457EE6F5.8020703@crmeng.com> <457EEAAE.108@pavlenko.uklinux.net>
+	<457EF23D.2000008@crmeng.com>
+Message-ID: <457F127A.7020108@pavlenko.uklinux.net>
+
+Charles,
+
+You need to specify style name for the layer to use e.g.
+landsat7_lyr.styles.append('landsat7 style')
+
+The tiff is quite large and it takes ~30sec to render and save to png 
+the whole image.  For better performance I'd suggest you create scaled 
+down versions of the same image and use rule/scale denominators to 
+render appropriate version. Together with 'tiling' (tiffcp) this will 
+provide 'pyramid' effect.
+
+Here is modified source that works for me:
+
+from mapnik import *
+
+# The projection info is taken from the output of listgeo -proj4
+
+m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+
+m.background = Color('white')
+
+landsat7_lyr = Layer('LandSat7',"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+
+landsat7_lyr.styles.append('landsat7 style')
+
+ds = Raster(format='tiff',
+
+             lox = '485831.0',
+
+             loy = '5931526.0',
+
+             hix = '714791.0',
+
+             hiy = '6150226.0',
+
+             file='/data/raster/raster.tiff')
+
+landsat7_lyr.datasource = ds
+
+landsat7_style = Style()
+
+landsat7_rule = Rule()
+
+sym = RasterSymbolizer()
+
+landsat7_rule.symbols.append(sym)
+
+landsat7_style.rules.append(landsat7_rule)
+
+m.append_style('landsat7 style', landsat7_style)
+
+landsat7_lyr.styles.append('landsat7_lyr')
+
+m.layers.append(landsat7_lyr)
+
+m.zoom_to_box(landsat7_lyr.envelope())
+
+#m.zoom_to_box(Envelope(537051.7450197876,6041155.107914236,544365.0045170359,6044713.534336278))
+
+render_to_file(m, 'map_test2.png', 'png') 
+
+
+
+> I cropped a small rectangle out of the large image, ran it through 
+> tiffcp, and tried it. No luck.  Attached is the tiff I tried.
+>
+> Artem Pavlenko wrote:
+>> At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+>> mapnik doesn't read projection information from geotilffs.
+>>
+>> 1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+>> 2.
+>> .........
+>> landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 
+>> +ellips=GRS80 +units=m')
+>> ........
+>>
+>> If you can put this tiff on ftp server somewhere I'll be able to have 
+>> a look further.
+>>
+>> Regards,
+>> Artem
+>>> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+>>>
+>>> My ultimate objective is to write a wxPython simple map viewer in 
+>>> which various vector layers are overlayed on the satellite image.
+>>>
+>>> My immediate problem is that I cannot render a tiff image. Does 
+>>> anyone have a tiff image and sample code to accomplish this? I 
+>>> understand that I must tile the tiff image as well. What parameters 
+>>> for tiffcp should be used?
+>>>
+>>> Code that does not work (renders just the white background):
+>>>
+>>> from mapnik import *
+>>> # The projection info is taken from the output of listgeo -proj4
+>>> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>>> m.background = Color('white')
+>>> landsat7_lyr = Layer('LandSat7')
+>>>
+>>> ds = Raster(format='tiff',
+>>>              lox = '485831.0',
+>>>              loy = '5931526.0',
+>>>              hix = '714791.0',
+>>>              hiy = '6150226.0',
+>>>              file='test.tif')
+>>> landsat7_lyr.datasource = ds
+>>>
+>>> landsat7_style = Style()
+>>> landsat7_rule = Rule()
+>>> sym = RasterSymbolizer()
+>>> landsat7_rule.symbols.append(sym)
+>>> landsat7_style.rules.append(landsat7_rule)
+>>> m.append_style('landsat7 style', landsat7_style)
+>>> landsat7_lyr.styles.append('landsat7_lyr')
+>>> m.layers.append(landsat7_lyr)
+>>>
+>>> m.zoom_to_box(landsat7_lyr.envelope())
+>>> render_to_file(m, 'map_test2.png', 'png')
+>>>
+>>>   
+
+
+From charles.mccreary at crmeng.com  Wed Dec 13 06:00:54 2006
+From: charles.mccreary at crmeng.com (Charles R. McCreary)
+Date: Tue, 12 Dec 2006 23:00:54 -0600
+Subject: [Mapnik-devel] tiff rendering
+In-Reply-To: <457F127A.7020108@pavlenko.uklinux.net>
+References: <457EE6F5.8020703@crmeng.com> <457EEAAE.108@pavlenko.uklinux.net>
+	<457EF23D.2000008@crmeng.com>
+	<457F127A.7020108@pavlenko.uklinux.net>
+Message-ID: <457F8906.1000806@crmeng.com>
+
+The now obvious error is appending the layer as a style:
+I had:
+landsat7_lyr.styles.append('landsat7_lyr') !Doh
+I should have had:
+landsat7_lyr.styles.append('landsat7 style')
+
+Mapnik swallowed it silently! I'll need to trace that and see what was 
+happening when I applied a layer object as a style.
+
+I notice that in your correction to my code, it did not matter that I 
+later appended the layer as a style, nor does it seem to matter when you 
+append the style. I guess you can build the object in any order and it 
+is processed later. I haven't crawled through the code yet, so my 
+observations are probably obvious.
+
+Artem Pavlenko wrote:
+> Charles,
+>
+> You need to specify style name for the layer to use e.g.
+> landsat7_lyr.styles.append('landsat7 style')
+>
+> The tiff is quite large and it takes ~30sec to render and save to png 
+> the whole image.  For better performance I'd suggest you create scaled 
+> down versions of the same image and use rule/scale denominators to 
+> render appropriate version. Together with 'tiling' (tiffcp) this will 
+> provide 'pyramid' effect.
+>
+> Here is modified source that works for me:
+>
+> from mapnik import *
+>
+> # The projection info is taken from the output of listgeo -proj4
+>
+> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>
+> m.background = Color('white')
+>
+> landsat7_lyr = Layer('LandSat7',"+proj=utm +zone=12 +ellips=GRS80 
+> +units=m")
+>
+> landsat7_lyr.styles.append('landsat7 style')
+>
+> ds = Raster(format='tiff',
+>
+>             lox = '485831.0',
+>
+>             loy = '5931526.0',
+>
+>             hix = '714791.0',
+>
+>             hiy = '6150226.0',
+>
+>             file='/data/raster/raster.tiff')
+>
+> landsat7_lyr.datasource = ds
+>
+> landsat7_style = Style()
+>
+> landsat7_rule = Rule()
+>
+> sym = RasterSymbolizer()
+>
+> landsat7_rule.symbols.append(sym)
+>
+> landsat7_style.rules.append(landsat7_rule)
+>
+> m.append_style('landsat7 style', landsat7_style)
+>
+> landsat7_lyr.styles.append('landsat7_lyr')
+>
+> m.layers.append(landsat7_lyr)
+>
+> m.zoom_to_box(landsat7_lyr.envelope())
+>
+> #m.zoom_to_box(Envelope(537051.7450197876,6041155.107914236,544365.0045170359,6044713.534336278)) 
+>
+>
+> render_to_file(m, 'map_test2.png', 'png')
+>
+>
+>> I cropped a small rectangle out of the large image, ran it through 
+>> tiffcp, and tried it. No luck.  Attached is the tiff I tried.
+>>
+>> Artem Pavlenko wrote:
+>>> At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+>>> mapnik doesn't read projection information from geotilffs.
+>>>
+>>> 1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+>>> 2.
+>>> .........
+>>> landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 
+>>> +ellips=GRS80 +units=m')
+>>> ........
+>>>
+>>> If you can put this tiff on ftp server somewhere I'll be able to 
+>>> have a look further.
+>>>
+>>> Regards,
+>>> Artem
+>>>> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+>>>>
+>>>> My ultimate objective is to write a wxPython simple map viewer in 
+>>>> which various vector layers are overlayed on the satellite image.
+>>>>
+>>>> My immediate problem is that I cannot render a tiff image. Does 
+>>>> anyone have a tiff image and sample code to accomplish this? I 
+>>>> understand that I must tile the tiff image as well. What parameters 
+>>>> for tiffcp should be used?
+>>>>
+>>>> Code that does not work (renders just the white background):
+>>>>
+>>>> from mapnik import *
+>>>> # The projection info is taken from the output of listgeo -proj4
+>>>> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>>>> m.background = Color('white')
+>>>> landsat7_lyr = Layer('LandSat7')
+>>>>
+>>>> ds = Raster(format='tiff',
+>>>>              lox = '485831.0',
+>>>>              loy = '5931526.0',
+>>>>              hix = '714791.0',
+>>>>              hiy = '6150226.0',
+>>>>              file='test.tif')
+>>>> landsat7_lyr.datasource = ds
+>>>>
+>>>> landsat7_style = Style()
+>>>> landsat7_rule = Rule()
+>>>> sym = RasterSymbolizer()
+>>>> landsat7_rule.symbols.append(sym)
+>>>> landsat7_style.rules.append(landsat7_rule)
+>>>> m.append_style('landsat7 style', landsat7_style)
+>>>> landsat7_lyr.styles.append('landsat7_lyr')
+>>>> m.layers.append(landsat7_lyr)
+>>>>
+>>>> m.zoom_to_box(landsat7_lyr.envelope())
+>>>> render_to_file(m, 'map_test2.png', 'png')
+>>>>
+>>>>   
+
+
+From charles.mccreary at crmeng.com  Wed Dec 13 15:18:25 2006
+From: charles.mccreary at crmeng.com (Charles R. McCreary)
+Date: Wed, 13 Dec 2006 08:18:25 -0600
+Subject: [Mapnik-devel] tiff rendering
+In-Reply-To: <457F127A.7020108@pavlenko.uklinux.net>
+References: <457EE6F5.8020703@crmeng.com> <457EEAAE.108@pavlenko.uklinux.net>
+	<457EF23D.2000008@crmeng.com>
+	<457F127A.7020108@pavlenko.uklinux.net>
+Message-ID: <45800BB1.6090903@crmeng.com>
+
+Thanks very much for your help! 30 sec? It only takes 1.76 sec on my old 
+laptop! What could be the reason for the large difference in rendering 
+time? The resulting image is 555.8 KB.
+
+Artem Pavlenko wrote:
+> Charles,
+>
+> You need to specify style name for the layer to use e.g.
+> landsat7_lyr.styles.append('landsat7 style')
+>
+> The tiff is quite large and it takes ~30sec to render and save to png 
+> the whole image.  For better performance I'd suggest you create scaled 
+> down versions of the same image and use rule/scale denominators to 
+> render appropriate version. Together with 'tiling' (tiffcp) this will 
+> provide 'pyramid' effect.
+>
+> Here is modified source that works for me:
+>
+> from mapnik import *
+>
+> # The projection info is taken from the output of listgeo -proj4
+>
+> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>
+> m.background = Color('white')
+>
+> landsat7_lyr = Layer('LandSat7',"+proj=utm +zone=12 +ellips=GRS80 
+> +units=m")
+>
+> landsat7_lyr.styles.append('landsat7 style')
+>
+> ds = Raster(format='tiff',
+>
+>             lox = '485831.0',
+>
+>             loy = '5931526.0',
+>
+>             hix = '714791.0',
+>
+>             hiy = '6150226.0',
+>
+>             file='/data/raster/raster.tiff')
+>
+> landsat7_lyr.datasource = ds
+>
+> landsat7_style = Style()
+>
+> landsat7_rule = Rule()
+>
+> sym = RasterSymbolizer()
+>
+> landsat7_rule.symbols.append(sym)
+>
+> landsat7_style.rules.append(landsat7_rule)
+>
+> m.append_style('landsat7 style', landsat7_style)
+>
+> landsat7_lyr.styles.append('landsat7_lyr')
+>
+> m.layers.append(landsat7_lyr)
+>
+> m.zoom_to_box(landsat7_lyr.envelope())
+>
+> #m.zoom_to_box(Envelope(537051.7450197876,6041155.107914236,544365.0045170359,6044713.534336278)) 
+>
+>
+> render_to_file(m, 'map_test2.png', 'png')
+>
+>
+>> I cropped a small rectangle out of the large image, ran it through 
+>> tiffcp, and tried it. No luck.  Attached is the tiff I tried.
+>>
+>> Artem Pavlenko wrote:
+>>> At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+>>> mapnik doesn't read projection information from geotilffs.
+>>>
+>>> 1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+>>> 2.
+>>> .........
+>>> landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 
+>>> +ellips=GRS80 +units=m')
+>>> ........
+>>>
+>>> If you can put this tiff on ftp server somewhere I'll be able to 
+>>> have a look further.
+>>>
+>>> Regards,
+>>> Artem
+>>>> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+>>>>
+>>>> My ultimate objective is to write a wxPython simple map viewer in 
+>>>> which various vector layers are overlayed on the satellite image.
+>>>>
+>>>> My immediate problem is that I cannot render a tiff image. Does 
+>>>> anyone have a tiff image and sample code to accomplish this? I 
+>>>> understand that I must tile the tiff image as well. What parameters 
+>>>> for tiffcp should be used?
+>>>>
+>>>> Code that does not work (renders just the white background):
+>>>>
+>>>> from mapnik import *
+>>>> # The projection info is taken from the output of listgeo -proj4
+>>>> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>>>> m.background = Color('white')
+>>>> landsat7_lyr = Layer('LandSat7')
+>>>>
+>>>> ds = Raster(format='tiff',
+>>>>              lox = '485831.0',
+>>>>              loy = '5931526.0',
+>>>>              hix = '714791.0',
+>>>>              hiy = '6150226.0',
+>>>>              file='test.tif')
+>>>> landsat7_lyr.datasource = ds
+>>>>
+>>>> landsat7_style = Style()
+>>>> landsat7_rule = Rule()
+>>>> sym = RasterSymbolizer()
+>>>> landsat7_rule.symbols.append(sym)
+>>>> landsat7_style.rules.append(landsat7_rule)
+>>>> m.append_style('landsat7 style', landsat7_style)
+>>>> landsat7_lyr.styles.append('landsat7_lyr')
+>>>> m.layers.append(landsat7_lyr)
+>>>>
+>>>> m.zoom_to_box(landsat7_lyr.envelope())
+>>>> render_to_file(m, 'map_test2.png', 'png')
+>>>>
+>>>>   
+
+
+From nickblack1 at gmail.com  Wed Dec 13 16:25:53 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Wed, 13 Dec 2006 15:25:53 +0000
+Subject: [Mapnik-devel] SVG question
+Message-ID: <223020e60612130725i1047ef21yad4fc5ff7319797f@mail.gmail.com>
+
+Hello,
+
+I'm trying to produce a line style to represent a railway.  I want it to
+look like:
+
+=|=|=|=|=|=|=
+
+except the two horizontal lines should be continuous, not broken.  So far I
+have this config:
+
+ <Style name="rail_casing">
+   <Rule>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#b6b5b3</CssParameter>
+        <CssParameter name="stroke-width">5</CssParameter>
+        <CssParameter name="stroke-linejoin">miter</CssParameter>
+        <CssParameter name="stroke-linecap">butt</CssParameter>
+      </LineSymbolizer>
+   </Rule>
+  </Style>
+
+  <Style name="rail">
+   <Rule>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#ffffff</CssParameter>
+        <CssParameter name="stroke-width">3</CssParameter>
+        <CssParameter name="stroke-linejoin">miter</CssParameter>
+        <CssParameter name="stroke-linecap">butt</CssParameter>
+      </LineSymbolizer>
+   </Rule>
+  </Style>
+
+ <Style name="rail_stroke">
+   <Rule>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#a0a0a0</CssParameter>
+        <CssParameter name="stroke-width">5</CssParameter>
+        <CssParameter name="stroke-linejoin">miter</CssParameter>
+        <CssParameter name="stroke-linecap">butt</CssParameter>
+        <CssParameter name="stroke-dasharray">0.1,5</CssParameter>
+      </LineSymbolizer>
+   </Rule>
+  </Style>
+
+With each of these styles applied in this order by seperate layers.  The
+problem with this is that the top most layer should represent the
+perpendicular strokes, something I tried to achieve by reducing the length
+of the stroke to 0.1 - I guess this wont work though.
+
+So is there abother way to acheive what I am trying to?  Is it possible to
+draw perpendicular strokes of m width, every n pixels along the line?
+
+Cheers,
+
+Nick
+
+
+
+
+-- 
+Nick Black
+--------------------------------
+http://www.blairclock.com
+---------------------------------
+http://www.blacksworld.net
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061213/b17924da/attachment.html>
+
+From artem at pavlenko.uklinux.net  Wed Dec 13 17:02:40 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Wed, 13 Dec 2006 16:02:40 +0000
+Subject: [Mapnik-devel] tiff rendering
+In-Reply-To: <45800BB1.6090903@crmeng.com>
+References: <457EE6F5.8020703@crmeng.com> <457EEAAE.108@pavlenko.uklinux.net>
+	<457EF23D.2000008@crmeng.com>
+	<457F127A.7020108@pavlenko.uklinux.net>
+	<45800BB1.6090903@crmeng.com>
+Message-ID: <45802420.10805@pavlenko.uklinux.net>
+
+Hmm... do you mean it takes 1.76s to load tiff, render and save to png?  
+I'd like to hear more about your setup,please
+Thanks,
+Artem
+
+Charles R. McCreary wrote:
+> Thanks very much for your help! 30 sec? It only takes 1.76 sec on my 
+> old laptop! What could be the reason for the large difference in 
+> rendering time? The resulting image is 555.8 KB.
+>
+> Artem Pavlenko wrote:
+>> Charles,
+>>
+>> You need to specify style name for the layer to use e.g.
+>> landsat7_lyr.styles.append('landsat7 style')
+>>
+>> The tiff is quite large and it takes ~30sec to render and save to png 
+>> the whole image.  For better performance I'd suggest you create 
+>> scaled down versions of the same image and use rule/scale 
+>> denominators to render appropriate version. Together with 'tiling' 
+>> (tiffcp) this will provide 'pyramid' effect.
+>>
+>> Here is modified source that works for me:
+>>
+>> from mapnik import *
+>>
+>> # The projection info is taken from the output of listgeo -proj4
+>>
+>> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>>
+>> m.background = Color('white')
+>>
+>> landsat7_lyr = Layer('LandSat7',"+proj=utm +zone=12 +ellips=GRS80 
+>> +units=m")
+>>
+>> landsat7_lyr.styles.append('landsat7 style')
+>>
+>> ds = Raster(format='tiff',
+>>
+>>             lox = '485831.0',
+>>
+>>             loy = '5931526.0',
+>>
+>>             hix = '714791.0',
+>>
+>>             hiy = '6150226.0',
+>>
+>>             file='/data/raster/raster.tiff')
+>>
+>> landsat7_lyr.datasource = ds
+>>
+>> landsat7_style = Style()
+>>
+>> landsat7_rule = Rule()
+>>
+>> sym = RasterSymbolizer()
+>>
+>> landsat7_rule.symbols.append(sym)
+>>
+>> landsat7_style.rules.append(landsat7_rule)
+>>
+>> m.append_style('landsat7 style', landsat7_style)
+>>
+>> landsat7_lyr.styles.append('landsat7_lyr')
+>>
+>> m.layers.append(landsat7_lyr)
+>>
+>> m.zoom_to_box(landsat7_lyr.envelope())
+>>
+>> #m.zoom_to_box(Envelope(537051.7450197876,6041155.107914236,544365.0045170359,6044713.534336278)) 
+>>
+>>
+>> render_to_file(m, 'map_test2.png', 'png')
+>>
+>>
+>>> I cropped a small rectangle out of the large image, ran it through 
+>>> tiffcp, and tried it. No luck.  Attached is the tiff I tried.
+>>>
+>>> Artem Pavlenko wrote:
+>>>> At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+>>>> mapnik doesn't read projection information from geotilffs.
+>>>>
+>>>> 1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+>>>> 2.
+>>>> .........
+>>>> landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 
+>>>> +ellips=GRS80 +units=m')
+>>>> ........
+>>>>
+>>>> If you can put this tiff on ftp server somewhere I'll be able to 
+>>>> have a look further.
+>>>>
+>>>> Regards,
+>>>> Artem
+>>>>> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+>>>>>
+>>>>> My ultimate objective is to write a wxPython simple map viewer in 
+>>>>> which various vector layers are overlayed on the satellite image.
+>>>>>
+>>>>> My immediate problem is that I cannot render a tiff image. Does 
+>>>>> anyone have a tiff image and sample code to accomplish this? I 
+>>>>> understand that I must tile the tiff image as well. What 
+>>>>> parameters for tiffcp should be used?
+>>>>>
+>>>>> Code that does not work (renders just the white background):
+>>>>>
+>>>>> from mapnik import *
+>>>>> # The projection info is taken from the output of listgeo -proj4
+>>>>> m = Map(800,600,"+proj=utm +zone=12 +ellips=GRS80 +units=m")
+>>>>> m.background = Color('white')
+>>>>> landsat7_lyr = Layer('LandSat7')
+>>>>>
+>>>>> ds = Raster(format='tiff',
+>>>>>              lox = '485831.0',
+>>>>>              loy = '5931526.0',
+>>>>>              hix = '714791.0',
+>>>>>              hiy = '6150226.0',
+>>>>>              file='test.tif')
+>>>>> landsat7_lyr.datasource = ds
+>>>>>
+>>>>> landsat7_style = Style()
+>>>>> landsat7_rule = Rule()
+>>>>> sym = RasterSymbolizer()
+>>>>> landsat7_rule.symbols.append(sym)
+>>>>> landsat7_style.rules.append(landsat7_rule)
+>>>>> m.append_style('landsat7 style', landsat7_style)
+>>>>> landsat7_lyr.styles.append('landsat7_lyr')
+>>>>> m.layers.append(landsat7_lyr)
+>>>>>
+>>>>> m.zoom_to_box(landsat7_lyr.envelope())
+>>>>> render_to_file(m, 'map_test2.png', 'png')
+>>>>>
+>>>>>   
+>
+>
+
+
+From artem at pavlenko.uklinux.net  Wed Dec 13 17:06:53 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Wed, 13 Dec 2006 16:06:53 +0000
+Subject: [Mapnik-devel] SVG question
+In-Reply-To: <223020e60612130725i1047ef21yad4fc5ff7319797f@mail.gmail.com>
+References: <223020e60612130725i1047ef21yad4fc5ff7319797f@mail.gmail.com>
+Message-ID: <4580251D.5060806@pavlenko.uklinux.net>
+
+Nick,
+
+To achieve rail-track stoke I'd suggest you create nice SVG in inkscape 
+(or similar tool), export to png  and then  use  LinePatternSymbolizer.
+
+I did something like that for http://mapnik.org/tiling/vancouver/
+
+Cheers,
+Artem
+> Hello,
+>
+> I'm trying to produce a line style to represent a railway.  I want it 
+> to look like:
+>
+> =|=|=|=|=|=|=
+>
+> except the two horizontal lines should be continuous, not broken.  So 
+> far I have this config:
+>
+>  <Style name="rail_casing">
+>    <Rule>
+>       <LineSymbolizer>
+>         <CssParameter name="stroke">#b6b5b3</CssParameter>
+>         <CssParameter name="stroke-width">5</CssParameter>
+>         <CssParameter name="stroke-linejoin">miter</CssParameter>
+>         <CssParameter name="stroke-linecap">butt</CssParameter>
+>       </LineSymbolizer>
+>    </Rule>
+>   </Style>
+>
+>   <Style name="rail">
+>    <Rule>
+>       <LineSymbolizer>
+>         <CssParameter name="stroke">#ffffff</CssParameter>
+>         <CssParameter name="stroke-width">3</CssParameter>
+>         <CssParameter name="stroke-linejoin">miter</CssParameter>
+>         <CssParameter name="stroke-linecap">butt</CssParameter>
+>       </LineSymbolizer>
+>    </Rule>
+>   </Style>
+>
+>  <Style name="rail_stroke">
+>    <Rule>
+>       <LineSymbolizer>
+>         <CssParameter name="stroke">#a0a0a0</CssParameter>
+>         <CssParameter name="stroke-width">5</CssParameter>
+>         <CssParameter name="stroke-linejoin">miter</CssParameter>
+>         <CssParameter name="stroke-linecap">butt</CssParameter>
+>         <CssParameter name="stroke-dasharray"> 0.1,5</CssParameter>
+>       </LineSymbolizer>
+>    </Rule>
+>   </Style>
+>
+> With each of these styles applied in this order by seperate layers.  
+> The problem with this is that the top most layer should represent the 
+> perpendicular strokes, something I tried to achieve by reducing the 
+> length of the stroke to 0.1 - I guess this wont work though.
+>
+> So is there abother way to acheive what I am trying to?  Is it 
+> possible to draw perpendicular strokes of m width, every n pixels 
+> along the line?
+>
+> Cheers,
+>
+> Nick
+>
+>
+>
+>
+> -- 
+> Nick Black
+> --------------------------------
+> http://www.blairclock.com
+> ---------------------------------
+> http://www.blacksworld.net
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From artem at pavlenko.uklinux.net  Wed Dec 13 17:47:29 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Wed, 13 Dec 2006 16:47:29 +0000
+Subject: [Mapnik-devel] PATCH for BIDI labels support
+In-Reply-To: <b8dc1f520612120134q7700d44bhf21f4b8c9b5ea766@mail.gmail.com>
+References: <b8dc1f520612120134q7700d44bhf21f4b8c9b5ea766@mail.gmail.com>
+Message-ID: <45802EA1.2070601@pavlenko.uklinux.net>
+
+Ehud,
+Your patch sounds great! I'll try to integrate it over this weekend.
+Thanks for your contribution!
+Artem.
+> Hi,
+>
+> The attached patch adds support for right to left languages by using
+> the fribidi library.
+>
+> I'm not familiar with scons, so I'm not sure I handled the
+> modifications correctly.
+>
+> To enable BIDI support specify BIDI=1 as an option to scons.
+> If the BIDI option is omitted, the bidi support will not be compiled.
+>
+> ------------------------------------------------------------------------
+>
+> Index: include/mapnik/unicode.hpp
+> ===================================================================
+> --- include/mapnik/unicode.hpp	(revision 411)
+> +++ include/mapnik/unicode.hpp	(working copy)
+> @@ -26,8 +26,53 @@
+>  
+>  #include <string>
+>  
+> +#ifdef USE_FRIBIDI
+> +#include <fribidi/fribidi.h>
+> +#endif
+> +
+>  namespace mapnik {
+>      
+> +/*
+> +** Use FRIBIDI to encode the string.
+> +** The return value must be freed by the caller.
+> +*/
+> +
+> +#ifdef USE_FRIBIDI
+> +    inline wchar_t* bidi_string(const wchar_t *logical)
+> +    {
+> +        FriBidiCharType base = FRIBIDI_TYPE_ON;
+> +        size_t len;
+> +
+> +        len = wcslen(logical);
+> +
+> +        FriBidiChar *visual;
+> +
+> +        FriBidiStrIndex *ltov, *vtol;
+> +        FriBidiLevel *levels;
+> +        FriBidiStrIndex new_len;
+> +        fribidi_boolean log2vis;
+> +
+> +        visual = (FriBidiChar *) malloc (sizeof (FriBidiChar) * (len + 1));
+> +        ltov = NULL;
+> +        vtol = NULL;
+> +        levels = NULL;
+> +
+> +        /* Create a bidi string. */
+> +        log2vis = fribidi_log2vis ((FriBidiChar *)logical, len, &base,
+> +                /* output */
+> +                visual, ltov, vtol, levels);
+> +
+> +        if (!log2vis) {
+> +            return NULL;
+> +        }
+> +
+> +        new_len = len;
+> +
+> +        return (wchar_t *)visual;
+> +    }
+> +#endif
+> +
+> +
+>      inline std::wstring to_unicode(std::string const& text)
+>      {
+>          std::wstring out;
+> @@ -75,6 +120,12 @@
+>              }
+>              out.push_back(wchar_t(code));
+>          }
+> +#ifdef USE_FRIBIDI
+> +        wchar_t *bidi_text = bidi_string(out.c_str());
+> +        out = bidi_text;
+> +        free(bidi_text);
+> +#endif
+> +        
+>          return out;
+>      }
+>  }
+> Index: SConstruct
+> ===================================================================
+> --- SConstruct	(revision 411)
+> +++ SConstruct	(working copy)
+> @@ -46,6 +46,7 @@
+>  opts.Add(ListOption('INPUT_PLUGINS','Input drivers to include','all',['postgis','shape','raster']))
+>  opts.Add(ListOption('BINDINGS','Language bindings to build','all',['python']))
+>  opts.Add('DEBUG', 'Compile a debug version of mapnik', '')
+> +opts.Add('BIDI', 'BIDI support', '')
+>  
+>  env = Environment(ENV=os.environ, options=opts)
+>  env['LIBDIR_SCHEMA'] = LIBDIR_SCHEMA
+> @@ -149,6 +150,10 @@
+>  else:
+>      env.Append(CXXFLAGS = '-ansi -Wall -ftemplate-depth-100 -O3 -finline-functions -Wno-inline -pthread -DNDEBUG -DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL')
+>  
+> +if env['BIDI']:
+> +    env.Append(CXXFLAGS = '-DUSE_FRIBIDI')
+> +    env['LIBS'].append('fribidi')
+> +
+>  # Build agg first, doesn't need anything special
+>  
+>  SConscript('agg/SConscript')
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From robert.coup at onetrackmind.co.nz  Wed Dec 13 21:44:34 2006
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Thu, 14 Dec 2006 09:44:34 +1300
+Subject: [Mapnik-devel] SVG question
+In-Reply-To: <223020e60612130725i1047ef21yad4fc5ff7319797f@mail.gmail.com>
+References: <223020e60612130725i1047ef21yad4fc5ff7319797f@mail.gmail.com>
+Message-ID: <45806632.7010307@onetrackmind.co.nz>
+
+Nick Black wrote:
+> I'm trying to produce a line style to represent a railway.  I want it 
+> to look like:
+>
+> =|=|=|=|=|=|=
+>
+> except the two horizontal lines should be continuous, not broken.  So 
+> far I have this config:
+>
+> With each of these styles applied in this order by seperate layers.  
+> The problem with this is that the top most layer should represent the 
+> perpendicular strokes, something I tried to achieve by reducing the 
+> length of the stroke to 0.1 - I guess this wont work though.
+The length of the stroke is in pixels. So I would imagine a line 0.1px 
+long would not be drawn unless your computer has rounding issues.
+> So is there abother way to acheive what I am trying to?  Is it 
+> possible to draw perpendicular strokes of m width, every n pixels 
+> along the line?
+Make it 1+px long? You probably want it wider too since 5px is the width 
+of your casing line.
+
+We use dashes 1,8 and 8px wide with the center line of 1px width. (thats 
+for a single line only).
+
+Rob :)
+
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Mobile +64-21-572 632
+Web http://www.onetrackmind.co.nz 
+
+
+
+
+From nickblack1 at gmail.com  Thu Dec 21 11:21:02 2006
+From: nickblack1 at gmail.com (Nick Black)
+Date: Thu, 21 Dec 2006 10:21:02 +0000
+Subject: [Mapnik-devel] Compile error - Revision: 418
+Message-ID: <223020e60612210221yafdf6cft10a846d0e4a2c97f@mail.gmail.com>
+
+hello,
+
+I get this error compiling 418 on Ubuntu server:
+
+src/tiff_reader.cpp: In member function 'TIFF*
+mapnik::TiffReader::load_if_exists(const std::string&)':
+
+
+anyone else have the same problem?
+
+
+Nick
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061221/1ecc87c4/attachment.html>
+
+From artem at mapnik.org  Thu Dec 21 12:06:37 2006
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 21 Dec 2006 11:06:37 +0000
+Subject: [Mapnik-devel] Compile error - Revision: 418
+In-Reply-To: <223020e60612210221yafdf6cft10a846d0e4a2c97f@mail.gmail.com>
+References: <223020e60612210221yafdf6cft10a846d0e4a2c97f@mail.gmail.com>
+Message-ID: <200612211106.37722.artem@mapnik.org>
+
+Nick,
+
+Could you post the complete err message and I'll have a look.
+
+Cheers,
+Artem
+
+On Thursday 21 December 2006 10:21, Nick Black wrote:
+
+> hello,
+>
+> I get this error compiling 418 on Ubuntu server:
+>
+> src/tiff_reader.cpp: In member function 'TIFF*
+> mapnik::TiffReader::load_if_exists(const std::string&)':
+>
+>
+> anyone else have the same problem?
+>
+>
+> Nick
+
+
+From pavlenko at users.berlios.de  Thu Dec 21 12:19:23 2006
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Thu, 21 Dec 2006 11:19:23 +0000
+Subject: [Mapnik-devel] Compile error - Revision: 418
+In-Reply-To: <223020e60612210221yafdf6cft10a846d0e4a2c97f@mail.gmail.com>
+References: <223020e60612210221yafdf6cft10a846d0e4a2c97f@mail.gmail.com>
+Message-ID: <200612211119.24084.pavlenko@users.berlios.de>
+
+Nick,
+Could you post complete message and I'll have a look.
+
+Artem.
+
+> hello,
+>
+> I get this error compiling 418 on Ubuntu server:
+>
+> src/tiff_reader.cpp: In member function 'TIFF*
+> mapnik::TiffReader::load_if_exists(const std::string&)':
+>
+>
+> anyone else have the same problem?
+>
+>
+> Nick
+
+

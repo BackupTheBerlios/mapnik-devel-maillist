@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] composition methods for point symbols
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3Cda9d28170812251743k74c617f4s5330d72f7589041d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000774.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] composition methods for point symbols</H1>
+    <B>Brian Quinion</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3Cda9d28170812251743k74c617f4s5330d72f7589041d%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] [PATCH] composition methods for point symbols">openstreetmap at brian.quinion.co.uk
+       </A><BR>
+    <I>Fri Dec 26 02:43:20 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000774.html">[Mapnik-devel] Any chance for a new win32 build???
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#775">[ date ]</a>
+              <a href="thread.html#775">[ thread ]</a>
+              <a href="subject.html#775">[ subject ]</a>
+              <a href="author.html#775">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The attached patch allows symbols images to be merged using a variety
+of methods (hue, sat, lum, colourize, and combinations) it adds the
+following stylesheet option:
+
+composition_method=&quot;colorize&quot;
+
+defaults to &quot;copy&quot;.
+
+If anyone can think of a better name for this functionality let me
+know - I couldn't think of a good one!
+
+Also adds generic hsl2rgb and rgs2hsl used for the above functionality.
+
+Cheers,
+--
+ Brian
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000774.html">[Mapnik-devel] Any chance for a new win32 build???
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#775">[ date ]</a>
+              <a href="thread.html#775">[ thread ]</a>
+              <a href="subject.html#775">[ subject ]</a>
+              <a href="author.html#775">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

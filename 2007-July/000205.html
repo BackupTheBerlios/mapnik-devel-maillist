@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] segfault with mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20segfault%20with%20mapnik&In-Reply-To=%3CF5DB8ABF-C16D-4F1D-8F04-9A91E542B55C%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000204.html">
+   <LINK REL="Next"  HREF="000209.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] segfault with mapnik</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20segfault%20with%20mapnik&In-Reply-To=%3CF5DB8ABF-C16D-4F1D-8F04-9A91E542B55C%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] segfault with mapnik">artem at mapnik.org
+       </A><BR>
+    <I>Tue Jul 24 10:57:10 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000204.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+        <LI>Next message: <A HREF="000209.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#205">[ date ]</a>
+              <a href="thread.html#205">[ thread ]</a>
+              <a href="subject.html#205">[ subject ]</a>
+              <a href="author.html#205">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 23 Jul 2007, at 22:36, Andreas Volz wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I use this code to insert a feature while runtime:
+</I>&gt;<i>
+</I>&gt;<i> class Mapniksource {
+</I>&gt;<i> ...
+</I>&gt;<i> private:
+</I>&gt;<i>   void createInternalLayer ();
+</I>&gt;<i>
+</I>&gt;<i>   boost::shared_ptr&lt;mapnik::Map&gt; map;
+</I>&gt;<i>   mapnik::memory_datasource *ds;
+</I>&gt;<i>   int m_width;
+</I>&gt;<i>   int m_height;
+</I>&gt;<i>   projection m_source;
+</I>&gt;<i>   mapnik::Layer *lyr;
+</I>&gt;<i>   int keyID;
+</I>&gt;<i>   std::vector &lt;mapnik::feature_ptr&gt; feature_ptr_vector;
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> void MapnikSource::createInternalLayer ()
+</I>&gt;<i> {
+</I>&gt;<i>   if (ds) delete ds;
+</I>
+  ds is owned by boost::shared_ptr&lt;..&gt; in Layer. You shouldn't delete  
+it.
+
+&gt;<i>   ds = new memory_datasource ();
+</I>
+
+&gt;<i>
+</I>&gt;<i>   if (lyr) delete (lyr);
+</I>&gt;<i>   lyr = new Layer (&quot;MarkerLayer&quot;);
+</I>&gt;<i>
+</I>
+You can create new Layer on stack. There is no need to new/delete and  
+keep track.
+&gt;<i>   for (unsigned int i = 0; i &lt; feature_ptr_vector.size (); i++)
+</I>&gt;<i>   {
+</I>&gt;<i>     feature_ptr &amp;f = feature_ptr_vector[i];
+</I>&gt;<i>
+</I>&gt;<i>     ds-&gt;push (f);
+</I>&gt;<i>   }
+</I>&gt;<i>
+</I>&gt;<i>   lyr-&gt;set_datasource(mapnik::datasource_ptr(ds));
+</I>&gt;<i>
+</I>&gt;<i>   lyr-&gt;set_srs(&quot;+proj=latlong +datum=WGS84&quot;);
+</I>&gt;<i>   lyr-&gt;add_style(&quot;enigator&quot;);
+</I>&gt;<i>
+</I>&gt;<i>   map-&gt;addLayer(*lyr);
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> void MapnikSource::insertDataPoint (double x, double y, const char
+</I>&gt;<i> *key, const char *value, const char* layer) {
+</I>&gt;<i>   feature_ptr f (feature_factory::create (keyID));
+</I>&gt;<i>
+</I>&gt;<i>   geometry_ptr point (new point_impl (-1));
+</I>&gt;<i>   point-&gt;move_to (x, y);
+</I>&gt;<i>
+</I>&gt;<i>   f-&gt;set_geometry(point);
+</I>&gt;<i>
+</I>&gt;<i>   transcoder tr (&quot;utf-8&quot;);
+</I>&gt;<i>   (*f)[key] = tr.transcode (value);
+</I>&gt;<i>
+</I>&gt;<i>   feature_ptr_vector.push_back (f);
+</I>&gt;<i>
+</I>&gt;<i>   keyID++;
+</I>&gt;<i>
+</I>&gt;<i>   // create Layer after each insert
+</I>&gt;<i>   createInternalLayer ();
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> This works only in 50% of all cases. Sometimes my application simply
+</I>&gt;<i> crash. The crash is inside Mapnik. Here is a gdb backtrace:
+</I>&gt;<i>
+</I>&gt;<i> Program received signal SIGSEGV, Segmentation fault.
+</I>&gt;<i> [Switching to Thread -1237186864 (LWP 12482)]
+</I>&gt;<i> 0x08059d9a in
+</I>&gt;<i> mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32&gt;
+</I>&gt;&gt;<i> ::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+</I>&gt;&gt;<i> proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+</I>&gt;&gt;<i> at /usr/local/include/mapnik/feature_style_processor.hpp:179
+</I>&gt;<i> 179                          featureset_ptr fs=ds-&gt;features(q);
+</I>
+&gt;<i> (gdb) bt
+</I>&gt;<i> #0  0x08059d9a in
+</I>&gt;<i> mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32&gt;
+</I>&gt;&gt;<i> ::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+</I>&gt;&gt;<i> proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+</I>&gt;&gt;<i> at /usr/local/include/mapnik/feature_style_processor.hpp:179
+</I>&gt;<i> #1  0x08057a3c in MapnikSource::getImageMap (this=0xbfa10184,
+</I>&gt;<i>     x_1=1210112.9791878795, y_1=6354110.4829181004,
+</I>&gt;<i> x_2=1220112.9791878795, y_2=6364110.4829181004, outImage=0xbfa100c4)
+</I>&gt;<i>     at /usr/local/include/mapnik/feature_style_processor.hpp:92
+</I>&gt;<i> #2  0x080525f9 in Navigation::getImageMap (this=0xbfa1016c,
+</I>&gt;<i>     outImage=0xbfa100c4) at Navigation.cpp:115
+</I>&gt;<i> #3  0x0805befa in NavigationScreen::updateMap (this=0xbfa0ffec,
+</I>&gt;<i> missedEvents=3) at NavigationScreen.cpp:103
+</I>&gt;<i> #4  0x0804fb2b in EcoreDispatcher::dispatcher_async_handler
+</I>&gt;<i> (data=0xbfa10094, fdh=0x8123dc8)
+</I>&gt;<i> at /usr/include/sigc++-2.0/sigc++/signal.h:686 #5  0xb7ed1749 in
+</I>&gt;<i> _ecore_main_loop_iterate_internal (once_only=0) at ecore_main.c:414
+</I>&gt;<i> #6  0xb7ed1967 in ecore_main_loop_begin () at ecore_main.c:79
+</I>&gt;<i> #7  0xb7c75887 in efl::EcoreApplication::exec (this=0x806fdb8)
+</I>&gt;<i>     at eflpp_ecore.cpp:99
+</I>&gt;<i> #8  0x08050000 in main (argc=0, argv=0x776f7401) at enigator.cpp:63
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Any ideas why this happens? I think my way to insert layers with data
+</I>&gt;<i> is perhaps a big hack. But is there a better way?
+</I>&gt;<i>
+</I>
+Try storing  datasource as a smart pointer and cast to  
+'memory_datasource' inside your member function.
+
+
+Cheers,
+Artem
+&gt;<i> regards
+</I>&gt;<i> Andreas
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070724/47bceb33/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070724/47bceb33/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000204.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+	<LI>Next message: <A HREF="000209.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#205">[ date ]</a>
+              <a href="thread.html#205">[ thread ]</a>
+              <a href="subject.html#205">[ subject ]</a>
+              <a href="author.html#205">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

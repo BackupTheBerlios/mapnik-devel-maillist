@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problems with 100% CPU hang
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20with%20100%25%20CPU%20hang&In-Reply-To=%3C4B51A788.6080601%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001051.html">
+   <LINK REL="Next"  HREF="001055.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problems with 100% CPU hang</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20with%20100%25%20CPU%20hang&In-Reply-To=%3C4B51A788.6080601%40gmx.de%3E"
+       TITLE="[Mapnik-devel] Problems with 100% CPU hang">ekkehart at gmx.de
+       </A><BR>
+    <I>Sat Jan 16 12:48:24 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001051.html">[Mapnik-devel] Mapnik 0.7.0 CHANGELOG review
+</A></li>
+        <LI>Next message: <A HREF="001055.html">[Mapnik-devel] Problems with 100% CPU hang
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1054">[ date ]</a>
+              <a href="thread.html#1054">[ thread ]</a>
+              <a href="subject.html#1054">[ subject ]</a>
+              <a href="author.html#1054">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi!
+
+We are trying to establish a rendering chain with mapnik and 
+map_tile/renderd for a topographical hiking map. The rendering basically 
+works fine, but there are certain tiles that cause the renderer to hang 
+with 100% CPU use.
+
+The problem is reproducible, it will always hang on the same tile.
+The SQL database is idle during that time.
+When you request the same tile from the same instance but with a 
+different style sheet, it works.
+When you render the same tile with the same style sheet from a python 
+binding instead, it works.
+
+So it seems that there is something in the style sheet that works in 
+python and fails in C++ bindings. Mapnik version is 0.6.1., server is 
+debian.
+
+Any ideas what might explain this behaviour?
+
+thanks
+	Nop
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001051.html">[Mapnik-devel] Mapnik 0.7.0 CHANGELOG review
+</A></li>
+	<LI>Next message: <A HREF="001055.html">[Mapnik-devel] Problems with 100% CPU hang
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1054">[ date ]</a>
+              <a href="thread.html#1054">[ thread ]</a>
+              <a href="subject.html#1054">[ subject ]</a>
+              <a href="author.html#1054">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

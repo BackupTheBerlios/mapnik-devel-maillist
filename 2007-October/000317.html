@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python argument types did not match C++ signature
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20argument%20types%20did%20not%20match%20C%2B%2B%20signature&In-Reply-To=%3C1817FA0E-DF47-4DAE-BDA4-538DACF5D43E%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000316.html">
+   <LINK REL="Next"  HREF="000310.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python argument types did not match C++ signature</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20argument%20types%20did%20not%20match%20C%2B%2B%20signature&In-Reply-To=%3C1817FA0E-DF47-4DAE-BDA4-538DACF5D43E%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Python argument types did not match C++ signature">artem at mapnik.org
+       </A><BR>
+    <I>Sat Oct 20 00:35:04 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000316.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+        <LI>Next message: <A HREF="000310.html">[Mapnik-devel] [Mapnik-users] New MacPort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#317">[ date ]</a>
+              <a href="thread.html#317">[ thread ]</a>
+              <a href="subject.html#317">[ subject ]</a>
+              <a href="author.html#317">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 19 Oct 2007, at 22:56, David Siegel wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> On 17.10.2007, at 17:43, Artem Pavlenko wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I was thinking about reflecting enumerations in Python. Here is  
+</I>&gt;&gt;<i> approach that doesn't make enumeration wrapper less strict in c++:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> template &lt;typename T&gt;
+</I>&gt;&gt;<i> struct mapnik_enumeration_to_python
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>       static PyObject* convert(T const&amp; v)
+</I>&gt;&gt;<i>       {
+</I>&gt;&gt;<i>          return ::PyInt_FromLong(v);
+</I>&gt;&gt;<i>       }
+</I>&gt;&gt;<i> };
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> void export_stroke ()
+</I>&gt;&gt;<i> {
+</I>&gt;&gt;<i>     using namespace mapnik;
+</I>&gt;&gt;<i>     using namespace boost::python;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     enum_&lt;line_cap_enum&gt;(&quot;line_cap&quot;)
+</I>&gt;&gt;<i>         .value(&quot;BUTT_CAP&quot;,BUTT_CAP)
+</I>&gt;&gt;<i>         .value(&quot;SQUARE_CAP&quot;,SQUARE_CAP)
+</I>&gt;&gt;<i>         .value(&quot;ROUND_CAP&quot;,ROUND_CAP)
+</I>&gt;&gt;<i>         ;
+</I>&gt;&gt;<i>     enum_&lt;line_join_enum&gt;(&quot;line_join&quot;)
+</I>&gt;&gt;<i>         .value(&quot;MITER_JOIN&quot;,MITER_JOIN)
+</I>&gt;&gt;<i>         .value(&quot;MITER_REVERT_JOIN&quot;,MITER_REVERT_JOIN)
+</I>&gt;&gt;<i>         .value(&quot;ROUND_JOIN&quot;,ROUND_JOIN)
+</I>&gt;&gt;<i>         .value(&quot;BEVEL_JOIN&quot;,BEVEL_JOIN)
+</I>&gt;&gt;<i>         ;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     implicitly_convertible&lt;line_join_enum,line_join_e&gt;();
+</I>&gt;&gt;<i>     implicitly_convertible&lt;line_cap_enum,line_cap_e&gt;();
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> to_python_converter&lt;line_join_e,mapnik_enumeration_to_python&lt;line_joi 
+</I>&gt;&gt;<i> n_e&gt; &gt;();
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> to_python_converter&lt;line_cap_e,mapnik_enumeration_to_python&lt;line_cap_ 
+</I>&gt;&gt;<i> e&gt; &gt;();
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> .............
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> to_python converter can be implemented to be more useful, at the  
+</I>&gt;&gt;<i> moment it just converts to PyInt.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Let me know your thoughts?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Good stuff! That is exactly what I was looking for. I'm just  
+</I>&gt;<i> starting to learn boost::python. With the conversion to long the  
+</I>&gt;<i> following python code fails:
+</I>&gt;<i>
+</I>&gt;<i> some_stroke = Stroke()
+</I>&gt;<i> some_stroke.line_cap = line_cap.ROUND_CAP
+</I>&gt;<i>
+</I>&gt;<i> other_stroke = Stroke()
+</I>&gt;<i> other_stroke.line_cap = some_stroke.line_cap
+</I>&gt;<i>
+</I>&gt;<i> I think I found a way to get the conversion to python right. I just  
+</I>&gt;<i> need to clean it up a little. With this little wrapper-wrapper- 
+</I>&gt;<i> thingy (is that a meta-wrapper?)  we could reduce the binding code  
+</I>&gt;<i> for mapnik::enumeration to:
+</I>&gt;<i>
+</I>&gt;<i> enumeration_&lt;line_cap&gt;();
+</I>&gt;<i>
+</I>&gt;<i> I'll check in the &quot;long version&quot; first, because making it a one- 
+</I>&gt;<i> liner requires a little renaming. In C++ line_cap_e would change to  
+</I>&gt;<i> line_cap.  In XML format the identifiers would change to the upper- 
+</I>&gt;<i> case version used in C++ and python. I'll annotate the code a bit.  
+</I>&gt;<i> Please have a look and tell me what you think.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 	david
+</I>&gt;<i>
+</I>
+Sounds good!
+
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/9b4f5882/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/9b4f5882/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000316.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+	<LI>Next message: <A HREF="000310.html">[Mapnik-devel] [Mapnik-users] New MacPort
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#317">[ date ]</a>
+              <a href="thread.html#317">[ thread ]</a>
+              <a href="subject.html#317">[ subject ]</a>
+              <a href="author.html#317">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

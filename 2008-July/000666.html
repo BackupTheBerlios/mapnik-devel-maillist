@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [patch] prevent segv if character not found in any	font
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20prevent%20segv%20if%20character%20not%20found%20in%20any%0A%09font&In-Reply-To=%3C1217286348.3754.46.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000663.html">
+   <LINK REL="Next"  HREF="000669.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [patch] prevent segv if character not found in any	font</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5Bpatch%5D%20prevent%20segv%20if%20character%20not%20found%20in%20any%0A%09font&In-Reply-To=%3C1217286348.3754.46.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] [patch] prevent segv if character not found in any	font">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Tue Jul 29 01:05:48 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000663.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+        <LI>Next message: <A HREF="000669.html">[Mapnik-devel] [patch] prevent segv if character not found in	any font
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#666">[ date ]</a>
+              <a href="thread.html#666">[ thread ]</a>
+              <a href="subject.html#666">[ subject ]</a>
+              <a href="author.html#666">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm trying out the latest code with some Chinese names and find that the
+current code SEGV's if the character can not be located in any available
+font. 
+
+The font rendering code can not handle the case that we return a NULL
+glyph pointer so instead fall back to the empty square that we always
+used to render for missing characters.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-font-fallback-segv.patch
+Type: text/x-patch
+Size: 587 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080729/cc7b33ae/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080729/cc7b33ae/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000663.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+	<LI>Next message: <A HREF="000669.html">[Mapnik-devel] [patch] prevent segv if character not found in	any font
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#666">[ date ]</a>
+              <a href="thread.html#666">[ thread ]</a>
+              <a href="subject.html#666">[ subject ]</a>
+              <a href="author.html#666">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

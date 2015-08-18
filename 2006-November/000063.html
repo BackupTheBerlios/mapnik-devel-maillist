@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] assert in dbffile.cpp
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20assert%20in%20dbffile.cpp&In-Reply-To=%3C456CB598.6040805%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000062.html">
+   <LINK REL="Next"  HREF="000066.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] assert in dbffile.cpp</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20assert%20in%20dbffile.cpp&In-Reply-To=%3C456CB598.6040805%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] assert in dbffile.cpp">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Tue Nov 28 23:18:00 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000062.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+        <LI>Next message: <A HREF="000066.html">[Mapnik-devel] error linking map.cpp since rev. 379
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Jon,
+
+The file is actually invalid. There should be one record corresponding 
+to one geometry in .shp. I managed to created this water.* rectangle 
+somehow:P. But  yes,  think changing assert to &gt;=0 should be fine.
+
+Artem.
+
+Jon Burgess wrote:
+&gt;<i> While running a DEBUG=1 build of mapnik I hit the following assert:
+</I>&gt;<i>
+</I>&gt;<i> void dbf_file::read_header()
+</I>&gt;<i> {
+</I>&gt;<i>     char c=file_.get();
+</I>&gt;<i>     if (c=='\3' || c=='\131')
+</I>&gt;<i>     {
+</I>&gt;<i>         skip(3);
+</I>&gt;<i>         num_records_=read_int();
+</I>&gt;<i> ***     assert(num_records_&gt;0);  
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The file in question is the OSM vmap0/water.dbf which has
+</I>&gt;<i> num_records_=0. I guess this is valid and this check should be
+</I>&gt;<i> &quot;num_records_&gt;=0&quot;. 
+</I>&gt;<i>
+</I>&gt;<i> For reference, here is the hex dump of the file.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> $ od -A x -t x1 mapnik/vmap0/water.dbf
+</I>&gt;<i> 000000 03 5f 07 1a 00 00 00 00 21 00 01 00 00 00 00 00
+</I>&gt;<i> 000010 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+</I>&gt;<i> 000020 0d
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000062.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+	<LI>Next message: <A HREF="000066.html">[Mapnik-devel] error linking map.cpp since rev. 379
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#63">[ date ]</a>
+              <a href="thread.html#63">[ thread ]</a>
+              <a href="subject.html#63">[ subject ]</a>
+              <a href="author.html#63">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

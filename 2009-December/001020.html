@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Correcting an offset in a layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3Caa4b7a0d0912211353t23db8a9apea861bd321ec94ef%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001019.html">
+   <LINK REL="Next"  HREF="001021.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Correcting an offset in a layer</H1>
+    <B>Marcin Rudowski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3Caa4b7a0d0912211353t23db8a9apea861bd321ec94ef%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Correcting an offset in a layer">mrudowski1 at gmail.com
+       </A><BR>
+    <I>Mon Dec 21 22:53:29 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001019.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+        <LI>Next message: <A HREF="001021.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1020">[ date ]</a>
+              <a href="thread.html#1020">[ thread ]</a>
+              <a href="subject.html#1020">[ subject ]</a>
+              <a href="author.html#1020">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2009/12/21 Nop &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ekkehart at gmx.de</A>&gt;:
+&gt;<i>
+</I>&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I am building a map with several layers containing OSM geometry and
+</I>&gt;<i> hillshading+contours. The hillshading roughly follows the instructions
+</I>&gt;<i> on <A HREF="http://wiki.openstreetmap.org/wiki/HikingBikingMaps,">http://wiki.openstreetmap.org/wiki/HikingBikingMaps,</A> but is
+</I>&gt;<i> eventually rendered with a RasterSymbolizer in mapnik.
+</I>&gt;<i>
+</I>&gt;<i> Now I have the problem that the hillshading and the geometry do not
+</I>&gt;<i> quite match. It seems the hillshading is offset some constant distance
+</I>&gt;<i> to the north and west. I have attached a picture that illustrates the
+</I>&gt;<i> problem. Obviously, the stream is at the lowest point of the valley and
+</I>&gt;<i> not on the south slope. The red ways on the north side end on the top of the
+</I>&gt;<i> slope.
+</I>&gt;<i>
+</I>&gt;<i> Now I am looking for a way to correct this offset. Do you have any idea
+</I>&gt;<i> on how to do this? Maybe by some preprocessing step/gdal tool? Or is
+</I>&gt;<i> there a way to adjust the projection so mapnik puts it in the right place?
+</I>&gt;<i>
+</I>&gt;<i> thank you
+</I>&gt;<i>
+</I>
+
+I don't remember specifics, but I had problem with quite big (20km?)
+offset north or south because of wrong ellipsoid reprojection and
+needed to specify correct proj4 parameters to gdal to override ones
+quest from hgt file format.
+
+In short I used (notice added -s_srs):
+ gdal_merge.py -v -o ../srtm.tif *.hgt
+ gdalwarp -of GTiff -srcnodata 32767 -dstnodata 32767 -s_srs \
+  &quot;+proj=latlong +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 \
+  +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over&quot; \
+  -t_srs &quot;+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 \
+  +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over&quot; \
+  -rcs -order 3 -tr 76.4370282852 76.4370282852  -wt Float32 -ot Float32 \
+  srtm.tif warped.tif
+ ./hillshade warped.tif hill_8.tif -z 2
+
+But if You have also west offset, I don't know what is wrong.
+
+Also I have still problems with tiff's adjustment on different levels.
+Because of rounding errors  when zooming(position of active rendering
+window is rounded to raster pixels and after that it is scaled to
+output resolution) In effect mountains aren't in one place on
+different zooms, but it is distans of 0.5-1px between neighbour zooms:
+<A HREF="http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&amp;lat=49.21244&amp;lon=19.9654&amp;layers=B00000FT">http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&amp;lat=49.21244&amp;lon=19.9654&amp;layers=B00000FT</A>
+Only when switching more than 2 levels at once it is little disturbing
+(moving mountains).
+
+I tried to match exactly -tr parameter to resolution of OpenLayers
+zooms (6378137*2*pi/2^19 = 76.4370282852), and also tried cutting
+geotiff on same computed virtual grid points (power of 2 of this tr),
+but without definite success. But for me it isn't noticeable much any
+more when comparing with google terrain layer:
+<A HREF="http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&amp;lat=49.21244&amp;lon=19.9654&amp;layers=00000BFT">http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&amp;lat=49.21244&amp;lon=19.9654&amp;layers=00000BFT</A>
+
+Maybe try my -tr value in place of suggested 30 from wiki.
+
+My some old notes about hillshading (and other mails of this thread):
+<A HREF="http://www.mail-archive.com/mapnik-users@lists.berlios.de/msg01120.html">http://www.mail-archive.com/mapnik-users@lists.berlios.de/msg01120.html</A>
+I also started from mentioned wiki when doing hillshading almost Year ago :)
+
+-- 
+Marcin Rudowski
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001019.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+	<LI>Next message: <A HREF="001021.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1020">[ date ]</a>
+              <a href="thread.html#1020">[ thread ]</a>
+              <a href="subject.html#1020">[ subject ]</a>
+              <a href="author.html#1020">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

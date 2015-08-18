@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cutting holes
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C0DADEB25-1963-4595-A2F6-5C9F9312F191%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001327.html">
+   <LINK REL="Next"  HREF="001333.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cutting holes</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C0DADEB25-1963-4595-A2F6-5C9F9312F191%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Cutting holes">dane at dbsgeo.com
+       </A><BR>
+    <I>Tue Feb  8 19:40:05 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001327.html">[Mapnik-devel] Cutting holes
+</A></li>
+        <LI>Next message: <A HREF="001333.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1331">[ date ]</a>
+              <a href="thread.html#1331">[ thread ]</a>
+              <a href="subject.html#1331">[ subject ]</a>
+              <a href="author.html#1331">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Lars,
+
+Great stuff, this certainly looks like something we should try to integrate - either as is or part of a larger effort to enable composing modes. If we add it we'll need to find a more generic solution of course (than matching colors), but very glad the patch works for your needs. 
+
+For now can you attach this patch to a ticket and assign to the Mapnik 2.0 milestone? That way we can consider it both before release, and when/if we need to push it to Mapnik 2.1 milestone (as I think a proper agg solution may take some time).
+
+Dane
+
+On Feb 6, 2011, at 12:32 PM, Lars Ahlzen wrote:
+
+&gt;<i> Hi Mapnik devs!
+</I>&gt;<i> 
+</I>&gt;<i> This is related to something I mentioned here briefly a while back. For some of my projects (such as TopOSM) I use mapnik to render overlays, such as contour lines, with a transparent background. In that case, I don't want solid halos around the labels, but the parts of the line(s) that would otherwise cover the label need to be cut out. Here's an example:
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="http://openstreetmap.us/~lahlzen/misc/contours.png">http://openstreetmap.us/~lahlzen/misc/contours.png</A>
+</I>&gt;<i> 
+</I>&gt;<i> (note that the background is transparent; not white)
+</I>&gt;<i> 
+</I>&gt;<i> I've been patching mapnik to more easily do this. With this patch, halos and poly fills defined as &quot;transparent&quot; now cut holes in the image (instead of rendering nothing). For example, the labels in the example above use:
+</I>&gt;<i> 
+</I>&gt;<i> &lt;TextSymbolizer name=&quot;height_ft&quot; face_name=&quot;DejaVu Sans Book&quot;
+</I>&gt;<i>       size=&quot;10&quot; fill=&quot;#420&quot; placement=&quot;line&quot; halo_fill=&quot;transparent&quot;
+</I>&gt;<i>       halo_radius=&quot;5&quot; min_distance=&quot;100&quot; max_char_angle_delta=&quot;35&quot;/&gt;
+</I>&gt;<i> 
+</I>&gt;<i> While the same thing can be accomplished by rendering several layers and combining them with some image processing (or more elegantly with something like TileStache), this should be more efficient and makes my life a lot easier.
+</I>&gt;<i> 
+</I>&gt;<i> The patch is against mapnik 0.7.1 and the Cairo renderer (with which I'm more familiar than AGG). I'm sure it could be implemented for AGG and extended to other symbolizers with relative ease.
+</I>&gt;<i> 
+</I>&gt;<i> Because of the simplicity of the patch (adding only about a dozen lines), and how much it simplifies *my* projects, I thought I should see what your thoughts are and if this is interesting to anyone else.
+</I>&gt;<i> 
+</I>&gt;<i> - Lars
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Lars Ahlzen
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+</I>&gt;<i> 
+</I>&gt;<i> Index: src/cairo_renderer.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/cairo_renderer.cpp	(revision 2557)
+</I>&gt;<i> +++ src/cairo_renderer.cpp	(working copy)
+</I>&gt;<i> @@ -248,6 +248,11 @@
+</I>&gt;<i>             context_-&gt;set_line_width(width);
+</I>&gt;<i>          }
+</I>&gt;<i> 
+</I>&gt;<i> +         void set_operator(Cairo::Operator op)
+</I>&gt;<i> +         {
+</I>&gt;<i> +            context_-&gt;set_operator(op);
+</I>&gt;<i> +         }
+</I>&gt;<i> +     
+</I>&gt;<i>          void set_dash(dash_array const &amp;dashes)
+</I>&gt;<i>          {
+</I>&gt;<i>             std::valarray&lt;double&gt; d(dashes.size() * 2);
+</I>&gt;<i> @@ -426,9 +431,14 @@
+</I>&gt;<i> 
+</I>&gt;<i>             set_line_width(sym.get_halo_radius());
+</I>&gt;<i>             set_line_join(ROUND_JOIN);
+</I>&gt;<i> -            set_color(sym.get_halo_fill());
+</I>&gt;<i> -            stroke();
+</I>&gt;<i> -
+</I>&gt;<i> +            if (sym.get_halo_fill().rgba() == 0) {
+</I>&gt;<i> +               set_operator(Cairo::OPERATOR_DEST_OUT);
+</I>&gt;<i> +               stroke();
+</I>&gt;<i> +               set_operator(Cairo::OPERATOR_OVER);
+</I>&gt;<i> +            } else {
+</I>&gt;<i> +               set_color(sym.get_halo_fill());
+</I>&gt;<i> +               stroke();
+</I>&gt;<i> +            }
+</I>&gt;<i>             set_color(sym.get_fill());
+</I>&gt;<i> 
+</I>&gt;<i>             path.rewind();
+</I>&gt;<i> @@ -563,8 +573,13 @@
+</I>&gt;<i> 
+</I>&gt;<i>       cairo_context context(context_);
+</I>&gt;<i> 
+</I>&gt;<i> -      context.set_color(sym.get_fill(), sym.get_opacity());
+</I>&gt;<i> -
+</I>&gt;<i> +      if (sym.get_fill().rgba() == 0) {
+</I>&gt;<i> +         context.set_color(0, 0, 0, 1.0);
+</I>&gt;<i> +         context.set_operator(Cairo::OPERATOR_DEST_OUT);
+</I>&gt;<i> +      } else {
+</I>&gt;<i> +         context.set_color(sym.get_fill(), sym.get_opacity());
+</I>&gt;<i> +      }
+</I>&gt;<i> +      
+</I>&gt;<i>       for (unsigned i = 0; i &lt; feature.num_geometries(); ++i)
+</I>&gt;<i>       {
+</I>&gt;<i>          geometry2d const&amp; geom = feature.get_geometry(i);
+</I>&gt;<i> @@ -577,6 +592,7 @@
+</I>&gt;<i>             context.fill();
+</I>&gt;<i>          }
+</I>&gt;<i>       }
+</I>&gt;<i> +      context.set_operator(Cairo::OPERATOR_OVER);
+</I>&gt;<i>    }
+</I>&gt;<i> 
+</I>&gt;<i>    typedef boost::tuple&lt;double,double,double,double&gt; segment_t;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001327.html">[Mapnik-devel] Cutting holes
+</A></li>
+	<LI>Next message: <A HREF="001333.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1331">[ date ]</a>
+              <a href="thread.html#1331">[ thread ]</a>
+              <a href="subject.html#1331">[ subject ]</a>
+              <a href="author.html#1331">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

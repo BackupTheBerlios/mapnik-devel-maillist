@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] query zoom example code (cali.cpp) and dev experience
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20query%20zoom%20example%20code%20%28cali.cpp%29%20and%20dev%20experience&In-Reply-To=%3C78ec96990808170900x17689321g608d1553533beb66%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000678.html">
+   <LINK REL="Next"  HREF="000677.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] query zoom example code (cali.cpp) and dev experience</H1>
+    <B>Leslie Wu</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20query%20zoom%20example%20code%20%28cali.cpp%29%20and%20dev%20experience&In-Reply-To=%3C78ec96990808170900x17689321g608d1553533beb66%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] query zoom example code (cali.cpp) and dev experience">lwu.two at gmail.com
+       </A><BR>
+    <I>Sun Aug 17 18:00:04 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000678.html">[Mapnik-devel] query zoom example code (cali.cpp) and dev experience
+</A></li>
+        <LI>Next message: <A HREF="000677.html">[Mapnik-devel] mapnik.org down
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#679">[ date ]</a>
+              <a href="thread.html#679">[ thread ]</a>
+              <a href="subject.html#679">[ subject ]</a>
+              <a href="author.html#679">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+I thought I'd share my experiences trying to modify Mapnik's (r727)
+demo/c++/rundemo.cpp code to render something slightly different.
+
+rundemo.cpp renders a map of Ontario/Quebec, and instead I wanted to draw a
+map of California and its surrounding states.
+
+I grabbed the data from the USGS in the form of &quot;statesp020&quot; (google it, or
+browse through nationalatlas.gov) and first wanted to modify rundemo.py
+instead. Alas, this is uncharted territory, as the Python binding does not
+yet support the mapnik::query object (see the near empty
+mapnik/bindings/python/mapnik/mapnik_query.cpp).
+
+Instead, I modified demo/c++/rundemo.cpp, and the final result can be viewed
+here: <A HREF="http://gist.github.com/5009/">http://gist.github.com/5009/</A>
+
+It took some time to get up to speed on Mapnik internals -- the code is
+sparsely commented and there doesn't seem to be a canonical Doxygen dump
+online (although one can be generated manually from the source). The Mapnik
+wiki has some details, and I started to fill in some small gaps there, but
+important bits such as what the &quot;res&quot; (second) parameter to the
+mapnik::query ctor isn't documented anywhere (elsewhere, some feature
+to_string() method seems to return &quot;TODO&quot;).
+
+The basic Mapnik data model which isn't directly documented is something
+like this. A mapnik Map has Layers, a Layer has a mapnik::datasource_ptr,
+and a datasource has features. One queries a Map's Layer's datasource by
+asking it for the features given a mapnik::query, specifying the
+axis-aligned bounding box (Envelope).
+
+Mapnik relies heavily on boost shared_ptr and similar classes, with the
+convention that _ptr denotes such a pointer.
+
+You can follow along here -- <A HREF="http://gist.github.com/5009#LID76">http://gist.github.com/5009#LID76</A>
+
+Note the call to (mapnik::query) q.add_property_name('STATE') on Line 80 --
+without these, no properties will be returned! Figured this out by reading
+feature_style_processor.hpp.
+Line 81 has the feature query call. It would probably be nice to use a
+filter_featureset&lt;&gt; object instead, but the filter&lt;&gt; objects don't seem to
+expose public typedefs to facilitate declaring the filter_featureset&lt;&gt;
+object?
+
+So, we asked the Map's Layer's datasource for a featureset_ptr, and then
+iterate through the linked list of features, checking to see which features
+pass the previously constructed filter. Unfortunately, the &quot;nil&quot; extent,
+that is, a default constructed Envelope&lt;double&gt; isn't really a nil extent,
+but rather an Envelope with negative width and negative height. That's okay
+but you shouldn't tell such an Envelope to expand_to_include() another
+Envelope, as it will do the Wrong Thing.
+
+I was hoping that it would work the other way, but there may or may not be
+reasons to design the library this way (code simplicity).
+
+Overall, even though the library is as-of-yet sparsely documented, it seems
+to work pretty well even though my XCode compiles crash whereas gcc compiles
+don't (ostensibly with the same include, compile, and linking options). The
+Python binding has some rough edges, and there are cases where appropriate
+public typedefs (in the &quot;traits&quot; spirit) would make figuring out how to type
+things somewhat simpler.
+
+~L
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080817/66deffa8/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080817/66deffa8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000678.html">[Mapnik-devel] query zoom example code (cali.cpp) and dev experience
+</A></li>
+	<LI>Next message: <A HREF="000677.html">[Mapnik-devel] mapnik.org down
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#679">[ date ]</a>
+              <a href="thread.html#679">[ thread ]</a>
+              <a href="subject.html#679">[ subject ]</a>
+              <a href="author.html#679">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

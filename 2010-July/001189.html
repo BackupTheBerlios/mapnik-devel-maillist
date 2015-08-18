@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Bounds clipping bug on local projection
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Bounds%20clipping%20bug%20on%20local%20projection&In-Reply-To=%3CB3353A60-778D-4010-80E8-386507EBAC2F%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001193.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Bounds clipping bug on local projection</H1>
+    <B>Gnonthgol</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Bounds%20clipping%20bug%20on%20local%20projection&In-Reply-To=%3CB3353A60-778D-4010-80E8-386507EBAC2F%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Bounds clipping bug on local projection">gnonthgol at gmail.com
+       </A><BR>
+    <I>Mon Jul  5 11:01:23 CEST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001193.html">[Mapnik-devel] Bounds clipping bug on local projection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1189">[ date ]</a>
+              <a href="thread.html#1189">[ thread ]</a>
+              <a href="subject.html#1189">[ subject ]</a>
+              <a href="author.html#1189">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I am trying to create a map with projection &quot;+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996&quot; but have problems with global shape files.
+The problem is almost identical with <A HREF="http://trac.mapnik.org/ticket/549">http://trac.mapnik.org/ticket/549</A> but proj_transform returns 0 witch does not trigger the patch.
+
+The problem lies in that in my projection Alaska and New Zeland is north of the north pole. Simular to the transverse mercator at <A HREF="http://en.wikipedia.org/wiki/File:MercTranSph.png">http://en.wikipedia.org/wiki/File:MercTranSph.png</A> but where proj_transform returns an error on utm and therefore trigers the said patch my projection does not and therefore the global layer gets clipped to nothing.
+
+I sugest that instead of transforming backward then clip the query bbox then transforming the bbox forward, why don't we just transform the bbox forward then clip it?
+
+Steps to reproduce:
+1. Compile mercator with the patch at #549 (optional)
+2. Download the shoreline_300 shape file from OSM
+3. Render a map with bounds (5, 57, 30, 72) and projection &quot;+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996&quot;
+
+Result:
+stdlog: &quot;no intersection with layer world (backward projected)&quot; (in debug mode)
+image: empty
+
+Gnonthgol
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001193.html">[Mapnik-devel] Bounds clipping bug on local projection
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1189">[ date ]</a>
+              <a href="thread.html#1189">[ thread ]</a>
+              <a href="subject.html#1189">[ subject ]</a>
+              <a href="author.html#1189">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

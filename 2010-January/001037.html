@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] MemoryError rendering with raster layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B4315E9.6060200%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001036.html">
+   <LINK REL="Next"  HREF="001038.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] MemoryError rendering with raster layer</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B4315E9.6060200%40gmx.de%3E"
+       TITLE="[Mapnik-devel] MemoryError rendering with raster layer">ekkehart at gmx.de
+       </A><BR>
+    <I>Tue Jan  5 11:35:21 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001036.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+        <LI>Next message: <A HREF="001038.html">[Mapnik-devel] Win32 binaries and Cairo
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1037">[ date ]</a>
+              <a href="thread.html#1037">[ thread ]</a>
+              <a href="subject.html#1037">[ subject ]</a>
+              <a href="author.html#1037">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi!
+
+Am 05.01.2010 10:38, schrieb Marcin Rudowski:
+&gt;<i> Are You using threads in python?
+</I>&gt;<i> Does memory error appear on loading map definition or while rendering?
+</I>&gt;<i> Does it occur on each zoom or only on higher &quot;altitudes&quot;(less detailed,
+</I>&gt;<i> more area visible)?
+</I>
+I am not using threads. The error occurs on render_to_file(), always on 
+the first call, zoom level 8.
+
+&gt;<i> I use mapnik 0.6.1 and very old hardware (P IV 2.4 + 800MB RAM) for
+</I>&gt;<i> rendering my map. This handles fine those tiff files (on any given zoom
+</I>&gt;<i> at most one is used):
+</I>&gt;<i> 79M	hill_15.tif 4352x4736
+</I>&gt;<i> 20M	hill_30.tif 8704x9472
+</I>&gt;<i> 316M	hill_8.tif  17408x18944
+</I>&gt;<i> each covering same area between 13&#176;E,48&#176;N and 24&#176;E,52&#176;N only with
+</I>&gt;<i> different resolutions.
+</I>
+Well, here it seems to work for &lt;50MB, it crashes with 100MB. Maybe the 
+memory overhead for downscaling from the detailed image to zoom 8 causes 
+the crash.
+
+I broke the rendering area into smaller pieces, but if I understand you 
+correctly, I could also create different TIFs for different zoomlevels.
+
+How does such a setup look in the style file? The image is referenced as 
+data source in the layer, but I belive there are no 
+Min/MaxScaleDenominators allowed there.
+
+thanks
+	Nop
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001036.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+	<LI>Next message: <A HREF="001038.html">[Mapnik-devel] Win32 binaries and Cairo
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1037">[ date ]</a>
+              <a href="thread.html#1037">[ thread ]</a>
+              <a href="subject.html#1037">[ subject ]</a>
+              <a href="author.html#1037">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

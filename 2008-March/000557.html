@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik viewer and OSM rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C20BCEF4F-9E62-462B-ABEB-68FF14813612%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000552.html">
+   <LINK REL="Next"  HREF="000553.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik viewer and OSM rendering</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C20BCEF4F-9E62-462B-ABEB-68FF14813612%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik viewer and OSM rendering">artem at mapnik.org
+       </A><BR>
+    <I>Mon Mar 17 23:18:27 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000552.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+        <LI>Next message: <A HREF="000553.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#557">[ date ]</a>
+              <a href="thread.html#557">[ thread ]</a>
+              <a href="subject.html#557">[ subject ]</a>
+              <a href="author.html#557">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 14 Mar 2008, at 13:39, Tom Hughes wrote:
+
+&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">7F55F893-F935-408A-93FE-E391925B5688 at mapnik.org</A>&gt;
+</I>&gt;<i>         Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 13 Mar 2008, at 08:45, Tom Hughes wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">47D8A4D4.9010909 at onetrackmind.co.nz</A>&gt;
+</I>&gt;&gt;&gt;<i>         Ben Moores &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ben.moores at onetrackmind.co.nz</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi, I've been doing some work adding PDF output to mapnik. It's
+</I>&gt;&gt;&gt;&gt;<i> still a
+</I>&gt;&gt;&gt;&gt;<i> work in progress, around 90% done and was going to be released when
+</I>&gt;&gt;&gt;&gt;<i> finished.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You do know that I committed support for PDF rendering using cairo
+</I>&gt;&gt;&gt;<i> a few weeks ago I assume?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - I've used a patched wxPdfDoc for the pdf rendering.
+</I>&gt;&gt;&gt;&gt;<i> - Most symbolizers are implemented.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm guessing not LinePatternSymbolizer ;-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Tom, I understand there are some issues with implementing pattern
+</I>&gt;&gt;<i> based stroke with cairo. Anything can be done?
+</I>&gt;<i>
+</I>&gt;<i> Well there is code in there to (try and) do it. It's ifdefed out
+</I>&gt;<i> though as it doesn't quite seem to work.
+</I>&gt;<i>
+</I>&gt;<i> It renders the pattern along the path OK but I can't seem to keep
+</I>&gt;<i> it properly centered on the path so you get some odd effects. I've
+</I>&gt;<i> been over my maths several times and it certainly seems to be right
+</I>&gt;<i> but it doesn't quite seem to work.
+</I>&gt;<i>
+</I>
+OK, fixed in r669
+&gt;<i> It will be pretty slow as well even when it does work.
+</I>
+It seems to be fine performance wise. Great work Tom!
+&gt;<i>
+</I>&gt;<i> Tom
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+</I>&gt;<i> <A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+</I>&gt;<i>
+</I>
+Artem
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000552.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+	<LI>Next message: <A HREF="000553.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#557">[ date ]</a>
+              <a href="thread.html#557">[ thread ]</a>
+              <a href="subject.html#557">[ subject ]</a>
+              <a href="author.html#557">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

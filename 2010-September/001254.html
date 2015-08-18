@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Layer compositing and erasing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Layer%20compositing%20and%20erasing&In-Reply-To=%3CAANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001253.html">
+   <LINK REL="Next"  HREF="001255.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Layer compositing and erasing</H1>
+    <B>Oleg Shaniuk</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Layer%20compositing%20and%20erasing&In-Reply-To=%3CAANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Layer compositing and erasing">oshaniuk at cloudmade.com
+       </A><BR>
+    <I>Thu Sep 16 08:24:09 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001253.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+        <LI>Next message: <A HREF="001255.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1254">[ date ]</a>
+              <a href="thread.html#1254">[ thread ]</a>
+              <a href="subject.html#1254">[ subject ]</a>
+              <a href="author.html#1254">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Lars,
+
+I saw your project before - looks really cool. Guess, you can use several
+Map objects to generate the compositions and then compose them in another
+&quot;final&quot; map? Maybe I'm missing some details?
+--
+RO
+
+
+On Thu, Sep 16, 2010 at 4:26 AM, Lars Ahlzen &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>&gt; wrote:
+
+&gt;<i> Hi Mapnik devs!
+</I>&gt;<i>
+</I>&gt;<i> I'm using primarily Mapnik to render TopOSM (<A HREF="http://toposm.com">http://toposm.com</A>). It's
+</I>&gt;<i> working really well, except that the rendering process is still complex
+</I>&gt;<i> and slow (preprocessing, rendering nine tiles, masking and compositing
+</I>&gt;<i> with ImageMagick etc). I believe a few (possibly minor) features in
+</I>&gt;<i> Mapnik could simplify the process tremendously.
+</I>&gt;<i>
+</I>&gt;<i> The first thing is basic rendering to layers (in the GIMP/Photoshop
+</I>&gt;<i> sense) and compositing. Similar things have been discussed before, for
+</I>&gt;<i> example in:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/314">http://trac.mapnik.org/ticket/314</A>
+</I>&gt;<i>
+</I>&gt;<i> though I'm not sure that simply one &quot;canvas&quot; per mapnik-layer would
+</I>&gt;<i> quite cut it in my case. For what I do, I'd need to render an arbitrary
+</I>&gt;<i> set of mapnik-layers to each canvas and overlay/composite each such
+</I>&gt;<i> &quot;temporary&quot; canvas onto the final result.
+</I>&gt;<i>
+</I>&gt;<i> The other feature that is very important to me (and that I emulate with
+</I>&gt;<i> multiple renderings and ImageMagick) is supporting &quot;erasing&quot;, i.e.
+</I>&gt;<i> setting the destination alpha (rather than the source/ink alpha) when
+</I>&gt;<i> painting, to cut or mask things. This is mentioned in:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/335">http://trac.mapnik.org/ticket/335</A>
+</I>&gt;<i>
+</I>&gt;<i> I'd love this feature not only for lines (as in the ticket) but for
+</I>&gt;<i> other things such as polygon fills and text halos. Combined with layers
+</I>&gt;<i> and compositing, TopOSM style label halos could be achieved directly
+</I>&gt;<i> with Mapnik:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://wiki.openstreetmap.org/wiki/TopOSM#Labels">http://wiki.openstreetmap.org/wiki/TopOSM#Labels</A>
+</I>&gt;<i>
+</I>&gt;<i> I can add some details to some of these tickets, if it helps.
+</I>&gt;<i>
+</I>&gt;<i> Either way, do these things seem realistic to those of you who know more
+</I>&gt;<i> about Mapnik internals?
+</I>&gt;<i>
+</I>&gt;<i> - Lars
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Lars Ahlzen
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100916/4819a55c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100916/4819a55c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001253.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+	<LI>Next message: <A HREF="001255.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1254">[ date ]</a>
+              <a href="thread.html#1254">[ thread ]</a>
+              <a href="subject.html#1254">[ subject ]</a>
+              <a href="author.html#1254">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

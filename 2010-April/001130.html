@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with local projections and worldwide	data extent
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%0A%09data%20extent&In-Reply-To=%3C6D22740A-C559-437C-8A6C-FC4691070512%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001133.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with local projections and worldwide	data extent</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%0A%09data%20extent&In-Reply-To=%3C6D22740A-C559-437C-8A6C-FC4691070512%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Problem with local projections and worldwide	data extent">dbsgeo at gmail.com
+       </A><BR>
+    <I>Thu Apr  1 09:02:57 CEST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001133.html">[Mapnik-devel] Problem with local projections and worldwide data extent
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1130">[ date ]</a>
+              <a href="thread.html#1130">[ thread ]</a>
+              <a href="subject.html#1130">[ subject ]</a>
+              <a href="author.html#1130">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+--- \o/ ---
+Sent from my phone
+
+On Mar 31, 2010, at 1:24 PM, Frederik Ramm &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>&gt; wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i>   I'm having trouble rendering something in several exotic  
+</I>&gt;<i> projections, for example epsg:31468 which is commonly used in  
+</I>&gt;<i> Germany and only defined for a rather small area.
+</I>&gt;<i>
+</I>&gt;<i> I have a database in epsg:4326 covering all of the world, and in my  
+</I>&gt;<i> style sheet I am defining
+</I>&gt;<i>
+</I>&gt;<i> &lt;Parameter name=&quot;extent&quot;&gt;-180,-85,180,85&lt;/Parameter&gt;
+</I>&gt;<i>
+</I>&gt;<i> for all data sources. Running images in any projection that is valid  
+</I>&gt;<i> for this whole extent works fine (debugging from nik2img, with  
+</I>&gt;<i> Mapnik 0.7.1):
+</I>&gt;<i>
+</I>&gt;<i> Step: 10 // --&gt; SRID: +init=epsg:4326
+</I>&gt;<i> Step: 11 // --&gt; Map extent: Envelope 
+</I>&gt;<i> (11.0097035573,49.01,12.9602964427,50.76)
+</I>&gt;<i> Step: 12 // --&gt; Map long/lat bbox: Envelope 
+</I>&gt;<i> (11.0097035573,49.01,12.9602964427,50.76)
+</I>&gt;<i> Step: 13 // --&gt; Map center: Coord(11.985,49.885)
+</I>&gt;<i> Step: 14 // --&gt; Map long/lat center: Coord(11.985,49.885)
+</I>&gt;<i> Step: 15 // --&gt; Map scale denominator: 2749987.42078
+</I>&gt;<i> Step: 16 // --&gt; Extent of all layers: Envelope 
+</I>&gt;<i> (-180.0,-85.0666032764,180.0,85.0)
+</I>&gt;<i> Step: 17 // --&gt; Long/lat extent of all layers: Envelope 
+</I>&gt;<i> (-180.0,-85.0666032764,180.0,85.0)
+</I>&gt;<i> Step: 18 // --&gt; Long/lat center of all layers: Coord 
+</I>&gt;<i> (0.0,-0.0333016381899)
+</I>&gt;<i> Step: 19 // --&gt; Layers intersecting map: [world, coast-poly,
+</I>&gt;<i>
+</I>&gt;<i> etc.
+</I>&gt;<i>
+</I>&gt;<i> However, if I do the same with epsg:31468 (I am using the -b  
+</I>&gt;<i> parameter to nik2img and specifying an area for which that  
+</I>&gt;<i> projection is definitely defined) I get
+</I>&gt;<i>
+</I>&gt;<i> Step: 10 // --&gt; SRID: +init=epsg:31468
+</I>&gt;<i> Step: 11 // --&gt; Map extent: Envelope 
+</I>&gt;<i> (4389656.16103,5430541.90021,4606589.44871,5625166.44553)
+</I>&gt;<i> Step: 12 // --&gt; Map long/lat bbox: Envelope 
+</I>&gt;<i> (10.490481472,49.0023092212,13.5089566571,50.7522196667)
+</I>&gt;<i> Step: 13 // --&gt; Map center: Coord(4498122.80487,5527854.17287)
+</I>&gt;<i> Step: 14 // --&gt; Map long/lat center: Coord 
+</I>&gt;<i> (11.9997190646,49.8772644439)
+</I>&gt;<i> Step: 15 // --&gt; Map scale denominator: 2747382.06271
+</I>&gt;<i> Step: 16 // --&gt; Extent of all layers: Envelope 
+</I>&gt;<i> (-3.14156014609,-1.48460172944,3.1144412121,1.48342809868)
+</I>&gt;<i> Step: 17 // --&gt; Long/lat extent of all layers: Envelope 
+</I>&gt;<i> (-25.4095106175,0.00372451805217,-25.4094660839,0.00374592328912)
+</I>&gt;<i> Step: 18 // --&gt; Long/lat center of all layers: Coord 
+</I>&gt;<i> (-25.4094883507,0.00373522067065)
+</I>&gt;<i> Step: 19 // --&gt; No layers intersecting map!
+</I>&gt;<i>
+</I>
+Hmm something seems odd with those longitudes. Or at least you would  
+think nik2img would report layer intersections.
+
+&gt;<i> Is it possible that I am running into that same bug which also  
+</I>&gt;<i> causes epsg:900913 to not work if the extent is set to +/- 90  
+</I>&gt;<i> degrees latitude?
+</I>
+Yes. Seems likely that there are proj_transform errrors ocurring  
+because the layer extents are outside the valid range to transform in  
+this custom proj.
+
+&gt;<i> IIRC the reason was that Mapnik first projects the extent of all  
+</I>&gt;<i> layers into the destination projection to find out whether there is  
+</I>&gt;<i> any intersection, and in this case that operation will certainly  
+</I>&gt;<i> yield garbage.
+</I>&gt;<i>
+</I>Right.
+&gt;<i> Will I be able to fix it by simply changing the code to project the  
+</I>&gt;<i> map extent into the data source extent and *then* find out if there  
+</I>&gt;<i> is an intersection?
+</I>
+Yes that seems like it should work nicer in this case.
+
+&gt;<i> Or have you been down that road already and encountered a different  
+</I>&gt;<i> problem?
+</I>&gt;<i>
+</I>Yes. For most cases the layer extent is a more reliable clipping  
+extent to use as the map extent (when zoomed out on an application)  
+can easiely extent past the range of reprojectable coords.
+
+I think we need both however- ability to clip by layer extent but also  
+manually provide a map max extent or layer max extent. What do you  
+think?
+
+To understand various approaches and drawbacks a while back  I  
+created: <A HREF="http://trac.mapnik.org/wiki/BoundsClipping">http://trac.mapnik.org/wiki/BoundsClipping</A>
+
+&gt;<i> Bye
+</I>&gt;<i> Frederik
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23 
+</I>&gt;<i> '33&quot;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001133.html">[Mapnik-devel] Problem with local projections and worldwide data extent
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1130">[ date ]</a>
+              <a href="thread.html#1130">[ thread ]</a>
+              <a href="subject.html#1130">[ subject ]</a>
+              <a href="author.html#1130">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Map constructor does not enfoce min/max size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20constructor%20does%20not%20enfoce%20min/max%20size&In-Reply-To=%3C1164567715.25408.186.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000056.html">
+   <LINK REL="Next"  HREF="000059.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Map constructor does not enfoce min/max size</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20constructor%20does%20not%20enfoce%20min/max%20size&In-Reply-To=%3C1164567715.25408.186.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Map constructor does not enfoce min/max size">jburgess at uklinux.net
+       </A><BR>
+    <I>Sun Nov 26 20:01:55 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000056.html">[Mapnik-devel] Map tiling patch
+</A></li>
+        <LI>Next message: <A HREF="000059.html">[Mapnik-devel] max_char_angle_delta fix
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I noticed a minor problem in map.cpp, the following constructor does
+appear to limit the width &amp; height to (MIN_MAPSIZE...MAX_MAPSIZE).
+
+    Map::Map(int width,int height, std::string const&amp; srs)
+        : width_(width),
+          height_(height),
+          srs_(srs),
+          background_(Color(255,255,255)) {}
+
+
+I'm not subscribed to mapnik-devel, the berlios mailing list
+subscription page appears to be broken.
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000056.html">[Mapnik-devel] Map tiling patch
+</A></li>
+	<LI>Next message: <A HREF="000059.html">[Mapnik-devel] max_char_angle_delta fix
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python bindings failing, revision 405
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C4575E3A8.3070609%40smartrak.biz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000076.html">
+   <LINK REL="Next"  HREF="000078.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python bindings failing, revision 405</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C4575E3A8.3070609%40smartrak.biz%3E"
+       TITLE="[Mapnik-devel] Python bindings failing, revision 405">dave at smartrak.biz
+       </A><BR>
+    <I>Tue Dec  5 22:24:56 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000076.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+        <LI>Next message: <A HREF="000078.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>What is the ouput of:
+ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+
+Mine (ubuntu 6.10 x86. mapnik rev 405):
+        linux-gate.so.1 =&gt;  (0xffffe000)
+        libmapnik.so =&gt; lss (0xb7cd3000)
+        libboost_python-gcc-mt-1_33_1.so.1.33.1 =&gt; 
+/usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1 (0xb7c93000)
+        libstdc++.so.6 =&gt; /usr/lib/libstdc++.so.6 (0xb7bb3000)
+        libm.so.6 =&gt; /lib/tls/i686/cmov/libm.so.6 (0xb7b8d000)
+        libgcc_s.so.1 =&gt; /lib/libgcc_s.so.1 (0xb7b82000)
+        libc.so.6 =&gt; /lib/tls/i686/cmov/libc.so.6 (0xb7a4e000)
+        libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0xb79e4000)
+        libz.so.1 =&gt; /usr/lib/libz.so.1 (0xb79d0000)
+        libltdl.so.3 =&gt; /usr/lib/libltdl.so.3 (0xb79c9000)
+        libpng12.so.0 =&gt; /usr/lib/libpng12.so.0 (0xb79a6000)
+        libtiff.so.4 =&gt; /usr/lib/libtiff.so.4 (0xb7954000)
+        libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0xb7935000)
+        libproj.so.0 =&gt; /usr/lib/libproj.so.0 (0xb7905000)
+        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =&gt; 
+/usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 (0xb78f9000)
+        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =&gt; 
+/usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 (0xb78e7000)
+        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =&gt; 
+/usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1 (0xb7845000)
+        libpython2.4.so.1.0 =&gt; /usr/lib/libpython2.4.so.1.0 (0xb7734000)
+        librt.so.1 =&gt; /lib/tls/i686/cmov/librt.so.1 (0xb772b000)
+        libpthread.so.0 =&gt; /lib/tls/i686/cmov/libpthread.so.0 (0xb7718000)
+        /lib/ld-linux.so.2 (0x80000000)
+        libdl.so.2 =&gt; /lib/tls/i686/cmov/libdl.so.2 (0xb7713000)
+        libicui18n.so.34 =&gt; /usr/lib/libicui18n.so.34 (0xb75fd000)
+        libicuuc.so.34 =&gt; /usr/lib/libicuuc.so.34 (0xb74fb000)
+        libutil.so.1 =&gt; /lib/tls/i686/cmov/libutil.so.1 (0xb74f7000)
+        libicudata.so.34 =&gt; /usr/lib/libicudata.so.34 (0xb6c82000)
+
+
+Matthew Perry wrote:
+&gt;<i> Hey folks,
+</I>&gt;<i>
+</I>&gt;<i>  I'm not able to get python bindings working from revision 405.
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;&gt;&gt;&gt;<i> import mapnik
+</I>&gt;&gt;&gt;&gt;<i>         
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>   File &quot;&lt;stdin&gt;&quot;, line 1, in ?
+</I>&gt;<i>   File &quot;/usr/lib/python2.4/site-packages/mapnik/__init__.py&quot;, line 33, in ?
+</I>&gt;<i>     from _mapnik import *
+</I>&gt;<i> ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+</I>&gt;<i> undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+</I>&gt;<i>
+</I>&gt;<i> I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+</I>&gt;<i> start debugging?
+</I>&gt;<i>   
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000076.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+	<LI>Next message: <A HREF="000078.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#77">[ date ]</a>
+              <a href="thread.html#77">[ thread ]</a>
+              <a href="subject.html#77">[ subject ]</a>
+              <a href="author.html#77">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

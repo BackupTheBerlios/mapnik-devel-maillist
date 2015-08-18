@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Complex PostGIS queries - patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Complex%20PostGIS%20queries%20-%20patch&In-Reply-To=%3CADF603BE-BD1C-463C-8C7C-322E60C6A0B0%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000937.html">
+   <LINK REL="Next"  HREF="000938.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Complex PostGIS queries - patch</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Complex%20PostGIS%20queries%20-%20patch&In-Reply-To=%3CADF603BE-BD1C-463C-8C7C-322E60C6A0B0%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Complex PostGIS queries - patch">blake at hailmail.net
+       </A><BR>
+    <I>Tue Jul 21 23:52:12 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000937.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+        <LI>Next message: <A HREF="000938.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#940">[ date ]</a>
+              <a href="thread.html#940">[ thread ]</a>
+              <a href="subject.html#940">[ subject ]</a>
+              <a href="author.html#940">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey Hans,
+
+Thanks so much for taking a close look at this and providing a patch.  
+There are many other devs and users more familiar with the PostGIS  
+implementation than I, but I will say that there is a lot of current  
+activity and thoughts about improving the flexibility of the driver.
+
+I'd encourage you to take a look at the other tickets:
+
+<A HREF="http://trac.mapnik.org/query?status=assigned&amp;status=new&amp;status=reopened&amp;component=PostGIS+Input+Driver&amp;order=priority&amp;col=id&amp;col=summary&amp;col=status&amp;col=type&amp;col=priority&amp;col=milestone&amp;col=component">http://trac.mapnik.org/query?status=assigned&amp;status=new&amp;status=reopened&amp;component=PostGIS+Input+Driver&amp;order=priority&amp;col=id&amp;col=summary&amp;col=status&amp;col=type&amp;col=priority&amp;col=milestone&amp;col=component</A>
+
+And particularly this thread: <A HREF="http://www.nabble.com/Odd-behavior-with-PostGIS-tc23983405.html">http://www.nabble.com/Odd-behavior-with-PostGIS-tc23983405.html</A>
+
+And either attach your patch to the most appropriate ticket or create  
+a new one.
+
+Thanks,
+
+Dane
+
+
+On Jul 17, 2009, at 3:31 AM, Hans Musil wrote:
+
+&gt;<i> Hi, I'm one of the technical admins of Wikivoyage, a free open  
+</I>&gt;<i> content wiki based travel guide. We have plans to make extensive use  
+</I>&gt;<i> of Mapnik together - but not only - with OSM data. The table layout  
+</I>&gt;<i> of the PostGIS backend will be completely different from what OSM's  
+</I>&gt;<i> osm2pgsql generates.
+</I>&gt;<i>
+</I>&gt;<i> Oh, yes - and I don't like mailing lists. I only will keep  
+</I>&gt;<i> subscribed for some days in order to follow the discussion. You  
+</I>&gt;<i> always can drop me a message on my Wikivoyage user talk page <A HREF="http://www.wikivoyage.org/de/Benutzer:Hansm">http://www.wikivoyage.org/de/Benutzer:Hansm</A>
+</I>&gt;<i>
+</I>&gt;<i> As I have seen from the source code, Mapnik makes a *very*  
+</I>&gt;<i> simplistic guess about the PostgreSQL table and schema that hold the  
+</I>&gt;<i> actual geometry column. If queries given as parameter  
+</I>&gt;<i> &quot;table&quot; (actually a bad name) get a little bit more complex, Mapnik  
+</I>&gt;<i> fails terribly. However, it's not worth to improve this guess since  
+</I>&gt;<i> queries may be really complex. Instead, I wanted to propose two  
+</I>&gt;<i> additional optional paramters for postgis_datasource: &quot;table_name&quot;  
+</I>&gt;<i> and &quot;schema_name&quot;. Both are used for retrieving the SRID and the  
+</I>&gt;<i> geometry field (if not given as parameter). The SRID itself is  
+</I>&gt;<i> needed for estimating the extend of the table's geometries.
+</I>&gt;<i>
+</I>&gt;<i> Here is an example for parameter &quot;table&quot;, that is too complex for  
+</I>&gt;<i> Mapnik (it guesses osm_relation_mb to be the geometry table):
+</I>&gt;<i>
+</I>&gt;<i> &lt;Parameter name=&quot;table&quot;&gt;(SELECT way FROM osm_way WHERE osm_id = ANY  
+</I>&gt;<i> (SELECT rm_way FROM osm_relation_mb WHERE rm_relation=62149)) as  
+</I>&gt;<i> border&lt;/Parameter&gt;
+</I>&gt;<i>
+</I>&gt;<i> I have added two patches, one for plugins/input/postgis/postgis.cpp  
+</I>&gt;<i> and one for the corresponding header file. Both refere to the up to  
+</I>&gt;<i> date svn version.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Hans
+</I>&gt;<i>
+</I>&gt;<i> --- mapnik-0.6.1/plugins/input/postgis/postgis.cpp	2009-07-14  
+</I>&gt;<i> 11:08:55.000000000 +0200
+</I>&gt;<i> +++ mapnik-0.6.1-patched/plugins/input/postgis/postgis.cpp	 
+</I>&gt;<i> 2009-07-17 11:39:44.000000000 +0200
+</I>&gt;<i> @@ -82,6 +82,9 @@
+</I>&gt;<i>
+</I>&gt;<i>    multiple_geometries_ =  
+</I>&gt;<i> *params_.get&lt;mapnik::boolean&gt;(&quot;multiple_geometries&quot;,false);
+</I>&gt;<i>
+</I>&gt;<i> +   schema_name_ = *params.get&lt;std::string&gt;(&quot;schema_name&quot;,&quot;&quot;);
+</I>&gt;<i> +   table_name_  = *params.get&lt;std::string&gt;(&quot;table_name&quot;,&quot;&quot;);
+</I>&gt;<i> +
+</I>&gt;<i>    boost::optional&lt;std::string&gt; ext  =  
+</I>&gt;<i> params_.get&lt;std::string&gt;(&quot;extent&quot;);
+</I>&gt;<i>    if (ext)
+</I>&gt;<i>    {
+</I>&gt;<i> @@ -130,25 +133,32 @@
+</I>&gt;<i>
+</I>&gt;<i>          desc_.set_encoding(conn-&gt;client_encoding());
+</I>&gt;<i>
+</I>&gt;<i> -         std::string table_name=table_from_sql(table_);
+</I>&gt;<i> -         std::string schema_name=&quot;&quot;;
+</I>&gt;<i> -         std::string::size_type idx=table_name.find_last_of('.');
+</I>&gt;<i> +         if (table_name_.length()==0)
+</I>&gt;<i> +         {
+</I>&gt;<i> +           table_name_=table_from_sql(table_);
+</I>&gt;<i> +           std::string::size_type idx=table_name_.find_last_of('.');
+</I>&gt;<i>          if (idx!=std::string::npos)
+</I>&gt;<i>          {
+</I>&gt;<i> -            schema_name=table_name.substr(0,idx);
+</I>&gt;<i> -            table_name=table_name.substr(idx+1);
+</I>&gt;<i> +              if (schema_name_.length()==0)
+</I>&gt;<i> +              {
+</I>&gt;<i> +                schema_name_=table_name_.substr(0,idx);
+</I>&gt;<i> +              };
+</I>&gt;<i> +              table_name_ =table_name_.substr(idx+1);
+</I>&gt;<i>          }
+</I>&gt;<i>          else
+</I>&gt;<i>          {
+</I>&gt;<i> -            table_name=table_name.substr(0);
+</I>&gt;<i> +              table_name_=table_name_.substr(0);
+</I>&gt;<i>          }
+</I>&gt;<i> +         };
+</I>&gt;<i> +
+</I>&gt;<i> +         geometryColumn_=geometry_field_;
+</I>&gt;<i>
+</I>&gt;<i>          std::ostringstream s;
+</I>&gt;<i>          s &lt;&lt; &quot;select f_geometry_column,srid,type from &quot;;
+</I>&gt;<i> -         s &lt;&lt; GEOMETRY_COLUMNS &lt;&lt;&quot; where f_table_name='&quot; &lt;&lt;  
+</I>&gt;<i> table_name&lt;&lt;&quot;'&quot;;
+</I>&gt;<i> +         s &lt;&lt; GEOMETRY_COLUMNS &lt;&lt;&quot; where f_table_name='&quot; &lt;&lt;  
+</I>&gt;<i> table_name_&lt;&lt;&quot;'&quot;;
+</I>&gt;<i>
+</I>&gt;<i> -         if (schema_name.length() &gt; 0)
+</I>&gt;<i> -            s &lt;&lt;&quot; and f_table_schema='&quot;&lt;&lt; schema_name &lt;&lt;&quot;'&quot;;
+</I>&gt;<i> +         if (schema_name_.length() &gt; 0)
+</I>&gt;<i> +            s &lt;&lt;&quot; and f_table_schema='&quot;&lt;&lt; schema_name_ &lt;&lt;&quot;'&quot;;
+</I>&gt;<i>
+</I>&gt;<i>          if (geometry_field_.length() &gt; 0)
+</I>&gt;<i>             s &lt;&lt; &quot; and f_geometry_column = '&quot; &lt;&lt; geometry_field_ &lt;&lt;  
+</I>&gt;<i> &quot;'&quot;;
+</I>&gt;<i> @@ -361,21 +371,20 @@
+</I>&gt;<i>       {
+</I>&gt;<i>           
+</I>&gt;<i> PoolGuard 
+</I>&gt;<i> &lt; 
+</I>&gt;<i> shared_ptr&lt;Connection&gt;,shared_ptr&lt;Pool&lt;Connection,ConnectionCreator&gt;  
+</I>&gt;<i> &gt; &gt; guard(conn,pool);
+</I>&gt;<i>          std::ostringstream s;
+</I>&gt;<i> -         std::string table_name = table_from_sql(table_);
+</I>&gt;<i>          boost::optional&lt;std::string&gt; estimate_extent =  
+</I>&gt;<i> params_.get&lt;std::string&gt;(&quot;estimate_extent&quot;);
+</I>&gt;<i>
+</I>&gt;<i>          if (estimate_extent &amp;&amp; *estimate_extent == &quot;true&quot;)
+</I>&gt;<i>          {
+</I>&gt;<i>             s &lt;&lt; &quot;select xmin(ext),ymin(ext),xmax(ext),ymax(ext)&quot;
+</I>&gt;<i>               &lt;&lt; &quot; from (select estimated_extent('&quot;
+</I>&gt;<i> -              &lt;&lt; table_name &lt;&lt;&quot;','&quot;
+</I>&gt;<i> +              &lt;&lt; table_name_ &lt;&lt;&quot;','&quot;
+</I>&gt;<i>               &lt;&lt; geometryColumn_ &lt;&lt; &quot;') as ext) as tmp&quot;;
+</I>&gt;<i>          }
+</I>&gt;<i>          else
+</I>&gt;<i>          {
+</I>&gt;<i>             s &lt;&lt; &quot;select xmin(ext),ymin(ext),xmax(ext),ymax(ext)&quot;
+</I>&gt;<i>               &lt;&lt; &quot; from (select extent(&quot; &lt;&lt;geometryColumn_&lt;&lt; &quot;) as  
+</I>&gt;<i> ext from &quot;
+</I>&gt;<i> -              &lt;&lt; table_name &lt;&lt; &quot;) as tmp&quot;;
+</I>&gt;<i> +              &lt;&lt; table_name_ &lt;&lt; &quot;) as tmp&quot;;
+</I>&gt;<i>          }
+</I>&gt;<i>
+</I>&gt;<i>          shared_ptr&lt;ResultSet&gt; rs=conn-&gt;executeQuery(s.str());
+</I>&gt;<i> --- mapnik-0.6.1/plugins/input/postgis/postgis.hpp	2009-07-14  
+</I>&gt;<i> 11:08:55.000000000 +0200
+</I>&gt;<i> +++ mapnik-0.6.1-patched/plugins/input/postgis/postgis.hpp	 
+</I>&gt;<i> 2009-07-17 11:40:42.000000000 +0200
+</I>&gt;<i> @@ -1,3 +1,4 @@
+</I>&gt;<i> +
+</I>&gt;<i> / 
+</I>&gt;<i> *****************************************************************************
+</I>&gt;<i>  *
+</I>&gt;<i>  * This file is part of Mapnik (c++ mapping toolkit)
+</I>&gt;<i> @@ -60,6 +61,8 @@
+</I>&gt;<i>       const std::string geometry_field_;
+</I>&gt;<i>       const int cursor_fetch_size_;
+</I>&gt;<i>       const int row_limit_;
+</I>&gt;<i> +      std::string schema_name_;
+</I>&gt;<i> +      std::string table_name_;
+</I>&gt;<i>       std::string geometryColumn_;
+</I>&gt;<i>       int type_;
+</I>&gt;<i>       int srid_;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000937.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+	<LI>Next message: <A HREF="000938.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#940">[ date ]</a>
+              <a href="thread.html#940">[ thread ]</a>
+              <a href="subject.html#940">[ subject ]</a>
+              <a href="author.html#940">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

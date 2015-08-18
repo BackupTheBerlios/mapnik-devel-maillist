@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text placement code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3C478A9D16.4090209%40smartrak.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000413.html">
+   <LINK REL="Next"  HREF="000418.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text placement code</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3C478A9D16.4090209%40smartrak.co.nz%3E"
+       TITLE="[Mapnik-devel] Text placement code">dave at smartrak.co.nz
+       </A><BR>
+    <I>Mon Jan 14 00:21:58 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000413.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+        <LI>Next message: <A HREF="000418.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#417">[ date ]</a>
+              <a href="thread.html#417">[ thread ]</a>
+              <a href="subject.html#417">[ subject ]</a>
+              <a href="author.html#417">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>get_ideal_placements currently contains code for handling 
+POINT_PLACEMENT and LINE_PLACEMENT with label_spacing &gt; 0, however it is 
+never used in these cases.
+
+If you edit the statements in:
+   void agg_renderer&lt;T&gt;::process(text_symbolizer const&amp; sym,
+                                 Feature const&amp; feature,
+                                 proj_transform const&amp; prj_trans)
+to use get_ideal_placements (via 
+finder.find_placements&lt;path_type&gt;(text_placement,path); ) in the 
+label_spacing &gt; 0 case, it seems to perform fine (at least in my small 
+test, the placements themselves were different however)
+
+What benefits/differences is find_placements_with_spacing providing over 
+find_placements + get_ideal_placements? (or vice versa)
+_with_spacing is a lot more complicated, but I can only assume it is 
+doing something better?
+There seems to be code in _with_spacing to support displacement and some 
+extra character placement checks, does this mean displacement doesn't 
+work if label_spacing == 0 ?
+
+It looks that we could replace these similar sets of functionality with 
+a single code path to handle both cases (with and without 
+label_spacing), as without label_spacing should just be a subset of with?
+
+I'll look into implementing this tomorrow if no one has any reasons why not.
+
+It does look like some of this code is currently WIP, anyone have any 
+plans in relation to text placement?
+Artem: Does the current text placement code work correctly with the 
+smoothing/curves support you are working on? Or have you done some 
+modifications in there?
+
+Thanks.
+Dave.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000413.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+	<LI>Next message: <A HREF="000418.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#417">[ date ]</a>
+              <a href="thread.html#417">[ thread ]</a>
+              <a href="subject.html#417">[ subject ]</a>
+              <a href="author.html#417">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

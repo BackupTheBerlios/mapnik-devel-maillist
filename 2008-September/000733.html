@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] mapnik with OGR abstraction support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20with%20OGR%20abstraction%20support&In-Reply-To=%3CF835A0AB-9415-405F-8C60-8535EFA9254A%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000731.html">
+   <LINK REL="Next"  HREF="000734.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] mapnik with OGR abstraction support</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20with%20OGR%20abstraction%20support&In-Reply-To=%3CF835A0AB-9415-405F-8C60-8535EFA9254A%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] mapnik with OGR abstraction support">blake at hailmail.net
+       </A><BR>
+    <I>Mon Sep 22 19:10:18 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000731.html">[Mapnik-devel] mapnik with OGR abstraction support
+</A></li>
+        <LI>Next message: <A HREF="000734.html">[Mapnik-devel] mapnik with OGR abstraction support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#733">[ date ]</a>
+              <a href="thread.html#733">[ thread ]</a>
+              <a href="subject.html#733">[ subject ]</a>
+              <a href="author.html#733">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Alberto,
+
+An OGR plugin would be an excellent feature.
+
+I wonder whether it would be equally useful in the short-term (and  
+easier to implement), an extension of mapnik's memory_datasource to  
+support line and polygon geometries (single and multi). Currently,  
+based on lwu's patch (<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/2008-September/000710.html">https://lists.berlios.de/pipermail/mapnik-devel/2008-September/000710.html</A> 
+), PointDatasource() can be used to dynamically feed in geometries and  
+attributes. I've used GeoDjango to produce these, since GeoDjango  
+already offers an excellent python interface to all ogr formats, but  
+the native python bindings of gdal/ogr would likely work well too.
+
+What do you think?  Have you rebuilt yet with Lwu's patch?
+
+Dane
+
+
+On Sep 22, 2008, at 9:16 AM, Alberto Gim&#233;nez E. wrote:
+
+&gt;<i> Hello list,
+</I>&gt;<i>
+</I>&gt;<i> Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be  
+</I>&gt;<i> feasible to write a pluggin like this?
+</I>&gt;<i> The GDAL/OGR library should provide a very useful abstraction  
+</I>&gt;<i> feature for reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+</I>&gt;<i>
+</I>&gt;<i> I'm looking forward to get my hands on this ... and also write an  
+</I>&gt;<i> GDAL/OGR driver for OSM like format.
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Alberto Gim&#233;nez E.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000731.html">[Mapnik-devel] mapnik with OGR abstraction support
+</A></li>
+	<LI>Next message: <A HREF="000734.html">[Mapnik-devel] mapnik with OGR abstraction support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#733">[ date ]</a>
+              <a href="thread.html#733">[ thread ]</a>
+              <a href="subject.html#733">[ subject ]</a>
+              <a href="author.html#733">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

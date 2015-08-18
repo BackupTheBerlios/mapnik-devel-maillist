@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%0A%09osm_way%3A%3Aget_bounds&In-Reply-To=%3CAANLkTi%3D3OEOZd32gdF6ccJWhnWdXyMfs6Jnf7%3DTsmVKq%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001359.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds</H1>
+    <B>Vladislav Shikhov</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%0A%09osm_way%3A%3Aget_bounds&In-Reply-To=%3CAANLkTi%3D3OEOZd32gdF6ccJWhnWdXyMfs6Jnf7%3DTsmVKq%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds">vladshikhov at gmail.com
+       </A><BR>
+    <I>Thu Mar 31 20:13:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001359.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1360">[ date ]</a>
+              <a href="thread.html#1360">[ thread ]</a>
+              <a href="subject.html#1360">[ subject ]</a>
+              <a href="author.html#1360">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane, in short, OSM plugin is not thread-safe. It works fine in
+single-threaded environment, but crashes with segfaults if called from
+parallel threads, compiled with THREADING=multi or THREADING=single
+doesn't matter.
+
+On Tue, Mar 29, 2011 at 9:24 AM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+&gt;<i> Vlad, yes I think I've noticed this crash in the past. Just be aware that the OSM plugin does not get a lot of use compared to the osm2pgsql/PostGIS plugin approach. So you may be better off with using PostGIS. Anyway please file a trac ticket about this issue if you want to see it fixed.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> --- \o/ ---
+</I>&gt;<i> Sent from my phone
+</I>&gt;<i>
+</I>&gt;<i> On Mar 26, 2011, at 4:51 AM, Vladislav Shikhov &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Mapnik devs!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've been trying mapnik for render tiles from osm source and got some
+</I>&gt;&gt;<i> crashes with segfaults.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> After adding additional debug output I found what
+</I>&gt;&gt;<i> osm_way::get_bounds() called for osm_node item from
+</I>&gt;&gt;<i> osm_featureset.cpp:75
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm going to continue debug, but if you have any idea you are welcome.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Vladislav Shikhov
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+
+-- 
+Vladislav Shikhov
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001359.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1360">[ date ]</a>
+              <a href="thread.html#1360">[ thread ]</a>
+              <a href="subject.html#1360">[ subject ]</a>
+              <a href="author.html#1360">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Ocean feature coloring
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Ocean%20feature%20coloring&In-Reply-To=%3C921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001126.html">
+   <LINK REL="Next"  HREF="001128.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Ocean feature coloring</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Ocean%20feature%20coloring&In-Reply-To=%3C921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Ocean feature coloring">dbsgeo at gmail.com
+       </A><BR>
+    <I>Wed Mar 31 21:14:50 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001126.html">[Mapnik-devel] Ocean feature coloring
+</A></li>
+        <LI>Next message: <A HREF="001128.html">[Mapnik-devel] Problem with local projections and worldwide data	extent
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1127">[ date ]</a>
+              <a href="thread.html#1127">[ thread ]</a>
+              <a href="subject.html#1127">[ subject ]</a>
+              <a href="author.html#1127">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Because WMS servers expect the client to decide/specify the background  
+color.
+
+The two Query parameters that determine this are:
+
+transparent={true|false}
+
+and
+
+bgcolor=OGC HEX
+
+So if you want a certain color, specify it and make sure to pass  
+transparent=FALSE
+
+Dane
+
+
+
+On Mar 31, 2010, at 12:07 PM, Adam Estrada wrote:
+
+&gt;<i> All,
+</I>&gt;<i>
+</I>&gt;<i> I am rendering the OSM data as a WMS using ogcserver. All of my  
+</I>&gt;<i> oceans are rendering as light gray or white tiles rather than the  
+</I>&gt;<i> default blue. Does anyone know why that may be happening? I am using  
+</I>&gt;<i> all the default configurations from generate_xml.py and ogcserver.
+</I>&gt;<i>
+</I>&gt;<i> Thanks in advance,
+</I>&gt;<i> Adam
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001126.html">[Mapnik-devel] Ocean feature coloring
+</A></li>
+	<LI>Next message: <A HREF="001128.html">[Mapnik-devel] Problem with local projections and worldwide data	extent
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1127">[ date ]</a>
+              <a href="thread.html#1127">[ thread ]</a>
+              <a href="subject.html#1127">[ subject ]</a>
+              <a href="author.html#1127">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

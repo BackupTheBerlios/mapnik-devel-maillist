@@ -1,0 +1,796 @@
+From steve at asklater.com  Fri Jan  5 12:17:53 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 11:17:53 +0000
+Subject: [Mapnik-devel] ruby bindings
+Message-ID: <20070105111753.GC23210@asklater.com>
+
+Not knowing a lot of python, I'm trying to build ruby bindings.. .but
+that means learning python to deal with scons. Chicken. Egg. I'm also
+new to swig.
+
+Where are the swig interface file(s)?
+
+How does SConstruct magically find env['PYTHON']? I can't find where
+it's set, it is set by scons somewhere?
+
+Documentation on bindings/python/SConstruct would be nice (appreciate
+they might not be needed for python devs) to hack it in to a version
+that builds ruby. I think I know what the BINDINGS bit in the main
+SConstruct is doing.
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From steve at asklater.com  Fri Jan  5 12:54:21 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 11:54:21 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105111753.GC23210@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+Message-ID: <20070105115421.GA3558@asklater.com>
+
+* @ 05/01/07 11:17:53 AM steve at asklater.com wrote:
+> Not knowing a lot of python, I'm trying to build ruby bindings.. .but
+> that means learning python to deal with scons. Chicken. Egg. I'm also
+> new to swig.
+> 
+> Where are the swig interface file(s)?
+> 
+> How does SConstruct magically find env['PYTHON']? I can't find where
+> it's set, it is set by scons somewhere?
+
+Ok I figured that out, here's a patch to check for ruby
+
+What do I have to do next?
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+-------------- next part --------------
+Index: SConstruct
+===================================================================
+--- SConstruct  (revision 423)
++++ SConstruct  (working copy)
+@@ -45,8 +45,9 @@
+ opts.Add(PathOption('PROJ_INCLUDES', 'Search path for PROJ.4 include files', '/usr/local/include'))
+ opts.Add(PathOption('PROJ_LIBS', 'Search path for PROJ.4 include files', '/usr/local/' + LIBDIR_SCHEMA))
+ opts.Add(PathOption('PYTHON','Python executable', sys.executable))
++opts.Add(PathOption('RUBY','Ruby executable', '/usr/bin/ruby'))
+ opts.Add(ListOption('INPUT_PLUGINS','Input drivers to include','all',['postgis','shape','raster']))
+-opts.Add(ListOption('BINDINGS','Language bindings to build','all',['python']))
++opts.Add(ListOption('BINDINGS','Language bindings to build','all',['python', 'ruby']))
+ opts.Add('DEBUG', 'Compile a debug version of mapnik', '')
+ opts.Add('DESTDIR', 'The root directory to install into. Useful mainly for binary package building', '/')
+ opts.Add('BIDI', 'BIDI support', '')
+@@ -153,6 +154,13 @@
+ 
+     SConscript('bindings/python/SConscript')
+ 
++# ruby
++
++if 'ruby' in env['BINDINGS']:
++    if not os.access(env['RUBY'], os.X_OK):
++        print "Cannot run ruby interpreter at '%s', make sure that you have the permissions to execute it." % env['PYTHON']
++        Exit(1)
++
+     
+ env = conf.Finish()
+
+From steve at asklater.com  Fri Jan  5 13:01:09 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 12:01:09 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105115421.GA3558@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<20070105115421.GA3558@asklater.com>
+Message-ID: <20070105120109.GB3558@asklater.com>
+
+* @ 05/01/07 11:54:21 AM steve at asklater.com wrote:
+> * @ 05/01/07 11:17:53 AM steve at asklater.com wrote:
+> > Not knowing a lot of python, I'm trying to build ruby bindings.. .but
+> > that means learning python to deal with scons. Chicken. Egg. I'm also
+> > new to swig.
+> > 
+> > Where are the swig interface file(s)?
+> > 
+> > How does SConstruct magically find env['PYTHON']? I can't find where
+> > it's set, it is set by scons somewhere?
+> 
+> Ok I figured that out, here's a patch to check for ruby
+> 
+> What do I have to do next?
+
+Right it doesn't even use swig, it uses boosts reflection magic?
+
+Argggggggh.
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From steve at asklater.com  Fri Jan  5 13:19:21 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 12:19:21 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <200701051216.26359.pavlenko@users.berlios.de>
+References: <20070105111753.GC23210@asklater.com>
+	<20070105115421.GA3558@asklater.com>
+	<20070105120109.GB3558@asklater.com>
+	<200701051216.26359.pavlenko@users.berlios.de>
+Message-ID: <20070105121921.GA5909@asklater.com>
+
+* @ 05/01/07 12:16:25 PM pavlenko at users.berlios.de wrote:
+> Hi Steve,
+> 
+> > Right it doesn't even use swig, it uses boosts reflection magic?
+> >
+> Yep, that's right.  There is Boost.Langbind project which will support 
+> (eventually) other bindings, including Ruby.   
+
+Am I wasting my time looking at swig?
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 13:40:12 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 12:40:12 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105121921.GA5909@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051216.26359.pavlenko@users.berlios.de>
+	<20070105121921.GA5909@asklater.com>
+Message-ID: <200701051240.12743.pavlenko@users.berlios.de>
+
+> Am I wasting my time looking at swig?
+I don't really know much about swig to suggest either way. I personally like    
+Boost.Langbind idea , but I'm biased here:)  
+
+Why not use Python, meanwhile? 
+I reckon the time it takes to learn Python from scratch is negligible compared 
+to writing c++/swig/ruby bindings.
+
+Cheers,
+Artem.
+ 
+> have fun
+>
+> SteveC steve at asklater.com http://www.asklater.com/steve/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From steve at asklater.com  Fri Jan  5 13:43:39 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 12:43:39 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <200701051240.12743.pavlenko@users.berlios.de>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051216.26359.pavlenko@users.berlios.de>
+	<20070105121921.GA5909@asklater.com>
+	<200701051240.12743.pavlenko@users.berlios.de>
+Message-ID: <20070105124337.GB5909@asklater.com>
+
+* @ 05/01/07 12:40:12 PM pavlenko at users.berlios.de wrote:
+> > Am I wasting my time looking at swig?
+> I don't really know much about swig to suggest either way. I personally like    
+> Boost.Langbind idea , but I'm biased here:)  
+> 
+> Why not use Python, meanwhile? 
+
+Because I find python really annoying, lack of docs annoyint and I've
+grown used to rubys simplicity.
+
+Oh and it means I can call it from rails.
+
+> I reckon the time it takes to learn Python from scratch is negligible compared 
+> to writing c++/swig/ruby bindings.
+
+the swig bindings only need to be written once and then you get java,
+c#, ruby, python, perl etc for free... that'd be a Good Thing for
+mapnik?
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 13:16:25 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 12:16:25 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105120109.GB3558@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<20070105115421.GA3558@asklater.com>
+	<20070105120109.GB3558@asklater.com>
+Message-ID: <200701051216.26359.pavlenko@users.berlios.de>
+
+Hi Steve,
+
+> Right it doesn't even use swig, it uses boosts reflection magic?
+>
+Yep, that's right.  There is Boost.Langbind project which will support 
+(eventually) other bindings, including Ruby.   
+
+Cheers,
+Artem
+
+
+From steve at asklater.com  Fri Jan  5 14:16:53 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 13:16:53 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105124337.GB5909@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051216.26359.pavlenko@users.berlios.de>
+	<20070105121921.GA5909@asklater.com>
+	<200701051240.12743.pavlenko@users.berlios.de>
+	<20070105124337.GB5909@asklater.com>
+Message-ID: <20070105131650.GA10988@asklater.com>
+
+* @ 05/01/07 12:43:39 PM steve at asklater.com wrote:
+> the swig bindings only need to be written once and then you get java,
+
+If you know C++ well enough then it looks relatively easy from this:
+
+http://www.swig.org/papers/PyTutorial98/PyTutorial98.pdf
+
+Copy and modify the headers a bit and you're done. Sort of.
+
+But you're right, I'm not going to try to learn scons, python, swig and
+C++ in one go - if anyone already does and is interested then please
+take a look at the above, else I'll try and get other people interested
+in it.
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 14:39:48 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 13:39:48 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105124337.GB5909@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051240.12743.pavlenko@users.berlios.de>
+	<20070105124337.GB5909@asklater.com>
+Message-ID: <200701051339.48600.pavlenko@users.berlios.de>
+
+On Friday 05 January 2007 12:43, SteveC wrote:
+> * @ 05/01/07 12:40:12 PM pavlenko at users.berlios.de wrote:
+> > > Am I wasting my time looking at swig?
+> >
+> > I don't really know much about swig to suggest either way. I personally
+> > like Boost.Langbind idea , but I'm biased here:)
+> >
+> > Why not use Python, meanwhile?
+>
+
+> Because I find python really annoying, lack of docs annoyint and I've
+> grown used to rubys simplicity.
+>
+> Oh and it means I can call it from rails.
+>
+
+Fair points ( minus documentation - there's a lot of it for Python). I'd like 
+to try and like Ruby as well;) . 
+ 
+> > I reckon the time it takes to learn Python from scratch is negligible
+> > compared to writing c++/swig/ruby bindings.
+>
+> the swig bindings only need to be written once and then you get java,
+> c#, ruby, python, perl etc for free... that'd be a Good Thing for
+> mapnik?
+>
+Well, this all sounds good, in _theory_. My main concern is to avoid creating 
+and supporting another mapscript : 
+http://zcologia.com/news/categorylist_html?cat_id=9
+
+If you're after a small subset of functionality and you want it in Ruby, I'd 
+say - go for it! It should be fairly easy and I can help with how mapnik 
+works etc.
+
+Cheers,
+Artem. 
+> have fun,
+>
+> SteveC steve at asklater.com http://www.asklater.com/steve/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From steve at asklater.com  Fri Jan  5 14:46:27 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 13:46:27 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <200701051339.48600.pavlenko@users.berlios.de>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051240.12743.pavlenko@users.berlios.de>
+	<20070105124337.GB5909@asklater.com>
+	<200701051339.48600.pavlenko@users.berlios.de>
+Message-ID: <20070105134626.GA12970@asklater.com>
+
+* @ 05/01/07 01:39:48 PM pavlenko at users.berlios.de wrote:
+> On Friday 05 January 2007 12:43, SteveC wrote:
+> > * @ 05/01/07 12:40:12 PM pavlenko at users.berlios.de wrote:
+> > > > Am I wasting my time looking at swig?
+> > >
+> > > I don't really know much about swig to suggest either way. I personally
+> > > like Boost.Langbind idea , but I'm biased here:)
+> > >
+> > > Why not use Python, meanwhile?
+> >
+> 
+> > Because I find python really annoying, lack of docs annoyint and I've
+> > grown used to rubys simplicity.
+> >
+> > Oh and it means I can call it from rails.
+> >
+> 
+> Fair points ( minus documentation - there's a lot of it for Python). I'd like 
+
+Where are the API docs a-la
+
+http://www.ruby-doc.org/core/
+http://java.sun.com/j2se/1.3/docs/api/
+
+Was I just being dumb in not finding them? :-)
+
+> If you're after a small subset of functionality and you want it in Ruby, I'd 
+> say - go for it! It should be fairly easy and I can help with how mapnik 
+> works etc.
+
+Yeah, all I want to do is create google tiles of OSM data a-la
+
+http://trac.openstreetmap.org/browser/utils/mapnik/all_tiles/render_all.py
+
+but in ruby so I can bolt it in to lots of other things...
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 14:59:07 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 13:59:07 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105134626.GA12970@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051339.48600.pavlenko@users.berlios.de>
+	<20070105134626.GA12970@asklater.com>
+Message-ID: <200701051359.07457.pavlenko@users.berlios.de>
+
+
+>
+> Where are the API docs a-la
+>
+> http://www.ruby-doc.org/core/
+> http://java.sun.com/j2se/1.3/docs/api/
+>
+> Was I just being dumb in not finding them? :-)
+
+I use http://docs.python.org/api/ but I'm Python newbe:)
+
+>
+> > If you're after a small subset of functionality and you want it in Ruby,
+> > I'd say - go for it! It should be fairly easy and I can help with how
+> > mapnik works etc.
+>
+> Yeah, all I want to do is create google tiles of OSM data a-la
+>
+> http://trac.openstreetmap.org/browser/utils/mapnik/all_tiles/render_all.py
+>
+> but in ruby so I can bolt it in to lots of other things...
+>
+
+OK, looks simple enough. Could you ask for volunteers with some swig/ruby 
+background on openstreetmap-dev first ? And if no one is interested I'll look 
+into this. But I'll have to learn at least a little bit about Ruby and Swig 
+first. 
+
+Cheers,
+Artem
+> have fun,
+>
+> SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From steve at asklater.com  Fri Jan  5 15:08:20 2007
+From: steve at asklater.com (SteveC)
+Date: Fri, 5 Jan 2007 14:08:20 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <200701051359.07457.pavlenko@users.berlios.de>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051339.48600.pavlenko@users.berlios.de>
+	<20070105134626.GA12970@asklater.com>
+	<200701051359.07457.pavlenko@users.berlios.de>
+Message-ID: <20070105140820.GD12970@asklater.com>
+
+* @ 05/01/07 01:59:07 PM pavlenko at users.berlios.de wrote:
+> 
+> >
+> > Where are the API docs a-la
+> >
+> > http://www.ruby-doc.org/core/
+> > http://java.sun.com/j2se/1.3/docs/api/
+> >
+> > Was I just being dumb in not finding them? :-)
+> 
+> I use http://docs.python.org/api/ but I'm Python newbe:)
+
+yeah seen that.. I mean a class reference...
+
+> OK, looks simple enough. Could you ask for volunteers with some swig/ruby 
+> background on openstreetmap-dev first ? And if no one is interested I'll look 
+
+will do
+
+> into this. But I'll have to learn at least a little bit about Ruby and Swig 
+> first. 
+
+You don't need to know any ruby, swig is totally independent. If you
+build python/whatever you like bindings then its just a switch to build
+the ruby ones too.
+
+The swig pdf I pointed to is really simple too, its just slides, just
+read up to about the little OpenGL example when you get time :-)
+
+have fun,
+
+SteveC steve at asklater.com http://www.asklater.com/steve/
+
+
+From crschmidt at metacarta.com  Fri Jan  5 15:21:52 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Fri, 5 Jan 2007 09:21:52 -0500
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105140820.GD12970@asklater.com>
+References: <20070105111753.GC23210@asklater.com>
+	<200701051339.48600.pavlenko@users.berlios.de>
+	<20070105134626.GA12970@asklater.com>
+	<200701051359.07457.pavlenko@users.berlios.de>
+	<20070105140820.GD12970@asklater.com>
+Message-ID: <20070105142152.GA17398@metacarta.com>
+
+On Fri, Jan 05, 2007 at 02:08:20PM +0000, SteveC wrote:
+> * @ 05/01/07 01:59:07 PM pavlenko at users.berlios.de wrote:
+> > 
+> > >
+> > > Where are the API docs a-la
+> > >
+> > > http://www.ruby-doc.org/core/
+> > > http://java.sun.com/j2se/1.3/docs/api/
+> > >
+> > > Was I just being dumb in not finding them? :-)
+> > 
+> > I use http://docs.python.org/api/ but I'm Python newbe:)
+> 
+> yeah seen that.. I mean a class reference...
+
+The Python Library Reference (http://docs.python.org/lib/) is much more
+readable to me than either the Java or Ruby docs that you linked above.
+
+However, the way to get a class reference is simple: on any machine on
+which Python is installe,d simply type 'pydoc -p 8080', then visit
+http://localhost:8080 - the result will lead to something like
+http://crschmidt.net:9080/ , which is a full API reference.
+Additionally, pydoc can do a keyword search (-k), and if you have
+graphical modules (Tkinter) installed, you can pop up a graphical
+browsing interface via pydoc -g.    
+
+Is this what you're looking for?
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 15:45:45 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 14:45:45 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105142152.GA17398@metacarta.com>
+References: <20070105111753.GC23210@asklater.com>
+	<20070105140820.GD12970@asklater.com>
+	<20070105142152.GA17398@metacarta.com>
+Message-ID: <200701051445.45937.pavlenko@users.berlios.de>
+
+
+> However, the way to get a class reference is simple: on any machine on
+> which Python is installe,d simply type 'pydoc -p 8080', then visit
+> http://localhost:8080 - the result will lead to something like
+> http://crschmidt.net:9080/ , which is a full API reference.
+> Additionally, pydoc can do a keyword search (-k), and if you have
+> graphical modules (Tkinter) installed, you can pop up a graphical
+> browsing interface via pydoc -g.
+>
+
+Nice one! I forgot about this one.
+Python rulez :) 
+Cheers!
+
+> Is this what you're looking for?
+>
+> Regards,
+
+
+From pavlenko at users.berlios.de  Fri Jan  5 15:54:18 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Fri, 5 Jan 2007 14:54:18 +0000
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <20070105142152.GA17398@metacarta.com>
+References: <20070105111753.GC23210@asklater.com>
+	<20070105140820.GD12970@asklater.com>
+	<20070105142152.GA17398@metacarta.com>
+Message-ID: <200701051454.18966.pavlenko@users.berlios.de>
+
+Mapnik API :)
+1. bash:> pydoc -p 8080
+2. http://localhost:8080/mapnik.html
+
+A.
+On Friday 05 January 2007 14:21, Christopher Schmidt wrote:
+> On Fri, Jan 05, 2007 at 02:08:20PM +0000, SteveC wrote:
+> > * @ 05/01/07 01:59:07 PM pavlenko at users.berlios.de wrote:
+> > > > Where are the API docs a-la
+> > > >
+> > > > http://www.ruby-doc.org/core/
+> > > > http://java.sun.com/j2se/1.3/docs/api/
+> > > >
+> > > > Was I just being dumb in not finding them? :-)
+> > >
+> > > I use http://docs.python.org/api/ but I'm Python newbe:)
+> >
+> > yeah seen that.. I mean a class reference...
+>
+> The Python Library Reference (http://docs.python.org/lib/) is much more
+> readable to me than either the Java or Ruby docs that you linked above.
+>
+> However, the way to get a class reference is simple: on any machine on
+> which Python is installe,d simply type 'pydoc -p 8080', then visit
+> http://localhost:8080 - the result will lead to something like
+> http://crschmidt.net:9080/ , which is a full API reference.
+> Additionally, pydoc can do a keyword search (-k), and if you have
+> graphical modules (Tkinter) installed, you can pop up a graphical
+> browsing interface via pydoc -g.
+>
+> Is this what you're looking for?
+>
+> Regards,
+
+
+From jfdoyon at gmail.com  Fri Jan  5 23:36:24 2007
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Fri, 05 Jan 2007 17:36:24 -0500
+Subject: [Mapnik-devel] ruby bindings
+In-Reply-To: <200701051454.18966.pavlenko@users.berlios.de>
+References: <20070105111753.GC23210@asklater.com>	<20070105140820.GD12970@asklater.com>	<20070105142152.GA17398@metacarta.com>
+	<200701051454.18966.pavlenko@users.berlios.de>
+Message-ID: <459ED2E8.5090804@gmail.com>
+
+The source distribution includes an out of date epydoc (More JavaDoc 
+style) documentation for the Mapnik API ... Someday I'll get back to that :)
+
+in docs/epydocs IIRC.
+
+As for the Python standard library in a nicer format, you can find one here:
+
+http://epydoc.sourceforge.net/stdlib/
+
+Not exactly sure what version this is for though ... I suppose you could 
+re-generate your own if you wanted to? :)
+
+J.F.
+
+Artem Pavlenko wrote:
+> Mapnik API :)
+> 1. bash:> pydoc -p 8080
+> 2. http://localhost:8080/mapnik.html
+>
+> A.
+> On Friday 05 January 2007 14:21, Christopher Schmidt wrote:
+>   
+>> On Fri, Jan 05, 2007 at 02:08:20PM +0000, SteveC wrote:
+>>     
+>>> * @ 05/01/07 01:59:07 PM pavlenko at users.berlios.de wrote:
+>>>       
+>>>>> Where are the API docs a-la
+>>>>>
+>>>>> http://www.ruby-doc.org/core/
+>>>>> http://java.sun.com/j2se/1.3/docs/api/
+>>>>>
+>>>>> Was I just being dumb in not finding them? :-)
+>>>>>           
+>>>> I use http://docs.python.org/api/ but I'm Python newbe:)
+>>>>         
+>>> yeah seen that.. I mean a class reference...
+>>>       
+>> The Python Library Reference (http://docs.python.org/lib/) is much more
+>> readable to me than either the Java or Ruby docs that you linked above.
+>>
+>> However, the way to get a class reference is simple: on any machine on
+>> which Python is installe,d simply type 'pydoc -p 8080', then visit
+>> http://localhost:8080 - the result will lead to something like
+>> http://crschmidt.net:9080/ , which is a full API reference.
+>> Additionally, pydoc can do a keyword search (-k), and if you have
+>> graphical modules (Tkinter) installed, you can pop up a graphical
+>> browsing interface via pydoc -g.
+>>
+>> Is this what you're looking for?
+>>
+>> Regards,
+>>     
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From reid at umn.edu  Mon Jan 29 19:51:22 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Mon, 29 Jan 2007 12:51:22 -0600
+Subject: [Mapnik-devel] Mapnik feedback
+Message-ID: <45BE422A.2050406@umn.edu>
+
+Hi folks,
+
+As I noted in a previous post, I'm just getting into mapnik. The 
+following are some suggestions I have for improving the software. This 
+is based on Subversion r432.
+
+I am more than happy to enter these into the Trac bug database, but my 
+initial foray there revealed only two bugs, so I don't want to do that 
+if that resource is unused.
+
+1. mapnik is underdocumented. While I was able to muddle through, some 
+user-oriented documentation would be very helpful.
+
+2. The tutorials on the website (on <http://mapnik.org/documentation/>) 
+are broken.
+
+3. render_to_tile() prints to standard output. I'd like to be able to 
+supress this.
+
+4. Installing to a nonstandard path without root access was quite a 
+pain; I wanted to install everything under /foo/bar, but the closest I 
+could get was some stuff under /foo/bar/usr and some stuff under 
+/foo/bar/foo/bar. I ended up writing a shell script (below) to create 
+symlinks to make things reasonable. To be honest, I'd suggest dumping 
+the current build system in favor of autoconf or setup.py, which are 
+more familiar to people and which do the right thing in my situation.
+
+Thoughts?
+
+Thanks for some great software.
+
+Reid
+
+
+-- workaround shell script follows --
+
+#!/bin/sh
+
+prefix=/export/scratch/reid/python
+site_packages=/lib/python2.4/site-packages
+
+set -e
+
+python scons/scons.py PGSQL_INCLUDES=/usr/include/postgresql 
+PREFIX=$prefix DEST
+DIR=$prefix install
+rm -fv $prefix/$site_packages/mapnik
+ln -v -s $prefix/usr/$site_packages/mapnik $prefix/$site_packages
+rm -fv $prefix/lib/libmapnik.so
+ln -v -s $prefix/$prefix/lib/libmapnik.so $prefix/lib
+
+
+
+From pavlenko at users.berlios.de  Mon Jan 29 22:16:00 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Mon, 29 Jan 2007 21:16:00 +0000
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <45BE422A.2050406@umn.edu>
+References: <45BE422A.2050406@umn.edu>
+Message-ID: <200701292116.00505.pavlenko@users.berlios.de>
+
+Hi Reid,
+
+Welcome to Mapnik :)
+
+On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+> Hi folks,
+>
+> As I noted in a previous post, I'm just getting into mapnik. The
+> following are some suggestions I have for improving the software. This
+> is based on Subversion r432.
+>
+> I am more than happy to enter these into the Trac bug database, but my
+> initial foray there revealed only two bugs, so I don't want to do that
+> if that resource is unused.
+Feel free to enter bugs/feature requests etc into trac. It is very new , hence 
+only a couple bugs.
+>
+> 1. mapnik is underdocumented. While I was able to muddle through, some
+> user-oriented documentation would be very helpful.
+
+Agreed. Lets improve this. Would you like to help to populate wiki? 
+>
+> 2. The tutorials on the website (on <http://mapnik.org/documentation/>)
+> are broken.
+>
+Yep. there are out of date.
+> 3. render_to_tile() prints to standard output. I'd like to be able to
+> supress this.
+>
+Please, enter bug into trac.
+> 4. Installing to a nonstandard path without root access was quite a
+> pain; I wanted to install everything under /foo/bar, but the closest I
+> could get was some stuff under /foo/bar/usr and some stuff under
+> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+> symlinks to make things reasonable. 
+
+Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing something 
+here, could you provide more info?
+ 
+> To be honest, I'd suggest dumping 
+> the current build system in favor of autoconf or setup.py, which are
+> more familiar to people and which do the right thing in my situation.
+>
+
+I'm quite happy to start discussion about better building system for mapnik.
+I have some experience with the following :
+1. autotools
+2. scons
+3. cmake
+4. Boost.Build.v2 
+
+but it is not clear to me which one is the best fit. Mapnik was using autotool 
+at the very begining but I got fed up with writing m4 macros very quickly. 
+
+Cheers
+Artem
+> Thoughts?
+>
+> Thanks for some great software.
+>
+> Reid
+>
+>
+> -- workaround shell script follows --
+>
+> #!/bin/sh
+>
+> prefix=/export/scratch/reid/python
+> site_packages=/lib/python2.4/site-packages
+>
+> set -e
+>
+> python scons/scons.py PGSQL_INCLUDES=/usr/include/postgresql
+> PREFIX=$prefix DEST
+> DIR=$prefix install
+> rm -fv $prefix/$site_packages/mapnik
+> ln -v -s $prefix/usr/$site_packages/mapnik $prefix/$site_packages
+> rm -fv $prefix/lib/libmapnik.so
+> ln -v -s $prefix/$prefix/lib/libmapnik.so $prefix/lib
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+

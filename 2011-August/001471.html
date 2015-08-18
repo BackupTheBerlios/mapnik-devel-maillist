@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Heatmaps and thoughts on extension points
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Heatmaps%20and%20thoughts%20on%20extension%20points&In-Reply-To=%3CCAH8pnHZ6Sx3Ft08xniOkOoiwWRR8sqTMjgApE2A0zid-9sxadA%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001470.html">
+   <LINK REL="Next"  HREF="001472.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Heatmaps and thoughts on extension points</H1>
+    <B>Stella Laurenzo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Heatmaps%20and%20thoughts%20on%20extension%20points&In-Reply-To=%3CCAH8pnHZ6Sx3Ft08xniOkOoiwWRR8sqTMjgApE2A0zid-9sxadA%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Heatmaps and thoughts on extension points">stella at laurenzo.org
+       </A><BR>
+    <I>Thu Aug 11 03:18:09 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001470.html">[Mapnik-devel] GSoC - Text placement and formating
+</A></li>
+        <LI>Next message: <A HREF="001472.html">[Mapnik-devel] Mapnik and Tilecache &quot;No module named Mapnik&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1471">[ date ]</a>
+              <a href="thread.html#1471">[ thread ]</a>
+              <a href="subject.html#1471">[ subject ]</a>
+              <a href="author.html#1471">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I've been playing with generating heatmap (and other raster) layers
+directly from within Mapnik instead of relying on the mish-mash of
+tools that seem to typically brought to bear to accomplish these types
+of things.  The work is here:
+
+   <A HREF="https://github.com/stellaeof/mapnik-rasterizers">https://github.com/stellaeof/mapnik-rasterizers</A>
+
+While the approach does basically work, it left me pondering extension
+points for Mapnik beyond the current input datasources.  What I really
+wanted was something like one of the following but I ended up settling
+for a raster datasource for lack of any other option:
+
+   1. Some kind of a &quot;Layer Plugin&quot; that would give me access to more
+of the render state and just hand off to me to take it all from there.
+   2. Some kind of pluggable symbolizer that has life-cycle methods
+that let me manage some state across an entire featureset and then
+lets me access the rendering context whenever I want to in order to
+paint my output.
+
+I know why these types of things would be bad from the perspective
+that Mapnik works hard to shield the data manipulation bits from the
+backend rendering bits (agg/cairo, et al).  I'm not sure how we could
+satisfy both concerns or whether there is enough other use cases to
+justify such thoughts.  I figured I'd throw it out there for
+discussion, though.
+
+The key thing about this type of output is that you need all of the
+data for an area before you start to paint.  In that way it acts more
+like an aggregate function vs a set returning function.  Once you've
+tabulated all of the data, you transform it globally and then colorize
+it.  The overall approach is all contained in the
+heatmap_datasource.cpp file in the heatmap_datasource::rasterize
+method.
+
+Does anyone have thoughts on a better way to approach this kind of problem?
+
+- stella
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001470.html">[Mapnik-devel] GSoC - Text placement and formating
+</A></li>
+	<LI>Next message: <A HREF="001472.html">[Mapnik-devel] Mapnik and Tilecache &quot;No module named Mapnik&quot;
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1471">[ date ]</a>
+              <a href="thread.html#1471">[ thread ]</a>
+              <a href="subject.html#1471">[ subject ]</a>
+              <a href="author.html#1471">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Multiple placements for TextSymbolizer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3CAANLkTikjf9bjQtzLfFewRnbdTfMa30rgMShD75%2B1syPW%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001290.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Multiple placements for TextSymbolizer</H1>
+    <B>Robert Coup</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3CAANLkTikjf9bjQtzLfFewRnbdTfMa30rgMShD75%2B1syPW%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Multiple placements for TextSymbolizer">robert.coup at koordinates.com
+       </A><BR>
+    <I>Mon Nov  1 10:17:37 CET 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001290.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1289">[ date ]</a>
+              <a href="thread.html#1289">[ thread ]</a>
+              <a href="subject.html#1289">[ subject ]</a>
+              <a href="author.html#1289">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Lennard,
+
+On Fri, Oct 29, 2010 at 6:54 AM, Lennard &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ldp at xs4all.nl</A>&gt; wrote:
+
+&gt;<i> On 28-10-2010 0:22, Robert Coup wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Does that cover the practical use case?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not all. As I argued, this should not be limited to TextSymbolizer, and not
+</I>&gt;<i> limited to certain arguments of TextSymbolizer. If a symbolizer, any
+</I>&gt;<i> symbolizer that can be dropped due to collisions, returns whether it could
+</I>&gt;<i> be placed or not, and you could act upon that, it would give you maximum
+</I>&gt;<i> freedom.
+</I>&gt;<i>
+</I>
+What's an actual example? Don't you end up in a recursive maze of
+failed-placements?
+
+
+&gt;<i>
+</I>&gt;<i> Also, in addition to an Else rule, I can also think of use cases for an
+</I>&gt;<i> opposite case, where a subsequent symbolizer will only be attempted when a
+</I>&gt;<i> previous one *has* been placed.
+</I>&gt;<i>
+</I>
+What's an actual example?
+
+If we want *maximum* freedom, surely we need code? Get mapnik's C++ to call
+python functions which can futz with placement/symbolizers/etc as much as
+they need to for every individual feature.
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101101/617a6949/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101101/617a6949/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001290.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1289">[ date ]</a>
+              <a href="thread.html#1289">[ thread ]</a>
+              <a href="subject.html#1289">[ subject ]</a>
+              <a href="author.html#1289">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

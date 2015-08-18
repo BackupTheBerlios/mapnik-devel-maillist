@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik stuck in recursive loop?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1179175293.23409.109.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000155.html">
+   <LINK REL="Next"  HREF="000157.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik stuck in recursive loop?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1179175293.23409.109.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik stuck in recursive loop?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Mon May 14 22:41:33 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000155.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+        <LI>Next message: <A HREF="000157.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#156">[ date ]</a>
+              <a href="thread.html#156">[ thread ]</a>
+              <a href="subject.html#156">[ subject ]</a>
+              <a href="author.html#156">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Mon, 2007-05-14 at 09:29 +0100, Artem Pavlenko wrote:
+&gt;<i> 
+</I>&gt;<i> On 12 May 2007, at 14:01, Jon Burgess wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+</I>&gt;<i> &gt; &gt; Hi Jon,
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; &gt; The length shows as 17, but there are only 16 obvious charaters
+</I>&gt;<i> &gt; &gt; &gt; in
+</I>&gt;<i> &gt; &gt; &gt; the
+</I>&gt;<i> &gt; &gt; &gt; name. I dumped the output to a file and did a hex dump. This
+</I>&gt;<i> &gt; &gt; &gt; shows
+</I>&gt;<i> &gt; &gt; &gt; the
+</I>&gt;<i> &gt; &gt; &gt; name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; gis=# COPY (select name,char_length(name) from planet_osm_line
+</I>&gt;<i> &gt; &gt; &gt; where
+</I>&gt;<i> &gt; &gt; &gt; osm_id=4361612) TO '/tmp/copytest.out';
+</I>&gt;<i> &gt; &gt; &gt; COPY 1
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; $ od -A x -t x1z /tmp/copytest.out
+</I>&gt;<i> &gt; &gt; &gt; 000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73
+</I>&gt;<i> &gt; &gt; &gt; &gt;...Besat
+</I>&gt;<i> &gt; &gt; &gt; Express&lt;
+</I>&gt;<i> &gt; &gt; &gt; 000010 77 61 79 09 31 37 0a
+</I>&gt;<i> &gt; &gt; &gt; &gt;way.17.&lt;
+</I>&gt;<i> &gt; &gt; &gt; 000017
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; &gt; &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; &gt; &gt; Jon
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; Thanks for doing all the hard work tracing down the problem. I've
+</I>&gt;<i> &gt; &gt; modified quad_tree to handle empty envelopes by introducing
+</I>&gt;<i> &gt; &gt; max_depth
+</I>&gt;<i> &gt; &gt; (in r479). Let me know if it works for you.
+</I>&gt;<i> &gt; &gt; Cheers,
+</I>&gt;<i> &gt; &gt; Artem Pavlenko
+</I>&gt;<i> &gt; &gt; <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; &gt; 
+</I>&gt;<i> &gt; Yes this fixes the crash with all the cases I've identified.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I've found that the problem only seems to occur when a name starts
+</I>&gt;<i> &gt; with
+</I>&gt;<i> &gt; the UTF-8 sequence e2 80 8c which is a &quot;ZERO WIDTH NON-JOINER&quot;
+</I>&gt;<i> &gt; according
+</I>&gt;<i> &gt; to <A HREF="http://www.tachyonsoft.com/uc0020.htm">http://www.tachyonsoft.com/uc0020.htm</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> I can see the problem. &quot;ZERO WIDTH NON-JOINER&quot; is an instructive,
+</I>&gt;<i> non-printable character. Freetype returns zero sized bounding box and
+</I>&gt;<i> this was triggering 'quad_tree' bug.  Are you building Mapnik with
+</I>&gt;<i> fibidi support? FRIBIDI=y ?  
+</I>&gt;<i> 
+</I>No, I didn't realise I had too. I only looked through the list of yes/no
+which got printed during the scons check. I didn't look to see if there
+was anything else to turn on.
+
+The failure I get when I enable BIDI but don't have the fribidi-devel
+package installed is pretty un-informative:
+
+$ python scons/scons.py BIDI=1
+scons: Reading SConscript files ...
+Building on Linux ...
+Checking for main() in C library m... no
+Could not find header or shared library for m, exiting!
+
+
+Fortunately the config.log is much clearer:
+
+gcc -o .sconf_temp/conftest_0 .sconf_temp/conftest_0.o -Lagg -Lsrc
+-L/usr/lib64 -L/usr/local/lib64 -lfreetype -lfribidi -lm
+/usr/bin/ld: cannot find -lfribidi
+collect2: ld returned 1 exit status
+scons: *** [.sconf_temp/conftest_0] Error 1
+
+
+Is there some way to avoid the -lfribidi in the initial libm checks?
+
+I'll recompile mapnik with BIDI=1 and see if it makes a difference to
+the rendering of this way.
+
+	Jon
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000155.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+	<LI>Next message: <A HREF="000157.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#156">[ date ]</a>
+              <a href="thread.html#156">[ thread ]</a>
+              <a href="subject.html#156">[ subject ]</a>
+              <a href="author.html#156">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

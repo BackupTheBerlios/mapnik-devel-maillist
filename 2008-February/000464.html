@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Protect access to proj4 with a mutex
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Protect%20access%20to%20proj4%20with%20a%20mutex&In-Reply-To=%3Cd82f70760802030950p5674bbdbn607675023ff6de2d%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000463.html">
+   <LINK REL="Next"  HREF="000465.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Protect access to proj4 with a mutex</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Protect%20access%20to%20proj4%20with%20a%20mutex&In-Reply-To=%3Cd82f70760802030950p5674bbdbn607675023ff6de2d%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Protect access to proj4 with a mutex">tom at compton.nu
+       </A><BR>
+    <I>Sun Feb  3 18:50:32 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000463.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+        <LI>Next message: <A HREF="000465.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#464">[ date ]</a>
+              <a href="thread.html#464">[ thread ]</a>
+              <a href="subject.html#464">[ subject ]</a>
+              <a href="author.html#464">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The attached patch adds a global mutex to protect all access to the
+proj4 library and ensure that only one thread can be inside a call to
+the library at a time.
+
+Jon Burgess has confirmed that this fixes the the rendering problems
+he was seeing when trying to do multithreaded rendering.
+
+The problem (as discovered with valgrind's helgrind tool) is that the
+library has a global error variable called pj_errno and if one thread
+writes to that and then another one reads it then the wrong thread can
+think it has seen an error and things go pear shaped.
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-projection-lock.patch
+Type: text/x-patch
+Size: 2933 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080203/c0e7c2c4/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080203/c0e7c2c4/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000463.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+	<LI>Next message: <A HREF="000465.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#464">[ date ]</a>
+              <a href="thread.html#464">[ thread ]</a>
+              <a href="subject.html#464">[ subject ]</a>
+              <a href="author.html#464">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about Mapnik projections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20Mapnik%20projections&In-Reply-To=%3CBF2B642A-2B52-4F8E-AA3A-420463B53542%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000333.html">
+   <LINK REL="Next"  HREF="000335.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about Mapnik projections</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20Mapnik%20projections&In-Reply-To=%3CBF2B642A-2B52-4F8E-AA3A-420463B53542%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Questions about Mapnik projections">artem at mapnik.org
+       </A><BR>
+    <I>Thu Dec  6 14:00:32 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000333.html">[Mapnik-devel] Questions about Mapnik projections
+</A></li>
+        <LI>Next message: <A HREF="000335.html">[Mapnik-devel] A few fixes for trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#334">[ date ]</a>
+              <a href="thread.html#334">[ thread ]</a>
+              <a href="subject.html#334">[ subject ]</a>
+              <a href="author.html#334">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Nick,
+
+On 6 Dec 2007, at 11:39, Nick Black wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> In the mapnik config file we use for something like openstreetmap, we
+</I>&gt;<i> define the srs at different points:
+</I>&gt;<i>
+</I>&gt;<i>  &lt;Layer name=&quot;text&quot; status=&quot;on&quot; srs=&quot;+proj=merc +datum=WGS84  +k=1.0
+</I>&gt;<i> +units=m +over +no_defs&quot;&gt;
+</I>&gt;<i>
+</I>
+Mapnik doesn't assume anything, you have to be explicit about  
+projections. The above tells Mapnik  layer 'text' is in Mercator.
+&gt;<i> The postgis database holds the data in a mercator projection:
+</I>&gt;<i>
+</I>&gt;<i>  PROJCS[&quot;WGS 84 / World Mercator&quot;,GEOGCS[&quot;WGS
+</I>&gt;<i> 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS
+</I>&gt;<i> 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],TOWGS84 
+</I>&gt;<i> [0,0,0,0,0,0,0],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;, 
+</I>&gt;<i> 0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;, 
+</I>&gt;<i> 0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY 
+</I>&gt;<i> [&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Mercator_1SP&quot;],PARAMETER 
+</I>&gt;<i> [&quot;latitude_of_origin&quot;,0],PARAMETER[&quot;central_meridian&quot;,0],PARAMETER 
+</I>&gt;<i> [&quot;scale_factor&quot;,1],PARAMETER[&quot;false_easting&quot;,0],PARAMETER 
+</I>&gt;<i> [&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY 
+</I>&gt;<i> [&quot;EPSG&quot;,&quot;9001&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;3395&quot;]]
+</I>&gt;<i>
+</I>&gt;<i> | +proj=merc +lon_0=0 +k=1.000000 +x_0=0 +y_0=0 +ellps=WGS84
+</I>&gt;<i> +datum=WGS84 +units=m +no_defs
+</I>&gt;<i>
+</I>
+&gt;<i>
+</I>&gt;<i> So am I right in thinking that in this case Mapnik isn't reprojecting
+</I>&gt;<i> the data at all?
+</I>
+This depends on your Map projection.
+&gt;<i>
+</I>&gt;<i> If I wanted to render tiles for a local area in a different
+</I>&gt;<i> projection, would the best option be to change the srs string in the
+</I>&gt;<i> mapnik config file or to reproject the data inside postgis?
+</I>
+Both approaches have they merits. I would try re-projecting on-fly  
+with Mapnik first.
+&gt;<i>   If I just
+</I>&gt;<i> change the srs string to something like
+</I>&gt;<i>
+</I>&gt;<i>  +proj=longlat +ellps=airy +no_defs
+</I>
+This is not OSGB NatGrid, it is geographic with Airy ellipsoid.  
+NatGrid is a Transverse Mercator :
+
++proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000 +y_0=-100000  
++ellps=airy  +units=m  
++towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894  
++units=m +nodefs
+
+BTW, Ordinance Survey is now using OSTN02 ( Transverse Mercator with  
+GRS80 ellipsoid and datum shifts from Geoid model if I remember this  
+correctly ) but proj4 doesn't support this.
+
+&gt;<i>
+</I>&gt;<i> for osgb, will mapnik reproject the tile I render to OSGB?
+</I>
+Depending on your final goal , changing Map srs to the string above  
+might do the trick. But it is *not* what OS is using now.
+Also, you'll have to come up with your own tiling schema :)
+
+Cheers
+Artem
+
+&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Nick Black
+</I>&gt;<i> --------------------------------
+</I>&gt;<i> <A HREF="http://www.blacksworld.net">http://www.blacksworld.net</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.999601 +x_0=400000  
+</I>&gt;<i> +y_0=-100000 +ellps=airy  +units=m  
+</I>&gt;<i> +towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894  
+</I>&gt;<i> +units=m +nodefs
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000333.html">[Mapnik-devel] Questions about Mapnik projections
+</A></li>
+	<LI>Next message: <A HREF="000335.html">[Mapnik-devel] A few fixes for trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#334">[ date ]</a>
+              <a href="thread.html#334">[ thread ]</a>
+              <a href="subject.html#334">[ subject ]</a>
+              <a href="author.html#334">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

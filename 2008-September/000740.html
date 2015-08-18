@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] 8-bit transparency?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%208-bit%20transparency%3F&In-Reply-To=%3C48DB49B5.8080800%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000739.html">
+   <LINK REL="Next"  HREF="000741.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] 8-bit transparency?</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%208-bit%20transparency%3F&In-Reply-To=%3C48DB49B5.8080800%40remote.org%3E"
+       TITLE="[Mapnik-devel] 8-bit transparency?">frederik at remote.org
+       </A><BR>
+    <I>Thu Sep 25 10:20:05 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000739.html">[Mapnik-devel] Trac ticket priority
+</A></li>
+        <LI>Next message: <A HREF="000741.html">[Mapnik-devel] TextSymbolizer attributes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#740">[ date ]</a>
+              <a href="thread.html#740">[ thread ]</a>
+              <a href="subject.html#740">[ subject ]</a>
+              <a href="author.html#740">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+    I'm trying to elicit from Mapnik an 8-bit PNG image (GIF would also 
+be acceptable) with a transparent background. Setting the &lt;Map&gt; bgcolor 
+to &quot;transparent&quot; works perfectly with plain PNG images, but reducing it 
+to 8 bit destroys transparency.
+
+(PNG does support transparency in palette images, so it is not a 
+limitation of the data format.)
+
+Closer inspection seems to suggest that include/mapnik/png_io.hpp simply 
+  doesn't care for the alpha channel in the reduce_8 method.
+
+Does anybody have a solution for this or a suggestion how I could best 
+implement it?
+
+My application does not need a true alpha channel; I could also work 
+with the GIF-type transparency where one color in the palette is &quot;the 
+transparent color&quot;.
+
+The PNG spec seems to require adding a tRNS chunk between PLTE and the 
+first IDAT. This chunk may either provide an alpha value for all colours 
+in the palette, or it may also just consist of one single &quot;0x00&quot; entry 
+that would then apply to the first colour in the palette and mimick the 
+GIF binary transparency.
+
+So a very cheap and simple method could be to inject the map background 
+colour as the very first colour in the palette, then do the normal 
+reduce_8 stuff, and add a tRNS chunk that specifies the first colour to 
+be transparent. Or I could simply (?) add an alpha value for every 
+colour, probably this would require changing the whole octree code to 
+work with RGBA instead of RGB.
+
+Any suggestions welcome!
+
+Thanks
+Frederik
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000739.html">[Mapnik-devel] Trac ticket priority
+</A></li>
+	<LI>Next message: <A HREF="000741.html">[Mapnik-devel] TextSymbolizer attributes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#740">[ date ]</a>
+              <a href="thread.html#740">[ thread ]</a>
+              <a href="subject.html#740">[ subject ]</a>
+              <a href="author.html#740">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

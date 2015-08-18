@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Filter for Null columns in osm.xml?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Filter%20for%20Null%20columns%20in%20osm.xml%3F&In-Reply-To=%3C1203880973.3480.175.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000499.html">
+   <LINK REL="Next"  HREF="000504.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Filter for Null columns in osm.xml?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Filter%20for%20Null%20columns%20in%20osm.xml%3F&In-Reply-To=%3C1203880973.3480.175.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Filter for Null columns in osm.xml?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sun Feb 24 20:22:53 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000499.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+        <LI>Next message: <A HREF="000504.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The bug fix for the handling of NULL columns in r657 has broken part of
+the osm.xml style file. The broken part is an attempts to render
+specific fills for certain building types with a fallback for all other
+cases where building is non-null.
+
+
+&lt;Filter&gt;[railway] = 'station' or [building] = 'station'&lt;/Filter&gt;
+... railway station style
+&lt;Filter&gt;[building] = 'supermarket'&lt;/Filter&gt;
+... supermarket style
+&lt;Filter&gt;[building] &lt;&gt; 'station' and [building] &lt;&gt; 'supermarket' and [building] &lt;&gt; ''&lt;/Filter&gt;
+... style for all other building types
+
+
+We can not easily use an ElseFilter for this since this style has lots
+of other things being rendered not just buildings.
+
+Is there another way to specify a filter equivalent to the SQL &quot;is not
+null&quot;, or should &quot;[building] &lt;&gt; ''&quot; be working for this? This used to
+work before the NULL column fix.
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000499.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+	<LI>Next message: <A HREF="000504.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#500">[ date ]</a>
+              <a href="thread.html#500">[ thread ]</a>
+              <a href="subject.html#500">[ subject ]</a>
+              <a href="author.html#500">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

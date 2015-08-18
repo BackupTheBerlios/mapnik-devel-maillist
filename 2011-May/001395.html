@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cairo backend - Unstable?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001394.html">
+   <LINK REL="Next"  HREF="001397.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cairo backend - Unstable?</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Cairo backend - Unstable?">dane at dbsgeo.com
+       </A><BR>
+    <I>Wed May 25 01:11:40 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001394.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+        <LI>Next message: <A HREF="001397.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1395">[ date ]</a>
+              <a href="thread.html#1395">[ thread ]</a>
+              <a href="subject.html#1395">[ subject ]</a>
+              <a href="author.html#1395">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Lars,
+
+It looks like memory is being freed by pixman (the rendering library cairo uses) that was already released by cairomm or mapnik. My first hunch is that perhaps your cairomm version got out of sync with your cairo version (cairomm being the C++ bindings we use to cairo).
+
+So, can you provide the exact cairomm version you are running? Also, do you have a simple test case that causes the issue, or at least a description of the type of situation it happens in (e.g. dynamic serving of tiles vs prerendering, etc).
+
+Dane
+
+On May 24, 2011, at 6:51 PM, Lars Ahlzen wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i> 
+</I>&gt;<i> I'm seeing intermittent crashes using the Cairo backend (to a standard ImageSurface), with both 0.7.1, 0.7.2-dev and trunk, and on different hardware.
+</I>&gt;<i> 
+</I>&gt;<i> The example below is from mapnik-trunk r2926 built against cairo 1.10.2 and pixman 0.22.0 (though I've tried several different versions of both).
+</I>&gt;<i> 
+</I>&gt;<i> Judging by the output, the issue may be in cairo or pixman, so perhaps this is the wrong place, but I though I should check here first. Any thoughts? Open a ticket?
+</I>&gt;<i> 
+</I>&gt;<i> - Lars
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> *** glibc detected *** python: double free or corruption (!prev): 0x0000000002cbe7c0 ***
+</I>&gt;<i> ======= Backtrace: =========
+</I>&gt;<i> /lib/libc.so.6(+0x774b6)[0x7f474fe614b6]
+</I>&gt;<i> /lib/libc.so.6(cfree+0x73)[0x7f474fe67c83]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libpixman-1.so.0(pixman_image_unref+0x93)[0x7f474c1d8923]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x27b1b)[0x7f474c45ab1b]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x28cdc)[0x7f474c45bcdc]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x2a9dd)[0x7f474c45d9dd]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x2b150)[0x7f474c45e150]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x48854)[0x7f474c47b854]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(+0x20e1a)[0x7f474c453e1a]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke_preserve+0x1b)[0x7f474c44aa4b]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libcairo.so.2(cairo_stroke+0x9)[0x7f474c44aa79]
+</I>&gt;<i> /usr/lib/libcairomm-1.0.so.1(_ZN5Cairo7Context6strokeEv+0xd)[0x7f47487361dd]
+</I>&gt;<i> /home/lars/mapnik-test/lib/libmapnik2.so.2.0(_ZN6mapnik19cairo_renderer_base7processERKNS_15line_symbolizerERKNS_7featureINS_8geometryINS_6vertexIdLi2EEENS_13vertex_vectorEEEN5boost10shared_ptrINS_6rasterEEEEERKNS_14proj_transformE+0x528)[0x7f474a189088]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE14apply_to_layerERKNS_5layerERS4_RKNS_10projectionEdRSt3setISsSt4lessISsESaISsEE+0x144d)[0x7f474a7ad82d]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN6mapnik23feature_style_processorINS_14cairo_rendererIN5Cairo7SurfaceEEEE5applyEv+0x150)[0x7f474a7adec0]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_Z7render4RKN6mapnik3MapEP14PycairoSurface+0x9b)[0x7f474a77c76b]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6python6detail12caller_arityILj2EE4implIPFvRKN6mapnik3MapEP14PycairoSurfaceENS0_21default_call_policiesENS_3mpl7vector3IvS8_SA_EEEclEP7_objectSJ_+0xdc)[0x7f474a781a1c]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python7objects8function4callEP7_objectS4_+0x28e)[0x7f4749ba1d9e]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(+0x31048)[0x7f4749ba2048]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x53)[0x7f4749ba98c3]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik11value_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df77]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x2d)[0x7f4749ba989d]
+</I>&gt;<i> /home/lars/mapnik-test/lib/python2.6/site-packages/mapnik2/_mapnik2.so(_ZN5boost6detail8function21function_obj_invoker2INS_3_bi6bind_tIbNS_6python6detail19translate_exceptionIN6mapnik12config_errorEPFvRKS9_EEENS3_5list3INS_3argILi1EEENSG_ILi2EEENS3_5valueISD_EEEEEEbRKNS6_17exception_handlerERKNS_9function0IvEEE6invokeERNS1_15function_bufferESP_ST_+0x17)[0x7f474a77df17]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(_ZN5boost6python21handle_exception_implENS_9function0IvEE+0x33)[0x7f4749ba9693]
+</I>&gt;<i> /usr/lib/libboost_python-py26.so.1.42.0(+0x2d948)[0x7f4749b9e948]
+</I>&gt;<i> python(PyObject_Call+0x47)[0x41c9d7]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x4888)[0x4a48c8]
+</I>&gt;<i> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x4d19)[0x4a4d59]
+</I>&gt;<i> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+</I>&gt;<i> python[0x535b50]
+</I>&gt;<i> python(PyObject_Call+0x47)[0x41c9d7]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+</I>&gt;<i> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+</I>&gt;<i> python[0x535b50]
+</I>&gt;<i> python(PyObject_Call+0x47)[0x41c9d7]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+</I>&gt;<i> python(PyEval_EvalCodeEx+0x911)[0x4a6bd1]
+</I>&gt;<i> python[0x535c4d]
+</I>&gt;<i> python(PyObject_Call+0x47)[0x41c9d7]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x3861)[0x4a38a1]
+</I>&gt;<i> python(PyEval_EvalFrameEx+0x5a70)[0x4a5ab0]
+</I>&gt;<i> ======= Memory map: ========
+</I>&gt;<i> 00400000-0061a000 r-xp 00000000 08:01 25822135                           /usr/bin/python2.6
+</I>&gt;<i> 00819000-0081a000 r--p 00219000 08:01 25822135                           /usr/bin/python2.6
+</I>&gt;<i> 0081a000-0087c000 rw-p 0021a000 08:01 25822135                           /usr/bin/python2.6
+</I>&gt;<i> 0087c000-0088b000 rw-p 00000000 00:00 0
+</I>&gt;<i> 020a3000-04c71000 rw-p 00000000 00:00 0                                  [heap]
+</I>&gt;<i> 7f4714000000-7f47175b5000 rw-p 00000000 00:00 0
+</I>&gt;<i> 7f47175b5000-7f4718000000 ---p 00000000 00:00 0
+</I>&gt;<i> 7f47186e4000-7f471877c000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471877c000-7f47187ff000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+</I>&gt;<i> 7f471a2f9000-7f471a391000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471a392000-7f471a415000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+</I>&gt;<i> 7f471a415000-7f471a4a1000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471a4a1000-7f471a52d000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471a52d000-7f471a5c5000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471a5c5000-7f471a651000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471a651000-7f471a6e9000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471a6e9000-7f471a76c000 r--p 00000000 08:01 37894457                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSansCondensed-Bold.ttf
+</I>&gt;<i> 7f471a76e000-7f471a7fa000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471a7fa000-7f471a892000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471a892000-7f471a91e000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471a91e000-7f471a9b6000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471a9b6000-7f471aa42000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttf
+</I>&gt;<i> 7f471aa42000-7f471aada000 r--p 00000000 08:01 37894456                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans.ttf
+</I>&gt;<i> 7f471aada000-7f471ab66000 r--p 00000000 08:01 37894460                   /home/lars/mapnik-test/lib/mapnik2/fonts/DejaVuSans-Bold.ttfAborted
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Lars Ahlzen
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001394.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+	<LI>Next message: <A HREF="001397.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1395">[ date ]</a>
+              <a href="thread.html#1395">[ thread ]</a>
+              <a href="subject.html#1395">[ subject ]</a>
+              <a href="author.html#1395">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

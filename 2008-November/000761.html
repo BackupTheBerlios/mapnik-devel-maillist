@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 64bit on Mac 10.5
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%2064bit%20on%20Mac%2010.5&In-Reply-To=%3C20081108095906.7c5d34df%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000762.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 64bit on Mac 10.5</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%2064bit%20on%20Mac%2010.5&In-Reply-To=%3C20081108095906.7c5d34df%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik 64bit on Mac 10.5">lists at brachttal.net
+       </A><BR>
+    <I>Sat Nov  8 09:59:06 CET 2008</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000762.html">[Mapnik-devel] Fix/Finished needed to value.hpp for Official	run_demo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#761">[ date ]</a>
+              <a href="thread.html#761">[ thread ]</a>
+              <a href="subject.html#761">[ subject ]</a>
+              <a href="author.html#761">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Tue, 28 Oct 2008 18:41:08 -0700 schrieb Dane Springmeyer:
+
+Hello Dane,
+
+have you tried the autotools build environment available in SVN?
+
+&gt;<i> ./autogen.sh &amp;&amp; make &amp;&amp; make install
+</I>
+Maybe the environment detects your system by itself. It worth a try. If
+you run into trouble contact me. I maintain this build environment.
+
+regards
+Andreas
+
+&gt;<i> I'm attempting to do so in scons with something like:
+</I>&gt;<i> 
+</I>&gt;<i> env.Append(CPPFLAGS=&quot;-Os -arch ppc -arch i386 -arch ppc64 -arch
+</I>&gt;<i> x86_64&quot;) env.Append(LINKFLAGS=&quot;-arch ppc -arch i386 -arch ppc64 -arch
+</I>&gt;<i> x86_64&quot;)
+</I>&gt;<i> 
+</I>&gt;<i> ..but that's far from correct yet.
+</I>&gt;<i> 
+</I>&gt;<i> Dane
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Oct 28, 2008, at 6:26 PM, Joseph Gentle wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Yeah that description is pretty accurate. You need to tell GCC and
+</I>&gt;<i> &gt; LD to make a 64 bit version of mapnik. To do that, it'll be some
+</I>&gt;<i> &gt; obscure gcc flags:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; From the link you posted:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Modify the generated 'Makefile' in mod_wsgi source code and change
+</I>&gt;<i> &gt; the CFLAGS variable to:
+</I>&gt;<i> &gt;   CFLAGS = -Wc,&quot;-arch ppc7400&quot; -Wc,&quot;-arch ppc64&quot; -Wc,&quot;-arch i386&quot;
+</I>&gt;<i> &gt; -Wc,&quot;-arch x86_64&quot;
+</I>&gt;<i> &gt; Also, insert into LFDLAGS similar options but not escaped by '-Wc,'.
+</I>&gt;<i> &gt;   LDFLAGS = -arch ppc7400 -arch ppc64 -arch i386 -arch x86_64 ...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I've never understood scons. Anyone know how you add cflags and
+</I>&gt;<i> &gt; ldflags using scons?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; -J
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Wed, Oct 29, 2008 at 12:08 PM, Dane Springmeyer  
+</I>&gt;<i> &gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt; Hi Joseph,
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; The issue is that libraries loading into an apache 64 bit proces
+</I>&gt;<i> &gt;&gt; on mac os
+</I>&gt;<i> &gt;&gt; have to be compiled with the 'arch x86_64' flag.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; So, currentlyI get:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; springmeyer:~ spring$ file /usr/local/lib/libmapnik.dylib
+</I>&gt;<i> &gt;&gt; /usr/local/lib/libmapnik.dylib: Mach-O dynamically linked shared  
+</I>&gt;<i> &gt;&gt; library
+</I>&gt;<i> &gt;&gt; i386
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; but I need to get something more like:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; /usr/local/lib/libmapnik.dylib: Mach-O universal binary with 4  
+</I>&gt;<i> &gt;&gt; architectures
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Otherwise in the apache logs I get:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [info] [client ::1] mod_wsgi (pid=18266,
+</I>&gt;<i> &gt;&gt; process='', application='springmeyer.local|/wsgiwms'): Loading
+</I>&gt;<i> &gt;&gt; WSGI script
+</I>&gt;<i> &gt;&gt; '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+</I>&gt;<i> &gt;&gt; wms.wsgi'.
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1] mod_wsgi
+</I>&gt;<i> &gt;&gt; (pid=18266): Exception occurred processing WSGI script
+</I>&gt;<i> &gt;&gt; '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+</I>&gt;<i> &gt;&gt; wms.wsgi'.
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1] Traceback (most  
+</I>&gt;<i> &gt;&gt; recent call
+</I>&gt;<i> &gt;&gt; last):
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+</I>&gt;<i> &gt;&gt; &quot;/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+</I>&gt;<i> &gt;&gt; wms.wsgi&quot;,
+</I>&gt;<i> &gt;&gt; line 45, in application
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1]     import mapnik
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+</I>&gt;<i> &gt;&gt; &quot;/Library/Python/2.5/site-packages/mapnik/__init__.py&quot;, line 31,
+</I>&gt;<i> &gt;&gt; in &lt;module&gt;
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1]     from _mapnik  
+</I>&gt;<i> &gt;&gt; import *
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1] ImportError:
+</I>&gt;<i> &gt;&gt; dlopen(/Library/Python/2.5/site-packages/mapnik/_mapnik.so, 10):
+</I>&gt;<i> &gt;&gt; no suitable
+</I>&gt;<i> &gt;&gt; image found.  Did find:
+</I>&gt;<i> &gt;&gt; [Tue Oct 28 18:02:23 2008] [error] [client ::1]
+</I>&gt;<i> &gt;&gt; \t/Library/Python/2.5/site-packages/mapnik/_mapnik.so: mach-o,
+</I>&gt;<i> &gt;&gt; but wrong
+</I>&gt;<i> &gt;&gt; architecture
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Mod wsgi has got some nice background on this:
+</I>&gt;<i> &gt;&gt; <A HREF="http://code.google.com/p/modwsgi/wiki/InstallationOnMacOSX">http://code.google.com/p/modwsgi/wiki/InstallationOnMacOSX</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; So, i doubt you have to deal with these issues on linux, but have  
+</I>&gt;<i> &gt;&gt; you seen
+</I>&gt;<i> &gt;&gt; anything like this?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Dane
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Oct 28, 2008, at 5:05 PM, Joseph Gentle wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; I have mapnik working fine on 64bit linux.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; What error(s) are you getting?
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; -J
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; On Wed, Oct 29, 2008 at 6:10 AM, Dane Springmeyer
+</I>&gt;<i> &gt;&gt;&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A> 
+</I>&gt;<i> &gt;&gt;&gt; &gt;
+</I>&gt;<i> &gt;&gt;&gt; wrote:
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Anyone done it?
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; I've been developing a mapnik wsgi app and have been restricted  
+</I>&gt;<i> &gt;&gt;&gt;&gt; to my
+</I>&gt;<i> &gt;&gt;&gt;&gt; linux box because the system Apache on mac 10.5 runs 64 bit.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; It would be great to be able to run mapnik inside a 64bit apache
+</I>&gt;<i> &gt;&gt;&gt;&gt; process.
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Ideas?
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; Dane
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt;&gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> 
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000762.html">[Mapnik-devel] Fix/Finished needed to value.hpp for Official	run_demo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#761">[ date ]</a>
+              <a href="thread.html#761">[ thread ]</a>
+              <a href="subject.html#761">[ subject ]</a>
+              <a href="author.html#761">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

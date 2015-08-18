@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [OSM-dev] curves
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20curves&In-Reply-To=%3C1B8EC254-A2D4-4564-B694-664FEA5AA81C%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000369.html">
+   <LINK REL="Next"  HREF="000371.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [OSM-dev] curves</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20curves&In-Reply-To=%3C1B8EC254-A2D4-4564-B694-664FEA5AA81C%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] [OSM-dev] curves">artem at mapnik.org
+       </A><BR>
+    <I>Thu Jan  3 16:53:05 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000369.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+        <LI>Next message: <A HREF="000371.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#370">[ date ]</a>
+              <a href="thread.html#370">[ thread ]</a>
+              <a href="subject.html#370">[ subject ]</a>
+              <a href="author.html#370">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 3 Jan 2008, at 15:37, Richard Fairhurst wrote:
+
+&gt;<i> (suggest follow-ups to dev only)
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Perhaps, not well know fact but Mapnik can render bezier curves. The
+</I>&gt;&gt;<i> reason it is not being used is the lack of support for curves in
+</I>&gt;&gt;<i> common GEO formats.
+</I>&gt;<i>
+</I>&gt;<i> Now that really _does_ have promise for slimming down SRTM filesizes.
+</I>&gt;<i>
+</I>&gt;<i> My workflow for SRTM is GeoTIFF-&gt;DEM2TOPO-&gt;Polish format-&gt;Perl
+</I>&gt;<i> script-&gt;Illustrator-&gt;simplify to beziers... which produces nice
+</I>&gt;<i> manageable files. Clearly those particular tools wouldn't be much use
+</I>&gt;<i> for OSM, but the principle remains.
+</I>&gt;<i>
+</I>&gt;<i> cheers
+</I>&gt;<i> Richard
+</I>
+Yes, indeed, storing contours as bezier curves would make more  
+compact files.
+But in what format? I guess we can create our own format (easy) or  
+extent SFS (abstract spec mentions curves but there's no open source  
+implementation I aware of)
+
+Artem
+
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000369.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+	<LI>Next message: <A HREF="000371.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#370">[ date ]</a>
+              <a href="thread.html#370">[ thread ]</a>
+              <a href="subject.html#370">[ subject ]</a>
+              <a href="author.html#370">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

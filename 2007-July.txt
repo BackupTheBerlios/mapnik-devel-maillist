@@ -1,0 +1,3298 @@
+From stephan.holl at intevation.de  Wed Jul  4 12:13:18 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Wed, 4 Jul 2007 12:13:18 +0200
+Subject: [Mapnik-devel] WMS-service of mapnik
+Message-ID: <20070704121318.7463650d@localhost>
+
+Hi Mapnik-developers, Jean-Francois Doyon,
+
+I would like to use the ogcserver-wms from mapnik to render OSM-data
+also in stock-WMS-desktop-clients.
+
+Therefor I followed the advises closely on[1] but my services dies
+with the following error (in apache-errorlog):
+mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+mod_fcgid: ArgumentError: Python argument types in
+mod_fcgid:     Layer.__init__(Layer)
+mod_fcgid: did not match C++ signature:
+mod_fcgid:     __init__(_object*, std::string)
+mod_fcgid:     __init__(_object*, std::string, std::string)
+mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory instance
+at 0x2b8690870c68>) 
+mod_fcgid:    15 self.register_style('style1', sty) 
+mod_fcgid:    16
+mod_fcgid:    17                 lyr = Layer('world', '+init=epsg:4326')
+mod_fcgid:    18                 lyr.datasource =
+Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+mod_fcgid:    19                 lyr.title = 'test' 
+mod_fcgid:    20                 lyr.abstract = 'abstract' 
+mod_fcgid:    21
+mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+0x2b8689b70aa0>, file undefined
+0x2b8689b70aa0>  
+mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/cgiserver.py
+0x2b8689b70aa0>in __init__(self=<__main__.WMSHandler object at  
+0x2b8689b70aa0>0x2b869086ce90>)  
+mod_fcgid:    44         except ImportError:
+mod_fcgid:    45             raise ServerConfigurationError('The
+factory module could not be loaded.') 
+mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'): 
+mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+'WMSFactory')() 
+mod_fcgid:    48         else: 
+mod_fcgid:    49             raise ServerConfigurationError('The
+factory module does not have a WMSFactory class.') 
+mod_fcgid:    50         if conf.has_option('server', 'debug'):
+mod_fcgid: self = <__main__.WMSHandler object at
+0x2b869086ce90>, self.mapfactory undefined, getattr undefined,
+0x2b869086ce90>mapfactorymodule = <module 'wms' from  
+0x2b869086ce90>'/opt/mapnik/wms.pyc'>  
+0x2b869086ce90>  
+mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+0x2b869086ce90>in run(self=<jon.fcgi.Request object at 0x2b8690864a50>)
+0x2b869086ce90>  
+mod_fcgid:   338       self._init()
+mod_fcgid:   339       self.log(2, "Calling handler")
+mod_fcgid:   340       try:
+mod_fcgid:   341         handler = self._handler_type()
+mod_fcgid:   342       except:
+mod_fcgid:   343         self.traceback()
+mod_fcgid:   344       else:
+mod_fcgid: handler undefined, self = <jon.fcgi.Request object at
+0x2b8690864a50>, self._handler_type = <class '__main__.WMSHandler'> ~  
+
+This is my wms.py-script (with only one layer for now):
+from mapnik.ogcserver.WMS import BaseWMSFactory
+from mapnik import *
+
+class WMSFactory(BaseWMSFactory):
+
+        def __init__(self):
+                BaseWMSFactory.__init__(self)
+                sty = Style()
+
+                rl = Rule()
+                rl.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+                rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+                sty.rules.append( rl )
+
+                self.register_style('style1', sty)
+
+                lyr = Layer('world', '+init=epsg:4326')
+                lyr.datasource =
+Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+lyr.title = 'test' lyr.abstract = 'abstract'
+
+                self.register_layer(lyr, 'style1')
+                self.finalize()
+
+I already posted that one on OSM-dev, but Artem told me to repost that
+here.
+Perhaps someone could give me a hint how to solve this. 
+
+As someone on OSM-dev pointed out that an object is needed for a layer
+to initialize instead a string. Is there a documentation of the
+python-bindings?
+
+Thanks for any pointers. I really appreciate it.
+
+Best
+
+	Stephan
+
+
+
+From artem at mapnik.org  Wed Jul  4 16:11:34 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 4 Jul 2007 15:11:34 +0100
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <20070704121318.7463650d@localhost>
+References: <20070704121318.7463650d@localhost>
+Message-ID: <67A60EAB-13A2-47C3-B95B-D1D2357B40A3@mapnik.org>
+
+
+On 4 Jul 2007, at 11:13, Stephan Holl wrote:
+
+> Hi Mapnik-developers, Jean-Francois Doyon,
+>
+> I would like to use the ogcserver-wms from mapnik to render OSM-data
+> also in stock-WMS-desktop-clients.
+>
+> Therefor I followed the advises closely on[1] but my services dies
+> with the following error (in apache-errorlog):
+> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+> mod_fcgid: ArgumentError: Python argument types in
+> mod_fcgid:     Layer.__init__(Layer)
+> mod_fcgid: did not match C++ signature:
+> mod_fcgid:     __init__(_object*, std::string)
+> mod_fcgid:     __init__(_object*, std::string, std::string)
+> mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory  
+> instance
+> at 0x2b8690870c68>)
+> mod_fcgid:    15 self.register_style('style1', sty)
+> mod_fcgid:    16
+> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+> 4326')
+> mod_fcgid:    18                 lyr.datasource =
+> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> mod_fcgid:    19                 lyr.title = 'test'
+> mod_fcgid:    20                 lyr.abstract = 'abstract'
+> mod_fcgid:    21
+> mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+> 0x2b8689b70aa0>, file undefined
+> 0x2b8689b70aa0>
+> mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/ 
+> cgiserver.py
+> 0x2b8689b70aa0>in __init__(self=<__main__.WMSHandler object at
+> 0x2b8689b70aa0>0x2b869086ce90>)
+> mod_fcgid:    44         except ImportError:
+> mod_fcgid:    45             raise ServerConfigurationError('The
+> factory module could not be loaded.')
+> mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'):
+> mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+> 'WMSFactory')()
+> mod_fcgid:    48         else:
+> mod_fcgid:    49             raise ServerConfigurationError('The
+> factory module does not have a WMSFactory class.')
+> mod_fcgid:    50         if conf.has_option('server', 'debug'):
+> mod_fcgid: self = <__main__.WMSHandler object at
+> 0x2b869086ce90>, self.mapfactory undefined, getattr undefined,
+> 0x2b869086ce90>mapfactorymodule = <module 'wms' from
+> 0x2b869086ce90>'/opt/mapnik/wms.pyc'>
+> 0x2b869086ce90>
+> mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+> 0x2b869086ce90>in run(self=<jon.fcgi.Request object at  
+> 0x2b8690864a50>)
+> 0x2b869086ce90>
+> mod_fcgid:   338       self._init()
+> mod_fcgid:   339       self.log(2, "Calling handler")
+> mod_fcgid:   340       try:
+> mod_fcgid:   341         handler = self._handler_type()
+> mod_fcgid:   342       except:
+> mod_fcgid:   343         self.traceback()
+> mod_fcgid:   344       else:
+> mod_fcgid: handler undefined, self = <jon.fcgi.Request object at
+> 0x2b8690864a50>, self._handler_type = <class '__main__.WMSHandler'> ~
+>
+> This is my wms.py-script (with only one layer for now):
+> from mapnik.ogcserver.WMS import BaseWMSFactory
+> from mapnik import *
+>
+> class WMSFactory(BaseWMSFactory):
+>
+>         def __init__(self):
+>                 BaseWMSFactory.__init__(self)
+>                 sty = Style()
+>
+>                 rl = Rule()
+>                 rl.symbols.append(PolygonSymbolizer(Color 
+> (248,216,136)))
+>                 rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+>                 sty.rules.append( rl )
+>
+>                 self.register_style('style1', sty)
+>
+>                 lyr = Layer('world', '+init=epsg:4326')
+>                 lyr.datasource =
+> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> lyr.title = 'test' lyr.abstract = 'abstract'
+>
+>                 self.register_layer(lyr, 'style1')
+>                 self.finalize()
+>
+> I already posted that one on OSM-dev, but Artem told me to repost that
+> here.
+> Perhaps someone could give me a hint how to solve this.
+>
+> As someone on OSM-dev pointed out that an object is needed for a layer
+> to initialize instead a string. Is there a documentation of the
+> python-bindings?
+>
+> Thanks for any pointers. I really appreciate it.
+>
+
+
+Stephan,
+
+I cannot see anything obvious apart from 'indentation'  (probably   
+just email formatting).
+At the moment the best way to access Mapnik Python docs is :
+
+pydoc -p 8000
+
+and then in a browser  :  http://localhost:8000/mapnik
+
+
+Artem
+
+
+> Best
+>
+> 	Stephan
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070704/d2520188/attachment.html>
+
+From jfdoyon at gmail.com  Thu Jul  5 03:56:42 2007
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Wed, 04 Jul 2007 21:56:42 -0400
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <20070704121318.7463650d@localhost>
+References: <20070704121318.7463650d@localhost>
+Message-ID: <468C4FDA.8080306@gmail.com>
+
+OK, so I go to turn on my Linux box, and it won't boot, so I can't 
+troubleshoot this very much right now, that being said ...
+
+I can't see anything wrong with your script at first hand.  In the 
+traceback you show, there seem to be indentation differences, which 
+could confuse Python, though you'd get a different error.
+
+The error that matters here is this:
+
+mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+mod_fcgid: ArgumentError: Python argument types in
+mod_fcgid:     Layer.__init__(Layer)
+mod_fcgid: did not match C++ signature:
+mod_fcgid:     __init__(_object*, std::string)
+mod_fcgid:     __init__(_object*, std::string, std::string)
+mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory instance
+at 0x2b8690870c68>) 
+mod_fcgid:    15 self.register_style('style1', sty) 
+mod_fcgid:    16
+mod_fcgid:    17                 lyr = Layer('world', '+init=epsg:4326')
+mod_fcgid:    18                 lyr.datasource =
+Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+mod_fcgid:    19                 lyr.title = 'test' 
+mod_fcgid:    20                 lyr.abstract = 'abstract' 
+mod_fcgid:    21
+mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+0x2b8689b70aa0>, file undefined
+0x2b8689b70aa0>  
+
+
+There might be some problem at the boost level, because the signatures 
+and your code look OK.
+
+What version of Boost are you using? What Linux distribution?
+
+J.F.
+
+Stephan Holl wrote:
+> Hi Mapnik-developers, Jean-Francois Doyon,
+>
+> I would like to use the ogcserver-wms from mapnik to render OSM-data
+> also in stock-WMS-desktop-clients.
+>
+> Therefor I followed the advises closely on[1] but my services dies
+> with the following error (in apache-errorlog):
+> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+> mod_fcgid: ArgumentError: Python argument types in
+> mod_fcgid:     Layer.__init__(Layer)
+> mod_fcgid: did not match C++ signature:
+> mod_fcgid:     __init__(_object*, std::string)
+> mod_fcgid:     __init__(_object*, std::string, std::string)
+> mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory instance
+> at 0x2b8690870c68>) 
+> mod_fcgid:    15 self.register_style('style1', sty) 
+> mod_fcgid:    16
+> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg:4326')
+> mod_fcgid:    18                 lyr.datasource =
+> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> mod_fcgid:    19                 lyr.title = 'test' 
+> mod_fcgid:    20                 lyr.abstract = 'abstract' 
+> mod_fcgid:    21
+> mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+> 0x2b8689b70aa0>, file undefined
+> 0x2b8689b70aa0>  
+> mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/cgiserver.py
+> 0x2b8689b70aa0>in __init__(self=<__main__.WMSHandler object at  
+> 0x2b8689b70aa0>0x2b869086ce90>)  
+> mod_fcgid:    44         except ImportError:
+> mod_fcgid:    45             raise ServerConfigurationError('The
+> factory module could not be loaded.') 
+> mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'): 
+> mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+> 'WMSFactory')() 
+> mod_fcgid:    48         else: 
+> mod_fcgid:    49             raise ServerConfigurationError('The
+> factory module does not have a WMSFactory class.') 
+> mod_fcgid:    50         if conf.has_option('server', 'debug'):
+> mod_fcgid: self = <__main__.WMSHandler object at
+> 0x2b869086ce90>, self.mapfactory undefined, getattr undefined,
+> 0x2b869086ce90>mapfactorymodule = <module 'wms' from  
+> 0x2b869086ce90>'/opt/mapnik/wms.pyc'>  
+> 0x2b869086ce90>  
+> mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+> 0x2b869086ce90>in run(self=<jon.fcgi.Request object at 0x2b8690864a50>)
+> 0x2b869086ce90>  
+> mod_fcgid:   338       self._init()
+> mod_fcgid:   339       self.log(2, "Calling handler")
+> mod_fcgid:   340       try:
+> mod_fcgid:   341         handler = self._handler_type()
+> mod_fcgid:   342       except:
+> mod_fcgid:   343         self.traceback()
+> mod_fcgid:   344       else:
+> mod_fcgid: handler undefined, self = <jon.fcgi.Request object at
+> 0x2b8690864a50>, self._handler_type = <class '__main__.WMSHandler'> ~  
+>
+> This is my wms.py-script (with only one layer for now):
+> from mapnik.ogcserver.WMS import BaseWMSFactory
+> from mapnik import *
+>
+> class WMSFactory(BaseWMSFactory):
+>
+>         def __init__(self):
+>                 BaseWMSFactory.__init__(self)
+>                 sty = Style()
+>
+>                 rl = Rule()
+>                 rl.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+>                 rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+>                 sty.rules.append( rl )
+>
+>                 self.register_style('style1', sty)
+>
+>                 lyr = Layer('world', '+init=epsg:4326')
+>                 lyr.datasource =
+> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> lyr.title = 'test' lyr.abstract = 'abstract'
+>
+>                 self.register_layer(lyr, 'style1')
+>                 self.finalize()
+>
+> I already posted that one on OSM-dev, but Artem told me to repost that
+> here.
+> Perhaps someone could give me a hint how to solve this. 
+>
+> As someone on OSM-dev pointed out that an object is needed for a layer
+> to initialize instead a string. Is there a documentation of the
+> python-bindings?
+>
+> Thanks for any pointers. I really appreciate it.
+>
+> Best
+>
+> 	Stephan
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From artem at mapnik.org  Thu Jul  5 22:23:01 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 5 Jul 2007 21:23:01 +0100
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <468C4FDA.8080306@gmail.com>
+References: <20070704121318.7463650d@localhost> <468C4FDA.8080306@gmail.com>
+Message-ID: <7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+
+Stephan,
+
+
+First thing is to make sure you have working mapnik. Could you verify  
+you can run python demo:
+
+
+$  cd $(mapnik_src)/demo/python
+$  python ./rundemo.py
+
+and you should get two maps on the same directory
+
+Let me know.
+Cheers,
+Artem
+
+On 5 Jul 2007, at 02:56, Jean-Fran?ois Doyon wrote:
+
+> OK, so I go to turn on my Linux box, and it won't boot, so I can't
+> troubleshoot this very much right now, that being said ...
+>
+> I can't see anything wrong with your script at first hand.  In the
+> traceback you show, there seem to be indentation differences, which
+> could confuse Python, though you'd get a different error.
+>
+> The error that matters here is this:
+>
+> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+> mod_fcgid: ArgumentError: Python argument types in
+> mod_fcgid:     Layer.__init__(Layer)
+> mod_fcgid: did not match C++ signature:
+> mod_fcgid:     __init__(_object*, std::string)
+> mod_fcgid:     __init__(_object*, std::string, std::string)
+> mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory  
+> instance
+> at 0x2b8690870c68>)
+> mod_fcgid:    15 self.register_style('style1', sty)
+> mod_fcgid:    16
+> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+> 4326')
+> mod_fcgid:    18                 lyr.datasource =
+> Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> mod_fcgid:    19                 lyr.title = 'test'
+> mod_fcgid:    20                 lyr.abstract = 'abstract'
+> mod_fcgid:    21
+> mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+> 0x2b8689b70aa0>, file undefined
+> 0x2b8689b70aa0>
+>
+>
+> There might be some problem at the boost level, because the signatures
+> and your code look OK.
+>
+> What version of Boost are you using? What Linux distribution?
+>
+> J.F.
+>
+> Stephan Holl wrote:
+>> Hi Mapnik-developers, Jean-Francois Doyon,
+>>
+>> I would like to use the ogcserver-wms from mapnik to render OSM-data
+>> also in stock-WMS-desktop-clients.
+>>
+>> Therefor I followed the advises closely on[1] but my services dies
+>> with the following error (in apache-errorlog):
+>> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+>> mod_fcgid: ArgumentError: Python argument types in
+>> mod_fcgid:     Layer.__init__(Layer)
+>> mod_fcgid: did not match C++ signature:
+>> mod_fcgid:     __init__(_object*, std::string)
+>> mod_fcgid:     __init__(_object*, std::string, std::string)
+>> mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory  
+>> instance
+>> at 0x2b8690870c68>)
+>> mod_fcgid:    15 self.register_style('style1', sty)
+>> mod_fcgid:    16
+>> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+>> 4326')
+>> mod_fcgid:    18                 lyr.datasource =
+>> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+>> world_boundaries_m')
+>> mod_fcgid:    19                 lyr.title = 'test'
+>> mod_fcgid:    20                 lyr.abstract = 'abstract'
+>> mod_fcgid:    21
+>> mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+>> 0x2b8689b70aa0>, file undefined
+>> 0x2b8689b70aa0>
+>> mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/ 
+>> cgiserver.py
+>> 0x2b8689b70aa0>in __init__(self=<__main__.WMSHandler object at
+>> 0x2b8689b70aa0>0x2b869086ce90>)
+>> mod_fcgid:    44         except ImportError:
+>> mod_fcgid:    45             raise ServerConfigurationError('The
+>> factory module could not be loaded.')
+>> mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'):
+>> mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+>> 'WMSFactory')()
+>> mod_fcgid:    48         else:
+>> mod_fcgid:    49             raise ServerConfigurationError('The
+>> factory module does not have a WMSFactory class.')
+>> mod_fcgid:    50         if conf.has_option('server', 'debug'):
+>> mod_fcgid: self = <__main__.WMSHandler object at
+>> 0x2b869086ce90>, self.mapfactory undefined, getattr undefined,
+>> 0x2b869086ce90>mapfactorymodule = <module 'wms' from
+>> 0x2b869086ce90>'/opt/mapnik/wms.pyc'>
+>> 0x2b869086ce90>
+>> mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+>> 0x2b869086ce90>in run(self=<jon.fcgi.Request object at  
+>> 0x2b8690864a50>)
+>> 0x2b869086ce90>
+>> mod_fcgid:   338       self._init()
+>> mod_fcgid:   339       self.log(2, "Calling handler")
+>> mod_fcgid:   340       try:
+>> mod_fcgid:   341         handler = self._handler_type()
+>> mod_fcgid:   342       except:
+>> mod_fcgid:   343         self.traceback()
+>> mod_fcgid:   344       else:
+>> mod_fcgid: handler undefined, self = <jon.fcgi.Request object at
+>> 0x2b8690864a50>, self._handler_type = <class '__main__.WMSHandler'> ~
+>>
+>> This is my wms.py-script (with only one layer for now):
+>> from mapnik.ogcserver.WMS import BaseWMSFactory
+>> from mapnik import *
+>>
+>> class WMSFactory(BaseWMSFactory):
+>>
+>>         def __init__(self):
+>>                 BaseWMSFactory.__init__(self)
+>>                 sty = Style()
+>>
+>>                 rl = Rule()
+>>                 rl.symbols.append(PolygonSymbolizer(Color 
+>> (248,216,136)))
+>>                 rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+>>                 sty.rules.append( rl )
+>>
+>>                 self.register_style('style1', sty)
+>>
+>>                 lyr = Layer('world', '+init=epsg:4326')
+>>                 lyr.datasource =
+>> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+>> world_boundaries_m')
+>> lyr.title = 'test' lyr.abstract = 'abstract'
+>>
+>>                 self.register_layer(lyr, 'style1')
+>>                 self.finalize()
+>>
+>> I already posted that one on OSM-dev, but Artem told me to repost  
+>> that
+>> here.
+>> Perhaps someone could give me a hint how to solve this.
+>>
+>> As someone on OSM-dev pointed out that an object is needed for a  
+>> layer
+>> to initialize instead a string. Is there a documentation of the
+>> python-bindings?
+>>
+>> Thanks for any pointers. I really appreciate it.
+>>
+>> Best
+>>
+>> 	Stephan
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070705/f38114b7/attachment.html>
+
+From stephan.holl at intevation.de  Fri Jul  6 08:16:24 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Fri, 6 Jul 2007 08:16:24 +0200
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+References: <20070704121318.7463650d@localhost> <468C4FDA.8080306@gmail.com>
+	<7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+Message-ID: <20070706081624.35dd4df6@localhost>
+
+Hello Artem,
+
+Artem Pavlenko <artem at mapnik.org>, [20070705-21:23:01]:
+
+> Stephan,
+> 
+> 
+> First thing is to make sure you have working mapnik. Could you
+> verify you can run python demo:
+> 
+> 
+> $  cd $(mapnik_src)/demo/python
+> $  python ./rundemo.py
+> 
+> and you should get two maps on the same directory
+
+Yes, this is working fine. I have also rendered the OSM-tiles which
+work nicely. But WMS is somewhat strange...
+
+I am on debian testing using everything from the debian-repositories.
+@J.P: this is my boost-version on debian testing
+dpkg -l "*boost*"|grep ^ii
+libboost-dev                   1.33.1-10
+libboost-filesystem-dev        1.33.1-10
+libboost-filesystem1.33.1      1.33.1-10
+libboost-iostreams-dev         1.33.1-10 
+libboost-iostreams1.33.1       1.33.1-10 
+libboost-program-options-dev   1.33.1-10 
+libboost-program-options1.33.1 1.33.1-10 
+libboost-python-dev            1.33.1-10 
+libboost-python1.33.1          1.33.1-10 
+libboost-regex-dev             1.33.1-10 
+libboost-regex1.33.1           1.33.1-10 
+libboost-serialization-dev     1.33.1-10 
+libboost-signals-dev           1.33.1-10 
+libboost-signals1.33.1         1.33.1-10 
+libboost-thread-dev            1.33.1-10 
+libboost-thread1.33.1          1.33.1-10 
+
+Perhaps I should compile mapnik by myself
+to make it work?
+
+Thanks for your help
+
+	Stephan
+
+
+> 
+> On 5 Jul 2007, at 02:56, Jean-Fran?ois Doyon wrote:
+> 
+> > OK, so I go to turn on my Linux box, and it won't boot, so I can't
+> > troubleshoot this very much right now, that being said ...
+> >
+> > I can't see anything wrong with your script at first hand.  In the
+> > traceback you show, there seem to be indentation differences, which
+> > could confuse Python, though you'd get a different error.
+> >
+> > The error that matters here is this:
+> >
+> > mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+> > mod_fcgid: ArgumentError: Python argument types in
+> > mod_fcgid:     Layer.__init__(Layer)
+> > mod_fcgid: did not match C++ signature:
+> > mod_fcgid:     __init__(_object*, std::string)
+> > mod_fcgid:     __init__(_object*, std::string, std::string)
+> > mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory  
+> > instance
+> > at 0x2b8690870c68>)
+> > mod_fcgid:    15 self.register_style('style1', sty)
+> > mod_fcgid:    16
+> > mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+> > 4326')
+> > mod_fcgid:    18                 lyr.datasource =
+> > Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+> > mod_fcgid:    19                 lyr.title = 'test'
+> > mod_fcgid:    20                 lyr.abstract = 'abstract'
+> > mod_fcgid:    21
+> > mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+> > 0x2b8689b70aa0>, file undefined
+> > 0x2b8689b70aa0>
+> >
+> >
+> > There might be some problem at the boost level, because the
+> > signatures and your code look OK.
+> >
+> > What version of Boost are you using? What Linux distribution?
+> >
+> > J.F.
+> >
+> > Stephan Holl wrote:
+> >> Hi Mapnik-developers, Jean-Francois Doyon,
+> >>
+> >> I would like to use the ogcserver-wms from mapnik to render
+> >> OSM-data also in stock-WMS-desktop-clients.
+> >>
+> >> Therefor I followed the advises closely on[1] but my services dies
+> >> with the following error (in apache-errorlog):
+> >> mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+> >> mod_fcgid: ArgumentError: Python argument types in
+> >> mod_fcgid:     Layer.__init__(Layer)
+> >> mod_fcgid: did not match C++ signature:
+> >> mod_fcgid:     __init__(_object*, std::string)
+> >> mod_fcgid:     __init__(_object*, std::string, std::string)
+> >> mod_fcgid: /opt/mapnik/wms.py in __init__(self=<wms.WMSFactory  
+> >> instance
+> >> at 0x2b8690870c68>)
+> >> mod_fcgid:    15 self.register_style('style1', sty)
+> >> mod_fcgid:    16
+> >> mod_fcgid:    17                 lyr = Layer('world', '+init=epsg: 
+> >> 4326')
+> >> mod_fcgid:    18                 lyr.datasource =
+> >> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+> >> world_boundaries_m')
+> >> mod_fcgid:    19                 lyr.title = 'test'
+> >> mod_fcgid:    20                 lyr.abstract = 'abstract'
+> >> mod_fcgid:    21
+> >> mod_fcgid: lyr undefined, global Shapefile = <function Shapefile at
+> >> 0x2b8689b70aa0>, file undefined
+> >> 0x2b8689b70aa0>
+> >> mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/ 
+> >> cgiserver.py
+> >> 0x2b8689b70aa0>in __init__(self=<__main__.WMSHandler object at
+> >> 0x2b8689b70aa0>0x2b869086ce90>)
+> >> mod_fcgid:    44         except ImportError:
+> >> mod_fcgid:    45             raise ServerConfigurationError('The
+> >> factory module could not be loaded.')
+> >> mod_fcgid:    46         if hasattr(mapfactorymodule,
+> >> 'WMSFactory'): mod_fcgid:    47 self.mapfactory =
+> >> getattr(mapfactorymodule, 'WMSFactory')()
+> >> mod_fcgid:    48         else:
+> >> mod_fcgid:    49             raise ServerConfigurationError('The
+> >> factory module does not have a WMSFactory class.')
+> >> mod_fcgid:    50         if conf.has_option('server', 'debug'):
+> >> mod_fcgid: self = <__main__.WMSHandler object at
+> >> 0x2b869086ce90>, self.mapfactory undefined, getattr undefined,
+> >> 0x2b869086ce90>mapfactorymodule = <module 'wms' from
+> >> 0x2b869086ce90>'/opt/mapnik/wms.pyc'>
+> >> 0x2b869086ce90>
+> >> mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+> >> 0x2b869086ce90>in run(self=<jon.fcgi.Request object at  
+> >> 0x2b8690864a50>)
+> >> 0x2b869086ce90>
+> >> mod_fcgid:   338       self._init()
+> >> mod_fcgid:   339       self.log(2, "Calling handler")
+> >> mod_fcgid:   340       try:
+> >> mod_fcgid:   341         handler = self._handler_type()
+> >> mod_fcgid:   342       except:
+> >> mod_fcgid:   343         self.traceback()
+> >> mod_fcgid:   344       else:
+> >> mod_fcgid: handler undefined, self = <jon.fcgi.Request object at
+> >> 0x2b8690864a50>, self._handler_type = <class
+> >> 0x2b8690864a50>'__main__.WMSHandler'> ~
+> >>
+> >> This is my wms.py-script (with only one layer for now):
+> >> from mapnik.ogcserver.WMS import BaseWMSFactory
+> >> from mapnik import *
+> >>
+> >> class WMSFactory(BaseWMSFactory):
+> >>
+> >>         def __init__(self):
+> >>                 BaseWMSFactory.__init__(self)
+> >>                 sty = Style()
+> >>
+> >>                 rl = Rule()
+> >>                 rl.symbols.append(PolygonSymbolizer(Color 
+> >> (248,216,136)))
+> >>                 rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+> >>                 sty.rules.append( rl )
+> >>
+> >>                 self.register_style('style1', sty)
+> >>
+> >>                 lyr = Layer('world', '+init=epsg:4326')
+> >>                 lyr.datasource =
+> >> Shapefile(file='/opt/mapnik/data/world_boundaries/ 
+> >> world_boundaries_m')
+> >> lyr.title = 'test' lyr.abstract = 'abstract'
+> >>
+> >>                 self.register_layer(lyr, 'style1')
+> >>                 self.finalize()
+> >>
+> >> I already posted that one on OSM-dev, but Artem told me to repost  
+> >> that
+> >> here.
+> >> Perhaps someone could give me a hint how to solve this.
+> >>
+> >> As someone on OSM-dev pointed out that an object is needed for a  
+> >> layer
+> >> to initialize instead a string. Is there a documentation of the
+> >> python-bindings?
+> >>
+> >> Thanks for any pointers. I really appreciate it.
+> >>
+> >> Best
+> >>
+> >> 	Stephan
+> >>
+> >> _______________________________________________
+> >> Mapnik-devel mailing list
+> >> Mapnik-devel at lists.berlios.de
+> >> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >>
+> >>
+> >
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> 
+> Artem Pavlenko
+> http://mapnik.org
+> 
+> 
+> 
+
+
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+
+From lists at brachttal.net  Fri Jul  6 23:12:27 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 6 Jul 2007 23:12:27 +0200
+Subject: [Mapnik-devel] Call for better documentation
+Message-ID: <20070706231227.646df0b6@frodo.mittelerde>
+
+Hello,
+
+While developing an mapnik based In-Car application I noticed that
+there's not really much mapnik documentation. The support on this
+mailing list and in #osm from various people is good, but it costs many
+time. So here are some ideas and questions to change this situation:
+
+- Are you interested in a better documentation?
+
+- Are you interested in a doxygen documented C++ API?
+
+- Are you interested in more small examples and tutorials.
+
+I ask these question only to hear some positive YES answers. :-)
+
+- I liked to add some stuff into the trac wiki, but I see no option to
+create a new user. Perhaps my fault, because I've no trac experience.
+
+- Do you accept patches with doxygen comments?
+
+- Maybe it's a good idea to change the complete mapnik.org to a wiki
+(e.g. MediaWiki).
+
+Any comments on my ideas? And what are your ideas to improve the
+documentation?
+
+regards
+Andreas
+
+
+From tim at sig.msstate.edu  Thu Jul 12 22:12:19 2007
+From: tim at sig.msstate.edu (Tim Tsai)
+Date: Thu, 12 Jul 2007 15:12:19 -0500
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070706231227.646df0b6@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+Message-ID: <46968B23.3090405@sig.msstate.edu>
+
+I haven't seen a response to this but I'd just like to chip in that I'd 
+appreciate more documentation too.
+
+Thanks,
+
+Tim
+
+Andreas Volz wrote:
+> Hello,
+>
+> While developing an mapnik based In-Car application I noticed that
+> there's not really much mapnik documentation. The support on this
+> mailing list and in #osm from various people is good, but it costs many
+> time. So here are some ideas and questions to change this situation:
+>
+> - Are you interested in a better documentation?
+>
+> - Are you interested in a doxygen documented C++ API?
+>
+> - Are you interested in more small examples and tutorials.
+>
+> I ask these question only to hear some positive YES answers. :-)
+>
+> - I liked to add some stuff into the trac wiki, but I see no option to
+> create a new user. Perhaps my fault, because I've no trac experience.
+>
+> - Do you accept patches with doxygen comments?
+>
+> - Maybe it's a good idea to change the complete mapnik.org to a wiki
+> (e.g. MediaWiki).
+>
+> Any comments on my ideas? And what are your ideas to improve the
+> documentation?
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+From kms at passback.co.uk  Fri Jul 13 09:59:57 2007
+From: kms at passback.co.uk (Keith Sharp)
+Date: Fri, 13 Jul 2007 08:59:57 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070706231227.646df0b6@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+Message-ID: <1184313597.3296.26.camel@animal.passback.co.uk>
+
+On Fri, 2007-07-06 at 23:12 +0200, Andreas Volz wrote:
+> Hello,
+> 
+> While developing an mapnik based In-Car application I noticed that
+> there's not really much mapnik documentation. The support on this
+> mailing list and in #osm from various people is good, but it costs many
+> time. So here are some ideas and questions to change this situation:
+> 
+> - Are you interested in a better documentation?
+
+Yes.
+
+> - Are you interested in a doxygen documented C++ API?
+
+Neutral - I'm not really a C++ person and I've not used doxygen before.
+
+> - Are you interested in more small examples and tutorials.
+
+Yes.
+
+> I ask these question only to hear some positive YES answers. :-)
+> 
+> - I liked to add some stuff into the trac wiki, but I see no option to
+> create a new user. Perhaps my fault, because I've no trac experience.
+> 
+> - Do you accept patches with doxygen comments?
+> 
+> - Maybe it's a good idea to change the complete mapnik.org to a wiki
+> (e.g. MediaWiki).
+> 
+> Any comments on my ideas? And what are your ideas to improve the
+> documentation?
+
+I find that short worked examples combined with full API docs are the
+best way to teach developers a new system.  The sort of example where I
+can get it running on my system relatively easily and then use the API
+docs to try out other functions to see what happens.
+
+Keith.
+
+
+
+From artem at mapnik.org  Fri Jul 13 10:54:48 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 13 Jul 2007 09:54:48 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070706231227.646df0b6@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+Message-ID: <8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+
+Hi Andreas,
+
+On 6 Jul 2007, at 22:12, Andreas Volz wrote:
+
+> Hello,
+>
+> While developing an mapnik based In-Car application I noticed that
+> there's not really much mapnik documentation. The support on this
+> mailing list and in #osm from various people is good, but it costs  
+> many
+> time. So here are some ideas and questions to change this situation:
+>
+> - Are you interested in a better documentation?
+>
+Yes
+> - Are you interested in a doxygen documented C++ API?
+>
+I'm not 100% convinced doxygen is the best way to document c++ but  
+yes, we need docs.
+> - Are you interested in more small examples and tutorials.
+>
+Yes.
+> I ask these question only to hear some positive YES answers. :-)
+>
+> - I liked to add some stuff into the trac wiki, but I see no option to
+> create a new user. Perhaps my fault, because I've no trac experience.
+>
+
+Please, contact me off list with your username and 'htdigest'  
+generated hash and I'll add yourself to trac editors.
+> - Do you accept patches with doxygen comments?
+
+If we decide to use doxygen, then yes.
+>
+> - Maybe it's a good idea to change the complete mapnik.org to a wiki
+> (e.g. MediaWiki).
+
+Hmm...  what makes you think MediaWiki is the answer and what can not  
+be achieved with current setup? I'm just trying to understand.
+>
+> Any comments on my ideas? And what are your ideas to improve the
+> documentation?
+
+
+Great stuff! Thanks a lot for starting this thread. I guess we need  
+some action now :). How do we start?
+Cheers,
+Artem
+
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070713/359a364e/attachment.html>
+
+From stephan.holl at intevation.de  Fri Jul 13 13:27:34 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Fri, 13 Jul 2007 13:27:34 +0200
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+References: <20070704121318.7463650d@localhost> <468C4FDA.8080306@gmail.com>
+	<7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+Message-ID: <20070713132734.599babac@thoe.hq.intevation.de>
+
+Hello Artem,
+
+Artem Pavlenko <artem at mapnik.org>, [20070705 - 21:23:01]
+
+> Stephan,
+> 
+> 
+> First thing is to make sure you have working mapnik. Could you
+> verify you can run python demo:
+> 
+> 
+> $  cd $(mapnik_src)/demo/python
+> $  python ./rundemo.py
+> 
+> and you should get two maps on the same directory
+
+I have build mapnik from SVN source on my maschine and now the WMS
+works as expected. Thanks for your help though!
+
+
+I have another question regarding the datasets available from here:
+http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+
+The prj-files from the shape said it is in Mercator-projection. I
+could not find any information about its EPSG-code:
+Feature Count: 3808
+Extent: (-20037508.342789, -19929239.113379) - (20037508.342789,
+18375854.709643) Layer SRS WKT:
+PROJCS["Mercator",
+    GEOGCS["GCS_WGS_1984",
+        DATUM["WGS_1984",
+            SPHEROID["WGS_1984",6378137,298.257223563]],
+        PRIMEM["Greenwich",0],
+        UNIT["Degree",0.017453292519943295]],
+    PROJECTION["Mercator_1SP"],
+    PARAMETER["standard_parallel_1",0],
+    PARAMETER["central_meridian",0],
+    PARAMETER["scale_factor",1],
+    PARAMETER["false_easting",0],
+    PARAMETER["false_northing",0],
+    UNIT["Meter",1]]
+
+Could some enlight me please?
+
+TIA
+
+	Stephan
+
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+
+From artem at mapnik.org  Fri Jul 13 15:40:12 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 13 Jul 2007 14:40:12 +0100
+Subject: [Mapnik-devel] WMS-service of mapnik
+In-Reply-To: <20070713132734.599babac@thoe.hq.intevation.de>
+References: <20070704121318.7463650d@localhost> <468C4FDA.8080306@gmail.com>
+	<7DD04850-12C3-4A37-BE07-D518275B8749@mapnik.org>
+	<20070713132734.599babac@thoe.hq.intevation.de>
+Message-ID: <AB3A6461-977A-433F-9E3E-990347E820A2@mapnik.org>
+
+Hi Stephan,
+On 13 Jul 2007, at 12:27, Stephan Holl wrote:
+
+> Hello Artem,
+>
+> Artem Pavlenko <artem at mapnik.org>, [20070705 - 21:23:01]
+>
+>> Stephan,
+>>
+>>
+>> First thing is to make sure you have working mapnik. Could you
+>> verify you can run python demo:
+>>
+>>
+>> $  cd $(mapnik_src)/demo/python
+>> $  python ./rundemo.py
+>>
+>> and you should get two maps on the same directory
+>
+> I have build mapnik from SVN source on my maschine and now the WMS
+> works as expected. Thanks for your help though!
+>
+Great!
+>
+> I have another question regarding the datasets available from here:
+> http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+>
+> The prj-files from the shape said it is in Mercator-projection. I
+> could not find any information about its EPSG-code:
+> Feature Count: 3808
+> Extent: (-20037508.342789, -19929239.113379) - (20037508.342789,
+> 18375854.709643) Layer SRS WKT:
+> PROJCS["Mercator",
+>     GEOGCS["GCS_WGS_1984",
+>         DATUM["WGS_1984",
+>             SPHEROID["WGS_1984",6378137,298.257223563]],
+>         PRIMEM["Greenwich",0],
+>         UNIT["Degree",0.017453292519943295]],
+>     PROJECTION["Mercator_1SP"],
+>     PARAMETER["standard_parallel_1",0],
+>     PARAMETER["central_meridian",0],
+>     PARAMETER["scale_factor",1],
+>     PARAMETER["false_easting",0],
+>     PARAMETER["false_northing",0],
+>     UNIT["Meter",1]]
+>
+> Could some enlight me please?
+
+Everyone seems to be using 41001 for the Mercator. I'm not sure how  
+'official' this one is . And you might have add extra config string  
+to ensure proj4 knows about Mercator. Try searching proj4 mailing  
+lists , I recall some postings about this issue.
+
+Cheers,
+Artem
+>
+> TIA
+>
+> 	Stephan
+>
+> -- 
+> Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/ 
+> ~stephan
+> Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B  
+> 18998
+> Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver  
+> Wagner
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070713/b9b1edf3/attachment.html>
+
+From tim at sig.msstate.edu  Fri Jul 13 22:48:19 2007
+From: tim at sig.msstate.edu (Tim Tsai)
+Date: Fri, 13 Jul 2007 15:48:19 -0500
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+Message-ID: <4697E513.10402@sig.msstate.edu>
+
+I've only played with Mapnik a little bit but coming from MapServer, I'd 
+definitely like to see the following (from a Python perspective):
+
+1) A simple stand-alone Python WMS server using the Python built-in HTTP 
+server classes (so that you don't have to involve Apache/etc. for 
+testing).  A CGI server of sorts that generates some interactive map 
+(CGI/Flash/etc.) would be great as well.
+
+2) More documentation on labeling.  My test case is at home so I am 
+writing from memory, but I got a bit confused between styles, layers, 
+etc. from the demo code.
+
+3) Some sample code on projections.
+
+Thanks!
+
+Tim
+
+
+From stephan.holl at intevation.de  Mon Jul 16 10:54:49 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Mon, 16 Jul 2007 10:54:49 +0200
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+Message-ID: <20070716105449.070c7d86@thoe.hq.intevation.de>
+
+Hello Artem,
+
+Artem Pavlenko <artem at mapnik.org>, [20070628 - 09:33:55]
+
+> Hello Stephan,
+> 
+> On 27 Jun 2007, at 15:41, Stephan Holl wrote:
+> 
+> > Hello mapnik-users,
+> >
+> > I tried the WMS-interface of mapnik described here[1] and I am
+> > wondering if I could use the osm.xml description-file to make mapnik
+> > act as a WMS-server.
+> 
+> > Since my example creates the styles in the script, I like to read in
+> > that file.
+> >
+> > Is this possible?
+> 
+> Yes, sure.
+
+This sounds good. Currently I am a little stuck how to load the data
+into the WMS-script. the doc/ogcserver/readme.txt reads that no
+Map()-object is needed.
+So I am lost how to load my map with load_map(), since load_map
+requires the reference to my mapboject.
+
+My tries (non-working):
+from mapnik.ogcserver.WMS import BaseWMSFactory
+from mapnik import *
+
+class WMSFactory(BaseWMSFactory):
+
+        def __init__(self):
+                BaseWMSFactory.__init__(self)
+                
+		m = Map(100,100)
+                file = 'mapnik-local.xml'
+                load_map(m,file)
+                self.finalize()
+
+Do I need to recreate all styles from the map-object and reregister all
+my layers like this:
+for i in range(len(m.layers)):
+  lyr = Layer(m.layers[i].name)
+  self.register_layer(lyr, m.layers[i].styles[0])
+
+> > If so, could you point me to some sort of
+> > documentation, please?
+> >
+> There aren't any documentations or examples on this topic, you're
+> the first one to come up with this approach:)
+> You'll  have to modify wms  to allow specifying bunch of mapniks  
+> layers as one wms layer or something like that. 
+
+Well, this is another step, but first it would be fine if every layer
+written in the xml-file would be kept up as one layer in
+GetCapabilities later on.
+
+> I'm not very
+> familiar with implementation details, but it shouldn't be too hard.
+> Jean- Francois Doyon has written WMS and he might have better
+> suggestions.
+> 
+> On the other hand, have you looked at TileCache? I personally think  
+> it's by far better solution for serving maps (vs WMS). It is also  
+> speaks WMS internally and you might be able to extract relevant bits.
+
+Yes, are are right with regards to OpenLayers as web-client. But I like
+to make OSM-data available for desktop-clients using no tiles but
+"stock" WMS-requests.
+
+Anyway, thanks for your suggestions how to solve this.
+
+Best
+
+	Stephan
+
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+
+From lists at brachttal.net  Mon Jul 16 23:45:13 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 16 Jul 2007 23:45:13 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+Message-ID: <20070716234513.70fd869b@frodo.mittelerde>
+
+Am Fri, 13 Jul 2007 09:54:48 +0100 schrieb Artem Pavlenko:
+
+Hello,
+
+> > - Are you interested in a doxygen documented C++ API?
+> >
+> I'm not 100% convinced doxygen is the best way to document c++ but  
+> yes, we need docs.
+
+I used doxygen in some other OpenSource projects and in my job. It's
+the best tool to document C++ sourcecode that I know. If someone knows
+a better, than tell it. If not I'll generate some doxygen stuff as demo.
+
+> > I ask these question only to hear some positive YES answers. :-)
+> >
+> > - I liked to add some stuff into the trac wiki, but I see no option
+> > to create a new user. Perhaps my fault, because I've no trac
+> > experience.
+> >
+> 
+> Please, contact me off list with your username and 'htdigest'  
+> generated hash and I'll add yourself to trac editors.
+
+Hm, I never created a htdigest generated hash. I found this link:
+http://trac.lighttpd.net/trac/wiki/Docs:ModAuth#htdigest
+What should I use as 'realm'?
+
+> > - Do you accept patches with doxygen comments?
+> 
+> If we decide to use doxygen, then yes.
+
+Someone with other ideas here?
+
+> > - Maybe it's a good idea to change the complete mapnik.org to a wiki
+> > (e.g. MediaWiki).
+> 
+> Hmm...  what makes you think MediaWiki is the answer and what can
+> not be achieved with current setup? I'm just trying to understand.
+
+I think MediaWiki is the most popular wiki. But there's nothing wrong
+with Trac. But I don't understand why users aren't able to create
+accounts without approval. In my eyes this is the spirit of a wiki.
+What is the reason for this?
+
+> > Any comments on my ideas? And what are your ideas to improve the
+> > documentation?
+> 
+> 
+> Great stuff! Thanks a lot for starting this thread. I guess we need  
+> some action now :). How do we start?
+
+I would start with some doxygen docu if nobody has another tool. Sure
+there're no comments yet, but it'll yet help to explore the source.
+
+And then every developer that uses Mapnik should create one small
+example and put it into the wiki.
+
+regards
+Andreas
+
+
+From stephan.holl at intevation.de  Wed Jul 18 10:18:42 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Wed, 18 Jul 2007 10:18:42 +0200
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <20070716105449.070c7d86@thoe.hq.intevation.de>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+	<20070716105449.070c7d86@thoe.hq.intevation.de>
+Message-ID: <20070718101842.29e93d4b@localhost>
+
+Hello,
+
+Stephan Holl <stephan.holl at intevation.de>, [20070716-10:54:49]:
+
+> My tries (non-working):
+> from mapnik.ogcserver.WMS import BaseWMSFactory
+> from mapnik import *
+> 
+> class WMSFactory(BaseWMSFactory):
+> 
+>         def __init__(self):
+>                 BaseWMSFactory.__init__(self)
+>                 
+> 		m = Map(100,100)
+>                 file = 'mapnik-local.xml'
+>                 load_map(m,file)
+>                 self.finalize()
+> 
+> Do I need to recreate all styles from the map-object and reregister
+> all my layers like this:
+> for i in range(len(m.layers)):
+>   lyr = Layer(m.layers[i].name)
+>   self.register_layer(lyr, m.layers[i].styles[0])
+
+I got further, but stoped with the following error:
+mod_fcgid: stderr: TypeError: No Python class registered for C++ class
+boost::variant<mapnik::point_symbolizer, mapnik::line_symbolizer,
+mapnik::line_pattern_symbolizer, mapnik::polygon_symbolizer,
+mapnik::polygon_pattern_symbolizer, mapnik::raster_symbolizer,
+mapnik::shield_symbolizer, mapnik::text_symbolizer,
+boost::detail::variant::void_, boost::detail::variant::void_,
+boost::detail::variant::void_, boost::detail::variant::void_,
+boost::detail::variant::void_, boost::detail::variant::void_,
+boost::detail::variant::void_, boost::detail::variant::void_,
+boost::detail::variant::void_, boost::detail::variant::void_,
+boost::detail::variant::void_, boost::detail::variant::void_> [Wed Jul
+18 10:00:14 2007] [warn] mod_fcgid:
+stderr: /home/osm/osm/mapnik/owsserver/OsmFactory.py in
+__init__(self=<OsmFactory.WMSFactory instance at 0xb663a50c>)
+
+Here is my script:
+
+1 from mapnik.ogcserver.WMS import BaseWMSFactory
+2 from mapnik import *
+3 
+4 class WMSFactory(BaseWMSFactory):
+5 
+6  def __init__(self):
+7   BaseWMSFactory.__init__(self)
+[comment-stuff]
+26  m = Map(100,100)
+27  osmfile='./file.xml'
+28  load_map(m,osmfile) 29 30  # loop over the file and grab the Styles
+31  # loop over all layers 32  for i in range(len(m.layers)):
+33   # register style-stuff
+34   mystyle = m.find_style(m.layers[i].styles[0])
+35   styname = 'style_' + str(i)
+36   for a in range(len(mystyle.rules)):
+37    rl = mystyle.rules[a]
+38    rl.filter = mystyle.rules[a].filter
+39    rl.max_scale = mystyle.rules[a].max_scale
+40    rl.min_scale = mystyle.rules[a].min_scale
+42
+43    # symbols-stuff
+44    for b in range(len(mystyle.rules[a].symbols)):
+45     symb = mystyle.rules[a].symbols[b]
+46     rl.symbols.append(symb)
+47
+48   mystyle.rules.append(rl)
+49   self.register_style(styname, mystyle)
+50
+51   # layer stuff
+52   lyr = Layer(m.layers[i].name, '+init=epsg:54004')
+53   lyr.title = m.layers[i].name
+54   lyr.datasource = m.layers[i].datasource
+55   lyr.abstract = m.layers[i].name
+56   self.register_layer(lyr, styname)
+57
+58  # Paint the WMS-request
+59  self.finalize()
+
+It stops somewhere between line 43 and 46. I am not sure if this a bug
+or only wrong usage of the python interface.
+
+Best regrads and thanks for you help
+
+
+	Stephan
+
+
+From artem at mapnik.org  Thu Jul 19 11:02:23 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 19 Jul 2007 10:02:23 +0100
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <20070716105449.070c7d86@thoe.hq.intevation.de>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+	<20070716105449.070c7d86@thoe.hq.intevation.de>
+Message-ID: <2C26204D-8A15-41D3-8BB8-CAA487BD3FC8@mapnik.org>
+
+
+On 16 Jul 2007, at 09:54, Stephan Holl wrote:
+
+> Hello Artem,
+>
+> Artem Pavlenko <artem at mapnik.org>, [20070628 - 09:33:55]
+>
+>> Hello Stephan,
+>>
+>> On 27 Jun 2007, at 15:41, Stephan Holl wrote:
+>>
+>>> Hello mapnik-users,
+>>>
+>>> I tried the WMS-interface of mapnik described here[1] and I am
+>>> wondering if I could use the osm.xml description-file to make mapnik
+>>> act as a WMS-server.
+>>
+>>> Since my example creates the styles in the script, I like to read in
+>>> that file.
+>>>
+>>> Is this possible?
+>>
+>> Yes, sure.
+>
+> This sounds good. Currently I am a little stuck how to load the data
+> into the WMS-script. the doc/ogcserver/readme.txt reads that no
+> Map()-object is needed.
+> So I am lost how to load my map with load_map(), since load_map
+> requires the reference to my mapboject.
+>
+> My tries (non-working):
+> from mapnik.ogcserver.WMS import BaseWMSFactory
+> from mapnik import *
+>
+> class WMSFactory(BaseWMSFactory):
+>
+>         def __init__(self):
+>                 BaseWMSFactory.__init__(self)
+>
+> 		m = Map(100,100)
+>                 file = 'mapnik-local.xml'
+>                 load_map(m,file)
+>                 self.finalize()
+>
+> Do I need to recreate all styles from the map-object and reregister  
+> all
+> my layers like this:
+> for i in range(len(m.layers)):
+>   lyr = Layer(m.layers[i].name)
+>   self.register_layer(lyr, m.layers[i].styles[0])
+
+
+Yes, it looks like current WMS implementation expects Layer(s) and  
+creates/maintains Map object internally.
+The above looks OK to me and should work in principle.
+
+>
+>>> If so, could you point me to some sort of
+>>> documentation, please?
+>>>
+>> There aren't any documentations or examples on this topic, you're
+>> the first one to come up with this approach:)
+>> You'll  have to modify wms  to allow specifying bunch of mapniks
+>> layers as one wms layer or something like that.
+>
+> Well, this is another step, but first it would be fine if every layer
+> written in the xml-file would be kept up as one layer in
+> GetCapabilities later on.
+
+OK.
+>
+>> I'm not very
+>> familiar with implementation details, but it shouldn't be too hard.
+>> Jean- Francois Doyon has written WMS and he might have better
+>> suggestions.
+>>
+>> On the other hand, have you looked at TileCache? I personally think
+>> it's by far better solution for serving maps (vs WMS). It is also
+>> speaks WMS internally and you might be able to extract relevant bits.
+>
+> Yes, are are right with regards to OpenLayers as web-client. But I  
+> like
+> to make OSM-data available for desktop-clients using no tiles but
+> "stock" WMS-requests.
+>
+> Anyway, thanks for your suggestions how to solve this.
+>
+> Best
+>
+> 	Stephan
+
+
+Cheers,
+Artem
+>
+> -- 
+> Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/ 
+> ~stephan
+> Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B  
+> 18998
+> Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver  
+> Wagner
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/cfd0c107/attachment.html>
+
+From artem at mapnik.org  Thu Jul 19 11:19:24 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 19 Jul 2007 10:19:24 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070716234513.70fd869b@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+Message-ID: <1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+
+
+On 16 Jul 2007, at 22:45, Andreas Volz wrote:
+
+> Am Fri, 13 Jul 2007 09:54:48 +0100 schrieb Artem Pavlenko:
+>
+> Hello,
+>
+>>> - Are you interested in a doxygen documented C++ API?
+>>>
+>> I'm not 100% convinced doxygen is the best way to document c++ but
+>> yes, we need docs.
+>
+> I used doxygen in some other OpenSource projects and in my job. It's
+> the best tool to document C++ sourcecode that I know. If someone knows
+> a better, than tell it. If not I'll generate some doxygen stuff as  
+> demo.
+>
+
+Yes, please.
+>>> I ask these question only to hear some positive YES answers. :-)
+>>>
+>>> - I liked to add some stuff into the trac wiki, but I see no option
+>>> to create a new user. Perhaps my fault, because I've no trac
+>>> experience.
+>>>
+>>
+>> Please, contact me off list with your username and 'htdigest'
+>> generated hash and I'll add yourself to trac editors.
+>
+> Hm, I never created a htdigest generated hash. I found this link:
+> http://trac.lighttpd.net/trac/wiki/Docs:ModAuth#htdigest
+> What should I use as 'realm'?
+
+You should use 'mapnik' for the realm.
+>
+>>> - Do you accept patches with doxygen comments?
+>>
+>> If we decide to use doxygen, then yes.
+>
+> Someone with other ideas here?
+
+Nope.
+>>> - Maybe it's a good idea to change the complete mapnik.org to a wiki
+>>> (e.g. MediaWiki).
+>>
+>> Hmm...  what makes you think MediaWiki is the answer and what can
+>> not be achieved with current setup? I'm just trying to understand.
+>
+> I think MediaWiki is the most popular wiki. But there's nothing wrong
+> with Trac. But I don't understand why users aren't able to create
+> accounts without approval. In my eyes this is the spirit of a wiki.
+> What is the reason for this?
+
+This can be fixed by installing webadmin and accoundmanager. I'm  
+looking into this.
+
+>
+>>> Any comments on my ideas? And what are your ideas to improve the
+>>> documentation?
+>>
+>>
+>> Great stuff! Thanks a lot for starting this thread. I guess we need
+>> some action now :). How do we start?
+>
+> I would start with some doxygen docu if nobody has another tool. Sure
+> there're no comments yet, but it'll yet help to explore the source.
+>
+> And then every developer that uses Mapnik should create one small
+> example and put it into the wiki.
+>
+
+Sounds like a great idea!
+> regards
+> Andreas
+>
+
+Best,
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/e12c79c8/attachment.html>
+
+From artem at mapnik.org  Thu Jul 19 12:44:51 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 19 Jul 2007 11:44:51 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <4697E513.10402@sig.msstate.edu>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<4697E513.10402@sig.msstate.edu>
+Message-ID: <61289EB4-B252-4891-A2F1-D00E02F0E72B@mapnik.org>
+
+Hi Tim,
+On 13 Jul 2007, at 21:48, Tim Tsai wrote:
+
+> I've only played with Mapnik a little bit but coming from  
+> MapServer, I'd
+> definitely like to see the following (from a Python perspective):
+>
+> 1) A simple stand-alone Python WMS server using the Python built-in  
+> HTTP
+> server classes (so that you don't have to involve Apache/etc. for
+> testing).  A CGI server of sorts that generates some interactive map
+> (CGI/Flash/etc.) would be great as well.
+>
+> 2) More documentation on labeling.  My test case is at home so I am
+> writing from memory, but I got a bit confused between styles, layers,
+> etc. from the demo code.
+>
+> 3) Some sample code on projections.
+>
+> Thanks!
+>
+> Tim
+
+
+All sounds good to me. We just need to get started somehow.  
+Documentation and samples are really lagging behind and they need your 
+(everyones) help !!!
+
+Cheers,
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/b1a8a3be/attachment.html>
+
+From artem at mapnik.org  Thu Jul 19 13:35:28 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 19 Jul 2007 12:35:28 +0100
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <20070718101842.29e93d4b@localhost>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+	<20070716105449.070c7d86@thoe.hq.intevation.de>
+	<20070718101842.29e93d4b@localhost>
+Message-ID: <A0861578-AA2F-460E-857D-DEDF7E27ECBD@mapnik.org>
+
+Hi Stephan,
+
+On 18 Jul 2007, at 09:18, Stephan Holl wrote:
+
+> Hello,
+>
+> Stephan Holl <stephan.holl at intevation.de>, [20070716-10:54:49]:
+>
+>> My tries (non-working):
+>> from mapnik.ogcserver.WMS import BaseWMSFactory
+>> from mapnik import *
+>>
+>> class WMSFactory(BaseWMSFactory):
+>>
+>>         def __init__(self):
+>>                 BaseWMSFactory.__init__(self)
+>>
+>> 		m = Map(100,100)
+>>                 file = 'mapnik-local.xml'
+>>                 load_map(m,file)
+>>                 self.finalize()
+>>
+>> Do I need to recreate all styles from the map-object and reregister
+>> all my layers like this:
+>> for i in range(len(m.layers)):
+>>   lyr = Layer(m.layers[i].name)
+>>   self.register_layer(lyr, m.layers[i].styles[0])
+>
+> I got further, but stoped with the following error:
+> mod_fcgid: stderr: TypeError: No Python class registered for C++ class
+> boost::variant<mapnik::point_symbolizer, mapnik::line_symbolizer,
+> mapnik::line_pattern_symbolizer, mapnik::polygon_symbolizer,
+> mapnik::polygon_pattern_symbolizer, mapnik::raster_symbolizer,
+> mapnik::shield_symbolizer, mapnik::text_symbolizer,
+> boost::detail::variant::void_, boost::detail::variant::void_,
+> boost::detail::variant::void_, boost::detail::variant::void_,
+> boost::detail::variant::void_, boost::detail::variant::void_,
+> boost::detail::variant::void_, boost::detail::variant::void_,
+> boost::detail::variant::void_, boost::detail::variant::void_,
+> boost::detail::variant::void_, boost::detail::variant::void_> [Wed Jul
+> 18 10:00:14 2007] [warn] mod_fcgid:
+> stderr: /home/osm/osm/mapnik/owsserver/OsmFactory.py in
+> __init__(self=<OsmFactory.WMSFactory instance at 0xb663a50c>)
+>
+> Here is my script:
+>
+> 1 from mapnik.ogcserver.WMS import BaseWMSFactory
+> 2 from mapnik import *
+> 3
+> 4 class WMSFactory(BaseWMSFactory):
+> 5
+> 6  def __init__(self):
+> 7   BaseWMSFactory.__init__(self)
+> [comment-stuff]
+> 26  m = Map(100,100)
+> 27  osmfile='./file.xml'
+> 28  load_map(m,osmfile) 29 30  # loop over the file and grab the  
+> Styles
+> 31  # loop over all layers 32  for i in range(len(m.layers)):
+> 33   # register style-stuff
+> 34   mystyle = m.find_style(m.layers[i].styles[0])
+> 35   styname = 'style_' + str(i)
+> 36   for a in range(len(mystyle.rules)):
+> 37    rl = mystyle.rules[a]
+> 38    rl.filter = mystyle.rules[a].filter
+> 39    rl.max_scale = mystyle.rules[a].max_scale
+> 40    rl.min_scale = mystyle.rules[a].min_scale
+> 42
+> 43    # symbols-stuff
+> 44    for b in range(len(mystyle.rules[a].symbols)):
+> 45     symb = mystyle.rules[a].symbols[b]
+> 46     rl.symbols.append(symb)
+> 47
+> 48   mystyle.rules.append(rl)
+> 49   self.register_style(styname, mystyle)
+> 50
+> 51   # layer stuff
+> 52   lyr = Layer(m.layers[i].name, '+init=epsg:54004')
+> 53   lyr.title = m.layers[i].name
+> 54   lyr.datasource = m.layers[i].datasource
+> 55   lyr.abstract = m.layers[i].name
+> 56   self.register_layer(lyr, styname)
+> 57
+> 58  # Paint the WMS-request
+> 59  self.finalize()
+>
+> It stops somewhere between line 43 and 46. I am not sure if this a bug
+> or only wrong usage of the python interface.
+>
+> Best regrads and thanks for you help
+>
+>
+
+It is not a bug but rather missing feature :) Attached is the patch  
+which should help : ?
+Here is my test case:
+
+#!/opt/python/bin/python
+# -*- coding: utf-8 -*-
+from mapnik import *
+
+m = Map(800,600)
+load_map(m,"/Users/artem/projects/viewer/osm.xml")
+
+for l in m.layers:
+     for style_name in l.styles:
+         s = m.find_style(style_name)
+         for r in s.rules:
+             for sym in r.symbols:
+                 print sym
+
+
+
+Let me know, if this solves the problem and I'll integrate in into  
+main trunk.
+
+Artem
+
+
+> 	Stephan
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: symbolizer.patch
+Type: application/octet-stream
+Size: 504 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment.obj>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070719/def8198d/attachment-0001.html>
+
+From stephan.holl at intevation.de  Thu Jul 19 14:51:51 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Thu, 19 Jul 2007 14:51:51 +0200
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <A0861578-AA2F-460E-857D-DEDF7E27ECBD@mapnik.org>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+	<20070716105449.070c7d86@thoe.hq.intevation.de>
+	<20070718101842.29e93d4b@localhost>
+	<A0861578-AA2F-460E-857D-DEDF7E27ECBD@mapnik.org>
+Message-ID: <20070719145151.400b0145@thoe.hq.intevation.de>
+
+Hello Artem,
+
+Artem Pavlenko <artem at mapnik.org>, [20070719 - 12:35:28]
+
+[...]
+
+> 
+> It is not a bug but rather missing feature :) Attached is the patch  
+> which should help : ?
+> Here is my test case:
+> 
+> #!/opt/python/bin/python
+> # -*- coding: utf-8 -*-
+> from mapnik import *
+> 
+> m = Map(800,600)
+> load_map(m,"/Users/artem/projects/viewer/osm.xml")
+> 
+> for l in m.layers:
+>      for style_name in l.styles:
+>          s = m.find_style(style_name)
+>          for r in s.rules:
+>              for sym in r.symbols:
+>                  print sym
+> 
+> 
+> 
+> Let me know, if this solves the problem and I'll integrate in into  
+> main trunk.
+
+It compiled OK and the TypeError is away. But I did not get a map,
+everything is white. I assume I have to handcraft my rules and symboles
+for WMS, because doing so, maps appear.
+Strange.
+
+Thank you for your quick help though!
+
+Best
+	Stephan
+
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+
+From lists at brachttal.net  Fri Jul 20 00:37:07 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 20 Jul 2007 00:37:07 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+Message-ID: <20070720003707.4c8c519f@frodo.mittelerde>
+
+Am Thu, 19 Jul 2007 10:19:24 +0100 schrieb Artem Pavlenko:
+
+> > I used doxygen in some other OpenSource projects and in my job. It's
+> > the best tool to document C++ sourcecode that I know. If someone
+> > knows a better, than tell it. If not I'll generate some doxygen
+> > stuff as demo.
+> >
+> 
+> Yes, please.
+
+Here is a doxygen demo of the Mapnik API. You don't see any comments,
+because there're non. But I think it does yet give a good overview.
+Needs some fine tunning.
+
+http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+
+> >>> I ask these question only to hear some positive YES answers. :-)
+> >>>
+> >>> - I liked to add some stuff into the trac wiki, but I see no
+> >>> option to create a new user. Perhaps my fault, because I've no
+> >>> trac experience.
+> >>>
+> >>
+> >> Please, contact me off list with your username and 'htdigest'
+> >> generated hash and I'll add yourself to trac editors.
+> >
+> > Hm, I never created a htdigest generated hash. I found this link:
+> > http://trac.lighttpd.net/trac/wiki/Docs:ModAuth#htdigest
+> > What should I use as 'realm'?
+> 
+> You should use 'mapnik' for the realm.
+
+Ok, will try it tomorrow.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Mon Jul 23 23:36:51 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 23 Jul 2007 23:36:51 +0200
+Subject: [Mapnik-devel] segfault with mapnik
+Message-ID: <20070723233651.6638ec2c@frodo.mittelerde>
+
+Hello,
+
+I use this code to insert a feature while runtime:
+
+class Mapniksource {
+...
+private:
+  void createInternalLayer ();  
+
+  boost::shared_ptr<mapnik::Map> map;
+  mapnik::memory_datasource *ds;
+  int m_width;
+  int m_height;
+  projection m_source;
+  mapnik::Layer *lyr;
+  int keyID;
+  std::vector <mapnik::feature_ptr> feature_ptr_vector;
+}
+
+void MapnikSource::createInternalLayer ()
+{
+  if (ds) delete ds;
+  ds = new memory_datasource ();
+
+  if (lyr) delete (lyr);
+  lyr = new Layer ("MarkerLayer");
+
+  for (unsigned int i = 0; i < feature_ptr_vector.size (); i++)
+  {
+    feature_ptr &f = feature_ptr_vector[i];
+
+    ds->push (f);
+  }
+
+  lyr->set_datasource(mapnik::datasource_ptr(ds));
+
+  lyr->set_srs("+proj=latlong +datum=WGS84");
+  lyr->add_style("enigator");
+
+  map->addLayer(*lyr);
+}
+
+void MapnikSource::insertDataPoint (double x, double y, const char
+*key, const char *value, const char* layer) {
+  feature_ptr f (feature_factory::create (keyID));
+
+  geometry_ptr point (new point_impl (-1));
+  point->move_to (x, y);
+
+  f->set_geometry(point);
+
+  transcoder tr ("utf-8");
+  (*f)[key] = tr.transcode (value);
+
+  feature_ptr_vector.push_back (f);
+
+  keyID++;
+
+  // create Layer after each insert
+  createInternalLayer ();
+}
+
+This works only in 50% of all cases. Sometimes my application simply
+crash. The crash is inside Mapnik. Here is a gdb backtrace:
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1237186864 (LWP 12482)]
+0x08059d9a in
+mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+>proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+>at /usr/local/include/mapnik/feature_style_processor.hpp:179
+179                          featureset_ptr fs=ds->features(q);
+(gdb) bt
+#0  0x08059d9a in
+mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+>proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+>at /usr/local/include/mapnik/feature_style_processor.hpp:179
+#1  0x08057a3c in MapnikSource::getImageMap (this=0xbfa10184, 
+    x_1=1210112.9791878795, y_1=6354110.4829181004,
+x_2=1220112.9791878795, y_2=6364110.4829181004, outImage=0xbfa100c4)
+    at /usr/local/include/mapnik/feature_style_processor.hpp:92
+#2  0x080525f9 in Navigation::getImageMap (this=0xbfa1016c, 
+    outImage=0xbfa100c4) at Navigation.cpp:115
+#3  0x0805befa in NavigationScreen::updateMap (this=0xbfa0ffec,
+missedEvents=3) at NavigationScreen.cpp:103
+#4  0x0804fb2b in EcoreDispatcher::dispatcher_async_handler
+(data=0xbfa10094, fdh=0x8123dc8)
+at /usr/include/sigc++-2.0/sigc++/signal.h:686 #5  0xb7ed1749 in
+_ecore_main_loop_iterate_internal (once_only=0) at ecore_main.c:414
+#6  0xb7ed1967 in ecore_main_loop_begin () at ecore_main.c:79
+#7  0xb7c75887 in efl::EcoreApplication::exec (this=0x806fdb8)
+    at eflpp_ecore.cpp:99
+#8  0x08050000 in main (argc=0, argv=0x776f7401) at enigator.cpp:63
+
+
+Any ideas why this happens? I think my way to insert layers with data
+is perhaps a big hack. But is there a better way?
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Tue Jul 24 10:57:10 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 24 Jul 2007 09:57:10 +0100
+Subject: [Mapnik-devel] segfault with mapnik
+In-Reply-To: <20070723233651.6638ec2c@frodo.mittelerde>
+References: <20070723233651.6638ec2c@frodo.mittelerde>
+Message-ID: <F5DB8ABF-C16D-4F1D-8F04-9A91E542B55C@mapnik.org>
+
+
+On 23 Jul 2007, at 22:36, Andreas Volz wrote:
+
+> Hello,
+>
+> I use this code to insert a feature while runtime:
+>
+> class Mapniksource {
+> ...
+> private:
+>   void createInternalLayer ();
+>
+>   boost::shared_ptr<mapnik::Map> map;
+>   mapnik::memory_datasource *ds;
+>   int m_width;
+>   int m_height;
+>   projection m_source;
+>   mapnik::Layer *lyr;
+>   int keyID;
+>   std::vector <mapnik::feature_ptr> feature_ptr_vector;
+> }
+>
+> void MapnikSource::createInternalLayer ()
+> {
+>   if (ds) delete ds;
+
+  ds is owned by boost::shared_ptr<..> in Layer. You shouldn't delete  
+it.
+
+>   ds = new memory_datasource ();
+
+
+>
+>   if (lyr) delete (lyr);
+>   lyr = new Layer ("MarkerLayer");
+>
+
+You can create new Layer on stack. There is no need to new/delete and  
+keep track.
+>   for (unsigned int i = 0; i < feature_ptr_vector.size (); i++)
+>   {
+>     feature_ptr &f = feature_ptr_vector[i];
+>
+>     ds->push (f);
+>   }
+>
+>   lyr->set_datasource(mapnik::datasource_ptr(ds));
+>
+>   lyr->set_srs("+proj=latlong +datum=WGS84");
+>   lyr->add_style("enigator");
+>
+>   map->addLayer(*lyr);
+> }
+>
+> void MapnikSource::insertDataPoint (double x, double y, const char
+> *key, const char *value, const char* layer) {
+>   feature_ptr f (feature_factory::create (keyID));
+>
+>   geometry_ptr point (new point_impl (-1));
+>   point->move_to (x, y);
+>
+>   f->set_geometry(point);
+>
+>   transcoder tr ("utf-8");
+>   (*f)[key] = tr.transcode (value);
+>
+>   feature_ptr_vector.push_back (f);
+>
+>   keyID++;
+>
+>   // create Layer after each insert
+>   createInternalLayer ();
+> }
+>
+> This works only in 50% of all cases. Sometimes my application simply
+> crash. The crash is inside Mapnik. Here is a gdb backtrace:
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> [Switching to Thread -1237186864 (LWP 12482)]
+> 0x08059d9a in
+> mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>> ::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+>> proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+>> at /usr/local/include/mapnik/feature_style_processor.hpp:179
+> 179                          featureset_ptr fs=ds->features(q);
+
+> (gdb) bt
+> #0  0x08059d9a in
+> mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>> ::apply_to_layer (this=0xbfa0e6b0, lay=@0xb4c08bb0, p=@0xbfa0e6b0,
+>> proj0=@0xbfa0e7b8, scale_denom=59523.809523810225)
+>> at /usr/local/include/mapnik/feature_style_processor.hpp:179
+> #1  0x08057a3c in MapnikSource::getImageMap (this=0xbfa10184,
+>     x_1=1210112.9791878795, y_1=6354110.4829181004,
+> x_2=1220112.9791878795, y_2=6364110.4829181004, outImage=0xbfa100c4)
+>     at /usr/local/include/mapnik/feature_style_processor.hpp:92
+> #2  0x080525f9 in Navigation::getImageMap (this=0xbfa1016c,
+>     outImage=0xbfa100c4) at Navigation.cpp:115
+> #3  0x0805befa in NavigationScreen::updateMap (this=0xbfa0ffec,
+> missedEvents=3) at NavigationScreen.cpp:103
+> #4  0x0804fb2b in EcoreDispatcher::dispatcher_async_handler
+> (data=0xbfa10094, fdh=0x8123dc8)
+> at /usr/include/sigc++-2.0/sigc++/signal.h:686 #5  0xb7ed1749 in
+> _ecore_main_loop_iterate_internal (once_only=0) at ecore_main.c:414
+> #6  0xb7ed1967 in ecore_main_loop_begin () at ecore_main.c:79
+> #7  0xb7c75887 in efl::EcoreApplication::exec (this=0x806fdb8)
+>     at eflpp_ecore.cpp:99
+> #8  0x08050000 in main (argc=0, argv=0x776f7401) at enigator.cpp:63
+>
+>
+> Any ideas why this happens? I think my way to insert layers with data
+> is perhaps a big hack. But is there a better way?
+>
+
+Try storing  datasource as a smart pointer and cast to  
+'memory_datasource' inside your member function.
+
+
+Cheers,
+Artem
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070724/47bceb33/attachment.html>
+
+From artem at mapnik.org  Tue Jul 24 09:52:21 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 24 Jul 2007 08:52:21 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070720003707.4c8c519f@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+Message-ID: <8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+
+
+On 19 Jul 2007, at 23:37, Andreas Volz wrote:
+
+> Am Thu, 19 Jul 2007 10:19:24 +0100 schrieb Artem Pavlenko:
+>
+>>> I used doxygen in some other OpenSource projects and in my job. It's
+>>> the best tool to document C++ sourcecode that I know. If someone
+>>> knows a better, than tell it. If not I'll generate some doxygen
+>>> stuff as demo.
+>>>
+>>
+>> Yes, please.
+>
+> Here is a doxygen demo of the Mapnik API. You don't see any comments,
+> because there're non. But I think it does yet give a good overview.
+> Needs some fine tunning.
+>
+> http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+
+
+Looks very promising. It certainly gives a good overview and reminds  
+me about things to clean up.
+>
+>>>>> I ask these question only to hear some positive YES answers. :-)
+>>>>>
+>>>>> - I liked to add some stuff into the trac wiki, but I see no
+>>>>> option to create a new user. Perhaps my fault, because I've no
+>>>>> trac experience.
+>>>>>
+>>>>
+>>>> Please, contact me off list with your username and 'htdigest'
+>>>> generated hash and I'll add yourself to trac editors.
+>>>
+>>> Hm, I never created a htdigest generated hash. I found this link:
+>>> http://trac.lighttpd.net/trac/wiki/Docs:ModAuth#htdigest
+>>> What should I use as 'realm'?
+>>
+>> You should use 'mapnik' for the realm.
+>
+> Ok, will try it tomorrow.
+
+Great!
+>
+> regards
+> Andreas
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070724/15fc9766/attachment.html>
+
+From lists at brachttal.net  Tue Jul 24 20:22:17 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 24 Jul 2007 20:22:17 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+Message-ID: <20070724202217.2f5f29fa@frodo.mittelerde>
+
+Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+
+> > Here is a doxygen demo of the Mapnik API. You don't see any
+> > comments, because there're non. But I think it does yet give a good
+> > overview. Needs some fine tunning.
+> >
+> > http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+> 
+> 
+> Looks very promising. It certainly gives a good overview and reminds  
+> me about things to clean up.
+
+I created a first patch to document map.hpp.
+
+http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch
+
+Perhaps it's a little "over-documented", but it's an example how to
+document the API.
+
+Please add the directory and the patch
+
+http://tux-style.de/osm/mapnik/patches/doxygen/
+
+below mapnik/docs in SVN. Then you could simply execute doxygen in this
+directory and the docs are generated in html.
+
+> >>>>> I ask these question only to hear some positive YES answers. :-)
+> >>>>>
+> >>>>> - I liked to add some stuff into the trac wiki, but I see no
+> >>>>> option to create a new user. Perhaps my fault, because I've no
+> >>>>> trac experience.
+> >>>>>
+> >>>>
+> >>>> Please, contact me off list with your username and 'htdigest'
+> >>>> generated hash and I'll add yourself to trac editors.
+> >>>
+> >>> Hm, I never created a htdigest generated hash. I found this link:
+> >>> http://trac.lighttpd.net/trac/wiki/Docs:ModAuth#htdigest
+> >>> What should I use as 'realm'?
+> >>
+> >> You should use 'mapnik' for the realm.
+> >
+> > Ok, will try it tomorrow.
+
+Is send to you...
+
+Andreas
+
+
+From lists at brachttal.net  Tue Jul 24 23:27:44 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 24 Jul 2007 23:27:44 +0200
+Subject: [Mapnik-devel] Is std::vector best for Layers in Map?
+Message-ID: <20070724232744.49c6bfa8@frodo.mittelerde>
+
+Hello,
+
+do you think std::vector is the best container for styles in a Map? Why
+not using a std::list? And I think we should provide some sort of swap()
+function to swap layer positions. And then add a second addLayer()
+function:
+
+int addLayer (const Layer& l, int insert)
+{
+  // try to insert layer at position insert
+  // return real number of insert
+  // -> if not possible (e.g. lesser number of layers) 
+  // then the caller has a number which layer to remove
+}
+
+Next a function
+
+bool removeLayer (std::string &name)
+
+to remove a Layer if only it's name is know. Next I would change
+addLayer to control that only Layers with unique names could be added.
+
+What do you think?
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Wed Jul 25 00:27:30 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 25 Jul 2007 00:27:30 +0200
+Subject: [Mapnik-devel] segfault with mapnik
+In-Reply-To: <F5DB8ABF-C16D-4F1D-8F04-9A91E542B55C@mapnik.org>
+References: <20070723233651.6638ec2c@frodo.mittelerde>
+	<F5DB8ABF-C16D-4F1D-8F04-9A91E542B55C@mapnik.org>
+Message-ID: <20070725002730.03711ffc@frodo.mittelerde>
+
+Am Tue, 24 Jul 2007 09:57:10 +0100 schrieb Artem Pavlenko:
+
+> > Any ideas why this happens? I think my way to insert layers with
+> > data is perhaps a big hack. But is there a better way?
+> >
+> 
+> Try storing  datasource as a smart pointer and cast to  
+> 'memory_datasource' inside your member function.
+> 
+
+How would I do this? I tried this:
+
+typedef boost::shared_ptr<mapnik::memory_datasource>
+                          memory_datasource_ptr;
+
+memory_datasource_ptr mds = static_cast <memory_datasource_ptr> (ds);
+
+This results in an compile error. So how would you practicaly do this
+cast?
+
+MapnikSource.cpp:162:   instantiated from here
+/usr/include/boost/shared_ptr.hpp:162: error: invalid conversion from
+'mapnik::datasource* const' to 'mapnik::memory_datasource*'
+
+regards
+Andreas
+
+
+From kms at passback.co.uk  Wed Jul 25 10:44:33 2007
+From: kms at passback.co.uk (Keith Sharp)
+Date: Wed, 25 Jul 2007 09:44:33 +0100
+Subject: [Mapnik-devel] Comments from Mapnik Fedora RPM review
+Message-ID: <1185353074.11681.13.camel@animal.passback.co.uk>
+
+Hello,
+
+I've been in the process of submitting a Mapnik RPM to Fedora for a few
+months now and I have had some feedback on my RPM.  A number of the
+comments were more related to Mapnik itself:
+
+1) Some of the files in the demo application have Windows-style line
+endings:
+
+	demo/data/boundaries_l.shp.xml
+	demo/data/boundaries.shp.xml
+	demo/data/qcdrainage.shp.xml
+	demo/data/ontdrainage.shp.xml
+	demo/data/popplaces.shp.xml
+	demo/data/COPYRIGHT.txt
+	demo/data/roads.shp.xml
+
+Can these be converted to Unix-style?
+
+2) Mapnik compiles with -O3, Fedora forbids this because of the extra
+complexity this adds to debugging.  Can this be changed/removed?
+
+3) Mapnik does not have a soversion which will cause problems in the
+future when the ABI changes and dynamically linked applications will
+start to fail.  Can  soversion support be added?
+
+4) Fedora already contains the Dejavu fonts so there is no need to
+bundle them with Mapnik.  I can probably cut these out during the RPM
+build process but it would be easier if they were removed upstream.  Is
+there any reason that they need to be bundled in the core package?
+
+The Fedora bug review is:
+
+	https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581
+
+Thanks,
+
+Keith.
+
+
+
+From artem at mapnik.org  Wed Jul 25 10:48:32 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 25 Jul 2007 09:48:32 +0100
+Subject: [Mapnik-devel] segfault with mapnik
+In-Reply-To: <20070725002730.03711ffc@frodo.mittelerde>
+References: <20070723233651.6638ec2c@frodo.mittelerde>
+	<F5DB8ABF-C16D-4F1D-8F04-9A91E542B55C@mapnik.org>
+	<20070725002730.03711ffc@frodo.mittelerde>
+Message-ID: <9255A9D3-9410-41FB-BFC3-26BA9CF5E70A@mapnik.org>
+
+
+On 24 Jul 2007, at 23:27, Andreas Volz wrote:
+
+> Am Tue, 24 Jul 2007 09:57:10 +0100 schrieb Artem Pavlenko:
+>
+>>> Any ideas why this happens? I think my way to insert layers with
+>>> data is perhaps a big hack. But is there a better way?
+>>>
+>>
+>> Try storing  datasource as a smart pointer and cast to
+>> 'memory_datasource' inside your member function.
+>>
+>
+> How would I do this? I tried this:
+>
+> typedef boost::shared_ptr<mapnik::memory_datasource>
+>                           memory_datasource_ptr;
+>
+> memory_datasource_ptr mds = static_cast <memory_datasource_ptr> (ds);
+>
+> This results in an compile error. So how would you practicaly do this
+> cast?
+>
+> MapnikSource.cpp:162:   instantiated from here
+> /usr/include/boost/shared_ptr.hpp:162: error: invalid conversion from
+> 'mapnik::datasource* const' to 'mapnik::memory_datasource*'
+
+
+You shouldn't cast smart pointers!!! Here is a small example for you:
+
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <mapnik/datasource.hpp>
+#include <mapnik/memory_datasource.hpp>
+
+using mapnik::datasource;
+using mapnik::datasource_ptr;
+
+int main()
+{
+    datasource_ptr ds (new mapnik::memory_datasource);
+    std::cout << typeid(ds.get()).name() << "\n";
+    if (ds)
+    {
+       mapnik::memory_datasource * mem =  
+dynamic_cast<mapnik::memory_datasource*>(ds.get());
+       if (mem)  // check if cast is ok!
+       {
+          std::cout << typeid(mem).name() << "\n";
+          // do something with memory_datasource e.g. push some features
+          mem->push(mapnik::feature_ptr(new mapnik::Feature(-1)));
+       }
+    }
+    return 0;
+}
+
+HTH
+Artem
+
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070725/179325dd/attachment.html>
+
+From artem at mapnik.org  Wed Jul 25 11:19:56 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 25 Jul 2007 10:19:56 +0100
+Subject: [Mapnik-devel] Comments from Mapnik Fedora RPM review
+In-Reply-To: <1185353074.11681.13.camel@animal.passback.co.uk>
+References: <1185353074.11681.13.camel@animal.passback.co.uk>
+Message-ID: <54DC219E-9E51-4FAB-8316-12FFBCFF543A@mapnik.org>
+
+Hi Keith,
+
+Thanks for pushing this forward.
+On 25 Jul 2007, at 09:44, Keith Sharp wrote:
+
+> Hello,
+>
+> I've been in the process of submitting a Mapnik RPM to Fedora for a  
+> few
+> months now and I have had some feedback on my RPM.  A number of the
+> comments were more related to Mapnik itself:
+>
+> 1) Some of the files in the demo application have Windows-style line
+> endings:
+>
+> 	demo/data/boundaries_l.shp.xml
+> 	demo/data/boundaries.shp.xml
+> 	demo/data/qcdrainage.shp.xml
+> 	demo/data/ontdrainage.shp.xml
+> 	demo/data/popplaces.shp.xml
+> 	demo/data/COPYRIGHT.txt
+> 	demo/data/roads.shp.xml
+>
+> Can these be converted to Unix-style?
+
+Sure, no problem. I just never had a chance to open these files in  
+Emacs  :)
+Actually, I don't think we need *.xml files at all , I'll remove them  
+and fix COPYRIGHT.txt
+>
+> 2) Mapnik compiles with -O3, Fedora forbids this because of the extra
+> complexity this adds to debugging.  Can this be changed/removed?
+>
+
+Mapnik is using similar compilation flags to boost.  Some boost  
+libraries _do_ benefit from -O3.
+I guess you can change this while building rpms, it shouldn't be  
+difficult.
+
+> 3) Mapnik does not have a soversion which will cause problems in the
+> future when the ABI changes and dynamically linked applications will
+> start to fail.  Can  soversion support be added?
+
+Yes, it can be. But ABI will change frequently!
+Dominic Hargreaves had the same challenge while building deb  
+packages. We should ask him.
+
+>
+> 4) Fedora already contains the Dejavu fonts so there is no need to
+> bundle them with Mapnik.  I can probably cut these out during the RPM
+> build process but it would be easier if they were removed  
+> upstream.  Is
+> there any reason that they need to be bundled in the core package?
+>
+The main reason to allow users to run 'rundemo.py' and create maps  
+with text without configuring anything.
+We can remove fonts and rely on standard fonts paths on Linux, I  
+guess. But what about Mac osx, win32 users?
+
+> The Fedora bug review is:
+>
+> 	https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581
+>
+> Thanks,
+>
+> Keith.
+>
+
+Cheers,
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070725/3297bef9/attachment.html>
+
+From kms at passback.co.uk  Wed Jul 25 12:55:34 2007
+From: kms at passback.co.uk (Keith Sharp)
+Date: Wed, 25 Jul 2007 11:55:34 +0100
+Subject: [Mapnik-devel] Comments from Mapnik Fedora RPM review
+In-Reply-To: <54DC219E-9E51-4FAB-8316-12FFBCFF543A@mapnik.org>
+References: <1185353074.11681.13.camel@animal.passback.co.uk>
+	<54DC219E-9E51-4FAB-8316-12FFBCFF543A@mapnik.org>
+Message-ID: <1185360934.11681.22.camel@animal.passback.co.uk>
+
+On Wed, 2007-07-25 at 10:19 +0100, Artem Pavlenko wrote:
+> Hi Keith,
+> 
+> 
+> Thanks for pushing this forward.
+> On 25 Jul 2007, at 09:44, Keith Sharp wrote:
+> 
+> > Hello,
+> > 
+> > 
+> > I've been in the process of submitting a Mapnik RPM to Fedora for a
+> > few
+> > months now and I have had some feedback on my RPM.  A number of the
+> > comments were more related to Mapnik itself:
+> > 
+> > 
+> > 1) Some of the files in the demo application have Windows-style line
+> > endings:
+> > 
+> > 
+> > demo/data/boundaries_l.shp.xml
+> > demo/data/boundaries.shp.xml
+> > demo/data/qcdrainage.shp.xml
+> > demo/data/ontdrainage.shp.xml
+> > demo/data/popplaces.shp.xml
+> > demo/data/COPYRIGHT.txt
+> > demo/data/roads.shp.xml
+> > 
+> > 
+> > Can these be converted to Unix-style?
+> 
+> 
+> Sure, no problem. I just never had a chance to open these files in
+> Emacs  :) 
+> Actually, I don't think we need *.xml files at all , I'll remove them
+> and fix COPYRIGHT.txt
+
+Thanks, once you've done this (and we've reached a decision on
+soversion) can you do a 0.4.1 or 0.5 release for me to package?
+
+> > 
+> > 
+> > 2) Mapnik compiles with -O3, Fedora forbids this because of the
+> > extra
+> > complexity this adds to debugging.  Can this be changed/removed?
+> > 
+> > 
+> 
+> 
+> Mapnik is using similar compilation flags to boost.  Some boost
+> libraries _do_ benefit from -O3.
+> I guess you can change this while building rpms, it shouldn't be
+> difficult.
+
+I'll look into doing this in the RPM, or possibly pushing back to
+reviewer to leave as -O3 if there is a demonstrable benefit.
+
+> > 
+> > 3) Mapnik does not have a soversion which will cause problems in the
+> > future when the ABI changes and dynamically linked applications will
+> > start to fail.  Can  soversion support be added?
+> 
+> 
+> Yes, it can be. But ABI will change frequently!  
+> Dominic Hargreaves had the same challenge while building deb packages.
+> We should ask him.
+
+I'll wait for Dominics input, is he on this list?
+
+> > 4) Fedora already contains the Dejavu fonts so there is no need to
+> > bundle them with Mapnik.  I can probably cut these out during the
+> > RPM
+> > build process but it would be easier if they were removed upstream.
+> > Is
+> > there any reason that they need to be bundled in the core package?
+> > 
+> > 
+> The main reason to allow users to run 'rundemo.py' and create maps
+> with text without configuring anything.
+> We can remove fonts and rely on standard fonts paths on Linux, I
+> guess. But what about Mac osx, win32 users?
+
+Ok, I'll fix the RPM build so that I don't package the fonts in Mapnik
+but use the system provided versions with the appropriate dependencies.
+This should mean that other users will be unaffected.
+
+Keith.
+
+
+
+
+From lists at brachttal.net  Wed Jul 25 23:10:28 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 25 Jul 2007 23:10:28 +0200
+Subject: [Mapnik-devel] segfault with mapnik
+In-Reply-To: <9255A9D3-9410-41FB-BFC3-26BA9CF5E70A@mapnik.org>
+References: <20070723233651.6638ec2c@frodo.mittelerde>
+	<F5DB8ABF-C16D-4F1D-8F04-9A91E542B55C@mapnik.org>
+	<20070725002730.03711ffc@frodo.mittelerde>
+	<9255A9D3-9410-41FB-BFC3-26BA9CF5E70A@mapnik.org>
+Message-ID: <20070725231028.3a4dae80@frodo.mittelerde>
+
+Am Wed, 25 Jul 2007 09:48:32 +0100 schrieb Artem Pavlenko:
+
+> > MapnikSource.cpp:162:   instantiated from here
+> > /usr/include/boost/shared_ptr.hpp:162: error: invalid conversion
+> > from 'mapnik::datasource* const' to 'mapnik::memory_datasource*'
+> 
+> 
+> You shouldn't cast smart pointers!!! Here is a small example for you:
+> 
+> #include <iostream>
+> #include <boost/shared_ptr.hpp>
+> #include <mapnik/datasource.hpp>
+> #include <mapnik/memory_datasource.hpp>
+> 
+> using mapnik::datasource;
+> using mapnik::datasource_ptr;
+> 
+> int main()
+> {
+>     datasource_ptr ds (new mapnik::memory_datasource);
+>     std::cout << typeid(ds.get()).name() << "\n";
+>     if (ds)
+>     {
+>        mapnik::memory_datasource * mem =  
+> dynamic_cast<mapnik::memory_datasource*>(ds.get());
+>        if (mem)  // check if cast is ok!
+>        {
+>           std::cout << typeid(mem).name() << "\n";
+>           // do something with memory_datasource e.g. push some
+> features mem->push(mapnik::feature_ptr(new mapnik::Feature(-1)));
+>        }
+>     }
+>     return 0;
+> }
+
+This seems to work. My application doesn't crash until now. Many thanks
+for your hints!
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Thu Jul 26 10:44:45 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 26 Jul 2007 09:44:45 +0100
+Subject: [Mapnik-devel] Comments from Mapnik Fedora RPM review
+In-Reply-To: <1185360934.11681.22.camel@animal.passback.co.uk>
+References: <1185353074.11681.13.camel@animal.passback.co.uk>
+	<54DC219E-9E51-4FAB-8316-12FFBCFF543A@mapnik.org>
+	<1185360934.11681.22.camel@animal.passback.co.uk>
+Message-ID: <D941B930-1E73-47D1-8CAB-48889AA82330@mapnik.org>
+
+
+On 25 Jul 2007, at 11:55, Keith Sharp wrote:
+
+> On Wed, 2007-07-25 at 10:19 +0100, Artem Pavlenko wrote:
+>> Hi Keith,
+>>
+>>
+>> Thanks for pushing this forward.
+>> On 25 Jul 2007, at 09:44, Keith Sharp wrote:
+>>
+>>> Hello,
+>>>
+>>>
+>>> I've been in the process of submitting a Mapnik RPM to Fedora for a
+>>> few
+>>> months now and I have had some feedback on my RPM.  A number of the
+>>> comments were more related to Mapnik itself:
+>>>
+>>>
+>>> 1) Some of the files in the demo application have Windows-style line
+>>> endings:
+>>>
+>>>
+>>> demo/data/boundaries_l.shp.xml
+>>> demo/data/boundaries.shp.xml
+>>> demo/data/qcdrainage.shp.xml
+>>> demo/data/ontdrainage.shp.xml
+>>> demo/data/popplaces.shp.xml
+>>> demo/data/COPYRIGHT.txt
+>>> demo/data/roads.shp.xml
+>>>
+>>>
+>>> Can these be converted to Unix-style?
+>>
+>>
+>> Sure, no problem. I just never had a chance to open these files in
+>> Emacs  :)
+>> Actually, I don't think we need *.xml files at all , I'll remove them
+>> and fix COPYRIGHT.txt
+>
+> Thanks, once you've done this (and we've reached a decision on
+> soversion) can you do a 0.4.1 or 0.5 release for me to package?
+
+
+Yes. We should probably jump straight to 0.5.
+>
+>>>
+>>>
+>>> 2) Mapnik compiles with -O3, Fedora forbids this because of the
+>>> extra
+>>> complexity this adds to debugging.  Can this be changed/removed?
+>>>
+>>>
+>>
+>>
+>> Mapnik is using similar compilation flags to boost.  Some boost
+>> libraries _do_ benefit from -O3.
+>> I guess you can change this while building rpms, it shouldn't be
+>> difficult.
+>
+> I'll look into doing this in the RPM, or possibly pushing back to
+> reviewer to leave as -O3 if there is a demonstrable benefit.
+
+>
+>>>
+>>> 3) Mapnik does not have a soversion which will cause problems in the
+>>> future when the ABI changes and dynamically linked applications will
+>>> start to fail.  Can  soversion support be added?
+>>
+>>
+>> Yes, it can be. But ABI will change frequently!
+>> Dominic Hargreaves had the same challenge while building deb  
+>> packages.
+>> We should ask him.
+>
+> I'll wait for Dominics input, is he on this list?
+
+I think, he is. I'll try to ping him .
+>
+>>> 4) Fedora already contains the Dejavu fonts so there is no need to
+>>> bundle them with Mapnik.  I can probably cut these out during the
+>>> RPM
+>>> build process but it would be easier if they were removed upstream.
+>>> Is
+>>> there any reason that they need to be bundled in the core package?
+>>>
+>>>
+>> The main reason to allow users to run 'rundemo.py' and create maps
+>> with text without configuring anything.
+>> We can remove fonts and rely on standard fonts paths on Linux, I
+>> guess. But what about Mac osx, win32 users?
+>
+> Ok, I'll fix the RPM build so that I don't package the fonts in Mapnik
+> but use the system provided versions with the appropriate  
+> dependencies.
+> This should mean that other users will be unaffected.
+>
+> Keith.
+>
+>
+
+Sounds good!
+Thanks.
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070726/fa831ddd/attachment.html>
+
+From lists at brachttal.net  Sat Jul 28 09:32:03 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 28 Jul 2007 09:32:03 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070724202217.2f5f29fa@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+Message-ID: <20070728093203.46b6aa0d@frodo.mittelerde>
+
+Am Tue, 24 Jul 2007 20:22:17 +0200 schrieb Andreas Volz:
+
+> Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+> 
+> > > Here is a doxygen demo of the Mapnik API. You don't see any
+> > > comments, because there're non. But I think it does yet give a
+> > > good overview. Needs some fine tunning.
+> > >
+> > > http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+> > 
+> > 
+> > Looks very promising. It certainly gives a good overview and
+> > reminds me about things to clean up.
+> 
+> I created a first patch to document map.hpp.
+> 
+> http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch
+> 
+> Perhaps it's a little "over-documented", but it's an example how to
+> document the API.
+> 
+> Please add the directory and the patch
+> 
+> http://tux-style.de/osm/mapnik/patches/doxygen/
+> 
+> below mapnik/docs in SVN. Then you could simply execute doxygen in
+> this directory and the docs are generated in html.
+
+Did you review my patch and new files? Could I go on with documenting
+the public API like this? Perhaps you could give me a SVN write access.
+Currently I like only to add docs. I would ask before changing any code.
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Sun Jul 29 12:56:50 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 29 Jul 2007 11:56:50 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070728093203.46b6aa0d@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+Message-ID: <C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+
+Hi Andreas,
+
+On 28 Jul 2007, at 08:32, Andreas Volz wrote:
+
+> Am Tue, 24 Jul 2007 20:22:17 +0200 schrieb Andreas Volz:
+>
+>> Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+>>
+>>>> Here is a doxygen demo of the Mapnik API. You don't see any
+>>>> comments, because there're non. But I think it does yet give a
+>>>> good overview. Needs some fine tunning.
+>>>>
+>>>> http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+>>>
+>>>
+>>> Looks very promising. It certainly gives a good overview and
+>>> reminds me about things to clean up.
+>>
+>> I created a first patch to document map.hpp.
+>>
+>> http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch
+>>
+>> Perhaps it's a little "over-documented", but it's an example how to
+>> document the API.
+>>
+>> Please add the directory and the patch
+>>
+>> http://tux-style.de/osm/mapnik/patches/doxygen/
+>>
+>> below mapnik/docs in SVN. Then you could simply execute doxygen in
+>> this directory and the docs are generated in html.
+>
+> Did you review my patch and new files? Could I go on with documenting
+> the public API like this? Perhaps you could give me a SVN write  
+> access.
+> Currently I like only to add docs. I would ask before changing any  
+> code.
+
+Sorry, it's taking so long. I had a very brief look at your patch.  
+There are a couple things need fixing, but It's fine otherwise.
+I'd like to look into BoostBook (http://www.boost.org/doc/html/ 
+boostbook.html) as a more high-level doc system. Maybe, I'll find  
+some time today.
+
+re: SVN  Send me your public key (ssh) off list!
+
+Artem
+
+
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070729/93be0f8b/attachment.html>
+
+From lists at brachttal.net  Tue Jul 31 09:50:06 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 31 Jul 2007 09:50:06 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+	<C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+Message-ID: <20070731095006.43369d72@frodo.mittelerde>
+
+Am Sun, 29 Jul 2007 11:56:50 +0100 schrieb Artem Pavlenko:
+
+> Hi Andreas,
+> 
+> On 28 Jul 2007, at 08:32, Andreas Volz wrote:
+> 
+> > Am Tue, 24 Jul 2007 20:22:17 +0200 schrieb Andreas Volz:
+> >
+> >> Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+> >>
+> >>>> Here is a doxygen demo of the Mapnik API. You don't see any
+> >>>> comments, because there're non. But I think it does yet give a
+> >>>> good overview. Needs some fine tunning.
+> >>>>
+> >>>> http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+> >>>
+> >>>
+> >>> Looks very promising. It certainly gives a good overview and
+> >>> reminds me about things to clean up.
+> >>
+> >> I created a first patch to document map.hpp.
+> >>
+> >> http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch
+> >>
+> >> Perhaps it's a little "over-documented", but it's an example how to
+> >> document the API.
+> >>
+> >> Please add the directory and the patch
+> >>
+> >> http://tux-style.de/osm/mapnik/patches/doxygen/
+> >>
+> >> below mapnik/docs in SVN. Then you could simply execute doxygen in
+> >> this directory and the docs are generated in html.
+> >
+> > Did you review my patch and new files? Could I go on with
+> > documenting the public API like this? Perhaps you could give me a
+> > SVN write access.
+> > Currently I like only to add docs. I would ask before changing any  
+> > code.
+> 
+> Sorry, it's taking so long. I had a very brief look at your patch.  
+> There are a couple things need fixing, but It's fine otherwise.
+> I'd like to look into BoostBook (http://www.boost.org/doc/html/ 
+> boostbook.html) as a more high-level doc system. Maybe, I'll find  
+> some time today.
+
+I didn't know it before. It looks nice. I used docbook before and it
+was good.
+
+> re: SVN  Send me your public key (ssh) off list!
+
+OK
+
+Andreas
+
+
+From artem at mapnik.org  Tue Jul 31 10:54:50 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 31 Jul 2007 09:54:50 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070731095006.43369d72@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+	<C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+	<20070731095006.43369d72@frodo.mittelerde>
+Message-ID: <A98E8A23-7E6C-408F-A60A-D36C7FBF1784@mapnik.org>
+
+
+On 31 Jul 2007, at 08:50, Andreas Volz wrote:
+
+> Am Sun, 29 Jul 2007 11:56:50 +0100 schrieb Artem Pavlenko:
+>
+>> Hi Andreas,
+>>
+>> On 28 Jul 2007, at 08:32, Andreas Volz wrote:
+>>
+>>> Am Tue, 24 Jul 2007 20:22:17 +0200 schrieb Andreas Volz:
+>>>
+>>>> Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+>>>>
+>>>>>> Here is a doxygen demo of the Mapnik API. You don't see any
+>>>>>> comments, because there're non. But I think it does yet give a
+>>>>>> good overview. Needs some fine tunning.
+>>>>>>
+>>>>>> http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html
+>>>>>
+>>>>>
+>>>>> Looks very promising. It certainly gives a good overview and
+>>>>> reminds me about things to clean up.
+>>>>
+>>>> I created a first patch to document map.hpp.
+>>>>
+>>>> http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch
+>>>>
+>>>> Perhaps it's a little "over-documented", but it's an example how to
+>>>> document the API.
+>>>>
+>>>> Please add the directory and the patch
+>>>>
+>>>> http://tux-style.de/osm/mapnik/patches/doxygen/
+>>>>
+>>>> below mapnik/docs in SVN. Then you could simply execute doxygen in
+>>>> this directory and the docs are generated in html.
+>>>
+>>> Did you review my patch and new files? Could I go on with
+>>> documenting the public API like this? Perhaps you could give me a
+>>> SVN write access.
+>>> Currently I like only to add docs. I would ask before changing any
+>>> code.
+>>
+>> Sorry, it's taking so long. I had a very brief look at your patch.
+>> There are a couple things need fixing, but It's fine otherwise.
+>> I'd like to look into BoostBook (http://www.boost.org/doc/html/
+>> boostbook.html) as a more high-level doc system. Maybe, I'll find
+>> some time today.
+>
+> I didn't know it before. It looks nice. I used docbook before and it
+> was good.
+>
+
+Yes, it is my plan to replace scons with Boost.Build.v2, which in  
+turn integrates with BoostBook.
+I'm already using BBv2 to build win32 binaries.
+>> re: SVN  Send me your public key (ssh) off list!
+>
+> OK
+
+>
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070731/4b3d00b0/attachment.html>
+
+From artem at mapnik.org  Tue Jul 31 22:41:07 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 31 Jul 2007 21:41:07 +0100
+Subject: [Mapnik-devel] 'anonymous' postings to trac.mapnik.org are disabled!
+Message-ID: <7C4370CC-1A2A-4F1E-A7E7-3F3B0322D0AA@mapnik.org>
+
+Hello all,
+
+I cleaned up trac from spam and disable 'anonymous' postings.
+The plan is to install user management plug-in and only accept  
+tickets from registered users.
+
+Meanwhile, tickets can be sent to mapnik-devel or directly to me.
+
+Cheers,
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070731/d0a5a8f2/attachment.html>
+

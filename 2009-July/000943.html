@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Symbolizer and GDAL work
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Symbolizer%20and%20GDAL%20work&In-Reply-To=%3C4A6B66AC.3030206%40toscat.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000942.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Symbolizer and GDAL work</H1>
+    <B>Alberto Valverde</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Symbolizer%20and%20GDAL%20work&In-Reply-To=%3C4A6B66AC.3030206%40toscat.net%3E"
+       TITLE="[Mapnik-devel] Raster Symbolizer and GDAL work">alberto at toscat.net
+       </A><BR>
+    <I>Sat Jul 25 22:10:20 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000942.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#943">[ date ]</a>
+              <a href="thread.html#943">[ thread ]</a>
+              <a href="subject.html#943">[ subject ]</a>
+              <a href="author.html#943">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane Springmeyer wrote:
+&gt;<i> I've been reviewing and corresponding with Albert Valverde about his 
+</I>&gt;<i> excellent patches to the Gdal driver (getting overviews working) and 
+</I>&gt;<i> RasterSymbolizer (adding support for colorizing, working with 
+</I>&gt;<i> individual bands, and nodata values, among other advancements).
+</I>&gt;<i>
+</I>&gt;<i> I'd like to propose Alberto commit access to start a branch for his 
+</I>&gt;<i> work. It looks feasible to begin pulling some of his changes into 
+</I>&gt;<i> trunk soon (particularly the support for GDAL overviews which is 
+</I>&gt;<i> working nicely, built upon Lucio's nice start), while review of best 
+</I>&gt;<i> practices and approaches for colorization would be great from all of you. 
+</I>Hi all,
+
+Thanks for the commit bit! I was having a hard time keeping my sanity 
+with all these patches lying around ;)
+
+Well, I've just created a &quot;gdalcolors&quot; branch and applied the patch. It 
+still lacks some cleanup, docs and tests which I hope to finish soon. I 
+must admit I'm not too happy with the patch as it is right now as some 
+parts are really &quot;hacky, partly due to my C++ inexperience and partly 
+because it seems (from my c++ newbie POV)  that mapnik was never 
+designed to display raw raster data.
+
+Anyway, this patch shows it's possible and I'm pretty sure that a little 
+bit of refactoring could make this functionality fit-in more cleanly. I 
+hope I can get some help guiding me on how to best introduce some 
+changes in mapnik to better support raster data.
+
+Some of these, from the top of my head:
+
+* To make best use of any overviews the featureset needs to know the 
+geographic extent and the image size as it was requested to the Map. 
+Currently it derives this information by peeking into the query object 
+(the patch makes it available to the featureset) to look at the 
+resolution but this is sub-optimal because the resolution is calculated 
+out of the intersection of the requested extent and the layer's extent. 
+Would it be possible to make the original extent and image size 
+available to the featureset somehow? Perhaps the query object could 
+carry this information too?
+
+* The raw data from the GdalBand is passed from the featureset down to 
+the symbolizer casted as a float into the ImageData32's int buffer and 
+then casted back. This is ugly but it works, at least with 32 bit data. 
+I yet have no use-case of it but perhaps some folks will need to display 
+Float64 data but it's not possible ATM (without incurring in yet more 
+horrible hacks). Any ideas on how to extend the ImageData (?) to be able 
+to carry other datatypes?
+
+Finally a little bit of background about the itch I'm trying to scratch 
+with these patches: I'm in the process of migrating the rendering engine 
+of a GIS webapp we're working on which currently uses mapscript to 
+mapnik due to the beautiful maps it makes, a (much) nicer python API and 
+its ability to load the styles from an XML file which will allow the 
+people in charge of administering the app to style the maps themselves 
+and stop bothering me all the time ;)
+
+This app is used mostly to display meteorological and other data we 
+derive from the meteo. one to aid in the wild forest fire-fighting in 
+Spain (we're unfortunately having a terrible summer so far with 14 
+active fires in this very moment :( )
+Since 99% of this data is raster based this functionality is essential 
+for us to be able to use mapnik as the main rendering engine.
+
+Cheers,
+Alberto
+
+P.S I've created another &quot;arrowsymbolizer&quot; branch with an 
+ArrowSymbolizer we use to render arrows to visualize wind 
+speed/direction and fireline intensity/direction. Perhaps this can be 
+useful to others working in a similar domain as us, or just to have fun 
+;). Though I have briefly mentioned this to Dane I didn't get any 
+explicit permission to upload it so if there's any problem (perhaps it's 
+too specialized for mapnik's audience?) don't hesitate to tell me an 
+I'll remove it immediately
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000942.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#943">[ date ]</a>
+              <a href="thread.html#943">[ thread ]</a>
+              <a href="subject.html#943">[ subject ]</a>
+              <a href="author.html#943">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

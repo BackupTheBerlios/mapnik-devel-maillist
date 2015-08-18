@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Optimizations around Mapnik's projection code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3CDD1E0A15-C71F-4CC8-AD8D-0522A30366B8%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001204.html">
+   <LINK REL="Next"  HREF="001208.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Optimizations around Mapnik's projection code</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3CDD1E0A15-C71F-4CC8-AD8D-0522A30366B8%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Optimizations around Mapnik's projection code">dane at dbsgeo.com
+       </A><BR>
+    <I>Thu Jul 22 23:11:42 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001204.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+        <LI>Next message: <A HREF="001208.html">[Mapnik-devel] Mapnik on Android
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1205">[ date ]</a>
+              <a href="thread.html#1205">[ thread ]</a>
+              <a href="subject.html#1205">[ subject ]</a>
+              <a href="author.html#1205">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jul 21, 2010, at 4:42 PM, Tom Hughes wrote:
+
+&gt;<i> On 22/07/10 00:27, Dane Springmeyer wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> Recently I noticed the large number of:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> #ifdef MAPNIK_THREADSAFE
+</I>&gt;&gt;<i>     mutex::scoped_lock lock(mutex_);
+</I>&gt;&gt;<i> #endif
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> Proj4 has thread safety issues so this makes sense:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> 1) Projection initialization in not thread safe (when creating from epsg code)
+</I>&gt;&gt;<i> 2) Usage of prj_errno is not thread safe (error code pointer)
+</I>&gt;&gt;<i> 3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+</I>&gt;<i> 
+</I>&gt;<i> I believe the locks were put in by me after Jon made mod_tile's renderd multi-threaded and found it was unstable.
+</I>&gt;<i> 
+</I>&gt;<i> All the proj4 doco I could find at the time just said it wasn't threadsafe so I wrapped everything in that mutex to make sure we
+</I>&gt;<i> didn't reenter it at all.
+</I>
+Yes, I looks like there has been some good attention recently based on the wiki page at: <A HREF="http://trac.osgeo.org/proj/wiki/ThreadSafety">http://trac.osgeo.org/proj/wiki/ThreadSafety</A>
+
+So, improvements in 4.7 (latest release) and likely also in the next release.
+
+&gt;<i> 
+</I>&gt;<i> If the issues are better understood now and we can improve things then that sounds good to me.
+</I>&gt;<i> 
+</I>
+Great, thanks for the feedback. I will continue to test to see if I can prompt any new crashes.
+
+&gt;<i> Tom
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+</I>&gt;<i> <A HREF="http://compton.nu/">http://compton.nu/</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001204.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+	<LI>Next message: <A HREF="001208.html">[Mapnik-devel] Mapnik on Android
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1205">[ date ]</a>
+              <a href="thread.html#1205">[ thread ]</a>
+              <a href="subject.html#1205">[ subject ]</a>
+              <a href="author.html#1205">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

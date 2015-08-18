@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support project - Scaling of bitmaps
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Scaling%20of%20bitmaps&In-Reply-To=%3CAANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001196.html">
+   <LINK REL="Next"  HREF="001191.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support project - Scaling of bitmaps</H1>
+    <B>Carlos Enrique L&#243;pez Garc&#233;s</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Scaling%20of%20bitmaps&In-Reply-To=%3CAANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Better Print Support project - Scaling of bitmaps">carlos.lopez.garces at gmail.com
+       </A><BR>
+    <I>Thu Jul  8 23:31:56 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001196.html">[Mapnik-devel] Rendering with Mapnik and python
+</A></li>
+        <LI>Next message: <A HREF="001191.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1188">[ date ]</a>
+              <a href="thread.html#1188">[ thread ]</a>
+              <a href="subject.html#1188">[ subject ]</a>
+              <a href="author.html#1188">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good morning/evening everybody,
+
+The mapnik_resolution branch (
+<A HREF="http://svn.mapnik.org/branches/mapnik_resolution/">http://svn.mapnik.org/branches/mapnik_resolution/</A>) currently supports the
+scaling of line widths, dashes and fonts through a scale factor that lets
+the user adjust the size of these elements. As you may know, the problem
+that is addressed with the scale factor is that when a map is rendered at
+higher resolution (a bigger image), the size of lines and fonts remains at a
+smaller scale. For example, if you have a stylesheet with widths and sizes
+that will look good in a 600x400 pixels image, it will no longer look good
+in an image of twice that size (1200x800), because the lines will be thinner
+and the labels and icons will be smaller. To correct this problem, one can
+pass a scale factor of 2.0, that will double the size of lines and fonts.
+
+The interface exposed to the user is currently the same as in trunk, which
+is passing the scale factor to the render method in python.
+
+Now, I'm beginning work with scaling symbols or bitmap icons. Trunk already
+does so for svg icons and the mapnik_resolution branch too (as it is merged
+with the former). And this is the reason why I write you, to ask for ideas
+on how this should be done. I've found two alternatives so far:
+
+
+   - Make use of the CImg library (<A HREF="http://cimg.sourceforge.net/">http://cimg.sourceforge.net/</A>) which is a
+   very lightweight code that doesn't require linking as it is all contained in
+   one single header file, but that has some dependencies on system libraries.
+   - Make use of the mechanism that agg provides. This might be a good
+   option since it is already a core component of mapnik. I don't have much
+   experience with the library, but the code sample in
+   <A HREF="http://www.antigrain.com/demo/image_transforms.cpp.html">http://www.antigrain.com/demo/image_transforms.cpp.html</A> shows that it is
+   possible.
+
+Any ideas are welcome.
+
+Thanks
+
+Carlos L&#243;pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100708/2358323c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100708/2358323c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001196.html">[Mapnik-devel] Rendering with Mapnik and python
+</A></li>
+	<LI>Next message: <A HREF="001191.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1188">[ date ]</a>
+              <a href="thread.html#1188">[ thread ]</a>
+              <a href="subject.html#1188">[ subject ]</a>
+              <a href="author.html#1188">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

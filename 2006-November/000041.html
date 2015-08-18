@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Tutorials online
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Tutorials%20online&In-Reply-To=%3C223020e60611070302n66c0a347i80a83df96d221c74%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000040.html">
+   <LINK REL="Next"  HREF="000042.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Tutorials online</H1>
+    <B>Nick Black</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Tutorials%20online&In-Reply-To=%3C223020e60611070302n66c0a347i80a83df96d221c74%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Tutorials online">nickblack1 at gmail.com
+       </A><BR>
+    <I>Tue Nov  7 12:02:01 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000040.html">[Mapnik-devel] Install problem
+</A></li>
+        <LI>Next message: <A HREF="000042.html">[Mapnik-devel] Tutorials online
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+When I try to run the online tutorials:
+
+<A HREF="http://mapnik.org/documentation/tutorial_1_hello_world/">http://mapnik.org/documentation/tutorial_1_hello_world/</A>
+
+I get various errors.  I'm jumping the gun a bit here, but comparing
+the sample code online to the sample code in demo/python/ from SVN, it
+looks as if the online tutorials are using deprecated method calls?
+Is this the case or could there be a problem with my installation?
+
+For example:
+
+from mapnik import *
+s=style()
+r=rule('hello,world! rule')
+r.symbols.append(polygon_symbolizer(color_from_string('#f2eff9')))
+...
+
+Prompts errors from python, complaining about style(), rule() and
+polygon_symbolizer...
+
+Comaring this to the sample code in demo/python :
+
+     69 provpoly_style = Style()
+     73
+     74 provpoly_rule_on = Rule()
+    94 provpoly_rule_on.symbols.append(PolygonSymbolizer(Color(250, 190, 183)))
+
+If this is the case, I'll update the tutotial documentation.
+
+Cheers,
+
+Nick
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000040.html">[Mapnik-devel] Install problem
+</A></li>
+	<LI>Next message: <A HREF="000042.html">[Mapnik-devel] Tutorials online
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#41">[ date ]</a>
+              <a href="thread.html#41">[ thread ]</a>
+              <a href="subject.html#41">[ subject ]</a>
+              <a href="author.html#41">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

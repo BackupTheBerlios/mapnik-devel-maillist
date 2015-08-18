@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Boost 1.35/1.36 problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Boost%201.35/1.36%20problem&In-Reply-To=%3C48A9B91B.2080404%40occinc.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000683.html">
+   <LINK REL="Next"  HREF="000686.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Boost 1.35/1.36 problem</H1>
+    <B>Brian Peschel</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Boost%201.35/1.36%20problem&In-Reply-To=%3C48A9B91B.2080404%40occinc.com%3E"
+       TITLE="[Mapnik-devel] Boost 1.35/1.36 problem">brianp at occinc.com
+       </A><BR>
+    <I>Mon Aug 18 20:02:03 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000683.html">[Mapnik-devel] Patch for to shape plugin error reporting
+</A></li>
+        <LI>Next message: <A HREF="000686.html">[Mapnik-devel] (resolved) Undefined symbols  / pycairo
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#685">[ date ]</a>
+              <a href="thread.html#685">[ thread ]</a>
+              <a href="subject.html#685">[ subject ]</a>
+              <a href="author.html#685">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have a bunch of code I have written (C++) using boost 1.34.1 (fedora 
+8). This is for real time image generation. The concern is that render 
+time is too long when alot of features are being drawn. I thought maybe 
+a newer version of boost might help the problem so I installled the 
+(just released) version of 1.36.0. I also tried 1.35.0. Neither version 
+will compile my code. I get this error:
+
+/usr/local/include/boost-1_36/boost/property_map.hpp:503: error: 
+expected nested-name-specifier before &#8216;unsigned&#8217;
+/usr/local/include/boost-1_36/boost/property_map.hpp:506: error: 
+type/value mismatch at argument 1 in template parameter list for 
+&#8216;template&lt;long unsigned int &lt;anonymous&gt;, class ValueType&gt; class 
+boost::ref_property_map&#8217;
+/usr/local/include/boost-1_36/boost/property_map.hpp:506: error: 
+expected a constant of type &#8216;long unsigned int&#8217;, got &#8216;long unsigned int&#8217;
+/usr/local/include/boost-1_36/boost/property_map.hpp:506: error: 
+template argument 2 is invalid
+
+It doesn't matter which if my files I compile. If I include a mapnik 
+header file I get this error. Like I said, this wasn't there under 
+1.34.1, so I assume something changed in boost between 1.34 and 1.35.
+
+Anyone seen a similar problem? Any idea how to fix it? Any other ideas 
+how to speed up the render time?
+
+- Brian
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000683.html">[Mapnik-devel] Patch for to shape plugin error reporting
+</A></li>
+	<LI>Next message: <A HREF="000686.html">[Mapnik-devel] (resolved) Undefined symbols  / pycairo
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#685">[ date ]</a>
+              <a href="thread.html#685">[ thread ]</a>
+              <a href="subject.html#685">[ subject ]</a>
+              <a href="author.html#685">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

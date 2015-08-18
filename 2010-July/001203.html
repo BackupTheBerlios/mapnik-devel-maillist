@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Optimizations around Mapnik's projection code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3C66A961D4-8110-4DDA-A3FD-BB8375ACFE8F%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001214.html">
+   <LINK REL="Next"  HREF="001204.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Optimizations around Mapnik's projection code</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3C66A961D4-8110-4DDA-A3FD-BB8375ACFE8F%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Optimizations around Mapnik's projection code">dane at dbsgeo.com
+       </A><BR>
+    <I>Thu Jul 22 01:27:44 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001214.html">[Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+</A></li>
+        <LI>Next message: <A HREF="001204.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1203">[ date ]</a>
+              <a href="thread.html#1203">[ thread ]</a>
+              <a href="subject.html#1203">[ subject ]</a>
+              <a href="author.html#1203">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Recently I noticed the large number of:
+
+#ifdef MAPNIK_THREADSAFE
+    mutex::scoped_lock lock(mutex_);
+#endif
+
+wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+
+Proj4 has thread safety issues so this makes sense:
+
+1) Projection initialization in not thread safe (when creating from epsg code)
+2) Usage of prj_errno is not thread safe (error code pointer)
+3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+
+My thoughts were:
+
+#1 As of proj 4.7 locking is done by proj4, so no need to duplicate locking in mapnik as far as I can tell
+
+#2 is not a problem currently for mapnik because we don't attempt to do anything with errors (but we may in the future - <A HREF="http://trac.mapnik.org/wiki/BoundsClipping">http://trac.mapnik.org/wiki/BoundsClipping</A>)
+
+#3 - can't do much about this.
+
+So, I set out to deal with #1 and noticed a few more things:
+
+1) there is a lock that affects proj_transform, even if we exit early because we don't need to reproject (source == dest). What this means is that even when proj4 is not used, since we call proj_transform we're hitting a lock for every coordinate reprojected (<A HREF="http://trac.mapnik.org/browser/trunk/src/proj_transform.cpp?rev=2062#L74">http://trac.mapnik.org/browser/trunk/src/proj_transform.cpp?rev=2062#L74</A>). Ouch.
+
+2) There are additional locks around repeated calls to proj._is_latlong, and a bit of refactoring could set this property once and avoid several locks.
+
+So, I set up a test environment that would hit mapnik with hundreds of current threads when rendering a small shapefile dataset (to make sure that database i/o would not get in the way of benchmarking).
+
+With the changes in <A HREF="http://trac.mapnik.org/changeset/2063">http://trac.mapnik.org/changeset/2063</A> I'm seeing 10-15% speed increases.
+
+So, I'm excited to report this performance improvement, and curious to see if anyone had questions or concerns.
+
+My test environment is apache ab. I've heard its not as good as http_perf, so I'm looking into that tool. I've been testing against a lightweight C++ server using boost asio (<A HREF="http://github.com/springmeyer/paleoserver">http://github.com/springmeyer/paleoserver</A>), which I put together partially  to making running tests like this easier. On a RHEL machine with 4 cores I can get around 150-170 requests/sec. when calling ab with 50 concurrent requests and 1000 total requests.
+
+Cheers,
+
+Dane
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001214.html">[Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+</A></li>
+	<LI>Next message: <A HREF="001204.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1203">[ date ]</a>
+              <a href="thread.html#1203">[ thread ]</a>
+              <a href="subject.html#1203">[ subject ]</a>
+              <a href="author.html#1203">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

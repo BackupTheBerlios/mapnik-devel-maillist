@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Comments from Mapnik Fedora RPM review
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3CD941B930-1E73-47D1-8CAB-48889AA82330%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000213.html">
+   <LINK REL="Next"  HREF="000220.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Comments from Mapnik Fedora RPM review</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3CD941B930-1E73-47D1-8CAB-48889AA82330%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Comments from Mapnik Fedora RPM review">artem at mapnik.org
+       </A><BR>
+    <I>Thu Jul 26 10:44:45 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000213.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+        <LI>Next message: <A HREF="000220.html">[Mapnik-devel] 'anonymous' postings to trac.mapnik.org are disabled!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#215">[ date ]</a>
+              <a href="thread.html#215">[ thread ]</a>
+              <a href="subject.html#215">[ subject ]</a>
+              <a href="author.html#215">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 25 Jul 2007, at 11:55, Keith Sharp wrote:
+
+&gt;<i> On Wed, 2007-07-25 at 10:19 +0100, Artem Pavlenko wrote:
+</I>&gt;&gt;<i> Hi Keith,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for pushing this forward.
+</I>&gt;&gt;<i> On 25 Jul 2007, at 09:44, Keith Sharp wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I've been in the process of submitting a Mapnik RPM to Fedora for a
+</I>&gt;&gt;&gt;<i> few
+</I>&gt;&gt;&gt;<i> months now and I have had some feedback on my RPM.  A number of the
+</I>&gt;&gt;&gt;<i> comments were more related to Mapnik itself:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 1) Some of the files in the demo application have Windows-style line
+</I>&gt;&gt;&gt;<i> endings:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> demo/data/boundaries_l.shp.xml
+</I>&gt;&gt;&gt;<i> demo/data/boundaries.shp.xml
+</I>&gt;&gt;&gt;<i> demo/data/qcdrainage.shp.xml
+</I>&gt;&gt;&gt;<i> demo/data/ontdrainage.shp.xml
+</I>&gt;&gt;&gt;<i> demo/data/popplaces.shp.xml
+</I>&gt;&gt;&gt;<i> demo/data/COPYRIGHT.txt
+</I>&gt;&gt;&gt;<i> demo/data/roads.shp.xml
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Can these be converted to Unix-style?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sure, no problem. I just never had a chance to open these files in
+</I>&gt;&gt;<i> Emacs  :)
+</I>&gt;&gt;<i> Actually, I don't think we need *.xml files at all , I'll remove them
+</I>&gt;&gt;<i> and fix COPYRIGHT.txt
+</I>&gt;<i>
+</I>&gt;<i> Thanks, once you've done this (and we've reached a decision on
+</I>&gt;<i> soversion) can you do a 0.4.1 or 0.5 release for me to package?
+</I>
+
+Yes. We should probably jump straight to 0.5.
+&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 2) Mapnik compiles with -O3, Fedora forbids this because of the
+</I>&gt;&gt;&gt;<i> extra
+</I>&gt;&gt;&gt;<i> complexity this adds to debugging.  Can this be changed/removed?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Mapnik is using similar compilation flags to boost.  Some boost
+</I>&gt;&gt;<i> libraries _do_ benefit from -O3.
+</I>&gt;&gt;<i> I guess you can change this while building rpms, it shouldn't be
+</I>&gt;&gt;<i> difficult.
+</I>&gt;<i>
+</I>&gt;<i> I'll look into doing this in the RPM, or possibly pushing back to
+</I>&gt;<i> reviewer to leave as -O3 if there is a demonstrable benefit.
+</I>
+&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 3) Mapnik does not have a soversion which will cause problems in the
+</I>&gt;&gt;&gt;<i> future when the ABI changes and dynamically linked applications will
+</I>&gt;&gt;&gt;<i> start to fail.  Can  soversion support be added?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Yes, it can be. But ABI will change frequently!
+</I>&gt;&gt;<i> Dominic Hargreaves had the same challenge while building deb  
+</I>&gt;&gt;<i> packages.
+</I>&gt;&gt;<i> We should ask him.
+</I>&gt;<i>
+</I>&gt;<i> I'll wait for Dominics input, is he on this list?
+</I>
+I think, he is. I'll try to ping him .
+&gt;<i>
+</I>&gt;&gt;&gt;<i> 4) Fedora already contains the Dejavu fonts so there is no need to
+</I>&gt;&gt;&gt;<i> bundle them with Mapnik.  I can probably cut these out during the
+</I>&gt;&gt;&gt;<i> RPM
+</I>&gt;&gt;&gt;<i> build process but it would be easier if they were removed upstream.
+</I>&gt;&gt;&gt;<i> Is
+</I>&gt;&gt;&gt;<i> there any reason that they need to be bundled in the core package?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> The main reason to allow users to run 'rundemo.py' and create maps
+</I>&gt;&gt;<i> with text without configuring anything.
+</I>&gt;&gt;<i> We can remove fonts and rely on standard fonts paths on Linux, I
+</I>&gt;&gt;<i> guess. But what about Mac osx, win32 users?
+</I>&gt;<i>
+</I>&gt;<i> Ok, I'll fix the RPM build so that I don't package the fonts in Mapnik
+</I>&gt;<i> but use the system provided versions with the appropriate  
+</I>&gt;<i> dependencies.
+</I>&gt;<i> This should mean that other users will be unaffected.
+</I>&gt;<i>
+</I>&gt;<i> Keith.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Sounds good!
+Thanks.
+&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070726/fa831ddd/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070726/fa831ddd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000213.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+	<LI>Next message: <A HREF="000220.html">[Mapnik-devel] 'anonymous' postings to trac.mapnik.org are disabled!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#215">[ date ]</a>
+              <a href="thread.html#215">[ thread ]</a>
+              <a href="subject.html#215">[ subject ]</a>
+              <a href="author.html#215">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

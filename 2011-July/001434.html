@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Support%20attachdb%20and%20initdb%20parameters%20in%20sqlite%0A%09plugin&In-Reply-To=%3CCAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf%3DEw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001435.html">
+   <LINK REL="Next"  HREF="001436.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin</H1>
+    <B>Stella Laurenzo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Support%20attachdb%20and%20initdb%20parameters%20in%20sqlite%0A%09plugin&In-Reply-To=%3CCAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf%3DEw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin">stella at laurenzo.org
+       </A><BR>
+    <I>Wed Jul  6 00:59:16 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001435.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+        <LI>Next message: <A HREF="001436.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1434">[ date ]</a>
+              <a href="thread.html#1434">[ thread ]</a>
+              <a href="subject.html#1434">[ subject ]</a>
+              <a href="author.html#1434">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+I've got a sqlite database where some of the tables/indexes are in a
+separate database file.  In order to use this, I needed mapnik to run an
+&quot;attach database&quot; command at startup.  I generalized the solution slightly
+and implemented this in the attached patch, also referenced here on github:
+
+<A HREF="https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101">https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101</A>
+
+There are three additions/changes to the sqlite plugin in this commit:
+
+   - Add an attachdb parameter with syntax
+&quot;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dbname at dbfile</A>[<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">,dbname2 at dbfile2...</A>]&quot;.
+    If attached files are not absolute or &quot;:memory:&quot; then they are interpreted
+   relative to the original database file.
+   - Add an initdb parameter which allows arbitrary sql to be run when a
+   connection is established.  Any attachments are processed before
+   initialization sql.  This just seemed like a good idea to add since attachdb
+   is just a fancy way to populate the list of initialization sql that this
+   adds to as well.  It may be useful for people to load extensions or set
+   other environment level sqlite options.
+   - Fix the detection logic for finding a spatial index so that it works
+   across databases (sqlite_master checks are per database file -
+   select...limit 0 and pragma tableinfo checks are &quot;global&quot; to all attached
+   databases).  This allows the base table to be in one database file and the
+   index in another.
+
+I also wrote and committed a new python test that checks all of this out.
+
+Let me know what I need to do to get this functionality committed.
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff
+Type: text/x-patch
+Size: 9695 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001435.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+	<LI>Next message: <A HREF="001436.html">[Mapnik-devel] Support attachdb and initdb parameters in sqlite	plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1434">[ date ]</a>
+              <a href="thread.html#1434">[ thread ]</a>
+              <a href="subject.html#1434">[ subject ]</a>
+              <a href="author.html#1434">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

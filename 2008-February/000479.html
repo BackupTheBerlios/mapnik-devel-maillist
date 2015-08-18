@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mac 10.4 build problem with boost
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem%20with%20boost&In-Reply-To=%3CC2068318-87B2-42D0-A4CE-09BAB3F975C0%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000474.html">
+   <LINK REL="Next"  HREF="000480.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mac 10.4 build problem with boost</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem%20with%20boost&In-Reply-To=%3CC2068318-87B2-42D0-A4CE-09BAB3F975C0%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mac 10.4 build problem with boost">artem at mapnik.org
+       </A><BR>
+    <I>Wed Feb 20 11:03:01 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000474.html">[Mapnik-devel] Mac 10.4 build problem with boost
+</A></li>
+        <LI>Next message: <A HREF="000480.html">[Mapnik-devel] Mac 10.4 build problem with boost
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#479">[ date ]</a>
+              <a href="thread.html#479">[ thread ]</a>
+              <a href="subject.html#479">[ subject ]</a>
+              <a href="author.html#479">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+Sometimes scons fails to update cache, could you try :
+
+rm -rf .scons*
+
+and try again.
+
+You boost installation looks fine.
+Cheers
+Artem
+
+On 15 Feb 2008, at 23:06, Dane Springmeyer wrote:
+
+&gt;<i> Trying to build mapnik on 10.4.11
+</I>&gt;<i>
+</I>&gt;<i> I'm running into a problem directing scons.py to find my boost  
+</I>&gt;<i> installs.
+</I>&gt;<i>
+</I>&gt;<i> Can anyone spot what might be going wrong?
+</I>&gt;<i>
+</I>&gt;<i> -------
+</I>&gt;<i>
+</I>&gt;<i> spring-2:~/src/mapnik_feb15 spring$ python scons/scons.py
+</I>&gt;<i> JPEG_INCLUDES=/Library/Frameworks/UnixImageIO.framework/unix/include
+</I>&gt;<i> JPEG_LIBS=/Library/Frameworks/UnixImageIO.framework/unix/lib
+</I>&gt;<i> PGSQL_INCLUDES=/usr/local/pgsql/include PGSQL_LIBS=/usr/local/pgsql/
+</I>&gt;<i> lib BOOST_INCLUDES=/opt/local/include/boost-1_34_1 BOOST_LIBS=/opt/
+</I>&gt;<i> local/lib
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> Building on Darwin ...
+</I>&gt;<i> Checking for C library m... yes
+</I>&gt;<i> Checking for C library ltdl... yes
+</I>&gt;<i> Checking for C library png... yes
+</I>&gt;<i> Checking for C library tiff... yes
+</I>&gt;<i> Checking for C library z... yes
+</I>&gt;<i> Checking for C library jpeg... yes
+</I>&gt;<i> Checking for C library proj... yes
+</I>&gt;<i> Checking for C library iconv... yes
+</I>&gt;<i> Checking for C library pq... yes
+</I>&gt;<i> Checking for C++ library gdal... yes
+</I>&gt;<i> Checking for C++ library boost_filesystem-mt... no
+</I>&gt;<i> Could not find header or shared library for boost filesystem, exiting!
+</I>&gt;<i>
+</I>&gt;<i> -------
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I installed boost using MACPORTS which put headers here, for example:
+</I>&gt;<i>
+</I>&gt;<i> /opt/local/include/boost-1_34_1/boost/filesystem/operations.hpp
+</I>&gt;<i> /opt/local/include/boost-1_34_1/boost/regex.hpp
+</I>&gt;<i>
+</I>&gt;<i> and put libraries and symlinks here:
+</I>&gt;<i>
+</I>&gt;<i> /opt/local/lib...
+</I>&gt;<i>
+</I>&gt;<i> spring-2:~/src/mapnik_feb15 spring$ ls -l /opt/local/lib/
+</I>&gt;<i> libboost_filesystem*
+</I>&gt;<i>
+</I>&gt;<i> -rw-r--r--   2 root  admin   81604 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-1_34_1.a
+</I>&gt;<i> -rwxr-xr-x   2 root  admin   66388 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-1_34_1.dylib
+</I>&gt;<i> -rw-r--r--   2 root  admin  410068 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-d-1_34_1.a
+</I>&gt;<i> -rwxr-xr-x   2 root  admin  367408 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-d-1_34_1.dylib
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     165 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-d.a -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-d-1_34_1.a
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     169 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-d.dylib -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-d-1_34_1.dylib
+</I>&gt;<i> -rw-r--r--   2 root  admin   81604 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-1_34_1.a
+</I>&gt;<i> -rwxr-xr-x   2 root  admin   66388 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-1_34_1.dylib
+</I>&gt;<i> -rw-r--r--   2 root  admin  410068 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-d-1_34_1.a
+</I>&gt;<i> -rwxr-xr-x   2 root  admin  367408 Feb 15 12:12 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-d-1_34_1.dylib
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     168 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-d.a -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-mt-d-1_34_1.a
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     172 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt-d.dylib -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-mt-d-1_34_1.dylib
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     166 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt.a -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-mt-1_34_1.a
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     170 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem-mt.dylib -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-mt-1_34_1.dylib
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     163 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem.a -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-1_34_1.a
+</I>&gt;<i> lrwxr-xr-x   1 root  admin     167 Feb 15 12:13 /opt/local/lib/
+</I>&gt;<i> libboost_filesystem.dylib -&gt; /opt/local/var/macports/build/
+</I>&gt;<i> _opt_local_var_macports_sources_rsync.macports.org_release_ports_devel 
+</I>&gt;<i> _b
+</I>&gt;<i> oost/work/destroot/opt/local/lib/libboost_filesystem-1_34_1.dylib
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000474.html">[Mapnik-devel] Mac 10.4 build problem with boost
+</A></li>
+	<LI>Next message: <A HREF="000480.html">[Mapnik-devel] Mac 10.4 build problem with boost
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#479">[ date ]</a>
+              <a href="thread.html#479">[ thread ]</a>
+              <a href="subject.html#479">[ subject ]</a>
+              <a href="author.html#479">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

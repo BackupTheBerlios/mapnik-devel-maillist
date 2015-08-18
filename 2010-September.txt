@@ -1,0 +1,1794 @@
+From richard at weait.com  Thu Sep  2 21:46:04 2010
+From: richard at weait.com (Richard Weait)
+Date: Thu, 2 Sep 2010 15:46:04 -0400
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+Message-ID: <AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+
+Greetings Mapnik Devs,
+
+It is time for you to mark your calendars and book your trips for the
+first Mapnik Code Sprint: Committers and Cartographers.  We are three
+weeks away from this event.  Book now!
+
+When?
+
+Friday 24 September 2010 - Sunday 26 September 2010
+
+Where?
+
+The Mapnik Code Sprint will be held in the tourist-popular South Bank
+section of London England.  The nice folks at CloudMade have offered
+to host us at their office so we'll have a friendly space, nearby pubs
+and great Mappy Ambiance.
+
+Where else?
+
+Well here is a pleasant surprise!  The nice folks at Stamen Design
+have decided that they have to be part of this event, and we're
+thrilled to hear it, so they are hosting a remote Mapnik Code Sprint
+at the same time[1] at their office in the Mission District of
+beautiful San Francisco.
+
+Who?
+
+We have a superstar line up of Mapnik Developers and cartographers
+attending this event.  In London, we'll have Mapnik founder, Artem
+Pavlenko, Mapnik project administrator, Dane Springmeyer and Steve
+Chilton, Chair of the Society of Cartographers, plus a cast of
+thousands[2] of the key developers and cartographers involved in
+Mapnik and OpenStreetMap.  In San Francisco we'll have Michal
+Migurski, of Walking-papers.org and Stamen Design fame, leading a huge
+robot army[3] of developers
+
+If you are a current committer to Mapnik or an otherwise super cool
+C++ coder intimately familiar with the project, you should be at
+Committers and Cartographers. If you are a super cool cartographer who
+hopes and dreams for a better Mapnik, you should be at Committers and
+Cartographers.  What if you are both a super cool cartographer and a
+whiz bang C++ developer?  Why aren't you here already?
+
+But what about me?
+
+Yes, there is a chance that you can still participate.  While we have
+limited space in both London and San Francisco, some spots are still
+available.  If you would like to attend please confirm your spot by
+mailing me directly.  If you can't attend either London or San
+Francisco you will be missing some of the fun but not all of it.
+We'll be on #mapnik IRC and the mapniik-dev@ list during the event as
+well.  Feel free to join from afar.
+
+What are we doing?
+
+A code sprint, or hack fest, is a period of software development
+focused on a given list of goals. Committers and Cartographers is a
+free and open three-day event for the improvement of the Mapnik code
+base.  The face to face meeting will let us approach complex topics
+with immediate feedback.  We'll see lots of bug-fixes and some new
+features tagged as #msc1 after the event is over.
+
+The goals for Committers and Cartographers are:
+
+- Cartography Improvements - Discuss and defeat some tricky
+cartography requests.  There may be others but those highlighted by
+Steve Chilton in the SotM talk are a good start.
+http://www.slideshare.net/steve8/what-id-like-to-do-with-mapnik-4756837
+
+- Squash bugs - we'll be squashing bugs as fast as we can.  Be sure to
+file any bugs that have been pestering you.
+
+Future Mapnik Code Sprints
+
+Based on the anticipated success of this first Mapnik Code Sprint, we
+plan to have more.  And if you have been toying with the idea of
+participating this time, you know you'll want to join in next time for
+sure.
+
+
+Best regards,
+Richard
+
+
+[1] well, at the same time, but with time zones and stuff in the way,
+so on the same days.
+[2] where "cast of thousands" approaches a dozen.
+[3] where "huge robot army" approaches a cool group of coders and designers.
+
+
+From robert.coup at koordinates.com  Thu Sep  2 23:30:00 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Fri, 3 Sep 2010 09:30:00 +1200
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+Message-ID: <AANLkTimcU8Uqk8usXpXqyXH6Zgt-xNk5ftPCeZ9GW-K5@mail.gmail.com>
+
+Hi Richard,
+
+On Fri, Sep 3, 2010 at 7:46 AM, Richard Weait <richard at weait.com> wrote:
+
+>
+> It is time for you to mark your calendars and book your trips for the
+> first Mapnik Code Sprint: Committers and Cartographers.  We are three
+> weeks away from this event.  Book now!
+>
+
+Awesome :)
+
+
+>
+> When?
+>
+> Friday 24 September 2010 - Sunday 26 September 2010
+>
+>
+Would be great if you can nail down some approximate session times so those
+of us participating via IRC from odd timezones can tie up with everyone
+else.
+
+Would be good to have a kick-off time at least :)
+
+
+> The goals for Committers and Cartographers are:
+>
+
+Would be good to put up a wiki page with ideas/ticket references, and what
+people are interested in working on. If we do that soon, then we can get
+some design discussions going on mapnik-devel so the sprint can focus more
+on the doing.
+
+Looking forward to it,
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100903/62f568ca/attachment.html>
+
+From richard at weait.com  Fri Sep  3 02:24:55 2010
+From: richard at weait.com (Richard Weait)
+Date: Thu, 2 Sep 2010 20:24:55 -0400
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTimcU8Uqk8usXpXqyXH6Zgt-xNk5ftPCeZ9GW-K5@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+	<AANLkTimcU8Uqk8usXpXqyXH6Zgt-xNk5ftPCeZ9GW-K5@mail.gmail.com>
+Message-ID: <AANLkTinHpaoLQSSeonvZ=__BPXP-GjPEhs++fKMmsVGi@mail.gmail.com>
+
+On Thu, Sep 2, 2010 at 5:30 PM, Robert Coup <robert.coup at koordinates.com> wrote:
+
+> Would be great if you can nail down some approximate session times so those
+> of us participating via IRC from odd timezones can tie up with everyone
+> else.
+> Would be good to have a kick-off time at least :)
+
+You are So Right.
+http://trac.mapnik.org/wiki/MapnikCodeSprint/MSC01/Schedule
+
+>> The goals for Committers and Cartographers are:
+>
+> Would be good to put up a wiki page with ideas/ticket references, and what
+> people are interested in working on. If we do that soon, then we can get
+> some design discussions going on mapnik-devel so the sprint can focus more
+> on the doing.
+
+And Right Again!
+http://trac.mapnik.org/wiki/MapnikCodeSprint/MCS01#Code
+
+Thanks for suggesting these.
+
+Best regards,
+Richard
+
+
+From bz at datenkueche.com  Sat Sep  4 02:20:49 2010
+From: bz at datenkueche.com (bernhard zwischenbrugger)
+Date: Sat, 04 Sep 2010 02:20:49 +0200
+Subject: [Mapnik-devel] Khmer font rendering
+Message-ID: <4C8190E1.5000606@datenkueche.com>
+
+  Hi Mapnik developers
+
+There are still some font rendering problems for Asian fonts.
+
+Khmer (Cambodian writing system)
+http://www.khtml.org/osm/v0.78/index.php#13.524788770271211:105.96127230241541:14.069831710311067
+The Khmer fonts don't have these rectangles around letters
+
+and
+Burmese writing system
+http://www.khtml.org/osm/v0.78/index.php#16.814712680096815:96.22790179365113:11.328678382554692
+The spaces between letters are not correct.
+
+Is there a way to help solving this issues?
+
+lg, Bernhard
+
+
+From blake at hailmail.net  Thu Sep  9 12:44:04 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 9 Sep 2010 12:44:04 +0200
+Subject: [Mapnik-devel] Khmer font rendering
+In-Reply-To: <4C8190E1.5000606@datenkueche.com>
+References: <4C8190E1.5000606@datenkueche.com>
+Message-ID: <70D7F3CF-480E-4113-BF27-D1F339F93C84@hailmail.net>
+
+
+On Sep 4, 2010, at 2:20 AM, bernhard zwischenbrugger wrote:
+
+> Hi Mapnik developers
+> 
+
+Hi!
+
+> There are still some font rendering problems for Asian fonts.
+> 
+
+Yes, there are certainly issues and we are currently in a mode of trying to get tickets for all the then to plan which to address and in what order.
+
+See: http://trac.mapnik.org/wiki/InternationalText
+
+> Khmer (Cambodian writing system)
+> http://www.khtml.org/osm/v0.78/index.php#13.524788770271211:105.96127230241541:14.069831710311067
+> The Khmer fonts don't have these rectangles around letters
+> 
+
+Seems like the dotted lines of the boxes indicate that this is not simply a character problem that could be fixed by a different (fallback) font. So, I'm not sure what is happening - a ticket would be great.
+
+> and
+> Burmese writing system
+> http://www.khtml.org/osm/v0.78/index.php#16.814712680096815:96.22790179365113:11.328678382554692
+> The spaces between letters are not correct.
+
+Yes, I have created a ticket about this for nepali text, would be great to make that ticket more generic and provide these links.  (http://trac.mapnik.org/ticket/558)
+
+> 
+> Is there a way to help solving this issues?
+> 
+
+We need native speakers who are also C++ programmers that can learn the ICU library (http://site.icu-project.org/) and dig into the mapnik text rendering code. Keep an eye out for individuals who might fit that description and I can help get them involved in development.
+
+Dane
+
+
+
+From tom at compton.nu  Thu Sep  9 13:07:04 2010
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 09 Sep 2010 12:07:04 +0100
+Subject: [Mapnik-devel] Khmer font rendering
+In-Reply-To: <70D7F3CF-480E-4113-BF27-D1F339F93C84@hailmail.net>
+References: <4C8190E1.5000606@datenkueche.com>
+	<70D7F3CF-480E-4113-BF27-D1F339F93C84@hailmail.net>
+Message-ID: <4C88BFD8.8050804@compton.nu>
+
+On 09/09/10 11:44, Dane Springmeyer wrote:
+
+> We need native speakers who are also C++ programmers that can learn the ICU library (http://site.icu-project.org/) and dig into the mapnik text rendering code. Keep an eye out for individuals who might fit that description and I can help get them involved in development.
+
+I think that ICU is probably actually part of the problem here, rather 
+than the solution.
+
+Unless things have changed recently I don't think ICU can actually help 
+with some of the issues - specifically I am thinking about shaping 
+issues here.
+
+The fundamental problem is that for some languages you need to choose 
+different glyphs for a codepoint depending on where that codepoint is in 
+a word. That means that you have to process whole words when doing glyph 
+selection rather than individual codepoints.
+
+There is a hack in ICU to work around this issue for a few languages - 
+arabic is one but there may be others. That works by replacing generic 
+codepoints with ones which code for a specific (start/middle/end) 
+version of the character. That hack is what mapnik currently uses to 
+handle arabic text.
+
+The problem is that ICU doesn't have that hack for other languages which 
+need shaping, and it may well not even be possible as it requires that 
+unicode contain specific codepoints for each version of the character.
+
+Another problem with the character by character processing mapnik does 
+is that line breaking is wrong for RTL languages as IIRC mapnik works by 
+reversing the list of codepoints and then processing them as if it was 
+an LTR language.
+
+The solution is to use something like pango which can take a whole 
+string of unicode codepoints and render the correct glyphs - pango has 
+support for the necessary special cases in a wide range of languages. 
+Pango can also tell you where should break lines.
+
+Of course the problem is that mapnik likes to render character by 
+character so it can render along a curve, and that does not fill well 
+with wanting to render whole strings...
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://compton.nu/
+
+
+From artem at mapnik-consulting.com  Mon Sep 13 13:20:49 2010
+From: artem at mapnik-consulting.com (Artem Pavlenko)
+Date: Mon, 13 Sep 2010 12:20:49 +0100
+Subject: [Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+In-Reply-To: <E1Ov6FC-0007Re-00.mvorotnikov-mail-ru@f30.mail.ru>
+References: <E1Ov6FC-0007Re-00.mvorotnikov-mail-ru@f30.mail.ru>
+Message-ID: <AANLkTi=fZF6ukx9MuC0Ds5xMQsphMZJd9cdcRzp8avEa@mail.gmail.com>
+
+Hi Michael,
+
+I don't use vc++ project file to build mapnik on windows, I use Boost.Build.v2.
+Let me know if you'd like me to send you Jamfiles (might take couple
+days as I'm very busy with work at the moment).
+
+Regards,
+Artem
+
+2010/9/13 ?????? ?????????? <mvorotnikov at mail.ru>:
+> Artem,
+>
+> Could you, please help us with windows compilation of mapnik sources?
+>
+> We really need those solution and project files for VS2005 or VS2008 to have the ability to add some changes we need to use mapnik in the whole strength.
+>
+> Thanks,
+> Vorotnikov Michael,
+> kosmosnimki.ru developer.
+>
+>
+>
+>
+>
+> Sat, 11 Sep 2010 11:39:55 +0200 ?????? ?? Dane Springmeyer <dane at dbsgeo.com>:
+>
+>> Sorry, I personally have no experience with compiling Mapnik on windows.
+>> It is Artem that does the windows compilation (Artem Pavlenko
+>> <artem at mapnik-consulting.com>).
+>> Michael, could you do your development on linux in VirtualBox? Otherwise I
+>> recommend checking in with Artem about the potential to collaborate to get
+>> some project files created. Short of that the only ones I know about are here:
+>> http://www.falconview.org/trac/FalconView/browser/Sandbox/MAPNIK%20README.txt
+>> Dane
+>> On Sep 1, 2010, at 10:07 PM, ?????? ?????????? wrote:
+>> > Dane,
+>> >
+>> > Sorry about being too late again, but I`m again having too much trouble
+>> with Mapnik being compiled under Microsoft VS2005 or VS2008 (doesn`t matter).
+>> >
+>> > I`m sure that our work can be done much more easier if I get VS project
+>> file if you have.
+>> >
+>> > Since you provide win32 binaries, I assume you have those project files
+>> (it does not really matter which studio 2005, 2008, 2010 for me)
+>> >
+>> > Can you please, send it to me with maybe some small explanations if any
+>> needed.
+>> >
+>> > Thanks,
+>> > Michael Vorotnikov.
+>> >
+>> >
+>> >
+>> >
+>> >
+>> > Wed, 25 Aug 2010 08:50:24 -0700 ?????? ?? Dane Springmeyer
+>> <dane at dbsgeo.com>:
+>> >
+>> >> Michael,
+>> >>
+>> >> Okay, good to hear. Let me know if you run into problems and I can
+>> try to help. Trunk has seen a lot of work recently, and also some fixes for
+>> whitespaces/indents
+>> >>
+>> >> I find really old patches often easier to hand port to trunk, but
+>> sometimes creating an svn diff that does not detect whitespace changes helps.
+>> Something like:
+>> >>
+>> >> # go into directory of older mapnik with changes made
+>> >> # and create a patch ignoring whitepace
+>> >> svn diff -x -w > my_patch.diff
+>> >>
+>> >> Dane
+>> >>
+>> >>
+>> >> On Aug 25, 2010, at 7:52 AM, ?????? ?????????? wrote:
+>> >>
+>> >>> Dane,
+>> >>>
+>> >>> Sorry for not responging so long.
+>> >>>
+>> >>> I`ll try to merge our changes into latest trunk revision and
+>> attach generated patch to the ticket by the end of this week.
+>> >>>
+>> >>> Michael.
+>> >>>
+>> >>>
+>> >>>
+>> >>>
+>> >>>
+>> >>>> Hey Guys,
+>> >>>>
+>> >>>> I did not get a response on my last email to you - any
+>> thoughts?
+>> >>>>
+>> >>>> Dane
+>> >>>>
+>> >>>>
+>> >>>> On Jul 23, 2010, at 10:29 AM, Dane Springmeyer wrote:
+>> >>>>
+>> >>>>> Hello Michael,
+>> >>>>>
+>> >>>>> On Jul 20, 2010, at 9:46 AM, ?????? ?????????? wrote:
+>> >>>>>
+>> >>>>>> Dane,
+>> >>>>>>
+>> >>>>>> We wish to add our patch to mapnik sources, so that
+>> it could be used in next versions of mapnik.
+>> >>>>>>
+>> >>>>>
+>> >>>>> Michael, this is very good.
+>> >>>>>
+>> >>>>> Currently we have two development branches: 0.7 series
+>> and trunk (aka Mapnik2).
+>> >>>>>
+>> >>>>> I would presume that your patch is either against the 0.6
+>> or 0.7 series? Is this true?
+>> >>>>>
+>> >>>>> Ideally we will have you develop the patch against trunk
+>> (Mapnik2).
+>> >>>>>
+>> >>>>> But, please be aware that Mapnik2 has made some
+>> implemented some stylesheet changes, so to test you will need to use a script
+>> to upgrade your xml stylesheets to Mapnik2. More info can be found here:
+>> http://trac.mapnik.org/wiki/Mapnik2
+>> >>>>>
+>> >>>>>> We had a patch almost year ago, so it is not as fresh
+>> as needed. Which revision version it should differ?
+>> >>>>>>
+>> >>>>>
+>> >>>>> We should work to apply it to Mapnik2 (trunk).
+>> >>>>>
+>> >>>>>> Is it convenient for you to have a look at our patch
+>> if we send it by the end of this week?
+>> >>>>>>
+>> >>>>>
+>> >>>>> Well, you can send it to me. But ideally you would go to
+>> http://trac.mapnik.org and attach it to a new ticket that describes the
+>> functionality.
+>> >>>>>
+>> >>>>> For example, your previous patch can be found here:
+>> http://trac.mapnik.org/ticket/463
+>> >>>>>
+>> >>>>> If you current patch still relates to this specific
+>> feature then you should re-attach the new patch at
+>> http://trac.mapnik.org/ticket/463.
+>> >>>>>
+>> >>>>> IDEALLY, for each new feature we would have separate
+>> patches and separate tickets, so please give that consideration.
+>> >>>>>
+>> >>>>>> Thanks,
+>> >>>>>>
+>> >>>>>
+>> >>>>> Thank you for getting in touch and your support of the
+>> Mapnik project!
+>> >>>>>
+>> >>>>>
+>> >>>>>> Michael Vorotnikov, developer of
+>> http://kosmosnimki.ru/
+>> >>>>>
+>> >>>>>
+>> >>>>> Dane
+>> >>>>>
+>> >>>>>
+>> >>>
+>> >>> ??? ???@Mail.Ru ? ????? ?????????!
+>> >>> ?????? ????? ? ???????? ?? m.mail.ru
+>> >
+>> > ??? ???@Mail.Ru ? ????? ?????????!
+>> > ?????? ????? ? ???????? ?? m.mail.ru
+>
+> ??? ???@Mail.Ru ? ????? ?????????!
+> ?????? ????? ? ???????? ?? m.mail.ru
+>
+
+
+From mvorotnikov at mail.ru  Mon Sep 13 12:26:38 2010
+From: mvorotnikov at mail.ru (=?koi8-r?Q?=ED=C9=C8=C1=C9=CC_=F7=CF=D2=CF=D4=CE=C9=CB=CF=D7?=)
+Date: Mon, 13 Sep 2010 14:26:38 +0400
+Subject: [Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+Message-ID: <E1Ov6FC-0007Re-00.mvorotnikov-mail-ru@f30.mail.ru>
+
+Artem,
+
+Could you, please help us with windows compilation of mapnik sources?
+
+We really need those solution and project files for VS2005 or VS2008 to have the ability to add some changes we need to use mapnik in the whole strength.
+
+Thanks, 
+Vorotnikov Michael, 
+kosmosnimki.ru developer.
+
+
+
+
+
+Sat, 11 Sep 2010 11:39:55 +0200 ?????? ?? Dane Springmeyer <dane at dbsgeo.com>:
+
+> Sorry, I personally have no experience with compiling Mapnik on windows.
+> It is Artem that does the windows compilation (Artem Pavlenko
+> <artem at mapnik-consulting.com>).
+> Michael, could you do your development on linux in VirtualBox? Otherwise I
+> recommend checking in with Artem about the potential to collaborate to get
+> some project files created. Short of that the only ones I know about are here:
+> http://www.falconview.org/trac/FalconView/browser/Sandbox/MAPNIK%20README.txt
+> Dane
+> On Sep 1, 2010, at 10:07 PM, ?????? ?????????? wrote:
+> > Dane,
+> > 
+> > Sorry about being too late again, but I`m again having too much trouble
+> with Mapnik being compiled under Microsoft VS2005 or VS2008 (doesn`t matter).
+> > 
+> > I`m sure that our work can be done much more easier if I get VS project
+> file if you have.
+> > 
+> > Since you provide win32 binaries, I assume you have those project files
+> (it does not really matter which studio 2005, 2008, 2010 for me)
+> > 
+> > Can you please, send it to me with maybe some small explanations if any
+> needed.
+> > 
+> > Thanks,
+> > Michael Vorotnikov.
+> > 
+> > 
+> > 
+> > 
+> > 
+> > Wed, 25 Aug 2010 08:50:24 -0700 ?????? ?? Dane Springmeyer
+> <dane at dbsgeo.com>:
+> > 
+> >> Michael,
+> >> 
+> >> Okay, good to hear. Let me know if you run into problems and I can
+> try to help. Trunk has seen a lot of work recently, and also some fixes for
+> whitespaces/indents
+> >> 
+> >> I find really old patches often easier to hand port to trunk, but
+> sometimes creating an svn diff that does not detect whitespace changes helps.
+> Something like:
+> >> 
+> >> # go into directory of older mapnik with changes made
+> >> # and create a patch ignoring whitepace
+> >> svn diff -x -w > my_patch.diff
+> >> 
+> >> Dane
+> >> 
+> >> 
+> >> On Aug 25, 2010, at 7:52 AM, ?????? ?????????? wrote:
+> >> 
+> >>> Dane,
+> >>> 
+> >>> Sorry for not responging so long.
+> >>> 
+> >>> I`ll try to merge our changes into latest trunk revision and
+> attach generated patch to the ticket by the end of this week.
+> >>> 
+> >>> Michael.
+> >>> 
+> >>> 
+> >>> 
+> >>> 
+> >>> 
+> >>>> Hey Guys,
+> >>>> 
+> >>>> I did not get a response on my last email to you - any
+> thoughts?
+> >>>> 
+> >>>> Dane
+> >>>> 
+> >>>> 
+> >>>> On Jul 23, 2010, at 10:29 AM, Dane Springmeyer wrote:
+> >>>> 
+> >>>>> Hello Michael,
+> >>>>> 
+> >>>>> On Jul 20, 2010, at 9:46 AM, ?????? ?????????? wrote:
+> >>>>> 
+> >>>>>> Dane,
+> >>>>>> 
+> >>>>>> We wish to add our patch to mapnik sources, so that
+> it could be used in next versions of mapnik.
+> >>>>>> 
+> >>>>> 
+> >>>>> Michael, this is very good.
+> >>>>> 
+> >>>>> Currently we have two development branches: 0.7 series
+> and trunk (aka Mapnik2). 
+> >>>>> 
+> >>>>> I would presume that your patch is either against the 0.6
+> or 0.7 series? Is this true?
+> >>>>> 
+> >>>>> Ideally we will have you develop the patch against trunk
+> (Mapnik2).
+> >>>>> 
+> >>>>> But, please be aware that Mapnik2 has made some
+> implemented some stylesheet changes, so to test you will need to use a script
+> to upgrade your xml stylesheets to Mapnik2. More info can be found here:
+> http://trac.mapnik.org/wiki/Mapnik2
+> >>>>> 
+> >>>>>> We had a patch almost year ago, so it is not as fresh
+> as needed. Which revision version it should differ?
+> >>>>>> 
+> >>>>> 
+> >>>>> We should work to apply it to Mapnik2 (trunk).
+> >>>>> 
+> >>>>>> Is it convenient for you to have a look at our patch
+> if we send it by the end of this week?
+> >>>>>> 
+> >>>>> 
+> >>>>> Well, you can send it to me. But ideally you would go to
+> http://trac.mapnik.org and attach it to a new ticket that describes the
+> functionality.
+> >>>>> 
+> >>>>> For example, your previous patch can be found here:
+> http://trac.mapnik.org/ticket/463
+> >>>>> 
+> >>>>> If you current patch still relates to this specific
+> feature then you should re-attach the new patch at
+> http://trac.mapnik.org/ticket/463.
+> >>>>> 
+> >>>>> IDEALLY, for each new feature we would have separate
+> patches and separate tickets, so please give that consideration.
+> >>>>> 
+> >>>>>> Thanks,
+> >>>>>> 
+> >>>>> 
+> >>>>> Thank you for getting in touch and your support of the
+> Mapnik project!
+> >>>>> 
+> >>>>> 
+> >>>>>> Michael Vorotnikov, developer of
+> http://kosmosnimki.ru/
+> >>>>> 
+> >>>>> 
+> >>>>> Dane
+> >>>>> 
+> >>>>> 
+> >>> 
+> >>> ??? ???@Mail.Ru ? ????? ?????????!
+> >>> ?????? ????? ? ???????? ?? m.mail.ru
+> > 
+> > ??? ???@Mail.Ru ? ????? ?????????!
+> > ?????? ????? ? ???????? ?? m.mail.ru
+
+??? ???@Mail.Ru ? ????? ?????????!
+?????? ????? ? ???????? ?? m.mail.ru
+
+
+From nickblack1 at gmail.com  Wed Sep 15 07:34:11 2010
+From: nickblack1 at gmail.com (Nick Black)
+Date: Tue, 14 Sep 2010 22:34:11 -0700
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTinHpaoLQSSeonvZ=__BPXP-GjPEhs++fKMmsVGi@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+	<AANLkTimcU8Uqk8usXpXqyXH6Zgt-xNk5ftPCeZ9GW-K5@mail.gmail.com>
+	<AANLkTinHpaoLQSSeonvZ=__BPXP-GjPEhs++fKMmsVGi@mail.gmail.com>
+Message-ID: <AANLkTimsU4Ov6ryhNZ5iW2Dn0YC24AhGcpwQvM6JC1CM@mail.gmail.com>
+
+Hi Guys,
+
+Looking forward to this :-)  If any of you don't know me, I'm from
+CloudMade.  We're really pleased to be able to give something back to the
+Mapnik community, so I hope you'll enjoy our offices over the weekend.
+
+Can I suggest drinks on Friday evening at the Mulberry Bush, just around the
+corner from our office? First round on us :-)
+
+--
+Nick
+
+
+On Thu, Sep 2, 2010 at 5:24 PM, Richard Weait <richard at weait.com> wrote:
+> On Thu, Sep 2, 2010 at 5:30 PM, Robert Coup <robert.coup at koordinates.com>
+wrote:
+>
+>> Would be great if you can nail down some approximate session times so
+those
+>> of us participating via IRC from odd timezones can tie up with everyone
+>> else.
+>> Would be good to have a kick-off time at least :)
+>
+> You are So Right.
+> http://trac.mapnik.org/wiki/MapnikCodeSprint/MSC01/Schedule
+>
+>>> The goals for Committers and Cartographers are:
+>>
+>> Would be good to put up a wiki page with ideas/ticket references, and
+what
+>> people are interested in working on. If we do that soon, then we can get
+>> some design discussions going on mapnik-devel so the sprint can focus
+more
+>> on the doing.
+>
+> And Right Again!
+> http://trac.mapnik.org/wiki/MapnikCodeSprint/MCS01#Code
+>
+> Thanks for suggesting these.
+>
+> Best regards,
+> Richard
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+--
+Nick Black
+twitter.com/nick_b
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100914/7c0609fb/attachment.html>
+
+From lars at ahlzen.com  Thu Sep 16 03:26:51 2010
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Wed, 15 Sep 2010 21:26:51 -0400
+Subject: [Mapnik-devel] Layer compositing and erasing
+Message-ID: <4C91725B.8020501@ahlzen.com>
+
+Hi Mapnik devs!
+
+I'm using primarily Mapnik to render TopOSM (http://toposm.com). It's
+working really well, except that the rendering process is still complex
+and slow (preprocessing, rendering nine tiles, masking and compositing
+with ImageMagick etc). I believe a few (possibly minor) features in
+Mapnik could simplify the process tremendously.
+
+The first thing is basic rendering to layers (in the GIMP/Photoshop
+sense) and compositing. Similar things have been discussed before, for
+example in:
+
+http://trac.mapnik.org/ticket/314
+
+though I'm not sure that simply one "canvas" per mapnik-layer would
+quite cut it in my case. For what I do, I'd need to render an arbitrary
+set of mapnik-layers to each canvas and overlay/composite each such
+"temporary" canvas onto the final result.
+
+The other feature that is very important to me (and that I emulate with
+multiple renderings and ImageMagick) is supporting "erasing", i.e.
+setting the destination alpha (rather than the source/ink alpha) when
+painting, to cut or mask things. This is mentioned in:
+
+http://trac.mapnik.org/ticket/335
+
+I'd love this feature not only for lines (as in the ticket) but for
+other things such as polygon fills and text halos. Combined with layers
+and compositing, TopOSM style label halos could be achieved directly
+with Mapnik:
+
+http://wiki.openstreetmap.org/wiki/TopOSM#Labels
+
+I can add some details to some of these tickets, if it helps.
+
+Either way, do these things seem realistic to those of you who know more
+about Mapnik internals?
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+From oshaniuk at cloudmade.com  Thu Sep 16 08:24:09 2010
+From: oshaniuk at cloudmade.com (Oleg Shaniuk)
+Date: Thu, 16 Sep 2010 09:24:09 +0300
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <4C91725B.8020501@ahlzen.com>
+References: <4C91725B.8020501@ahlzen.com>
+Message-ID: <AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+
+Hi Lars,
+
+I saw your project before - looks really cool. Guess, you can use several
+Map objects to generate the compositions and then compose them in another
+"final" map? Maybe I'm missing some details?
+--
+RO
+
+
+On Thu, Sep 16, 2010 at 4:26 AM, Lars Ahlzen <lars at ahlzen.com> wrote:
+
+> Hi Mapnik devs!
+>
+> I'm using primarily Mapnik to render TopOSM (http://toposm.com). It's
+> working really well, except that the rendering process is still complex
+> and slow (preprocessing, rendering nine tiles, masking and compositing
+> with ImageMagick etc). I believe a few (possibly minor) features in
+> Mapnik could simplify the process tremendously.
+>
+> The first thing is basic rendering to layers (in the GIMP/Photoshop
+> sense) and compositing. Similar things have been discussed before, for
+> example in:
+>
+> http://trac.mapnik.org/ticket/314
+>
+> though I'm not sure that simply one "canvas" per mapnik-layer would
+> quite cut it in my case. For what I do, I'd need to render an arbitrary
+> set of mapnik-layers to each canvas and overlay/composite each such
+> "temporary" canvas onto the final result.
+>
+> The other feature that is very important to me (and that I emulate with
+> multiple renderings and ImageMagick) is supporting "erasing", i.e.
+> setting the destination alpha (rather than the source/ink alpha) when
+> painting, to cut or mask things. This is mentioned in:
+>
+> http://trac.mapnik.org/ticket/335
+>
+> I'd love this feature not only for lines (as in the ticket) but for
+> other things such as polygon fills and text halos. Combined with layers
+> and compositing, TopOSM style label halos could be achieved directly
+> with Mapnik:
+>
+> http://wiki.openstreetmap.org/wiki/TopOSM#Labels
+>
+> I can add some details to some of these tickets, if it helps.
+>
+> Either way, do these things seem realistic to those of you who know more
+> about Mapnik internals?
+>
+> - Lars
+>
+> --
+> Lars Ahlzen
+> lars at ahlzen.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100916/4819a55c/attachment.html>
+
+From lars at ahlzen.com  Thu Sep 16 20:28:12 2010
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Thu, 16 Sep 2010 14:28:12 -0400
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+Message-ID: <4C9261BC.7050306@ahlzen.com>
+
+On 9/16/2010 2:24 AM, Oleg Shaniuk wrote:
+> I saw your project before - looks really cool. Guess, you can use
+> several Map objects to generate the compositions and then compose them
+> in another "final" map? Maybe I'm missing some details?
+
+Well, if Image.blend can do the final composite (not much doc there), 
+you're probably right (or I could use PIL or similar), so maybe that 
+part isn't necessary.
+
+Without the "erase" feature mentioned below, however, the cutouts, 
+see-through halos etc still require image manipulation that would be 
+difficult (and inefficient) even with PIL.
+
+In my dreams, you could specify erasing with something like:
+
+<PolygonSymbolizer>
+   <CssParameter name="fill">transparent</CssParameter>
+</PolygonSymbolizer>
+
+and
+
+<TextSymbolizer name="..." fill="#000" halo_fill="transparent" 
+halo_radius="2" />
+
+to get nice "cutouts" for halos and polygons in a semi-transparent map tile.
+
+AFAIK, drawing-wise, setting the destination alpha is a relatively 
+straightforward operation with both AGG and Cairo.
+
+>     The other feature that is very important to me (and that I emulate with
+>     multiple renderings and ImageMagick) is supporting "erasing", i.e.
+>     setting the destination alpha (rather than the source/ink alpha) when
+>     painting, to cut or mask things. This is mentioned in:
+>
+>     http://trac.mapnik.org/ticket/335
+>
+>     I'd love this feature not only for lines (as in the ticket) but for
+>     other things such as polygon fills and text halos. Combined with layers
+>     and compositing, TopOSM style label halos could be achieved directly
+>     with Mapnik:
+>
+>     http://wiki.openstreetmap.org/wiki/TopOSM#Labels
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+From mike at stamen.com  Fri Sep 17 00:23:32 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Thu, 16 Sep 2010 15:23:32 -0700
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <4C9261BC.7050306@ahlzen.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+	<4C9261BC.7050306@ahlzen.com>
+Message-ID: <B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+
+On Sep 16, 2010, at 11:28 AM, Lars Ahlzen wrote:
+
+> In my dreams, you could specify erasing with something like:
+> 
+> <PolygonSymbolizer>
+>  <CssParameter name="fill">transparent</CssParameter>
+> </PolygonSymbolizer>
+> 
+> and
+> 
+> <TextSymbolizer name="..." fill="#000" halo_fill="transparent" halo_radius="2" />
+> 
+> to get nice "cutouts" for halos and polygons in a semi-transparent map tile.
+> 
+> AFAIK, drawing-wise, setting the destination alpha is a relatively straightforward operation with both AGG and Cairo.
+
+
+Don't you just want a mask, and the possibility of nesting layers and groups of layers?
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From carlos.lopez.garces at gmail.com  Fri Sep 17 08:39:10 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Fri, 17 Sep 2010 01:39:10 -0500
+Subject: [Mapnik-devel] Unicode in SVG renderer
+Message-ID: <AANLkTikA1UOFuyb+6LONuUG69yBCUZqAY+2SHp2KYeJO@mail.gmail.com>
+
+Hello, how are you? I'm sorry for not staying in touch these last few weeks.
+I've been working on the generation of SVG text tags since yesterday, but
+got to the point where I need to process UnicodeString objects. According to
+boost::spirit::karma's documentation (
+http://www.boost.org/doc/libs/1_44_0/libs/spirit/doc/html/spirit/karma/reference/karma_basics.html#spirit.karma.reference.karma_basics.character_encoding_namespace),
+Unicode support is not available yet: "includes ascii, iso8859_1, standardand
+standard_wide (*and in the future, **unicode*)". I wonder if you have given
+some thought to this issue.
+
+Regards
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100917/1ff0066e/attachment.html>
+
+From lars at ahlzen.com  Fri Sep 17 23:10:12 2010
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Fri, 17 Sep 2010 17:10:12 -0400
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+	<4C9261BC.7050306@ahlzen.com>
+	<B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+Message-ID: <4C93D934.1070309@ahlzen.com>
+
+On 09/16/2010 06:23 PM, Michal Migurski wrote:
+> On Sep 16, 2010, at 11:28 AM, Lars Ahlzen wrote:
+> 
+>> In my dreams, you could specify erasing with something like:
+>> 
+>> <PolygonSymbolizer> <CssParameter
+>> name="fill">transparent</CssParameter> </PolygonSymbolizer>
+>> 
+>> and
+>> 
+>> <TextSymbolizer name="..." fill="#000" halo_fill="transparent"
+>> halo_radius="2" />
+>> 
+>> to get nice "cutouts" for halos and polygons in a semi-transparent
+>> map tile.
+>> 
+>> AFAIK, drawing-wise, setting the destination alpha is a relatively
+>> straightforward operation with both AGG and Cairo.
+> 
+> 
+> Don't you just want a mask, and the possibility of nesting layers and
+> groups of layers?
+
+Well, anything that can produce the results I want. :)
+
+This just seems like the simplest and most efficient way. Or did you
+have some specific solution in mind that I may have overlooked?
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+From mike at stamen.com  Fri Sep 17 23:58:56 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Fri, 17 Sep 2010 14:58:56 -0700
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <4C93D934.1070309@ahlzen.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+	<4C9261BC.7050306@ahlzen.com>
+	<B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+	<4C93D934.1070309@ahlzen.com>
+Message-ID: <948989F6-206A-4587-B68C-639488BF571B@stamen.com>
+
+On Sep 17, 2010, at 2:10 PM, Lars Ahlzen wrote:
+
+> On 09/16/2010 06:23 PM, Michal Migurski wrote:
+>> On Sep 16, 2010, at 11:28 AM, Lars Ahlzen wrote:
+>> 
+>>> In my dreams, you could specify erasing with something like:
+>>> 
+>>> <PolygonSymbolizer> <CssParameter
+>>> name="fill">transparent</CssParameter> </PolygonSymbolizer>
+>>> 
+>>> and
+>>> 
+>>> <TextSymbolizer name="..." fill="#000" halo_fill="transparent"
+>>> halo_radius="2" />
+>>> 
+>>> to get nice "cutouts" for halos and polygons in a semi-transparent
+>>> map tile.
+>>> 
+>>> AFAIK, drawing-wise, setting the destination alpha is a relatively
+>>> straightforward operation with both AGG and Cairo.
+>> 
+>> 
+>> Don't you just want a mask, and the possibility of nesting layers and
+>> groups of layers?
+> 
+> Well, anything that can produce the results I want. :)
+> 
+> This just seems like the simplest and most efficient way. Or did you
+> have some specific solution in mind that I may have overlooked?
+
+
+I guess I'm just trying to figure out the easiest, most Photoshop-like way of representing these operations. So far my personal skin in the game is this:
+	http://tilestache.org/doc/TileStache.Goodies.Providers.Composite.html
+
+...which is just taking shape slowly. I recently read the Porter Duff paper and I think I've got some work to do. =)
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From dane at dbsgeo.com  Sat Sep 18 16:27:17 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 18 Sep 2010 16:27:17 +0200
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTimsU4Ov6ryhNZ5iW2Dn0YC24AhGcpwQvM6JC1CM@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinC_8sL_L6uDysuxMd6VtN3VSsJd8HzMcRc4kZU@mail.gmail.com>
+	<AANLkTimcU8Uqk8usXpXqyXH6Zgt-xNk5ftPCeZ9GW-K5@mail.gmail.com>
+	<AANLkTinHpaoLQSSeonvZ=__BPXP-GjPEhs++fKMmsVGi@mail.gmail.com>
+	<AANLkTimsU4Ov6ryhNZ5iW2Dn0YC24AhGcpwQvM6JC1CM@mail.gmail.com>
+Message-ID: <A9024F7F-C766-4850-A7D2-FE76B0421397@dbsgeo.com>
+
+
+On Sep 15, 2010, at 7:34 AM, Nick Black wrote:
+
+> Hi Guys,
+> 
+> Looking forward to this :-)  If any of you don't know me, I'm from CloudMade.  We're really pleased to be able to give something back to the Mapnik community, so I hope you'll enjoy our offices over the weekend.
+> 
+> Can I suggest drinks on Friday evening at the Mulberry Bush, just around the corner from our office? First round on us :-)
+> 
+> --
+> Nick
+
+Nick, awesome, thanks!
+
+Added to the wiki schedule:
+
+http://trac.mapnik.org/wiki/MapnikCodeSprint/MSC01/Schedule
+
+Dane
+
+
+
+From lars at ahlzen.com  Sat Sep 18 21:21:17 2010
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Sat, 18 Sep 2010 15:21:17 -0400
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <948989F6-206A-4587-B68C-639488BF571B@stamen.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+	<4C9261BC.7050306@ahlzen.com>
+	<B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+	<4C93D934.1070309@ahlzen.com>
+	<948989F6-206A-4587-B68C-639488BF571B@stamen.com>
+Message-ID: <4C95112D.7000801@ahlzen.com>
+
+On 09/17/2010 05:58 PM, Michal Migurski wrote:
+>>> Don't you just want a mask, and the possibility of nesting layers
+>>> and groups of layers?
+>> 
+>> Well, anything that can produce the results I want. :)
+>> 
+>> This just seems like the simplest and most efficient way. Or did
+>> you have some specific solution in mind that I may have
+>> overlooked?
+> 
+> 
+> I guess I'm just trying to figure out the easiest, most
+> Photoshop-like way of representing these operations. So far my
+> personal skin in the game is this: 
+> http://tilestache.org/doc/TileStache.Goodies.Providers.Composite.html
+>
+>  ...which is just taking shape slowly. I recently read the Porter
+> Duff paper and I think I've got some work to do. =)
+
+Ah, yeah, I really should give TileStache a try... I'm sure it could get
+rid of some of the current cruft.
+
+However, in the halos example, if I use TS with a mask, I'd still have
+to render labels twice (mask and "real"), right? Also, worse, any
+non-halo features, such as highway shields, could affect the label
+placement in the "real" layer *only*. (I'd like labels and shields in
+the same layer to prevent overlap.)
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+From mike at stamen.com  Sun Sep 19 19:00:30 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Sun, 19 Sep 2010 10:00:30 -0700
+Subject: [Mapnik-devel] Layer compositing and erasing
+In-Reply-To: <4C95112D.7000801@ahlzen.com>
+References: <4C91725B.8020501@ahlzen.com>
+	<AANLkTik3KF_8Md4MrucH6vi-Rah06pLUvkpetdcGiBuV@mail.gmail.com>
+	<4C9261BC.7050306@ahlzen.com>
+	<B1CF19A9-EC61-4A5B-8F14-AD190BE919DC@stamen.com>
+	<4C93D934.1070309@ahlzen.com>
+	<948989F6-206A-4587-B68C-639488BF571B@stamen.com>
+	<4C95112D.7000801@ahlzen.com>
+Message-ID: <70878319-EDED-4AFE-85C7-354D4E8BA933@stamen.com>
+
+On Sep 18, 2010, at 12:21 PM, Lars Ahlzen wrote:
+
+> On 09/17/2010 05:58 PM, Michal Migurski wrote:
+>> I guess I'm just trying to figure out the easiest, most
+>> Photoshop-like way of representing these operations. So far my
+>> personal skin in the game is this: 
+>> http://tilestache.org/doc/TileStache.Goodies.Providers.Composite.html
+>> 
+>> ...which is just taking shape slowly. I recently read the Porter
+>> Duff paper and I think I've got some work to do. =)
+> 
+> Ah, yeah, I really should give TileStache a try... I'm sure it could get
+> rid of some of the current cruft.
+> 
+> However, in the halos example, if I use TS with a mask, I'd still have
+> to render labels twice (mask and "real"), right? Also, worse, any
+> non-halo features, such as highway shields, could affect the label
+> placement in the "real" layer *only*. (I'd like labels and shields in
+> the same layer to prevent overlap.)
+
+
+You'd have to pull it from cache twice, but generally it'd only be rendered once.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From dane at dbsgeo.com  Mon Sep 20 22:35:41 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 20 Sep 2010 22:35:41 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik map opacity
+In-Reply-To: <4C8093C9.6060307@geoinfo.geof.hr>
+References: <4C7CF89E.3030901@geoinfo.geof.hr>
+	<64FEFB3BDAC1414F80EBF758194587DA1A3833C2F6@mbx.ajgirona.org>
+	<4C8093C9.6060307@geoinfo.geof.hr>
+Message-ID: <39C6EC19-E939-4CD6-853C-814FBF70243B@dbsgeo.com>
+
+
+On Sep 3, 2010, at 8:20 AM, Dra?en Odoba?i? wrote:
+
+> On 01.09.2010 11:17, manel.clos at ajgirona.cat wrote:
+>> Hi,
+>> 
+>> I'll just patch mapnik's ogcserver (if you are using it, of course). We are using a copy of ogcserver for each wms service instead of a global installed one. This means there is no problem in doing such an ugly hack :) because it will affect just that service.
+>> 
+>> The image won't hit the disk until cached and it will also save you the hassle of running a script afterwards. Tell me if the performance is acceptable, perhaps we can make a patch until support is added to mapnik.
+>> 
+>> File common.py:
+>> 
+>> class WMSBaseServiceHandler(BaseServiceHandler):
+>> 
+>>     def GetMap(self, params):
+>>         m = self._buildMap(params)
+>>         im = Image(params['width'], params['height'])
+>>         render(m, im)
+>>         format = PIL_TYPE_MAPPING[params['format']]
+>>         import PIL, StringIO
+>>         img = PIL.Image.open(StringIO.StringIO(im.tostring(format)))
+>>         img = self.reduce_opacity(img, 0.5)
+>>         buf = StringIO.StringIO()
+>>         img.save(buf, format=format)
+>>         return Response(params['format'].replace('8',''), buf.getvalue())
+>> 
+>>     def reduce_opacity(self, im, opacity):
+>>         import ImageEnhance
+>>         """Returns an image with reduced opacity."""
+>>         assert opacity>= 0 and opacity<= 1
+>>         if im.mode != 'RGBA':
+>>             im = im.convert('RGBA')
+>>         else:
+>>             im = im.copy()
+>>         alpha = im.split()[3]
+>>         alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+>>         im.putalpha(alpha)
+>>         return im
+>> 
+>> 
+> 
+> Hi,
+> 
+> i've actually done something similar, customized rendering pipeline to check whether final rendering should be transparent or not.
+> 
+> Would it be feasible to add this kinda support directly to mapnik core?
+> 
+
+Yes, absolutely. Drazen, could you please add a ticket to trac and set the Milestone to:
+
+http://trac.mapnik.org/milestone/MCS1%20Tickets
+
+I'd like to take a look at implementing this at the sprint next week.
+
+> Dra?en
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From dane at dbsgeo.com  Fri Sep 24 00:18:28 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 23 Sep 2010 23:18:28 +0100
+Subject: [Mapnik-devel] Code sprint starts tomorrow
+Message-ID: <8CDC334F-0682-414D-8903-7EC7FA8B08E9@dbsgeo.com>
+
+Looking forward to seeing some of you in person in London (and hopefully many of you remotely on IRC) starting tomorrow for the first ever Mapnik code sprint.
+
+We've got a loose agenda for Friday, but highlights of plans tomorrow include Steve Chilton discussing ideas he has around advanced cartography features for OSM and Artem discussing a bit about architecture and the origins of Mapnik. I hope these conversations will lead into unplanned discussions and brainstorming about where Mapnik is going and what fun things we'd all like to be doing with the toolkit in the future - The goal being to set us up to both squash bugs over the next two days and also get priorities sorted for development over the next several months.
+
+I know we have some folks not arriving till Saturday (Ivan I think), or only able to visit on Sunday (Tom Hughes, Andy Allen, yes?), so just please list yourself and the days you will attend on the wiki and we'll get excited to see you when possible.
+
+http://trac.mapnik.org/wiki/MapnikCodeSprint/MCS01
+
+My thanks go out to Richard Weait who masterminded and planned this whole event - thank you Richard! And to Nick Black and Cloudmade for hosting us in London, and Mike Migurski for opening Stamen's doors in San Francisco.
+
+Sadly Richard could not join us in London, but I look forward to many more events like this one where he will hopefully preside. 
+
+Cheers,
+
+Dane
+
+From dodobas at geoinfo.geof.hr  Fri Sep 24 17:59:05 2010
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Fri, 24 Sep 2010 17:59:05 +0200
+Subject: [Mapnik-devel] Code sprint starts tomorrow
+In-Reply-To: <8CDC334F-0682-414D-8903-7EC7FA8B08E9@dbsgeo.com>
+References: <8CDC334F-0682-414D-8903-7EC7FA8B08E9@dbsgeo.com>
+Message-ID: <4C9CCAC9.607@geoinfo.geof.hr>
+
+Hi everyone,
+
+if you are wondering what is happening on first Code Sprint checkout 
+Trac Timeline http://is.gd/fqLjB.
+
+You can also follow #irc log at http://is.gd/fqLsx
+
+It's not too late to join us, #mapnik at irc.freenode.org
+
+See you
+
+
+From dane at dbsgeo.com  Sat Sep 25 11:38:26 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 25 Sep 2010 10:38:26 +0100
+Subject: [Mapnik-devel] mapnik.org status
+Message-ID: <4EE7DC54-E6D9-478D-AEEB-31BC0F3F5E37@dbsgeo.com>
+
+With all the action on trac/svn yesterday on the first day of the sprint we filled up the disk on the mapnik.org machine :).
+
+We don't have a fix currently, so mapnik.org and trac.mapnik.org are down.
+
+While svn.mapnik.org is up this is *read only*, so we've quickly imported latest trunk into github and will be working on this during the sprint:
+
+http://github.com/mapnik/mapnik-trunk
+
+So, clone from there if you want to follow development! We'll send more updates if mapnik.org comes back online.
+
+Join irc.freenode.net#mapnik if you have questions.
+
+Dane
+
+From dane at dbsgeo.com  Sat Sep 25 12:03:03 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 25 Sep 2010 11:03:03 +0100
+Subject: [Mapnik-devel] Steve Chilton's presentation from Day 1 of Mapnik
+	code sprint
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>
+Message-ID: <6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+
+Hi All,
+
+Steve's great slides which he presented to us yesterday in London to inspire coding plans are now both available...
+
+on slideshare:
+
+http://www.slideshare.net/steve8/mapnik-code-sprint-what-id-like-to-do-with-mapnik
+
+and as a PDF (with notes) here:
+
+http://dbsgeo.com/mapnik/ms01/chilton_codesprint-what-I?d-like-to-do-with-mapnik.pdf
+
+Thanks Steve!
+
+Dane
+
+
+
+From blake at hailmail.net  Sat Sep 25 16:01:30 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sat, 25 Sep 2010 15:01:30 +0100
+Subject: [Mapnik-devel] [Mapnik-users] mapnik.org status
+In-Reply-To: <4EE7DC54-E6D9-478D-AEEB-31BC0F3F5E37@dbsgeo.com>
+References: <4EE7DC54-E6D9-478D-AEEB-31BC0F3F5E37@dbsgeo.com>
+Message-ID: <4BF8D364-0858-44BE-80EA-C8691E9A9901@hailmail.net>
+
+Okay, all services are back up, so we're again committing directly to svn:
+
+http://trac.mapnik.org/timeline
+
+
+- Dane
+
+On Sep 25, 2010, at 10:38 AM, Dane Springmeyer wrote:
+
+> With all the action on trac/svn yesterday on the first day of the sprint we filled up the disk on the mapnik.org machine :).
+> 
+> We don't have a fix currently, so mapnik.org and trac.mapnik.org are down.
+> 
+> While svn.mapnik.org is up this is *read only*, so we've quickly imported latest trunk into github and will be working on this during the sprint:
+> 
+> http://github.com/mapnik/mapnik-trunk
+> 
+> So, clone from there if you want to follow development! We'll send more updates if mapnik.org comes back online.
+> 
+> Join irc.freenode.net#mapnik if you have questions.
+> 
+> Dane
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From mike at stamen.com  Sat Sep 25 20:49:23 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Sat, 25 Sep 2010 11:49:23 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from
+	Day 1 of Mapnik code sprint
+In-Reply-To: <6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>
+	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+Message-ID: <683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+
+This is great, thanks Steve!
+
+I've got just a few comments mostly having to do with in-mapnik vs. not-in-mapnik scope. Going down the list,
+
+1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+2) underlying roads and brudges: yes yes yes.
+3) iterative label placement: also yes
+4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+5) icon rotation: yes please
+6) svg icons: oh yes
+7) variable width: not sure I understand this one
+8) vignettes: yessir
+9) spread text labels: isn't this in already?
+10) different casing: yes
+11) text labels to the side: yes yes
+12) nudge icon: different from dx/dy?
+13) mountain ranges on hint line: this seems out of scope for mapnik, to me
+14) collapse areas: more of a data question, isn't it?
+15) text rotation: sure
+16) point and line data: I don't think I understand this one
+17) icon/text coupling: absolutely, yes
+18) separate two lines by minimum distance: dangerous to include in mapnik
+19) add natural earth data: sure, but is this a thing for mapnik to do?
+
+So generally speaking it's excellent stuff. I think I object to a few of them being in mapnik proper (1, 13, 14, 18, 19) mostly on the grounds of scope and division of labor. I've been saying for a long time that OSM is not necessarily suitable as a rendering data source (http://mike.teczno.com/notes/slides/nacis.html) and we would need to do a bunch of work to prepare the data for rendering at different scales. Issues around linear features like rivers or roads being represented as centerlines or shapes, how features behave in proximity to one another, etc. all should be handled in a scale-appropriate way at the data source. I think this is particularly important because mapnik is used to generate tiles, and it generally deals with very small areas that need to be knit together and still work, visually (Cloudmade's tiles are uniquely awful at this). Mapnik's choice the painter's algorithm is the critical choice here that makes it even remotely feasible to think about tiles for the whole planet.
+
+In short, I'm enthusiastic about most of Steve proposals! I think some of them are really more about OSM than they are about Mapnik, and my feelings about changes to the rendering library can be summed up as Keep Mapnik Painterly.
+
+-mike.
+
+On Sep 25, 2010, at 3:03 AM, Dane Springmeyer wrote:
+
+> Hi All,
+> 
+> Steve's great slides which he presented to us yesterday in London to inspire coding plans are now both available...
+> 
+> on slideshare:
+> 
+> http://www.slideshare.net/steve8/mapnik-code-sprint-what-id-like-to-do-with-mapnik
+> 
+> and as a PDF (with notes) here:
+> 
+> http://dbsgeo.com/mapnik/ms01/chilton_codesprint-what-I?d-like-to-do-with-mapnik.pdf
+> 
+> Thanks Steve!
+> 
+> Dane
+> 
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+> 
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From ldp at xs4all.nl  Sat Sep 25 21:09:28 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Sat, 25 Sep 2010 21:09:28 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from
+ Day 1 of Mapnik code sprint
+In-Reply-To: <683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+Message-ID: <4C9E48E8.4040800@xs4all.nl>
+
+On 25-9-2010 20:49, Michal Migurski wrote:
+
+> 1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+
+When you source all your road/railway/waterway data through a single 
+Layer, that approach works just fine. It's when it's split up among two 
+dozen Layers with even more Styles, where this breaks down. Just witness 
+the multitude of layering issues in OSM's trac.
+
+> 4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+
+Just a few days ago, we saw an osm2pgsql patch to include a 
+ST_PointOnSurface geom column. That's handling it at the data source, 
+but mapnik should also be able to calculate this, given a polygon feature.
+
+Repeating labels, yes please from me as well.
+
+> 7) variable width: not sure I understand this one
+
+Visualising the OSM width=* tag, for canals for instance.
+
+> 9) spread text labels: isn't this in already?
+
+You can introduce spacing in texts, but not variable spacing depending 
+on the size of the feature they apply to.
+
+> 12) nudge icon: different from dx/dy?
+
+Yes: dependent on the placement list. When a symbol won't fit due to 
+previous symbols overlapping where it wants to go, nudge it a bit to try 
+and make it fit.
+
+> 13) mountain ranges on hint line: this seems out of scope for mapnik, to me
+> 14) collapse areas: more of a data question, isn't it?
+
+I agree. These are a case for data preprocessing.
+
+> 16) point and line data: I don't think I understand this one
+
+It has to do with the fact that there is no coupling between rendered 
+features. The example used in earlier presentations was of the grey 
+turning circles we used to have. The challenge in solving that was to 
+find out from a point (highway=turning_circle) what style it had to 
+take, depending on the line that point was on. If the turning circle was 
+on an unclassified road, it had to render to fit on that road, and the 
+same for tertiary, service, living_street. I took the approach of using 
+postgis to find out the relevant information.
+
+> 17) icon/text coupling: absolutely, yes
+
+ShieldSymbolizer with text displacement. However, in osm.xml, we're 
+first rendering every symbols, and only later in the painter's algorithm 
+the texts to go with those symbols.
+
+If we'd render symbol+text in a single Rule, a lot more symbols would be 
+dropped from the map.
+
+-- 
+Lennard
+
+
+From mike at stamen.com  Sat Sep 25 21:53:57 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Sat, 25 Sep 2010 12:53:57 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from
+	Day 1 of Mapnik code sprint
+In-Reply-To: <4C9E48E8.4040800@xs4all.nl>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+	<4C9E48E8.4040800@xs4all.nl>
+Message-ID: <85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F@stamen.com>
+
+(re-sending this without attached images)
+
+On Sep 25, 2010, at 12:09 PM, Lennard wrote:
+
+> On 25-9-2010 20:49, Michal Migurski wrote:
+> 
+>> 1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+> 
+> When you source all your road/railway/waterway data through a single Layer, that approach works just fine. It's when it's split up among two dozen Layers with even more Styles, where this breaks down. Just witness the multitude of layering issues in OSM's trac.
+
+I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+
+
+>> 4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+> 
+> Just a few days ago, we saw an osm2pgsql patch to include a ST_PointOnSurface geom column. That's handling it at the data source, but mapnik should also be able to calculate this, given a polygon feature.
+
+Agreed!
+
+
+>> 7) variable width: not sure I understand this one
+> 
+> Visualising the OSM width=* tag, for canals for instance.
+
+So this is supported in mapnik as it stands now, with line widths changeable based on the width tag, isn't it?
+
+
+>> 12) nudge icon: different from dx/dy?
+> 
+> Yes: dependent on the placement list. When a symbol won't fit due to previous symbols overlapping where it wants to go, nudge it a bit to try and make it fit.
+
+Oh, I thought this was already a feature of Mapnik, if it isn't it should be! =)
+
+
+>> 16) point and line data: I don't think I understand this one
+> 
+> It has to do with the fact that there is no coupling between rendered features. The example used in earlier presentations was of the grey turning circles we used to have. The challenge in solving that was to find out from a point (highway=turning_circle) what style it had to take, depending on the line that point was on. If the turning circle was on an unclassified road, it had to render to fit on that road, and the same for tertiary, service, living_street. I took the approach of using postgis to find out the relevant information.
+
+Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems:
+
+	http://mike.teczno.com/img/mapnik-butt-caps.png
+	http://mike.teczno.com/img/mapnik-square-caps.png
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                415.558.1610
+
+
+
+
+
+From ldp at xs4all.nl  Sat Sep 25 22:23:33 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Sat, 25 Sep 2010 22:23:33 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from
+ Day 1 of Mapnik code sprint
+In-Reply-To: <85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F@stamen.com>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>	<4C9E48E8.4040800@xs4all.nl>
+	<85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F@stamen.com>
+Message-ID: <4C9E5A45.9000609@xs4all.nl>
+
+On 25-9-2010 21:53, Michal Migurski wrote:
+
+> I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+
+Cascadenik can also only address it by creating dozens of layers, for 
+each possible layer=*. I'd like to see variables and loops become a 
+possibility in the stylesheet, so I can iterate over the layer=* tags, 
+by calling the same styles but with different layer=* values in the 
+datasource.
+
+>>> 7) variable width: not sure I understand this one
+>>
+>> Visualising the OSM width=* tag, for canals for instance.
+>
+> So this is supported in mapnik as it stands now, with line widths changeable based on the width tag, isn't it?
+
+If the new expression engine allows to set the width of a 
+LineSymbolizer, then yeah, we can already do it in trunk.
+
+The issue is that you'd have sudden changes in line width where the 
+canal width tag changes. It should create a small tapering section in 
+those spots.
+
+> Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems:
+
+The other example is where differently classed roads meet in a T, and 
+the fill of the rising bar protrudes into the top bar. If you understand 
+what I mean there.
+
+-- 
+Lennard
+
+
+From mike at stamen.com  Sat Sep 25 21:45:26 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Sat, 25 Sep 2010 12:45:26 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from
+	Day 1 of Mapnik code sprint
+In-Reply-To: <4C9E48E8.4040800@xs4all.nl>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>
+	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>
+	<4C9E48E8.4040800@xs4all.nl>
+Message-ID: <EA3D1382-E2A2-421E-A43E-7B1085A7133D@stamen.com>
+
+On Sep 25, 2010, at 12:09 PM, Lennard wrote:
+
+> On 25-9-2010 20:49, Michal Migurski wrote:
+> 
+>> 1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+> 
+> When you source all your road/railway/waterway data through a single Layer, that approach works just fine. It's when it's split up among two dozen Layers with even more Styles, where this breaks down. Just witness the multitude of layering issues in OSM's trac.
+
+I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+
+
+>> 4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+> 
+> Just a few days ago, we saw an osm2pgsql patch to include a ST_PointOnSurface geom column. That's handling it at the data source, but mapnik should also be able to calculate this, given a polygon feature.
+
+Agreed!
+
+
+>> 7) variable width: not sure I understand this one
+> 
+> Visualising the OSM width=* tag, for canals for instance.
+
+So this is supported in mapnik as it stands now, with line widths changeable based on the width tag, isn't it?
+
+
+>> 12) nudge icon: different from dx/dy?
+> 
+> Yes: dependent on the placement list. When a symbol won't fit due to previous symbols overlapping where it wants to go, nudge it a bit to try and make it fit.
+
+Oh, I thought this was already a feature of Mapnik, if it isn't it should be! =)
+
+
+>> 16) point and line data: I don't think I understand this one
+> 
+> It has to do with the fact that there is no coupling between rendered features. The example used in earlier presentations was of the grey turning circles we used to have. The challenge in solving that was to find out from a point (highway=turning_circle) what style it had to take, depending on the line that point was on. If the turning circle was on an unclassified road, it had to render to fit on that road, and the same for tertiary, service, living_street. I took the approach of using postgis to find out the relevant information.
+
+Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems: (attached images)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PastedGraphic-2.png
+Type: image/png
+Size: 18939 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100925/0c7f17b6/attachment.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: PastedGraphic-3.png
+Type: image/png
+Size: 18326 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100925/0c7f17b6/attachment-0001.png>
+-------------- next part --------------
+
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+From mike at stamen.com  Mon Sep 27 17:44:44 2010
+From: mike at stamen.com (Michal Migurski)
+Date: Mon, 27 Sep 2010 08:44:44 -0700
+Subject: [Mapnik-devel] Steve Chilton's presentation from Day 1 of
+	Mapnik code sprint
+In-Reply-To: <4C9E5A45.9000609@xs4all.nl>
+References: <DEC2FCE18B20734CAFA668E4384829632F11272AF2@WGFP-EXMBV1.uni.mdx.ac.uk>	<6C4190D7-11A7-40E7-969C-F5994A1DE64A@dbsgeo.com>	<683168D9-BDA7-4328-9624-DBD7408E81A2@stamen.com>	<4C9E48E8.4040800@xs4all.nl>
+	<85F6AEE1-32DF-40C7-BF74-2F5B7E8A500F@stamen.com>
+	<4C9E5A45.9000609@xs4all.nl>
+Message-ID: <C74058E5-19FD-40ED-8483-249E2231F349@stamen.com>
+
+On Sep 25, 2010, at 1:23 PM, Lennard wrote:
+
+> On 25-9-2010 21:53, Michal Migurski wrote:
+> 
+>> I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+> 
+> Cascadenik can also only address it by creating dozens of layers, for each possible layer=*. I'd like to see variables and loops become a possibility in the stylesheet, so I can iterate over the layer=* tags, by calling the same styles but with different layer=* values in the datasource.
+
+I'm not sure how comfortable I am mucking with the layers and data sources - Cascadenik *could* create dozens of layers but if I understand correctly, that would cause the same geometry to be pulled out of the data source numerous times.
+
+At this point, it'd probably be better to stop leaning on the XML and introduce the idea of rendering callbacks or something, to prevent a situation where we're creating an entirely new programming language in XML. I can imagine, for example, a CallbackSymbolizer which uses something like the BSD-licensed embedded JS engine V8:
+
+	<Map>
+		<Script>
+			function variableRivers(geom, attrs)
+			{
+				return [LineSymbolizer("#000", attrs.width),
+					     TextSymbolizer("DejaVu", attrs.name)];
+			}
+		</Script>
+		<Style name="rivers">
+			<Rule>
+				<CallbackSymbolizer name="variableRivers"/>
+			</Rule>
+		</Style>
+		<Layer>
+			<StyleName>rivers</StyleName>
+			<Datasource/>
+		</Layer>
+	</Map>
+
+Just a sketch, not to be taken over-seriously.
+
+
+>> Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems:
+> 
+> The other example is where differently classed roads meet in a T, and the fill of the rising bar protrudes into the top bar. If you understand what I mean there.
+
+
+Definitely.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+

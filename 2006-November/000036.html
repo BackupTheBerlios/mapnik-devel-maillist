@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Install problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Install%20problem&In-Reply-To=%3C223020e60611060747y52991bf7hfc1e346a59953157%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000035.html">
+   <LINK REL="Next"  HREF="000037.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Install problem</H1>
+    <B>Nick Black</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Install%20problem&In-Reply-To=%3C223020e60611060747y52991bf7hfc1e346a59953157%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Install problem">nickblack1 at gmail.com
+       </A><BR>
+    <I>Mon Nov  6 16:47:30 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000035.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+        <LI>Next message: <A HREF="000037.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+My name is Nick, and I've just started using Mapnik, which I'l
+hopefully be using for rendering map data to use in a web-based
+mapping project.
+
+I'm having a couple of problems with compiling and installing Mapnik,
+onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+to do with :
+
+ Checking for main() in C library pq... no
+
+I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+
+/usr/lib/libpq.so
+
+
+After running scons.py and scons.py install , Mapnik appears to
+compile and install ok, but when I run:
+
+&gt;&gt;&gt;<i> from mapnik import *
+</I>registered datasource : raster
+registered datasource : shape
+
+
+So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+I dont have any PostGIS support, but so far as I can tell, Postgres is
+installed in the directories that the scons.py looks in:
+
+:<i>/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+</I>total 140
+drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+-rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+-rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+-rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+-rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+-rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+-rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+-rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+-rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+-rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+
+So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+
+Thanks in advance,
+
+Nick
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000035.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+	<LI>Next message: <A HREF="000037.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

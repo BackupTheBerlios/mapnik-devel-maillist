@@ -1,0 +1,825 @@
+From beau at beaugunderson.com  Sun Jun  1 00:08:53 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Sat, 31 May 2008 16:08:53 -0600
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+Message-ID: <d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+
+After looking at font_face again I'm not quite sure how this would work in
+practice--what would the multi-face font_face return for:
+
+   family_name,
+   style_name,
+   glyph,
+   get_face?
+
+Open to suggestions but I think maybe just making the rendering multi-face
+aware (as my patch does) might be the way to go?
+
+
+Beau
+
+On Sat, May 31, 2008 at 3:13 AM, Martijn van Oosterhout <kleptog at gmail.com>
+wrote:
+
+> On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson <beau at beaugunderson.com>
+> wrote:
+> > I think the fix for this is to make get_string_info aware of the faces
+> used
+> > (i.e. have it do fallback as well) and then change the struct returned to
+> > include an array of spacing data for the different faces and update the
+> > consumers of that info struct to be able to loop through it for each
+> > character and space accordingly.
+>
+> Perhaps the idea is to make your font list with fallback look like a
+> font and export the same interface. That way the fallback is
+> abstracted into a single file, rather than everywhere where fonts are
+> used...
+>
+> Have a nice day,
+> --
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/8493f30f/attachment.html>
+
+From kleptog at gmail.com  Sun Jun  1 14:05:38 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sun, 1 Jun 2008 14:05:38 +0200
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+Message-ID: <2fc2c5f10806010505m7ff881adyb5d53dd2133837c3@mail.gmail.com>
+
+On Sun, Jun 1, 2008 at 12:08 AM, Beau Gunderson <beau at beaugunderson.com> wrote:
+> After looking at font_face again I'm not quite sure how this would work in
+> practice--what would the multi-face font_face return for:
+>
+>    family_name,
+>    style_name,
+>    glyph,
+>    get_face?
+
+At a guess, those values for te first font, since the rest are merely
+fallback. But when would those be called anyway.
+
+> Open to suggestions but I think maybe just making the rendering multi-face
+> aware (as my patch does) might be the way to go?
+
+Fine by me, I just thought it might be easier....
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From bbcaponi at pst.com.br  Fri Jun  6 22:34:03 2008
+From: bbcaponi at pst.com.br (Bruno B Caponi)
+Date: Fri, 6 Jun 2008 17:34:03 -0300
+Subject: [Mapnik-devel] TextSymbolizer attributes
+Message-ID: <OF348E8054.1AC97463-ON03257460.0070FB5A-03257460.0070FB5E@cps.pst.com.br>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080606/26754537/attachment.html>
+
+From mhanson at photon.com  Thu Jun 12 15:16:11 2008
+From: mhanson at photon.com (Matt Hanson)
+Date: Thu, 12 Jun 2008 09:16:11 -0400
+Subject: [Mapnik-devel] Raster styles
+Message-ID: <0719BE42F22E0A46857DF72644EC5D70691D32@pj-exchange.photon.com>
+
+Hello,
+
+I'm trying to figure out how raster styles work and how to set the RGB
+bands of an input raster.  Does anyone have any sort of example program
+or can you provide any sort of help at all?     I've posted to the user
+list which I assume you've all seen but with no answer.    The lack of
+mapnik documentation combined with the general lack of chatter in the
+community doesn't seem to bode well for Mapnik.  
+
+matt
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080612/813ad161/attachment.html>
+
+From mhanson at photon.com  Tue Jun 17 19:18:58 2008
+From: mhanson at photon.com (Matt Hanson)
+Date: Tue, 17 Jun 2008 13:18:58 -0400
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com>
+	<633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+Message-ID: <0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+
+I looked more into this.   Mapnik utilizes plugins for input which creates a problem because there's no direct interface to the GDAL plugin.  When you open a GDAL file in Mapnik it goes through each band and checks the GDALColorIntrep field for each RasterBand.  If it finds a band set to each of red/green/blue then you'll get an RGB band.  If even one is missing you'll get a grayscale image.   Note that if color info is not set the grayscale band used for rendering will always be the last band in the file.   It's during this time that the data is actually read in for these bands, so there's no hope for setting color bands in styles as at that point it's too late.   I also noted that the entire datafile is read in for the bands on open, the GDAL file handle is not kept around, simply read in and then ditched.   I don't think this is all that desirable because you are reading in the file at full resolution (what if you have a 10Kx10K raster?) and only downsized later during the rendering process.
+
+I think this is an inherent problem in Mapnik's design because it greatly reduces its flexibility and has introduced some serious limitations.   I'm not sure the plugin method is the best approach especially with the existence of the GDAL/OGR library there isn't a need for other plugins.   The plugin design should be replaced simply with a fixed dependency on GDAL/OGR.  After all GDAL fairly easily supports addition of custom formats so adding a format to GDAL would extend to Mapnik.
+
+I'd like to do this but it'd likely be a large job and difficult due to the general lack of documentation and comments.
+
+matt
+
+
+
+-----Original Message-----
+From: Matt Bartolome [mailto:mattxbart at gmail.com] 
+Sent: Monday, June 16, 2008 8:11 PM
+To: Matt Hanson
+Cc: mapnik-users at lists.berlios.de
+Subject: Re: [Mapnik-users] GDAL raster rendering
+
+I'm going to try using tiffcp (libtiff-tools in ubuntu) to flatten the
+geotiff and then manually set the extents.
+
+Hopefully someone can chime in and shed some light on the
+gdal/geotiff/rastersymbolizer stuff.
+
+-Matt
+
+On Mon, Jun 16, 2008 at 3:02 PM, Matt Hanson <mhanson at photon.com> wrote:
+> Hi Matt, great question!  I say that because I've asked the same thing a
+> couple times in the last week on both the user and dev lists (see my
+> post from this morning).
+>
+> As near as I can tell mapnik gets the RGB bands when it reads in the
+> image from the file itself, it's not set with the style.  I hope I'm
+> wrong though because it really should be adjustable.
+>
+> In your case I'm not sure\hy it's not setting them to the default RGB
+> bands that are in the file itself - I had thought that if there were
+> bands set in the file that's what it used but if it's not doing that
+> either...I'm not sure.
+>
+> I keep looking at the code trying to figure this out but nothing
+> yet....I'll post back here if I figure it out.  Good luck!
+>
+>
+>
+>
+> -----Original Message-----
+> From: mapnik-users-bounces at lists.berlios.de
+> [mailto:mapnik-users-bounces at lists.berlios.de] On Behalf Of Matt
+> Bartolome
+> Sent: Monday, June 16, 2008 5:49 PM
+> To: mapnik-users at lists.berlios.de
+> Subject: [Mapnik-users] GDAL raster rendering
+>
+> Hi,
+> I'm successfully rendering GeoTiffs using the GDAL datasource in gray
+> scale but would like to render them in color. gdalinfo outputs:
+>
+> Band 1 Block=12001x1 Type=Byte, ColorInterp=Gray
+>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>  Metadata:
+>    LAYER_TYPE=athematic
+> Band 2 Block=12001x1 Type=Byte, ColorInterp=Undefined
+>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>  Metadata:
+>    LAYER_TYPE=athematic
+> Band 3 Block=12001x1 Type=Byte, ColorInterp=Undefined
+>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>  Metadata:
+>    LAYER_TYPE=athematic
+>
+> All I've got in my style thus far is:
+>
+>  <Style name="raster">
+>    <Rule>
+>      <RasterSymbolizer>
+>      </RasterSymbolizer>
+>    </Rule>
+>  </Style>
+>
+> When viewing the geotiff in arcmap it sets Red, Green, Blue as
+> 120,123,100 automatically. Is that something read off the file that
+> gdal isn't seeing or is that something I set myself?
+>
+> Thanks,
+> Matt
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+From tom at compton.nu  Tue Jun 17 19:53:22 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Tue, 17 Jun 2008 18:53:22 +0100
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com>
+	<633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+Message-ID: <2619f7b04f.tom@loxley.compton.nu>
+
+In message <0719BE42F22E0A46857DF72644EC5D70691D76 at pj-exchange.photon.com>
+          "Matt Hanson" <mhanson at photon.com> wrote:
+
+> I looked more into this.   Mapnik utilizes plugins for input which creates
+> a problem because there's no direct interface to the GDAL plugin.  When you
+> open a GDAL file in Mapnik it goes through each band and checks the
+> GDALColorIntrep field for each RasterBand.  If it finds a band set to each
+> of red/green/blue then you'll get an RGB band.  If even one is missing
+> you'll get a grayscale image.   Note that if color info is not set the
+> grayscale band used for rendering will always be the last band in the file.
+> It's during this time that the data is actually read in for these bands, so
+> there's no hope for setting color bands in styles as at that point it's too
+> late.   I also noted that the entire datafile is read in for the bands on
+> open, the GDAL file handle is not kept around, simply read in and then
+> ditched.   I don't think this is all that desirable because you are reading
+> in the file at full resolution (what if you have a 10Kx10K raster?) and
+> only downsized later during the rendering process.
+
+I can't pretend to understand most of this because I don't know anything
+about GDAL but I don't see why the fact that a plugin is used should have
+any effect on anything.
+
+As far as repeated reopening of the file goes, the solution is probably
+just some sort of pool/cache in the plugin much as the postgis plugin
+does for database connections.
+
+> I think this is an inherent problem in Mapnik's design because it greatly
+> reduces its flexibility and has introduced some serious limitations.   I'm
+> not sure the plugin method is the best approach especially with the
+> existence of the GDAL/OGR library there isn't a need for other plugins.
+> The plugin design should be replaced simply with a fixed dependency on
+> GDAL/OGR.  After all GDAL fairly easily supports addition of custom formats
+> so adding a format to GDAL would extend to Mapnik.
+
+That would be a rather radical design change...
+
+> I'd like to do this but it'd likely be a large job and difficult due to the
+> general lack of documentation and comments.
+
+I would suggest that you would want to get Artem's agreement before
+starting on such a project - there doesn't seem to be much point if
+he has good reasons for the current architecture.
+
+For what it's worth it sounds to me like the real solution to your
+problem is an extension to the RasterSymbolizer to allow a colour
+to be specified to override that which comes from the source raster
+data. That's if I've understood the problem correctly.
+
+To be honest I think mapnik's real target is rendering of vector
+data, which may be why the support for raster data is quite limited.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From mhanson at photon.com  Tue Jun 17 20:44:49 2008
+From: mhanson at photon.com (Matt Hanson)
+Date: Tue, 17 Jun 2008 14:44:49 -0400
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <2619f7b04f.tom@loxley.compton.nu>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com>
+	<633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+	<2619f7b04f.tom@loxley.compton.nu>
+Message-ID: <0719BE42F22E0A46857DF72644EC5D70691D7A@pj-exchange.photon.com>
+
+Hi Tom,
+
+> From: Tom Hughes [mailto:tom at compton.nu]
+> I can't pretend to understand most of this because I don't know
+> anything about GDAL but I don't see why the fact that a plugin is used
+should
+> have any effect on anything.
+
+The problem is that the current plugin architecture doesn't allow the
+passing of arbitrary fields to the plugin itself.   So, in the case of
+GDAL you can't set what bands you want to extract for viewing from it.
+Imagine having a 2GB 128 band hyperspectral image.   Right now you'd
+have to create 128 single band files in order to allow Mapnik to render
+any possible band.  And that's just for grayscale images.  What if you
+want to set your RGB bands to 3 other arbitrary bands?
+
+So maybe the solution is just to allow arbitrary arguments to plugins,
+then the plugins themselves can handle plugin specific options.  In
+fact, that probably is the much better solution than my previously
+stated draconian approach of ditching plugins.
+
+> As far as repeated reopening of the file goes, the solution is
+probably
+> just some sort of pool/cache in the plugin much as the postgis plugin
+> does for database connections.
+
+Maybe, I'm not familiar with how the postgis plugin works.  If it
+maintains a connection and retrieves data as needed then that's exactly
+what is needed.  It looks more like the GDAL plugin was quickly put
+together just to get something able to read all of the GDAL supported
+formats.  It can probably use a bit of work.    I'll look at the postgis
+plugin.   I'm pretty new to Mapnik and don't have a full understanding
+of it so it's very likely I'm missing some really basic things, but
+that's why I'm posting here.
+
+
+> That would be a rather radical design change...
+> 
+> > I'd like to do this but it'd likely be a large job and difficult due
+> to the
+> > general lack of documentation and comments.
+> 
+> I would suggest that you would want to get Artem's agreement before
+> starting on such a project - there doesn't seem to be much point if
+> he has good reasons for the current architecture.
+
+
+I'd really like to hear Artem's views on it, or pointers on how to
+potentially work around the problem, but it's now been over 2 months
+since his last appearance on these lists. I've also emailed him
+independently.  He appears to have gone missing.
+
+
+> For what it's worth it sounds to me like the real solution to your
+> problem is an extension to the RasterSymbolizer to allow a colour
+> to be specified to override that which comes from the source raster
+> data. That's if I've understood the problem correctly.
+
+
+If only that would work, but I don't think it will because the styles
+are applied at too late of a stage - after all the data has been read in
+and thus after the color bands have been specified (and specified by the
+file itself rather than the user wanting to read it).
+
+
+> To be honest I think mapnik's real target is rendering of vector
+> data, which may be why the support for raster data is quite limited.
+
+
+I think you're right - the target also seems to be mostly python users.
+Unfortunately it's also the only C++ library to support vector on raster
+rendering that I've found.   Mapserver and Geoserver do it, but they
+don't have a stand alone developer library to use that functionality.
+
+
+
+From mhanson at photon.com  Tue Jun 17 21:42:56 2008
+From: mhanson at photon.com (Matt Hanson)
+Date: Tue, 17 Jun 2008 15:42:56 -0400
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <0719BE42F22E0A46857DF72644EC5D70691D7A@pj-exchange.photon.com>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com><0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com><633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com><0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com><2619f7b04f.tom@loxley.compton.nu>
+	<0719BE42F22E0A46857DF72644EC5D70691D7A@pj-exchange.photon.com>
+Message-ID: <0719BE42F22E0A46857DF72644EC5D70691D7B@pj-exchange.photon.com>
+
+Ok, I was wrong on several accounts, now in the light of day I'm seeing
+how the code works a lot better.   The problems still there, but it's a
+bit different then I originally thought.
+
+You can pass arbitrary parameters to an input plugin, with the
+parameters class.   So it's very easy to pass in the desired bands upon
+reading the file.
+
+But I was also wrong about when the data is read in - it's read in the
+featureset class which is when it is actually rendered.  But the
+featureset class doesn't have direct access to the datasource, only the
+actual GDALdataset pointer.  But since the GDAL file is opened as
+readonly you can't set the desired bands in the datasource class.
+
+So I need to figure out some way to pass from the datasource onto the
+featureset.   If anyone is familiar with the code enough to know how
+this might be accomplished...?    I'll keep looking, but if that can be
+figured out it's just replacing the rasterband loop in gdal_featureset
+with a few lines to explicitly set the red/green/blue bands.
+
+
+> -----Original Message-----
+> From: mapnik-devel-bounces at lists.berlios.de [mailto:mapnik-devel-
+> bounces at lists.berlios.de] On Behalf Of Matt Hanson
+> Sent: Tuesday, June 17, 2008 2:45 PM
+> To: mapnik-users at lists.berlios.de; mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+> 
+> Hi Tom,
+> 
+> > From: Tom Hughes [mailto:tom at compton.nu]
+> > I can't pretend to understand most of this because I don't know
+> > anything about GDAL but I don't see why the fact that a plugin is
+> used
+> should
+> > have any effect on anything.
+> 
+> The problem is that the current plugin architecture doesn't allow the
+> passing of arbitrary fields to the plugin itself.   So, in the case of
+> GDAL you can't set what bands you want to extract for viewing from it.
+> Imagine having a 2GB 128 band hyperspectral image.   Right now you'd
+> have to create 128 single band files in order to allow Mapnik to
+render
+> any possible band.  And that's just for grayscale images.  What if you
+> want to set your RGB bands to 3 other arbitrary bands?
+> 
+> So maybe the solution is just to allow arbitrary arguments to plugins,
+> then the plugins themselves can handle plugin specific options.  In
+> fact, that probably is the much better solution than my previously
+> stated draconian approach of ditching plugins.
+> 
+> > As far as repeated reopening of the file goes, the solution is
+> probably
+> > just some sort of pool/cache in the plugin much as the postgis
+plugin
+> > does for database connections.
+> 
+> Maybe, I'm not familiar with how the postgis plugin works.  If it
+> maintains a connection and retrieves data as needed then that's
+exactly
+> what is needed.  It looks more like the GDAL plugin was quickly put
+> together just to get something able to read all of the GDAL supported
+> formats.  It can probably use a bit of work.    I'll look at the
+> postgis
+> plugin.   I'm pretty new to Mapnik and don't have a full understanding
+> of it so it's very likely I'm missing some really basic things, but
+> that's why I'm posting here.
+> 
+> 
+> > That would be a rather radical design change...
+> >
+> > > I'd like to do this but it'd likely be a large job and difficult
+> due
+> > to the
+> > > general lack of documentation and comments.
+> >
+> > I would suggest that you would want to get Artem's agreement before
+> > starting on such a project - there doesn't seem to be much point if
+> > he has good reasons for the current architecture.
+> 
+> 
+> I'd really like to hear Artem's views on it, or pointers on how to
+> potentially work around the problem, but it's now been over 2 months
+> since his last appearance on these lists. I've also emailed him
+> independently.  He appears to have gone missing.
+> 
+> 
+> > For what it's worth it sounds to me like the real solution to your
+> > problem is an extension to the RasterSymbolizer to allow a colour
+> > to be specified to override that which comes from the source raster
+> > data. That's if I've understood the problem correctly.
+> 
+> 
+> If only that would work, but I don't think it will because the styles
+> are applied at too late of a stage - after all the data has been read
+> in
+> and thus after the color bands have been specified (and specified by
+> the
+> file itself rather than the user wanting to read it).
+> 
+> 
+> > To be honest I think mapnik's real target is rendering of vector
+> > data, which may be why the support for raster data is quite limited.
+> 
+> 
+> I think you're right - the target also seems to be mostly python
+users.
+> Unfortunately it's also the only C++ library to support vector on
+> raster
+> rendering that I've found.   Mapserver and Geoserver do it, but they
+> don't have a stand alone developer library to use that functionality.
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From mattxbart at gmail.com  Tue Jun 17 23:14:10 2008
+From: mattxbart at gmail.com (Matt Bartolome)
+Date: Tue, 17 Jun 2008 14:14:10 -0700
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com>
+	<633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+Message-ID: <633d34560806171414t6d17ecndca0f946c4e3a331@mail.gmail.com>
+
+Thanks for looking into this Matt!
+
+In my search I found this very helpful info for my situation:
+http://www.oryx.com/ams/landsat.html
+http://www.gdal.org/gdal_translate.html
+
+The translated tiff produces color for me in the mapnik rendering process:
+gdal_translate -of GTiff -co "TILED=YES"  mytiff.tif translated.tif
+
+On Tue, Jun 17, 2008 at 10:18 AM, Matt Hanson <mhanson at photon.com> wrote:
+> I looked more into this.   Mapnik utilizes plugins for input which creates a problem because there's no direct interface to the GDAL plugin.  When you open a GDAL file in Mapnik it goes through each band and checks the GDALColorIntrep field for each RasterBand.  If it finds a band set to each of red/green/blue then you'll get an RGB band.  If even one is missing you'll get a grayscale image.   Note that if color info is not set the grayscale band used for rendering will always be the last band in the file.   It's during this time that the data is actually read in for these bands, so there's no hope for setting color bands in styles as at that point it's too late.   I also noted that the entire datafile is read in for the bands on open, the GDAL file handle is not kept around, simply read in and then ditched.   I don't think this is all that desirable because you are reading in the file at full resolution (what if you have a 10Kx10K raster?) and only downsized later during the
+>  rendering process.
+>
+> I think this is an inherent problem in Mapnik's design because it greatly reduces its flexibility and has introduced some serious limitations.   I'm not sure the plugin method is the best approach especially with the existence of the GDAL/OGR library there isn't a need for other plugins.   The plugin design should be replaced simply with a fixed dependency on GDAL/OGR.  After all GDAL fairly easily supports addition of custom formats so adding a format to GDAL would extend to Mapnik.
+>
+> I'd like to do this but it'd likely be a large job and difficult due to the general lack of documentation and comments.
+>
+> matt
+>
+>
+>
+> -----Original Message-----
+> From: Matt Bartolome [mailto:mattxbart at gmail.com]
+> Sent: Monday, June 16, 2008 8:11 PM
+> To: Matt Hanson
+> Cc: mapnik-users at lists.berlios.de
+> Subject: Re: [Mapnik-users] GDAL raster rendering
+>
+> I'm going to try using tiffcp (libtiff-tools in ubuntu) to flatten the
+> geotiff and then manually set the extents.
+>
+> Hopefully someone can chime in and shed some light on the
+> gdal/geotiff/rastersymbolizer stuff.
+>
+> -Matt
+>
+> On Mon, Jun 16, 2008 at 3:02 PM, Matt Hanson <mhanson at photon.com> wrote:
+>> Hi Matt, great question!  I say that because I've asked the same thing a
+>> couple times in the last week on both the user and dev lists (see my
+>> post from this morning).
+>>
+>> As near as I can tell mapnik gets the RGB bands when it reads in the
+>> image from the file itself, it's not set with the style.  I hope I'm
+>> wrong though because it really should be adjustable.
+>>
+>> In your case I'm not sure\hy it's not setting them to the default RGB
+>> bands that are in the file itself - I had thought that if there were
+>> bands set in the file that's what it used but if it's not doing that
+>> either...I'm not sure.
+>>
+>> I keep looking at the code trying to figure this out but nothing
+>> yet....I'll post back here if I figure it out.  Good luck!
+>>
+>>
+>>
+>>
+>> -----Original Message-----
+>> From: mapnik-users-bounces at lists.berlios.de
+>> [mailto:mapnik-users-bounces at lists.berlios.de] On Behalf Of Matt
+>> Bartolome
+>> Sent: Monday, June 16, 2008 5:49 PM
+>> To: mapnik-users at lists.berlios.de
+>> Subject: [Mapnik-users] GDAL raster rendering
+>>
+>> Hi,
+>> I'm successfully rendering GeoTiffs using the GDAL datasource in gray
+>> scale but would like to render them in color. gdalinfo outputs:
+>>
+>> Band 1 Block=12001x1 Type=Byte, ColorInterp=Gray
+>>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>>  Metadata:
+>>    LAYER_TYPE=athematic
+>> Band 2 Block=12001x1 Type=Byte, ColorInterp=Undefined
+>>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>>  Metadata:
+>>    LAYER_TYPE=athematic
+>> Band 3 Block=12001x1 Type=Byte, ColorInterp=Undefined
+>>  Overviews: 3001x2001, 1501x1001, 751x501, 376x251, 188x126, 94x63
+>>  Metadata:
+>>    LAYER_TYPE=athematic
+>>
+>> All I've got in my style thus far is:
+>>
+>>  <Style name="raster">
+>>    <Rule>
+>>      <RasterSymbolizer>
+>>      </RasterSymbolizer>
+>>    </Rule>
+>>  </Style>
+>>
+>> When viewing the geotiff in arcmap it sets Red, Green, Blue as
+>> 120,123,100 automatically. Is that something read off the file that
+>> gdal isn't seeing or is that something I set myself?
+>>
+>> Thanks,
+>> Matt
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From tom at compton.nu  Wed Jun 18 01:15:30 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 18 Jun 2008 00:15:30 +0100
+Subject: [Mapnik-devel] [Mapnik-users] GDAL raster rendering
+In-Reply-To: <0719BE42F22E0A46857DF72644EC5D70691D7B@pj-exchange.photon.com>
+References: <633d34560806161449h71363d79m7d081b8c1b61d35d@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D70@pj-exchange.photon.com>
+	<633d34560806161710h37173f79nfaebaaa459dd50f1@mail.gmail.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D76@pj-exchange.photon.com>
+	<2619f7b04f.tom@loxley.compton.nu>
+	<0719BE42F22E0A46857DF72644EC5D70691D7A@pj-exchange.photon.com>
+	<0719BE42F22E0A46857DF72644EC5D70691D7B@pj-exchange.photon.com>
+Message-ID: <d82f70760806171615h318c2d3es8281cb5a164d62dd@mail.gmail.com>
+
+2008/6/17 Matt Hanson <mhanson at photon.com>:
+
+> But I was also wrong about when the data is read in - it's read in the
+> featureset class which is when it is actually rendered.  But the
+> featureset class doesn't have direct access to the datasource, only the
+> actual GDALdataset pointer.  But since the GDAL file is opened as
+> readonly you can't set the desired bands in the datasource class.
+>
+> So I need to figure out some way to pass from the datasource onto the
+> featureset.   If anyone is familiar with the code enough to know how
+> this might be accomplished...?    I'll keep looking, but if that can be
+> figured out it's just replacing the rasterband loop in gdal_featureset
+> with a few lines to explicitly set the red/green/blue bands.
+
+The featureset pointer returned by the features() method of the
+datasource is a pointer to a gdal_featureset object which, as you say,
+just contains the raw GDAL pointer.
+
+The gdal_featureset object is part of the GDL plugin though so you can
+always extend it to store extra information from the datasource (or
+even just a pointer to the datasource it came from).
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From artem at mapnik.org  Sun Jun 29 12:34:58 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 29 Jun 2008 11:34:58 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+Message-ID: <2CC0BD96-C047-43EB-840C-76621A7CF64E@mapnik.org>
+
+Hi Beau,
+
+Thanks for your contribution. I haven't tested it yet, but I will asap  
+and let you know. I guess OSM would be the best place to try it.
+
+Anyone has an idea about font names sequence to catch all  
+international names ?
+
+  Cheers
+Artem
+On 31 May 2008, at 23:08, Beau Gunderson wrote:
+
+> After looking at font_face again I'm not quite sure how this would  
+> work in practice--what would the multi-face font_face return for:
+>
+>    family_name,
+>    style_name,
+>    glyph,
+>    get_face?
+>
+> Open to suggestions but I think maybe just making the rendering  
+> multi-face aware (as my patch does) might be the way to go?
+>
+>
+> Beau
+>
+> On Sat, May 31, 2008 at 3:13 AM, Martijn van Oosterhout <kleptog at gmail.com 
+> > wrote:
+> On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson <beau at beaugunderson.com 
+> > wrote:
+> > I think the fix for this is to make get_string_info aware of the  
+> faces used
+> > (i.e. have it do fallback as well) and then change the struct  
+> returned to
+> > include an array of spacing data for the different faces and  
+> update the
+> > consumers of that info struct to be able to loop through it for each
+> > character and space accordingly.
+>
+> Perhaps the idea is to make your font list with fallback look like a
+> font and export the same interface. That way the fallback is
+> abstracted into a single file, rather than everywhere where fonts are
+> used...
+>
+> Have a nice day,
+> --
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080629/acc48e53/attachment.html>
+
+From artem at mapnik.org  Sun Jun 29 13:00:52 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 29 Jun 2008 12:00:52 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<4649bea54f.tom@loxley.compton.nu>
+	<d6cb3ab10805261644m59f8d8ddmea25424a444849a2@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+Message-ID: <FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+
+Hi Beau,
+
+I just applied your patch. I haven't tested it yet.
+Cheers
+Artem
+
+On 31 May 2008, at 23:08, Beau Gunderson wrote:
+
+> After looking at font_face again I'm not quite sure how this would  
+> work in practice--what would the multi-face font_face return for:
+>
+>    family_name,
+>    style_name,
+>    glyph,
+>    get_face?
+>
+> Open to suggestions but I think maybe just making the rendering  
+> multi-face aware (as my patch does) might be the way to go?
+>
+>
+> Beau
+>
+> On Sat, May 31, 2008 at 3:13 AM, Martijn van Oosterhout <kleptog at gmail.com 
+> > wrote:
+> On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson <beau at beaugunderson.com 
+> > wrote:
+> > I think the fix for this is to make get_string_info aware of the  
+> faces used
+> > (i.e. have it do fallback as well) and then change the struct  
+> returned to
+> > include an array of spacing data for the different faces and  
+> update the
+> > consumers of that info struct to be able to loop through it for each
+> > character and space accordingly.
+>
+> Perhaps the idea is to make your font list with fallback look like a
+> font and export the same interface. That way the fallback is
+> abstracted into a single file, rather than everywhere where fonts are
+> used...
+>
+> Have a nice day,
+> --
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080629/fe9a03fc/attachment.html>
+

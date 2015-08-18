@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Steve%20Chilton%27s%20presentation%20from%0A%20Day%201%20of%20Mapnik%20code%20sprint&In-Reply-To=%3C4C9E48E8.4040800%40xs4all.nl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001269.html">
+   <LINK REL="Next"  HREF="001273.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint</H1>
+    <B>Lennard</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Steve%20Chilton%27s%20presentation%20from%0A%20Day%201%20of%20Mapnik%20code%20sprint&In-Reply-To=%3C4C9E48E8.4040800%40xs4all.nl%3E"
+       TITLE="[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint">ldp at xs4all.nl
+       </A><BR>
+    <I>Sat Sep 25 21:09:28 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001269.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+        <LI>Next message: <A HREF="001273.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1270">[ date ]</a>
+              <a href="thread.html#1270">[ thread ]</a>
+              <a href="subject.html#1270">[ subject ]</a>
+              <a href="author.html#1270">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 25-9-2010 20:49, Michal Migurski wrote:
+
+&gt;<i> 1) layer tag: I usually solve this issue in pgsql queries, which I've been happy with. I think that the layer tag should influence the order in which geometries are fed to mapnik, and that mapnik should continue to be agnostic as to the source of the data it's seeing.
+</I>
+When you source all your road/railway/waterway data through a single 
+Layer, that approach works just fine. It's when it's split up among two 
+dozen Layers with even more Styles, where this breaks down. Just witness 
+the multitude of layering issues in OSM's trac.
+
+&gt;<i> 4) point-in-polygon: heavens yes, also repeating labels for very large polygons with spacing awareness
+</I>
+Just a few days ago, we saw an osm2pgsql patch to include a 
+ST_PointOnSurface geom column. That's handling it at the data source, 
+but mapnik should also be able to calculate this, given a polygon feature.
+
+Repeating labels, yes please from me as well.
+
+&gt;<i> 7) variable width: not sure I understand this one
+</I>
+Visualising the OSM width=* tag, for canals for instance.
+
+&gt;<i> 9) spread text labels: isn't this in already?
+</I>
+You can introduce spacing in texts, but not variable spacing depending 
+on the size of the feature they apply to.
+
+&gt;<i> 12) nudge icon: different from dx/dy?
+</I>
+Yes: dependent on the placement list. When a symbol won't fit due to 
+previous symbols overlapping where it wants to go, nudge it a bit to try 
+and make it fit.
+
+&gt;<i> 13) mountain ranges on hint line: this seems out of scope for mapnik, to me
+</I>&gt;<i> 14) collapse areas: more of a data question, isn't it?
+</I>
+I agree. These are a case for data preprocessing.
+
+&gt;<i> 16) point and line data: I don't think I understand this one
+</I>
+It has to do with the fact that there is no coupling between rendered 
+features. The example used in earlier presentations was of the grey 
+turning circles we used to have. The challenge in solving that was to 
+find out from a point (highway=turning_circle) what style it had to 
+take, depending on the line that point was on. If the turning circle was 
+on an unclassified road, it had to render to fit on that road, and the 
+same for tertiary, service, living_street. I took the approach of using 
+postgis to find out the relevant information.
+
+&gt;<i> 17) icon/text coupling: absolutely, yes
+</I>
+ShieldSymbolizer with text displacement. However, in osm.xml, we're 
+first rendering every symbols, and only later in the painter's algorithm 
+the texts to go with those symbols.
+
+If we'd render symbol+text in a single Rule, a lot more symbols would be 
+dropped from the map.
+
+-- 
+Lennard
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001269.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+	<LI>Next message: <A HREF="001273.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from	Day 1 of Mapnik code sprint
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1270">[ date ]</a>
+              <a href="thread.html#1270">[ thread ]</a>
+              <a href="subject.html#1270">[ subject ]</a>
+              <a href="author.html#1270">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Suggestion &amp; patch for debug output
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Suggestion%20%26%20patch%20for%20debug%20output&In-Reply-To=%3CFFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000407.html">
+   <LINK REL="Next"  HREF="000417.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Suggestion &amp; patch for debug output</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Suggestion%20%26%20patch%20for%20debug%20output&In-Reply-To=%3CFFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Suggestion &amp; patch for debug output">artem at mapnik.org
+       </A><BR>
+    <I>Fri Jan 11 11:10:50 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000407.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+        <LI>Next message: <A HREF="000417.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#413">[ date ]</a>
+              <a href="thread.html#413">[ thread ]</a>
+              <a href="subject.html#413">[ subject ]</a>
+              <a href="author.html#413">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 10 Jan 2008, at 22:13, David Leaver wrote:
+
+&gt;<i> Ha, I ran into the same error today!
+</I>&gt;<i>
+</I>&gt;<i> Patch to wrap with MAPNIK_DEBUG and output to std:clog attached.
+</I>&gt;<i>
+</I>&gt;<i> Could someone with svn write access check it in please :-)
+</I>
+This std::cout wasn't intended to be there.. but then why not :)
+Applied in r588
+A.
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dave.
+</I>&gt;<i>
+</I>&gt;<i> Robert Coup wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 10/01/2008, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt; wrote:
+</I>&gt;&gt;<i> I was trying to get Mapnik to work with TileCache 2.01 as a CGI  
+</I>&gt;&gt;<i> and it kept erroring out because of the debug output. It was being  
+</I>&gt;&gt;<i> interpreted as headers (size=2 specifically was causing the error).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It would be nice if instead of a compile-time option the debug  
+</I>&gt;&gt;<i> output could be specified by an environment variable (or some  
+</I>&gt;&gt;<i> other method, like a function call).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> And it should really be using std::cerr rather than std::cout...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Rob :)
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Index: src/datasource_cache.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/datasource_cache.cpp	(revision 587)
+</I>&gt;<i> +++ src/datasource_cache.cpp	(working copy)
+</I>&gt;<i> @@ -92,12 +92,14 @@
+</I>&gt;<i>             throw std::runtime_error(string(&quot;Cannot load symbols: &quot;) +
+</I>&gt;<i>                     lt_dlerror());
+</I>&gt;<i>         }
+</I>&gt;<i> -       std::cout &lt;&lt; &quot;size = &quot; &lt;&lt; params.size() &lt;&lt; &quot;\n&quot;;
+</I>&gt;<i> +#ifdef MAPNIK_DEBUG
+</I>&gt;<i> +       std::clog &lt;&lt; &quot;size = &quot; &lt;&lt; params.size() &lt;&lt; &quot;\n&quot;;
+</I>&gt;<i>         parameters::const_iterator i = params.begin();
+</I>&gt;<i>         for (;i!=params.end();++i)
+</I>&gt;<i>         {
+</I>&gt;<i> -          std::cout &lt;&lt; i-&gt;first &lt;&lt; &quot;=&quot; &lt;&lt; i-&gt;second &lt;&lt; &quot;\n&quot;;
+</I>&gt;<i> +          std::clog &lt;&lt; i-&gt;first &lt;&lt; &quot;=&quot; &lt;&lt; i-&gt;second &lt;&lt; &quot;\n&quot;;
+</I>&gt;<i>         }
+</I>&gt;<i> +#endif
+</I>&gt;<i>         ds=datasource_ptr(create_datasource(params),  
+</I>&gt;<i> datasource_deleter());
+</I>&gt;<i>
+</I>&gt;<i>  #ifdef MAPNIK_DEBUG
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/5bd18b18/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/5bd18b18/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000407.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+	<LI>Next message: <A HREF="000417.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#413">[ date ]</a>
+              <a href="thread.html#413">[ thread ]</a>
+              <a href="subject.html#413">[ subject ]</a>
+              <a href="author.html#413">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,2805 @@
+From nick at hogweed.org  Sat Mar  1 12:53:23 2008
+From: nick at hogweed.org (Nick Whitelegg)
+Date: Sat, 1 Mar 2008 11:53:23 +0000
+Subject: [Mapnik-devel] OSM plugin
+In-Reply-To: <F491419B-AD60-4539-A4B0-AE7638363D3B@gmail.com>
+References: <200802282057.55738.nick@hogweed.org>
+	<F491419B-AD60-4539-A4B0-AE7638363D3B@gmail.com>
+Message-ID: <200803011153.23709.nick@hogweed.org>
+
+
+
+Hello Artem (and everyone),
+
+The OSM plugin is now in SVN. It successfully renders various types of OSM way 
+(motorway, primary, tertiary, footway, bridleway) in a test .osm file. Note I 
+haven't tested images or text rendering yet.
+
+The libxml2 problem remains unresolved at present, so it's using expat 2.0.1 
+to parse the OSM XML. You can control the parser through the Mapnik XML file; 
+use the "parser" attribute (see test.xml) for an example. Allowed values are 
+libxml2 or expat.
+
+The test data and programs are there as well. The makefiles are a bit messy at 
+present.
+
+Nick
+
+
+From nick at hogweed.org  Sun Mar  2 14:26:51 2008
+From: nick at hogweed.org (Nick Whitelegg)
+Date: Sun, 2 Mar 2008 13:26:51 +0000
+Subject: [Mapnik-devel] OSM plugin update - now using libxml2
+Message-ID: <200803021326.51542.nick@hogweed.org>
+
+
+Just committed an update to the OSM plugin. It's now using libxml2, not expat. 
+I still couldn't get the SAX parser to work without crashing but then found 
+that the recommended SAX-like interface to libxml2 is the XMLTextReader 
+interface anyhow, which osm2pgsql also uses, so switched to using that.
+
+Nick
+
+
+From artem at mapnik.org  Sun Mar  9 11:14:18 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 9 Mar 2008 10:14:18 +0000
+Subject: [Mapnik-devel] OSM plugin update - now using libxml2
+In-Reply-To: <200803021326.51542.nick@hogweed.org>
+References: <200803021326.51542.nick@hogweed.org>
+Message-ID: <353A1883-3460-43C6-978D-D97699622656@mapnik.org>
+
+
+On 2 Mar 2008, at 13:26, Nick Whitelegg wrote:
+
+>
+> Just committed an update to the OSM plugin. It's now using libxml2,  
+> not expat.
+> I still couldn't get the SAX parser to work without crashing but  
+> then found
+> that the recommended SAX-like interface to libxml2 is the  
+> XMLTextReader
+> interface anyhow, which osm2pgsql also uses, so switched to using  
+> that.
+
+
+I had a chance to build and run osm plug-in.  Great!
+
+I'm yet to look properly at implementation details, but I have some  
+ideas on how to improve performance. I'll get back  on this.
+
+Thanks again, Nick!
+
+Artem
+
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From snecklifter at gmail.com  Sun Mar  9 18:40:26 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Sun, 9 Mar 2008 17:40:26 +0000
+Subject: [Mapnik-devel] [PATCH]: Build for PPC64
+Message-ID: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+
+Hi,
+
+I've packaged your rather nice software for Fedora. The following
+patch helps it build under the ppc64 primary arch.
+
+--- SConstruct.orig     2008-03-09 17:04:07.000000000 +0000
++++ SConstruct  2008-03-09 17:06:30.000000000 +0000
+@@ -24,6 +24,8 @@
+
+ if platform.uname()[4] == 'x86_64':
+     LIBDIR_SCHEMA='lib64'
++elif platform.uname()[4] == 'ppc64':
++    LIBDIR_SCHEMA='lib64'
+ else:
+     LIBDIR_SCHEMA='lib'
+
+
+Cheers
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From tom at compton.nu  Sun Mar  9 19:09:24 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sun, 09 Mar 2008 18:09:24 GMT
+Subject: [Mapnik-devel] [PATCH]: Build for PPC64
+In-Reply-To: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+Message-ID: <25f9787d4f.tom@loxley.compton.nu>
+
+In message <364d303b0803091040k12b5283fxdd34aea8fabcc655 at mail.gmail.com>
+          "Christopher Brown" <snecklifter at gmail.com> wrote:
+
+> I've packaged your rather nice software for Fedora. The following
+> patch helps it build under the ppc64 primary arch.
+
+I assume you realise that Keith Sharp has been working on getting mapnik
+into Fedora and has an active submission review ongoing?
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From snecklifter at gmail.com  Sun Mar  9 19:14:49 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Sun, 9 Mar 2008 18:14:49 +0000
+Subject: [Mapnik-devel] [PATCH]: Build for PPC64
+In-Reply-To: <25f9787d4f.tom@loxley.compton.nu>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+Message-ID: <364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+
+On 09/03/2008, Tom Hughes <tom at compton.nu> wrote:
+> In message <364d303b0803091040k12b5283fxdd34aea8fabcc655 at mail.gmail.com>
+>
+>           "Christopher Brown" <snecklifter at gmail.com> wrote:
+>
+>  > I've packaged your rather nice software for Fedora. The following
+>  > patch helps it build under the ppc64 primary arch.
+>
+>
+> I assume you realise that Keith Sharp has been working on getting mapnik
+>  into Fedora and has an active submission review ongoing?
+
+That'll teach me. No I didn't realise that. Kieth appears to be trying
+to get 0.4 submitted - will add comments to that bug and see what
+happens. Thanks Tom.
+
+Cheers
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From tom at compton.nu  Sun Mar  9 20:08:10 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sun, 09 Mar 2008 19:08:10 GMT
+Subject: [Mapnik-devel] [PATCH]: Build for PPC64
+In-Reply-To: <364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu> 
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+Message-ID: <4d5a7e7d4f.tom@loxley.compton.nu>
+
+In message <364d303b0803091114u52a72a10h1f0df8c3406c79cd at mail.gmail.com>
+          "Christopher Brown" <snecklifter at gmail.com> wrote:
+
+> On 09/03/2008, Tom Hughes <tom at compton.nu> wrote:
+> > In message <364d303b0803091040k12b5283fxdd34aea8fabcc655 at mail.gmail.com>
+> >
+> >           "Christopher Brown" <snecklifter at gmail.com> wrote:
+> >
+> >  > I've packaged your rather nice software for Fedora. The following
+> >  > patch helps it build under the ppc64 primary arch.
+> >
+> >
+> > I assume you realise that Keith Sharp has been working on getting mapnik
+> >  into Fedora and has an active submission review ongoing?
+> 
+> That'll teach me. No I didn't realise that. Kieth appears to be trying
+> to get 0.4 submitted - will add comments to that bug and see what
+> happens. Thanks Tom.
+
+Well actually he was waiting for 0.5 to get the SONAME support that
+he needed to pass review. I don't think he's had time to update it
+since 0.5 came out though.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Wed Mar 12 06:55:32 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 11 Mar 2008 22:55:32 -0700
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <4d5a7e7d4f.tom@loxley.compton.nu>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+Message-ID: <CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+
+Just noticed the SVN additions for the python bindings to cairo.
+
+So, to test I installed py-cairo with boost on 10.5 and when  
+rebuilding mapnik from svn revision 666 I get these undefined symbols:
+
+...
+
+Undefined symbols:
+   "Cairo::Surface::Surface(_cairo_surface*, bool)", referenced from:
+       render3(mapnik::Map const&, PycairoSurface*, unsigned int,  
+unsigned int)in mapnik_python.os
+       render4(mapnik::Map const&, PycairoSurface*)in mapnik_python.os
+ld: symbol(s) not found
+collect2: ld returned 1 exit status
+scons: *** [bindings/python/_mapnik.so] Error 1
+scons: building terminated because of errors.
+
+....
+
+Cheers,
+Dane
+
+
+
+
+From tom at compton.nu  Wed Mar 12 09:34:44 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 12 Mar 2008 08:34:44 +0000
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net> (Dane
+	Springmeyer's message of "Tue\, 11 Mar 2008 22\:55\:32 -0700")
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+Message-ID: <yekhcfcbasb.fsf@dellow.uk.cyberscience.com>
+
+In message <CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05 at hailmail.net>
+        Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Just noticed the SVN additions for the python bindings to cairo.
+>
+> So, to test I installed py-cairo with boost on 10.5 and when  
+> rebuilding mapnik from svn revision 666 I get these undefined symbols:
+>
+> ...
+>
+> Undefined symbols:
+>    "Cairo::Surface::Surface(_cairo_surface*, bool)", referenced from:
+>        render3(mapnik::Map const&, PycairoSurface*, unsigned int,  
+> unsigned int)in mapnik_python.os
+>        render4(mapnik::Map const&, PycairoSurface*)in mapnik_python.os
+> ld: symbol(s) not found
+> collect2: ld returned 1 exit status
+> scons: *** [bindings/python/_mapnik.so] Error 1
+> scons: building terminated because of errors.
+
+Sounds like you haven't got cairomm and/or cairomm-devel installed
+although I don't understand how the main library builds in that case.
+
+What's the actual link command it used?
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From artem at mapnik.org  Wed Mar 12 18:21:49 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Mar 2008 17:21:49 +0000
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+Message-ID: <450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+
+Hi Dane,
+
+On 12 Mar 2008, at 05:55, Dane Springmeyer wrote:
+
+> Just noticed the SVN additions for the python bindings to cairo.
+>
+> So, to test I installed py-cairo with boost on 10.5 and when
+> rebuilding mapnik from svn revision 666 I get these undefined symbols:
+>
+> ...
+>
+> Undefined symbols:
+>    "Cairo::Surface::Surface(_cairo_surface*, bool)", referenced from:
+>        render3(mapnik::Map const&, PycairoSurface*, unsigned int,
+> unsigned int)in mapnik_python.os
+>        render4(mapnik::Map const&, PycairoSurface*)in mapnik_python.os
+> ld: symbol(s) not found
+> collect2: ld returned 1 exit status
+> scons: *** [bindings/python/_mapnik.so] Error 1
+> scons: building terminated because of errors.
+
+Have you got cairomm-1.0 (c++ wrappers) installed, too?
+
+Works for me on 10.4. I compiled cairo/cairomm-1.0 from source trunk.
+>
+> ....
+>
+> Cheers,
+> Dane
+>
+Artem
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From blake at hailmail.net  Wed Mar 12 18:24:35 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 12 Mar 2008 10:24:35 -0700
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+	<450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+Message-ID: <0FAAE6C5-18D0-4D5F-82FE-66A3D288662C@hailmail.net>
+
+Thanks Tom and Artem,
+
+I'll check with the boost folks about the c++ wrappers. I'm not sure,  
+but that sounds like a likely culprit.
+
+Thanks,
+
+Dane
+
+On Mar 12, 2008, at 10:21 AM, Artem Pavlenko wrote:
+
+> Hi Dane,
+>
+> On 12 Mar 2008, at 05:55, Dane Springmeyer wrote:
+>
+>> Just noticed the SVN additions for the python bindings to cairo.
+>>
+>> So, to test I installed py-cairo with boost on 10.5 and when
+>> rebuilding mapnik from svn revision 666 I get these undefined  
+>> symbols:
+>>
+>> ...
+>>
+>> Undefined symbols:
+>>   "Cairo::Surface::Surface(_cairo_surface*, bool)", referenced from:
+>>       render3(mapnik::Map const&, PycairoSurface*, unsigned int,
+>> unsigned int)in mapnik_python.os
+>>       render4(mapnik::Map const&, PycairoSurface*)in mapnik_python.os
+>> ld: symbol(s) not found
+>> collect2: ld returned 1 exit status
+>> scons: *** [bindings/python/_mapnik.so] Error 1
+>> scons: building terminated because of errors.
+>
+> Have you got cairomm-1.0 (c++ wrappers) installed, too?
+>
+> Works for me on 10.4. I compiled cairo/cairomm-1.0 from source trunk.
+>>
+>> ....
+>>
+>> Cheers,
+>> Dane
+>>
+> Artem
+>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+
+
+
+From blake at hailmail.net  Wed Mar 12 18:36:06 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 12 Mar 2008 10:36:06 -0700
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <0FAAE6C5-18D0-4D5F-82FE-66A3D288662C@hailmail.net>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+	<450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+	<0FAAE6C5-18D0-4D5F-82FE-66A3D288662C@hailmail.net>
+Message-ID: <265D1811-74B0-4F43-8B97-1D694B45C8B5@hailmail.net>
+
+Actually, Artem I have cairomm installed from boost, which should be  
+the c++ wrappers.
+
+I am going to install from source now and see if that fixes the problem.
+
+Dane
+
+
+On Mar 12, 2008, at 10:24 AM, Dane Springmeyer wrote:
+
+> Thanks Tom and Artem,
+>
+> I'll check with the boost folks about the c++ wrappers. I'm not sure,
+> but that sounds like a likely culprit.
+>
+> Thanks,
+>
+> Dane
+>
+> On Mar 12, 2008, at 10:21 AM, Artem Pavlenko wrote:
+>
+>> Hi Dane,
+>>
+>> On 12 Mar 2008, at 05:55, Dane Springmeyer wrote:
+>>
+>>> Just noticed the SVN additions for the python bindings to cairo.
+>>>
+>>> So, to test I installed py-cairo with boost on 10.5 and when
+>>> rebuilding mapnik from svn revision 666 I get these undefined
+>>> symbols:
+>>>
+>>> ...
+>>>
+>>> Undefined symbols:
+>>>  "Cairo::Surface::Surface(_cairo_surface*, bool)", referenced from:
+>>>      render3(mapnik::Map const&, PycairoSurface*, unsigned int,
+>>> unsigned int)in mapnik_python.os
+>>>      render4(mapnik::Map const&, PycairoSurface*)in mapnik_python.os
+>>> ld: symbol(s) not found
+>>> collect2: ld returned 1 exit status
+>>> scons: *** [bindings/python/_mapnik.so] Error 1
+>>> scons: building terminated because of errors.
+>>
+>> Have you got cairomm-1.0 (c++ wrappers) installed, too?
+>>
+>> Works for me on 10.4. I compiled cairo/cairomm-1.0 from source trunk.
+>>>
+>>> ....
+>>>
+>>> Cheers,
+>>> Dane
+>>>
+>> Artem
+>>
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From tom at compton.nu  Wed Mar 12 18:49:25 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 12 Mar 2008 17:49:25 GMT
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <265D1811-74B0-4F43-8B97-1D694B45C8B5@hailmail.net>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu> 
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net> 
+	<450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+	<0FAAE6C5-18D0-4D5F-82FE-66A3D288662C@hailmail.net> 
+	<265D1811-74B0-4F43-8B97-1D694B45C8B5@hailmail.net>
+Message-ID: <88a6027f4f.tom@loxley.compton.nu>
+
+In message <265D1811-74B0-4F43-8B97-1D694B45C8B5 at hailmail.net>
+          Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Actually, Artem I have cairomm installed from boost, which should be
+> the c++ wrappers.
+
+Boost is nothing to do with cairomm (or even pycairo).
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Wed Mar 12 18:54:41 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 12 Mar 2008 10:54:41 -0700
+Subject: [Mapnik-devel] Undefined symbols  / pycairo
+In-Reply-To: <88a6027f4f.tom@loxley.compton.nu>
+References: <364d303b0803091040k12b5283fxdd34aea8fabcc655@mail.gmail.com>
+	<25f9787d4f.tom@loxley.compton.nu>
+	<364d303b0803091114u52a72a10h1f0df8c3406c79cd@mail.gmail.com>
+	<4d5a7e7d4f.tom@loxley.compton.nu>
+	<CF7AD335-A8D0-4CE3-86E4-C8A7B5734B05@hailmail.net>
+	<450724F5-AB50-4917-8C1E-D2B8EFF53D9B@mapnik.org>
+	<0FAAE6C5-18D0-4D5F-82FE-66A3D288662C@hailmail.net>
+	<265D1811-74B0-4F43-8B97-1D694B45C8B5@hailmail.net>
+	<88a6027f4f.tom@loxley.compton.nu>
+Message-ID: <B7DBE911-CC64-4EAE-8238-0CC09F39C2DE@hailmail.net>
+
+Hi Tom,
+
+Sorry I meant macports (not boost). I'm currently working on  
+installing the dependencies for cairo... I'll check back in if I  
+succeed.
+
+Dane
+
+
+On Mar 12, 2008, at 10:49 AM, Tom Hughes wrote:
+
+> In message <265D1811-74B0-4F43-8B97-1D694B45C8B5 at hailmail.net>
+>          Dane Springmeyer <blake at hailmail.net> wrote:
+>
+>> Actually, Artem I have cairomm installed from boost, which should be
+>> the c++ wrappers.
+>
+> Boost is nothing to do with cairomm (or even pycairo).
+>
+> Tom
+>
+> -- 
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From nick at hogweed.org  Thu Mar 13 00:45:11 2008
+From: nick at hogweed.org (Nick Whitelegg)
+Date: Wed, 12 Mar 2008 23:45:11 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+Message-ID: <200803122345.11584.nick@hogweed.org>
+
+
+Hello Artem, (and all)
+
+Got the Mapnik viewer running tonight with the OSM plugin. After playing 
+around with it here are some enhancement ideas (aside from the ability to 
+change styles through the GUI) - if these fit in with your plans I'll start 
+working on them:
+
+- when an OSM layer (or indeed any other data layer) is loaded, set the bounds 
+of the visible map to be the bounds of the data just loaded;
+
+- show current coordinates on-screen;
+
+- show high level OSM data types (e.g. "footpath", "pub") and allow the user 
+to change their styles without knowing the details of the tagging scheme;
+
+- Interactive OSM browser mode, where the viewer will download and then cache 
+live data from OSM by tile. 
+
+- Export to PDF, etc, for printing.
+
+Does this sound good?
+
+Nick
+
+
+From ben.moores at onetrackmind.co.nz  Thu Mar 13 04:51:48 2008
+From: ben.moores at onetrackmind.co.nz (Ben Moores)
+Date: Thu, 13 Mar 2008 16:51:48 +1300
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <200803122345.11584.nick@hogweed.org>
+References: <200803122345.11584.nick@hogweed.org>
+Message-ID: <47D8A4D4.9010909@onetrackmind.co.nz>
+
+Hi, I've been doing some work adding PDF output to mapnik. It's still a 
+work in progress, around 90% done and was going to be released when 
+finished.
+
+- I've used a patched wxPdfDoc for the pdf rendering.
+- Most symbolizers are implemented.
+- Tried to make it as a separate library to mapnik, but had to subclass 
+some of the symbolizers. Mostly this was adding output sizes to images, 
+since pixels don't correspond to page measurements.
+- Implemented PDF layers, so you can turn things on and off.
+
+I've uploaded a test file using the example data set:
+http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html
+
+Please ignore the funky colours and overlays, that was just for testing 
+to make sure everything was lining up right.
+
+Let me know if you're interested in this in its unfinished state.
+
+
+Ben
+
+
+
+Nick Whitelegg wrote:
+> Hello Artem, (and all)
+> 
+> Got the Mapnik viewer running tonight with the OSM plugin. After playing 
+> around with it here are some enhancement ideas (aside from the ability to 
+> change styles through the GUI) - if these fit in with your plans I'll start 
+> working on them:
+> 
+> - when an OSM layer (or indeed any other data layer) is loaded, set the bounds 
+> of the visible map to be the bounds of the data just loaded;
+> 
+> - show current coordinates on-screen;
+> 
+> - show high level OSM data types (e.g. "footpath", "pub") and allow the user 
+> to change their styles without knowing the details of the tagging scheme;
+> 
+> - Interactive OSM browser mode, where the viewer will download and then cache 
+> live data from OSM by tile. 
+> 
+> - Export to PDF, etc, for printing.
+> 
+> Does this sound good?
+> 
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+
+From dave at smartrak.co.nz  Thu Mar 13 04:56:37 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 13 Mar 2008 16:56:37 +1300
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <47D8A4D4.9010909@onetrackmind.co.nz>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+Message-ID: <47D8A5F5.2000509@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080313/ed88bd33/attachment.html>
+
+From tom at compton.nu  Thu Mar 13 09:45:50 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 13 Mar 2008 08:45:50 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <47D8A4D4.9010909@onetrackmind.co.nz> (Ben Moores's message of
+	"Thu\, 13 Mar 2008 16\:51\:48 +1300")
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+Message-ID: <yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+
+In message <47D8A4D4.9010909 at onetrackmind.co.nz>
+        Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+
+> Hi, I've been doing some work adding PDF output to mapnik. It's still a 
+> work in progress, around 90% done and was going to be released when 
+> finished.
+
+You do know that I committed support for PDF rendering using cairo
+a few weeks ago I assume?
+
+> - I've used a patched wxPdfDoc for the pdf rendering.
+> - Most symbolizers are implemented.
+
+I'm guessing not LinePatternSymbolizer ;-)
+
+> - Tried to make it as a separate library to mapnik, but had to subclass 
+> some of the symbolizers. Mostly this was adding output sizes to images, 
+> since pixels don't correspond to page measurements.
+
+I have (currently) just treated cairo units (which are points
+for PDF surfaces) as equivalent to pixels. I think that isn't
+quite right as cairo is using points (72dpi) and mapnik assumes
+a value of about 90dpi IIRC.
+
+> - Implemented PDF layers, so you can turn things on and off.
+
+I haven't done that, but if cairo offers a way to declare layers
+it should be easy enough - it's the first I've heard of it to be
+honest.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From artem at mapnik.org  Fri Mar 14 13:16:35 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Mar 2008 12:16:35 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <200803122345.11584.nick@hogweed.org>
+References: <200803122345.11584.nick@hogweed.org>
+Message-ID: <3C4A7994-F67F-4942-BECB-1D99DFA6F789@mapnik.org>
+
+Hi Nick,
+
+>
+> Hello Artem, (and all)
+>
+> Got the Mapnik viewer running tonight with the OSM plugin. After  
+> playing
+> around with it here are some enhancement ideas (aside from the  
+> ability to
+> change styles through the GUI) - if these fit in with your plans  
+> I'll start
+> working on them:
+>
+> - when an OSM layer (or indeed any other data layer) is loaded, set  
+> the bounds
+> of the visible map to be the bounds of the data just loaded;
+
+Sounds good to me. Even better, we can have this configurable.
+>
+> - show current coordinates on-screen;
+>
+
+Yes. Showing  Lat/Lon and projected coordinates would be cool.
+
+> - show high level OSM data types (e.g. "footpath", "pub") and allow  
+> the user
+> to change their styles without knowing the details of the tagging  
+> scheme;
+>
+
+I'd rather stay generic in terms of data source. But, yes, high level  
+abstraction for feature types is good.
+
+> - Interactive OSM browser mode, where the viewer will download and  
+> then cache
+> live data from OSM by tile.
+>
+
+Yes.
+> - Export to PDF, etc, for printing.
+>
+> Does this sound good?
+>
+
+All sounds good :).
+
+Did you have a chance to look at optimizing osm.input ? I had brief  
+look and I think caching mapnik::feature<> types in spatially aware  
+container  would be much better in terms of performance. Also, does  
+plug-in support polygons ?
+
+
+
+> Nick
+
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Fri Mar 14 13:27:15 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Mar 2008 12:27:15 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <47D8A4D4.9010909@onetrackmind.co.nz>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+Message-ID: <2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+
+Hi Ben,
+
+
+> Hi, I've been doing some work adding PDF output to mapnik. It's  
+> still a
+> work in progress, around 90% done and was going to be released when
+> finished.
+>
+> - I've used a patched wxPdfDoc for the pdf rendering.
+> - Most symbolizers are implemented.
+> - Tried to make it as a separate library to mapnik, but had to  
+> subclass
+> some of the symbolizers. Mostly this was adding output sizes to  
+> images,
+> since pixels don't correspond to page measurements.
+> - Implemented PDF layers, so you can turn things on and off.
+>
+> I've uploaded a test file using the example data set:
+> http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html
+>
+
+Great stuff. Are you aware of Tom Hughes cairo_renderer (svn trunk)  
+which can output vector PDF, PS and SVG amongst other things?
+
+
+> Please ignore the funky colours and overlays, that was just for  
+> testing
+> to make sure everything was lining up right.
+>
+> Let me know if you're interested in this in its unfinished state.
+>
+
+It looks like great area to swap notes.  I tested cairo_renderer and  
+results are good. I don't know much about wxPdfDoc and what it uses  
+underneath. In general, having as many  rendering back-ends as  
+possible is great and using wxPdfDoc might be good choice for you  
+particular application, but please have a look at cairo implementation.
+
+If you could publish even unfinished code somewhere I'd like to have  
+a look. Perhaps, 'experimental' branch in SVN ? Let me know if you  
+would like write access.
+
+>
+> Ben
+>
+
+Cheers
+Artem
+>
+>
+> Nick Whitelegg wrote:
+>> Hello Artem, (and all)
+>>
+>> Got the Mapnik viewer running tonight with the OSM plugin. After  
+>> playing
+>> around with it here are some enhancement ideas (aside from the  
+>> ability to
+>> change styles through the GUI) - if these fit in with your plans  
+>> I'll start
+>> working on them:
+>>
+>> - when an OSM layer (or indeed any other data layer) is loaded,  
+>> set the bounds
+>> of the visible map to be the bounds of the data just loaded;
+>>
+>> - show current coordinates on-screen;
+>>
+>> - show high level OSM data types (e.g. "footpath", "pub") and  
+>> allow the user
+>> to change their styles without knowing the details of the tagging  
+>> scheme;
+>>
+>> - Interactive OSM browser mode, where the viewer will download and  
+>> then cache
+>> live data from OSM by tile.
+>>
+>> - Export to PDF, etc, for printing.
+>>
+>> Does this sound good?
+>>
+>> Nick
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Fri Mar 14 13:35:46 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Mar 2008 12:35:46 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+Message-ID: <7F55F893-F935-408A-93FE-E391925B5688@mapnik.org>
+
+
+On 13 Mar 2008, at 08:45, Tom Hughes wrote:
+
+> In message <47D8A4D4.9010909 at onetrackmind.co.nz>
+>         Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+>
+>> Hi, I've been doing some work adding PDF output to mapnik. It's  
+>> still a
+>> work in progress, around 90% done and was going to be released when
+>> finished.
+>
+> You do know that I committed support for PDF rendering using cairo
+> a few weeks ago I assume?
+>
+>> - I've used a patched wxPdfDoc for the pdf rendering.
+>> - Most symbolizers are implemented.
+>
+> I'm guessing not LinePatternSymbolizer ;-)
+
+Tom, I understand there are some issues with implementing pattern  
+based stroke with cairo. Anything can be done?
+
+>
+>> - Tried to make it as a separate library to mapnik, but had to  
+>> subclass
+>> some of the symbolizers. Mostly this was adding output sizes to  
+>> images,
+>> since pixels don't correspond to page measurements.
+>
+> I have (currently) just treated cairo units (which are points
+> for PDF surfaces) as equivalent to pixels. I think that isn't
+> quite right as cairo is using points (72dpi) and mapnik assumes
+> a value of about 90dpi IIRC.
+
+Well, this should be user configurable I guess. I think png and jpeg  
+can have some metadata about resolution embedded, too.
+>
+>> - Implemented PDF layers, so you can turn things on and off.
+>
+> I haven't done that, but if cairo offers a way to declare layers
+> it should be easy enough - it's the first I've heard of it to be
+> honest.
+
+Nice feature to have :)
+
+>
+> Tom
+>
+> -- 
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+>
+Cheers
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From tom at compton.nu  Fri Mar 14 14:39:23 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Fri, 14 Mar 2008 13:39:23 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <7F55F893-F935-408A-93FE-E391925B5688@mapnik.org> (Artem
+	Pavlenko's message of "Fri\, 14 Mar 2008 12\:35\:46 +0000")
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+	<7F55F893-F935-408A-93FE-E391925B5688@mapnik.org>
+Message-ID: <yekprtx5ss4.fsf@dellow.uk.cyberscience.com>
+
+In message <7F55F893-F935-408A-93FE-E391925B5688 at mapnik.org>
+        Artem Pavlenko <artem at mapnik.org> wrote:
+
+> On 13 Mar 2008, at 08:45, Tom Hughes wrote:
+>
+>> In message <47D8A4D4.9010909 at onetrackmind.co.nz>
+>>         Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+>>
+>>> Hi, I've been doing some work adding PDF output to mapnik. It's
+>>> still a
+>>> work in progress, around 90% done and was going to be released when
+>>> finished.
+>>
+>> You do know that I committed support for PDF rendering using cairo
+>> a few weeks ago I assume?
+>>
+>>> - I've used a patched wxPdfDoc for the pdf rendering.
+>>> - Most symbolizers are implemented.
+>>
+>> I'm guessing not LinePatternSymbolizer ;-)
+>
+> Tom, I understand there are some issues with implementing pattern
+> based stroke with cairo. Anything can be done?
+
+Well there is code in there to (try and) do it. It's ifdefed out
+though as it doesn't quite seem to work.
+
+It renders the pattern along the path OK but I can't seem to keep
+it properly centered on the path so you get some odd effects. I've
+been over my maths several times and it certainly seems to be right
+but it doesn't quite seem to work.
+
+It will be pretty slow as well even when it does work.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From ben.moores at onetrackmind.co.nz  Fri Mar 14 20:38:04 2008
+From: ben.moores at onetrackmind.co.nz (Ben Moores)
+Date: Sat, 15 Mar 2008 08:38:04 +1300
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+References: <200803122345.11584.nick@hogweed.org>	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+Message-ID: <47DAD41C.1060709@onetrackmind.co.nz>
+
+Tom Hughes wrote:
+> In message <47D8A4D4.9010909 at onetrackmind.co.nz>
+>         Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+> 
+>> Hi, I've been doing some work adding PDF output to mapnik. It's still a 
+>> work in progress, around 90% done and was going to be released when 
+>> finished.
+> 
+> You do know that I committed support for PDF rendering using cairo
+> a few weeks ago I assume?
+
+cool, the stuff i've been working on has been a bit on and off for 
+months (maybe 6). I did look for all the pdf rendering libraries I could 
+find before I started, and looking back now, Cairo wasn't in the list. 
+Not sure how I missed that.
+
+wxPdfDoc still says its in beta (and not updated since Dec 2006), but 
+had far more supported features than the other libraries I found at the 
+time. Ulrich, the maintainer, is still working on it, and hoped to have 
+another release with more features and bug fixes.
+
+It should not be too much work to use whatever library you want.
+
+> 
+>> - I've used a patched wxPdfDoc for the pdf rendering.
+>> - Most symbolizers are implemented.
+> 
+> I'm guessing not LinePatternSymbolizer ;-)
+
+Only partly :), I can use a pdf pattern to render a line, but since the 
+people I wrote this for didn't need it, I didn't spend the time to 
+rotate the pattern for each line segment.
+
+http://upload2.net/page/download/SeATQAEf9aw4LWz/linepatternsymboltest.pdf.html
+
+The only other symbolizer I haven't done is the marker symbolizer. But 
+the point_symbolizer with images worked well enough for me.
+
+> 
+>> - Tried to make it as a separate library to mapnik, but had to subclass 
+>> some of the symbolizers. Mostly this was adding output sizes to images, 
+>> since pixels don't correspond to page measurements.
+> 
+> I have (currently) just treated cairo units (which are points
+> for PDF surfaces) as equivalent to pixels. I think that isn't
+> quite right as cairo is using points (72dpi) and mapnik assumes
+> a value of about 90dpi IIRC.
+
+The way i've done scaling is:
+  - specify the units to be used in the pdf, e.g. mm, inch, point
+  - then each pixel in mapnik is equated to a pdf-unit.
+  - e.g. with mm units in the pdf doc, a 5-pixel wide line corresponds 
+to a 5mm wide line. This worked quite well.
+
+It would be nice if you could specify an output size of images and get 
+mapnik to scale them. At the moment its a bit of a pain that the 
+symbolizer_with_image requires the size of the image before it loads it, 
+it'd be nice if it figured it out itself. This would let me remove the 
+subclasses; looking back now, this was probably the way I should have 
+done it.
+
+> 
+>> - Implemented PDF layers, so you can turn things on and off.
+> 
+> I haven't done that, but if cairo offers a way to declare layers
+> it should be easy enough - it's the first I've heard of it to be
+> honest.
+
+It's quite easy, just some marked content in the page stream, and a 
+couple of dictionaries. I had to hack support for it into wxpdfdoc 
+myself, although it might be in the next release. If you want more 
+information, its called 'Optional Content' in pdfs, and been available 
+since PDF 1.5. The PDF Reference version 1.7 has it in section 4.10.
+
+I'm not sure what viewers other than acrobat support it. But the 
+fall-back for a viewer with no support is to just render everything.
+
+I'll try to get a bit more work done on it this weekend, I haven't 
+updated to svn head for a while.
+
+
+Ben
+
+
+
+
+
+
+From ben.moores at onetrackmind.co.nz  Fri Mar 14 20:43:34 2008
+From: ben.moores at onetrackmind.co.nz (Ben Moores)
+Date: Sat, 15 Mar 2008 08:43:34 +1300
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+Message-ID: <47DAD566.9070302@onetrackmind.co.nz>
+
+Artem Pavlenko wrote:
+> Hi Ben,
+> 
+> 
+>> Hi, I've been doing some work adding PDF output to mapnik. It's still a
+>> work in progress, around 90% done and was going to be released when
+>> finished.
+>>
+>> - I've used a patched wxPdfDoc for the pdf rendering.
+>> - Most symbolizers are implemented.
+>> - Tried to make it as a separate library to mapnik, but had to subclass
+>> some of the symbolizers. Mostly this was adding output sizes to images,
+>> since pixels don't correspond to page measurements.
+>> - Implemented PDF layers, so you can turn things on and off.
+>>
+>> I've uploaded a test file using the example data set:
+>> http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html
+>>
+> 
+> Great stuff. Are you aware of Tom Hughes cairo_renderer (svn trunk) 
+> which can output vector PDF, PS and SVG amongst other things?
+
+I hadn't found that renderer when I started, but I'll have a look at 
+what it can do.
+
+> 
+> 
+>> Please ignore the funky colours and overlays, that was just for testing
+>> to make sure everything was lining up right.
+>>
+>> Let me know if you're interested in this in its unfinished state.
+>>
+> 
+> It looks like great area to swap notes.  I tested cairo_renderer and 
+> results are good. I don't know much about wxPdfDoc and what it uses 
+> underneath. In general, having as many  rendering back-ends as possible 
+> is great and using wxPdfDoc might be good choice for you particular 
+> application, but please have a look at cairo implementation.
+> 
+> If you could publish even unfinished code somewhere I'd like to have a 
+> look. Perhaps, 'experimental' branch in SVN ? Let me know if you would 
+> like write access.
+
+Thanks, I could do that. I'm currently using an unpublished patched 
+version of wxpdfdoc, but I can make that available as well.
+
+
+Ben
+
+
+
+
+
+From artem at mapnik.org  Sat Mar 15 00:10:07 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Mar 2008 23:10:07 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <47DAD566.9070302@onetrackmind.co.nz>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<2F4D9270-739A-43EF-A3F1-6C8567EE0AC9@mapnik.org>
+	<47DAD566.9070302@onetrackmind.co.nz>
+Message-ID: <A0E76703-65CE-4956-9291-A1F5A4905535@mapnik.org>
+
+
+On 14 Mar 2008, at 19:43, Ben Moores wrote:
+
+> Artem Pavlenko wrote:
+>> Hi Ben,
+>>
+>>
+>>> Hi, I've been doing some work adding PDF output to mapnik. It's  
+>>> still a
+>>> work in progress, around 90% done and was going to be released when
+>>> finished.
+>>>
+>>> - I've used a patched wxPdfDoc for the pdf rendering.
+>>> - Most symbolizers are implemented.
+>>> - Tried to make it as a separate library to mapnik, but had to  
+>>> subclass
+>>> some of the symbolizers. Mostly this was adding output sizes to  
+>>> images,
+>>> since pixels don't correspond to page measurements.
+>>> - Implemented PDF layers, so you can turn things on and off.
+>>>
+>>> I've uploaded a test file using the example data set:
+>>> http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html
+>>>
+>>
+>> Great stuff. Are you aware of Tom Hughes cairo_renderer (svn trunk)
+>> which can output vector PDF, PS and SVG amongst other things?
+>
+> I hadn't found that renderer when I started, but I'll have a look at
+> what it can do.
+>
+>>
+>>
+>>> Please ignore the funky colours and overlays, that was just for  
+>>> testing
+>>> to make sure everything was lining up right.
+>>>
+>>> Let me know if you're interested in this in its unfinished state.
+>>>
+>>
+>> It looks like great area to swap notes.  I tested cairo_renderer and
+>> results are good. I don't know much about wxPdfDoc and what it uses
+>> underneath. In general, having as many  rendering back-ends as  
+>> possible
+>> is great and using wxPdfDoc might be good choice for you particular
+>> application, but please have a look at cairo implementation.
+>>
+>> If you could publish even unfinished code somewhere I'd like to  
+>> have a
+>> look. Perhaps, 'experimental' branch in SVN ? Let me know if you  
+>> would
+>> like write access.
+>
+> Thanks, I could do that. I'm currently using an unpublished patched
+> version of wxpdfdoc, but I can make that available as well.
+
+Great, send me (off list) your preferable username and ssh public  
+key, please
+>
+>
+
+> Ben
+>
+
+Artem
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From nick at hogweed.org  Sat Mar 15 20:50:56 2008
+From: nick at hogweed.org (Nick Whitelegg)
+Date: Sat, 15 Mar 2008 19:50:56 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <3C4A7994-F67F-4942-BECB-1D99DFA6F789@mapnik.org>
+References: <200803122345.11584.nick@hogweed.org>
+	<3C4A7994-F67F-4942-BECB-1D99DFA6F789@mapnik.org>
+Message-ID: <200803151950.56569.nick@hogweed.org>
+
+
+Hello Artem,
+
+> All sounds good :).
+
+OK will get going on it (and the osm.input stuff below) as soon as I can... I 
+just need to finish off some improvements to Freemap.
+
+> Did you have a chance to look at optimizing osm.input ? I had brief
+> look and I think caching mapnik::feature<> types in spatially aware
+> container  would be much better in terms of performance. 
+
+OK, though this will likely need to involve some research on my part as I'm 
+not overly familiar with quadtrees, etc.
+
+> Also, does 
+> plug-in support polygons ?
+
+Not yet, though they seem to render OK. Will add it in though, should be just 
+a case of setting up key/value combinations which map to polygons.
+
+Nick
+
+
+From artem at mapnik.org  Mon Mar 17 23:18:27 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 17 Mar 2008 22:18:27 +0000
+Subject: [Mapnik-devel] Mapnik viewer and OSM rendering
+In-Reply-To: <yekprtx5ss4.fsf@dellow.uk.cyberscience.com>
+References: <200803122345.11584.nick@hogweed.org>
+	<47D8A4D4.9010909@onetrackmind.co.nz>
+	<yek3aqv9flt.fsf@dellow.uk.cyberscience.com>
+	<7F55F893-F935-408A-93FE-E391925B5688@mapnik.org>
+	<yekprtx5ss4.fsf@dellow.uk.cyberscience.com>
+Message-ID: <20BCEF4F-9E62-462B-ABEB-68FF14813612@mapnik.org>
+
+
+On 14 Mar 2008, at 13:39, Tom Hughes wrote:
+
+> In message <7F55F893-F935-408A-93FE-E391925B5688 at mapnik.org>
+>         Artem Pavlenko <artem at mapnik.org> wrote:
+>
+>> On 13 Mar 2008, at 08:45, Tom Hughes wrote:
+>>
+>>> In message <47D8A4D4.9010909 at onetrackmind.co.nz>
+>>>         Ben Moores <ben.moores at onetrackmind.co.nz> wrote:
+>>>
+>>>> Hi, I've been doing some work adding PDF output to mapnik. It's
+>>>> still a
+>>>> work in progress, around 90% done and was going to be released when
+>>>> finished.
+>>>
+>>> You do know that I committed support for PDF rendering using cairo
+>>> a few weeks ago I assume?
+>>>
+>>>> - I've used a patched wxPdfDoc for the pdf rendering.
+>>>> - Most symbolizers are implemented.
+>>>
+>>> I'm guessing not LinePatternSymbolizer ;-)
+>>
+>> Tom, I understand there are some issues with implementing pattern
+>> based stroke with cairo. Anything can be done?
+>
+> Well there is code in there to (try and) do it. It's ifdefed out
+> though as it doesn't quite seem to work.
+>
+> It renders the pattern along the path OK but I can't seem to keep
+> it properly centered on the path so you get some odd effects. I've
+> been over my maths several times and it certainly seems to be right
+> but it doesn't quite seem to work.
+>
+
+OK, fixed in r669
+> It will be pretty slow as well even when it does work.
+
+It seems to be fine performance wise. Great work Tom!
+>
+> Tom
+>
+> -- 
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+>
+
+Artem
+
+
+
+From dom at earth.li  Fri Mar 21 15:05:27 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Fri, 21 Mar 2008 14:05:27 +0000
+Subject: [Mapnik-devel] Stable series
+Message-ID: <20080321140527.GJ6059@urchin.earth.li>
+
+Hello,
+
+Artem and I have been vaguely discussing this in the past - I would like
+to try and maintain a stable series with unchanging API/ABI in order to
+fix bugs and maybe add small enhancements.
+
+I've created a wiki page https://trac.mapnik.org/wiki/StableMergeQueue
+which lists some candidates.
+
+If anyone actively committing fancies reviewing that list, and
+adding/modifying to it, that's be great.
+
+Cheers,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From snecklifter at gmail.com  Mon Mar 24 00:23:55 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Sun, 23 Mar 2008 23:23:55 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+Message-ID: <364d303b0803231623x74b76e47m53e5b981f0435eff@mail.gmail.com>
+
+Hi mapnik dudes,
+
+Fedora is building with gcc 4.3 and the following trivial changes are
+needed. If these could be checked in along with my previous ppc64
+patch I would be grateful. Kevin Sharp has graciously agreed for me to
+take this on and I hope to have mapnik included in the Fedora 8 and
+onwards repositories Real Soon Now. Feel free to follow its progress
+and make comment should you so wish:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=234581
+
+====================================================
+
+
+--- include/mapnik/vertex_vector.hpp.orig       2008-03-23
+21:02:21.000000000 +0000
++++ include/mapnik/verte--- include/mapnik/vertex_vector.hpp.orig
+ 2008-03-23 21:02:21.000000000 +0000
++++ include/mapnik/vertex_vector.hpp    2008-03-23 21:04:00.000000000 +0000
+@@ -37,6 +37,7 @@
+ #include <boost/tuple/tuple.hpp>
+ // stl
+ #include <vector>
++#include <cstring>
+
+ namespace mapnik
+ {
+--- include/mapnik/quad_tree.hpp.orig   2008-03-23 21:42:19.000000000 +0000
++++ include/mapnik/quad_tree.hpp        2008-03-23 21:42:43.000000000 +0000
+@@ -30,6 +30,7 @@
+ #include <boost/noncopyable.hpp>
+ // stl
+ #include <vector>
++#include <cstring>
+
+ namespace mapnik
+ {
+--- include/mapnik/image_data.hpp.orig  2008-03-23 22:04:22.000000000 +0000
++++ include/mapnik/image_data.hpp       2008-03-23 22:04:44.000000000 +0000
+@@ -27,6 +27,7 @@
+
+ #include <mapnik/octree.hpp>
+ #include <cassert>
++#include <cstring>
+
+ // When using Sun's C++ compiler, use the `std` namespace to get
+memcpy, memset routines.
+ #ifdef __SUNPRO_CC
+ --- include/mapnik/enumeration.hpp.orig        2008-03-23
+22:22:53.000000000 +0000
++++ include/mapnik/enumeration.hpp      2008-03-23 22:37:29.000000000 +0000
+@@ -28,6 +28,7 @@
+ #include <vector>
+ #include <bitset>
+ #include <iostream>
++#include <cstdlib>
+
+ namespace mapnik {
+
+--- plugins/input/shape/shapefile.hpp.orig      2008-03-23
+22:48:10.000000000 +0000
++++ plugins/input/shape/shapefile.hpp   2008-03-23 22:49:05.000000000 +0000
+@@ -32,6 +32,8 @@
+ #include <boost/iostreams/device/file.hpp>
+ #include <boost/iostreams/device/mapped_file.hpp>
+
++#include <cstring>
++
+ using mapnik::Envelope;
+
+ struct shape_record
+x_vector.hpp    2008-03-23 21:04:00.000000000 +0000
+@@ -37,6 +37,7 @@
+ #include <boost/tuple/tuple.hpp>
+ // stl
+ #include <vector>
++#include <cstring>
+
+ namespace mapnik
+ {
+--- include/mapnik/quad_tree.hpp.orig   2008-03-23 21:42:19.000000000 +0000
++++ include/mapnik/quad_tree.hpp        2008-03-23 21:42:43.000000000 +0000
+@@ -30,6 +30,7 @@
+ #include <boost/noncopyable.hpp>
+ // stl
+ #include <vector>
++#include <cstring>
+
+ namespace mapnik
+ {
+--- include/mapnik/image_data.hpp.orig  2008-03-23 22:04:22.000000000 +0000
++++ include/mapnik/image_data.hpp       2008-03-23 22:04:44.000000000 +0000
+@@ -27,6 +27,7 @@
+
+ #include <mapnik/octree.hpp>
+ #include <cassert>
++#include <cstring>
+
+ // When using Sun's C++ compiler, use the `std` namespace to get
+memcpy, memset routines.
+ #ifdef __SUNPRO_CC
+ --- include/mapnik/enumeration.hpp.orig        2008-03-23
+22:22:53.000000000 +0000
++++ include/mapnik/enumeration.hpp      2008-03-23 22:37:29.000000000 +0000
+@@ -28,6 +28,7 @@
+ #include <vector>
+ #include <bitset>
+ #include <iostream>
++#include <cstdlib>
+
+ namespace mapnik {
+
+--- plugins/input/shape/shapefile.hpp.orig      2008-03-23
+22:48:10.000000000 +0000
++++ plugins/input/shape/shapefile.hpp   2008-03-23 22:49:05.000000000 +0000
+@@ -32,6 +32,8 @@
+ #include <boost/iostreams/device/file.hpp>
+ #include <boost/iostreams/device/mapped_file.hpp>
+
++#include <cstring>
++
+ using mapnik::Envelope;
+
+ struct shape_record
+
+
+========================================================
+
+Cheers
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From snecklifter at gmail.com  Mon Mar 24 00:30:08 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Sun, 23 Mar 2008 23:30:08 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+Message-ID: <364d303b0803231630q49300244r3b26d8b1078e46b1@mail.gmail.com>
+
+I've uploaded it for convenience as I formatted it badly in my previous post:
+
+http://snecker.fedorapeople.org/mapnik/devel/gcc43-build.patch
+
+Regards
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From dom at earth.li  Mon Mar 24 01:04:39 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Mon, 24 Mar 2008 00:04:39 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+In-Reply-To: <364d303b0803231623x74b76e47m53e5b981f0435eff@mail.gmail.com>
+References: <364d303b0803231623x74b76e47m53e5b981f0435eff@mail.gmail.com>
+Message-ID: <20080324000439.GW6059@urchin.earth.li>
+
+On Sun, Mar 23, 2008 at 11:23:55PM +0000, Christopher Brown wrote:
+> Hi mapnik dudes,
+> 
+> Fedora is building with gcc 4.3 and the following trivial changes are
+> needed. If these could be checked in along with my previous ppc64
+> patch I would be grateful. Kevin Sharp has graciously agreed for me to
+> take this on and I hope to have mapnik included in the Fedora 8 and
+> onwards repositories Real Soon Now. Feel free to follow its progress
+> and make comment should you so wish:
+> 
+> https://bugzilla.redhat.com/show_bug.cgi?id=234581
+> 
+> ====================================================
+
+This looks pretty much the same as the patch in
+https://trac.mapnik.org/ticket/76
+
+Artem, are you happy for me to commit this to trunk?
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From artem at mapnik.org  Mon Mar 24 12:33:37 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 24 Mar 2008 11:33:37 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+In-Reply-To: <20080324000439.GW6059@urchin.earth.li>
+References: <364d303b0803231623x74b76e47m53e5b981f0435eff@mail.gmail.com>
+	<20080324000439.GW6059@urchin.earth.li>
+Message-ID: <5F5CFEB0-F146-41E6-A379-87315B4C3CEE@mapnik.org>
+
+
+On 24 Mar 2008, at 00:04, Dominic Hargreaves wrote:
+
+> On Sun, Mar 23, 2008 at 11:23:55PM +0000, Christopher Brown wrote:
+>> Hi mapnik dudes,
+>>
+>> Fedora is building with gcc 4.3 and the following trivial changes are
+>> needed. If these could be checked in along with my previous ppc64
+>> patch I would be grateful. Kevin Sharp has graciously agreed for  
+>> me to
+>> take this on and I hope to have mapnik included in the Fedora 8 and
+>> onwards repositories Real Soon Now. Feel free to follow its progress
+>> and make comment should you so wish:
+>>
+>> https://bugzilla.redhat.com/show_bug.cgi?id=234581
+>>
+>> ====================================================
+>
+> This looks pretty much the same as the patch in
+> https://trac.mapnik.org/ticket/76
+>
+> Artem, are you happy for me to commit this to trunk?
+Absolutely!
+
+
+Chris, great news about Fedora progress!
+>
+> Dominic.
+
+Artem
+>
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From snecklifter at gmail.com  Mon Mar 24 16:00:03 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Mon, 24 Mar 2008 15:00:03 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 warnings
+Message-ID: <364d303b0803240800v2e1af9d2r70541b955c01ffcd@mail.gmail.com>
+
+Hi Artem et al,
+
+Some more trivial changes, mainly to quieten gcc and as possible
+future-proofing if the compilers get more strict.
+
+http://snecker.fedorapeople.org/mapnik/devel/gcc43-warnings.patch
+
+For a visual representation here are the two builds, firstly without,
+then with the patch:
+
+http://koji.fedoraproject.org/koji/getfile?taskID=527611&name=build.log
+http://koji.fedoraproject.org/koji/getfile?taskID=528126&name=build.log
+
+Cheers
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From dom at earth.li  Tue Mar 25 01:24:26 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Tue, 25 Mar 2008 00:24:26 +0000
+Subject: [Mapnik-devel] reinstating regex support
+Message-ID: <20080325002426.GH6059@urchin.earth.li>
+
+Hi David,
+
+A bug has been raised which seems to be related to your changes back in
+September: https://trac.mapnik.org/ticket/77
+
+in particular:
+http://trac.mapnik.org/changeset/533/branches/strict-xml-branch/include/mapnik/filter_parser.hpp
+
+was this a deliberate decision, or something that crept in by mistake?
+It would be good to get this functionality back. Reverting the single
+commented out line would appear to be a fix, and does not cause compile
+time issues. I haven't tested out the regex functionality, however.
+
+Cheers,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From artem at mapnik.org  Wed Mar 26 10:54:47 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 26 Mar 2008 09:54:47 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+In-Reply-To: <364d303b0803231630q49300244r3b26d8b1078e46b1@mail.gmail.com>
+References: <364d303b0803231630q49300244r3b26d8b1078e46b1@mail.gmail.com>
+Message-ID: <31E04CC7-2123-460B-9C33-16AED24C65FA@mapnik.org>
+
+OK, looks it has been applied already in r674.
+
+On 23 Mar 2008, at 23:30, Christopher Brown wrote:
+
+> I've uploaded it for convenience as I formatted it badly in my  
+> previous post:
+>
+> http://snecker.fedorapeople.org/mapnik/devel/gcc43-build.patch
+>
+> Regards
+>
+> -- 
+> Christopher Brown
+>
+> http://www.chruz.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Wed Mar 26 10:56:42 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 26 Mar 2008 09:56:42 +0000
+Subject: [Mapnik-devel] [PATCH] GCC 4.3 warnings
+In-Reply-To: <364d303b0803240800v2e1af9d2r70541b955c01ffcd@mail.gmail.com>
+References: <364d303b0803240800v2e1af9d2r70541b955c01ffcd@mail.gmail.com>
+Message-ID: <99E2D2EA-90C5-4F06-924E-F64CB9E1A9FA@mapnik.org>
+
+
+On 24 Mar 2008, at 15:00, Christopher Brown wrote:
+
+> Hi Artem et al,
+>
+> Some more trivial changes, mainly to quieten gcc and as possible
+> future-proofing if the compilers get more strict.
+>
+> http://snecker.fedorapeople.org/mapnik/devel/gcc43-warnings.patch
+>
+> For a visual representation here are the two builds, firstly without,
+> then with the patch:
+>
+> http://koji.fedoraproject.org/koji/getfile? 
+> taskID=527611&name=build.log
+> http://koji.fedoraproject.org/koji/getfile? 
+> taskID=528126&name=build.log
+>
+> Cheers
+
+Applied in r675
+cheers
+Artem
+>
+> -- 
+> Christopher Brown
+>
+> http://www.chruz.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Wed Mar 26 10:57:56 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 26 Mar 2008 09:57:56 +0000
+Subject: [Mapnik-devel] reinstating regex support
+In-Reply-To: <20080325002426.GH6059@urchin.earth.li>
+References: <20080325002426.GH6059@urchin.earth.li>
+Message-ID: <F256A848-DBAC-4B41-BE30-8838A888C80C@mapnik.org>
+
+
+On 25 Mar 2008, at 00:24, Dominic Hargreaves wrote:
+
+> Hi David,
+>
+> A bug has been raised which seems to be related to your changes  
+> back in
+> September: https://trac.mapnik.org/ticket/77
+>
+> in particular:
+> http://trac.mapnik.org/changeset/533/branches/strict-xml-branch/ 
+> include/mapnik/filter_parser.hpp
+>
+> was this a deliberate decision, or something that crept in by mistake?
+> It would be good to get this functionality back. Reverting the single
+> commented out line would appear to be a fix, and does not cause  
+> compile
+> time issues. I haven't tested out the regex functionality, however.
+>
+> Cheers,
+> Dominic.
+
+Dominic, I can not see any reasons for not using regex support. It  
+woks fine, for me at least.
+>
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From jburgess777 at googlemail.com  Thu Mar 27 01:32:07 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 27 Mar 2008 00:32:07 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+Message-ID: <1206577927.31610.41.camel@localhost.localdomain>
+
+There is one OSM tile which causes the mapnik rendering code to get
+stuck in an infinite loop. Strictly speaking it is the freetype library
+which loops, but it seems to be triggered by a broken text placement.
+
+It is using the text_symbolizer on the water layer which is trying to
+apply a text label using the line_placement on an area with some holes.
+I added some debug into font_engine_freetype prepare_glyphs() & render()
+and this seems to indicate that it has been given a text_path with many
+'nan' positions.
+
+start layer processing : water
+datasource = 0x13f23b0
+borrow 0x703f60
+select asbinary(way) as
+geom,"landuse","name","natural","tunnel","waterway" from (select * from
+planet_osm_polygon where landuse='reservoir' or landuse='water' or
+"natural"='lake' or "natural"='water' or "natural"='land' order by
+z_order) as water where way && setSRID('BOX3D(454647.4442402283
+6765288.499464378,460150.910276761 6770791.965500911)'::box3d,900913)
+ENCODING = UTF8
+return 0x703f60
+[ prepare_glyphs() is called ]
+   New glyphs: 12
+   prepare_glyph: N,-1.20924,-3.28447,-0.35277
+   pushed_glyph: 0 N,-1.20924,-3.28447,-0.35277
+   prepare_glyph: o,5.25727,-5.66341,-0.384141
+   pushed_glyph: 1 o,5.25727,-5.66341,-0.384141
+   prepare_glyph: o,10.82,-7.91199,-0.384141
+   pushed_glyph: 2 o,10.82,-7.91199,-0.384141
+   prepare_glyph: r,16.3827,-10.1606,-0.384141
+   pushed_glyph: 3 r,16.3827,-10.1606,-0.384141
+   prepare_glyph: d,23.3861,-5.53079,2.53918
+   pushed_glyph: 4 d,23.3861,-5.53079,2.53918
+   prepare_glyph:  ,nan,nan,nan
+   pushed_glyph: 5  ,nan,nan,nan
+   prepare_glyph: P,nan,nan,nan
+   pushed_glyph: 6 P,nan,nan,nan
+   prepare_glyph: a,nan,nan,nan
+   pushed_glyph: 7 a,nan,nan,nan
+   prepare_glyph: m,nan,nan,nan
+   pushed_glyph: 8 m,nan,nan,nan
+   prepare_glyph: p,nan,nan,nan
+   pushed_glyph: 9 p,nan,nan,nan
+   prepare_glyph: u,nan,nan,nan
+   pushed_glyph: 10 u,nan,nan,nan
+   prepare_glyph: s,nan,nan,nan
+   pushed_glyph: 11 s,nan,nan,nan
+[ now render() is called on the prepared glyphs ]
+   pulling_glyph: 0
+   pulling_glyph: 1
+   pulling_glyph: 2
+   pulling_glyph: 3
+   pulling_glyph: 4
+   pulling_glyph: 5
+   pulling_glyph: 6
+   pulling_glyph: 7
+   pulling_glyph: 8
+   pulling_glyph: 9
+[ the render code is stuck in a loop here ]
+
+
+If you want to reproduce this, the .osm file below contains sufficient
+data to trigger the bug: 
+http://tile.openstreetmap.org/rotterdam-broken.osm
+
+The area ways have the name "Noord Pampus" and are in a multipolygon
+relation. The tile which triggers this problem is /16/33517/21696.png
+(please don't request this tile from the main OSM site, it'll trigger
+this bug). It only occurs on this zoom level. Note that this is being
+done with mod_tile meta-tiling so it is actually rendering the 8x8
+tiles:
+	x=33512 - 33519
+	y=21696 - 21703
+	z=16
+
+I'm wondering whether the placement algorithm has tried to place the
+text over a discontinuity between 2 different rings of the polygon.
+
+Any ideas on how best to debug this?
+
+	Jon
+
+
+
+
+
+
+From kleptog at gmail.com  Thu Mar 27 09:26:55 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 27 Mar 2008 09:26:55 +0100
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <1206577927.31610.41.camel@localhost.localdomain>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+Message-ID: <2fc2c5f10803270126o3b8965a4s45c5a0b471a30d1@mail.gmail.com>
+
+On Thu, Mar 27, 2008 at 1:32 AM, Jon Burgess <jburgess777 at googlemail.com> wrote:
+> There is one OSM tile which causes the mapnik rendering code to get
+>  stuck in an infinite loop. Strictly speaking it is the freetype library
+>  which loops, but it seems to be triggered by a broken text placement.
+>
+>  It is using the text_symbolizer on the water layer which is trying to
+>  apply a text label using the line_placement on an area with some holes.
+>  I added some debug into font_engine_freetype prepare_glyphs() & render()
+>  and this seems to indicate that it has been given a text_path with many
+>  'nan' positions.
+
+Do you know the exact object? Perhaps you should try running isvalid()
+over the area to determine if all the objects are indeed sane.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From kleptog at gmail.com  Thu Mar 27 10:01:53 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 27 Mar 2008 10:01:53 +0100
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <1206577927.31610.41.camel@localhost.localdomain>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+Message-ID: <2fc2c5f10803270201q31259752l5aadee16bc139aa8@mail.gmail.com>
+
+On Thu, Mar 27, 2008 at 1:32 AM, Jon Burgess <jburgess777 at googlemail.com> wrote:
+>  If you want to reproduce this, the .osm file below contains sufficient
+>  data to trigger the bug:
+>  http://tile.openstreetmap.org/rotterdam-broken.osm
+>
+>  The area ways have the name "Noord Pampus" and are in a multipolygon
+>  relation. The tile which triggers this problem is /16/33517/21696.png
+>  (please don't request this tile from the main OSM site, it'll trigger
+>  this bug). It only occurs on this zoom level. Note that this is being
+>  done with mod_tile meta-tiling so it is actually rendering the 8x8
+>  tiles:
+
+Since it was in NL I thought the NL tileserver might have some info,
+but it appears the multipolygon relation didn't get imported at all
+there... It all looks fine in JOSM. For me it's ID 6286890 in the
+database, perhaps you could try the st_interiorringn() and
+st_exteriorring() functions to see if it actually picks up the holes
+properly. I thought mapnik knew about rings with holes, but maybe it
+doesn't...
+
+Hope this helps,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From artem at mapnik.org  Thu Mar 27 12:26:41 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 Mar 2008 11:26:41 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <1206577927.31610.41.camel@localhost.localdomain>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+Message-ID: <69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+
+
+On 27 Mar 2008, at 00:32, Jon Burgess wrote:
+
+> There is one OSM tile which causes the mapnik rendering code to get
+> stuck in an infinite loop. Strictly speaking it is the freetype  
+> library
+> which loops, but it seems to be triggered by a broken text placement.
+>
+> It is using the text_symbolizer on the water layer which is trying to
+> apply a text label using the line_placement on an area with some  
+> holes.
+> I added some debug into font_engine_freetype prepare_glyphs() &  
+> render()
+> and this seems to indicate that it has been given a text_path with  
+> many
+> 'nan' positions.
+>
+
+Looks wrong. I'm trying to identify that polygon in database:
+wget http://www.openstreetmap.org/api/0.5/map? 
+bbox=4.08416748047,51.8069165352,4.13360595703,51.8374746497
+
+  There is :
+..
+  <relation id="1432" visible="true" timestamp="2008-03-12T15:52:58 
++00:00" user="robx">
+     <member type="way" ref="6286890" role="outer"/>
+     <member type="way" ref="8164848" role="inner"/>
+     <member type="way" ref="8164849" role="inner"/>
+     <member type="way" ref="8164850" role="inner"/>
+     <tag k="type" v="multipolygon"/>
+   </relation>
+
+
+I'm using latest osm2pgsql but it seems to ignoring 'inner' roles :
+
+openstreetmap=# select isvalid(way),ST_NumInteriorRings(way),osm_id  
+from planet_osm_polygon where name like 'Noord%';
+  isvalid | st_numinteriorrings | osm_id
+---------+---------------------+--------
+  t       |                   0 |   1432
+
+
+Jon, could you send me actual db dump for that polygon?
+
+
+The prime suspect  is in placement_finder.cpp (378:396) -  it looks  
+wrong to me
+Cheers
+Artem
+
+> start layer processing : water
+> datasource = 0x13f23b0
+> borrow 0x703f60
+> select asbinary(way) as
+> geom,"landuse","name","natural","tunnel","waterway" from (select *  
+> from
+> planet_osm_polygon where landuse='reservoir' or landuse='water' or
+> "natural"='lake' or "natural"='water' or "natural"='land' order by
+> z_order) as water where way && setSRID('BOX3D(454647.4442402283
+> 6765288.499464378,460150.910276761 6770791.965500911)'::box3d,900913)
+> ENCODING = UTF8
+> return 0x703f60
+> [ prepare_glyphs() is called ]
+>    New glyphs: 12
+>    prepare_glyph: N,-1.20924,-3.28447,-0.35277
+>    pushed_glyph: 0 N,-1.20924,-3.28447,-0.35277
+>    prepare_glyph: o,5.25727,-5.66341,-0.384141
+>    pushed_glyph: 1 o,5.25727,-5.66341,-0.384141
+>    prepare_glyph: o,10.82,-7.91199,-0.384141
+>    pushed_glyph: 2 o,10.82,-7.91199,-0.384141
+>    prepare_glyph: r,16.3827,-10.1606,-0.384141
+>    pushed_glyph: 3 r,16.3827,-10.1606,-0.384141
+>    prepare_glyph: d,23.3861,-5.53079,2.53918
+>    pushed_glyph: 4 d,23.3861,-5.53079,2.53918
+>    prepare_glyph:  ,nan,nan,nan
+>    pushed_glyph: 5  ,nan,nan,nan
+>    prepare_glyph: P,nan,nan,nan
+>    pushed_glyph: 6 P,nan,nan,nan
+>    prepare_glyph: a,nan,nan,nan
+>    pushed_glyph: 7 a,nan,nan,nan
+>    prepare_glyph: m,nan,nan,nan
+>    pushed_glyph: 8 m,nan,nan,nan
+>    prepare_glyph: p,nan,nan,nan
+>    pushed_glyph: 9 p,nan,nan,nan
+>    prepare_glyph: u,nan,nan,nan
+>    pushed_glyph: 10 u,nan,nan,nan
+>    prepare_glyph: s,nan,nan,nan
+>    pushed_glyph: 11 s,nan,nan,nan
+> [ now render() is called on the prepared glyphs ]
+>    pulling_glyph: 0
+>    pulling_glyph: 1
+>    pulling_glyph: 2
+>    pulling_glyph: 3
+>    pulling_glyph: 4
+>    pulling_glyph: 5
+>    pulling_glyph: 6
+>    pulling_glyph: 7
+>    pulling_glyph: 8
+>    pulling_glyph: 9
+> [ the render code is stuck in a loop here ]
+>
+>
+> If you want to reproduce this, the .osm file below contains sufficient
+> data to trigger the bug:
+> http://tile.openstreetmap.org/rotterdam-broken.osm
+>
+> The area ways have the name "Noord Pampus" and are in a multipolygon
+> relation. The tile which triggers this problem is /16/33517/21696.png
+> (please don't request this tile from the main OSM site, it'll trigger
+> this bug). It only occurs on this zoom level. Note that this is being
+> done with mod_tile meta-tiling so it is actually rendering the 8x8
+> tiles:
+> 	x=33512 - 33519
+> 	y=21696 - 21703
+> 	z=16
+>
+> I'm wondering whether the placement algorithm has tried to place the
+> text over a discontinuity between 2 different rings of the polygon.
+>
+> Any ideas on how best to debug this?
+>
+> 	Jon
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Thu Mar 27 12:28:54 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 Mar 2008 11:28:54 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <2fc2c5f10803270126o3b8965a4s45c5a0b471a30d1@mail.gmail.com>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<2fc2c5f10803270126o3b8965a4s45c5a0b471a30d1@mail.gmail.com>
+Message-ID: <0E041CE2-9693-4BEB-ADCD-36824C213A23@mapnik.org>
+
+
+On 27 Mar 2008, at 08:26, Martijn van Oosterhout wrote:
+
+> On Thu, Mar 27, 2008 at 1:32 AM, Jon Burgess  
+> <jburgess777 at googlemail.com> wrote:
+>> There is one OSM tile which causes the mapnik rendering code to get
+>>  stuck in an infinite loop. Strictly speaking it is the freetype  
+>> library
+>>  which loops, but it seems to be triggered by a broken text  
+>> placement.
+>>
+>>  It is using the text_symbolizer on the water layer which is  
+>> trying to
+>>  apply a text label using the line_placement on an area with some  
+>> holes.
+>>  I added some debug into font_engine_freetype prepare_glyphs() &  
+>> render()
+>>  and this seems to indicate that it has been given a text_path  
+>> with many
+>>  'nan' positions.
+>
+> Do you know the exact object? Perhaps you should try running isvalid()
+> over the area to determine if all the objects are indeed sane.
+
+It is valid but has no inner loops in my setup somehow...
+>
+> Have a nice day,
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Thu Mar 27 12:30:48 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 Mar 2008 11:30:48 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <2fc2c5f10803270201q31259752l5aadee16bc139aa8@mail.gmail.com>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<2fc2c5f10803270201q31259752l5aadee16bc139aa8@mail.gmail.com>
+Message-ID: <8D3F4390-5D94-4B82-95F1-59EA69226405@mapnik.org>
+
+
+On 27 Mar 2008, at 09:01, Martijn van Oosterhout wrote:
+
+> On Thu, Mar 27, 2008 at 1:32 AM, Jon Burgess  
+> <jburgess777 at googlemail.com> wrote:
+>>  If you want to reproduce this, the .osm file below contains  
+>> sufficient
+>>  data to trigger the bug:
+>>  http://tile.openstreetmap.org/rotterdam-broken.osm
+>>
+>>  The area ways have the name "Noord Pampus" and are in a multipolygon
+>>  relation. The tile which triggers this problem is / 
+>> 16/33517/21696.png
+>>  (please don't request this tile from the main OSM site, it'll  
+>> trigger
+>>  this bug). It only occurs on this zoom level. Note that this is  
+>> being
+>>  done with mod_tile meta-tiling so it is actually rendering the 8x8
+>>  tiles:
+>
+> Since it was in NL I thought the NL tileserver might have some info,
+> but it appears the multipolygon relation didn't get imported at all
+> there... It all looks fine in JOSM. For me it's ID 6286890 in the
+> database, perhaps you could try the st_interiorringn() and
+> st_exteriorring() functions to see if it actually picks up the holes
+> properly. I thought mapnik knew about rings with holes, but maybe it
+> doesn't...
+
+It does, it always did, but for LINE_PLACEMENT along polygon with  
+multiple inner loops it doesn't do right thing as far as I can see.  
+Needs replicating and debugging
+>
+> Hope this helps,
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From jburgess777 at googlemail.com  Thu Mar 27 13:22:09 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 27 Mar 2008 12:22:09 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+Message-ID: <b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+
+On 27/03/2008, Artem Pavlenko <artem at mapnik.org> wrote:
+>
+>  On 27 Mar 2008, at 00:32, Jon Burgess wrote:
+>
+>  > There is one OSM tile which causes the mapnik rendering code to get
+>  > stuck in an infinite loop. Strictly speaking it is the freetype
+>  > library
+>  > which loops, but it seems to be triggered by a broken text placement.
+>  >
+>  > It is using the text_symbolizer on the water layer which is trying to
+>  > apply a text label using the line_placement on an area with some
+>  > holes.
+>  > I added some debug into font_engine_freetype prepare_glyphs() &
+>  > render()
+>  > and this seems to indicate that it has been given a text_path with
+>  > many
+>  > 'nan' positions.
+>  >
+>
+>
+> Looks wrong. I'm trying to identify that polygon in database:
+>  wget http://www.openstreetmap.org/api/0.5/map?
+>  bbox=4.08416748047,51.8069165352,4.13360595703,51.8374746497
+>
+>   There is :
+>  ..
+>   <relation id="1432" visible="true" timestamp="2008-03-12T15:52:58
+>  +00:00" user="robx">
+>      <member type="way" ref="6286890" role="outer"/>
+>      <member type="way" ref="8164848" role="inner"/>
+>      <member type="way" ref="8164849" role="inner"/>
+>      <member type="way" ref="8164850" role="inner"/>
+>      <tag k="type" v="multipolygon"/>
+>    </relation>
+>
+>
+>  I'm using latest osm2pgsql but it seems to ignoring 'inner' roles :
+>
+>  openstreetmap=# select isvalid(way),ST_NumInteriorRings(way),osm_id
+>  from planet_osm_polygon where name like 'Noord%';
+>   isvalid | st_numinteriorrings | osm_id
+>  ---------+---------------------+--------
+>   t       |                   0 |   1432
+>
+>
+>  Jon, could you send me actual db dump for that polygon?
+
+Odd, I get...
+
+gis=> select isvalid(way),ST_NumInteriorRings(way),osm_id
+gis-> from planet_osm_polygon where name like 'Noord%';
+ isvalid | st_numinteriorrings | osm_id
+---------+---------------------+--------
+ t       |                   3 |   1432
+(1 row)
+
+
+The geometry is...
+
+POLYGON((454606.53 6765285.52,454606.53 6765303.52,454617.66
+6765339.53,454573.14 6765357.53,454550.87 6765375.54,454539.74
+6765411.54,454517.48 6765447.55,454428.42 6765501.56,454339.36
+6765537.57,454294.84 6765609.59,454183.52 6765645.6,454127.86
+6765681.61,454094.46 6765717.62,454094.46 6765753.63,454205.78
+6765807.64,454228.05 6765807.64,454261.44 6765771.63,454283.7
+6765735.62,454361.63 6765699.61,454406.16 6765663.6,454472.95
+6765591.59,454517.48 6765573.58,454539.74 6765555.58,454562
+6765519.57,454651.06 6765483.56,454662.19 6765519.57,454728.98
+6765807.64,454806.91 6766113.73,454951.62 6766725.94,455007.28
+6766942.03,454973.89 6766960.04,454662.19 6767050.07,453938.61
+6767248.16,453793.9 6767284.18,453415.41 6767410.23,453292.96
+6767446.25,453048.06 6767554.3,452769.76 6767698.37,452658.44
+6767734.39,451779.02 6768400.76,451400.53 6768815.01,450743.75
+6769679.62,450610.16 6769949.82,450131.49 6769409.42,450365.26
+6769211.28,450331.86 6769121.22,450298.47 6768905.07,450242.81
+6768598.88,450231.68 6768436.78,450287.34 6768202.64,450387.52
+6768058.56,450476.58 6767968.52,450476.58 6767932.5,450354.13
+6767986.53,450253.94 6768022.54,450209.41 6768022.54,450075.83
+6768076.57,449797.53 6768238.67,449496.97 6768490.81,449463.57
+6768472.8,449541.49 6768418.77,449764.13 6768238.67,449775.27
+6768202.64,449786.4 6768148.61,449764.13 6768076.57,449586.02
+6767878.47,449652.81 6767806.43,449997.9 6767518.29,449975.64
+6767500.28,450009.04 6767482.27,450120.36 6767392.23,450131.49
+6767356.21,450064.7 6767284.18,450031.3 6767230.15,450031.3
+6767212.14,450153.75 6767122.1,450354.13 6767356.21,450721.48
+6767806.43,450721.48 6767842.45,450688.09 6767932.5,450688.09
+6768058.56,450788.27 6768022.54,450866.2 6767950.51,450977.52
+6767932.5,451378.27 6767842.45,451389.4 6767824.44,451356
+6767824.44,451333.74 6767788.42,451344.87 6767716.38,451378.27
+6767608.33,451378.27 6767572.31,451356 6767572.31,451322.61
+6767518.29,451333.74 6767464.26,451356 6767446.25,451367.13
+6767392.23,451378.27 6767374.22,451456.19 6767320.19,451600.91
+6767212.14,451801.28 6766996.05,452101.84 6766689.93,452235.43
+6766527.87,452302.22 6766491.86,452402.41 6766419.83,452803.16
+6766203.76,452825.42 6766203.76,453003.53 6766131.74,453114.85
+6766077.72,453281.83 6766005.7,453382.02 6765951.68,453504.47
+6765897.67,453771.64 6765771.63,453827.3 6765771.63,453894.09
+6765753.63,453927.48 6765789.64,453938.61 6765807.64,453949.75
+6765789.64,453927.48 6765753.63,453916.35 6765699.61,453916.35
+6765681.61,453927.48 6765663.6,453960.88 6765627.6,454027.67
+6765591.59,454049.93 6765591.59,454150.12 6765537.57,454205.78
+6765519.57,454228.05 6765501.56,454250.31 6765501.56,454283.7
+6765483.56,454317.1 6765483.56,454395.02 6765429.55,454428.42
+6765375.54,454472.95 6765321.52,454506.34 6765321.52,454562
+6765303.52,454606.53 6765285.52),(451845.81 6767158.12,451823.54
+6767158.12,451767.88 6767194.14,451723.36 6767266.17,451656.56
+6767302.18,451567.51 6767338.2,451545.25 6767356.21,451467.32
+6767374.22,451367.13 6767464.26,451344.87 6767500.28,451367.13
+6767518.29,451422.79 6767500.28,451478.45 6767464.26,451534.11
+6767410.23,451734.49 6767302.18,451779.02 6767266.17,451834.68
+6767248.16,451901.47 6767176.13,451923.73 6767176.13,451990.52
+6767140.11,452112.97 6767140.11,452146.37 6767122.1,452157.5
+6767104.1,452202.03 6767104.1,452202.03 6767050.07,452168.63
+6766996.05,452101.84 6766942.03,452046.18 6766924.02,452001.66
+6766906.01,451979.39 6766924.02,451968.26 6766978.04,451968.26
+6767032.07,451946 6767032.07,451901.47 6767086.09,451879.2
+6767122.1,451845.81 6767158.12),(453304.09 6766275.78,453248.43
+6766365.81,453248.43 6766383.82,453259.57 6766401.82,453292.96
+6766419.83,453326.36 6766401.82,453370.89 6766383.82,453404.28
+6766383.82,453448.81 6766347.81,453471.07 6766311.79,453493.34
+6766293.79,453482.2 6766275.78,453393.15 6766203.76,453370.89
+6766221.76,453359.75 6766239.77,453359.75 6766275.78,453304.09
+6766275.78),(452970.13 6766365.81,452959 6766383.82,452925.61
+6766401.82,452914.48 6766419.83,452925.61 6766473.85,452947.87
+6766509.86,452970.13 6766509.86,453025.79 6766491.86,453025.79
+6766509.86,452992.4 6766563.88,452881.08 6766563.88,452792.02
+6766581.89,452758.63 6766563.88,452647.31 6766563.88,452513.73
+6766599.9,452391.27 6766671.92,452380.14 6766689.93,452346.75
+6766689.93,452324.48 6766707.94,452291.09 6766761.96,452257.69
+6766779.96,452246.56 6766797.97,452202.03 6766797.97,452168.63
+6766851.99,452168.63 6766906.01,452179.77 6766924.02,452213.16
+6766960.04,452279.95 6766960.04,452324.48 6766942.03,452335.61
+6766924.02,452357.88 6766924.02,452391.27 6766888.01,452458.07
+6766851.99,452547.12 6766797.97,452691.84 6766725.94,452747.5
+6766707.94,452814.29 6766671.92,452858.82 6766671.92,452892.21
+6766689.93,452936.74 6766689.93,452959 6766653.92,453003.53
+6766653.92,453048.06 6766617.9,453070.32 6766527.87,453092.59
+6766491.86,453148.25 6766455.84,453181.64 6766419.83,453181.64
+6766383.82,453148.25 6766365.81,452970.13 6766365.81))
+
+>  The prime suspect  is in placement_finder.cpp (378:396) -  it looks
+>  wrong to me
+>  Cheers
+>  Artem
+>
+>
+-- 
+    Jon
+
+
+From artem at mapnik.org  Thu Mar 27 17:20:09 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 Mar 2008 16:20:09 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+	<b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+Message-ID: <3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+
+>
+> Odd, I get...
+>
+> gis=> select isvalid(way),ST_NumInteriorRings(way),osm_id
+> gis-> from planet_osm_polygon where name like 'Noord%';
+>  isvalid | st_numinteriorrings | osm_id
+> ---------+---------------------+--------
+>  t       |                   3 |   1432
+> (1 row)
+>
+>
+
+Odd indeed. I tried again but I always get only outer ring  (using  
+svn trunk osm2pgsql) .
+> The geometry is...
+
+
+
+Ok, loaded your geometry and I get 3 inner loops, but I can not  
+replicate your problem. Polygon 1432 is fine. But there is
+
+  <relation id="2030" visible="true" timestamp="2007-09-28T20:20:54 
++01:00" user="Skywave">
+     <member type="way" ref="8033577" role=""/>
+     <member type="way" ref="8169051" role=""/>
+     <tag k="type" v="multipolygon"/>
+   </relation>
+
+which corresponds to invalid polygon in db:
+
+NOTICE:  Hole lies outside shell at or near point 458280 6.76844e+06
+
+
+So, which polygon is actually causing trouble ?
+
+Artem
+
+
+
+From kleptog at gmail.com  Thu Mar 27 19:49:44 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 27 Mar 2008 19:49:44 +0100
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+	<b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+	<3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+Message-ID: <2fc2c5f10803271149w597a96c6ra9567b2179ee2e04@mail.gmail.com>
+
+On Thu, Mar 27, 2008 at 5:20 PM, Artem Pavlenko <artem at mapnik.org> wrote:
+>  So, which polygon is actually causing trouble ?
+
+I'm pretty sure its this one:
+
+http://www.openstreetmap.org/api/0.5/relation/1432/full
+
+Given the glyphs its trying to output, but I don't see the problem
+either... My DB had the problem that the cycle-map relation patch to
+osm2pgsql broken the multipolygon stuff. I fix that and now I get the
+right number of rings, but no other problems.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From jburgess777 at googlemail.com  Thu Mar 27 21:17:58 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 27 Mar 2008 20:17:58 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+	<b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+	<3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+Message-ID: <1206649078.5001.8.camel@localhost.localdomain>
+
+
+On Thu, 2008-03-27 at 16:20 +0000, Artem Pavlenko wrote:
+> So, which polygon is actually causing trouble ?
+
+It is definitely the relation 1432. I can reproduce the problem by
+downloading and importing the data for just this single relation:
+
+wget -O 1432.osm http://api.openstreetmap.org/api/0.5/relation/1432/full
+osm2pgsql -m 1432.osm
+
+I have attached the patch I used to show the 'NaN' output.
+Could you try applying this patch and see if you get valid co-ordinates
+for all the vertexes in the path or some NaN? 
+
+It seems that for me the freetype library stumbles on OK with the first
+few NaN so it maybe it is just crunching random data. Maybe you are just
+lucky that the NaN's in the path do not cause a lockup?
+
+I'll add some more debug into the maths used to generate the path. I can
+see a few places where a NaN float could be generated.
+
+	Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: debug-path.patch
+Type: text/x-patch
+Size: 2085 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080327/c4f5128b/attachment.bin>
+
+From artem at mapnik.org  Thu Mar 27 22:00:15 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 27 Mar 2008 21:00:15 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <1206649078.5001.8.camel@localhost.localdomain>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<69235BC5-CF67-4A4B-9BBE-584E1DC87C8A@mapnik.org>
+	<b215ec5f0803270522g2b8a4117p7534861e4ee396af@mail.gmail.com>
+	<3DC172FB-B68B-4D91-948B-F34FCA3CC1B6@mapnik.org>
+	<1206649078.5001.8.camel@localhost.localdomain>
+Message-ID: <C3BBAF38-9344-4E80-A506-805EFE897B65@mapnik.org>
+
+
+On 27 Mar 2008, at 20:17, Jon Burgess wrote:
+
+>
+> On Thu, 2008-03-27 at 16:20 +0000, Artem Pavlenko wrote:
+>> So, which polygon is actually causing trouble ?
+>
+> It is definitely the relation 1432. I can reproduce the problem by
+> downloading and importing the data for just this single relation:
+>
+> wget -O 1432.osm http://api.openstreetmap.org/api/0.5/relation/1432/ 
+> full
+> osm2pgsql -m 1432.osm
+>
+> I have attached the patch I used to show the 'NaN' output.
+> Could you try applying this patch and see if you get valid co- 
+> ordinates
+> for all the vertexes in the path or some NaN?
+>
+
+Hmm..  all coordinates seems reasonable :
+
+   New glyphs: 12
+    prepare_glyph: N,-0.787987,-3.41014,-0.227086
+    pushed_glyph: 0 N,-0.787987,-3.41014,-0.227086
+    prepare_glyph: o,5.91171,-4.95599,-0.262601
+    pushed_glyph: 1 o,5.91171,-4.95599,-0.262601
+    prepare_glyph: o,11.706,-6.51355,-0.262601
+    pushed_glyph: 2 o,11.706,-6.51355,-0.262601
+    prepare_glyph: r,17.5003,-8.07111,-0.262601
+    pushed_glyph: 3 r,17.5003,-8.07111,-0.262601
+    prepare_glyph: d,21.3632,-9.10948,-0.262601
+    pushed_glyph: 4 d,21.3632,-9.10948,-0.262601
+    prepare_glyph:  ,29.9211,-10.255,0.558619
+    pushed_glyph: 5  ,29.9211,-10.255,0.558619
+    prepare_glyph: P,33.1735,-8.08002,0.821849
+    pushed_glyph: 6 P,33.1735,-8.08002,0.821849
+    prepare_glyph: a,37.2587,-3.68558,0.821849
+    pushed_glyph: 7 a,37.2587,-3.68558,0.821849
+    prepare_glyph: m,41.4913,0.877992,0.885965
+    pushed_glyph: 8 m,41.4913,0.877992,0.885965
+    prepare_glyph: p,44.6394,6.56656,0.0474596
+    pushed_glyph: 9 p,44.6394,6.56656,0.0474596
+    prepare_glyph: u,46.9688,10.4704,-1.60599
+    pushed_glyph: 10 u,46.9688,10.4704,-1.60599
+    prepare_glyph: s,47.2808,6.19535,-2.12582
+    pushed_glyph: 11 s,47.2808,6.19535,-2.12582
+    pulling_glyph: 0
+    pulling_glyph: 1
+    pulling_glyph: 2
+    pulling_glyph: 3
+    pulling_glyph: 4
+    pulling_glyph: 5
+    pulling_glyph: 6
+    pulling_glyph: 7
+    pulling_glyph: 8
+    pulling_glyph: 9
+    pulling_glyph: 10
+    pulling_glyph: 11
+end layer processing
+
+
+Do I need to zooming into particular box to get NaNs ?
+
+Artem
+
+
+> It seems that for me the freetype library stumbles on OK with the  
+> first
+> few NaN so it maybe it is just crunching random data. Maybe you are  
+> just
+> lucky that the NaN's in the path do not cause a lockup?
+>
+> I'll add some more debug into the maths used to generate the path.  
+> I can
+> see a few places where a NaN float could be generated.
+
+
+
+>
+> 	Jon
+>
+>
+> <debug-path.patch>
+
+
+
+From dom at earth.li  Sat Mar 29 19:23:14 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Sat, 29 Mar 2008 18:23:14 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <1206577927.31610.41.camel@localhost.localdomain>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+Message-ID: <20080329182314.GS2204@urchin.earth.li>
+
+On Thu, Mar 27, 2008 at 12:32:07AM +0000, Jon Burgess wrote:
+> There is one OSM tile which causes the mapnik rendering code to get
+> stuck in an infinite loop. Strictly speaking it is the freetype library
+> which loops, but it seems to be triggered by a broken text placement.
+
+This is also https://trac.mapnik.org/ticket/86 .
+
+If you do get to a fix, adding information on that ticket would be much
+appreciated. Artem suggested that a fix for this really ought to get
+into the stable release.
+
+Cheers,
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From jburgess777 at googlemail.com  Sat Mar 29 19:39:44 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 29 Mar 2008 18:39:44 +0000
+Subject: [Mapnik-devel] Any advice on debugging placement_finder?
+In-Reply-To: <20080329182314.GS2204@urchin.earth.li>
+References: <1206577927.31610.41.camel@localhost.localdomain>
+	<20080329182314.GS2204@urchin.earth.li>
+Message-ID: <1206815984.15472.29.camel@localhost.localdomain>
+
+
+On Sat, 2008-03-29 at 18:23 +0000, Dominic Hargreaves wrote:
+> On Thu, Mar 27, 2008 at 12:32:07AM +0000, Jon Burgess wrote:
+> > There is one OSM tile which causes the mapnik rendering code to get
+> > stuck in an infinite loop. Strictly speaking it is the freetype library
+> > which loops, but it seems to be triggered by a broken text placement.
+> 
+> This is also https://trac.mapnik.org/ticket/86 .
+> 
+> If you do get to a fix, adding information on that ticket would be much
+> appreciated. Artem suggested that a fix for this really ought to get
+> into the stable release.
+> 
+> Cheers,
+> Dominic.
+
+I just added a patch to that ticket which seems to work for me. I think
+the problem only occurs rarely since line placement is not often used
+with areas.
+
+	Jon
+
+
+
+
+From dom at earth.li  Sun Mar 30 19:34:20 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Sun, 30 Mar 2008 18:34:20 +0100
+Subject: [Mapnik-devel] Testing 0.5 stable branch (0.5.1 release)
+Message-ID: <20080330173420.GV2204@urchin.earth.li>
+
+I've prepared what will become mapnik 0.5.1 in subversion as
+branches/stable/0.5. I'd be grateful if people could test this,
+especially on non-Linux platforms (Artem, I think it would be good to
+test win32 builds before tagging, for example).
+
+Cheers,
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From kms at passback.co.uk  Sun Mar 30 20:48:15 2008
+From: kms at passback.co.uk (Keith Sharp)
+Date: Sun, 30 Mar 2008 19:48:15 +0100
+Subject: [Mapnik-devel] Confirm licence on icon with Mapnik source
+Message-ID: <1206902895.31733.8.camel@statler.passback.co.uk>
+
+Hello,
+
+I wanted to use the icon:
+
+	demo/viewer/images/globe.png
+
+in an application of my own, can the copyright holder (Artem?) confirm
+that it is under the LGPL?
+
+Many thanks,
+
+Keith.
+
+
+
+From artem at mapnik.org  Sun Mar 30 21:38:09 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 30 Mar 2008 20:38:09 +0100
+Subject: [Mapnik-devel] Testing 0.5 stable branch (0.5.1 release)
+In-Reply-To: <20080330173420.GV2204@urchin.earth.li>
+References: <20080330173420.GV2204@urchin.earth.li>
+Message-ID: <0D29E5AB-FA6B-4A0B-9641-BE9217F8C096@mapnik.org>
+
+
+On 30 Mar 2008, at 18:34, Dominic Hargreaves wrote:
+
+> I've prepared what will become mapnik 0.5.1 in subversion as
+> branches/stable/0.5. I'd be grateful if people could test this,
+> especially on non-Linux platforms (Artem, I think it would be good to
+> test win32 builds before tagging, for example).
+>
+
+Great job!  I'll try to build win32 ASAP
+> Cheers,
+>
+> Dominic.
+>
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Sun Mar 30 21:48:05 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 30 Mar 2008 20:48:05 +0100
+Subject: [Mapnik-devel] Confirm licence on icon with Mapnik source
+In-Reply-To: <1206902895.31733.8.camel@statler.passback.co.uk>
+References: <1206902895.31733.8.camel@statler.passback.co.uk>
+Message-ID: <14345B45-F2C8-4F51-B9C3-D9DB310538C0@mapnik.org>
+
+
+On 30 Mar 2008, at 19:48, Keith Sharp wrote:
+
+> Hello,
+>
+> I wanted to use the icon:
+>
+> 	demo/viewer/images/globe.png
+>
+> in an application of my own, can the copyright holder (Artem?) confirm
+> that it is under the LGPL?
+
+Hmm.. I can not be 100% certain about origins of this icon, I'm  
+afraid. It's quite possible the icon in question came from kde- 
+look.org where most sets are GPL AFAIK.
+
+>
+> Many thanks,
+>
+> Keith.
+>
+
+
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem.mapnik at googlemail.com  Mon Mar 31 19:35:31 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Mon, 31 Mar 2008 18:35:31 +0100
+Subject: [Mapnik-devel] Testing 0.5 stable branch (0.5.1 release)
+In-Reply-To: <20080330173420.GV2204@urchin.earth.li>
+References: <20080330173420.GV2204@urchin.earth.li>
+Message-ID: <7124B694-C7A1-4DAF-8C38-58007E1CC115@mapnik.org>
+
+
+On 30 Mar 2008, at 18:34, Dominic Hargreaves wrote:
+
+> I've prepared what will become mapnik 0.5.1 in subversion as
+> branches/stable/0.5. I'd be grateful if people could test this,
+> especially on non-Linux platforms (Artem, I think it would be good to
+> test win32 builds before tagging, for example).
+
+
+Dominic,
+
+I just committed win32 specific patch to stable/0.5  - just some  
+minor changes.
+Could you verify, it works for you on Debian
+Artem
+
+>
+> Cheers,
+>
+> Dominic.
+>
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+

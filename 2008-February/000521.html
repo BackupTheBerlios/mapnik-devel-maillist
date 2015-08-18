@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20OSM%20plugin%20-%20crash%20in%20libxml%20parsing&In-Reply-To=%3C200802280018.48474.nick%40hogweed.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000519.html">
+   <LINK REL="Next"  HREF="000522.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing</H1>
+    <B>Nick Whitelegg</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20OSM%20plugin%20-%20crash%20in%20libxml%20parsing&In-Reply-To=%3C200802280018.48474.nick%40hogweed.org%3E"
+       TITLE="[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing">nick at hogweed.org
+       </A><BR>
+    <I>Thu Feb 28 01:18:48 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000519.html">[Mapnik-devel] Mapnik direct OSM support
+</A></li>
+        <LI>Next message: <A HREF="000522.html">[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#521">[ date ]</a>
+              <a href="thread.html#521">[ thread ]</a>
+              <a href="subject.html#521">[ subject ]</a>
+              <a href="author.html#521">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello everyone,
+
+Have just tried the Mapnik/OSM plugin. Unfortunately I get a crash when the 
+XML is being parsed. This is unfortunately not reproducible if the XML 
+parsing code is used standalone, rather than as an OSM plugin.
+
+The latest version of my code is at 
+<A HREF="http://www.nickw.uklinux.net/mapnik/mapnikosm_2.tar.bz2.">http://www.nickw.uklinux.net/mapnik/mapnikosm_2.tar.bz2.</A>
+
+As well as the actual code, this contains a small C++ file - render.cpp - used 
+for testing, along with a test XML style file - osmmerc.xml - and a small 
+test OSM file - test.osm.
+
+The error occurs when the the startElement() method in xmlparse.cpp is called.
+
+I'm wondering whether this is something to do with the way I compiled the 
+shared library? The libMakefile is what I use to make the shared library. I 
+used -fPIC to compile each source file, then
+
+gcc -shared -o osm.input $(OBJ)
+
+to make the shared library.
+
+A backtrace is displayed (see below)
+
+Any ideas on this one? 
+
+Thanks,
+Nick
+
+--
+
+Output from render:
+
+osm::dataset::loadmemset
+setting up my_handler
+parsing file`
+*** glibc detected *** ./render: realloc(): invalid pointer: 0xbfbadc3c ***
+======= Backtrace: =========
+/lib/libc.so.6[0xb7a894b6]
+/lib/libc.so.6(realloc+0x255)[0xb7a8d2f5]
+/usr/lib/libxml2.so.2(nodePush+0x75)[0xb7e59d25]
+/usr/lib/libxml2.so.2(xmlSAX2StartElement+0x119)[0xb7f1b709]
+/usr/lib/libxml2.so.2(startElement+0x2b)[0xb7f227db]
+/usr/lib/libxml2.so.2(xmlParseStartTag+0x481)[0xb7e63501]
+/usr/lib/libxml2.so.2(xmlParseElement+0x199)[0xb7e6b849]
+/usr/lib/libxml2.so.2(xmlParseDocument+0x2ab)[0xb7e6dafb]
+/usr/lib/libxml2.so.2(xmlSAXUserParseFile+0x6b)[0xb7e6e85b]
+/usr/local/lib/mapnik/input/osm.input(_ZN11osm_dataset4loadEPKc+0x121)
+[0xb785e65f]
+/usr/local/lib/mapnik/input/osm.input(_ZN14osm_datasourceC1ERKN6mapnik10parametersE+0x456)
+[0xb7860758]
+/usr/local/lib/mapnik/input/osm.input(create+0x34)[0xb7860b0c]
+/usr/local/lib/libmapnik.so.0.5
+(_ZN6mapnik16datasource_cache6createERKNS_10parametersE+0x4f8)[0xb7d0e808]
+/usr/local/lib/libmapnik.so.0.5
+(_ZN6mapnik10map_parser11parse_layerERNS_3MapERKN5boost13property_tree11basic_ptreeINS4_12ptree_traitsIcEEEE+0x6ff)
+[0xb7d5970f]
+/usr/local/lib/libmapnik.so.0.5
+(_ZN6mapnik10map_parser9parse_mapERNS_3MapERKN5boost13property_tree11basic_ptreeINS4_12ptree_traitsIcEEEE+0x25d)
+[0xb7d665fd]
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000519.html">[Mapnik-devel] Mapnik direct OSM support
+</A></li>
+	<LI>Next message: <A HREF="000522.html">[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#521">[ date ]</a>
+              <a href="thread.html#521">[ thread ]</a>
+              <a href="subject.html#521">[ subject ]</a>
+              <a href="author.html#521">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

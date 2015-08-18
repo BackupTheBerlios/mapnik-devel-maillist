@@ -1,0 +1,4676 @@
+From artem.mapnik at googlemail.com  Wed Jan  2 16:50:05 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 2 Jan 2008 15:50:05 +0000
+Subject: [Mapnik-devel] Managing large XML files aka osm.xml
+Message-ID: <0851CDDF-9F2C-411D-92EA-C5A842D1C75D@gmail.com>
+
+Hello all!
+
+David Siegel implemented support for libxml2 parser in Mapnik, check  
+it out :
+
+http://mapnik.org/news/2008/jan/02/managing_large_xml/
+
+http://trac.mapnik.org/wiki/ManagingLargeXmlFiles
+
+Happy New Year!
+Artem
+
+
+From kleptog at gmail.com  Wed Jan  2 16:59:30 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Wed, 2 Jan 2008 16:59:30 +0100
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <1198923512.8110.6.camel@animal.passback.co.uk>
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+Message-ID: <2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+
+On Dec 29, 2007 11:18 AM, Keith Sharp <kms at passback.co.uk> wrote:
+> I think the major thing that needs to be done before a release is
+> versioned sonames.  This came up as a blocker during the review of my
+> Mapnik package for inclusion in Fedora:
+>
+>         https://bugzilla.redhat.com/show_bug.cgi?id=234581
+
+Is there someone working on this? I have a small amount of experience,
+if people are interested...
+
+All I think they are asking for is that the library get a version
+number, like libmapnik-0.5.0.so, right?
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From artem at mapnik.org  Wed Jan  2 17:35:13 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 2 Jan 2008 16:35:13 +0000
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+	<2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+Message-ID: <760879AD-7296-4F7B-AB78-8F5A8464EC06@mapnik.org>
+
+
+On 2 Jan 2008, at 15:59, Martijn van Oosterhout wrote:
+
+> On Dec 29, 2007 11:18 AM, Keith Sharp <kms at passback.co.uk> wrote:
+>> I think the major thing that needs to be done before a release is
+>> versioned sonames.  This came up as a blocker during the review of my
+>> Mapnik package for inclusion in Fedora:
+>>
+>>         https://bugzilla.redhat.com/show_bug.cgi?id=234581
+>
+> Is there someone working on this? I have a small amount of experience,
+> if people are interested...
+>
+
+Martijn, sure, your help would be great!
+> All I think they are asking for is that the library get a version
+> number, like libmapnik-0.5.0.so, right?
+
+Yep, something like:
+
+libmapnik.so.0.5.0
+
+When ABI change we'll need to increment major version number i.e
+
+libmapnik.so.1.6.0 and so on.
+
+Scons scripts needs modifying to create correct symbolic links during  
+install, could you have a look into this?
+
+Artem
+>
+> Have a nice day,
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From skinkie at xs4all.nl  Wed Jan  2 17:37:51 2008
+From: skinkie at xs4all.nl (Stefan de Konink)
+Date: Wed, 2 Jan 2008 17:37:51 +0100 (CET)
+Subject: [Mapnik-devel] [OSM-dev] Managing large XML files aka osm.xml
+In-Reply-To: <0851CDDF-9F2C-411D-92EA-C5A842D1C75D@gmail.com>
+Message-ID: <20080102172528.W89463-100000@xs2.xs4all.nl>
+
+On Wed, 2 Jan 2008, Artem Pavlenko wrote:
+
+> David Siegel implemented support for libxml2 parser in Mapnik, check
+> it out :
+
+I was able to load the entiere planet.osm into MonetDB4 (XML), but
+incompare to the SQL version it is not optimal. And one may wonder why he
+wants to use an text representation instead of a processed binary!
+
+For plain XML processing people should probably stick with MSXML for the
+time being. The performance of it is probably the best one out there. We
+did some XSLT processing based on the tiles at home stuff, and it is not
+funny that an 8 times as powerful machine gets beaten.
+
+
+I wonder how much time it will take for each run on an 8GB machine
+processing the current planet.osm (61GB).
+
+
+Stefan
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  2 17:50:09 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 2 Jan 2008 16:50:09 +0000
+Subject: [Mapnik-devel] [OSM-dev] Managing large XML files aka osm.xml
+In-Reply-To: <20080102172528.W89463-100000@xs2.xs4all.nl>
+References: <20080102172528.W89463-100000@xs2.xs4all.nl>
+Message-ID: <EC3B2298-32E3-4205-B9C4-D52023A18E59@gmail.com>
+
+
+On 2 Jan 2008, at 16:37, Stefan de Konink wrote:
+
+> On Wed, 2 Jan 2008, Artem Pavlenko wrote:
+>
+>> David Siegel implemented support for libxml2 parser in Mapnik, check
+>> it out :
+>
+> I was able to load the entiere planet.osm into MonetDB4 (XML), but
+> incompare to the SQL version it is not optimal. And one may wonder  
+> why he
+> wants to use an text representation instead of a processed binary!
+
+Sorry, if it was not clear. Mapnik has got three xml parsers to  
+choose from (at compile time) : tinyxml, spirit and now libxml2.
+Only libxml2 based supports advanced features like entities.  Mapnik  
+is using XML parsers to load data/styles definition file,
+not actual osm data.
+
+>
+> For plain XML processing people should probably stick with MSXML  
+> for the
+> time being. The performance of it is probably the best one out there.
+I would doubt it. BTW, all three parsers mentioned above run happily  
+on win32.
+
+> We
+> did some XSLT processing based on the tiles at home stuff, and it is not
+> funny that an 8 times as powerful machine gets beaten.
+
+
+> I wonder how much time it will take for each run on an 8GB machine
+> processing the current planet.osm (61GB).
+
+I understand but I never decompress planet :
+
+:> osm2pgsql planet.osm.bz2
+
+
+>
+>
+> Stefan
+>
+
+Artem
+
+
+
+From tom at compton.nu  Wed Jan  2 17:18:36 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 02 Jan 2008 16:18:36 +0000
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+	(Martijn van Oosterhout's message of "Wed\,
+	2 Jan 2008 16\:59\:30 +0100")
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+	<2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+Message-ID: <yekmyronqub.fsf@dellow.uk.cyberscience.com>
+
+In message <2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39 at mail.gmail.com>
+        Martijn van Oosterhout <kleptog at gmail.com> wrote:
+
+> On Dec 29, 2007 11:18 AM, Keith Sharp <kms at passback.co.uk> wrote:
+>> I think the major thing that needs to be done before a release is
+>> versioned sonames.  This came up as a blocker during the review of my
+>> Mapnik package for inclusion in Fedora:
+>>
+>>         https://bugzilla.redhat.com/show_bug.cgi?id=234581
+>
+> Is there someone working on this? I have a small amount of experience,
+> if people are interested...
+>
+> All I think they are asking for is that the library get a version
+> number, like libmapnik-0.5.0.so, right?
+
+Yes - it just needs an soname basically.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From artem.mapnik at googlemail.com  Wed Jan  2 22:55:44 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 2 Jan 2008 21:55:44 +0000
+Subject: [Mapnik-devel] SRTM relief
+Message-ID: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+
+Hello lists,
+
+Sometime last year I was inspired by http://www.srtm.com and I even  
+contacted developer to see if we can use SRTM derived relief maps in  
+OSM.
+I don't remember all details but reply was somewhat ambiguous:  yes  
+OSM can use pre-rendered tiles from the site above, source code (in  
+Java ) is a bit messy, cause my crazy mate coded something ...
+Anyway, while srtm.com tiles look good on its own, colour scheme is  
+not suitable for overlaying with OSM data IMHO. So I thought it would  
+be fairly straight forward to implement something from scratch.
+
+Here is what I'm thinking about - a c++ command line app, which given  
+bounding box in geographic coordinate system (WGS84) would read  
+compressed raw SRTM files and output 'nice' looking maps (tiles) in  
+specified projection (I only care about Mercator and OS NatGrid but  
+others will work as well).
+
+Here is more detailed feature list:
+
+1. highly configurable
+2. all steps needed to produce final relief map included (relief,  
+blending , warping  etc)
+3. read raw compressed SRTM directly
+4. easy to add new algorithms
+5. using GIL from Adobe for accessing pixels and implementing algos.
+6. mapnik and OSM ready
+7. perhaps it can be used for outputting contours as well (?)
+
+I've coded a prototype based on excellent posting on http:// 
+perrygeo.net/wordpress/?p=7 and I'm looking for a good color scheme  
+that would work for the whole planet, any pointers?
+
+Here is some test outputs:
+
+http://artem.dev.openstreetmap.org/files/relief_osgb.png
+http://artem.dev.openstreetmap.org/files/srtm_relief.png
+
+(red pixels are voids and I'm yet to fill them, did someone mentioned  
+some good algorithms a few months ago?)
+
+The kind of reliefs I think might work well for OSM are gmap terrain  
+or perhaps Yahoo style.
+Any ideas or comments? Cartographers?
+
+Thanks in advance
+Artem
+
+
+
+
+
+
+From robert.coup at onetrackmind.co.nz  Thu Jan  3 03:18:28 2008
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Thu, 3 Jan 2008 15:18:28 +1300
+Subject: [Mapnik-devel] [Mapnik-users] SRTM relief
+In-Reply-To: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+References: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+Message-ID: <c5097ac40801021818i526e3861j628fb5bc100a56@mail.gmail.com>
+
+On 03/01/2008, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+>
+> 3. read raw compressed SRTM directly
+
+
+Why not read it via GDAL? Then any other GDAL source (TIFs, grids, etc)
+would work as well. I'm not familiar with SRTM but gdal lists it as a
+supported format[1].
+
+Rob :)
+
+[1] http://gdal.org/frmt_various.html#SRTMHGT
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080103/c775be20/attachment.html>
+
+From igor.brejc at gmail.com  Thu Jan  3 10:27:51 2008
+From: igor.brejc at gmail.com (Igor Brejc)
+Date: Thu, 03 Jan 2008 10:27:51 +0100
+Subject: [Mapnik-devel] [OSM-dev] SRTM relief
+In-Reply-To: <477CA830.1010402@na1400.info>
+References: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+	<477CA830.1010402@na1400.info>
+Message-ID: <477CAA97.3010104@gmail.com>
+
+Lambertus wrote:
+> Will this be able to write the SRTM data as ways to .osm files as well? 
+> AFAIK there is no such utility yet, but it would be useful for creating 
+> e.g. Garmin maps.
+>   
+>
+Srtm2Osm converts SRTM3 data to OSM ways and can also categorize them so 
+that they can easily be used with mkgmap:
+http://wiki.openstreetmap.org/index.php/Srtm2Osm#Categorizing_Contours_For_Mkgmap
+
+
+Regards,
+Igor
+
+
+From osm at na1400.info  Thu Jan  3 10:17:36 2008
+From: osm at na1400.info (Lambertus)
+Date: Thu, 03 Jan 2008 10:17:36 +0100
+Subject: [Mapnik-devel] [OSM-dev] SRTM relief
+In-Reply-To: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+References: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+Message-ID: <477CA830.1010402@na1400.info>
+
+Will this be able to write the SRTM data as ways to .osm files as well? 
+AFAIK there is no such utility yet, but it would be useful for creating 
+e.g. Garmin maps.
+
+Artem Pavlenko wrote:
+> Hello lists,
+> 
+> Sometime last year I was inspired by http://www.srtm.com and I even  
+> contacted developer to see if we can use SRTM derived relief maps in  
+> OSM.
+> I don't remember all details but reply was somewhat ambiguous:  yes  
+> OSM can use pre-rendered tiles from the site above, source code (in  
+> Java ) is a bit messy, cause my crazy mate coded something ...
+> Anyway, while srtm.com tiles look good on its own, colour scheme is  
+> not suitable for overlaying with OSM data IMHO. So I thought it would  
+> be fairly straight forward to implement something from scratch.
+> 
+> Here is what I'm thinking about - a c++ command line app, which given  
+> bounding box in geographic coordinate system (WGS84) would read  
+> compressed raw SRTM files and output 'nice' looking maps (tiles) in  
+> specified projection (I only care about Mercator and OS NatGrid but  
+> others will work as well).
+> 
+> Here is more detailed feature list:
+> 
+> 1. highly configurable
+> 2. all steps needed to produce final relief map included (relief,  
+> blending , warping  etc)
+> 3. read raw compressed SRTM directly
+> 4. easy to add new algorithms
+> 5. using GIL from Adobe for accessing pixels and implementing algos.
+> 6. mapnik and OSM ready
+> 7. perhaps it can be used for outputting contours as well (?)
+> 
+> I've coded a prototype based on excellent posting on http:// 
+> perrygeo.net/wordpress/?p=7 and I'm looking for a good color scheme  
+> that would work for the whole planet, any pointers?
+> 
+> Here is some test outputs:
+> 
+> http://artem.dev.openstreetmap.org/files/relief_osgb.png
+> http://artem.dev.openstreetmap.org/files/srtm_relief.png
+> 
+> (red pixels are voids and I'm yet to fill them, did someone mentioned  
+> some good algorithms a few months ago?)
+> 
+> The kind of reliefs I think might work well for OSM are gmap terrain  
+> or perhaps Yahoo style.
+> Any ideas or comments? Cartographers?
+> 
+> Thanks in advance
+> Artem
+> 
+> 
+> 
+> 
+> 
+> _______________________________________________
+> dev mailing list
+> dev at openstreetmap.org
+> http://lists.openstreetmap.org/cgi-bin/mailman/listinfo/dev
+
+
+
+From osm at na1400.info  Thu Jan  3 11:20:43 2008
+From: osm at na1400.info (Lambertus)
+Date: Thu, 03 Jan 2008 11:20:43 +0100
+Subject: [Mapnik-devel] [OSM-dev] SRTM relief
+In-Reply-To: <477CAA97.3010104@gmail.com>
+References: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+	<477CA830.1010402@na1400.info> <477CAA97.3010104@gmail.com>
+Message-ID: <477CB6FB.1030104@na1400.info>
+
+Igor Brejc wrote:
+> Lambertus wrote:
+>> Will this be able to write the SRTM data as ways to .osm files as 
+>> well? AFAIK there is no such utility yet, but it would be useful for 
+>> creating e.g. Garmin maps.
+>>  
+> Srtm2Osm converts SRTM3 data to OSM ways and can also categorize them so 
+> that they can easily be used with mkgmap:
+> http://wiki.openstreetmap.org/index.php/Srtm2Osm#Categorizing_Contours_For_Mkgmap 
+> 
+Oh nice, I hadn't found that page yet. Thanks!
+
+
+
+From artem at mapnik.org  Thu Jan  3 11:57:07 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 10:57:07 +0000
+Subject: [Mapnik-devel] [Mapnik-users] SRTM relief
+In-Reply-To: <c5097ac40801021818i526e3861j628fb5bc100a56@mail.gmail.com>
+References: <62287DFF-6293-4A6D-AF63-647CBC67D9CA@gmail.com>
+	<c5097ac40801021818i526e3861j628fb5bc100a56@mail.gmail.com>
+Message-ID: <39408BE2-991D-41B7-84AF-29572E3C8B5E@mapnik.org>
+
+
+> On 03/01/2008, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+> 3. read raw compressed SRTM directly
+>
+> Why not read it via GDAL? Then any other GDAL source (TIFs, grids,  
+> etc) would work as well. I'm not familiar with SRTM but gdal lists  
+> it as a supported format[1].
+
+SRTM files are *very* easy to read , also GDAL can not read  
+compressed files AFAIK.
+At the moment I'm only interested in SRTM data anyway.
+Artem
+
+>
+>
+> Rob :)
+>
+> [1] http://gdal.org/frmt_various.html#SRTMHGT
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080103/85e1432e/attachment.html>
+
+From kleptog at gmail.com  Thu Jan  3 12:53:28 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 3 Jan 2008 12:53:28 +0100
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <760879AD-7296-4F7B-AB78-8F5A8464EC06@mapnik.org>
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+	<2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+	<760879AD-7296-4F7B-AB78-8F5A8464EC06@mapnik.org>
+Message-ID: <2fc2c5f10801030353p733c174ey4a6d29644f6db9ea@mail.gmail.com>
+
+On Jan 2, 2008 5:35 PM, Artem Pavlenko <artem at mapnik.org> wrote:
+> Martijn, sure, your help would be great!
+> > All I think they are asking for is that the library get a version
+> > number, like libmapnik-0.5.0.so, right?
+>
+> Yep, something like:
+>
+> libmapnik.so.0.5.0
+
+Ok, here's a first cut. What it does is:
+Installed library: libmapnik.so.0.5.0
+Soname: libmapnik.so.0.5 (with symlink created pointing to actual lib)
+plus a symlink from libmapnik.so to the soname symlink.
+
+> When ABI change we'll need to increment major version number i.e
+
+I've put in a variable ABI_VERSION and with the above scheme 0.5.1 is
+ABI compatable but 0.6.0 is not. I have no idea how stable the ABI is
+so I just made this up. If we don't think the ABI will be stable at
+all we should just set the soname to libmapnik.0.5.0 and be done with
+it. If we think the ABI is really stable we can make it
+libmapnik.so.0.
+
+The decision is not set in stone so we should choose what suits the
+current situation the best.
+
+Any comments?
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapniksoname.patch
+Type: text/x-patch
+Size: 2247 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080103/8a4c53d1/attachment.bin>
+
+From artem at mapnik.org  Thu Jan  3 13:19:43 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 12:19:43 +0000
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <2fc2c5f10801030353p733c174ey4a6d29644f6db9ea@mail.gmail.com>
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+	<2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+	<760879AD-7296-4F7B-AB78-8F5A8464EC06@mapnik.org>
+	<2fc2c5f10801030353p733c174ey4a6d29644f6db9ea@mail.gmail.com>
+Message-ID: <FBAAF09E-AA1A-4F09-8229-16CE11B6E146@mapnik.org>
+
+Martijn, looks good. I applied your patch in r580. I guess I have to  
+add something similar for darwin arch.
+Also, would you like a svn write access , just let me know.
+
+Artem
+
+On 3 Jan 2008, at 11:53, Martijn van Oosterhout wrote:
+
+> On Jan 2, 2008 5:35 PM, Artem Pavlenko <artem at mapnik.org> wrote:
+>> Martijn, sure, your help would be great!
+>>> All I think they are asking for is that the library get a version
+>>> number, like libmapnik-0.5.0.so, right?
+>>
+>> Yep, something like:
+>>
+>> libmapnik.so.0.5.0
+>
+> Ok, here's a first cut. What it does is:
+> Installed library: libmapnik.so.0.5.0
+> Soname: libmapnik.so.0.5 (with symlink created pointing to actual lib)
+> plus a symlink from libmapnik.so to the soname symlink.
+>
+>> When ABI change we'll need to increment major version number i.e
+>
+> I've put in a variable ABI_VERSION and with the above scheme 0.5.1 is
+> ABI compatable but 0.6.0 is not. I have no idea how stable the ABI is
+> so I just made this up. If we don't think the ABI will be stable at
+> all we should just set the soname to libmapnik.0.5.0 and be done with
+> it. If we think the ABI is really stable we can make it
+> libmapnik.so.0.
+>
+> The decision is not set in stone so we should choose what suits the
+> current situation the best.
+>
+> Any comments?
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/ 
+> <mapniksoname.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dom at earth.li  Thu Jan  3 13:09:27 2008
+From: dom at earth.li (Dominic Hargreaves)
+Date: Thu, 3 Jan 2008 12:09:27 +0000
+Subject: [Mapnik-devel] New release?
+In-Reply-To: <2fc2c5f10801030353p733c174ey4a6d29644f6db9ea@mail.gmail.com>
+References: <20071229055526.GA21326@metacarta.com>
+	<1198923512.8110.6.camel@animal.passback.co.uk>
+	<2fc2c5f10801020759n406bb3a9jf23e5f6e2642fc39@mail.gmail.com>
+	<760879AD-7296-4F7B-AB78-8F5A8464EC06@mapnik.org>
+	<2fc2c5f10801030353p733c174ey4a6d29644f6db9ea@mail.gmail.com>
+Message-ID: <20080103120927.GU4317@urchin.earth.li>
+
+On Thu, Jan 03, 2008 at 12:53:28PM +0100, Martijn van Oosterhout wrote:
+> On Jan 2, 2008 5:35 PM, Artem Pavlenko <artem at mapnik.org> wrote:
+> > Martijn, sure, your help would be great!
+> > > All I think they are asking for is that the library get a version
+> > > number, like libmapnik-0.5.0.so, right?
+> >
+> > Yep, something like:
+> >
+> > libmapnik.so.0.5.0
+> 
+> Ok, here's a first cut. What it does is:
+> Installed library: libmapnik.so.0.5.0
+> Soname: libmapnik.so.0.5 (with symlink created pointing to actual lib)
+> plus a symlink from libmapnik.so to the soname symlink.
+> 
+> > When ABI change we'll need to increment major version number i.e
+> 
+> I've put in a variable ABI_VERSION and with the above scheme 0.5.1 is
+> ABI compatable but 0.6.0 is not. I have no idea how stable the ABI is
+> so I just made this up. If we don't think the ABI will be stable at
+> all we should just set the soname to libmapnik.0.5.0 and be done with
+> it. If we think the ABI is really stable we can make it
+> libmapnik.so.0.
+> 
+> The decision is not set in stone so we should choose what suits the
+> current situation the best.
+> 
+> Any comments?
+
+This all looks good, and will make the Debian packages a bit nicer
+(currently I'm making up my soname (currently "1d" -- d for Debian) and
+incrementing it for each mapnik release).
+
+Cheers,
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From artem.mapnik at googlemail.com  Thu Jan  3 16:16:47 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 15:16:47 +0000
+Subject: [Mapnik-devel] curves
+Message-ID: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+
+Hello,
+
+Perhaps, not well know fact but Mapnik can render bezier curves. The  
+reason it is not being used is the lack of support for curves in  
+common GEO formats.
+I'm adding support for on-fly 'smooth' polygons/lines , which can be  
+controlled by providing smooth parameter (0.0 - 2.0)  i.e:
+
+  <Rule>
+       <Filter>[natural] = 'lake' or [natural] = 'water'</Filter>
+       <MaxScaleDenominator>5000000</MaxScaleDenominator>
+       <PolygonSymbolizer>
+         <CssParameter name="fill">&water_color;</CssParameter>
+	<CssParameter name="smooth">1.0</CssParameter>
+      </PolygonSymbolizer>
+     </Rule>
+
+It is very fast and you can see the result : http:// 
+artem.dev.openstreetmap.org/files/smooth_1.0.png
+(note that text following curve as well)
+
+I know tah has been using bezier curves by pre-processing geometries  
+for while.
+
+What people think about explicitly supporting curves as a part of  
+geometry model? This way we can model the world better.
+
+Thoughts?
+
+Artem
+
+P.S. Are there some hints (tags) in OSM that can be used for to  
+smooth or not?
+Also, are there are examples where it does work well and where it  
+doesn't?
+
+
+
+
+
+From kleptog at gmail.com  Thu Jan  3 16:24:00 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Thu, 3 Jan 2008 16:24:00 +0100
+Subject: [Mapnik-devel] curves
+In-Reply-To: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+Message-ID: <2fc2c5f10801030724l778f47c5m48023cc232936443@mail.gmail.com>
+
+On Jan 3, 2008 4:16 PM, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+> P.S. Are there some hints (tags) in OSM that can be used for to
+> smooth or not?
+> Also, are there are examples where it does work well and where it
+> doesn't?
+
+AFAIK there are no explicit hints, but there is code in osmarender to
+do bezier curves. There there is a lot of fudging to make it look
+good, but it's there. The main problem being that angles of 90 degrees
+or greater should possibly not be rounded. I think we can pretty
+safely turn it on for roads and river boundaries/coastlines. Though
+the parts that represent piers need to be exempted somehow.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From richard at systemeD.net  Thu Jan  3 16:37:09 2008
+From: richard at systemeD.net (Richard Fairhurst)
+Date: Thu, 03 Jan 2008 15:37:09 +0000
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+Message-ID: <20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+
+(suggest follow-ups to dev only)
+
+Artem Pavlenko wrote:
+
+> Perhaps, not well know fact but Mapnik can render bezier curves. The
+> reason it is not being used is the lack of support for curves in
+> common GEO formats.
+
+Now that really _does_ have promise for slimming down SRTM filesizes.
+
+My workflow for SRTM is GeoTIFF->DEM2TOPO->Polish format->Perl  
+script->Illustrator->simplify to beziers... which produces nice  
+manageable files. Clearly those particular tools wouldn't be much use  
+for OSM, but the principle remains.
+
+cheers
+Richard
+
+
+
+From artem at mapnik.org  Thu Jan  3 16:53:05 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 15:53:05 +0000
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+Message-ID: <1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+
+
+On 3 Jan 2008, at 15:37, Richard Fairhurst wrote:
+
+> (suggest follow-ups to dev only)
+>
+> Artem Pavlenko wrote:
+>
+>> Perhaps, not well know fact but Mapnik can render bezier curves. The
+>> reason it is not being used is the lack of support for curves in
+>> common GEO formats.
+>
+> Now that really _does_ have promise for slimming down SRTM filesizes.
+>
+> My workflow for SRTM is GeoTIFF->DEM2TOPO->Polish format->Perl
+> script->Illustrator->simplify to beziers... which produces nice
+> manageable files. Clearly those particular tools wouldn't be much use
+> for OSM, but the principle remains.
+>
+> cheers
+> Richard
+
+Yes, indeed, storing contours as bezier curves would make more  
+compact files.
+But in what format? I guess we can create our own format (easy) or  
+extent SFS (abstract spec mentions curves but there's no open source  
+implementation I aware of)
+
+Artem
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From crschmidt at metacarta.com  Thu Jan  3 17:17:11 2008
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Thu, 3 Jan 2008 11:17:11 -0500
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+	<1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+Message-ID: <20080103161711.GA16381@alta.metacarta.com>
+
+On Thu, Jan 03, 2008 at 03:53:05PM +0000, Artem Pavlenko wrote:
+> But in what format? I guess we can create our own format (easy) or  
+> extent SFS (abstract spec mentions curves but there's no open source  
+> implementation I aware of)
+
+SDF has support for curves, and is implemented inside of FDO.
+
+I highly doubt you want to reuse FDO for this, but just stating for the
+record.
+
+(The Simple Features definition for curves may not actually be what you
+think it is...)
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Thu Jan  3 17:32:42 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 16:32:42 +0000
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <20080103161711.GA16381@alta.metacarta.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+	<1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+	<20080103161711.GA16381@alta.metacarta.com>
+Message-ID: <5789A883-EE44-4DFA-BE43-44DF402FAF7B@mapnik.org>
+
+
+On 3 Jan 2008, at 16:17, Christopher Schmidt wrote:
+
+> On Thu, Jan 03, 2008 at 03:53:05PM +0000, Artem Pavlenko wrote:
+>> But in what format? I guess we can create our own format (easy) or
+>> extent SFS (abstract spec mentions curves but there's no open source
+>> implementation I aware of)
+>
+> SDF has support for curves, and is implemented inside of FDO.
+>
+> I highly doubt you want to reuse FDO for this, but just stating for  
+> the
+> record.
+
+I'll have a look thanks, but FDO seems complete overkill.
+>
+> (The Simple Features definition for curves may not actually be what  
+> you
+> think it is...)
+
+I recall there were some ideas about extending SFS geometry model to  
+support bezier, b-splines, nurbs curves, when it was developed.
+I think oracle spatial has some support , not sure.
+
+Cheers
+Artem
+
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From crschmidt at metacarta.com  Thu Jan  3 17:46:55 2008
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Thu, 3 Jan 2008 11:46:55 -0500
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <5789A883-EE44-4DFA-BE43-44DF402FAF7B@mapnik.org>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+	<1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+	<20080103161711.GA16381@alta.metacarta.com>
+	<5789A883-EE44-4DFA-BE43-44DF402FAF7B@mapnik.org>
+Message-ID: <20080103164654.GB16381@alta.metacarta.com>
+
+On Thu, Jan 03, 2008 at 04:32:42PM +0000, Artem Pavlenko wrote:
+> 
+> On 3 Jan 2008, at 16:17, Christopher Schmidt wrote:
+> 
+> >On Thu, Jan 03, 2008 at 03:53:05PM +0000, Artem Pavlenko wrote:
+> >>But in what format? I guess we can create our own format (easy) or
+> >>extent SFS (abstract spec mentions curves but there's no open source
+> >>implementation I aware of)
+> >
+> >SDF has support for curves, and is implemented inside of FDO.
+> >
+> >I highly doubt you want to reuse FDO for this, but just stating for  
+> >the
+> >record.
+> 
+> I'll have a look thanks, but FDO seems complete overkill.
+
+If it were me, I wouldn't even bother taking a look. I was just
+mentioning it for the record.
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Thu Jan  3 18:16:15 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 3 Jan 2008 17:16:15 +0000
+Subject: [Mapnik-devel] [OSM-dev] curves
+In-Reply-To: <20080103164654.GB16381@alta.metacarta.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<20080103153709.qor0g6ctgk0k40kw@webmail.systemed.net>
+	<1B8EC254-A2D4-4564-B694-664FEA5AA81C@mapnik.org>
+	<20080103161711.GA16381@alta.metacarta.com>
+	<5789A883-EE44-4DFA-BE43-44DF402FAF7B@mapnik.org>
+	<20080103164654.GB16381@alta.metacarta.com>
+Message-ID: <5DC7D145-A191-485A-92D7-9AB65F17F185@mapnik.org>
+
+
+On 3 Jan 2008, at 16:46, Christopher Schmidt wrote:
+
+> On Thu, Jan 03, 2008 at 04:32:42PM +0000, Artem Pavlenko wrote:
+>>
+>> On 3 Jan 2008, at 16:17, Christopher Schmidt wrote:
+>>
+>>> On Thu, Jan 03, 2008 at 03:53:05PM +0000, Artem Pavlenko wrote:
+>>>> But in what format? I guess we can create our own format (easy) or
+>>>> extent SFS (abstract spec mentions curves but there's no open  
+>>>> source
+>>>> implementation I aware of)
+>>>
+>>> SDF has support for curves, and is implemented inside of FDO.
+>>>
+>>> I highly doubt you want to reuse FDO for this, but just stating for
+>>> the
+>>> record.
+>>
+>> I'll have a look thanks, but FDO seems complete overkill.
+>
+> If it were me, I wouldn't even bother taking a look. I was just
+> mentioning it for the record.
+
+thanks, I wont bother.
+
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+>
+
+
+
+From artem.mapnik at googlemail.com  Fri Jan  4 18:31:24 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Fri, 4 Jan 2008 17:31:24 +0000
+Subject: [Mapnik-devel] reliefs follow up
+Message-ID: <3032457C-813E-4F63-B952-8B75D3C65132@gmail.com>
+
+Hello,
+
+I had lots of fun generating reliefs today:) The utility can now read  
+GIMP gradient files (*.ggr) :
+
+./bin/darwin/debug/relief  --bbox=19,42,21,44 --z 4 --az=300 --alt=60  
+-g ~/Desktop/DEM_poster.ggr ./srtm  relief.png
+
+here are some shots:
+
+http://artem.dev.openstreetmap.org/files/reliefs/dem_poster.jpg
+http://artem.dev.openstreetmap.org/files/reliefs/dem_poster_2.jpg
+http://artem.dev.openstreetmap.org/files/reliefs/neutral.jpg
+http://artem.dev.openstreetmap.org/files/reliefs/california_dry.jpg
+
+All gradients are from http://sview01.wiredworkplace.net/pub/cpt-city/ 
+index.html ( as suggested by Matt Perry)
+
+Cheers
+Artem
+
+
+
+
+
+From nickblack1 at gmail.com  Fri Jan  4 18:40:51 2008
+From: nickblack1 at gmail.com (Nick Black)
+Date: Fri, 4 Jan 2008 17:40:51 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs follow up
+In-Reply-To: <3032457C-813E-4F63-B952-8B75D3C65132@gmail.com>
+References: <3032457C-813E-4F63-B952-8B75D3C65132@gmail.com>
+Message-ID: <223020e60801040940t4f1b2789v5b3ed090e18da7f5@mail.gmail.com>
+
+Looking good Artem!
+
+On Jan 4, 2008 5:31 PM, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+> Hello,
+>
+> I had lots of fun generating reliefs today:) The utility can now read
+> GIMP gradient files (*.ggr) :
+>
+> ./bin/darwin/debug/relief  --bbox=19,42,21,44 --z 4 --az=300 --alt=60
+> -g ~/Desktop/DEM_poster.ggr ./srtm  relief.png
+>
+> here are some shots:
+>
+> http://artem.dev.openstreetmap.org/files/reliefs/dem_poster.jpg
+> http://artem.dev.openstreetmap.org/files/reliefs/dem_poster_2.jpg
+> http://artem.dev.openstreetmap.org/files/reliefs/neutral.jpg
+> http://artem.dev.openstreetmap.org/files/reliefs/california_dry.jpg
+>
+> All gradients are from http://sview01.wiredworkplace.net/pub/cpt-city/
+> index.html ( as suggested by Matt Perry)
+>
+> Cheers
+> Artem
+>
+>
+>
+>
+> _______________________________________________
+> dev mailing list
+> dev at openstreetmap.org
+> http://lists.openstreetmap.org/cgi-bin/mailman/listinfo/dev
+>
+
+
+
+-- 
+Nick Black
+--------------------------------
+http://www.blacksworld.net
+
+
+From blackadderajr at googlemail.com  Fri Jan  4 18:56:36 2008
+From: blackadderajr at googlemail.com (Andy Robinson (blackadder))
+Date: Fri, 4 Jan 2008 17:56:36 -0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs follow up
+In-Reply-To: <3032457C-813E-4F63-B952-8B75D3C65132@gmail.com>
+References: <3032457C-813E-4F63-B952-8B75D3C65132@gmail.com>
+Message-ID: <!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAABVCJlFcgOcRariAivt2+6fAQAAAAA=@googlemail.com>
+
+Artem Pavlenko wrote:
+>Sent: 04 January 2008 5:31 PM
+>To: dev Openstreetmap
+>Cc: mapnik-dev
+>Subject: [OSM-dev] reliefs follow up
+>
+>Hello,
+>
+>I had lots of fun generating reliefs today:) The utility can now read
+>GIMP gradient files (*.ggr) :
+>
+>./bin/darwin/debug/relief  --bbox=19,42,21,44 --z 4 --az=300 --alt=60
+>-g ~/Desktop/DEM_poster.ggr ./srtm  relief.png
+>
+>here are some shots:
+>
+>http://artem.dev.openstreetmap.org/files/reliefs/dem_poster.jpg
+>http://artem.dev.openstreetmap.org/files/reliefs/dem_poster_2.jpg
+>http://artem.dev.openstreetmap.org/files/reliefs/neutral.jpg
+>http://artem.dev.openstreetmap.org/files/reliefs/california_dry.jpg
+>
+>All gradients are from http://sview01.wiredworkplace.net/pub/cpt-city/
+>index.html ( as suggested by Matt Perry)
+>
+>Cheers
+>Artem
+>
+Hey, that looks really cool :-)
+
+Cheers
+
+Andy
+
+
+
+From dave at smartrak.co.nz  Sun Jan  6 23:43:51 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Mon, 07 Jan 2008 11:43:51 +1300
+Subject: [Mapnik-devel] Small error in current SVN
+In-Reply-To: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+Message-ID: <478159A7.6060702@smartrak.co.nz>
+
+There are some diff errors in SVN:
+
+http://trac.mapnik.org/browser/trunk/demo/c%2B%2B/rundemo.cpp
+Line 45 - 49
+
+Introduced in R579
+http://trac.mapnik.org/changeset/579#file1
+
+
+I don't have SVN write access to fix them myself.
+
+Dave.
+
+
+From david at artcom.de  Mon Jan  7 07:54:28 2008
+From: david at artcom.de (David Siegel)
+Date: Mon, 7 Jan 2008 07:54:28 +0100
+Subject: [Mapnik-devel] Small error in current SVN
+In-Reply-To: <478159A7.6060702@smartrak.co.nz>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<478159A7.6060702@smartrak.co.nz>
+Message-ID: <D9C0B235-6FAF-40E7-AD8B-315235C7AD11@artcom.de>
+
+On 06.01.2008, at 23:43, David Leaver wrote:
+
+> There are some diff errors in SVN:
+>
+> http://trac.mapnik.org/browser/trunk/demo/c%2B%2B/rundemo.cpp
+> Line 45 - 49
+
+
+Oops...
+fixed in revision 582
+
+At least the compile time issues. Now it segfaults... at least on my  
+system. I'll investigate it later today.
+
+I kept the '/usr/share/' version of the path, although both versions  
+point to nirvana on my system.
+
+Thanks for the report.
+
+Cheers,
+	d.
+
+
+From artem at mapnik.org  Mon Jan  7 11:06:38 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 7 Jan 2008 10:06:38 +0000
+Subject: [Mapnik-devel] Small error in current SVN
+In-Reply-To: <478159A7.6060702@smartrak.co.nz>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<478159A7.6060702@smartrak.co.nz>
+Message-ID: <316D54A8-ABD8-4784-8A13-8977A7626FB4@mapnik.org>
+
+Hi Dave,
+
+Thanks for reporting this.
+Artem
+
+> There are some diff errors in SVN:
+>
+> http://trac.mapnik.org/browser/trunk/demo/c%2B%2B/rundemo.cpp
+> Line 45 - 49
+>
+> Introduced in R579
+> http://trac.mapnik.org/changeset/579#file1
+>
+>
+> I don't have SVN write access to fix them myself.
+>
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem.mapnik at googlemail.com  Tue Jan  8 18:23:02 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Tue, 8 Jan 2008 17:23:02 +0000
+Subject: [Mapnik-devel] reliefs madness
+Message-ID: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+
+Just implemented accurate re-projection (warping) SRTM data into any  
+projection supported by proj4:
+
+http://artem.dev.openstreetmap.org/files/reliefs/natgrid_warp.jpg
+
+( this one in British NatGrid : +proj=tmerc +lat_0=49 +lon_0=-2  
++k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +units=m  
++towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894  
++units=m +nodefs )
+
+I guess next step would be to render some tiles with OSM data on top  :D
+
+Artem
+  
+
+
+From blackadderajr at googlemail.com  Tue Jan  8 18:28:26 2008
+From: blackadderajr at googlemail.com (Andy Robinson (blackadder))
+Date: Tue, 8 Jan 2008 17:28:26 -0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+Message-ID: <!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+
+Artem Pavlenko wrote:
+>Sent: 08 January 2008 5:23 PM
+>To: dev Openstreetmap; mapnik-dev
+>Subject: [OSM-dev] reliefs madness
+>
+>Just implemented accurate re-projection (warping) SRTM data into any
+>projection supported by proj4:
+>
+>http://artem.dev.openstreetmap.org/files/reliefs/natgrid_warp.jpg
+>
+>( this one in British NatGrid : +proj=tmerc +lat_0=49 +lon_0=-2
+>+k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +units=m
+>+towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894
+>+units=m +nodefs )
+>
+>I guess next step would be to render some tiles with OSM data on top  :D
+>
+
+
+Neat, shows just how low the fens are too :-D
+
+Cheers
+
+Andy
+
+
+
+From artem.mapnik at googlemail.com  Tue Jan  8 18:34:40 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Tue, 8 Jan 2008 17:34:40 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+Message-ID: <064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+
+
+On 8 Jan 2008, at 17:28, Andy Robinson ((blackadder)) wrote:
+
+> Artem Pavlenko wrote:
+>> Sent: 08 January 2008 5:23 PM
+>> To: dev Openstreetmap; mapnik-dev
+>> Subject: [OSM-dev] reliefs madness
+>>
+>> Just implemented accurate re-projection (warping) SRTM data into any
+>> projection supported by proj4:
+>>
+>> http://artem.dev.openstreetmap.org/files/reliefs/natgrid_warp.jpg
+>>
+>> ( this one in British NatGrid : +proj=tmerc +lat_0=49 +lon_0=-2
+>> +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +units=m
+>> +towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894
+>> +units=m +nodefs )
+>>
+>> I guess next step would be to render some tiles with OSM data on  
+>> top  :D
+>>
+>
+>
+> Neat, shows just how low the fens are too :-D
+
+Yep, the fens look quite watery .. are they really?
+
+>
+> Cheers
+>
+> Andy
+>
+
+
+
+From dave at smartrak.co.nz  Wed Jan  9 03:46:06 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Wed, 09 Jan 2008 15:46:06 +1300
+Subject: [Mapnik-devel] C++ Demo crash in current SVN
+In-Reply-To: <1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+Message-ID: <4784356E.8090704@smartrak.co.nz>
+
+I'm running a freshly installed Ubuntu 7.10, mapnik from current SVN 
+(r586, problem happened with r585 also).
+I've built and installed mapnik non-debug using the scons make system.
+
+When I build the c++ demo and run it, it segfaults.
+Building a debug mapnik and building the c++ demo against that, 
+everything is fine.
+Editing the SConstruct file to remove the -O2 flag makes a release build 
+that works, but is about 2x slower!
+
+If you change the line:
+m.set_background(color_factory::from_string("white"));
+in the c++ demo to set a color without using the factory, everything is 
+okay. (ex: m.set_background(Color(255, 255, 255)); )
+Alternatively, if you remove all of the calls to create_filter 
+everything is okay, but totally useless as you have no filtering.
+
+The python demo works fine, which is a bit strange as it creates the 
+background color in the same way.
+
+If run under valgrind it seems to report the error has something to do 
+with boost::spirit.
+(I've added the -g flag to get line numbers)
+http://pastebin.com/m70eab41e
+
+Anyone else getting the same behavior?
+
+Dave.
+
+*GCC version (Standard ubuntu):*
+gcc -v
+Using built-in specs.
+Target: i486-linux-gnu
+Configured with: ../src/configure -v 
+--enable-languages=c,c++,fortran,objc,obj-c++,treelang --prefix=/usr 
+--enable-shared --with-system-zlib --libexecdir=/usr/lib 
+--without-included-gettext --enable-threads=posix --enable-nls 
+--with-gxx-include-dir=/usr/include/c++/4.1.3 --program-suffix=-4.1 
+--enable-__cxa_atexit --enable-clocale=gnu --enable-libstdcxx-debug 
+--enable-mpfr --enable-checking=release i486-linux-gnu
+Thread model: posix
+gcc version 4.1.3 20070929 (prerelease) (Ubuntu 4.1.2-16ubuntu2)
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/f228dab5/attachment.html>
+
+From artem.mapnik at googlemail.com  Wed Jan  9 10:26:34 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 09:26:34 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+Message-ID: <11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+
+http://mapnik.org/maps/srtm_relief/
+
+This is an experiment to see how OSM data can be overlaid on top of  
+relief maps and test warping etc. I haven't spent time to adjust  
+cartography just got rid of everything apart from 'places' and mayor  
+roads. Tiles are in Mercator projection (same as OSM) and quantized  
+by Mapnik to have max 256 colours.
+
+I'm using the following gradient  (0-5000m)
+
+0 RGB(0,96,70,255)
+0.010204 RGB(15,121,47,255)
+0.102041 RGB(232,214,124,255)
+0.244898 RGB(161,66,0,255)
+0.346939 RGB(158,0,0,255)
+0.571429 RGB(110,110,110,255)
+0.816327 RGB(255,255,255,255)
+
+./bin/darwin/release/relief -- 
+bbox=-841180.171507,6373242.87273,-114662.443602,7524074.4827  ./ 
+srtm  relief_1.png --z 4 --az=180 --alt=45  --sea=lightblue -g ~/ 
+gradient/DEM_poster.ggr --end=5000
+
+I'm aware of voids and 'below sea level' areas (TODO) and I'm looking  
+for the best solution. Ideas welcome!
+
+
+Cheers
+Artem
+
+
+
+
+
+
+From kleptog at gmail.com  Wed Jan  9 10:46:29 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Wed, 9 Jan 2008 10:46:29 +0100
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+Message-ID: <2fc2c5f10801090146t3992b432x5b2a54ae383e0633@mail.gmail.com>
+
+On Jan 9, 2008 10:26 AM, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+> http://mapnik.org/maps/srtm_relief/
+
+All I can say is *wow*. Does this take a lot of processing power?
+Because it would be a nice backdrop for OSM maps.
+
+> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking
+> for the best solution. Ideas welcome!
+
+The below sea level bit, is that why the bit of NL you can see is a
+funny grey colour?
+
+Very nice work.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From jochen at remote.org  Wed Jan  9 10:58:23 2008
+From: jochen at remote.org (Jochen Topf)
+Date: Wed, 9 Jan 2008 10:58:23 +0100
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+Message-ID: <20080109095823.GB2606@eldorado.remote.org>
+
+On Wed, Jan 09, 2008 at 09:26:34AM +0000, Artem Pavlenko wrote:
+> http://mapnik.org/maps/srtm_relief/
+
+Wow! That looks great.
+
+> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking  
+> for the best solution. Ideas welcome!
+
+I think areas below sea level should just get the darkest green. In most
+cases it is probably not necessary to distinguish the details.
+
+Void areas might be handled by painting them in a unqiue color and then
+finding in the produced image all pixels with that unique color and just
+taking the average of all pixels around them (that are not themselves
+void). Something like that anyway. That might not be the most accurate
+algorithm, but at least for low zoom levels it should be ok.
+
+Jochen
+-- 
+Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/  +49-721-388298
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 11:08:01 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 10:08:01 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <2fc2c5f10801090146t3992b432x5b2a54ae383e0633@mail.gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<2fc2c5f10801090146t3992b432x5b2a54ae383e0633@mail.gmail.com>
+Message-ID: <46CEE4AB-1B78-49AD-BB86-77BFA4E3CE53@gmail.com>
+
+
+On 9 Jan 2008, at 09:46, Martijn van Oosterhout wrote:
+
+> On Jan 9, 2008 10:26 AM, Artem Pavlenko  
+> <artem.mapnik at googlemail.com> wrote:
+>> http://mapnik.org/maps/srtm_relief/
+>
+> All I can say is *wow*. Does this take a lot of processing power?
+
+It is CPU intensive but reasonably fast. My setup is quite modest -  
+mac book intel . For the UK I the output is one large TIFF and yes,  
+this  wont work for the whole world. As always, some sort of tiling  
+is the key. I'm thinking about creating 200x200 km (??)  tiles  
+(TIFFs) for the world and feed them into Mapnik. The only problem I  
+ran into so far is memory for creating big rasters  > 10000x10000  
+pixel - I only have 1Gb RAM
+
+> Because it would be a nice backdrop for OSM maps.
+
+This is my goal.
+
+>
+>> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking
+>> for the best solution. Ideas welcome!
+>
+> The below sea level bit, is that why the bit of NL you can see is a
+> funny grey colour?
+
+Yes, and I'm just ignore them for the time being.
+
+>
+> Very nice work.
+>
+
+Cheers
+Artem
+> Have a nice day,
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 11:14:15 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 10:14:15 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <20080109095823.GB2606@eldorado.remote.org>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+Message-ID: <38398F36-BF0B-4184-9EBD-CBFB5044658E@gmail.com>
+
+
+On 9 Jan 2008, at 09:58, Jochen Topf wrote:
+
+> On Wed, Jan 09, 2008 at 09:26:34AM +0000, Artem Pavlenko wrote:
+>> http://mapnik.org/maps/srtm_relief/
+>
+> Wow! That looks great.
+>
+>> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking
+>> for the best solution. Ideas welcome!
+>
+> I think areas below sea level should just get the darkest green. In  
+> most
+> cases it is probably not necessary to distinguish the details.
+
+Yes, I'll try that.
+>
+> Void areas might be handled by painting them in a unqiue color and  
+> then
+> finding in the produced image all pixels with that unique color and  
+> just
+> taking the average of all pixels around them (that are not themselves
+> void). Something like that anyway. That might not be the most accurate
+> algorithm, but at least for low zoom levels it should be ok.
+
+I think simple averaging should work well enough for the purpose  -  
+we're only making a 2D maps at the moment :).
+I was looking at GMap 'terrain' layer and it looks really rough in  
+some areas, too:
+
+http://maps.google.com/? 
+ie=UTF8&ll=50.666981,-1.57156&spn=0.013029,0.026908&t=p&z=15&om=1
+
+
+Cheers,
+Artem
+>
+> Jochen
+> -- 
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+> +49-721-388298
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/a6a8ce71/attachment.html>
+
+From artem at mapnik.org  Wed Jan  9 11:30:27 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 10:30:27 +0000
+Subject: [Mapnik-devel] C++ Demo crash in current SVN
+In-Reply-To: <4784356E.8090704@smartrak.co.nz>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+	<4784356E.8090704@smartrak.co.nz>
+Message-ID: <4ED81A32-0851-4E0B-BA68-3A11C9722DB2@mapnik.org>
+
+Hi David,
+On 9 Jan 2008, at 02:46, David Leaver wrote:
+
+> I'm running a freshly installed Ubuntu 7.10, mapnik from current  
+> SVN (r586, problem happened with r585 also).
+> I've built and installed mapnik non-debug using the scons make system.
+>
+> When I build the c++ demo and run it, it segfaults.
+> Building a debug mapnik and building the c++ demo against that,  
+> everything is fine.
+> Editing the SConstruct file to remove the -O2 flag makes a release  
+> build that works, but is about 2x slower!
+>
+> If you change the line:
+> m.set_background(color_factory::from_string("white"));
+> in the c++ demo to set a color without using the factory,  
+> everything is okay. (ex: m.set_background(Color(255, 255, 255)); )
+> Alternatively, if you remove all of the calls to create_filter  
+> everything is okay, but totally useless as you have no filtering.
+>
+> The python demo works fine, which is a bit strange as it creates  
+> the background color in the same way.
+>
+> If run under valgrind it seems to report the error has something to  
+> do with boost::spirit.
+> (I've added the -g flag to get line numbers)
+> http://pastebin.com/m70eab41e
+>
+> Anyone else getting the same behavior?
+
+Main library is compiled with BOOST_SPIRIT_THREADSAFE defined.  Try :
+
+  g++ -O2 -DBOOST_SPIRIT_THREADSAFE -I/opt/mapnik/include -I /opt/ 
+boost/include/boost-1_34_1/  -I../ -I /Users/artem/projects/mapnik/ 
+agg/include  -I /usr/local/include/freetype2 -L/opt/mapnik/lib  - 
+lmapnik rundemo.cpp -o rundemo
+
+  and it will work :)
+Artem
+
+>
+>
+> Dave.
+>
+> GCC version (Standard ubuntu):
+> gcc -v
+> Using built-in specs.
+> Target: i486-linux-gnu
+> Configured with: ../src/configure -v --enable-languages=c,c+ 
+> +,fortran,objc,obj-c++,treelang --prefix=/usr --enable-shared -- 
+> with-system-zlib --libexecdir=/usr/lib --without-included-gettext -- 
+> enable-threads=posix --enable-nls --with-gxx-include-dir=/usr/ 
+> include/c++/4.1.3 --program-suffix=-4.1 --enable-__cxa_atexit -- 
+> enable-clocale=gnu --enable-libstdcxx-debug --enable-mpfr --enable- 
+> checking=release i486-linux-gnu
+> Thread model: posix
+> gcc version 4.1.3 20070929 (prerelease) (Ubuntu 4.1.2-16ubuntu2)
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/7ad76b28/attachment.html>
+
+From artem at mapnik.org  Wed Jan  9 12:28:19 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 11:28:19 +0000
+Subject: [Mapnik-devel] Small error in current SVN
+In-Reply-To: <D9C0B235-6FAF-40E7-AD8B-315235C7AD11@artcom.de>
+References: <CD4CDD6C-9DA4-4B65-8EC1-10503AEBCA95@gmail.com>
+	<478159A7.6060702@smartrak.co.nz>
+	<D9C0B235-6FAF-40E7-AD8B-315235C7AD11@artcom.de>
+Message-ID: <135F41E5-81F4-44C1-9261-81E2AEFAC0EA@mapnik.org>
+
+Hi David,
+
+
+On 7 Jan 2008, at 06:54, David Siegel wrote:
+
+> On 06.01.2008, at 23:43, David Leaver wrote:
+>
+>> There are some diff errors in SVN:
+>>
+>> http://trac.mapnik.org/browser/trunk/demo/c%2B%2B/rundemo.cpp
+>> Line 45 - 49
+>
+>
+> Oops...
+> fixed in revision 582
+>
+> At least the compile time issues. Now it segfaults... at least on my
+> system. I'll investigate it later today.
+
+
+Try defining BOOST_SPIRIT_THREADSAFE, it should fix this.
+Cheers
+A
+>
+> I kept the '/usr/share/' version of the path, although both versions
+> point to nirvana on my system.
+>
+> Thanks for the report.
+>
+> Cheers,
+> 	d.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 13:44:51 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 12:44:51 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <20080109095823.GB2606@eldorado.remote.org>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+Message-ID: <8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+
+
+>
+> I think areas below sea level should just get the darkest green. In  
+> most
+> cases it is probably not necessary to distinguish the details.
+>
+
+OK, below sea level is now corrected : http:// 
+artem.dev.openstreetmap.org/files/reliefs/water.jpg
+but there are still lots of water around. I guess this represents  
+reality.
+
+Artem 
+
+
+From kleptog at gmail.com  Wed Jan  9 13:55:20 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Wed, 9 Jan 2008 13:55:20 +0100
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+Message-ID: <2fc2c5f10801090455u71d1f690vd14fb2b3932a908b@mail.gmail.com>
+
+On Jan 9, 2008 1:44 PM, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+> OK, below sea level is now corrected : http://
+> artem.dev.openstreetmap.org/files/reliefs/water.jpg
+> but there are still lots of water around. I guess this represents
+> reality.
+
+
+From jochen at remote.org  Wed Jan  9 13:59:19 2008
+From: jochen at remote.org (Jochen Topf)
+Date: Wed, 9 Jan 2008 13:59:19 +0100
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+Message-ID: <20080109125919.GA4964@eldorado.remote.org>
+
+On Wed, Jan 09, 2008 at 12:44:51PM +0000, Artem Pavlenko wrote:
+>> I think areas below sea level should just get the darkest green. In most
+>> cases it is probably not necessary to distinguish the details.
+>>
+>
+> OK, below sea level is now corrected : 
+> http://artem.dev.openstreetmap.org/files/reliefs/water.jpg
+> but there are still lots of water around. I guess this represents reality.
+
+But the water is not real. Look at the Google aerial images for that
+area and you'll see. Well, there is a lot of water in Holland, no
+question about that. But your relief gives the wrong impression, because
+it looks like some kind of marsh land or so while in reality it is
+mostly dry with some canals in between.
+
+Maybe ignoring all water pixels if they have less than n sorrounding
+pixels with water or something like it.
+
+But it does look mmuch better now. Definitely good enough to be "usable".
+
+Jochen
+-- 
+Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/  +49-721-388298
+
+
+
+From gravitystorm at gmail.com  Wed Jan  9 14:18:10 2008
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Wed, 9 Jan 2008 13:18:10 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+Message-ID: <c4193f8c0801090518m34525593q866673704d94c1f6@mail.gmail.com>
+
+On Jan 9, 2008 12:44 PM, Artem Pavlenko <artem.mapnik at googlemail.com> wrote:
+>
+> >
+> > I think areas below sea level should just get the darkest green. In
+> > most
+> > cases it is probably not necessary to distinguish the details.
+> >
+>
+> OK, below sea level is now corrected : http://
+> artem.dev.openstreetmap.org/files/reliefs/water.jpg
+> but there are still lots of water around. I guess this represents
+> reality.
+
+It looks to me like you are treating everything as at sealevel or
+below as needing to be coloured blue? That's not the case, it's still
+land, even if it's below sea level.
+
+Cheers,
+Andy
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 14:53:58 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 13:53:58 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <20080109125919.GA4964@eldorado.remote.org>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+	<20080109125919.GA4964@eldorado.remote.org>
+Message-ID: <9E16C592-D7B5-43BB-8BC3-481AF5822A90@gmail.com>
+
+
+On 9 Jan 2008, at 12:59, Jochen Topf wrote:
+
+> On Wed, Jan 09, 2008 at 12:44:51PM +0000, Artem Pavlenko wrote:
+>>> I think areas below sea level should just get the darkest green.  
+>>> In most
+>>> cases it is probably not necessary to distinguish the details.
+>>>
+>>
+>> OK, below sea level is now corrected :
+>> http://artem.dev.openstreetmap.org/files/reliefs/water.jpg
+>> but there are still lots of water around. I guess this represents  
+>> reality.
+>
+> But the water is not real. Look at the Google aerial images for that
+> area and you'll see. Well, there is a lot of water in Holland, no
+> question about that. But your relief gives the wrong impression,  
+> because
+> it looks like some kind of marsh land or so while in reality it is
+> mostly dry with some canals in between.
+
+Agreed.
+>
+> Maybe ignoring all water pixels if they have less than n sorrounding
+> pixels with water or something like it.
+
+I think I have even better solution.  We can use SWBD to create water/ 
+land, which will allow to filter out 'real' water.
+Artem
+
+>
+> But it does look mmuch better now. Definitely good enough to be  
+> "usable".
+>
+> Jochen
+> -- 
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+> +49-721-388298
+>
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 14:58:50 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 13:58:50 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <c4193f8c0801090518m34525593q866673704d94c1f6@mail.gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+	<c4193f8c0801090518m34525593q866673704d94c1f6@mail.gmail.com>
+Message-ID: <A17AC15B-1ABF-4644-910D-E771C8C326BD@gmail.com>
+
+
+On 9 Jan 2008, at 13:18, Andy Allan wrote:
+
+> On Jan 9, 2008 12:44 PM, Artem Pavlenko  
+> <artem.mapnik at googlemail.com> wrote:
+>>
+>>>
+>>> I think areas below sea level should just get the darkest green. In
+>>> most
+>>> cases it is probably not necessary to distinguish the details.
+>>>
+>>
+>> OK, below sea level is now corrected : http://
+>> artem.dev.openstreetmap.org/files/reliefs/water.jpg
+>> but there are still lots of water around. I guess this represents
+>> reality.
+>
+> It looks to me like you are treating everything as at sealevel or
+> below as needing to be coloured blue? That's not the case, it's still
+> land, even if it's below sea level.
+Everything < 0 is below the sea level at the moment. But there are  
+==0 which are not water. I think using water mask will solve this.
+CHeers
+Artem
+>
+> Cheers,
+> Andy
+
+
+
+From artem.mapnik at googlemail.com  Wed Jan  9 15:07:27 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 14:07:27 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <20080109125919.GA4964@eldorado.remote.org>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+	<20080109125919.GA4964@eldorado.remote.org>
+Message-ID: <53342BE9-22CC-442B-AB35-E355EEEFAC51@gmail.com>
+
+
+http://artem.dev.openstreetmap.org/files/srtm.jpg   - SRTM relief  -  
+white-ish pixels are below sea level
+http://artem.dev.openstreetmap.org/files/srtm_swbd.jpg  SRTM + SWBD  
+mask shows where 'real' water is.
+
+Looks promising.
+
+On 9 Jan 2008, at 12:59, Jochen Topf wrote:
+
+> On Wed, Jan 09, 2008 at 12:44:51PM +0000, Artem Pavlenko wrote:
+>>> I think areas below sea level should just get the darkest green.  
+>>> In most
+>>> cases it is probably not necessary to distinguish the details.
+>>>
+>>
+>> OK, below sea level is now corrected :
+>> http://artem.dev.openstreetmap.org/files/reliefs/water.jpg
+>> but there are still lots of water around. I guess this represents  
+>> reality.
+>
+> But the water is not real. Look at the Google aerial images for that
+> area and you'll see. Well, there is a lot of water in Holland, no
+> question about that. But your relief gives the wrong impression,  
+> because
+> it looks like some kind of marsh land or so while in reality it is
+> mostly dry with some canals in between.
+>
+> Maybe ignoring all water pixels if they have less than n sorrounding
+> pixels with water or something like it.
+>
+> But it does look mmuch better now. Definitely good enough to be  
+> "usable".
+>
+> Jochen
+> -- 
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+> +49-721-388298
+>
+
+
+
+From artem at mapnik.org  Wed Jan  9 19:36:59 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 9 Jan 2008 18:36:59 +0000
+Subject: [Mapnik-devel] [OSM-dev] reliefs madness
+In-Reply-To: <53342BE9-22CC-442B-AB35-E355EEEFAC51@gmail.com>
+References: <E597A293-11A4-4DE1-A89D-AE93EEDDA132@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAiDhXeiKAdRoXGbSA3H5pIAQAAAAA=@googlemail.com>
+	<064D86C6-5A41-4406-BB4F-BD1EDDD9E977@gmail.com>
+	<62601FB2-61AE-4E24-B80A-B7FE21C69B15@mapnik.org>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAAXAme8ZbCuQ46pxdVCQ9nFAQAAAAA=@googlemail.com>
+	<11A64133-5B2E-4188-BE71-36201B12F911@gmail.com>
+	<20080109095823.GB2606@eldorado.remote.org>
+	<8F0DF0AF-62BF-45D4-A4E1-F1CA7ECD32BA@gmail.com>
+	<20080109125919.GA4964@eldorado.remote.org>
+	<53342BE9-22CC-442B-AB35-E355EEEFAC51@gmail.com>
+Message-ID: <4ADF88E8-3182-4219-9B81-6F66A455A8DF@mapnik.org>
+
+OK, SWBD masking does the trick :  http://artem.dev.openstreetmap.org/ 
+files/reliefs/srtm_masked.jpg  :D
+
+
+On 9 Jan 2008, at 14:07, Artem Pavlenko wrote:
+
+>
+> http://artem.dev.openstreetmap.org/files/srtm.jpg   - SRTM relief  -
+> white-ish pixels are below sea level
+> http://artem.dev.openstreetmap.org/files/srtm_swbd.jpg  SRTM + SWBD
+> mask shows where 'real' water is.
+>
+> Looks promising.
+>
+> On 9 Jan 2008, at 12:59, Jochen Topf wrote:
+>
+>> On Wed, Jan 09, 2008 at 12:44:51PM +0000, Artem Pavlenko wrote:
+>>>> I think areas below sea level should just get the darkest green.
+>>>> In most
+>>>> cases it is probably not necessary to distinguish the details.
+>>>>
+>>>
+>>> OK, below sea level is now corrected :
+>>> http://artem.dev.openstreetmap.org/files/reliefs/water.jpg
+>>> but there are still lots of water around. I guess this represents
+>>> reality.
+>>
+>> But the water is not real. Look at the Google aerial images for that
+>> area and you'll see. Well, there is a lot of water in Holland, no
+>> question about that. But your relief gives the wrong impression,
+>> because
+>> it looks like some kind of marsh land or so while in reality it is
+>> mostly dry with some canals in between.
+>>
+>> Maybe ignoring all water pixels if they have less than n sorrounding
+>> pixels with water or something like it.
+>>
+>> But it does look mmuch better now. Definitely good enough to be
+>> "usable".
+>>
+>> Jochen
+>> -- 
+>> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/
+>> +49-721-388298
+>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From david at artcom.de  Wed Jan  9 20:25:50 2008
+From: david at artcom.de (David Siegel)
+Date: Wed, 9 Jan 2008 20:25:50 +0100
+Subject: [Mapnik-devel] C++ Demo crash in current SVN
+In-Reply-To: <4784356E.8090704@smartrak.co.nz>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+	<4784356E.8090704@smartrak.co.nz>
+Message-ID: <7F4D2783-74E6-4C09-AF25-73706AB7CC50@artcom.de>
+
+
+On 09.01.2008, at 03:46, David Leaver wrote:
+
+> I'm running a freshly installed Ubuntu 7.10, mapnik from current SVN  
+> (r586, problem happened with r585 also).
+> I've built and installed mapnik non-debug using the scons make system.
+>
+> When I build the c++ demo and run it, it segfaults.
+> Building a debug mapnik and building the c++ demo against that,  
+> everything is fine.
+> Editing the SConstruct file to remove the -O2 flag makes a release  
+> build that works, but is about 2x slower!
+>
+> If you change the line:
+> m.set_background(color_factory::from_string("white"));
+> in the c++ demo to set a color without using the factory, everything  
+> is okay. (ex: m.set_background(Color(255, 255, 255)); )
+> Alternatively, if you remove all of the calls to create_filter  
+> everything is okay, but totally useless as you have no filtering.
+>
+
+Interesting. I had a very similar problem on Mac OS X 10.5. It turned  
+out that it was caused by the -finline-functions flag. So it was over  
+optimization, too. Although -O2 works fine, though. My current  
+solution is to disable function inlining for filter_factory.cpp only  
+which seems to work. I expect the performance penalty to be minimal  
+because filters are only parsed on startup once. I will check in my  
+fix tonight. At least it will help to play with different optimization  
+settings for filter_factory.cpp
+
+gcc -v
+Using built-in specs.
+Target: i686-apple-darwin9
+Configured with: /var/tmp/gcc/gcc-5465~16/src/configure --disable- 
+checking -enable-werror --prefix=/usr --mandir=/share/man --enable- 
+languages=c,objc,c++,obj-c++ --program-transform-name=/^[cg][^.-]*$/s/ 
+$/-4.0/ --with-gxx-include-dir=/include/c++/4.0.0 --with-slibdir=/usr/ 
+lib --build=i686-apple-darwin9 --with-arch=apple --with-tune=generic -- 
+host=i686-apple-darwin9 --target=i686-apple-darwin9
+Thread model: posix
+gcc version 4.0.1 (Apple Inc. build 5465)
+
+Cheers
+	d.
+
+
+From dave at smartrak.co.nz  Wed Jan  9 21:07:25 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 10 Jan 2008 09:07:25 +1300
+Subject: [Mapnik-devel] C++ Demo crash in current SVN
+In-Reply-To: <4ED81A32-0851-4E0B-BA68-3A11C9722DB2@mapnik.org>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+	<4784356E.8090704@smartrak.co.nz>
+	<4ED81A32-0851-4E0B-BA68-3A11C9722DB2@mapnik.org>
+Message-ID: <4785297D.7020803@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/845e2139/attachment.html>
+
+From blake at hailmail.net  Thu Jan 10 01:30:31 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 9 Jan 2008 16:30:31 -0800
+Subject: [Mapnik-devel] Mac 10.4 build problem
+In-Reply-To: <4785297D.7020803@smartrak.co.nz>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+	<4784356E.8090704@smartrak.co.nz>
+	<4ED81A32-0851-4E0B-BA68-3A11C9722DB2@mapnik.org>
+	<4785297D.7020803@smartrak.co.nz>
+Message-ID: <44D183B6-80E2-47FA-AEC6-702C00278BFF@hailmail.net>
+
+I'm running Mac OS 10.4.11 and attempting to build mapnik with scons  
+from the current SVN trunk
+
+I get a error with libtool and libiconv:
+
+ld: Undefined symbols:
+_libiconv
+_libiconv_close
+_libiconv_open
+/usr/bin/libtool: internal link edit command failed
+scons: *** [src/libmapnik.dylib] Error 1
+scons: building terminated because of errors.
+spring:~/mapnik/trunk
+
+and I see a warning just above it:
+
+./boost/property_tree/detail/ptree_implementation.hpp:800: warning:  
+'tmp$value_' may be used uninitialized in this function
+
+i've got libiconv in /usr/libs/ and /usr/local/libs/
+
+-dane
+
+
+
+
+
+
+From dave at smartrak.co.nz  Thu Jan 10 02:20:30 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 10 Jan 2008 14:20:30 +1300
+Subject: [Mapnik-devel] Blending error (With Patch)
+Message-ID: <478572DE.7060204@smartrak.co.nz>
+
+One thing I've noticed is that if your map is rendered onto a fully 
+transparent background (alpha=0), it will still be blended to the color 
+components that are set in that layer.
+In comparison to any image editing software, this behavior is incorrect.
+Investigating AGG usage, it looks like the wrong blending is being used 
+(pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+
+The attached image portrays this behavior.
+Column 1: background(0,0,0,0), first row is bad
+Column 2: background(255,255,255,0), second row is bad
+Column 3: with patch applied, all are good, any background with alpha=0 
+gives the same output.
+
+Dave.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: blend_error.patch
+Type: text/x-diff
+Size: 3446 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: blend_error.png
+Type: image/png
+Size: 16860 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.png>
+
+From beau at beaugunderson.com  Thu Jan 10 10:13:28 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Thu, 10 Jan 2008 01:13:28 -0800
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+Message-ID: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+
+I was trying to get Mapnik to work with TileCache 2.01 as a CGI and it kept
+erroring out because of the debug output. It was being interpreted as
+headers (size=2 specifically was causing the error).
+
+It would be nice if instead of a compile-time option the debug output could
+be specified by an environment variable (or some other method, like a
+function call).
+
+
+Thanks,
+
+Beau
+
+
+Index: datasource_cache.cpp
+===================================================================
+--- datasource_cache.cpp        (revision 587)
++++ datasource_cache.cpp        (working copy)
+@@ -92,12 +92,14 @@
+            throw std::runtime_error(string("Cannot load symbols: ") +
+                    lt_dlerror());
+        }
++#ifdef MAPNIK_DEBUG
+        std::cout << "size = " << params.size() << "\n";
+        parameters::const_iterator i = params.begin();
+        for (;i!=params.end();++i)
+        {
+           std::cout << i->first << "=" << i->second << "\n";
+        }
++#endif
+        ds=datasource_ptr(create_datasource(params), datasource_deleter());
+
+ #ifdef MAPNIK_DEBUG
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/d9c34ee5/attachment.html>
+
+From robert.coup at onetrackmind.co.nz  Thu Jan 10 10:19:17 2008
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Thu, 10 Jan 2008 22:19:17 +1300
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+In-Reply-To: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+Message-ID: <c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+
+On 10/01/2008, Beau Gunderson <beau at beaugunderson.com> wrote:
+>
+> I was trying to get Mapnik to work with TileCache 2.01 as a CGI and it
+> kept erroring out because of the debug output. It was being interpreted as
+> headers (size=2 specifically was causing the error).
+>
+> It would be nice if instead of a compile-time option the debug output
+> could be specified by an environment variable (or some other method, like a
+> function call).
+
+
+And it should really be using std::cerr rather than std::cout...
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/2c74bb04/attachment.html>
+
+From dave at smartrak.co.nz  Thu Jan 10 23:13:04 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Fri, 11 Jan 2008 11:13:04 +1300
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+In-Reply-To: <c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+Message-ID: <47869870.9070905@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/7b6e5f5d/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: datasourcedebugmsg.patch
+Type: text/x-patch
+Size: 805 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/7b6e5f5d/attachment.bin>
+
+From perrygeo at gmail.com  Fri Jan 11 09:41:21 2008
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Fri, 11 Jan 2008 00:41:21 -0800
+Subject: [Mapnik-devel] Mapnik viewer
+Message-ID: <5383fa5e0801110041r7654547epb39fd41e0609f7d9@mail.gmail.com>
+
+I'm trying to get the Mapnik viewer up an running. Compiled fine
+(after fighting with freetype and agg include paths) but it's having
+trouble loading a map definition.
+
+loading /home/perry/Desktop/test_mapnik.xml
+Could not create datasource. No plugin found for type 'shape' in layer
+'countries'
+
+This same xml works fine via the python bindings at least. Did I miss anything?
+
+-- 
+Matthew T. Perry
+http://www.perrygeo.net
+
+
+From artem at mapnik.org  Fri Jan 11 10:52:30 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 09:52:30 +0000
+Subject: [Mapnik-devel] Mac 10.4 build problem
+In-Reply-To: <44D183B6-80E2-47FA-AEC6-702C00278BFF@hailmail.net>
+References: <1190234245.4459.18.camel@localhost.localdomain>	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+	<4784356E.8090704@smartrak.co.nz>
+	<4ED81A32-0851-4E0B-BA68-3A11C9722DB2@mapnik.org>
+	<4785297D.7020803@smartrak.co.nz>
+	<44D183B6-80E2-47FA-AEC6-702C00278BFF@hailmail.net>
+Message-ID: <B2F10182-0A16-41F5-8CF3-EEAD45F72B26@mapnik.org>
+
+Hi Dane,
+
+On 10 Jan 2008, at 00:30, Dane Springmeyer wrote:
+
+> I'm running Mac OS 10.4.11 and attempting to build mapnik with scons
+
+I'm running 10.4.11, too.
+> from the current SVN trunk
+>
+> I get a error with libtool and libiconv:
+>
+> ld: Undefined symbols:
+> _libiconv
+> _libiconv_close
+> _libiconv_open
+> /usr/bin/libtool: internal link edit command failed
+> scons: *** [src/libmapnik.dylib] Error 1
+> scons: building terminated because of errors.
+> spring:~/mapnik/trunk
+>
+> and I see a warning just above it:
+>
+> ./boost/property_tree/detail/ptree_implementation.hpp:800: warning:
+> 'tmp$value_' may be used uninitialized in this function
+
+This warning is OK.
+>
+> i've got libiconv in /usr/libs/ and /usr/local/libs/
+
+
+I think this is the problem. Make sure you're linking to the one in / 
+usr/lib:
+
+ls -l /usr/lib/libiconv.*
+lrwxr-xr-x   1 root  wheel       16 Sep  6 16:07 /usr/lib/libiconv. 
+2.2.0.dylib -> libiconv.2.dylib
+-rw-r--r--   1 root  wheel  1986536 Nov 19 17:11 /usr/lib/libiconv. 
+2.dylib
+lrwxr-xr-x   1 root  wheel       20 Sep  6 16:07 /usr/lib/ 
+libiconv.dylib -> libiconv.2.2.0.dylib
+-rw-r--r--   1 root  wheel      786 Sep 11  2006 /usr/lib/libiconv.la
+
+Cheers
+Artem
+
+>
+> -dane
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Fri Jan 11 11:02:53 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 10:02:53 +0000
+Subject: [Mapnik-devel] Blending error (With Patch)
+In-Reply-To: <478572DE.7060204@smartrak.co.nz>
+References: <478572DE.7060204@smartrak.co.nz>
+Message-ID: <069E3F7D-2D06-44EA-87F7-697702D31CBC@mapnik.org>
+
+Hi Dave,
+
+On 10 Jan 2008, at 01:20, David Leaver wrote:
+
+> One thing I've noticed is that if your map is rendered onto a fully  
+> transparent background (alpha=0), it will still be blended to the  
+> color components that are set in that layer.
+> In comparison to any image editing software, this behavior is  
+> incorrect.
+> Investigating AGG usage, it looks like the wrong blending is being  
+> used (pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+>
+> The attached image portrays this behavior.
+> Column 1: background(0,0,0,0), first row is bad
+> Column 2: background(255,255,255,0), second row is bad
+> Column 3: with patch applied, all are good, any background with  
+> alpha=0 gives the same output.
+
+
+Yes, I can see the problem. I'll apply your patch as soon as I sync  
+my local copy of agg_renderer.cpp.
+Or, would you like svn write access?
+
+Thanks!
+Artem
+
+> Dave.
+> Index: include/mapnik/agg_renderer.hpp
+> ===================================================================
+> --- include/mapnik/agg_renderer.hpp	(revision 587)
+> +++ include/mapnik/agg_renderer.hpp	(working copy)
+> @@ -89,7 +89,7 @@
+>            unsigned width_;
+>            unsigned height_;
+>            agg::rendering_buffer buf_;
+> -          agg::pixfmt_rgba32 pixf_;
+> +          agg::pixfmt_rgba32_plain pixf_;
+>            CoordTransform t_;
+>            freetype_engine font_engine_;
+>            face_manager<freetype_engine> font_manager_;
+> Index: src/agg_renderer.cpp
+> ===================================================================
+> --- src/agg_renderer.cpp	(revision 587)
+> +++ src/agg_renderer.cpp	(working copy)
+> @@ -160,7 +160,7 @@
+>                                   proj_transform const& prj_trans)
+>     {
+>        typedef  coord_transform2<CoordTransform,geometry2d> path_type;
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> ren_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain> ren_base;
+>        typedef agg::renderer_scanline_aa_solid<ren_base> renderer;
+>  	
+>        Color const& fill_ = sym.get_fill();
+> @@ -203,7 +203,7 @@
+>     {
+>        typedef  coord_transform2<CoordTransform,geometry2d> path_type;
+>        typedef  coord_transform3<CoordTransform,geometry2d>  
+> path_type_roof;
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> ren_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain> ren_base;
+>        typedef agg::renderer_scanline_aa_solid<ren_base> renderer;
+>
+>        ren_base renb(pixf_);
+> @@ -306,7 +306,7 @@
+>                                   Feature const& feature,
+>                                   proj_transform const& prj_trans)
+>     {
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> ren_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain> ren_base;
+>        typedef coord_transform2<CoordTransform,geometry2d> path_type;
+>        typedef agg::renderer_outline_aa<ren_base> renderer_oaa;
+>        typedef agg::rasterizer_outline_aa<renderer_oaa>  
+> rasterizer_outline_aa;
+> @@ -496,7 +496,7 @@
+>     {
+>        typedef  coord_transform2<CoordTransform,geometry2d> path_type;
+>        typedef  
+> agg::line_image_pattern<agg::pattern_filter_bilinear_rgba8>  
+> pattern_type;
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> renderer_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain>  
+> renderer_base;
+>        typedef agg::renderer_outline_image<renderer_base,  
+> pattern_type> renderer_type;
+>        typedef agg::rasterizer_outline_aa<renderer_type>  
+> rasterizer_type;
+>
+> @@ -526,7 +526,7 @@
+>                                   proj_transform const& prj_trans)
+>     {
+>        typedef coord_transform2<CoordTransform,geometry2d> path_type;
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> ren_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain> ren_base;
+>        typedef agg::wrap_mode_repeat wrap_x_type;
+>        typedef agg::wrap_mode_repeat wrap_y_type;
+>        typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba32,
+> @@ -601,7 +601,7 @@
+>                                   proj_transform const& prj_trans)
+>     {
+>        typedef  coord_transform2<CoordTransform,geometry2d> path_type;
+> -      typedef agg::renderer_base<agg::pixfmt_rgba32> ren_base;
+> +      typedef agg::renderer_base<agg::pixfmt_rgba32_plain> ren_base;
+>        typedef agg::renderer_scanline_aa_solid<ren_base> renderer;
+>        arrow arrow_;
+>        //double k = ::pow(1.2,  
+> 0.7);<blend_error.png>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Fri Jan 11 11:05:09 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 10:05:09 +0000
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+In-Reply-To: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+Message-ID: <8325F016-9688-4A55-86AD-D508660D8239@mapnik.org>
+
+Hi Beau,
+
+On 10 Jan 2008, at 09:13, Beau Gunderson wrote:
+
+> I was trying to get Mapnik to work with TileCache 2.01 as a CGI and  
+> it kept erroring out because of the debug output. It was being  
+> interpreted as headers (size=2 specifically was causing the error).
+>
+> It would be nice if instead of a compile-time option the debug  
+> output could be specified by an environment variable (or some other  
+> method, like a function call).
+
+I left this stdout printing by mistake, it shouldn't be there .  
+Thanks for reporting this!
+Artem
+>
+>
+>
+> Thanks,
+>
+> Beau
+>
+>
+> Index: datasource_cache.cpp
+> ===================================================================
+> --- datasource_cache.cpp        (revision 587)
+> +++ datasource_cache.cpp        (working copy)
+> @@ -92,12 +92,14 @@
+>             throw std::runtime_error(string("Cannot load symbols: ") +
+>                     lt_dlerror());
+>         }
+> +#ifdef MAPNIK_DEBUG
+>         std::cout << "size = " << params.size() << "\n";
+>         parameters::const_iterator i = params.begin();
+>         for (;i!=params.end();++i)
+>         {
+>            std::cout << i->first << "=" << i->second << "\n";
+>         }
+> +#endif
+>         ds=datasource_ptr(create_datasource(params),  
+> datasource_deleter());
+>
+>  #ifdef MAPNIK_DEBUG
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Fri Jan 11 11:06:14 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 10:06:14 +0000
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+In-Reply-To: <c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+Message-ID: <CCBA8BC8-C939-4C21-922B-ADE44D9605A4@mapnik.org>
+
+
+On 10 Jan 2008, at 09:19, Robert Coup wrote:
+
+> On 10/01/2008, Beau Gunderson <beau at beaugunderson.com> wrote:
+> I was trying to get Mapnik to work with TileCache 2.01 as a CGI and  
+> it kept erroring out because of the debug output. It was being  
+> interpreted as headers (size=2 specifically was causing the error).
+>
+> It would be nice if instead of a compile-time option the debug  
+> output could be specified by an environment variable (or some other  
+> method, like a function call).
+>
+> And it should really be using std::cerr rather than std::cout...
+
+Or even std::clog which what is used in Mapnik. ( usually std::clog  
+== std::cerr :)
+Cheers
+Artem
+>
+>
+> Rob :)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/1e899707/attachment.html>
+
+From artem at mapnik.org  Fri Jan 11 11:10:50 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 10:10:50 +0000
+Subject: [Mapnik-devel] Suggestion & patch for debug output
+In-Reply-To: <47869870.9070905@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+Message-ID: <FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+
+
+On 10 Jan 2008, at 22:13, David Leaver wrote:
+
+> Ha, I ran into the same error today!
+>
+> Patch to wrap with MAPNIK_DEBUG and output to std:clog attached.
+>
+> Could someone with svn write access check it in please :-)
+
+This std::cout wasn't intended to be there.. but then why not :)
+Applied in r588
+A.
+
+>
+>
+> Dave.
+>
+> Robert Coup wrote:
+>>
+>> On 10/01/2008, Beau Gunderson <beau at beaugunderson.com> wrote:
+>> I was trying to get Mapnik to work with TileCache 2.01 as a CGI  
+>> and it kept erroring out because of the debug output. It was being  
+>> interpreted as headers (size=2 specifically was causing the error).
+>>
+>> It would be nice if instead of a compile-time option the debug  
+>> output could be specified by an environment variable (or some  
+>> other method, like a function call).
+>>
+>> And it should really be using std::cerr rather than std::cout...
+>>
+>> Rob :)
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> Index: src/datasource_cache.cpp
+> ===================================================================
+> --- src/datasource_cache.cpp	(revision 587)
+> +++ src/datasource_cache.cpp	(working copy)
+> @@ -92,12 +92,14 @@
+>             throw std::runtime_error(string("Cannot load symbols: ") +
+>                     lt_dlerror());
+>         }
+> -       std::cout << "size = " << params.size() << "\n";
+> +#ifdef MAPNIK_DEBUG
+> +       std::clog << "size = " << params.size() << "\n";
+>         parameters::const_iterator i = params.begin();
+>         for (;i!=params.end();++i)
+>         {
+> -          std::cout << i->first << "=" << i->second << "\n";
+> +          std::clog << i->first << "=" << i->second << "\n";
+>         }
+> +#endif
+>         ds=datasource_ptr(create_datasource(params),  
+> datasource_deleter());
+>
+>  #ifdef MAPNIK_DEBUG
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/5bd18b18/attachment.html>
+
+From jburgess at uklinux.net  Fri Jan 11 19:44:51 2008
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Fri, 11 Jan 2008 18:44:51 +0000
+Subject: [Mapnik-devel] Mapnik viewer
+In-Reply-To: <5383fa5e0801110041r7654547epb39fd41e0609f7d9@mail.gmail.com>
+References: <5383fa5e0801110041r7654547epb39fd41e0609f7d9@mail.gmail.com>
+Message-ID: <1200077091.4029.207.camel@localhost.localdomain>
+
+
+On Fri, 2008-01-11 at 00:41 -0800, Matthew Perry wrote:
+> I'm trying to get the Mapnik viewer up an running. Compiled fine
+> (after fighting with freetype and agg include paths) but it's having
+> trouble loading a map definition.
+> 
+> loading /home/perry/Desktop/test_mapnik.xml
+> Could not create datasource. No plugin found for type 'shape' in layer
+> 'countries'
+> 
+> This same xml works fine via the python bindings at least. Did I miss anything?
+> 
+
+If you are on a 64 bit machine the attached patch might help.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: viewer-64bit.patch
+Type: text/x-patch
+Size: 985 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080111/64fd1d92/attachment.bin>
+
+From artem at mapnik.org  Fri Jan 11 22:01:12 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 11 Jan 2008 21:01:12 +0000
+Subject: [Mapnik-devel] debugging Mapnik
+In-Reply-To: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+Message-ID: <D067176E-5C09-4C5C-821C-2FDB645B7FB5@mapnik.org>
+
+Hi Beau,
+Have a look:
+http://www.boost.org/libs/python/doc/v2/faq.html#debugging
+
+Artem
+
+
+
+From perrygeo at gmail.com  Fri Jan 11 22:10:20 2008
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Fri, 11 Jan 2008 13:10:20 -0800
+Subject: [Mapnik-devel] Mapnik viewer
+In-Reply-To: <1200077091.4029.207.camel@localhost.localdomain>
+References: <5383fa5e0801110041r7654547epb39fd41e0609f7d9@mail.gmail.com>
+	<1200077091.4029.207.camel@localhost.localdomain>
+Message-ID: <5383fa5e0801111310m7201f8f5i21347d059dfe1736@mail.gmail.com>
+
+Jon,
+
+ Thanks. I'm on 32-bit but that patch did give me an idea where to
+look. Changing the hardcoded paths and recompiling solved the problem.
+
+- matt
+
+On Jan 11, 2008 10:44 AM, Jon Burgess <jburgess at uklinux.net> wrote:
+>
+> On Fri, 2008-01-11 at 00:41 -0800, Matthew Perry wrote:
+> > I'm trying to get the Mapnik viewer up an running. Compiled fine
+> > (after fighting with freetype and agg include paths) but it's having
+> > trouble loading a map definition.
+> >
+> > loading /home/perry/Desktop/test_mapnik.xml
+> > Could not create datasource. No plugin found for type 'shape' in layer
+> > 'countries'
+> >
+> > This same xml works fine via the python bindings at least. Did I miss anything?
+> >
+>
+> If you are on a 64 bit machine the attached patch might help.
+>
+>         Jon
+>
+>
+
+
+
+-- 
+Matthew T. Perry
+http://www.perrygeo.net
+
+"I love deadlines. I like the whooshing sound they make as they fly by."
+-- Douglas Adams
+
+
+From dave at smartrak.co.nz  Mon Jan 14 00:21:58 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Mon, 14 Jan 2008 12:21:58 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+Message-ID: <478A9D16.4090209@smartrak.co.nz>
+
+get_ideal_placements currently contains code for handling 
+POINT_PLACEMENT and LINE_PLACEMENT with label_spacing > 0, however it is 
+never used in these cases.
+
+If you edit the statements in:
+   void agg_renderer<T>::process(text_symbolizer const& sym,
+                                 Feature const& feature,
+                                 proj_transform const& prj_trans)
+to use get_ideal_placements (via 
+finder.find_placements<path_type>(text_placement,path); ) in the 
+label_spacing > 0 case, it seems to perform fine (at least in my small 
+test, the placements themselves were different however)
+
+What benefits/differences is find_placements_with_spacing providing over 
+find_placements + get_ideal_placements? (or vice versa)
+_with_spacing is a lot more complicated, but I can only assume it is 
+doing something better?
+There seems to be code in _with_spacing to support displacement and some 
+extra character placement checks, does this mean displacement doesn't 
+work if label_spacing == 0 ?
+
+It looks that we could replace these similar sets of functionality with 
+a single code path to handle both cases (with and without 
+label_spacing), as without label_spacing should just be a subset of with?
+
+I'll look into implementing this tomorrow if no one has any reasons why not.
+
+It does look like some of this code is currently WIP, anyone have any 
+plans in relation to text placement?
+Artem: Does the current text placement code work correctly with the 
+smoothing/curves support you are working on? Or have you done some 
+modifications in there?
+
+Thanks.
+Dave.
+
+
+From gravitystorm at gmail.com  Mon Jan 14 13:45:26 2008
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Mon, 14 Jan 2008 12:45:26 +0000
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <478A9D16.4090209@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+Message-ID: <c4193f8c0801140445m2786b54ew4f71d7496d7069bd@mail.gmail.com>
+
+Hi David,
+
+I can't comment on any of your points below, but if you're looking
+into label spacing code I'd like to draw your attention to
+http://trac.mapnik.org/ticket/38
+Which shows the placement breaking down badly when displacing on
+non-straight paths - something that should be considered too.
+
+Cheers,
+Andy
+
+On Jan 13, 2008 11:21 PM, David Leaver <dave at smartrak.co.nz> wrote:
+> get_ideal_placements currently contains code for handling
+> POINT_PLACEMENT and LINE_PLACEMENT with label_spacing > 0, however it is
+> never used in these cases.
+>
+> If you edit the statements in:
+>    void agg_renderer<T>::process(text_symbolizer const& sym,
+>                                  Feature const& feature,
+>                                  proj_transform const& prj_trans)
+> to use get_ideal_placements (via
+> finder.find_placements<path_type>(text_placement,path); ) in the
+> label_spacing > 0 case, it seems to perform fine (at least in my small
+> test, the placements themselves were different however)
+>
+> What benefits/differences is find_placements_with_spacing providing over
+> find_placements + get_ideal_placements? (or vice versa)
+> _with_spacing is a lot more complicated, but I can only assume it is
+> doing something better?
+> There seems to be code in _with_spacing to support displacement and some
+> extra character placement checks, does this mean displacement doesn't
+> work if label_spacing == 0 ?
+>
+> It looks that we could replace these similar sets of functionality with
+> a single code path to handle both cases (with and without
+> label_spacing), as without label_spacing should just be a subset of with?
+>
+> I'll look into implementing this tomorrow if no one has any reasons why not.
+>
+> It does look like some of this code is currently WIP, anyone have any
+> plans in relation to text placement?
+> Artem: Does the current text placement code work correctly with the
+> smoothing/curves support you are working on? Or have you done some
+> modifications in there?
+>
+> Thanks.
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From artem at mapnik.org  Mon Jan 14 16:18:00 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 14 Jan 2008 15:18:00 +0000
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <478A9D16.4090209@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+Message-ID: <AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+
+Hi Dave,
+
+On 13 Jan 2008, at 23:21, David Leaver wrote:
+
+> get_ideal_placements currently contains code for handling
+> POINT_PLACEMENT and LINE_PLACEMENT with label_spacing > 0, however  
+> it is
+> never used in these cases.
+>
+> If you edit the statements in:
+>    void agg_renderer<T>::process(text_symbolizer const& sym,
+>                                  Feature const& feature,
+>                                  proj_transform const& prj_trans)
+> to use get_ideal_placements (via
+> finder.find_placements<path_type>(text_placement,path); ) in the
+> label_spacing > 0 case, it seems to perform fine (at least in my small
+> test, the placements themselves were different however)
+
+
+>
+> What benefits/differences is find_placements_with_spacing providing  
+> over
+> find_placements + get_ideal_placements? (or vice versa)
+> _with_spacing is a lot more complicated, but I can only assume it is
+> doing something better?
+
+There are performance issues with using find_placement when  
+label_spacing > 0. You can replicate the problem by having 'long'  
+road geometry but only rendering a small part of it (zoomed in). In  
+this case the original 'find_placement' would calculate lots  
+( placement outside of extent ) causing degradation in performance.   
+I written separate find_placement_with_spacing to address this.
+
+> There seems to be code in _with_spacing to support displacement and  
+> some
+> extra character placement checks, does this mean displacement doesn't
+> work if label_spacing == 0 ?
+
+Displacement code is a quick 'hack' at the moment. We should do  
+something better.
+>
+> It looks that we could replace these similar sets of functionality  
+> with
+> a single code path to handle both cases (with and without
+> label_spacing), as without label_spacing should just be a subset of  
+> with?
+>
+
+I found it is quite difficult to combine different placement  
+strategies without creating a big 'blob' method :). I think having  
+separate smaller blocks are easier to understand/maintain. I spent  
+sometime re-factoring text rendering stuff, but  I'm sure we can  
+improve further.
+> I'll look into implementing this tomorrow if no one has any reasons  
+> why not.
+>
+
+Please, go ahead and I'm happy to help.
+> It does look like some of this code is currently WIP, anyone have any
+> plans in relation to text placement?
+
+Would be nice to implement certain aspects like 'sharp' angles  
+handling...
+> Artem: Does the current text placement code work correctly with the
+> smoothing/curves support you are working on? Or have you done some
+> modifications in there?
+
+placement_finder operates on 'path' concept so it works with 'smooth'  
+paths.
+
+Cheers,
+Artem
+>
+> Thanks.
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From robert.coup at onetrackmind.co.nz  Mon Jan 14 22:20:54 2008
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Tue, 15 Jan 2008 10:20:54 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+Message-ID: <c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+
+Hey all,
+
+> It does look like some of this code is currently WIP, anyone have any
+> > plans in relation to text placement?
+>
+> Would be nice to implement certain aspects like 'sharp' angles
+> handling...
+
+
+We wrote some improved text-on-lines placement code that was in the codebase
+12-15 months back - it failed a use case that we never got to see, so one of
+the committers reverted it again. But it worked pretty well on our
+streetmaps.
+
+It adjusted the kerning and glyph angles depending on the glyph size and the
+path geometry to reduce spacing problems such as [1]. It's not up-to-date
+with the current trunk, but if anyone is keen I'm happy to send through the
+current version of the cpp file to give you some inspiration (or scare you
+off - label placement is a messy business).
+
+Cheers,
+
+Rob :)
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://www.onetrackmind.co.nz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/ddbba59f/attachment.html>
+
+From dave at smartrak.co.nz  Mon Jan 14 22:23:13 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Tue, 15 Jan 2008 10:23:13 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	
+	<47869870.9070905@smartrak.co.nz>	
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	
+	<478A9D16.4090209@smartrak.co.nz>	
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+Message-ID: <478BD2C1.4080008@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/86d40156/attachment.html>
+
+From dave at smartrak.co.nz  Mon Jan 14 22:26:09 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Tue, 15 Jan 2008 10:26:09 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+Message-ID: <478BD371.1030804@smartrak.co.nz>
+
+Artem Pavlenko wrote:
+>
+> There are performance issues with using find_placement when 
+> label_spacing > 0. You can replicate the problem by having 'long' road 
+> geometry but only rendering a small part of it (zoomed in). In this 
+> case the original 'find_placement' would calculate lots ( placement 
+> outside of extent ) causing degradation in performance.  I written 
+> separate find_placement_with_spacing to address this.
+Ah yes, very true!
+> I found it is quite difficult to combine different placement 
+> strategies without creating a big 'blob' method :). I think having 
+> separate smaller blocks are easier to understand/maintain. I spent 
+> sometime re-factoring text rendering stuff, but  I'm sure we can 
+> improve further.
+Definitely, I was only going to refactor them together if it would make 
+sense, sounds like it won't.
+> Would be nice to implement certain aspects like 'sharp' angles 
+> handling...
+Details on this?
+
+Andy Allan wrote:
+ > I'd like to draw your attention to
+ > http://trac.mapnik.org/ticket/38
+
+I'll keep it in mind, I have an idea or two here I will try.
+Currently it appears we displace on the character level (each character 
+gets displaced from the line based on the angle of the line that it is 
+placed on). It may be possible to place all the characters normally then 
+displace them as a word based on the average angle.
+
+One of the reasons I want to investigate the text placement code is that 
+the current find_placement_with_spacing code doesn't handle nicely when 
+the spacing is longer than the line length. I would expect in this case 
+that a single label would be placed in the middle of the street, but 
+currently no labels are placed.
+
+Dave.
+
+
+From artem at mapnik.org  Mon Jan 14 23:25:10 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 14 Jan 2008 22:25:10 +0000
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+Message-ID: <862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>
+
+Hi Rob,
+
+On 14 Jan 2008, at 21:20, Robert Coup wrote:
+
+> Hey all,
+>
+> > It does look like some of this code is currently WIP, anyone have  
+> any
+> > plans in relation to text placement?
+>
+> Would be nice to implement certain aspects like 'sharp' angles
+> handling...
+>
+> We wrote some improved text-on-lines placement code that was in the  
+> codebase 12-15 months back - it failed a use case that we never got  
+> to see, so one of the committers reverted it again. But it worked  
+> pretty well on our streetmaps.
+>
+> It adjusted the kerning and glyph angles depending on the glyph  
+> size and the path geometry to reduce spacing problems such as [1].  
+> It's not up-to-date with the current trunk, but if anyone is keen  
+> I'm happy to send through the current version of the cpp file to  
+> give you some inspiration (or scare you off - label placement is a  
+> messy business).
+
+Yes, please! Lets improve text labeling.
+
+Cheers
+Artem
+
+>
+>
+> Cheers,
+>
+> Rob :)
+> -- 
+> One Track Mind Ltd.
+> PO Box 1604, Shortland St, Auckland, New Zealand
+> Phone +64-9-966 0433 Fax +64-9-969 0045
+> Web http://www.onetrackmind.co.nz
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080114/adc7a610/attachment.html>
+
+From artem at mapnik.org  Mon Jan 14 23:31:28 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 14 Jan 2008 22:31:28 +0000
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <478BD371.1030804@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<478BD371.1030804@smartrak.co.nz>
+Message-ID: <BCA8DF10-2115-4363-AF0F-403E7857DFF6@mapnik.org>
+
+
+On 14 Jan 2008, at 21:26, David Leaver wrote:
+
+> Artem Pavlenko wrote:
+>>
+>> There are performance issues with using find_placement when  
+>> label_spacing > 0. You can replicate the problem by having 'long'  
+>> road geometry but only rendering a small part of it (zoomed in).  
+>> In this case the original 'find_placement' would calculate lots  
+>> ( placement outside of extent ) causing degradation in  
+>> performance.  I written separate find_placement_with_spacing to  
+>> address this.
+> Ah yes, very true!
+>> I found it is quite difficult to combine different placement  
+>> strategies without creating a big 'blob' method :). I think having  
+>> separate smaller blocks are easier to understand/maintain. I spent  
+>> sometime re-factoring text rendering stuff, but  I'm sure we can  
+>> improve further.
+> Definitely, I was only going to refactor them together if it would  
+> make sense, sounds like it won't.
+
+Not too sure.  I think it is worth looking at the code again.
+Artem
+
+  
+  
+
+
+From robert.coup at onetrackmind.co.nz  Tue Jan 15 00:29:56 2008
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Tue, 15 Jan 2008 12:29:56 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>
+Message-ID: <c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>
+
+Atttempt 2: Artem, can we get the mailing list to change the reply-to
+address to point to itself rather than the original author? :)
+
+On 15/01/2008, Artem Pavlenko <artem at mapnik.org> wrote:
+>
+> On 14 Jan 2008, at 21:20, Robert Coup wrote:
+>
+> We wrote some improved text-on-lines placement code that was in the
+> codebase 12-15 months back - it failed a use case that we never got to see,
+> so one of the committers reverted it again. But it worked pretty well on our
+> streetmaps.
+>
+> It adjusted the kerning and glyph angles depending on the glyph size and
+> the path geometry to reduce spacing problems such as [1]. It's not
+> up-to-date with the current trunk, but if anyone is keen I'm happy to send
+> through the current version of the cpp file to give you some inspiration (or
+> scare you off - label placement is a messy business).
+>
+>
+> Yes, please! Lets improve text labeling.
+>
+
+Okay, see attached the latest version we have. The original author of the
+code is still around - ping me offlist if you have specific Qs for him and
+i'll put you in touch.
+
+Cheers,
+
+Rob :)
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://www.onetrackmind.co.nz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/15f45892/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: placement_finder.cpp
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080115/15f45892/attachment.ksh>
+
+From amitti at 10east.com  Tue Jan 15 01:25:49 2008
+From: amitti at 10east.com (Aaron Mitti)
+Date: Mon, 14 Jan 2008 19:25:49 -0500 (EST)
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>
+	<47869870.9070905@smartrak.co.nz>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>
+	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+
+All,
+
+I thought it might help for you guys to see the text labeling and 
+placement as we designed it to work. I setup a public demonstration on our 
+website, feel free to click around.
+
+http://www.10east.com/bolt_on_maps_example
+
+It seems to pretty well for the 95+% case, but there's certainly room for 
+improvement.
+
+-Aaron
+
+--
+Aaron Mitti
+Senior Open Systems Engineer
+10 East Corp.
+
+On Tue, 15 Jan 2008, Robert Coup wrote:
+
+> Atttempt 2: Artem, can we get the mailing list to change the reply-to
+> address to point to itself rather than the original author? :)
+>
+> On 15/01/2008, Artem Pavlenko <artem at mapnik.org> wrote:
+>>
+>> On 14 Jan 2008, at 21:20, Robert Coup wrote:
+>>
+>> We wrote some improved text-on-lines placement code that was in the
+>> codebase 12-15 months back - it failed a use case that we never got to see,
+>> so one of the committers reverted it again. But it worked pretty well on our
+>> streetmaps.
+>>
+>> It adjusted the kerning and glyph angles depending on the glyph size and
+>> the path geometry to reduce spacing problems such as [1]. It's not
+>> up-to-date with the current trunk, but if anyone is keen I'm happy to send
+>> through the current version of the cpp file to give you some inspiration (or
+>> scare you off - label placement is a messy business).
+>>
+>>
+>> Yes, please! Lets improve text labeling.
+>>
+>
+> Okay, see attached the latest version we have. The original author of the
+> code is still around - ping me offlist if you have specific Qs for him and
+> i'll put you in touch.
+>
+> Cheers,
+>
+> Rob :)
+> -- 
+> One Track Mind Ltd.
+> PO Box 1604, Shortland St, Auckland, New Zealand
+> Phone +64-9-966 0433 Fax +64-9-969 0045
+> Web http://www.onetrackmind.co.nz
+>
+
+
+From dave at smartrak.co.nz  Tue Jan 15 22:13:10 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Wed, 16 Jan 2008 10:13:10 +1300
+Subject: [Mapnik-devel] Text placement code
+In-Reply-To: <Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>
+	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+Message-ID: <478D21E6.8090109@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080116/8c9a35e6/attachment.html>
+
+From artem.mapnik at googlemail.com  Tue Jan 15 23:16:06 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Tue, 15 Jan 2008 22:16:06 +0000
+Subject: [Mapnik-devel] [OSM-dev] relief madness
+In-Reply-To: <374894E8-E0AD-4F50-8C6D-6997675D16CC@gmail.com>
+References: <5C7B7A6E-8CC0-424C-BFC3-8400E37F72EC@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAC1mQrJ5Y3bQqSj90F355lwAQAAAAA=@googlemail.com>
+	<6CCBE200-2485-48DD-BCF3-7A1E658D463D@gmail.com>
+	<374894E8-E0AD-4F50-8C6D-6997675D16CC@gmail.com>
+Message-ID: <D6E85D48-FFA2-461C-ABDC-E055B3C2AA3D@gmail.com>
+
+I did some more relief hacking today. Here is resampled (to match  
+SRTM3 resolution) and masked gtopo30 based relief, which looks not  
+bad at all :
+http://artem.dev.openstreetmap.org/files/reliefs/gtopo30.jpg
+
+I'm hoping to use gtopo30 as a 'fill' layer for fixing voids in SRTM3  
+- delta surface filling.
+
+Artem
+  
+
+
+From blake at hailmail.net  Wed Jan 16 00:08:31 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 15 Jan 2008 15:08:31 -0800
+Subject: [Mapnik-devel] [OSM-dev] relief madness
+In-Reply-To: <D6E85D48-FFA2-461C-ABDC-E055B3C2AA3D@gmail.com>
+References: <5C7B7A6E-8CC0-424C-BFC3-8400E37F72EC@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAC1mQrJ5Y3bQqSj90F355lwAQAAAAA=@googlemail.com>
+	<6CCBE200-2485-48DD-BCF3-7A1E658D463D@gmail.com>
+	<374894E8-E0AD-4F50-8C6D-6997675D16CC@gmail.com>
+	<D6E85D48-FFA2-461C-ABDC-E055B3C2AA3D@gmail.com>
+Message-ID: <5A30795C-1EC4-4524-B0C6-96883C1BB906@hailmail.net>
+
+Artem,
+  That impressive.  In thinking about void filling you might consult  
+this reference on the methods used by others:
+
+http://srtm.csi.cgiar.org/SRTMdataProcessingMethodology.asp
+
+Dane
+
+On Jan 15, 2008, at 2:16 PM, Artem Pavlenko wrote:
+
+> I did some more relief hacking today. Here is resampled (to match
+> SRTM3 resolution) and masked gtopo30 based relief, which looks not
+> bad at all :
+> http://artem.dev.openstreetmap.org/files/reliefs/gtopo30.jpg
+>
+> I'm hoping to use gtopo30 as a 'fill' layer for fixing voids in SRTM3
+> - delta surface filling.
+>
+> Artem
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Wed Jan 16 16:27:00 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 16 Jan 2008 15:27:00 +0000
+Subject: [Mapnik-devel] [OSM-dev] relief madness
+In-Reply-To: <5A30795C-1EC4-4524-B0C6-96883C1BB906@hailmail.net>
+References: <5C7B7A6E-8CC0-424C-BFC3-8400E37F72EC@gmail.com>
+	<!&!AAAAAAAAAAAuAAAAAAAAAOKaD4mR3JBOrEpRon92nMgBANp/H2q5kHFIvKMsnZiQaZAAAAABxJAAABAAAAC1mQrJ5Y3bQqSj90F355lwAQAAAAA=@googlemail.com>
+	<6CCBE200-2485-48DD-BCF3-7A1E658D463D@gmail.com>
+	<374894E8-E0AD-4F50-8C6D-6997675D16CC@gmail.com>
+	<D6E85D48-FFA2-461C-ABDC-E055B3C2AA3D@gmail.com>
+	<5A30795C-1EC4-4524-B0C6-96883C1BB906@hailmail.net>
+Message-ID: <8D6FEBBC-5C2D-4F3E-B4CE-B49C0656B40A@mapnik.org>
+
+Hi Dane,
+
+Thanks for the reference.  I did see it a while ago but your email  
+prompt me to look again.
+Basically, my approach is similar - fill voids with data from another  
+source. My intention is to use SRTM3 for making maps and I'm hoping I  
+can get away without accumulating all the data used by CGIAR (I have  
+limited time/resources ..) As for algorithms, AFAIK 'Delta surface  
+filling' delivers best results for this task (and it used by NGA, ESRI).
+
+To summarize, I'd rather use already available data from CGIAR but  
+it's not free for commercial use. I hope my approach will deliver  
+good 'visual' results for making 2D maps , I'm not worried about 3D  
+modeling at this time.
+
+Cheers
+Artem
+
+On 15 Jan 2008, at 23:08, Dane Springmeyer wrote:
+
+> Artem,
+>   That impressive.  In thinking about void filling you might consult
+> this reference on the methods used by others:
+>
+> http://srtm.csi.cgiar.org/SRTMdataProcessingMethodology.asp
+>
+> Dane
+>
+> On Jan 15, 2008, at 2:16 PM, Artem Pavlenko wrote:
+>
+>> I did some more relief hacking today. Here is resampled (to match
+>> SRTM3 resolution) and masked gtopo30 based relief, which looks not
+>> bad at all :
+>> http://artem.dev.openstreetmap.org/files/reliefs/gtopo30.jpg
+>>
+>> I'm hoping to use gtopo30 as a 'fill' layer for fixing voids in SRTM3
+>> - delta surface filling.
+>>
+>> Artem
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From jburgess777 at googlemail.com  Sun Jan 20 01:02:40 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 20 Jan 2008 00:02:40 +0000
+Subject: [Mapnik-devel] Rendering problem when trying to use render() with
+	offset
+Message-ID: <1200787360.32282.137.camel@localhost.localdomain>
+
+I have been trying to make the OSM tile rendering process as efficient
+as possble and noticed that the Mapnik code allows an offset to be
+specified when rendering. I thought this might be a useful improvement
+to the piece of code which currently renders the tile as 512x512 and
+then cuts out the 256x256 square in the middle. 
+
+The old code:
+
+  im = Image(512, 512)
+  render(m, im)
+  view = im.view(128,128,256,256) # x,y,width,height
+  save_to_file("test_view.png",'png',view)
+
+Result: http://www.jburgess.uklinux.net/cut-tile/test_view.png 
+
+
+New code:
+
+  im = Image(256, 256)
+  render(m, im, 128, 128)
+  save_to_file("test_offset.png",'png',im)
+
+Result: http://www.jburgess.uklinux.net/cut-tile/test_offset.png
+
+
+This seems to work fine for 99% of the map but you'll notice in the
+results above that text label is missing for the pub. Normally this
+would have extended beyond the edge of the tile but looks like it has
+been dropped. Is this to be expected?
+
+
+
+The full test code is at:
+http://www.jburgess.uklinux.net/cut-tile/test.py
+
+The main OSM map uses the old code and looks OK:
+http://www.openstreetmap.org/?lat=50.753698&lon=-1.530211&zoom=18&layers=B0FT
+
+The pub has been in OSM for ages so if you've got a recent planet dump
+loaded already then you should need to update your data. If you want
+this small area then a file can be found here:
+http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm
+
+	Jon
+
+
+
+
+
+
+From artem at mapnik.org  Sun Jan 20 20:26:36 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 20 Jan 2008 19:26:36 +0000
+Subject: [Mapnik-devel] Rendering problem when trying to use render()
+	with offset
+In-Reply-To: <1200787360.32282.137.camel@localhost.localdomain>
+References: <1200787360.32282.137.camel@localhost.localdomain>
+Message-ID: <F646D817-38D6-413C-B96A-A068F57782F6@mapnik.org>
+
+
+On 20 Jan 2008, at 00:02, Jon Burgess wrote:
+
+> I have been trying to make the OSM tile rendering process as efficient
+> as possble and noticed that the Mapnik code allows an offset to be
+> specified when rendering. I thought this might be a useful improvement
+> to the piece of code which currently renders the tile as 512x512 and
+> then cuts out the 256x256 square in the middle.
+>
+> The old code:
+>
+>   im = Image(512, 512)
+>   render(m, im)
+>   view = im.view(128,128,256,256) # x,y,width,height
+>   save_to_file("test_view.png",'png',view)
+>
+> Result: http://www.jburgess.uklinux.net/cut-tile/test_view.png
+>
+>
+> New code:
+>
+>   im = Image(256, 256)
+>   render(m, im, 128, 128)
+>   save_to_file("test_offset.png",'png',im)
+>
+> Result: http://www.jburgess.uklinux.net/cut-tile/test_offset.png
+>
+>
+> This seems to work fine for 99% of the map but you'll notice in the
+> results above that text label is missing for the pub. Normally this
+> would have extended beyond the edge of the tile but looks like it has
+> been dropped. Is this to be expected?
+
+No. I had a quick look and those offsets only used to initialize view  
+transform and label collision detection is still working with width/ 
+height offset by +-64 pixel (hardcoded)/  I'll change render to use  
+offset_x and offset_y for label placement.
+
+Cheers
+Artem
+
+>
+>
+>
+> The full test code is at:
+> http://www.jburgess.uklinux.net/cut-tile/test.py
+>
+> The main OSM map uses the old code and looks OK:
+> http://www.openstreetmap.org/? 
+> lat=50.753698&lon=-1.530211&zoom=18&layers=B0FT
+>
+> The pub has been in OSM for ages so if you've got a recent planet dump
+> loaded already then you should need to update your data. If you want
+> this small area then a file can be found here:
+> http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm
+>
+> 	Jon
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From dave at smartrak.co.nz  Mon Jan 21 04:30:10 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Mon, 21 Jan 2008 16:30:10 +1300
+Subject: [Mapnik-devel] Text placement update
+In-Reply-To: <478D21E6.8090109@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz>
+Message-ID: <479411C2.90404@smartrak.co.nz>
+
+I've committed a fairly hefty change to the text placement code, 
+returning the behavior of the previous placement code, but with the 
+improved efficiency of the new code (hopefully :) ).
+Log: http://trac.mapnik.org/changeset/597
+
+The displacement code is different now, better in some cases and worse 
+in others.
+Related bug: http://trac.mapnik.org/ticket/38
+
+I've got some good ideas for improving the character placement based on 
+Roberts patch and some ideas of my own, which I will investigate.
+
+If someone has example code + datafiles I could use to test 
+ShieldSymbolizer I could port it to use the new code also. Perhaps 
+someone would be kind enough to create a test for it, demonstrating what 
+it is meant to do? C++ or Python is fine, you can use the existing test 
+datafiles I have added to SVN.
+
+
+Dave.
+
+
+From artem at mapnik.org  Mon Jan 21 17:16:35 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 21 Jan 2008 16:16:35 +0000
+Subject: [Mapnik-devel] Text placement update
+In-Reply-To: <479411C2.90404@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz> <479411C2.90404@smartrak.co.nz>
+Message-ID: <1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+
+
+On 21 Jan 2008, at 03:30, David Leaver wrote:
+
+> I've committed a fairly hefty change to the text placement code,
+> returning the behavior of the previous placement code, but with the
+> improved efficiency of the new code (hopefully :) ).
+> Log: http://trac.mapnik.org/changeset/597
+>
+> The displacement code is different now, better in some cases and worse
+> in others.
+> Related bug: http://trac.mapnik.org/ticket/38
+
+Good stuff. It seems to work fine for me, I'll do more testing tonight.
+>
+> I've got some good ideas for improving the character placement  
+> based on
+> Roberts patch and some ideas of my own, which I will investigate.
+
+Great!
+>
+> If someone has example code + datafiles I could use to test
+> ShieldSymbolizer I could port it to use the new code also. Perhaps
+> someone would be kind enough to create a test for it, demonstrating  
+> what
+> it is meant to do? C++ or Python is fine, you can use the existing  
+> test
+> datafiles I have added to SVN.
+
+Yes, I'll create some test data from OSM for you. I like having  
+samples in SVN but perhaps it'd be better to move them into to a  
+separate directory (in trunk at the moment) ? What do you think?
+
+Cheers
+Artem
+
+>
+>
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From dave at smartrak.biz  Mon Jan 21 18:35:57 2008
+From: dave at smartrak.biz (Dave Leaver)
+Date: Tue, 22 Jan 2008 06:35:57 +1300
+Subject: [Mapnik-devel] Text placement update
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz> <479411C2.90404@smartrak.co.nz>
+	<1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+Message-ID: <236B4D6E6137CE4BBA94F247930D63BE02C30C@stkdns.smartrak.biz>
+
+Putting samples outside of trunk / in another repository should be fine, so long as they are easy to get a checkout of to use them.
+Some instructions in the test directory should do the job.
+
+Dave.
+
+
+-----Original Message-----
+From: Artem Pavlenko [mailto:artem at mapnik.org]
+Sent: Tue 1/22/2008 5:16 AM
+To: Dave Leaver
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] Text placement update
+ 
+
+On 21 Jan 2008, at 03:30, David Leaver wrote:
+
+> I've committed a fairly hefty change to the text placement code,
+> returning the behavior of the previous placement code, but with the
+> improved efficiency of the new code (hopefully :) ).
+> Log: http://trac.mapnik.org/changeset/597
+>
+> The displacement code is different now, better in some cases and worse
+> in others.
+> Related bug: http://trac.mapnik.org/ticket/38
+
+Good stuff. It seems to work fine for me, I'll do more testing tonight.
+>
+> I've got some good ideas for improving the character placement  
+> based on
+> Roberts patch and some ideas of my own, which I will investigate.
+
+Great!
+>
+> If someone has example code + datafiles I could use to test
+> ShieldSymbolizer I could port it to use the new code also. Perhaps
+> someone would be kind enough to create a test for it, demonstrating  
+> what
+> it is meant to do? C++ or Python is fine, you can use the existing  
+> test
+> datafiles I have added to SVN.
+
+Yes, I'll create some test data from OSM for you. I like having  
+samples in SVN but perhaps it'd be better to move them into to a  
+separate directory (in trunk at the moment) ? What do you think?
+
+Cheers
+Artem
+
+>
+>
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080122/5fa144a3/attachment.html>
+
+From jbronn at gmail.com  Mon Jan 21 18:47:57 2008
+From: jbronn at gmail.com (Justin Bronn)
+Date: Mon, 21 Jan 2008 11:47:57 -0600
+Subject: [Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support (w/Sun
+	Studio compiler)
+In-Reply-To: <1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>	<478D21E6.8090109@smartrak.co.nz>
+	<479411C2.90404@smartrak.co.nz>
+	<1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+Message-ID: <4794DACD.2020200@gmail.com>
+
+I just submitted a patch (ticket #63) that adds support for OSX Leopard 
+and preliminary support for Sun's C++ compiler on Solaris. My motivation 
+was that the GCC implementation for OpenSolaris has a bug that makes 
+compiling Boost.Python impossible. In the process, I also fixed bugs to 
+get running on my Leopard install.
+
+While the patch will get Mapnik compiled on OpenSolaris, however it 
+segfaults when attempting to run the tests -- but it may help others get 
+further. The tests run OK when compiled on Leopard.
+
+I built with r598 because compiling with r599 fails with the following 
+error (g++ on Leopard):
+
+src/placement_finder.cpp:141: error: ?class 
+mapnik::label_collision_detector4? has no member named ?extent?
+
+Best Regards,
+-Justin Bronn
+
+
+
+
+From gravitystorm at gmail.com  Mon Jan 21 20:35:23 2008
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Mon, 21 Jan 2008 19:35:23 +0000
+Subject: [Mapnik-devel] Blending error (With Patch)
+In-Reply-To: <478572DE.7060204@smartrak.co.nz>
+References: <478572DE.7060204@smartrak.co.nz>
+Message-ID: <c4193f8c0801211135s70ebb736o26298b6ba1472515@mail.gmail.com>
+
+On Jan 10, 2008 1:20 AM, David Leaver <dave at smartrak.co.nz> wrote:
+> One thing I've noticed is that if your map is rendered onto a fully
+> transparent background (alpha=0), it will still be blended to the color
+> components that are set in that layer.
+> In comparison to any image editing software, this behavior is incorrect.
+> Investigating AGG usage, it looks like the wrong blending is being used
+> (pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+>
+> The attached image portrays this behavior.
+> Column 1: background(0,0,0,0), first row is bad
+> Column 2: background(255,255,255,0), second row is bad
+> Column 3: with patch applied, all are good, any background with alpha=0
+> gives the same output.
+
+The patch for this helped expose another blending bug which I'd
+previously reported to Artem (via an Openstreetmap conversation) to
+the point where we couldn't ignore it further, and we made a patch for
+the latest trunk today. I've raised a ticket with the patch attached
+at
+
+https://trac.mapnik.org/ticket/64
+
+Cheers,
+Andy
+
+
+From artem at mapnik.org  Mon Jan 21 21:00:20 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 21 Jan 2008 20:00:20 +0000
+Subject: [Mapnik-devel] Blending error (With Patch)
+In-Reply-To: <c4193f8c0801211135s70ebb736o26298b6ba1472515@mail.gmail.com>
+References: <478572DE.7060204@smartrak.co.nz>
+	<c4193f8c0801211135s70ebb736o26298b6ba1472515@mail.gmail.com>
+Message-ID: <CA3377E6-25D2-4C0B-BEBC-E9820AC6DD10@mapnik.org>
+
+Hi Andy,
+
+On 21 Jan 2008, at 19:35, Andy Allan wrote:
+
+> On Jan 10, 2008 1:20 AM, David Leaver <dave at smartrak.co.nz> wrote:
+>> One thing I've noticed is that if your map is rendered onto a fully
+>> transparent background (alpha=0), it will still be blended to the  
+>> color
+>> components that are set in that layer.
+>> In comparison to any image editing software, this behavior is  
+>> incorrect.
+>> Investigating AGG usage, it looks like the wrong blending is being  
+>> used
+>> (pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+>>
+>> The attached image portrays this behavior.
+>> Column 1: background(0,0,0,0), first row is bad
+>> Column 2: background(255,255,255,0), second row is bad
+>> Column 3: with patch applied, all are good, any background with  
+>> alpha=0
+>> gives the same output.
+>
+> The patch for this helped expose another blending bug which I'd
+> previously reported to Artem (via an Openstreetmap conversation) to
+> the point where we couldn't ignore it further, and we made a patch for
+> the latest trunk today. I've raised a ticket with the patch attached
+> at
+>
+> https://trac.mapnik.org/ticket/64
+
+Thanks for the patch, applied in r601
+
+Artem
+>
+
+> Cheers,
+> Andy
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Mon Jan 21 21:46:32 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 21 Jan 2008 20:46:32 +0000
+Subject: [Mapnik-devel] Patch for OSX Leopard and OpenSolaris Support
+	(w/Sun Studio compiler)
+In-Reply-To: <4794DACD.2020200@gmail.com>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>	<478D21E6.8090109@smartrak.co.nz>
+	<479411C2.90404@smartrak.co.nz>
+	<1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+	<4794DACD.2020200@gmail.com>
+Message-ID: <14B88723-32DA-4FCA-8E74-1C5F4A4D96D6@mapnik.org>
+
+Hi Justin,
+
+On 21 Jan 2008, at 17:47, Justin Bronn wrote:
+
+> I just submitted a patch (ticket #63) that adds support for OSX  
+> Leopard
+> and preliminary support for Sun's C++ compiler on Solaris. My  
+> motivation
+> was that the GCC implementation for OpenSolaris has a bug that makes
+> compiling Boost.Python impossible. In the process, I also fixed  
+> bugs to
+> get running on my Leopard install.
+
+Cool! I applied your patch (r603).
+>
+> While the patch will get Mapnik compiled on OpenSolaris, however it
+> segfaults when attempting to run the tests -- but it may help  
+> others get
+> further. The tests run OK when compiled on Leopard.
+>
+
+Have you tried running rundemo.py?  Or something else ? Is sun's  
+compiler based on gcc ?
+You can tell I'm not an expert on Solaris :)
+
+> I built with r598 because compiling with r599 fails with the following
+> error (g++ on Leopard):
+>
+> src/placement_finder.cpp:141: error: ?class
+> mapnik::label_collision_detector4? has no member named ?extent?
+>
+My bad, fixed in r602
+> Best Regards,
+> -Justin Bronn
+>
+
+Thanks again
+Artem
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From artem at mapnik.org  Mon Jan 21 23:13:37 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 21 Jan 2008 22:13:37 +0000
+Subject: [Mapnik-devel] Text placement update
+In-Reply-To: <236B4D6E6137CE4BBA94F247930D63BE02C30C@stkdns.smartrak.biz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz> <479411C2.90404@smartrak.co.nz>
+	<1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+	<236B4D6E6137CE4BBA94F247930D63BE02C30C@stkdns.smartrak.biz>
+Message-ID: <47F09CCC-3E28-4C07-9A5E-30BB9BFFAF05@mapnik.org>
+
+Hi Dave,
+
+I created ShieldSymbolizer demo for you: http://trac.mapnik.org/wiki/ 
+ShieldSymbolizerTests
+Let me if you need anything else.
+Cheers
+Artem
+
+On 21 Jan 2008, at 17:35, Dave Leaver wrote:
+
+> Putting samples outside of trunk / in another repository should be  
+> fine, so long as they are easy to get a checkout of to use them.
+> Some instructions in the test directory should do the job.
+>
+> Dave.
+>
+>
+> -----Original Message-----
+> From: Artem Pavlenko [mailto:artem at mapnik.org]
+> Sent: Tue 1/22/2008 5:16 AM
+> To: Dave Leaver
+> Cc: mapnik-devel at lists.berlios.de
+> Subject: Re: [Mapnik-devel] Text placement update
+>
+>
+> On 21 Jan 2008, at 03:30, David Leaver wrote:
+>
+> > I've committed a fairly hefty change to the text placement code,
+> > returning the behavior of the previous placement code, but with the
+> > improved efficiency of the new code (hopefully :) ).
+> > Log: http://trac.mapnik.org/changeset/597
+> >
+> > The displacement code is different now, better in some cases and  
+> worse
+> > in others.
+> > Related bug: http://trac.mapnik.org/ticket/38
+>
+> Good stuff. It seems to work fine for me, I'll do more testing  
+> tonight.
+> >
+> > I've got some good ideas for improving the character placement
+> > based on
+> > Roberts patch and some ideas of my own, which I will investigate.
+>
+> Great!
+> >
+> > If someone has example code + datafiles I could use to test
+> > ShieldSymbolizer I could port it to use the new code also. Perhaps
+> > someone would be kind enough to create a test for it, demonstrating
+> > what
+> > it is meant to do? C++ or Python is fine, you can use the existing
+> > test
+> > datafiles I have added to SVN.
+>
+> Yes, I'll create some test data from OSM for you. I like having
+> samples in SVN but perhaps it'd be better to move them into to a
+> separate directory (in trunk at the moment) ? What do you think?
+>
+> Cheers
+> Artem
+>
+> >
+> >
+> > Dave.
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080121/9512e07b/attachment.html>
+
+From gravitystorm at gmail.com  Tue Jan 22 11:56:58 2008
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Tue, 22 Jan 2008 10:56:58 +0000
+Subject: [Mapnik-devel] Text placement update
+In-Reply-To: <479411C2.90404@smartrak.co.nz>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>
+	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>
+	<478A9D16.4090209@smartrak.co.nz>
+	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>
+	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>
+	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>
+	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>
+	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz> <479411C2.90404@smartrak.co.nz>
+Message-ID: <c4193f8c0801220256n21613b68ufac9c64e0e0b83a0@mail.gmail.com>
+
+On Jan 21, 2008 3:30 AM, David Leaver <dave at smartrak.co.nz> wrote:
+> I've committed a fairly hefty change to the text placement code,
+> returning the behavior of the previous placement code, but with the
+> improved efficiency of the new code (hopefully :) ).
+> Log: http://trac.mapnik.org/changeset/597
+>
+> The displacement code is different now, better in some cases and worse
+> in others.
+> Related bug: http://trac.mapnik.org/ticket/38
+
+Hi Dave,
+
+The displacement code is much, much better than before, impressively
+so. It still breaks down on some pathological cases, such as circular
+paths of similar size to the text font (see attached) but in general
+is much better in >90% of cases that were previously badly handled.
+Also the displacement values (dy) now behave in a predicable manner
+which is an improvement too.
+
+Thanks,
+Andy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 5421.png
+Type: image/png
+Size: 10934 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080122/58711989/attachment.png>
+
+From dave at smartrak.co.nz  Wed Jan 23 05:26:22 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Wed, 23 Jan 2008 17:26:22 +1300
+Subject: [Mapnik-devel] Character placement Improvement!
+In-Reply-To: <CA3377E6-25D2-4C0B-BEBC-E9820AC6DD10@mapnik.org>
+References: <478572DE.7060204@smartrak.co.nz>
+	<c4193f8c0801211135s70ebb736o26298b6ba1472515@mail.gmail.com>
+	<CA3377E6-25D2-4C0B-BEBC-E9820AC6DD10@mapnik.org>
+Message-ID: <4796C1EE.4010306@smartrak.co.nz>
+
+I've written some new character placement code that works better with 
+corners (committed in r605).
+
+Basically it calculates the start and end position of the character, 
+then calculates the angle between those points.
+This means sharp line angle changes no longer make the characters "pop 
+out" of the word.
+
+max_char_angle_delta can give slightly different results as now 
+character angles are not strict to the angle of the road segments.
+
+Example Images:
+
+New: http://img505.imageshack.us/my.php?image=charplacementnewyi3.png
+Old: http://img135.imageshack.us/my.php?image=charplacementoldaa5.png
+
+New: http://img135.imageshack.us/my.php?image=displacementnewkd5.png
+Old: http://img404.imageshack.us/my.php?image=displacementoldvf2.png
+
+New: http://img404.imageshack.us/my.php?image=textspacingnewza6.png
+Old: http://img293.imageshack.us/my.php?image=textspacingoldwx9.png
+
+Give it a try and give me some feedback :-)
+
+Dave.
+
+
+From artem at mapnik.org  Wed Jan 23 16:19:43 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 23 Jan 2008 15:19:43 +0000
+Subject: [Mapnik-devel] Character placement Improvement!
+In-Reply-To: <4796C1EE.4010306@smartrak.co.nz>
+References: <478572DE.7060204@smartrak.co.nz>
+	<c4193f8c0801211135s70ebb736o26298b6ba1472515@mail.gmail.com>
+	<CA3377E6-25D2-4C0B-BEBC-E9820AC6DD10@mapnik.org>
+	<4796C1EE.4010306@smartrak.co.nz>
+Message-ID: <5638AC1E-3384-4B9F-B086-F18C17E831D8@mapnik.org>
+
+Hi David,
+
+> I've written some new character placement code that works better with
+> corners (committed in r605).
+>
+> Basically it calculates the start and end position of the character,
+> then calculates the angle between those points.
+> This means sharp line angle changes no longer make the characters "pop
+> out" of the word.
+>
+> max_char_angle_delta can give slightly different results as now
+> character angles are not strict to the angle of the road segments.
+>
+> Example Images:
+>
+> New: http://img505.imageshack.us/my.php?image=charplacementnewyi3.png
+> Old: http://img135.imageshack.us/my.php?image=charplacementoldaa5.png
+>
+> New: http://img135.imageshack.us/my.php?image=displacementnewkd5.png
+> Old: http://img404.imageshack.us/my.php?image=displacementoldvf2.png
+>
+> New: http://img404.imageshack.us/my.php?image=textspacingnewza6.png
+> Old: http://img293.imageshack.us/my.php?image=textspacingoldwx9.png
+>
+
+Looks very good!
+> Give it a try and give me some feedback :-)
+
+I will.
+
+>
+> Dave.
+>
+
+Cheers
+Artem
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From dave at smartrak.co.nz  Wed Jan 23 21:19:58 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 24 Jan 2008 09:19:58 +1300
+Subject: [Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+Message-ID: <4797A16E.3050507@smartrak.co.nz>
+
+I'm on Ubuntu 7.10, and the recently added iconv test fails. If I remove 
+the test for it, the build goes fine.
+
+The libc6-dev package includes iconv.h, but there is no libiconv in 
+ubuntu (it is part of libc as far as I can tell).
+http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h
+
+Could the test be changed to only check for the header or something?
+
+Dave.
+
+
+
+ 
+
+
+From jburgess at uklinux.net  Wed Jan 23 21:52:25 2008
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Wed, 23 Jan 2008 20:52:25 +0000
+Subject: [Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+In-Reply-To: <4797A16E.3050507@smartrak.co.nz>
+References: <4797A16E.3050507@smartrak.co.nz>
+Message-ID: <1201121545.20807.21.camel@localhost.localdomain>
+
+
+On Thu, 2008-01-24 at 09:19 +1300, David Leaver wrote:
+> I'm on Ubuntu 7.10, and the recently added iconv test fails. If I remove 
+> the test for it, the build goes fine.
+> 
+> The libc6-dev package includes iconv.h, but there is no libiconv in 
+> ubuntu (it is part of libc as far as I can tell).
+> http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h
+> 
+> Could the test be changed to only check for the header or something?
+> 
+> Dave.
+> 
+
+Same here on Fedora 8. The attached patch made the missing libconv
+non-fatal for me.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: iconv-optional.patch
+Type: text/x-patch
+Size: 381 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080123/4f05c803/attachment.bin>
+
+From artem at mapnik.org  Wed Jan 23 22:06:38 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 23 Jan 2008 21:06:38 +0000
+Subject: [Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+In-Reply-To: <1201121545.20807.21.camel@localhost.localdomain>
+References: <4797A16E.3050507@smartrak.co.nz>
+	<1201121545.20807.21.camel@localhost.localdomain>
+Message-ID: <8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>
+
+Hi Jon
+Applied in r610
+Thanks
+On 23 Jan 2008, at 20:52, Jon Burgess wrote:
+
+>
+> On Thu, 2008-01-24 at 09:19 +1300, David Leaver wrote:
+>> I'm on Ubuntu 7.10, and the recently added iconv test fails. If I  
+>> remove
+>> the test for it, the build goes fine.
+>>
+>> The libc6-dev package includes iconv.h, but there is no libiconv in
+>> ubuntu (it is part of libc as far as I can tell).
+>> http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h
+>>
+>> Could the test be changed to only check for the header or something?
+>>
+>> Dave.
+>>
+>
+> Same here on Fedora 8. The attached patch made the missing libconv
+> non-fatal for me.
+>
+> 	Jon
+>
+> <iconv-optional.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dave at smartrak.co.nz  Wed Jan 23 22:44:07 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 24 Jan 2008 10:44:07 +1300
+Subject: [Mapnik-devel] Upside-down labels
+In-Reply-To: <8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>
+References: <4797A16E.3050507@smartrak.co.nz>
+	<1201121545.20807.21.camel@localhost.localdomain>
+	<8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>
+Message-ID: <4797B527.6060803@smartrak.co.nz>
+
+I've just committed a fix for upside down label placement.
+http://trac.mapnik.org/ticket/46
+http://trac.mapnik.org/ticket/65
+
+Could someone who deals with the OSM data (artem?) test if those tiles 
+are generated correctly now?
+If so you can close the bug.
+
+Thanks.
+Dave.
+
+
+From artem at mapnik.org  Wed Jan 23 22:53:50 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 23 Jan 2008 21:53:50 +0000
+Subject: [Mapnik-devel] Upside-down labels
+In-Reply-To: <4797B527.6060803@smartrak.co.nz>
+References: <4797A16E.3050507@smartrak.co.nz>
+	<1201121545.20807.21.camel@localhost.localdomain>
+	<8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>
+	<4797B527.6060803@smartrak.co.nz>
+Message-ID: <9E607DDB-1BC8-472A-BE46-AD3AF5487413@mapnik.org>
+
+
+On 23 Jan 2008, at 21:44, David Leaver wrote:
+
+> I've just committed a fix for upside down label placement.
+> http://trac.mapnik.org/ticket/46
+> http://trac.mapnik.org/ticket/65
+>
+> Could someone who deals with the OSM data (artem?) test if those tiles
+> are generated correctly now?
+> If so you can close the bug.
+
+Fantastic! Thanks.
+Artem
+>
+> Thanks.
+> Dave.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From dave at smartrak.co.nz  Thu Jan 24 02:22:49 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Thu, 24 Jan 2008 14:22:49 +1300
+Subject: [Mapnik-devel] Text placement update (ShieldSymbolizer)
+In-Reply-To: <47F09CCC-3E28-4C07-9A5E-30BB9BFFAF05@mapnik.org>
+References: <d6cb3ab10801100113r9034bc2o16911e4445e7195d@mail.gmail.com>	<c5097ac40801100119v26b7fac8s9fc47176df95e88a@mail.gmail.com>	<47869870.9070905@smartrak.co.nz>	<FFC3C7D4-603C-41FF-9CE5-0D9FBC494B4F@mapnik.org>	<478A9D16.4090209@smartrak.co.nz>	<AFB56660-59A2-43DA-BC75-B7AB5709F5D5@mapnik.org>	<c5097ac40801141320i4eeba3a1h8038f9539ca83b9d@mail.gmail.com>	<862A6F22-F73C-43DF-AA56-ED9C4E422323@mapnik.org>	<c5097ac40801141529p54f20cfbvfae0e71b22cc1d4a@mail.gmail.com>	<Pine.LNX.4.64.0801141919180.13088@amitti1.10east.com>
+	<478D21E6.8090109@smartrak.co.nz> <479411C2.90404@smartrak.co.nz>
+	<1CDFE8F8-A154-4943-9946-D966B7BEFA36@mapnik.org>
+	<236B4D6E6137CE4BBA94F247930D63BE02C30C@stkdns.smartrak.biz>
+	<47F09CCC-3E28-4C07-9A5E-30BB9BFFAF05@mapnik.org>
+Message-ID: <4797E869.30708@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080124/f2223275/attachment.html>
+
+From gravitystorm at gmail.com  Fri Jan 25 18:38:15 2008
+From: gravitystorm at gmail.com (Andy Allan)
+Date: Fri, 25 Jan 2008 17:38:15 +0000
+Subject: [Mapnik-devel] Upside-down labels
+In-Reply-To: <4797B527.6060803@smartrak.co.nz>
+References: <4797A16E.3050507@smartrak.co.nz>
+	<1201121545.20807.21.camel@localhost.localdomain>
+	<8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>
+	<4797B527.6060803@smartrak.co.nz>
+Message-ID: <c4193f8c0801250938g40507725o4027a2e1633cc223@mail.gmail.com>
+
+On Jan 23, 2008 9:44 PM, David Leaver <dave at smartrak.co.nz> wrote:
+> I've just committed a fix for upside down label placement.
+> http://trac.mapnik.org/ticket/46
+> http://trac.mapnik.org/ticket/65
+>
+> Could someone who deals with the OSM data (artem?) test if those tiles
+> are generated correctly now?
+> If so you can close the bug.
+
+This might be a false alarm, in which case forgive me. With r614 I
+have displaced, single character labels that are not rendered at all,
+whereas labels with 2+ characters work fine. I don't have any time
+before my flight this evening to investigate further, but I'm pretty
+sure it worked in r605 and definitely in r601 and I thought I'd
+mention it in case you spot something or have a chance to check.
+
+If it's not something you can recreate, don't worry about it, and I'll
+do some investigations in a week's time. It's not inconceivable that
+it's a mistake at my end (we did some refactoring of other stuff too),
+but with it working fine for 2 or more characters but not for 1 my
+suspicions are raised that there's a corner case with your 50% test.
+
+Cheers,
+Andy
+
+
+From artem.mapnik at googlemail.com  Sun Jan 27 16:53:08 2008
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Sun, 27 Jan 2008 15:53:08 +0000
+Subject: [Mapnik-devel] mapnik release
+In-Reply-To: <20080127002626.GF4317@urchin.earth.li>
+References: <OF0A6F1DB1.0AD562C0-ON802573DB.003BBF88-802573DB.003C4019@solent-university.ac.uk>
+	<20080125142000.GT4317@urchin.earth.li>
+	<238F16EE-01DF-4777-BB59-DC4BBF93F3CC@gmail.com>
+	<20080126200643.GC4317@urchin.earth.li>
+	<03ECD4F0-A28E-4EA6-87B0-C2AA36B980C6@gmail.com>
+	<20080127002626.GF4317@urchin.earth.li>
+Message-ID: <1559F549-47E0-4538-8C04-8E0B2FCB5B46@gmail.com>
+
+forwarding to mapnik-devel
+On 27 Jan 2008, at 00:26, Dominic Hargreaves wrote:
+
+> On Sat, Jan 26, 2008 at 08:24:28PM +0000, Artem Pavlenko wrote:
+>>
+>> On 26 Jan 2008, at 20:06, Dominic Hargreaves wrote:
+>>> Alternatively, would it make most sense to ship the plugins as  
+>>> part of
+>>> the main library? Is there any other way they could be used other  
+>>> than
+>>> as part of the main library?
+>>
+>> Part of core libmapnik I think. Theoretically, of course it is
+>> possible to use them separately but in practice they're tightly
+>> linked to Mapnik.
+>
+> Hrm, this presents a bit of a problem for people using the plugins,
+> since the plugin path is currently hardcoded in places to be
+> /usr/lib/mapnik/input, and it would be a shame to have to have people
+> modify their code when using a new release.
+>
+> Would it be possible to change things so that the library knows  
+> where to
+> find plugins by itself, eg with a register_default_datasources?  
+> Then the
+> code could automatically look in, eg, /usr/lib/mapnik/0.5/input.
+>
+Should we have MAPNIK_VERSION defined somewhere ? What people think?
+
+> By the way, feel free to move this onto mapnik-devel if it's better
+> there.
+>
+
+cc  to mapnik-dev
+> Dominic.
+>
+
+
+> -- 
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+Artem
+
+
+From immix at austin360.com  Mon Jan 28 17:03:24 2008
+From: immix at austin360.com (Bendtsen Debro)
+Date: Mon, 28 Jan 2008 16:03:24 +0000
+Subject: [Mapnik-devel] phlebotomy
+Message-ID: <4612531461.20080128155445@austin360.com>
+
+Saluton, 
+
+  Doownloadable Softwaree
+
+	http://www.geocities.com/c5a2v08nzsosjgq/
+
+  
+On the next car, arrived all breathless and panted on the
+blackboard that would stump the angels pick the meat from
+the skins, and the gall from first, he fell back to a point
+near the cumberland on which the phrase project gutenberg
+appears, a little nod i was landed last night on a certain
+even spoke to bovary about it. They put him to fourth side
+that which sloped down in the direction it is the superior
+race, few in number, and unaccustomed ^ '. With me tonight.
+' i'm so sorry. I can't..
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080128/da170d3b/attachment.html>
+
+From dave at smartrak.co.nz  Mon Jan 28 22:43:06 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Tue, 29 Jan 2008 10:43:06 +1300
+Subject: [Mapnik-devel] Upside-down labels
+In-Reply-To: <c4193f8c0801250938g40507725o4027a2e1633cc223@mail.gmail.com>
+References: <4797A16E.3050507@smartrak.co.nz>	
+	<1201121545.20807.21.camel@localhost.localdomain>	
+	<8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>	
+	<4797B527.6060803@smartrak.co.nz>
+	<c4193f8c0801250938g40507725o4027a2e1633cc223@mail.gmail.com>
+Message-ID: <479E4C6A.2080306@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080129/13a5ace5/attachment.html>
+
+From artem at mapnik.org  Tue Jan 29 10:59:24 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 29 Jan 2008 09:59:24 +0000
+Subject: [Mapnik-devel] Upside-down labels
+In-Reply-To: <479E4C6A.2080306@smartrak.co.nz>
+References: <4797A16E.3050507@smartrak.co.nz>	
+	<1201121545.20807.21.camel@localhost.localdomain>	
+	<8D0D5C72-FAD2-4106-A7D4-6EBA56202177@mapnik.org>	
+	<4797B527.6060803@smartrak.co.nz>
+	<c4193f8c0801250938g40507725o4027a2e1633cc223@mail.gmail.com>
+	<479E4C6A.2080306@smartrak.co.nz>
+Message-ID: <080FF631-AED2-4F7F-8A08-F26F7CC50891@mapnik.org>
+
+
+On 28 Jan 2008, at 21:43, David Leaver wrote:
+
+> Thanks!
+> You were right, 1 character labels weren't being rendered.
+> Fixed in SVN now :-)
+>
+> Dave.
+>
+
+Dave,  thanks for fixing this
+Artem
+
+> Andy Allan wrote:
+>>
+>> On Jan 23, 2008 9:44 PM, David Leaver <dave at smartrak.co.nz> wrote:
+>>
+>>> I've just committed a fix for upside down label placement.
+>>> http://trac.mapnik.org/ticket/46
+>>> http://trac.mapnik.org/ticket/65
+>>>
+>>> Could someone who deals with the OSM data (artem?) test if those  
+>>> tiles
+>>> are generated correctly now?
+>>> If so you can close the bug.
+>>>
+>> This might be a false alarm, in which case forgive me. With r614 I
+>> have displaced, single character labels that are not rendered at all,
+>> whereas labels with 2+ characters work fine. I don't have any time
+>> before my flight this evening to investigate further, but I'm pretty
+>> sure it worked in r605 and definitely in r601 and I thought I'd
+>> mention it in case you spot something or have a chance to check.
+>>
+>> If it's not something you can recreate, don't worry about it, and  
+>> I'll
+>> do some investigations in a week's time. It's not inconceivable that
+>> it's a mistake at my end (we did some refactoring of other stuff  
+>> too),
+>> but with it working fine for 2 or more characters but not for 1 my
+>> suspicions are raised that there's a corner case with your 50% test.
+>>
+>> Cheers,
+>> Andy
+>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080129/5e012b20/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Jan 30 19:48:54 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 30 Jan 2008 18:48:54 +0000
+Subject: [Mapnik-devel] [patch] compile fix for: append() takes exactly one
+	argument
+Message-ID: <1201718934.3412.166.camel@localhost.localdomain>
+
+The SVN code give me an error unless I apply the attached patch
+
+TypeError: append() takes exactly one argument (2 given):
+...
+  File "/home/jburgess/svn.openstreetmap.org/applications/rendering/mapnik/mapnik.org/bindings/python/SConscript", line 41:
+    libraries.append('mapnik', 'boost_python%s' % env['BOOST_APPEND'])
+
+
+Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-sconstruct-append.patch
+Type: text/x-patch
+Size: 539 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080130/27230c71/attachment.bin>
+
+From jburgess777 at googlemail.com  Wed Jan 30 20:18:30 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 30 Jan 2008 19:18:30 +0000
+Subject: [Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+Message-ID: <1201720710.3412.174.camel@localhost.localdomain>
+
+On one machine I'm seeing the following compile failure with the latest
+code:
+
+g++ -o bindings/python/mapnik_image_view.os -c -DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL -ansi -Wall -pthread -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -O2 -finline-functions -Wno-inline -DNDEBUG -fPIC -I/usr/include/python2.4 -Iagg/include -Itinyxml -Iinclude -I. -I/usr/include -I/usr/include/postgresql -I/usr/local/include -I/usr/include/freetype2 bindings/python/mapnik_image_view.cpp
+In file included from /usr/include/png.h:363,
+                 from include/mapnik/png_io.hpp:28,
+                 from bindings/python/mapnik_image_view.cpp:28:
+/usr/include/pngconf.h:312:10: error: #error png.h already includes setjmp.h with some additional fixup.
+scons: *** [bindings/python/mapnik_image_view.os] Error 1
+scons: building terminated because of errors.
+
+
+Looking through the preprocessor output it seems that setjmp.h gtes
+included as a side effect of boost/python.hpp and we can not easily move
+png_io.hpp above this in the file. The attached patch is not brilliant
+but seems to work.
+
+I suspect the problem only happens with certain combinations of
+libpng/boost/python versions.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-png-setjmp-clash.patch
+Type: text/x-patch
+Size: 909 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080130/06a82708/attachment.bin>
+
+From artem at mapnik.org  Wed Jan 30 20:41:34 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 30 Jan 2008 19:41:34 +0000
+Subject: [Mapnik-devel] [patch] ordering issue between png.h and setjmp.h
+In-Reply-To: <1201720710.3412.174.camel@localhost.localdomain>
+References: <1201720710.3412.174.camel@localhost.localdomain>
+Message-ID: <A77698BB-0B84-4719-A25E-53AFE452C145@mapnik.org>
+
+
+On 30 Jan 2008, at 19:18, Jon Burgess wrote:
+
+> On one machine I'm seeing the following compile failure with the  
+> latest
+> code:
+>
+> g++ -o bindings/python/mapnik_image_view.os -c - 
+> DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL -ansi -Wall  
+> -pthread -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -O2  
+> -finline-functions -Wno-inline -DNDEBUG -fPIC -I/usr/include/ 
+> python2.4 -Iagg/include -Itinyxml -Iinclude -I. -I/usr/include -I/ 
+> usr/include/postgresql -I/usr/local/include -I/usr/include/ 
+> freetype2 bindings/python/mapnik_image_view.cpp
+> In file included from /usr/include/png.h:363,
+>                  from include/mapnik/png_io.hpp:28,
+>                  from bindings/python/mapnik_image_view.cpp:28:
+> /usr/include/pngconf.h:312:10: error: #error png.h already includes  
+> setjmp.h with some additional fixup.
+> scons: *** [bindings/python/mapnik_image_view.os] Error 1
+> scons: building terminated because of errors.
+>
+>
+> Looking through the preprocessor output it seems that setjmp.h gtes
+> included as a side effect of boost/python.hpp and we can not easily  
+> move
+> png_io.hpp above this in the file. The attached patch is not brilliant
+> but seems to work.
+>
+> I suspect the problem only happens with certain combinations of
+> libpng/boost/python versions.
+
+Yes, I had the same problem on Ubuntu 7.10.  But there is no problem  
+building on FC8 or OS X.
+Thanks for the patch.
+Artem
+>
+> 	Jon
+>
+> <mapnik-png-setjmp- 
+> clash.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From tom at compton.nu  Thu Jan 31 01:40:19 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 31 Jan 2008 00:40:19 +0000
+Subject: [Mapnik-devel] r616 incorrect?
+Message-ID: <d82f70760801301640j4ad1885cx41e41d36be5785dc@mail.gmail.com>
+
+Revision 616 alters bindings/python/SConscript to prefix DESTDIR onto
+the value of mapniklibpath in the generated paths.py file.
+
+This seems to be wrong though - DESTDIR is a temporary prefix during
+package creation and shouldn't be encoded in any paths that will part
+of the installed software.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From artem at mapnik.org  Thu Jan 31 01:45:29 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 31 Jan 2008 00:45:29 +0000
+Subject: [Mapnik-devel] r616 incorrect?
+In-Reply-To: <d82f70760801301640j4ad1885cx41e41d36be5785dc@mail.gmail.com>
+References: <d82f70760801301640j4ad1885cx41e41d36be5785dc@mail.gmail.com>
+Message-ID: <74832E19-7917-4168-A617-055F2CE33829@mapnik.org>
+
+
+On 31 Jan 2008, at 00:40, Tom Hughes wrote:
+
+> Revision 616 alters bindings/python/SConscript to prefix DESTDIR onto
+> the value of mapniklibpath in the generated paths.py file.
+>
+> This seems to be wrong though - DESTDIR is a temporary prefix during
+> package creation and shouldn't be encoded in any paths that will part
+> of the installed software.
+>
+> Tom
+>
+
+Tom, thanks. I'll have a look tomorrow.
+Artem
+
+> -- 
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+

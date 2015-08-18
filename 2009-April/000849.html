@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.6.0 released
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3C03DC501C-58B4-4947-87E9-6FBE221B4454%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000848.html">
+   <LINK REL="Next"  HREF="000850.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.6.0 released</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3C03DC501C-58B4-4947-87E9-6FBE221B4454%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.6.0 released">blake at hailmail.net
+       </A><BR>
+    <I>Tue Apr  7 23:20:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000848.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+        <LI>Next message: <A HREF="000850.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#849">[ date ]</a>
+              <a href="thread.html#849">[ thread ]</a>
+              <a href="subject.html#849">[ subject ]</a>
+              <a href="author.html#849">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+
+&gt;<i> I did the initial port to Autotools because more as one year ago
+</I>&gt;<i> mapnik didn't build with Debian out of the box. I had to create many
+</I>&gt;<i> boost symlinks by hand.
+</I>
+Yes, :)
+
+&gt;<i> Maybe that was because I was doing something
+</I>&gt;<i> wrong.
+</I>
+Yes, boost library names are pretty complex and our SCons  
+implementation for finding them (needed and) has improved quite a bit.
+
+However, autodetection of boost library names when boost has been  
+installed from source (and the install process did not create any  
+symlinks) still could benefit from improvement and I plan to work on  
+this in trunk before 0.7.0.
+
+&gt;<i> Another reason was the support for pkg-config that the rest of
+</I>&gt;<i> my builds use.
+</I>
+BTW, we are now commonly using built in pkg-config support with Scons  
+to locate a number of dependencies.
+
+&gt;<i> Also the pkg-config --uninstalled function that allows
+</I>&gt;<i> to link again libraries in place without installing them. This saves a
+</I>&gt;<i> lot of time.
+</I>
+Hm, I'm unfamiliar with this.
+
+&gt;<i> Now as I did the port to Autotools I don't like to throw
+</I>&gt;<i> it away. Many distributions use the ./configure &amp;&amp; make &amp;&amp; make  
+</I>&gt;<i> install
+</I>&gt;<i> way to easy create packages (e.g. gentoo).
+</I>&gt;<i>
+</I>
+I agree, and I'm glad you've started documenting it.
+
+&gt;<i> But I don't like to vote against scons. If you don't like to switch
+</I>&gt;<i> I'll be happy if you simply let the autotools files in SVN for me.
+</I>
+Cool.
+
+So I guess we just need to remove the Autotools stuff when we package  
+releases.
+
+Dane
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000848.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+	<LI>Next message: <A HREF="000850.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#849">[ date ]</a>
+              <a href="thread.html#849">[ thread ]</a>
+              <a href="subject.html#849">[ subject ]</a>
+              <a href="author.html#849">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

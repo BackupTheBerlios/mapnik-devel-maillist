@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] No plugin found for type 'shape'
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20plugin%20found%20for%20type%20%27shape%27&In-Reply-To=%3C2D325A41D5528346A1D4376672E5380B9CED94%40SVR-EXC-CRS02.lbcamden.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000969.html">
+   <LINK REL="Next"  HREF="000971.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] No plugin found for type 'shape'</H1>
+    <B>Spurgeon, Peter</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20plugin%20found%20for%20type%20%27shape%27&In-Reply-To=%3C2D325A41D5528346A1D4376672E5380B9CED94%40SVR-EXC-CRS02.lbcamden.net%3E"
+       TITLE="[Mapnik-devel] No plugin found for type 'shape'">Peter.Spurgeon at camden.gov.uk
+       </A><BR>
+    <I>Tue Oct 20 18:00:58 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000969.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+        <LI>Next message: <A HREF="000971.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#970">[ date ]</a>
+              <a href="thread.html#970">[ thread ]</a>
+              <a href="subject.html#970">[ subject ]</a>
+              <a href="author.html#970">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi 
+
+Here is the paths.py file
+
+mapniklibpath=&quot;c:\mapnik_0_6_1\lib\mapnik&quot;
+inputpluginspath=mapniklibpath + &quot;c:\mapnik_0_6_1\plugins\input&quot;
+fontscollectionpath = mapniklibpath + &quot;\fonts&quot;
+
+
+Another issue is that I don't think the mapnik_0_6_1 folder contains all the required sub-folders. I had to take the demo and plugins folders from the stable repository. I edited the path.py file so that the paths to lib\mapnik and plugins are correct but the error is still produced.
+
+Peter Spurgeon
+Corporate GIS Manager
+
+Telephone: 020 7974 5614
+-----Original Message-----
+From: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel-bounces at lists.berlios.de</A> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel-bounces at lists.berlios.de</A>] On Behalf Of Artem Pavlenko
+Sent: 20 October 2009 16:52
+To: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+Subject: Re: [Mapnik-devel] No plugin found for type 'shape'
+
+Hi Peter,
+
+Could you post content of :
+
+C:\mapnik_0_6_1\site-packages\mapnik\paths.py
+
+Regards,
+Artem
+
+2009/10/20 Spurgeon, Peter &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Peter.Spurgeon at camden.gov.uk</A>&gt;:
+&gt;<i> Hi
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> When I run rundemo.py on Windows, I get the following error messages: -
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Traceback (most recent call last):
+</I>&gt;<i>
+</I>&gt;<i> &#160; File &quot;C:\mapnik_0_6_1\demo\python\rundemo.py&quot;, line 59, in &lt;module&gt;
+</I>&gt;<i>
+</I>&gt;<i> &#160;&#160;&#160; provpoly_lyr.datasource =
+</I>&gt;<i> Shapefile(file='C:\mapnik_0_6_1\demo\data\boundaries', encoding='latin1')
+</I>&gt;<i>
+</I>&gt;<i> &#160; File &quot;C:\mapnik_0_6_1\site-packages\mapnik\__init__.py&quot;, line 132, in
+</I>&gt;<i> Shapefile
+</I>&gt;<i>
+</I>&gt;<i> &#160;&#160;&#160; return CreateDatasource(keywords)
+</I>&gt;<i>
+</I>&gt;<i> UserWarning: Could not create datasource. No plugin found for type 'shape'
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Please advise.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i>
+</I>&gt;<i> Peter
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Peter Spurgeon
+</I>&gt;<i> Corporate GIS Manager
+</I>&gt;<i> Camden Corporate ICT
+</I>&gt;<i> Organisation Development
+</I>&gt;<i> London Borough of Camden
+</I>&gt;<i>
+</I>&gt;<i> Telephone:&#160;&#160;&#160;020 7974 5614
+</I>&gt;<i> Fax:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;020 7974 5860
+</I>&gt;<i> Web:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;camden.gov.uk
+</I>&gt;<i>
+</I>&gt;<i> 1st floor
+</I>&gt;<i> 3 - 5 Cressy Road
+</I>&gt;<i> 3 - 5 Cressy Road
+</I>&gt;<i> London NW3 2ND
+</I>&gt;<i>
+</I>&gt;<i> Please consider the environment before printing this email.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This e-mail may contain information which is confidential, legally
+</I>&gt;<i> privileged and/or copyright protected. This e-mail is intended for the
+</I>&gt;<i> addressee only. If you receive this in error, please contact the sender and
+</I>&gt;<i> delete the material from your computer
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>_______________________________________________
+Mapnik-devel mailing list
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+
+This e-mail may contain information which is confidential, legally privileged and/or copyright protected. This e-mail is intended for the addressee only. If you receive this in error, please contact the sender and delete the material from your computer
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000969.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+	<LI>Next message: <A HREF="000971.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#970">[ date ]</a>
+              <a href="thread.html#970">[ thread ]</a>
+              <a href="subject.html#970">[ subject ]</a>
+              <a href="author.html#970">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

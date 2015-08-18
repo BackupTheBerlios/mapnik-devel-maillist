@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] MemoryError rendering with raster layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B427986.8080006%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001031.html">
+   <LINK REL="Next"  HREF="001033.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] MemoryError rendering with raster layer</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20MemoryError%20rendering%20with%20raster%20layer&In-Reply-To=%3C4B427986.8080006%40gmx.de%3E"
+       TITLE="[Mapnik-devel] MemoryError rendering with raster layer">ekkehart at gmx.de
+       </A><BR>
+    <I>Tue Jan  5 00:28:06 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001031.html">[Mapnik-devel] New York Code Sprint
+</A></li>
+        <LI>Next message: <A HREF="001033.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1032">[ date ]</a>
+              <a href="thread.html#1032">[ thread ]</a>
+              <a href="subject.html#1032">[ subject ]</a>
+              <a href="author.html#1032">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello!
+
+
+I am currently trying to render Hillshading from raster layers with 
+mapnik 0.6.1. I have successfully rendered the first section of 8x2&#176; 
+from a 45MB GeoTiff. Now I tried to render another section of 10x3&#176; from 
+a 102 MB GeoTiff and this yielded a MemoryError.
+
+This was much to my surprise, I was told that mapnik could handle 
+several 10x10&#176; images of the same resolution and I am far from that 
+size. Opening a 100MB image should not be a problem.
+
+I am running a WinXP64 machien with 6GB of memory, 4GB of free physical 
+memory at that time. Python is 2.5. The image loads fine in other 
+software. If I replace the layer with a smaller image it works. I did 
+not observe python allocating visible amounts of memory in process monitor.
+
+Any ideas what the problem is and what to do about it?
+
+
+bye
+	Nop
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001031.html">[Mapnik-devel] New York Code Sprint
+</A></li>
+	<LI>Next message: <A HREF="001033.html">[Mapnik-devel] MemoryError rendering with raster layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1032">[ date ]</a>
+              <a href="thread.html#1032">[ thread ]</a>
+              <a href="subject.html#1032">[ subject ]</a>
+              <a href="author.html#1032">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

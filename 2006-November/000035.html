@@ -1,0 +1,636 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch for nicer text placement on lines
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20nicer%20text%20placement%20on%20lines&In-Reply-To=%3C454A6DEC.8080005%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000034.html">
+   <LINK REL="Next"  HREF="000036.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch for nicer text placement on lines</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20nicer%20text%20placement%20on%20lines&In-Reply-To=%3C454A6DEC.8080005%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] Patch for nicer text placement on lines">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Thu Nov  2 23:15:08 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000034.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+        <LI>Next message: <A HREF="000036.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Toby,
+Thanks for your patch. A little bit too late to look into this. round 
+here:). I'll try tomorrow.
+Cheers,
+Artem
+
+Toby Collett wrote:
+&gt;<i> Too early a start today....here is the new patch actually attached.
+</I>&gt;<i>
+</I>&gt;<i> On Fri, 2006-11-03 at 11:10 +1300, Toby Collett wrote:
+</I>&gt;<i>   
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> The first patch had a bug with its default value, use the attached
+</I>&gt;&gt;<i> instead. Something in the range 0.3-&gt;0.7 seems to work pretty well for
+</I>&gt;&gt;<i> the max_char_angle_delta property, the default behaviour is as in the
+</I>&gt;&gt;<i> unpatched version, try follow any angle change.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Toby
+</I>&gt;&gt;<i> On Fri, 2006-11-03 at 10:52 +1300, Toby Collett wrote:
+</I>&gt;&gt;<i>     
+</I>&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;<i> The attached patch adds a maximum angle delta for text placement (if the
+</I>&gt;&gt;&gt;<i> angle changes too much between characters it finds an alternate
+</I>&gt;&gt;&gt;<i> placement), this is specified in the max_char_angle_delta property in
+</I>&gt;&gt;&gt;<i> radians (feel free to change it to degrees).
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> It also improves the text placement around corners trying to minimise
+</I>&gt;&gt;&gt;<i> the distance between the center of the character and the line on each
+</I>&gt;&gt;&gt;<i> side. This is the major portion of the patch. 
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Toby Collett
+</I>&gt;&gt;&gt;<i> One Track Mind
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;<i>       
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>     
+</I>&gt;&gt;<i> ------------------------------------------------------------------------
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Index: include/mapnik/placement_finder.hpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- include/mapnik/placement_finder.hpp	(revision 364)
+</I>&gt;&gt;<i> +++ include/mapnik/placement_finder.hpp	(working copy)
+</I>&gt;&gt;<i> @@ -89,6 +89,8 @@
+</I>&gt;&gt;<i>      int text_ratio;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>      int label_spacing; // distance between repeated labels on a single geometry
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +    double max_char_angle_delta;
+</I>&gt;&gt;<i>    };
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> @@ -110,6 +112,7 @@
+</I>&gt;&gt;<i>      void update_detector(placement *p);
+</I>&gt;&gt;<i>    
+</I>&gt;&gt;<i>      label_collision_detector3 detector_;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i>    };
+</I>&gt;&gt;<i>    
+</I>&gt;&gt;<i>  }
+</I>&gt;&gt;<i> Index: include/mapnik/text_symbolizer.hpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- include/mapnik/text_symbolizer.hpp	(revision 364)
+</I>&gt;&gt;<i> +++ include/mapnik/text_symbolizer.hpp	(working copy)
+</I>&gt;&gt;<i> @@ -49,6 +49,8 @@
+</I>&gt;&gt;<i>          void set_wrap_width(unsigned ratio);
+</I>&gt;&gt;<i>          unsigned get_label_spacing() const; // spacing between repeated labels on lines
+</I>&gt;&gt;<i>          void set_label_spacing(unsigned spacing);
+</I>&gt;&gt;<i> +        double get_max_char_angle_delta() const; // maximum change in angle between adjacent characters
+</I>&gt;&gt;<i> +        void set_max_char_angle_delta(double angle);
+</I>&gt;&gt;<i>          unsigned get_text_size() const;
+</I>&gt;&gt;<i>          std::string const&amp; get_face_name() const;
+</I>&gt;&gt;<i>          Color const&amp; get_fill() const;
+</I>&gt;&gt;<i> @@ -69,6 +71,7 @@
+</I>&gt;&gt;<i>          unsigned text_ratio_;
+</I>&gt;&gt;<i>          unsigned wrap_width_;
+</I>&gt;&gt;<i>          unsigned label_spacing_;
+</I>&gt;&gt;<i> +        double max_char_angle_delta_;
+</I>&gt;&gt;<i>          Color fill_;
+</I>&gt;&gt;<i>          Color halo_fill_;
+</I>&gt;&gt;<i>          unsigned halo_radius_;
+</I>&gt;&gt;<i> Index: src/placement_finder.cpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- src/placement_finder.cpp	(revision 364)
+</I>&gt;&gt;<i> +++ src/placement_finder.cpp	(working copy)
+</I>&gt;&gt;<i> @@ -41,13 +41,13 @@
+</I>&gt;&gt;<i>  namespace mapnik
+</I>&gt;&gt;<i>  {
+</I>&gt;&gt;<i>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, std::pair&lt;double, double&gt; dimensions_)
+</I>&gt;&gt;<i> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0)
+</I>&gt;&gt;<i> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0)
+</I>&gt;&gt;<i>      {
+</I>&gt;&gt;<i>      }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>      //For text
+</I>&gt;&gt;<i>      placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, label_placement_e placement_)
+</I>&gt;&gt;<i> -        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0)
+</I>&gt;&gt;<i> +        : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0), label_spacing(0), max_char_angle_delta(0.0)
+</I>&gt;&gt;<i>      {
+</I>&gt;&gt;<i>      }
+</I>&gt;&gt;<i>    
+</I>&gt;&gt;<i> @@ -162,17 +162,15 @@
+</I>&gt;&gt;<i>          double string_width = string_dimensions.first;
+</I>&gt;&gt;<i>          //    double string_height = string_dimensions.second;
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> +//         for (unsigned int ii = 0; ii &lt; p-&gt;info-&gt;num_characters(); ++ii)
+</I>&gt;&gt;<i> +//             std::clog &lt;&lt; static_cast&lt;char&gt; (p-&gt;info-&gt;at(ii).character);
+</I>&gt;&gt;<i> +//         std::clog &lt;&lt; std::endl;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -        std::clog &lt;&lt; &quot;trying to place string: &quot;;
+</I>&gt;&gt;<i> -        for (unsigned int ii = 0; ii &lt; p-&gt;info-&gt;num_characters(); ++ii)
+</I>&gt;&gt;<i> -            std::clog &lt;&lt; static_cast&lt;char&gt; (p-&gt;info-&gt;at(ii).character);
+</I>&gt;&gt;<i> -        std::clog &lt;&lt; std::endl;
+</I>&gt;&gt;<i> -
+</I>&gt;&gt;<i>          double distance = p-&gt;get_total_distance();
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i>          if (string_width &gt; distance)
+</I>&gt;&gt;<i>          {
+</I>&gt;&gt;<i> -            std::clog &lt;&lt; &quot;String longer than segment, bailing&quot; &lt;&lt; std::endl;
+</I>&gt;&gt;<i> +            //std::clog &lt;&lt; &quot;String longer than segment, bailing&quot; &lt;&lt; std::endl;
+</I>&gt;&gt;<i>              return false;
+</I>&gt;&gt;<i>          }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> @@ -192,7 +190,7 @@
+</I>&gt;&gt;<i>          bool FoundPlacement = false;
+</I>&gt;&gt;<i>          for (std::vector&lt;double&gt;::const_iterator itr = ideal_label_distances.begin(); itr &lt; ideal_label_distances.end(); ++itr)
+</I>&gt;&gt;<i>          {
+</I>&gt;&gt;<i> -            std::clog &lt;&lt; &quot;Trying to find txt placement at distance: &quot; &lt;&lt; *itr &lt;&lt; std::endl;
+</I>&gt;&gt;<i> +            //std::clog &lt;&lt; &quot;Trying to find txt placement at distance: &quot; &lt;&lt; *itr &lt;&lt; std::endl;
+</I>&gt;&gt;<i>              for (double i = 0; i &lt; ideal_spacing; i += delta)
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i>                  p-&gt;clear_envelopes();
+</I>&gt;&gt;<i> @@ -213,8 +211,8 @@
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>          }    
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> -        if (FoundPlacement)
+</I>&gt;&gt;<i> -            std::clog &lt;&lt; &quot;Found Placement&quot; &lt;&lt; string_width &lt;&lt; &quot; &quot; &lt;&lt; distance &lt;&lt; std::endl;
+</I>&gt;&gt;<i> +//         if (FoundPlacement)
+</I>&gt;&gt;<i> +//             std::clog &lt;&lt; &quot;Found Placement&quot; &lt;&lt; string_width &lt;&lt; &quot; &quot; &lt;&lt; distance &lt;&lt; std::endl;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>          return FoundPlacement;
+</I>&gt;&gt;<i>      }
+</I>&gt;&gt;<i> @@ -270,6 +268,8 @@
+</I>&gt;&gt;<i>       {
+</I>&gt;&gt;<i>          double new_x, new_y, old_x, old_y;
+</I>&gt;&gt;<i>          unsigned cur_node = 0;
+</I>&gt;&gt;<i> +        double next_char_x = 0;
+</I>&gt;&gt;<i> +        double next_char_y = 0;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>          double angle = 0.0;
+</I>&gt;&gt;<i>          int orientation = 0;
+</I>&gt;&gt;<i> @@ -285,8 +285,11 @@
+</I>&gt;&gt;<i>          //    double string_width = string_dimensions.first;
+</I>&gt;&gt;<i>          double string_height = string_dimensions.second;
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> +        // find the segment that our text should start on
+</I>&gt;&gt;<i>          p-&gt;shape_path.rewind(0);
+</I>&gt;&gt;<i>          p-&gt;shape_path.vertex(&amp;new_x,&amp;new_y);
+</I>&gt;&gt;<i> +        old_x = new_x;
+</I>&gt;&gt;<i> +        old_y = new_y;
+</I>&gt;&gt;<i>          for (unsigned i = 0; i &lt; p-&gt;geom-&gt;num_points() - 1; i++)
+</I>&gt;&gt;<i>          {
+</I>&gt;&gt;<i>              double dx, dy;
+</I>&gt;&gt;<i> @@ -306,60 +309,73 @@
+</I>&gt;&gt;<i>              distance += segment_length;
+</I>&gt;&gt;<i>              if (distance &gt; target_distance)
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i> +                // this segment is greater that the target starting distance so start here
+</I>&gt;&gt;<i>                  p-&gt;current_placement.starting_x = new_x - dx*(distance - target_distance)/segment_length;
+</I>&gt;&gt;<i>                  p-&gt;current_placement.starting_y = new_y - dy*(distance - target_distance)/segment_length;
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> +                // angle text starts at and orientation
+</I>&gt;&gt;<i>                  angle = atan2(-dy, dx);
+</I>&gt;&gt;<i> +                orientation = fabs(angle) &gt; M_PI/2 ? -1 : 1;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -                if (angle &gt; M_PI/2 || angle &lt;= -M_PI/2) {
+</I>&gt;&gt;<i> -                    orientation = -1;
+</I>&gt;&gt;<i> -                }
+</I>&gt;&gt;<i> -                else {
+</I>&gt;&gt;<i> -                    orientation = 1;
+</I>&gt;&gt;<i> -                }
+</I>&gt;&gt;<i> -
+</I>&gt;&gt;<i>                  distance -= target_distance;
+</I>&gt;&gt;<i>              
+</I>&gt;&gt;<i>                  break;
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>          }
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> +        // now find the placement of each character starting from our initial segment
+</I>&gt;&gt;<i> +        // determined above
+</I>&gt;&gt;<i> +        double last_angle = angle; 
+</I>&gt;&gt;<i>          for (unsigned i = 0; i &lt; p-&gt;info-&gt;num_characters(); i++)
+</I>&gt;&gt;<i>          {
+</I>&gt;&gt;<i>              character_info ci;
+</I>&gt;&gt;<i>              unsigned c;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +            // grab the next character according to the orientation
+</I>&gt;&gt;<i> +            ci = orientation &gt; 0 ? p-&gt;info-&gt;at(i) : p-&gt;info-&gt;at(p-&gt;info-&gt;num_characters() - i - 1);
+</I>&gt;&gt;<i> +            c = ci.character;
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i> -            while (distance &lt;= 0) 
+</I>&gt;&gt;<i> +            double angle_delta = 0;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +            // if the distance remaining in this segment is less than the character width
+</I>&gt;&gt;<i> +            // move to the next segment
+</I>&gt;&gt;<i> +            if (distance &lt;= ci.width) 
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i> -                double dx, dy;
+</I>&gt;&gt;<i> +                last_angle = angle;
+</I>&gt;&gt;<i> +                while (distance &lt;= ci.width) 
+</I>&gt;&gt;<i> +                {
+</I>&gt;&gt;<i> +                    double dx, dy;
+</I>&gt;&gt;<i> +    
+</I>&gt;&gt;<i> +                    cur_node++;
+</I>&gt;&gt;<i> +                
+</I>&gt;&gt;<i> +                    if (cur_node &gt;= p-&gt;geom-&gt;num_points()) {
+</I>&gt;&gt;<i> +                        break;
+</I>&gt;&gt;<i> +                    }
+</I>&gt;&gt;<i> +                    
+</I>&gt;&gt;<i> +                    old_x = new_x;
+</I>&gt;&gt;<i> +                    old_y = new_y;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -                cur_node++;
+</I>&gt;&gt;<i> -            
+</I>&gt;&gt;<i> -                if (cur_node &gt;= p-&gt;geom-&gt;num_points()) {
+</I>&gt;&gt;<i> -                    break;
+</I>&gt;&gt;<i> +                    p-&gt;shape_path.vertex(&amp;new_x,&amp;new_y);
+</I>&gt;&gt;<i> +    
+</I>&gt;&gt;<i> +                    dx = new_x - old_x;
+</I>&gt;&gt;<i> +                    dy = new_y - old_y;
+</I>&gt;&gt;<i> +    
+</I>&gt;&gt;<i> +                    angle = atan2(-dy, dx );
+</I>&gt;&gt;<i> +                    distance += sqrt(dx*dx+dy*dy);
+</I>&gt;&gt;<i>                  }
+</I>&gt;&gt;<i> -            
+</I>&gt;&gt;<i> -                old_x = new_x;
+</I>&gt;&gt;<i> -                old_y = new_y;
+</I>&gt;&gt;<i> +                // since our rendering angle has changed then check against our
+</I>&gt;&gt;<i> +                // max allowable angle change.
+</I>&gt;&gt;<i> +                angle_delta = last_angle - angle;
+</I>&gt;&gt;<i> +                // normalise between -180 and 180
+</I>&gt;&gt;<i> +                while (angle_delta &gt; M_PI)
+</I>&gt;&gt;<i> +                    angle_delta -= M_PI;
+</I>&gt;&gt;<i> +                while (angle_delta &lt; -M_PI)
+</I>&gt;&gt;<i> +                    angle_delta += M_PI;
+</I>&gt;&gt;<i> +                if (p-&gt;max_char_angle_delta &gt; 0 &amp;&amp; fabs(angle_delta) &gt; p-&gt;max_char_angle_delta)
+</I>&gt;&gt;<i> +                    return false;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -                p-&gt;shape_path.vertex(&amp;new_x,&amp;new_y);
+</I>&gt;&gt;<i> -
+</I>&gt;&gt;<i> -                dx = new_x - old_x;
+</I>&gt;&gt;<i> -                dy = new_y - old_y;
+</I>&gt;&gt;<i> -
+</I>&gt;&gt;<i> -                angle = atan2(-dy, dx );
+</I>&gt;&gt;<i> -            
+</I>&gt;&gt;<i> -                distance += sqrt(dx*dx+dy*dy);
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -            if (orientation == -1) {
+</I>&gt;&gt;<i> -                ci = p-&gt;info-&gt;at(p-&gt;info-&gt;num_characters() - i - 1);
+</I>&gt;&gt;<i> -            }
+</I>&gt;&gt;<i> -            else
+</I>&gt;&gt;<i> -            {
+</I>&gt;&gt;<i> -                ci = p-&gt;info-&gt;at(i);
+</I>&gt;&gt;<i> -            }
+</I>&gt;&gt;<i> -            c = ci.character;
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>              Envelope&lt;double&gt; e;
+</I>&gt;&gt;<i>              if (p-&gt;has_dimensions)
+</I>&gt;&gt;<i> @@ -367,48 +383,114 @@
+</I>&gt;&gt;<i>                  e.init(x, y, x + p-&gt;dimensions.first, y + p-&gt;dimensions.second);
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -            if (orientation == -1) {
+</I>&gt;&gt;<i> -                x = new_x - (distance - ci.width)*cos(angle);
+</I>&gt;&gt;<i> -                y = new_y + (distance - ci.width)*sin(angle);
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -                //Center the text on the line.
+</I>&gt;&gt;<i> -                x += (((double)string_height/2.0) - 1.0)*cos(angle+M_PI/2);
+</I>&gt;&gt;<i> -                y -= (((double)string_height/2.0) - 1.0)*sin(angle+M_PI/2);
+</I>&gt;&gt;<i> -        
+</I>&gt;&gt;<i> -                if (!p-&gt;has_dimensions)
+</I>&gt;&gt;<i> +            double render_angle = angle;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +            if (fabs(angle_delta) &gt; 0.05 &amp;&amp; i &gt; 0)
+</I>&gt;&gt;<i> +            {
+</I>&gt;&gt;<i> +                // paramatise the new line segment
+</I>&gt;&gt;<i> +                double last_dist_from_line = string_height;
+</I>&gt;&gt;<i> +                double line_origin_x = sqrt(pow(old_x-x,2)+pow(old_y-y,2));
+</I>&gt;&gt;<i> +                double line_origin_y = 0;
+</I>&gt;&gt;<i> +                double closest_lp_x = cos(fabs(angle_delta));
+</I>&gt;&gt;<i> +                double closest_lp_y = sin(fabs(angle_delta));
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                // iterate over placement points to find the angle to actually render the letter at
+</I>&gt;&gt;<i> +                for (double pax = 0; pax &lt; string_height/2 &amp;&amp; pax &lt; line_origin_x; pax += 0.1)
+</I>&gt;&gt;<i>                  {
+</I>&gt;&gt;<i> -                    e.init(x, y, x + ci.width*cos(angle+M_PI), y - ci.width*sin(angle+M_PI));
+</I>&gt;&gt;<i> -                    e.expand_to_include(x - ci.height*sin(angle+M_PI), y - ci.height*cos(angle+M_PI));
+</I>&gt;&gt;<i> -                    e.expand_to_include(x + (ci.width*cos(angle+M_PI) - ci.height*sin(angle+M_PI)), y - (ci.width*sin(angle+M_PI) + ci.height*cos(angle+M_PI)));
+</I>&gt;&gt;<i> +                    // calculate dependant parameters
+</I>&gt;&gt;<i> +                    double letter_angle = asin(pax/(string_height/2));
+</I>&gt;&gt;<i> +                    double pbx = pax+ci.width*cos(letter_angle);
+</I>&gt;&gt;<i> +                    double pby = ci.width*sin(letter_angle);
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                    // find closest point on the new segment
+</I>&gt;&gt;<i> +                    double closest_param = ((pbx - line_origin_x)*closest_lp_x + (pby - line_origin_y)*closest_lp_y)/(closest_lp_x*closest_lp_x + closest_lp_y*closest_lp_y);
+</I>&gt;&gt;<i> +                    double closest_point_x = line_origin_x + closest_param*closest_lp_x;
+</I>&gt;&gt;<i> +                    double closest_point_y = line_origin_y + closest_param*closest_lp_y;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                    // calculate the error between this and the letter
+</I>&gt;&gt;<i> +                    double dist_from_line = sqrt(pow(pbx - closest_point_x,2) + pow(pby - closest_point_y,2));
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                    // if  our error is getting worse then stop
+</I>&gt;&gt;<i> +                    if (dist_from_line &gt; last_dist_from_line)
+</I>&gt;&gt;<i> +                    {
+</I>&gt;&gt;<i> +                        double pcx, pcy;
+</I>&gt;&gt;<i> +                        double extra_space = (ci.height/2)*sin(fabs(angle_delta)-letter_angle);
+</I>&gt;&gt;<i> +                        double extra_space_x = extra_space * cos(fabs(angle_delta));
+</I>&gt;&gt;<i> +                        double extra_space_y = extra_space * sin(fabs(angle_delta));
+</I>&gt;&gt;<i> +                        // remove extra distance used in corner
+</I>&gt;&gt;<i> +                        distance -= line_origin_x + closest_param + extra_space;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                        // transform local calculation space to a global position for placement
+</I>&gt;&gt;<i> +                        if (angle_delta &lt; 0)
+</I>&gt;&gt;<i> +                        {
+</I>&gt;&gt;<i> +                            // left turn
+</I>&gt;&gt;<i> +                            render_angle = letter_angle + last_angle;
+</I>&gt;&gt;<i> +                            pcx = 2*pax;
+</I>&gt;&gt;<i> +                            pcy = 0;//-(ci.height/2)*cos(letter_angle);
+</I>&gt;&gt;<i> +                        }
+</I>&gt;&gt;<i> +                        else
+</I>&gt;&gt;<i> +                        {   // right turn
+</I>&gt;&gt;<i> +                            render_angle = -letter_angle + last_angle;
+</I>&gt;&gt;<i> +                            pcx = 0;
+</I>&gt;&gt;<i> +                            pcy = 0;//-(ci.height/2)*cos(letter_angle);
+</I>&gt;&gt;<i> +                        }
+</I>&gt;&gt;<i> +                        double rdx = pcx * cos(-last_angle) - pcy*sin(-last_angle);
+</I>&gt;&gt;<i> +                        double rdy = pcy*cos(-last_angle) + pcx * sin(-last_angle);
+</I>&gt;&gt;<i> +                        x += rdx;
+</I>&gt;&gt;<i> +                        y += rdy;
+</I>&gt;&gt;<i> +                        next_char_x = (ci.width+extra_space_x)*cos(render_angle) - extra_space_y*sin(render_angle);
+</I>&gt;&gt;<i> +                        next_char_y = (ci.width+extra_space_x)*sin(render_angle) + extra_space_y*cos(render_angle);
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                        //distance -= 5;
+</I>&gt;&gt;<i> +                        break;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +                    }
+</I>&gt;&gt;<i> +                    last_dist_from_line = dist_from_line;
+</I>&gt;&gt;<i>                  }
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>              else
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i> -                x = new_x - distance*cos(angle);
+</I>&gt;&gt;<i> -                y = new_y + distance*sin(angle);
+</I>&gt;&gt;<i> -
+</I>&gt;&gt;<i> +                x = new_x - (distance)*cos(angle);
+</I>&gt;&gt;<i> +                y = new_y + (distance)*sin(angle);
+</I>&gt;&gt;<i>                  //Center the text on the line.
+</I>&gt;&gt;<i> -                x += (((double)string_height/2.0) - 1.0)*cos(angle-M_PI/2);
+</I>&gt;&gt;<i> -                y -= (((double)string_height/2.0) - 1.0)*sin(angle-M_PI/2);
+</I>&gt;&gt;<i> +                x -= (((double)string_height/2.0) - 1.0)*cos(render_angle+M_PI/2);
+</I>&gt;&gt;<i> +                y += (((double)string_height/2.0) - 1.0)*sin(render_angle+M_PI/2);
+</I>&gt;&gt;<i> +                distance -= ci.width;
+</I>&gt;&gt;<i> +                next_char_x = ci.width*cos(render_angle);
+</I>&gt;&gt;<i> +                next_char_y = ci.width*sin(render_angle);
+</I>&gt;&gt;<i> +            }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> -                if (!p-&gt;has_dimensions)
+</I>&gt;&gt;<i> -                {
+</I>&gt;&gt;<i> -                    e.init(x, y, x + ci.width*cos(angle), y - ci.width*sin(angle));
+</I>&gt;&gt;<i> -                    e.expand_to_include(x - ci.height*sin(angle), y - ci.height*cos(angle));
+</I>&gt;&gt;<i> -                    e.expand_to_include(x + (ci.width*cos(angle) - ci.height*sin(angle)), y - (ci.width*sin(angle) + ci.height*cos(angle)));
+</I>&gt;&gt;<i> -                }
+</I>&gt;&gt;<i> +            double render_x = x;
+</I>&gt;&gt;<i> +            double render_y = y;
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +            if (!p-&gt;has_dimensions)
+</I>&gt;&gt;<i> +            {
+</I>&gt;&gt;<i> +                // put four corners of the letter into envelope
+</I>&gt;&gt;<i> +                e.init(render_x, render_y, render_x + ci.width*cos(render_angle), render_y - ci.width*sin(render_angle));
+</I>&gt;&gt;<i> +                e.expand_to_include(render_x - ci.height*sin(render_angle), render_y - ci.height*cos(render_angle));
+</I>&gt;&gt;<i> +                e.expand_to_include(render_x + (ci.width*cos(render_angle) - ci.height*sin(render_angle)), render_y - (ci.width*sin(render_angle) + ci.height*cos(render_angle)));
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i> -        
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i>              if (!detector_.has_placement(e))
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i>                  return false;
+</I>&gt;&gt;<i>              }
+</I>&gt;&gt;<i>          
+</I>&gt;&gt;<i>              p-&gt;envelopes.push(e);
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +            if (orientation &lt; 0)
+</I>&gt;&gt;<i> +            {
+</I>&gt;&gt;<i> +                // rotate in place
+</I>&gt;&gt;<i> +                render_x += ci.width*cos(render_angle) - (string_height-2)*sin(render_angle);
+</I>&gt;&gt;<i> +                render_y -= ci.width*sin(render_angle) + (string_height-2)*cos(render_angle);
+</I>&gt;&gt;<i> +                render_angle += M_PI;
+</I>&gt;&gt;<i> +            }
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i>          
+</I>&gt;&gt;<i> -            p-&gt;current_placement.path.add_node(c, x - p-&gt;current_placement.starting_x, -y + p-&gt;current_placement.starting_y, (orientation == -1 ? angle + M_PI : angle));
+</I>&gt;&gt;<i> -        
+</I>&gt;&gt;<i> -            distance -= ci.width;
+</I>&gt;&gt;<i> +            p-&gt;current_placement.path.add_node(c, render_x - p-&gt;current_placement.starting_x, -render_y + p-&gt;current_placement.starting_y, render_angle);
+</I>&gt;&gt;<i> +            x += next_char_x;
+</I>&gt;&gt;<i> +            y -= next_char_y;
+</I>&gt;&gt;<i>          }
+</I>&gt;&gt;<i>          p-&gt;placements.push_back(p-&gt;current_placement);
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> @@ -434,7 +516,6 @@
+</I>&gt;&gt;<i>                  for (int i = 1; ((wrap_at = string_width/i)/(string_height*i)) &gt; p-&gt;text_ratio &amp;&amp; (string_width/i) &gt; p-&gt;wrap_width; ++i);
+</I>&gt;&gt;<i>              else
+</I>&gt;&gt;<i>                  wrap_at = p-&gt;wrap_width;
+</I>&gt;&gt;<i> -            //std::clog &lt;&lt; &quot;Wrapping string at&quot; &lt;&lt; wrap_at &lt;&lt; std::endl;
+</I>&gt;&gt;<i>          }
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i>          // work out where our line breaks need to be
+</I>&gt;&gt;<i> @@ -492,7 +573,7 @@
+</I>&gt;&gt;<i>              line_breaks.push_back(p-&gt;info-&gt;num_characters() + 1);
+</I>&gt;&gt;<i>              line_widths.push_back(string_width);
+</I>&gt;&gt;<i>          }
+</I>&gt;&gt;<i> -    
+</I>&gt;&gt;<i> +        
+</I>&gt;&gt;<i>          p-&gt;info-&gt;set_dimensions(string_width, string_height);
+</I>&gt;&gt;<i>          
+</I>&gt;&gt;<i>          if (p-&gt;geom-&gt;type() == LineString)
+</I>&gt;&gt;<i> @@ -527,7 +608,6 @@
+</I>&gt;&gt;<i>              ci = p-&gt;info-&gt;at(i);
+</I>&gt;&gt;<i>              
+</I>&gt;&gt;<i>              unsigned c = ci.character;
+</I>&gt;&gt;<i> -        
+</I>&gt;&gt;<i>              if (i == index_to_wrap_at)
+</I>&gt;&gt;<i>              {
+</I>&gt;&gt;<i>                  index_to_wrap_at = line_breaks[++line_number];
+</I>&gt;&gt;<i> Index: src/text_symbolizer.cpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- src/text_symbolizer.cpp	(revision 364)
+</I>&gt;&gt;<i> +++ src/text_symbolizer.cpp	(working copy)
+</I>&gt;&gt;<i> @@ -30,18 +30,19 @@
+</I>&gt;&gt;<i>  namespace mapnik
+</I>&gt;&gt;<i>  {
+</I>&gt;&gt;<i>      text_symbolizer::text_symbolizer(std::string const&amp; name, std::string const&amp; face_name, unsigned size,Color const&amp; fill)
+</I>&gt;&gt;<i> -        : name_(name),
+</I>&gt;&gt;<i> +	: name_(name),
+</I>&gt;&gt;<i>            face_name_(face_name),
+</I>&gt;&gt;<i> -          size_(size),
+</I>&gt;&gt;<i> +	  size_(size),
+</I>&gt;&gt;<i>            text_ratio_(0),
+</I>&gt;&gt;<i>            wrap_width_(0),
+</I>&gt;&gt;<i>            label_spacing_(0),
+</I>&gt;&gt;<i> -          fill_(fill),
+</I>&gt;&gt;<i> -          halo_fill_(Color(255,255,255)),
+</I>&gt;&gt;<i> -          halo_radius_(0),
+</I>&gt;&gt;<i> -          label_p_(point_placement),
+</I>&gt;&gt;<i> -          anchor_(0.0,0.5),
+</I>&gt;&gt;<i> -          displacement_(0.0,0.0)  {}
+</I>&gt;&gt;<i> +          max_char_angle_delta_(0),
+</I>&gt;&gt;<i> +	  fill_(fill),
+</I>&gt;&gt;<i> +	  halo_fill_(Color(255,255,255)),
+</I>&gt;&gt;<i> +	  halo_radius_(0),
+</I>&gt;&gt;<i> +	  label_p_(point_placement),
+</I>&gt;&gt;<i> +	  anchor_(0.0,0.5),
+</I>&gt;&gt;<i> +	  displacement_(0.0,0.0)  {}
+</I>&gt;&gt;<i>             
+</I>&gt;&gt;<i>      text_symbolizer::text_symbolizer(text_symbolizer const&amp; rhs)
+</I>&gt;&gt;<i>          : name_(rhs.name_),
+</I>&gt;&gt;<i> @@ -50,6 +51,7 @@
+</I>&gt;&gt;<i>            text_ratio_(rhs.text_ratio_),
+</I>&gt;&gt;<i>            wrap_width_(rhs.wrap_width_),
+</I>&gt;&gt;<i>            label_spacing_(rhs.label_spacing_),
+</I>&gt;&gt;<i> +          max_char_angle_delta_(rhs.max_char_angle_delta_),
+</I>&gt;&gt;<i>            fill_(rhs.fill_),
+</I>&gt;&gt;<i>            halo_fill_(rhs.halo_fill_),
+</I>&gt;&gt;<i>            halo_radius_(rhs.halo_radius_),
+</I>&gt;&gt;<i> @@ -67,6 +69,7 @@
+</I>&gt;&gt;<i>          text_ratio_ = other.text_ratio_;
+</I>&gt;&gt;<i>          wrap_width_ = other.wrap_width_;
+</I>&gt;&gt;<i>          label_spacing_ = other.label_spacing_;
+</I>&gt;&gt;<i> +        max_char_angle_delta_ = other.max_char_angle_delta_;
+</I>&gt;&gt;<i>          fill_ = other.fill_;
+</I>&gt;&gt;<i>          halo_fill_ = other.halo_fill_;
+</I>&gt;&gt;<i>          halo_radius_ = other.halo_radius_;
+</I>&gt;&gt;<i> @@ -108,7 +111,7 @@
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>      unsigned  text_symbolizer::get_label_spacing() const
+</I>&gt;&gt;<i>      {
+</I>&gt;&gt;<i> -    return label_spacing_;
+</I>&gt;&gt;<i> +        return label_spacing_;
+</I>&gt;&gt;<i>      }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i>      void  text_symbolizer::set_label_spacing(unsigned spacing) 
+</I>&gt;&gt;<i> @@ -116,6 +119,16 @@
+</I>&gt;&gt;<i>          label_spacing_ = spacing;
+</I>&gt;&gt;<i>      }
+</I>&gt;&gt;<i>  
+</I>&gt;&gt;<i> +    double text_symbolizer::get_max_char_angle_delta() const
+</I>&gt;&gt;<i> +    {
+</I>&gt;&gt;<i> +        return max_char_angle_delta_;
+</I>&gt;&gt;<i> +    }
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i> +    void text_symbolizer::set_max_char_angle_delta(double angle) 
+</I>&gt;&gt;<i> +    {
+</I>&gt;&gt;<i> +        max_char_angle_delta_ = angle;
+</I>&gt;&gt;<i> +    }
+</I>&gt;&gt;<i> +
+</I>&gt;&gt;<i>      unsigned  text_symbolizer::get_text_size() const
+</I>&gt;&gt;<i>      {
+</I>&gt;&gt;<i>          return size_;
+</I>&gt;&gt;<i> Index: src/agg_renderer.cpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- src/agg_renderer.cpp	(revision 364)
+</I>&gt;&gt;<i> +++ src/agg_renderer.cpp	(working copy)
+</I>&gt;&gt;<i> @@ -507,7 +507,8 @@
+</I>&gt;&gt;<i>                      text_placement.text_ratio = sym.get_text_ratio();
+</I>&gt;&gt;<i>                      text_placement.wrap_width = sym.get_wrap_width();
+</I>&gt;&gt;<i>                      text_placement.label_spacing = sym.get_label_spacing();
+</I>&gt;&gt;<i> -                    
+</I>&gt;&gt;<i> +                    text_placement.max_char_angle_delta = sym.get_max_char_angle_delta();
+</I>&gt;&gt;<i> +                  
+</I>&gt;&gt;<i>                      bool found = finder_.find_placements(&amp;text_placement);
+</I>&gt;&gt;<i>                      if (!found) {
+</I>&gt;&gt;<i>                        return;
+</I>&gt;&gt;<i> Index: bindings/python/mapnik/ogcserver/common.py
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- bindings/python/mapnik/ogcserver/common.py	(revision 364)
+</I>&gt;&gt;<i> +++ bindings/python/mapnik/ogcserver/common.py	(working copy)
+</I>&gt;&gt;<i> @@ -384,4 +384,4 @@
+</I>&gt;&gt;<i>  class Projection(MapnikProjection):
+</I>&gt;&gt;<i>      
+</I>&gt;&gt;<i>      def epsgstring(self):
+</I>&gt;&gt;<i> -        return self.params().split('=')[1].upper()
+</I>&gt;&gt;<i> \ No newline at end of file
+</I>&gt;&gt;<i> +        return self.params().split('=')[1].upper()
+</I>&gt;&gt;<i> Index: bindings/python/mapnik_text_symbolizer.cpp
+</I>&gt;&gt;<i> ===================================================================
+</I>&gt;&gt;<i> --- bindings/python/mapnik_text_symbolizer.cpp	(revision 364)
+</I>&gt;&gt;<i> +++ bindings/python/mapnik_text_symbolizer.cpp	(working copy)
+</I>&gt;&gt;<i> @@ -43,6 +43,9 @@
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::get_halo_fill,
+</I>&gt;&gt;<i>                        return_value_policy&lt;copy_const_reference&gt;()),
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::set_halo_fill)
+</I>&gt;&gt;<i> +        .add_property(&quot;halo_radius&quot;,
+</I>&gt;&gt;<i> +                      &amp;text_symbolizer::get_halo_radius, 
+</I>&gt;&gt;<i> +                      &amp;text_symbolizer::set_halo_radius)
+</I>&gt;&gt;<i>          .add_property(&quot;wrap_width&quot;,
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::get_wrap_width,
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::set_wrap_width)
+</I>&gt;&gt;<i> @@ -52,9 +55,9 @@
+</I>&gt;&gt;<i>          .add_property(&quot;label_spacing&quot;,
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::get_label_spacing,
+</I>&gt;&gt;<i>                        &amp;text_symbolizer::set_label_spacing)
+</I>&gt;&gt;<i> -        .add_property(&quot;halo_radius&quot;,
+</I>&gt;&gt;<i> -                      &amp;text_symbolizer::get_halo_radius, 
+</I>&gt;&gt;<i> -                      &amp;text_symbolizer::set_halo_radius)
+</I>&gt;&gt;<i> +        .add_property(&quot;max_char_angle_delta&quot;,
+</I>&gt;&gt;<i> +                      &amp;text_symbolizer::get_max_char_angle_delta,
+</I>&gt;&gt;<i> +                      &amp;text_symbolizer::set_max_char_angle_delta)
+</I>&gt;&gt;<i>          .def(&quot;set_label_placement&quot;,&amp;text_symbolizer::set_label_placement,
+</I>&gt;&gt;<i>               &quot;Set the placement of the label&quot;)
+</I>&gt;&gt;<i>  	;
+</I>&gt;&gt;<i>     
+</I>&gt;&gt;<i> ------------------------------------------------------------------------
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>     
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000034.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+	<LI>Next message: <A HREF="000036.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#35">[ date ]</a>
+              <a href="thread.html#35">[ thread ]</a>
+              <a href="subject.html#35">[ subject ]</a>
+              <a href="author.html#35">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

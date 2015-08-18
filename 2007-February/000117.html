@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik feedback
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C200702051213.41925.pavlenko%40users.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000116.html">
+   <LINK REL="Next"  HREF="000118.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik feedback</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C200702051213.41925.pavlenko%40users.berlios.de%3E"
+       TITLE="[Mapnik-devel] Mapnik feedback">pavlenko at users.berlios.de
+       </A><BR>
+    <I>Mon Feb  5 13:13:41 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000116.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+        <LI>Next message: <A HREF="000118.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#117">[ date ]</a>
+              <a href="thread.html#117">[ thread ]</a>
+              <a href="subject.html#117">[ subject ]</a>
+              <a href="author.html#117">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Reid,
+Thanks for your feedback!
+On Thursday 01 February 2007 20:38, Reid Priedhorsky wrote:
+&gt;<i> Hi Artem,
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko wrote:
+</I>&gt;<i> &gt; On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+</I>&gt;<i> &gt;&gt; 1. mapnik is underdocumented. While I was able to muddle through, some
+</I>&gt;<i> &gt;&gt; user-oriented documentation would be very helpful.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Agreed. Lets improve this. Would you like to help to populate wiki?
+</I>&gt;<i>
+</I>&gt;<i> Unfortunately I don't think I am able to offer the time to write
+</I>&gt;<i> documentation. I would, however, be happy to offer my Python script as
+</I>&gt;<i> an example.
+</I>Yes, please! 
+
+&gt;<i> &gt;&gt; 3. render_to_tile() prints to standard output. I'd like to be able to
+</I>&gt;<i> &gt;&gt; supress this.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Please, enter bug into trac.
+</I>&gt;<i>
+</I>&gt;<i> #9, I believe. I also entered a few others.
+</I>Great! 
+&gt;<i> &gt;&gt; 4. Installing to a nonstandard path without root access was quite a
+</I>&gt;<i> &gt;&gt; pain; I wanted to install everything under /foo/bar, but the closest I
+</I>&gt;<i> &gt;&gt; could get was some stuff under /foo/bar/usr and some stuff under
+</I>&gt;<i> &gt;&gt; /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+</I>&gt;<i> &gt;&gt; symlinks to make things reasonable.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing
+</I>&gt;<i> &gt; something here, could you provide more info?
+</I>&gt;<i>
+</I>&gt;<i> Sure. I put it into trac #10.
+</I>
+&gt;<i> &gt; I'm quite happy to start discussion about better building system for
+</I>&gt;<i> &gt; mapnik. I have some experience with the following :
+</I>&gt;<i> &gt; 1. autotools
+</I>&gt;<i> &gt; 2. scons
+</I>&gt;<i> &gt; 3. cmake
+</I>&gt;<i> &gt; 4. Boost.Build.v2
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; but it is not clear to me which one is the best fit. Mapnik was using
+</I>&gt;<i> &gt; autotool at the very begining but I got fed up with writing m4 macros
+</I>&gt;<i> &gt; very quickly.
+</I>&gt;<i>
+</I>&gt;<i> I don't know a whole lot about programming to any of those build
+</I>&gt;<i> systems. I did use autotools some years ago and found it pretty
+</I>&gt;<i> straightforward, so I'm surprised that autotools required writing
+</I>&gt;<i> significant numbers of M4 macros, but I never used it for Python or C++
+</I>&gt;<i> projects.
+</I>&gt;<i>
+</I>&gt;<i> Given that, speaking as an end-user, these are the things that I found
+</I>&gt;<i> difficult about scons:
+</I>&gt;<i>
+</I>&gt;<i> 1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+</I>&gt;<i>
+</I>&gt;<i> 2. Difficult to install into non-standard locations.
+</I>&gt;<i>
+</I>&gt;<i> 3. It seems to redo all the library checks before each operation, even
+</I>&gt;<i> an invalidly-specified one; e.g. try &quot;python scons/scons.py build&quot; --
+</I>&gt;<i> for me it chugs away detecting libraries for 7 seconds before telling me
+</I>&gt;<i> that &quot;build&quot; is an invalid operation.
+</I>&gt;<i>
+</I>I think your comments are valid and they highlight the fact that current build 
+system is not always working as expected. 
+
+&gt;<i> Python modules seem to be moving increasingly to &quot;distutils&quot;
+</I>&gt;<i> &lt;<A HREF="http://www.python.org/doc/2.4.4/lib/module-distutils.html">http://www.python.org/doc/2.4.4/lib/module-distutils.html</A>&gt;, which I
+</I>&gt;<i> have not used except as an installer. I don't know how suitable this
+</I>&gt;<i> would be for people who just want to use the C++ interface.
+</I>
+Yes, exactly. Distutils are not much help for building c++ libraries. 
+I'm playing with Boost.Build.v2 at the moment  and I'm hoping to have 
+alternative/experimental build system very soon.
+
+If you're using debian based distro you could try: 
+
+deb <A HREF="http://www.larted.org.uk/~dom/debian/mapnik">http://www.larted.org.uk/~dom/debian/mapnik</A> unstable/
+deb-src <A HREF="http://www.larted.org.uk/~dom/debian/mapnik">http://www.larted.org.uk/~dom/debian/mapnik</A> unstable/
+
+Cheers,
+Artem
+
+&gt;<i> Take care,
+</I>&gt;<i>
+</I>&gt;<i> Reid
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000116.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+	<LI>Next message: <A HREF="000118.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#117">[ date ]</a>
+              <a href="thread.html#117">[ thread ]</a>
+              <a href="subject.html#117">[ subject ]</a>
+              <a href="author.html#117">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

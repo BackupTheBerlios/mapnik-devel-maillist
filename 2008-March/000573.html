@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Any advice on debugging placement_finder?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C8D3F4390-5D94-4B82-95F1-59EA69226405%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000570.html">
+   <LINK REL="Next"  HREF="000571.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Any advice on debugging placement_finder?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C8D3F4390-5D94-4B82-95F1-59EA69226405%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Any advice on debugging placement_finder?">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 27 12:30:48 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000570.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+        <LI>Next message: <A HREF="000571.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#573">[ date ]</a>
+              <a href="thread.html#573">[ thread ]</a>
+              <a href="subject.html#573">[ subject ]</a>
+              <a href="author.html#573">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 27 Mar 2008, at 09:01, Martijn van Oosterhout wrote:
+
+&gt;<i> On Thu, Mar 27, 2008 at 1:32 AM, Jon Burgess  
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jburgess777 at googlemail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>  If you want to reproduce this, the .osm file below contains  
+</I>&gt;&gt;<i> sufficient
+</I>&gt;&gt;<i>  data to trigger the bug:
+</I>&gt;&gt;<i>  <A HREF="http://tile.openstreetmap.org/rotterdam-broken.osm">http://tile.openstreetmap.org/rotterdam-broken.osm</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>  The area ways have the name &quot;Noord Pampus&quot; and are in a multipolygon
+</I>&gt;&gt;<i>  relation. The tile which triggers this problem is / 
+</I>&gt;&gt;<i> 16/33517/21696.png
+</I>&gt;&gt;<i>  (please don't request this tile from the main OSM site, it'll  
+</I>&gt;&gt;<i> trigger
+</I>&gt;&gt;<i>  this bug). It only occurs on this zoom level. Note that this is  
+</I>&gt;&gt;<i> being
+</I>&gt;&gt;<i>  done with mod_tile meta-tiling so it is actually rendering the 8x8
+</I>&gt;&gt;<i>  tiles:
+</I>&gt;<i>
+</I>&gt;<i> Since it was in NL I thought the NL tileserver might have some info,
+</I>&gt;<i> but it appears the multipolygon relation didn't get imported at all
+</I>&gt;<i> there... It all looks fine in JOSM. For me it's ID 6286890 in the
+</I>&gt;<i> database, perhaps you could try the st_interiorringn() and
+</I>&gt;<i> st_exteriorring() functions to see if it actually picks up the holes
+</I>&gt;<i> properly. I thought mapnik knew about rings with holes, but maybe it
+</I>&gt;<i> doesn't...
+</I>
+It does, it always did, but for LINE_PLACEMENT along polygon with  
+multiple inner loops it doesn't do right thing as far as I can see.  
+Needs replicating and debugging
+&gt;<i>
+</I>&gt;<i> Hope this helps,
+</I>&gt;<i> -- 
+</I>&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000570.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+	<LI>Next message: <A HREF="000571.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#573">[ date ]</a>
+              <a href="thread.html#573">[ thread ]</a>
+              <a href="subject.html#573">[ subject ]</a>
+              <a href="author.html#573">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

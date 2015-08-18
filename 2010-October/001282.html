@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Multiple placements for TextSymbolizer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3CAANLkTi%3DJKAYaSOxkDgUCYXogokcQJr%3DPJ_S33Nbpr4L7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001281.html">
+   <LINK REL="Next"  HREF="001283.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Multiple placements for TextSymbolizer</H1>
+    <B>Robert Coup</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3CAANLkTi%3DJKAYaSOxkDgUCYXogokcQJr%3DPJ_S33Nbpr4L7%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Multiple placements for TextSymbolizer">robert.coup at koordinates.com
+       </A><BR>
+    <I>Thu Oct 28 00:22:23 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001281.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+        <LI>Next message: <A HREF="001283.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1282">[ date ]</a>
+              <a href="thread.html#1282">[ thread ]</a>
+              <a href="subject.html#1282">[ subject ]</a>
+              <a href="author.html#1282">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey folks,
+
+My $5 worth...
+
+On Thu, Oct 28, 2010 at 9:45 AM, Lennard &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ldp at xs4all.nl</A>&gt; wrote:
+
+&gt;<i> On 27-10-2010 17:16, Hermann Kraus wrote:
+</I>&gt;<i>
+</I>&gt;<i>  Option c)
+</I>&gt;&gt;<i> Something completely different.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> c) I've mentioned a few times before (on IRC, as recently as the code
+</I>&gt;<i> sprint) that I would like to see symbolizers return information about
+</I>&gt;<i> whether they could be placed, and that there could be an 'else' construction
+</I>&gt;<i> to call other symbolizers upon that. This would also enable your
+</I>&gt;<i> AlternatePlacement proposal.
+</I>
+
+All the options proposed seem ridiculously verbose in the simple case (and
+in a complex case too):
+
+Stepping back, I think we need to end up specifying:
+
+ - vertical-align: top, middle, bottom, baseline(?)
+ - horizontal-align: left, center, right
+These two form the &quot;anchor&quot; - the closest corner on the label to our
+&quot;target&quot; location.
+
+ - dx
+ - dy
+These two specify the distance from the &quot;target&quot; (tx,ty) to the anchor
+point.
+
+I'm thinking these could be summarised into:
+ - placement: offset(default),center,n,s,e,w,ne,se,nw,sw,any -- setting h+v
+alignment &amp; the anchor position. You could go with CSS-style &quot;left top,
+center middle, right bottom, etc&quot; but it seems a lot more verbose. &quot;any&quot;
+would be a shortcut for everything except offset in a &quot;sane&quot; order.
+ - dx,dy
+
+an &quot;offset&quot; placement would do the existing behavior - dx &amp; dy become an
+offset used to move the label from center.
+That leads to:
+&lt;TextSymbolizer placement=&quot;point&quot; placement_options=&quot;any&quot; dx=&quot;50&quot; dy=&quot;50&quot;
+/&gt;
+
+For example, placement_options=&quot;center,e,ne,se&quot; would try and do (in order):
+ 1. vertical-align=center, horiz-align=center, x=tx, y=ty
+ 2. vertical-align=center, horiz-align=left, x=tx+dx, y=ty
+ 3. vertical-align=bottom, horiz-align=left, x=tx+dx, y=ty+dy
+ 4. vertical-align=top, horiz-align=left, x=tx+dx, y=ty-dy
+
+Not sure what should happen if you specify vertical-alignment alongside
+placement_options... I'd guess nothing except when it's testing the &quot;offset&quot;
+placement.
+
+I think it would be ideal to have max-dx+max-dy/radius rather than dx+dy to
+define a rectangle/circle where any placement would be valid, then try and
+find the closest one, but given the unlimited potential placements in such
+an area it seems too hard to make it work. I don't particularly like it, but
+you could do something along the lines of dx=&quot;10,20,20,30,30&quot;
+dy=&quot;10,20,30,20,30&quot; to allow trying &quot;further away&quot;. That would do the
+placement_options for each of:
+ 1. tx,ty
+ 2. tx&#177;10,ty&#177;10
+ 3. tx&#177;20,ty&#177;20
+ 4. tx&#177;20,ty&#177;30
+ 5. tx&#177;30,ty&#177;20
+ 6. tx&#177;30,ty&#177;30
+
+Does that cover the practical use case?
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101028/b1f4e698/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101028/b1f4e698/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001281.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+	<LI>Next message: <A HREF="001283.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1282">[ date ]</a>
+              <a href="thread.html#1282">[ thread ]</a>
+              <a href="subject.html#1282">[ subject ]</a>
+              <a href="author.html#1282">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

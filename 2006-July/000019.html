@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Gentoo ebuild
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gentoo%20ebuild&In-Reply-To=%3C44C2BE34.7040308%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000018.html">
+   <LINK REL="Next"  HREF="000020.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Gentoo ebuild</H1>
+    <B>Jean-Fran&#231;ois Doyon</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gentoo%20ebuild&In-Reply-To=%3C44C2BE34.7040308%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Gentoo ebuild">jfdoyon at gmail.com
+       </A><BR>
+    <I>Sun Jul 23 02:09:24 CEST 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000018.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+        <LI>Next message: <A HREF="000020.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Federico,
+
+Excellent!  Always good to have easy ways to install mapnik :)
+
+Unfortunately, it seems your patches only apply to Gentoo.  I see you've 
+switched fro using PYTHON_PREFIX to PREFIX ... which is bizarre, the 
+python system is fairly strict in it's file system layout.  Why doesn't 
+PYTHON_PREFIX work?
+
+Also, what kind of problems do you get with -O3?
+
+As for SWIG ... I don't think anyone has played with it yet ... very 
+interesting idea however.  For Python/C++, Boost.Python is prefered.  If 
+there's demand for other languages, then great!  Ideally someday it 
+would be nice to incoporate the SWIG stuff into the standard 
+distribution IMO.
+
+The way you're doing it may be over simplistic however ... I'm not 
+surprised it doesn't work!  That might also generate as rather 
+unintuitive API for the Java programmer.
+
+Unfortunately, I fail to see what the problem is on line 92 of map.hpp 
+... it's pretty straightforward.  The previous line is a virtual 
+declaration, maybe SWIG doesn't support that?
+
+Overall, I'm not sure how good C++ support is in SWIG (I've played with 
+it for C with success mind you ... but C++?).
+
+Basically I look at SWIG as a lazy approach ... a little too generic, 
+especially in the OO world.  Have you considered writing a JNI 
+interface?  This would allow a much more java-esque integration I'm 
+betting ... better in the long run.  But then I don't know squat about 
+Java :)
+
+J.F.
+
+Federico Fissore wrote:
+&gt;<i> Hello all
+</I>&gt;<i>
+</I>&gt;<i> i've created a gentoo ebuild for building and installing mapnik on 
+</I>&gt;<i> gentoo boxes
+</I>&gt;<i> Please get it from <A HREF="http://bugs.gentoo.org/show_bug.cgi?id=140599">http://bugs.gentoo.org/show_bug.cgi?id=140599</A>
+</I>&gt;<i>
+</I>&gt;<i> I had to patch che SConstruct files in order to allow users to change 
+</I>&gt;<i> optimization level and to make the scons procedure NOT create ANY file 
+</I>&gt;<i> outside what in gentoo is called the &quot;sandbox&quot; (the safe place where 
+</I>&gt;<i> ebuilds are build before being integrated into the system)
+</I>&gt;<i>
+</I>&gt;<i> OK and now a question: I dunno if you have used SWIG for the python 
+</I>&gt;<i> bindings but I wanted you to use it because that easily leaded to the 
+</I>&gt;<i> creation of java bindings, that are what I'm looking for.
+</I>&gt;<i>
+</I>&gt;<i> I've dedicated two hours to java bindings using swig (in the manual 
+</I>&gt;<i> the way I've followed is called &quot;SWIG for the truly lazy&quot;) but I 
+</I>&gt;<i> wasn't successfull.
+</I>&gt;<i>
+</I>&gt;<i> Attached you find the tiny swig interface created and here is the 
+</I>&gt;<i> command use to wrap it with swig
+</I>&gt;<i> cd bindings/java
+</I>&gt;<i> swig -v -java -c++ -I../../include -I/usr/include Map.i
+</I>&gt;<i>
+</I>&gt;<i> This lead to buildable but incomplete Map.java class. In particular 
+</I>&gt;<i> the following error occurs
+</I>&gt;<i> ../../include/map.hpp:92: Error: Syntax error in input(1).
+</I>&gt;<i>
+</I>&gt;<i> Hope this could help someone, and that someone could help me ;)
+</I>&gt;<i>
+</I>&gt;<i> Bye
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> %module Map
+</I>&gt;<i> %{
+</I>&gt;<i> /* Includes the header in the wrapper code */
+</I>&gt;<i> #include &lt;map.hpp&gt;
+</I>&gt;<i> %}
+</I>&gt;<i>
+</I>&gt;<i> /* Parse the header file to generate wrappers */
+</I>&gt;<i> %include &lt;map.hpp&gt;
+</I>&gt;<i>   
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="http://bat.berlios.de/mailman/listinfo/mapnik-devel">http://bat.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>   
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000018.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+	<LI>Next message: <A HREF="000020.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

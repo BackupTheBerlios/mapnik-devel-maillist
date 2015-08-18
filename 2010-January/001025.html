@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] No antialiasing on transparent background?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20antialiasing%20on%20transparent%20background%3F&In-Reply-To=%3C4B3DFE6A.6060002%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001027.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] No antialiasing on transparent background?</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20No%20antialiasing%20on%20transparent%20background%3F&In-Reply-To=%3C4B3DFE6A.6060002%40gmx.de%3E"
+       TITLE="[Mapnik-devel] No antialiasing on transparent background?">ekkehart at gmx.de
+       </A><BR>
+    <I>Fri Jan  1 14:53:46 CET 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001027.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1025">[ date ]</a>
+              <a href="thread.html#1025">[ thread ]</a>
+              <a href="subject.html#1025">[ subject ]</a>
+              <a href="author.html#1025">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hello!
+
+
+I used to do my rendering in one pass on a white, semi-transparent 
+background. The quality of the resulting images was good.
+
+Now I changed to a fully transparent background. Unfortunately, the 
+rendering against transparency is rather ugly. It now seems to be 
+completely without antialiasing, the ways have steps and parts of thin 
+lines are missing.
+
+Example tile of old style:
+<A HREF="http://topo.geofabrik.de/trails/15/17436/11196.png">http://topo.geofabrik.de/trails/15/17436/11196.png</A>
+
+Same tile on transparent background:
+<A HREF="http://tile.dev.openstreetmap.de/topo/15/17436/11196.png">http://tile.dev.openstreetmap.de/topo/15/17436/11196.png</A>
+
+Mapnik is 0.6.1 with renderd, layers renderd on a full color background 
+with the same installation look good.
+
+Does mapnik have a problem with transparent background? Do I miss a setting?
+
+bye
+	Nop
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001027.html">[Mapnik-devel] No antialiasing on transparent background?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1025">[ date ]</a>
+              <a href="thread.html#1025">[ thread ]</a>
+              <a href="subject.html#1025">[ subject ]</a>
+              <a href="author.html#1025">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Update%3A%20cascadenik%20%22-xmlbad%22%20branch&In-Reply-To=%3CAANLkTi%3DkuBda09AOMiGt6SL50ByEZNTd9GprCcwxZmGi%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001221.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch</H1>
+    <B>waldemar quevedo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Update%3A%20cascadenik%20%22-xmlbad%22%20branch&In-Reply-To=%3CAANLkTi%3DkuBda09AOMiGt6SL50ByEZNTd9GprCcwxZmGi%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch">waldemar.quevedo at gmail.com
+       </A><BR>
+    <I>Mon Aug  2 06:01:41 CEST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001221.html">[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1220">[ date ]</a>
+              <a href="thread.html#1220">[ thread ]</a>
+              <a href="subject.html#1220">[ subject ]</a>
+              <a href="author.html#1220">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Robert,
+
+Thanks for the work you did to the branch! I tried it a bit this weekend and
+gave it a shot to add some support to mapnik2 constructors. I also added
+some support for postgis and shape types of datasources so that I could
+render the style.mml that comes bundled with Cascadenik, though I don't know
+if that was the right approach. I'm attaching the diff and hello world
+script that I used to play with the branch.
+
+Regards,
+
+- Waldemar
+
+On Thu, Jul 29, 2010 at 4:28 AM, Robert Coup &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">robert.coup at koordinates.com</A>&gt;wrote:
+
+&gt;<i> Hi folks,
+</I>&gt;<i>
+</I>&gt;<i> A wee while back Mike Migurski started the cascadenik-xmlbad branch,
+</I>&gt;<i> enabling cascadenik styles to be applied directly to a mapnik map object (as
+</I>&gt;<i> an alternative to producing XML). In the last few weeks I've picked it up,
+</I>&gt;<i> ported a years worth of changes from trunk, and fixed a bunch of bugs &amp;
+</I>&gt;<i> missing bits. Thanks to Dane for his help too.
+</I>&gt;<i>
+</I>&gt;<i> If people are/were using the -xmlbad branch, it would be great if you could
+</I>&gt;<i> update to the newest revisions and give me some feedback. :) And if you are
+</I>&gt;<i> interested in applying cascadenik styles to a mapnik Map in python rather
+</I>&gt;<i> than producing XML, give it a go.
+</I>&gt;<i>
+</I>&gt;<i> SVN browse:
+</I>&gt;<i> <A HREF="http://code.google.com/p/mapnik-utils/source/browse/#svn/branches/cascadenik-xmlbad">http://code.google.com/p/mapnik-utils/source/browse/#svn/branches/cascadenik-xmlbad</A>
+</I>&gt;<i>  SVN checkout:
+</I>&gt;<i> <A HREF="http://mapnik-utils.googlecode.com/svn/branches/cascadenik-xmlbad">http://mapnik-utils.googlecode.com/svn/branches/cascadenik-xmlbad</A>
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Rob :)
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik2-support.patch
+Type: text/x-patch
+Size: 7222 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.bin</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: cascadenik_xmlbad_hello_world_mapnik2.py
+Type: text/x-python
+Size: 1326 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.py">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100801/9902ce4c/attachment.py</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001221.html">[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1220">[ date ]</a>
+              <a href="thread.html#1220">[ thread ]</a>
+              <a href="subject.html#1220">[ subject ]</a>
+              <a href="author.html#1220">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C1224543850.21096.84.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000754.html">
+   <LINK REL="Next"  HREF="000756.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C1224543850.21096.84.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Tue Oct 21 01:04:10 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000754.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000756.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#755">[ date ]</a>
+              <a href="thread.html#755">[ thread ]</a>
+              <a href="subject.html#755">[ subject ]</a>
+              <a href="author.html#755">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, 2008-10-21 at 00:23 +0200, Andreas Volz wrote:
+&gt;<i> Am Sun, 19 Oct 2008 22:57:30 +0100 schrieb Jon Burgess:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; On Sun, 2008-10-19 at 23:28 +0200, Andreas Volz wrote:
+</I>&gt;<i> &gt; &gt; ...
+</I>&gt;<i> &gt; &gt; Maybe someone is able to help me to interpret the results and learn
+</I>&gt;<i> &gt; &gt; how to improve the speed.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; This is all processing the &quot;roads&quot; layer (as per the 'start layer
+</I>&gt;<i> &gt; processing : roads' message).
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; The first loop (s1) is iterating over all the roads returned from the
+</I>&gt;<i> &gt; DB (150k).
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; The second loop is iterating over all the relevant styles, s2 is
+</I>&gt;<i> &gt; double s1 which implies you have 2 styles in your roads layer, these
+</I>&gt;<i> &gt; are probably roads-casing and roads.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; s3 is the count of features which pass the 'filter' criteria of the
+</I>&gt;<i> &gt; style and actually get rendered on to the tile. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; s3 is far lower than s2 (approx 1/8th). This implies that 7/8th of the
+</I>&gt;<i> &gt; data fetched from the DB is actually redundant to rendering this
+</I>&gt;<i> &gt; tile. 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; One obvious optimisation would improve this ratio by being more
+</I>&gt;<i> &gt; selective about what is fetched from the database. This can be done
+</I>&gt;<i> &gt; either by pushing some of the filter criteria down into the SQL (see
+</I>&gt;<i> &gt; the 'power' layer for one example of where this has been done) or by
+</I>&gt;<i> 
+</I>&gt;<i> You mean thats's possible in the XML file only?
+</I>&gt;<i> 
+</I>&gt;<i>    &lt;Layer name=&quot;power&quot; status=&quot;on&quot; srs=&quot;+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over&quot;&gt;
+</I>&gt;<i>     &lt;StyleName&gt;power&lt;/StyleName&gt;
+</I>&gt;<i>     &lt;Datasource&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;type&quot;&gt;postgis&lt;/Parameter&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;host&quot;&gt;/var/run/postgresql/&lt;/Parameter&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;dbname&quot;&gt;gis&lt;/Parameter&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;estimate_extent&quot;&gt;false&lt;/Parameter&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;table&quot;&gt;(select way from planet_osm_line where &quot;power&quot;='line') as power&lt;/Parameter&gt;
+</I>&gt;<i>       &lt;Parameter name=&quot;extent&quot;&gt;-20037508,-19929239,20037508,19929239&lt;/Parameter&gt;
+</I>&gt;<i>     &lt;/Datasource&gt;
+</I>&gt;<i>   &lt;/Layer&gt;
+</I>&gt;<i> 
+</I>&gt;<i> So how would I do it with the road layer?
+</I>
+Well, one way to do it _might_ be to turn it into muliple layers, one
+with highway=motorway, another with highway=primary, another with
+highway=secondary etc.
+
+The downside of this is that if also effects the sequence that things
+are rendered. For example, if you got things wrong, you might find your
+primary road which is meant to go on a bridge over the motorway now gets
+drawn underneath the motorway line.
+
+This is exactly the problem that the 'order by z_order' tries to
+address. The z_order field is calculated by osm2pgsql based on the
+layer, tunnel, bridge tags (highway type has influence too).
+
+&gt;<i> &gt; partitioning the data into more tables in the DB (done to an extent
+</I>&gt;<i> &gt; with the planet_osm_roads table). 
+</I>&gt;<i> 
+</I>&gt;<i> I imported the data with a OSM tool. This would need to modify the tool
+</I>
+Yes it would
+
+&gt;<i> &gt; Another feature which I've seen take excessive amounts of time is the
+</I>&gt;<i> &gt; 'order by z_order' on some of the SQL select lines. This really takes
+</I>&gt;<i> &gt; a significant amount of CPU when fetching many thousand entries from
+</I>&gt;<i> &gt; the DB. Reducing the amount of data being fetched would obviously
+</I>&gt;<i> &gt; help here too.
+</I>&gt;<i> 
+</I>&gt;<i> Seems to work good. I improved the map rendering time from 4:5 to 3.4 seconds 
+</I>&gt;<i> (complete germany). Not yet perfect, but a start.
+</I>&gt;<i> 
+</I>&gt;<i> What is the drawback of not using z_order. I assume it was used for some reason.
+</I>
+As mentioned above, this is used to help ensure the correct rendering
+order for tunnels, layers, bridges etc. This is important for higher
+zooms where these features are visible but you could argue that this
+becomes less important at lower zooms.
+
+I've hinted already that these sorts of optimisations do effect how the
+output gets rendered so you will probably need to do experiments to get
+a good feel for how the rule/style/layers interact when you make
+changes.
+
+As you mention, making more substantial change may require further
+enhancements to osm2pgsql, the database tables or the Mapnik code.
+
+Another optimisation which I think Artem played around with before was
+simplifying the geometries in the tables. We do not need to preserve the
+every single node along every road when rendering country-scale maps.
+Again this would require more processing during the data import.
+
+On the main tile server the time taken to render the high zoom tiles
+(especially zoom 17 &amp; 18) is far higher than the low zoom tiles.
+Optimising the rendering time for the 1024 tiles at zoom 5 tiles makes
+very little difference compared to the time spent rendering the 44
+million tiles that are rendered at zoom 17*. Obviously you've got
+different priorities because you want the rendering to be fast at all
+zooms.
+
+	Jon
+
+* This is based on the number of tiles present on the tile server at
+zoom 17 on 2008-06-27. For a spreadsheet with the tile stats see:
+<A HREF="http://tile.openstreetmap.org/direct/tiles-20080627.ods">http://tile.openstreetmap.org/direct/tiles-20080627.ods</A>
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000754.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000756.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#755">[ date ]</a>
+              <a href="thread.html#755">[ thread ]</a>
+              <a href="subject.html#755">[ subject ]</a>
+              <a href="author.html#755">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

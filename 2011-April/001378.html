@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Viewer%20-%20mapnik2%20-%20maximum-extents&In-Reply-To=%3CDC51281E-1E6A-449B-86CE-220CF79E97F3%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001377.html">
+   <LINK REL="Next"  HREF="001379.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Viewer - mapnik2 - maximum-extents</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Viewer%20-%20mapnik2%20-%20maximum-extents&In-Reply-To=%3CDC51281E-1E6A-449B-86CE-220CF79E97F3%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Viewer - mapnik2 - maximum-extents">dane at dbsgeo.com
+       </A><BR>
+    <I>Sun Apr 17 06:36:15 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001377.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+        <LI>Next message: <A HREF="001379.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1378">[ date ]</a>
+              <a href="thread.html#1378">[ thread ]</a>
+              <a href="subject.html#1378">[ subject ]</a>
+              <a href="author.html#1378">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+The linking errors below all look to be occurring because of missing references to function signatures I added just in the past few days.
+
+I cannot replicate the problem building the viewer locally. Is it possible you have two libmapnik2.so installed or that your viewer object files are stale?
+
+If after fully cleaning and recompiling you still hit the errors let me know.
+
+Dane
+
+
+On Apr 16, 2011, at 12:06 PM, David Eastcott wrote:
+
+&gt;<i> I normally build all the mapnik components as an RPM package and this morning I pulled the latest trunk (2786) and was attempting to rebuild mapnik and the viewer when I got a linker error about 'missing references'.
+</I>&gt;<i> 
+</I>&gt;<i> I am not sure where to start looking to resolve this so I thought I would ask if anyone else has seen this? Or could offer some suggestions?  I do not have a clean machine, yet, to do a normal build and install.
+</I>&gt;<i> 
+</I>&gt;<i> The following fragment are the errors I am getting:
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> g++ -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,-O1 -o viewer release/main.o release/mainwindow.o release/mapwidget.o release/layerwidget.o release/layerlistmodel.o release/layerdelegate.o release/styles_model.o release/about_dialog.o release/info_dialog.o release/layer_info_dialog.o release/moc_mainwindow.o release/moc_mapwidget.o release/moc_layerwidget.o release/moc_layerlistmodel.o release/moc_layerdelegate.o release/moc_styles_model.o release/moc_about_dialog.o release/moc_info_dialog.o release/moc_layer_info_dialog.o release/qrc_mapnik_viewer.o    -L/usr/lib64 -L../../src/ -L/usr/X11/lib -lmapnik2 -lfreetype -lboost_system -licuuc -lboost_filesystem -lboost_regex -lQtGui -L/usr/lib64 -L/usr/lib -lQtCore -lpthread
+</I>&gt;<i> release/mapwidget.o: In function `mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)':
+</I>&gt;<i> 
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x134): undefined reference to `mapnik::Map::maximum_extent() const'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x14f): undefined reference to `mapnik::box2d&lt;double&gt;::clip(mapnik::box2d&lt;double&gt; const&amp;)'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x174): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d&lt;double&gt;&amp;) const'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x18c): undefined reference to `mapnik::proj_transform::backward(mapnik::box2d&lt;double&gt;&amp;) const'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x37d): undefined reference to `mapnik::box2d&lt;double&gt;::clip(mapnik::box2d&lt;double&gt; const&amp;)'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x38d): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d&lt;double&gt;&amp;) const'
+</I>&gt;<i> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::image_32&gt; &gt;::apply_to_layer(mapnik::layer const&amp;, mapnik::agg_renderer&lt;mapnik::image_32&gt;&amp;, mapnik::projection const&amp;, double)]+0x8b7): undefined reference to `mapnik::box2d&lt;double&gt;::clip(mapnik::box2d&lt;double&gt; const&amp;)'
+</I>&gt;<i> 
+</I>&gt;<i> collect2: ld returned 1 exit status
+</I>&gt;<i> make[1]: *** [viewer] Error 1
+</I>&gt;<i> make[1]: Leaving directory `/home/david/ProjectsDev/ProjectsRPMS/rpm/BUILD/mapnik-2.0.0/demo/viewer'
+</I>&gt;<i> make: *** [release] Error 2
+</I>&gt;<i> error: Bad exit status from /home/david/ProjectsDev/ProjectsRPMS/rpm/tmp/rpm-tmp.0wZIWd (%build)
+</I>&gt;<i> 
+</I>&gt;<i> Regards Dave
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001377.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+	<LI>Next message: <A HREF="001379.html">[Mapnik-devel] Viewer - mapnik2 - maximum-extents
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1378">[ date ]</a>
+              <a href="thread.html#1378">[ thread ]</a>
+              <a href="subject.html#1378">[ subject ]</a>
+              <a href="author.html#1378">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

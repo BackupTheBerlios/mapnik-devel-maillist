@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Using raster datasources
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20raster%20datasources&In-Reply-To=%3Cb658f7060901260210h1bab8b1ar1db7877da2f519ed%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000785.html">
+   <LINK REL="Next"  HREF="000787.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Using raster datasources</H1>
+    <B>Oleg Shaniuk</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20raster%20datasources&In-Reply-To=%3Cb658f7060901260210h1bab8b1ar1db7877da2f519ed%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Using raster datasources">oshaniuk at cogniance.com
+       </A><BR>
+    <I>Mon Jan 26 11:10:55 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000785.html">[Mapnik-devel] Using raster datasources
+</A></li>
+        <LI>Next message: <A HREF="000787.html">[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#786">[ date ]</a>
+              <a href="thread.html#786">[ thread ]</a>
+              <a href="subject.html#786">[ subject ]</a>
+              <a href="author.html#786">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ok, here is some parts of code:
+
+Notes:
+
+code c++
+
+size (in pixels) of raster image is the same, as size of image being
+rendered
+
+and raster was rendered for the same bbox( doesn't matter since we setting
+this
+
+bbox for raster and map at once, so, I can't get why raster is shifted up -
+so it doesn't
+
+cover resulting image.
+
+The projection for raster layer is the same, as for Map:
+
+Layer raster_l(hs, map-&gt;srs() );
+
+Ok, here is code below:
+
+&gt;<i> rendering{
+</I>&gt;<i>
+</I>&gt;<i> ....
+</I>&gt;<i>
+</I>&gt;<i> Envelope&lt;double&gt; bbox(p0x, p0y, p1x,p1y);
+</I>&gt;<i>
+</I>&gt;<i> // pti - structure containing info to build valid path to a valid raster
+</I>&gt;<i> file
+</I>&gt;<i> update_raster(pti,map,bbox);
+</I>&gt;<i>
+</I>&gt;<i> map-&gt;resize(size, size);
+</I>&gt;<i> map-&gt;zoomToBox(bbox);
+</I>&gt;<i>
+</I>&gt;<i> Image32 img = Image32(size, size);
+</I>&gt;<i>
+</I>&gt;<i> agg_renderer&lt;Image32&gt; ren = new agg_renderer&lt;Image32&gt;(map,img);
+</I>&gt;<i>
+</I>&gt;<i> ren-&gt;apply();
+</I>&gt;<i>
+</I>&gt;<i> ...
+</I>&gt;<i>
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> void update_raster( struct tileinfo* pti, Map&amp; map,Envelope&lt;double&gt;&amp; bbox)
+</I>&gt;<i> {
+</I>&gt;<i>   char rampname[PATH_MAX];
+</I>&gt;<i>   struct stat s;
+</I>&gt;<i>
+</I>&gt;<i>   tileinfo_to_ramp(rampname,PATH_MAX, pti);
+</I>&gt;<i>
+</I>&gt;<i>   if(stat(rampname, &amp;s)) {
+</I>&gt;<i>       sprintf(rampname,&quot;/mnt/var/raster/defaultramp.tif&quot;);
+</I>&gt;<i>   }
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   // 1. cycle styles to ensure - no other layer &quot;raster&quot; is included
+</I>&gt;<i>   // 2. insert new raster with valid tiff
+</I>&gt;<i>
+</I>&gt;<i>   std::vector&lt;Layer&gt;&amp; layers = map-&gt;layers();
+</I>&gt;<i>   std::vector&lt;Layer&gt;::iterator li;
+</I>&gt;<i>
+</I>&gt;<i>   std::string raster(&quot;raster&quot;);
+</I>&gt;<i>
+</I>
+  // desciption of this class a bit below
+&gt;<i>   find_layer_predicate flp(raster);
+</I>&gt;<i>
+</I>&gt;<i>   Layer raster_l(hs, map-&gt;srs() );
+</I>&gt;<i>
+</I>&gt;<i>   raster_l.add_style(raster);
+</I>&gt;<i>
+</I>&gt;<i>   char ds[64];
+</I>&gt;<i>
+</I>&gt;<i>   { // set up datasource
+</I>&gt;<i>    parameters p;
+</I>&gt;<i>    p[&quot;type&quot;]=raster.c_str();
+</I>&gt;<i>    p[&quot;file&quot;]=rampname;
+</I>&gt;<i>    p[&quot;format&quot;]=&quot;tiff&quot;;
+</I>&gt;<i>    sprintf(ds,&quot;%f&quot;, bbox.minx());
+</I>&gt;<i>    p[&quot;lox&quot;]= ds;
+</I>&gt;<i>    sprintf(ds,&quot;%f&quot;, bbox.miny());
+</I>&gt;<i>    p[&quot;loy&quot;]= ds;
+</I>&gt;<i>    sprintf(ds,&quot;%f&quot;, bbox.maxx());
+</I>&gt;<i>    p[&quot;hix&quot;]= ds;
+</I>&gt;<i>    sprintf(ds,&quot;%f&quot;, bbox.maxy());
+</I>&gt;<i>    p[&quot;hiy&quot;]= ds;
+</I>&gt;<i>
+</I>&gt;<i>    raster_l.set_datasource(datasource_cache::instance()-&gt;create(p));
+</I>&gt;<i>   }
+</I>&gt;<i>
+</I>&gt;<i>   // predicate to find_if - class &quot;find_layer_predicate&quot;
+</I>&gt;<i>   // with overloaded &quot;()&quot; operator - returns true,
+</I>&gt;<i>   // if layer.name() equals to string in predicate.cmp;
+</I>&gt;<i>
+</I>&gt;<i>   li = find_if( layers.begin(), layers.end(), flp );
+</I>&gt;<i>
+</I>&gt;<i>   if(li != layers.end()) {
+</I>&gt;<i>    *li = raster_l; // here we replace layer
+</I>&gt;<i>   } else { // we should insert raster element to right pos
+</I>&gt;<i>   std::string cp(&quot;coast-poly&quot;);
+</I>&gt;<i>
+</I>&gt;<i>   flp.cmp = cp; // replace search string to predicate
+</I>&gt;<i>
+</I>&gt;<i>   li = find_if(layers.begin(), layers.end(), flp );
+</I>&gt;<i>
+</I>&gt;<i>   if(li != layers.end()) { // here we insert hs layer
+</I>&gt;<i>    ++li;
+</I>&gt;<i>    std::cout &lt;&lt; &quot;Raster inserted before:&quot; &lt;&lt; li-&gt;name() &lt;&lt; std::endl;
+</I>&gt;<i>
+</I>&gt;<i>    layers.insert(li, raster_l);
+</I>&gt;<i>   } else {
+</I>&gt;<i>    std::cout &lt;&lt; &quot;WARNING: can't insert raster layer to style &quot;
+</I>&gt;<i>              &lt;&lt; pti-&gt;styleID &lt;&lt; std::endl;
+</I>&gt;<i>   }
+</I>&gt;<i>   }
+</I>&gt;<i>
+</I>&gt;<i>   //save_map(*map, &quot;/tmp/style.xml&quot;);
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+On Sat, Jan 24, 2009 at 12:33 PM, Artem Pavlenko &lt;
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik-consulting.com</A>&gt; wrote:
+
+&gt;<i> HI Oleg,
+</I>&gt;<i>
+</I>&gt;<i> Any chance you could post Python/C++ script you're using. It is
+</I>&gt;<i> difficult to see the problem otherwise.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i> 2009/1/23 Oleg Shaniuk &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">oshaniuk at cogniance.com</A>&gt;:
+</I>&gt;<i> &gt; Hi All,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; There is a problem with rendering map, using raster layer:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 1. I have rendered image fox lox,loy,hix,hiy via mapnik, using map with
+</I>&gt;<i> srs:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0
+</I>&gt;<i> &gt; +k=1.0 +units=m +nadgrids=@null +no_defs +over
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 2. I'm rendering new image in mapnik for the same lox,loy,hix,hiy and
+</I>&gt;<i> same
+</I>&gt;<i> &gt; size in pixels, adding a layer to style.xml:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &lt;Layer name=&quot;prerendered&quot; srs=&quot;+proj=merc +a=6378137 +b=6378137
+</I>&gt;<i> +lat_ts=0.0
+</I>&gt;<i> &gt; +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs
+</I>&gt;<i> +over&quot;
+</I>&gt;<i> &gt; status=&quot;1&quot; clear_label_cache=&quot;0&quot;&gt;
+</I>&gt;<i> &gt;   &lt;StyleName&gt;raster&lt;/StyleName&gt;
+</I>&gt;<i> &gt;   &lt;Datasource&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;file&quot;&gt;/mnt/var/img/test.tif&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;format&quot;&gt;tiff&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;hix&quot;&gt;117407.275446&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;hiy&quot;&gt;6770486.217388&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;lox&quot;&gt;78271.516964&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;loy&quot;&gt;6731350.458906&lt;/Parameter&gt;
+</I>&gt;<i> &gt;      &lt;Parameter name=&quot;type&quot;&gt;raster&lt;/Parameter&gt;
+</I>&gt;<i> &gt;   &lt;/Datasource&gt;
+</I>&gt;<i> &gt;   &lt;/Layer&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; as a result I'm getting image with prerendered image shifted up for some
+</I>&gt;<i> &gt; pixels (Only UP, North - I'm was playing with UK map)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; But, following the logic, these images should apply exactly one to one.
+</I>&gt;<i> &gt; Maybe someone face such problem before?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; RO
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; RO
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>
+
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090126/901eaea2/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090126/901eaea2/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000785.html">[Mapnik-devel] Using raster datasources
+</A></li>
+	<LI>Next message: <A HREF="000787.html">[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#786">[ date ]</a>
+              <a href="thread.html#786">[ thread ]</a>
+              <a href="subject.html#786">[ subject ]</a>
+              <a href="author.html#786">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

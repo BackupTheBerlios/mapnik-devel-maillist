@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Multiple placements for TextSymbolizer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3Cop.vk8p1fpwi35s77%40sl500.localnetwork%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001287.html">
+   <LINK REL="Next"  HREF="001281.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Multiple placements for TextSymbolizer</H1>
+    <B>Hermann Kraus</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3Cop.vk8p1fpwi35s77%40sl500.localnetwork%3E"
+       TITLE="[Mapnik-devel] Multiple placements for TextSymbolizer">herm at scribus.info
+       </A><BR>
+    <I>Wed Oct 27 17:16:17 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001287.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+        <LI>Next message: <A HREF="001281.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1280">[ date ]</a>
+              <a href="thread.html#1280">[ thread ]</a>
+              <a href="subject.html#1280">[ subject ]</a>
+              <a href="author.html#1280">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello!
+
+I'm working on adding multiple placements to TextSymbolizer and would like  
+to discuss the best way to do this.
+What I am trying to do is: When a label can't be placed at the intended  
+position other positions (or font sizes) are tried.
+
+Now the question is how to design the user interface (which might  
+influence the implementation):
+
+Option a)
+&lt;TextSymbolizer dx=&quot;...&quot; dy=&quot;...&quot; size=&quot;...&quot; fill=&quot;...&quot; ... &gt;
+     &lt;AlternatePlacement dx=&quot;...&quot; dy=&quot;...&quot; /&gt;
+     &lt;AlternatePlacement dx=&quot;...&quot; dy=&quot;...&quot; /&gt;
+     &lt;AlternatePlacement dx=&quot;...&quot; dy=&quot;...&quot; size=&quot;...&quot; /&gt;
+&lt;/TextSymbolizer&gt;
+The default values would stay in the TextSymbolizer tag but they could be  
+overriden by AlternatePlacement tags.
+
+Option b)
+&lt;TextSymbolizer fill=&quot;...&quot;&gt;
+     &lt;Placement dx=&quot;...&quot; dy=&quot;...&quot; size=&quot;...&quot; /&gt;
+     &lt;Placement dx=&quot;...&quot; dy=&quot;...&quot; size=&quot;...&quot; /&gt;
+     &lt;Placement dx=&quot;...&quot; dy=&quot;...&quot; size=&quot;...&quot; /&gt;
+&lt;/TextSymbolizer&gt;
+All placement values are specified in special Placement tags.
+
+Option c)
+Something completely different.
+
+For all options a simplified version could be added to automate generating  
+the list placement e.g. &lt;AutoPlacment dx=&quot;...&quot; dy=&quot;...&quot;  
+position=&quot;top,bottom,right,left&quot;&gt; which would change the sign of the dx,  
+dy values automatically.
+
+The next question is: Which options are needed. On my list are dx, dy,  
+size, wrap_width, character_spacing. But others might be useful too. It  
+might be possible to use the &quot;name&quot; field which would allow pulling a  
+short version of the string from the database. However this might be  
+difficult to implement.
+
+Thanks for your feedback.
+
+Hermann
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001287.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+	<LI>Next message: <A HREF="001281.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1280">[ date ]</a>
+              <a href="thread.html#1280">[ thread ]</a>
+              <a href="subject.html#1280">[ subject ]</a>
+              <a href="author.html#1280">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

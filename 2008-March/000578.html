@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Any advice on debugging placement_finder?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3CC3BBAF38-9344-4E80-A506-805EFE897B65%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000577.html">
+   <LINK REL="Next"  HREF="000579.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Any advice on debugging placement_finder?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3CC3BBAF38-9344-4E80-A506-805EFE897B65%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Any advice on debugging placement_finder?">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 27 22:00:15 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000577.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+        <LI>Next message: <A HREF="000579.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#578">[ date ]</a>
+              <a href="thread.html#578">[ thread ]</a>
+              <a href="subject.html#578">[ subject ]</a>
+              <a href="author.html#578">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 27 Mar 2008, at 20:17, Jon Burgess wrote:
+
+&gt;<i>
+</I>&gt;<i> On Thu, 2008-03-27 at 16:20 +0000, Artem Pavlenko wrote:
+</I>&gt;&gt;<i> So, which polygon is actually causing trouble ?
+</I>&gt;<i>
+</I>&gt;<i> It is definitely the relation 1432. I can reproduce the problem by
+</I>&gt;<i> downloading and importing the data for just this single relation:
+</I>&gt;<i>
+</I>&gt;<i> wget -O 1432.osm <A HREF="http://api.openstreetmap.org/api/0.5/relation/1432/">http://api.openstreetmap.org/api/0.5/relation/1432/</A> 
+</I>&gt;<i> full
+</I>&gt;<i> osm2pgsql -m 1432.osm
+</I>&gt;<i>
+</I>&gt;<i> I have attached the patch I used to show the 'NaN' output.
+</I>&gt;<i> Could you try applying this patch and see if you get valid co- 
+</I>&gt;<i> ordinates
+</I>&gt;<i> for all the vertexes in the path or some NaN?
+</I>&gt;<i>
+</I>
+Hmm..  all coordinates seems reasonable :
+
+   New glyphs: 12
+    prepare_glyph: N,-0.787987,-3.41014,-0.227086
+    pushed_glyph: 0 N,-0.787987,-3.41014,-0.227086
+    prepare_glyph: o,5.91171,-4.95599,-0.262601
+    pushed_glyph: 1 o,5.91171,-4.95599,-0.262601
+    prepare_glyph: o,11.706,-6.51355,-0.262601
+    pushed_glyph: 2 o,11.706,-6.51355,-0.262601
+    prepare_glyph: r,17.5003,-8.07111,-0.262601
+    pushed_glyph: 3 r,17.5003,-8.07111,-0.262601
+    prepare_glyph: d,21.3632,-9.10948,-0.262601
+    pushed_glyph: 4 d,21.3632,-9.10948,-0.262601
+    prepare_glyph:  ,29.9211,-10.255,0.558619
+    pushed_glyph: 5  ,29.9211,-10.255,0.558619
+    prepare_glyph: P,33.1735,-8.08002,0.821849
+    pushed_glyph: 6 P,33.1735,-8.08002,0.821849
+    prepare_glyph: a,37.2587,-3.68558,0.821849
+    pushed_glyph: 7 a,37.2587,-3.68558,0.821849
+    prepare_glyph: m,41.4913,0.877992,0.885965
+    pushed_glyph: 8 m,41.4913,0.877992,0.885965
+    prepare_glyph: p,44.6394,6.56656,0.0474596
+    pushed_glyph: 9 p,44.6394,6.56656,0.0474596
+    prepare_glyph: u,46.9688,10.4704,-1.60599
+    pushed_glyph: 10 u,46.9688,10.4704,-1.60599
+    prepare_glyph: s,47.2808,6.19535,-2.12582
+    pushed_glyph: 11 s,47.2808,6.19535,-2.12582
+    pulling_glyph: 0
+    pulling_glyph: 1
+    pulling_glyph: 2
+    pulling_glyph: 3
+    pulling_glyph: 4
+    pulling_glyph: 5
+    pulling_glyph: 6
+    pulling_glyph: 7
+    pulling_glyph: 8
+    pulling_glyph: 9
+    pulling_glyph: 10
+    pulling_glyph: 11
+end layer processing
+
+
+Do I need to zooming into particular box to get NaNs ?
+
+Artem
+
+
+&gt;<i> It seems that for me the freetype library stumbles on OK with the  
+</I>&gt;<i> first
+</I>&gt;<i> few NaN so it maybe it is just crunching random data. Maybe you are  
+</I>&gt;<i> just
+</I>&gt;<i> lucky that the NaN's in the path do not cause a lockup?
+</I>&gt;<i>
+</I>&gt;<i> I'll add some more debug into the maths used to generate the path.  
+</I>&gt;<i> I can
+</I>&gt;<i> see a few places where a NaN float could be generated.
+</I>
+
+
+&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &lt;debug-path.patch&gt;
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000577.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+	<LI>Next message: <A HREF="000579.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#578">[ date ]</a>
+              <a href="thread.html#578">[ thread ]</a>
+              <a href="subject.html#578">[ subject ]</a>
+              <a href="author.html#578">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

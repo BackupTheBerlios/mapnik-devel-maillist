@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Segmentation fault when running rundemo.py
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C348044D4-A35B-476E-BA13-D829A57E339A%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000498.html">
+   <LINK REL="Next"  HREF="000500.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Segmentation fault when running rundemo.py</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C348044D4-A35B-476E-BA13-D829A57E339A%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Segmentation fault when running rundemo.py">artem at mapnik.org
+       </A><BR>
+    <I>Sun Feb 24 11:33:02 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000498.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+        <LI>Next message: <A HREF="000500.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#499">[ date ]</a>
+              <a href="thread.html#499">[ thread ]</a>
+              <a href="subject.html#499">[ subject ]</a>
+              <a href="author.html#499">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 24 Feb 2008, at 10:12, Tom Hughes wrote:
+
+&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">92C7C869-3054-42D8-B7AE-FF064A39C3DD at mapnik.org</A>&gt;
+</I>&gt;<i>           Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 22 Feb 2008, at 21:37, Tom Hughes wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I just ran a test under valgrind with OSM data and all I found was
+</I>&gt;&gt;&gt;<i> this:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ==17947== Conditional jump or move depends on uninitialised value(s)
+</I>&gt;&gt;&gt;<i> ==17947==    at 0x4F5663C:
+</I>&gt;&gt;&gt;<i> mapnik::logical_and&lt;mapnik::feature&lt;mapnik::geometry&lt;mapnik::vertex&lt; 
+</I>&gt;&gt;&gt;<i> do
+</I>&gt;&gt;&gt;<i> uble, 2&gt; &gt;, boost::shared_ptr&lt;mapnik::raster&gt; &gt; &gt;::pass
+</I>&gt;&gt;&gt;<i> (mapnik::feature&lt;mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt;,
+</I>&gt;&gt;&gt;<i> boost::shared_ptr&lt;mapnik::raster&gt; &gt; const&amp;) const (logical.hpp:48)
+</I>&gt;&gt;&gt;<i> ==17947==    by 0x40DE29:
+</I>&gt;&gt;&gt;<i> mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32 
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> ::apply_to_layer(mapnik::Layer const&amp;,
+</I>&gt;&gt;&gt;<i> mapnik::agg_renderer&lt;mapnik::Image32&gt;&amp;, mapnik::projection const&amp;,
+</I>&gt;&gt;&gt;<i> double) (feature_style_processor.hpp:193)
+</I>&gt;&gt;&gt;<i> ==17947==    by 0x40E45C:
+</I>&gt;&gt;&gt;<i> mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32 
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i> ::apply() (feature_style_processor.hpp:92)
+</I>&gt;&gt;&gt;<i> ==17947==    by 0x408448: main (mapnik_test.cpp:105)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hmm.. looks like valgrind is compailing about lack of default ctor
+</I>&gt;&gt;<i> which shouldn't be a problem in this case.
+</I>&gt;<i>
+</I>&gt;<i> No - the problem (as you may have seen from my commit) was that
+</I>&gt;<i> if PostGIS returned null for an attribute then the plugin didn't
+</I>&gt;<i> noticed and decoded a buffer of undefined data into a &quot;value&quot; for
+</I>&gt;<i> the attribute.
+</I>&gt;<i>
+</I>&gt;<i> That undefinedness then propagated up through the expression
+</I>&gt;<i> until it hit the conditional in logical_and and triggered the
+</I>&gt;<i> complaint.
+</I>
+Yes, definitely bug. Thanks for the fix. I guess we were getting  
+quite a few of these (nulls) from OSM data.
+
+&gt;<i>
+</I>&gt;<i> Tom
+</I>&gt;<i>
+</I>Artem
+
+&gt;<i> -- 
+</I>&gt;<i> Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+</I>&gt;<i> <A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000498.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+	<LI>Next message: <A HREF="000500.html">[Mapnik-devel] Filter for Null columns in osm.xml?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#499">[ date ]</a>
+              <a href="thread.html#499">[ thread ]</a>
+              <a href="subject.html#499">[ subject ]</a>
+              <a href="author.html#499">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik stuck in recursive loop?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C4D020B3A-F6A5-419C-955A-E44086361F2E%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000163.html">
+   <LINK REL="Next"  HREF="000159.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik stuck in recursive loop?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C4D020B3A-F6A5-419C-955A-E44086361F2E%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik stuck in recursive loop?">artem at mapnik.org
+       </A><BR>
+    <I>Sat May 12 01:33:02 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000163.html">[Mapnik-devel] fix for fribidi problem with empty strings
+</A></li>
+        <LI>Next message: <A HREF="000159.html">[Mapnik-devel] (no subject)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#150">[ date ]</a>
+              <a href="thread.html#150">[ thread ]</a>
+              <a href="subject.html#150">[ subject ]</a>
+              <a href="author.html#150">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Jon,
+
+Yes, looks like a bug, I'll fix it asap.
+
+Cheers,
+Artem
+
+On 12 May 2007, at 00:05, Jon Burgess wrote:
+
+&gt;<i> On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+</I>&gt;&gt;<i> I've found that Mapnik is segfaulting while trying to render some OSM
+</I>&gt;&gt;<i> tiles with the latest planet dump. The stack trace has hundreds of
+</I>&gt;&gt;<i> frames which all look very similar - it looks to me like this  
+</I>&gt;&gt;<i> algorithm
+</I>&gt;&gt;<i> is stuck in a recursive loop and has overflowed the stack:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> (gdb) bt 10
+</I>&gt;&gt;<i> #0  0x00002aaab0c53ee0 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+</I>&gt;&gt;<i>     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+</I>&gt;&gt;<i> #1  0x00002aaab0c54302 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:179
+</I>&gt;&gt;<i> #2  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #3  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #4  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #5  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #6  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #7  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #8  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+</I>&gt;&gt;<i>     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/ 
+</I>&gt;&gt;<i> quad_tree.hpp:189
+</I>&gt;&gt;<i> #9  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;&gt;&gt;<i> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This happens when I do the following command with the latest
+</I>&gt;&gt;<i> planet.osm/osm2pgsql/mapnik/osm.xml
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ echo 10531 6454 14 | ./render_from_list.py
+</I>&gt;&gt;<i> 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+</I>&gt;&gt;<i> 35.639441068973944)
+</I>&gt;&gt;<i> Segmentation fault
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Looking at quad_tree.hpp do_insert_data(), it looks like it is  
+</I>&gt;<i> dividing
+</I>&gt;<i> up node* into smaller and smaller pieces until the box is no longer
+</I>&gt;<i> contained within the extent of a single child node. Unfortunately it
+</I>&gt;<i> seems that this recursion is unbounded if the box is of zero size,  
+</I>&gt;<i> which
+</I>&gt;<i> is in the case which causes the crash:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> (gdb) p box-&gt;minx_
+</I>&gt;<i> $8 = 421.98901139097484
+</I>&gt;<i> (gdb) p box-&gt;maxx_
+</I>&gt;<i> $9 = 421.98901139097484
+</I>&gt;<i> (gdb) p box-&gt;miny_
+</I>&gt;<i> $10 = 12.967983092237455
+</I>&gt;<i> (gdb) p box-&gt;maxy_
+</I>&gt;<i> $11 = 12.967983092237455
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> (gdb) p box
+</I>&gt;<i> $1 = (
+</I>&gt;<i>     const mapnik::Envelope&lt;double&gt; &amp;) @0x7fffaf6092c0:
+</I>&gt;<i> {&lt;boost::addable&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik:: 
+</I>&gt;<i> Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,  
+</I>&gt;<i> double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt;, boost::detail::empty_base,  
+</I>&gt;<i> boost::detail::true_t&gt;,boost::detail::empty_base,boost::detail::true_t 
+</I>&gt;<i> &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::addable1&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik: 
+</I>&gt;<i> :Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,  
+</I>&gt;<i> double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt;, boost::detail::empty_base,  
+</I>&gt;<i> boost::detail::true_t&gt; &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::subtractable&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapni 
+</I>&gt;<i> k::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt;  
+</I>&gt;<i> &gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; =  
+</I>&gt;<i> {&lt;boost::subtractable1&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapn 
+</I>&gt;<i> ik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt; &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::multipliabl 
+</I>&gt;<i> e2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;&gt;  
+</I>&gt;<i> =  
+</I>&gt;<i> {&lt;boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::detail:: 
+</I>&gt;<i> empty_base&gt;&gt; = {&lt;&gt; = {&lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No  
+</I>&gt;<i> data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data  
+</I>&gt;<i> fields&gt;}, &lt;No data fields&gt;}, minx_ = 421.98901139097484,
+</I>&gt;<i>   miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+</I>&gt;<i> 12.967983092237455}
+</I>&gt;<i> (gdb) p node_extent
+</I>&gt;<i> $2 = (
+</I>&gt;<i>     const mapnik::Envelope&lt;double&gt; &amp;) @0xbe8390:
+</I>&gt;<i> {&lt;boost::addable&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik:: 
+</I>&gt;<i> Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,  
+</I>&gt;<i> double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt;, boost::detail::empty_base,  
+</I>&gt;<i> boost::detail::true_t&gt;,boost::detail::empty_base,boost::detail::true_t 
+</I>&gt;<i> &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::addable1&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik: 
+</I>&gt;<i> :Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,  
+</I>&gt;<i> double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt;, boost::detail::empty_base,  
+</I>&gt;<i> boost::detail::true_t&gt; &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::subtractable&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapni 
+</I>&gt;<i> k::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt;  
+</I>&gt;<i> &gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; =  
+</I>&gt;<i> {&lt;boost::subtractable1&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapn 
+</I>&gt;<i> ik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double,  
+</I>&gt;<i> boost::detail::empty_base&gt; &gt; &gt;&gt; =  
+</I>&gt;<i> {&lt;boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::multipliabl 
+</I>&gt;<i> e2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;&gt;  
+</I>&gt;<i> =  
+</I>&gt;<i> {&lt;boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::detail:: 
+</I>&gt;<i> empty_base&gt;&gt; = {&lt;&gt; = {&lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No  
+</I>&gt;<i> data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data  
+</I>&gt;<i> fields&gt;}, &lt;No data fields&gt;}, minx_ = 421.98901139097478,
+</I>&gt;<i>   miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+</I>&gt;<i> 12.967983092237455}
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070512/107f3ca8/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070512/107f3ca8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000163.html">[Mapnik-devel] fix for fribidi problem with empty strings
+</A></li>
+	<LI>Next message: <A HREF="000159.html">[Mapnik-devel] (no subject)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#150">[ date ]</a>
+              <a href="thread.html#150">[ thread ]</a>
+              <a href="subject.html#150">[ subject ]</a>
+              <a href="author.html#150">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

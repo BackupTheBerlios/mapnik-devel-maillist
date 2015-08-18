@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik and reprojection of shapefiles
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C7254D22E-4223-4F35-9B41-5AC4C023BA27%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000247.html">
+   <LINK REL="Next"  HREF="000249.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik and reprojection of shapefiles</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C7254D22E-4223-4F35-9B41-5AC4C023BA27%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik and reprojection of shapefiles">artem at mapnik.org
+       </A><BR>
+    <I>Wed Sep 12 13:25:47 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000247.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+        <LI>Next message: <A HREF="000249.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#248">[ date ]</a>
+              <a href="thread.html#248">[ thread ]</a>
+              <a href="subject.html#248">[ subject ]</a>
+              <a href="author.html#248">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 12 Sep 2007, at 12:11, Jon Burgess wrote:
+
+&gt;<i> On 12/09/2007, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;&gt;<i> No, we cannot use world extent , many projections only work on a  
+</I>&gt;&gt;<i> small
+</I>&gt;&gt;<i> region i.e Transverse  Mercator (NatGrid, UTM). In fact Mercator  
+</I>&gt;&gt;<i> will choke
+</I>&gt;&gt;<i> on longitudes -90,90 .
+</I>
+
+I meant to say latitudes :D
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i> To solve this properly we need some way of querying every  
+</I>&gt;&gt;<i> projection for
+</I>&gt;&gt;<i> valid bounds. I couldn't see anything helpful in proj4. I might be  
+</I>&gt;&gt;<i> missing
+</I>&gt;&gt;<i> something.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm not convinced that projecting the extent is necessarily valid for
+</I>&gt;<i> some projections, i.e. the code assumes:
+</I>&gt;<i>
+</I>&gt;<i> extent(Project(shape)).minx == Project(extent(shape).minx)
+</I>&gt;<i> extent(Project(shape)).miny == Project(extent(shape).miny)
+</I>&gt;<i> etc.
+</I>&gt;<i>
+</I>&gt;<i> This may be true for some simple projections like latlong &amp; mercator
+</I>&gt;<i> where NS/EW are always at right angles but I imagine this rapid falls
+</I>&gt;<i> down when a rectangle bounding box becomes some curved shape in the
+</I>&gt;<i> other projection.
+</I>
+Yes, you're right.  Then the only reliable way would be to define  
+valid bounds in geographic (latlong) projection with WGS84 ellipsoid.
+This is a kind of master projection. All projection and datum  
+transforms go to/from WGS84.
+
+The problem is where to get this info ? I didn't see anything in  
+proj4. I'll look again. Or we can ask user to specify these bounds  
+with default  Envelope(-180,-90,180,90)  Thoughts?
+
+Artem
+
+
+&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i>     Jon
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/f59ce471/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/f59ce471/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000247.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+	<LI>Next message: <A HREF="000249.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#248">[ date ]</a>
+              <a href="thread.html#248">[ thread ]</a>
+              <a href="subject.html#248">[ subject ]</a>
+              <a href="author.html#248">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support project - Looking for someone	to test a script.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Looking%20for%20someone%0A%09to%20test%20a%20script.&In-Reply-To=%3CAANLkTimJlPafwjPPGm00IHPI5WM2XLM52rg1IdzgsWuh%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001195.html">
+   <LINK REL="Next"  HREF="001198.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support project - Looking for someone	to test a script.</H1>
+    <B>Carlos Enrique L&#243;pez Garc&#233;s</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Looking%20for%20someone%0A%09to%20test%20a%20script.&In-Reply-To=%3CAANLkTimJlPafwjPPGm00IHPI5WM2XLM52rg1IdzgsWuh%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Better Print Support project - Looking for someone	to test a script.">carlos.lopez.garces at gmail.com
+       </A><BR>
+    <I>Sat Jul 10 11:07:19 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001195.html">[Mapnik-devel] libosmscout
+</A></li>
+        <LI>Next message: <A HREF="001198.html">[Mapnik-devel] Better Print Support project - Looking for	someone to test a script.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1197">[ date ]</a>
+              <a href="thread.html#1197">[ thread ]</a>
+              <a href="subject.html#1197">[ subject ]</a>
+              <a href="author.html#1197">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello everybody,
+
+I just wanted to share a script that supports part of the work of this
+project.
+
+render_with_resolution.py is an experimental script with two purposes:
+
+&#8226; To define a possible interface to the resolution functionality of the
+mapnik_resolution branch.
+&#8226; To find the proper operations to obtain a scale factor that adjusts the
+size of lines and fonts given a resolution parameter.
+
+The idea behind this script is to produce an image that will fit a certain
+physical space. This physical space might be the size of the paper or PDF
+document (or a region of it) on which the image of the map is to be printed.
+Furthermore, a given PPI (pixels per inch) value is required to obtain a
+certain quality on the image. In reality, the script accepts one PPI value
+for the horizontal dimension and one for the vertical dimension.
+
+Given the PPI values and the desired physical space (measured in inches or
+millimeters), the script computes the size of the digital image in pixels
+(its resolution) using the following formula:
+
+    width of digital image = horizontal PPI x physical width of target space
+    height of digital image = vertical PPI x physical height of target space
+
+For example, if I want to print an image on a space of 13x8 inches at 300
+PPI, I would obtain a digital image of 3900x2400 pixels.
+
+Now, if I requested an image of this size, I would obtain a very large map
+with very tiny labels and thin lines. This is the problem we are trying to
+solve with the introduction of the scale factor. This scale factor will make
+sure that the width of lines and size of fonts grow/shrinks proportionally
+to the size of the image.
+
+The script calculates the scale factor as the quotient of the required PPI
+and a base PPI value. This base PPI value is calculated from another couple
+of values that have to be supplied by the user: The pixel width and height
+of the rendering device. The formula is as follows:
+
+    base horizontal PPI = 1/pixel width
+    base vertical PPI = 1/pixel height
+
+So if the supplied pixel size was 0.28x0.28mm (the OGC standard pixel size),
+we would have a base PPI value of approximately 90.1, both horizontally and
+vertically (convert the size of pixels in millimeters to inches first).
+
+As I said before, this base PPI value serves as a base from which to
+calculate the scale factor. The scale factor would be calculated this way:
+
+    horizontal scale factor = horizontal PPI / base horizontal PPI
+    vertical scale factor = vertical PPI / vertical horizontal PPI
+
+Right now, it doesn't make sense to have a scale factor for both dimensions.
+So, using the previous values, the scale factor would be 300/90.1 = 3.329.
+
+However, this scale factor is not large enough to make the lines and fonts
+look good in the 3900x2400 pixels image. To account for this, a larger pixel
+size would need to be supplied (to make the base PPI value smaller and hence
+the quotient of the required PPI and the former larger).
+
+I'm not completely sure if this is the correct way of calculating the scale
+factor, since the base resolution is quite dependent on the value of the
+supplied pixel size, which might be hard to get it right. Here's where I ask
+for your opinions and comments.
+
+I would also appreciate if someone could test the script. The steps you have
+to follow are:
+
+    1) Export the mapnik_resolution branch: svn export
+<A HREF="http://svn.mapnik.org/branches/mapnik_resolution">http://svn.mapnik.org/branches/mapnik_resolution</A>
+    2) Compile and install it.
+    3) Go to tests/scale_factor_calculator. This is the directory where the
+script lives. The script is called 'render_with_resolution'. Also, in this
+directory you'll find a copy of nik2img.py and its required dependencies.
+This is because the script calls it after calculating the image size and
+scale factor to actually render the image.
+    4) Generate an osm.xml stylesheet and upgrade it.
+    5) Run the script like this:
+
+python render_with_resolution.py styles/osm.xml images/image.png -b -0.02894
+51.48472 0.0002 51.4976 --width 13.3 --height 8.3 --dimension-units in
+--ppi-x 300 --ppi-y 300 --pixel-width 0.010466 --pixel-height 0.010466
+--pixel-size-units in
+
+Parameters:
+
+    --width: Width of the physical space that the map will cover (in inches
+or millimeters).
+    --height: Height of the physical space that the map will cover (in
+inches or millimeters).
+    --dimension-units: Units in which the previous two values are given (in
+or mm)
+    --ppi-x: Pixels per inch in the horizontal dimension.
+    --ppi-x: Pixels per inch in the vertical dimension.
+    --pixel-width: Width of pixels in inches or millimeters.
+    --pixel-height: Height of pixels in inches or millimeters.
+    --pixel-size-units: Units in which the previous two values are given (in
+or mm).
+
+Thanks in advance
+
+Carlos L&#243;pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/c83c661d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/c83c661d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001195.html">[Mapnik-devel] libosmscout
+</A></li>
+	<LI>Next message: <A HREF="001198.html">[Mapnik-devel] Better Print Support project - Looking for	someone to test a script.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1197">[ date ]</a>
+              <a href="thread.html#1197">[ thread ]</a>
+              <a href="subject.html#1197">[ subject ]</a>
+              <a href="author.html#1197">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

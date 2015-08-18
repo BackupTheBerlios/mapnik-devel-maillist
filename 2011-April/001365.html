@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%0A%092005&In-Reply-To=%3CBANLkTin1Ak-LaAh91pTi%2BUc8s6PKD2Ehpg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001364.html">
+   <LINK REL="Next"  HREF="001366.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cann%27t%20run%20mapnik%20rundemo.cpp%20on%20visual%20studio%0A%092005&In-Reply-To=%3CBANLkTin1Ak-LaAh91pTi%2BUc8s6PKD2Ehpg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Tue Apr  5 14:55:48 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001364.html">[Mapnik-devel] Mapnik 0.7.1 and Python 2.6.6 on Windows 7 64 bit
+</A></li>
+        <LI>Next message: <A HREF="001366.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1365">[ date ]</a>
+              <a href="thread.html#1365">[ thread ]</a>
+              <a href="subject.html#1365">[ subject ]</a>
+              <a href="author.html#1365">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The latest boost version doesn't work because it uses filesystem v3.
+In this version, there are no cast operators from filesystem::path to
+std::string. Either define a preprocessor token to use v2 (don't know
+which one, it's in the documentation); or use an earlier version (I
+think 1.44 is the latest that used v2 by default).
+
+
+cheers,
+
+roel
+
+
+On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt; wrote:
+&gt;<i> Thank you for your kind help.
+</I>&gt;<i>
+</I>&gt;<i> I download mapnik source from your link. I added all the libraries and
+</I>&gt;<i> create solution. I took boost-1.46.1.
+</I>&gt;<i> I tried to follow the link and made a visual studio 2005 project. Where I
+</I>&gt;<i> built it I found several error like these:
+</I>&gt;<i>
+</I>&gt;<i> 1&gt;d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+</I>&gt;<i> error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1 from
+</I>&gt;<i> 'boost::filesystem3::path' to 'const std::string &amp;'
+</I>&gt;<i> 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Reason: cannot convert from 'boost::filesystem3::path' to 'const
+</I>&gt;<i> std::string'
+</I>&gt;<i> 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; No user-defined-conversion operator available that can perform
+</I>&gt;<i> this conversion, or the operator cannot be called
+</I>&gt;<i> 1&gt;d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+</I>&gt;<i> error C2039: 'string' : is not a member of
+</I>&gt;<i> 'boost::filesystem3::directory_entry'
+</I>&gt;<i> 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+</I>&gt;<i> : see declaration of 'boost::filesystem3::directory_entry'
+</I>&gt;<i> 1&gt;d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+</I>&gt;<i> error C2228: left of '.c_str' must have class/struct/union
+</I>&gt;<i> 1&gt;d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+</I>&gt;<i> error C2039: 'string' : is not a member of
+</I>&gt;<i> 'boost::filesystem3::directory_entry'
+</I>&gt;<i> 1&gt;&#160;&#160;&#160;&#160;&#160;&#160;&#160; d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+</I>&gt;<i> : see declaration of 'boost::filesystem3::directory_entry'
+</I>&gt;<i> 1&gt;d:\mapnik by
+</I>&gt;<i> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+</I>&gt;<i> error C2228: left of '.c_str' must have class/struct/union
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">roel.vanhout at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I don't recommend trying to get it all to work with pre-build
+</I>&gt;&gt;<i> binaries. Most binaries you will find online of third-party libraries
+</I>&gt;&gt;<i> do not document with which flags they are build, or with which
+</I>&gt;&gt;<i> compiler etc; and if they use different flags, it won't work anyway.
+</I>&gt;&gt;<i> Although theoretically anything is possible, in practice you're not
+</I>&gt;&gt;<i> going to be able to get it to work (things like SECURE_CRT, which
+</I>&gt;&gt;<i> manifest to use, etc).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I documented how to build from source for all libraries on
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/wiki/BuildingOnWindows">http://trac.mapnik.org/wiki/BuildingOnWindows</A> . It's not for the faint
+</I>&gt;&gt;<i> of heart, especially some PITA libraries like icu and libtool. Also
+</I>&gt;&gt;<i> check my tickets in trac for some patches to make things build with
+</I>&gt;&gt;<i> MSVC. I only recommend spending time on it if you're already
+</I>&gt;&gt;<i> experienced with MSVC and troubleshooting building/linking issues with
+</I>&gt;&gt;<i> it.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> roel
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">rakib114 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> &gt; Hi,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I am new to mapnik. I successfully installed mapnik but I want it to
+</I>&gt;&gt;<i> &gt; visual
+</I>&gt;&gt;<i> &gt; studio 2005. So I tried to run the C++ demo on Visual studio project.
+</I>&gt;&gt;<i> &gt; What I
+</I>&gt;&gt;<i> &gt; did is as follows:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Installation:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I installed mapnik 0.7.1 with python 2.6 on Vista as per
+</I>&gt;&gt;<i> &gt; <A HREF="http://trac.mapnik.org/wiki/WindowsInstallation.">http://trac.mapnik.org/wiki/WindowsInstallation.</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I made a directory D:\mapnik installation for visual studio 2005 and
+</I>&gt;&gt;<i> &gt; copy
+</I>&gt;&gt;<i> &gt; mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+</I>&gt;&gt;<i> &gt; installation
+</I>&gt;&gt;<i> &gt; for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+</I>&gt;&gt;<i> &gt; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt; 2005\mapnik-0.7.1\python\2.6\site-packages
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Third party library:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 1.&#160;&#160;&#160;&#160;&#160;&#160;&#160; freetype-2.4.4
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 2.&#160;&#160;&#160;&#160;&#160;&#160;&#160; icu
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 3.&#160;&#160;&#160;&#160;&#160;&#160;&#160; libtool-1.5.26
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 4.&#160;&#160;&#160;&#160;&#160;&#160;&#160; boost_1_46_1
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Procedure:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 1.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I created a new Win32 Console Application named MapnikApp in
+</I>&gt;&gt;<i> &gt; the
+</I>&gt;&gt;<i> &gt; above directory.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 2.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I tried to run reundemo.cpp in mapnik-0.7.1. I copied the
+</I>&gt;&gt;<i> &gt; content
+</I>&gt;&gt;<i> &gt; of this file to our MapnikApp.cpp
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 3.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I included the following to
+</I>&gt;&gt;<i> &gt; Project-&gt;Properties-&gt;C/C++-&gt;General-&gt;Additional Include Directories.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt; 2005\mapnik-0.7.1\include
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio 2005\boost_1_46_1
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio 2005\icu\include
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt; 2005\libtool-1.5.26\include
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; D:\mapnik installation for visual studio
+</I>&gt;&gt;<i> &gt; 2005\freetype-2.4.4\include
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 4.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I added the associate lib directory to
+</I>&gt;&gt;<i> &gt; Project-&gt;Properties-&gt;Linker-&gt;General-&gt;Additional Library Directories
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 5.&#160;&#160;&#160;&#160;&#160;&#160;&#160; I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 6.&#160;&#160;&#160;&#160;&#160;&#160;&#160; After running the project (debug, win32) I got the following
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Unhandled exception at 0x1002cbe5
+</I>&gt;&gt;<i> &gt; (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading
+</I>&gt;&gt;<i> &gt; location
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;0xcccccccc.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; In Release Win32 I got the following.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; std::exception: vector&lt;T&gt; too long when it tried to
+</I>&gt;&gt;<i> &gt; execute
+</I>&gt;&gt;<i> &gt; m.insert_style.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; For simplicity I tried to run the following
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; Map m(800,600);
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; m.set_background(color_factory::from_string(&quot;white&quot;));
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; m.zoomToBox(Envelope&lt;double&gt;(1405120.04127408,-247003.813399447,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; 1706357.31328276,-25098.593149577));
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; Image32 buf(m.getWidth(),m.getHeight());
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; agg_renderer&lt;Image32&gt; ren(m,buf);
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160; ren.apply();
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#160;I got the following error.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; A buffer overrun has occurred in MapnikApp.exe which has corrupted the
+</I>&gt;&gt;<i> &gt; program's internal state. Press Break to debug the program or Continue
+</I>&gt;&gt;<i> &gt; to
+</I>&gt;&gt;<i> &gt; terminate the program.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I need help how to solve it.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; With best regards,
+</I>&gt;&gt;<i> &gt; Rakib
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; _______________________________________________
+</I>&gt;&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001364.html">[Mapnik-devel] Mapnik 0.7.1 and Python 2.6.6 on Windows 7 64 bit
+</A></li>
+	<LI>Next message: <A HREF="001366.html">[Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio	2005
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1365">[ date ]</a>
+              <a href="thread.html#1365">[ thread ]</a>
+              <a href="subject.html#1365">[ subject ]</a>
+              <a href="author.html#1365">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

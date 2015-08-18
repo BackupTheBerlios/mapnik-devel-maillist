@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%0A%20compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3CBLU0-SMTP74357EF0B5970E1AED8FC1CE950%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001225.html">
+   <LINK REL="Next"  HREF="001234.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow</H1>
+    <B>feverzsj</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%0A%20compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3CBLU0-SMTP74357EF0B5970E1AED8FC1CE950%40phx.gbl%3E"
+       TITLE="[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow">feverzsj at hotmail.com
+       </A><BR>
+    <I>Tue Aug 10 17:34:14 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001225.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+        <LI>Next message: <A HREF="001234.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1233">[ date ]</a>
+              <a href="thread.html#1233">[ thread ]</a>
+              <a href="subject.html#1233">[ subject ]</a>
+              <a href="author.html#1233">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane Springmeyer wrote:
+&gt;<i>
+</I>&gt;<i> zsj,
+</I>&gt;<i>
+</I>&gt;<i> Yes, Mapnik trunk uses boost::spirit, which takes an enormous amount of memory to compile grammers for.
+</I>hi, Dane
+Have to say compilation with boost::spirit for complex grammar is really painful. One of the author has suggested some guidelines here(<A HREF="http://boost-spirit.com/home/articles/doc-addendum/best-practices/">http://boost-spirit.com/home/articles/doc-addendum/best-practices/</A>), but seems not so helpful.
+Comparing to spirit::classic, the compilation time is much longer and memory usage is much higher.
+Furthermore, I think spirit::classic also has a handy character iterator facility. For example, an icu based iterator can accept any byte stream encoded in icu supported codepage, and feed ucs2 or ucs4 code to the spirit parser. That is much better than the current codepage namespace solution.
+
+
+&gt;<i>  I've never seen compile times over 25 minutes however, for the whole codebase. Normally I see 15-20 minute compile times on a machine with 2GB ram. It also makes sense that filter_factory.cpp takes a longer time to compile that other files at it pulls in #include &lt;mapnik/expression_grammar.hpp&gt; which is the file containing boost::spirit grammers.
+</I>&gt;<i>
+</I>&gt;<i> It sounds like msvc8 is much slower than g++ - have you tried compiling with mingw at all?
+</I>&gt;<i>
+</I>&gt;<i>  Dane
+</I>Switching to msvc9, compilation of mapnik took about 30 minutes. Seems 
+msvc9 is able to processes complex template more effectively. Compiling 
+with mingw3.81 from qt creator also took similar time. But the memory 
+usage is still very high.
+
+Regards, zsj
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001225.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+	<LI>Next message: <A HREF="001234.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1233">[ date ]</a>
+              <a href="thread.html#1233">[ thread ]</a>
+              <a href="subject.html#1233">[ subject ]</a>
+              <a href="author.html#1233">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Rendering problem when trying to use render() with	offset
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Rendering%20problem%20when%20trying%20to%20use%20render%28%29%20with%0A%09offset&In-Reply-To=%3C1200787360.32282.137.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000430.html">
+   <LINK REL="Next"  HREF="000432.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Rendering problem when trying to use render() with	offset</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Rendering%20problem%20when%20trying%20to%20use%20render%28%29%20with%0A%09offset&In-Reply-To=%3C1200787360.32282.137.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Rendering problem when trying to use render() with	offset">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sun Jan 20 01:02:40 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000430.html">[Mapnik-devel] [OSM-dev] relief madness
+</A></li>
+        <LI>Next message: <A HREF="000432.html">[Mapnik-devel] Rendering problem when trying to use render()	with offset
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#431">[ date ]</a>
+              <a href="thread.html#431">[ thread ]</a>
+              <a href="subject.html#431">[ subject ]</a>
+              <a href="author.html#431">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have been trying to make the OSM tile rendering process as efficient
+as possble and noticed that the Mapnik code allows an offset to be
+specified when rendering. I thought this might be a useful improvement
+to the piece of code which currently renders the tile as 512x512 and
+then cuts out the 256x256 square in the middle. 
+
+The old code:
+
+  im = Image(512, 512)
+  render(m, im)
+  view = im.view(128,128,256,256) # x,y,width,height
+  save_to_file(&quot;test_view.png&quot;,'png',view)
+
+Result: <A HREF="http://www.jburgess.uklinux.net/cut-tile/test_view.png">http://www.jburgess.uklinux.net/cut-tile/test_view.png</A> 
+
+
+New code:
+
+  im = Image(256, 256)
+  render(m, im, 128, 128)
+  save_to_file(&quot;test_offset.png&quot;,'png',im)
+
+Result: <A HREF="http://www.jburgess.uklinux.net/cut-tile/test_offset.png">http://www.jburgess.uklinux.net/cut-tile/test_offset.png</A>
+
+
+This seems to work fine for 99% of the map but you'll notice in the
+results above that text label is missing for the pub. Normally this
+would have extended beyond the edge of the tile but looks like it has
+been dropped. Is this to be expected?
+
+
+
+The full test code is at:
+<A HREF="http://www.jburgess.uklinux.net/cut-tile/test.py">http://www.jburgess.uklinux.net/cut-tile/test.py</A>
+
+The main OSM map uses the old code and looks OK:
+<A HREF="http://www.openstreetmap.org/?lat=50.753698&amp;lon=-1.530211&amp;zoom=18&amp;layers=B0FT">http://www.openstreetmap.org/?lat=50.753698&amp;lon=-1.530211&amp;zoom=18&amp;layers=B0FT</A>
+
+The pub has been in OSM for ages so if you've got a recent planet dump
+loaded already then you should need to update your data. If you want
+this small area then a file can be found here:
+<A HREF="http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm">http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm</A>
+
+	Jon
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000430.html">[Mapnik-devel] [OSM-dev] relief madness
+</A></li>
+	<LI>Next message: <A HREF="000432.html">[Mapnik-devel] Rendering problem when trying to use render()	with offset
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#431">[ date ]</a>
+              <a href="thread.html#431">[ thread ]</a>
+              <a href="subject.html#431">[ subject ]</a>
+              <a href="author.html#431">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

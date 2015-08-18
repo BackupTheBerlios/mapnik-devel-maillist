@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Is std::vector best for Layers in Map?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Is%20std%3A%3Avector%20best%20for%20Layers%20in%20Map%3F&In-Reply-To=%3C20070724232744.49c6bfa8%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000214.html">
+   <LINK REL="Next"  HREF="000210.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Is std::vector best for Layers in Map?</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Is%20std%3A%3Avector%20best%20for%20Layers%20in%20Map%3F&In-Reply-To=%3C20070724232744.49c6bfa8%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Is std::vector best for Layers in Map?">lists at brachttal.net
+       </A><BR>
+    <I>Tue Jul 24 23:27:44 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000214.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+        <LI>Next message: <A HREF="000210.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#208">[ date ]</a>
+              <a href="thread.html#208">[ thread ]</a>
+              <a href="subject.html#208">[ subject ]</a>
+              <a href="author.html#208">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+do you think std::vector is the best container for styles in a Map? Why
+not using a std::list? And I think we should provide some sort of swap()
+function to swap layer positions. And then add a second addLayer()
+function:
+
+int addLayer (const Layer&amp; l, int insert)
+{
+  // try to insert layer at position insert
+  // return real number of insert
+  // -&gt; if not possible (e.g. lesser number of layers) 
+  // then the caller has a number which layer to remove
+}
+
+Next a function
+
+bool removeLayer (std::string &amp;name)
+
+to remove a Layer if only it's name is know. Next I would change
+addLayer to control that only Layers with unique names could be added.
+
+What do you think?
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000214.html">[Mapnik-devel] segfault with mapnik
+</A></li>
+	<LI>Next message: <A HREF="000210.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#208">[ date ]</a>
+              <a href="thread.html#208">[ thread ]</a>
+              <a href="subject.html#208">[ subject ]</a>
+              <a href="author.html#208">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

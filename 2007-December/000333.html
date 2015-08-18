@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about Mapnik projections
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20Mapnik%20projections&In-Reply-To=%3C223020e60712060339w2ebf4e08qaecca675b3431b06%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000334.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about Mapnik projections</H1>
+    <B>Nick Black</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20Mapnik%20projections&In-Reply-To=%3C223020e60712060339w2ebf4e08qaecca675b3431b06%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about Mapnik projections">nickblack1 at gmail.com
+       </A><BR>
+    <I>Thu Dec  6 12:39:52 CET 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000334.html">[Mapnik-devel] Questions about Mapnik projections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#333">[ date ]</a>
+              <a href="thread.html#333">[ thread ]</a>
+              <a href="subject.html#333">[ subject ]</a>
+              <a href="author.html#333">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+In the mapnik config file we use for something like openstreetmap, we
+define the srs at different points:
+
+ &lt;Layer name=&quot;text&quot; status=&quot;on&quot; srs=&quot;+proj=merc +datum=WGS84  +k=1.0
++units=m +over +no_defs&quot;&gt;
+
+The postgis database holds the data in a mercator projection:
+
+ PROJCS[&quot;WGS 84 / World Mercator&quot;,GEOGCS[&quot;WGS
+84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS
+84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Mercator_1SP&quot;],PARAMETER[&quot;latitude_of_origin&quot;,0],PARAMETER[&quot;central_meridian&quot;,0],PARAMETER[&quot;scale_factor&quot;,1],PARAMETER[&quot;false_easting&quot;,0],PARAMETER[&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;3395&quot;]]
+
+|<i> +proj=merc +lon_0=0 +k=1.000000 +x_0=0 +y_0=0 +ellps=WGS84
+</I>+datum=WGS84 +units=m +no_defs
+
+
+So am I right in thinking that in this case Mapnik isn't reprojecting
+the data at all?
+
+If I wanted to render tiles for a local area in a different
+projection, would the best option be to change the srs string in the
+mapnik config file or to reproject the data inside postgis?  If I just
+change the srs string to something like
+
+ +proj=longlat +ellps=airy +no_defs
+
+for osgb, will mapnik reproject the tile I render to OSGB?
+
+Cheers,
+
+
+-- 
+Nick Black
+--------------------------------
+<A HREF="http://www.blacksworld.net">http://www.blacksworld.net</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000334.html">[Mapnik-devel] Questions about Mapnik projections
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#333">[ date ]</a>
+              <a href="thread.html#333">[ thread ]</a>
+              <a href="subject.html#333">[ subject ]</a>
+              <a href="author.html#333">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

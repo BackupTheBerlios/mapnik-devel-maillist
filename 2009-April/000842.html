@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python support with autotools
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20support%20with%20autotools&In-Reply-To=%3C20090405230851.31c103a9%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000837.html">
+   <LINK REL="Next"  HREF="000843.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python support with autotools</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20support%20with%20autotools&In-Reply-To=%3C20090405230851.31c103a9%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Python support with autotools">lists at brachttal.net
+       </A><BR>
+    <I>Sun Apr  5 23:08:51 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000837.html">[Mapnik-devel] [Announce] kismet input plugin available in SVN
+</A></li>
+        <LI>Next message: <A HREF="000843.html">[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#842">[ date ]</a>
+              <a href="thread.html#842">[ thread ]</a>
+              <a href="subject.html#842">[ subject ]</a>
+              <a href="author.html#842">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I've not much Python knowledge, but I added it to the build system to
+compile and install at least the same files as scons. If I install it
+to /usr then the mapnik import isn't found. But anyway I tried to run
+it local:
+
+export PYTHONPATH=/home/andreas/src/svn/mapnik/bindings/python/.libs:/home/andreas/src/svn/mapnik/bindings/python/mapnik:/home/andreas/src/svn/mapnik/bindings/python/
+
+&gt;<i> python rundemo.py 
+</I>
+The mapnik library and python bindings must have been compiled and installed successfully before running this script.
+
+Traceback (most recent call last):
+  File &quot;rundemo.py&quot;, line 27, in &lt;module&gt;
+    from mapnik import *
+  File &quot;/home/andreas/src/svn/mapnik/bindings/python/mapnik/__init__.py&quot;, line 54, in &lt;module&gt;
+    from _mapnik import *
+ImportError: /home/andreas/src/svn/mapnik/bindings/python/.libs/_mapnik.so:
+undefined symbol: _ZTIN5boost6python15instance_holderE
+
+
+But if I look into _mapnik.so:
+
+&gt;<i> nm _mapnik.so | grep _ZTIN5boost6python15instance_holderE
+</I>         U _ZTIN5boost6python15instance_holderE
+
+The symbol is defined in that library. It's the first time I create a python library.
+Could anyone please test it and tell me what's wrong. I'll fix then the build system.
+
+This is what I've installed with 'DESTDIR=/tmp/mapnik_install make install':
+
+<A HREF="http://tux-style.de/tmp/mapnik_install.tar.gz">http://tux-style.de/tmp/mapnik_install.tar.gz</A>
+
+Does it look good for you?
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000837.html">[Mapnik-devel] [Announce] kismet input plugin available in SVN
+</A></li>
+	<LI>Next message: <A HREF="000843.html">[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#842">[ date ]</a>
+              <a href="thread.html#842">[ thread ]</a>
+              <a href="subject.html#842">[ subject ]</a>
+              <a href="author.html#842">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

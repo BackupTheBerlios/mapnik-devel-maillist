@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Blending error (With Patch)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3C069E3F7D-2D06-44EA-87F7-697702D31CBC%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000404.html">
+   <LINK REL="Next"  HREF="000437.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Blending error (With Patch)</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3C069E3F7D-2D06-44EA-87F7-697702D31CBC%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Blending error (With Patch)">artem at mapnik.org
+       </A><BR>
+    <I>Fri Jan 11 11:02:53 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000404.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+        <LI>Next message: <A HREF="000437.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#410">[ date ]</a>
+              <a href="thread.html#410">[ thread ]</a>
+              <a href="subject.html#410">[ subject ]</a>
+              <a href="author.html#410">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dave,
+
+On 10 Jan 2008, at 01:20, David Leaver wrote:
+
+&gt;<i> One thing I've noticed is that if your map is rendered onto a fully  
+</I>&gt;<i> transparent background (alpha=0), it will still be blended to the  
+</I>&gt;<i> color components that are set in that layer.
+</I>&gt;<i> In comparison to any image editing software, this behavior is  
+</I>&gt;<i> incorrect.
+</I>&gt;<i> Investigating AGG usage, it looks like the wrong blending is being  
+</I>&gt;<i> used (pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+</I>&gt;<i>
+</I>&gt;<i> The attached image portrays this behavior.
+</I>&gt;<i> Column 1: background(0,0,0,0), first row is bad
+</I>&gt;<i> Column 2: background(255,255,255,0), second row is bad
+</I>&gt;<i> Column 3: with patch applied, all are good, any background with  
+</I>&gt;<i> alpha=0 gives the same output.
+</I>
+
+Yes, I can see the problem. I'll apply your patch as soon as I sync  
+my local copy of agg_renderer.cpp.
+Or, would you like svn write access?
+
+Thanks!
+Artem
+
+&gt;<i> Dave.
+</I>&gt;<i> Index: include/mapnik/agg_renderer.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/agg_renderer.hpp	(revision 587)
+</I>&gt;<i> +++ include/mapnik/agg_renderer.hpp	(working copy)
+</I>&gt;<i> @@ -89,7 +89,7 @@
+</I>&gt;<i>            unsigned width_;
+</I>&gt;<i>            unsigned height_;
+</I>&gt;<i>            agg::rendering_buffer buf_;
+</I>&gt;<i> -          agg::pixfmt_rgba32 pixf_;
+</I>&gt;<i> +          agg::pixfmt_rgba32_plain pixf_;
+</I>&gt;<i>            CoordTransform t_;
+</I>&gt;<i>            freetype_engine font_engine_;
+</I>&gt;<i>            face_manager&lt;freetype_engine&gt; font_manager_;
+</I>&gt;<i> Index: src/agg_renderer.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/agg_renderer.cpp	(revision 587)
+</I>&gt;<i> +++ src/agg_renderer.cpp	(working copy)
+</I>&gt;<i> @@ -160,7 +160,7 @@
+</I>&gt;<i>                                   proj_transform const&amp; prj_trans)
+</I>&gt;<i>     {
+</I>&gt;<i>        typedef  coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; ren_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt; ren_base;
+</I>&gt;<i>        typedef agg::renderer_scanline_aa_solid&lt;ren_base&gt; renderer;
+</I>&gt;<i>  	
+</I>&gt;<i>        Color const&amp; fill_ = sym.get_fill();
+</I>&gt;<i> @@ -203,7 +203,7 @@
+</I>&gt;<i>     {
+</I>&gt;<i>        typedef  coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i>        typedef  coord_transform3&lt;CoordTransform,geometry2d&gt;  
+</I>&gt;<i> path_type_roof;
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; ren_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt; ren_base;
+</I>&gt;<i>        typedef agg::renderer_scanline_aa_solid&lt;ren_base&gt; renderer;
+</I>&gt;<i>
+</I>&gt;<i>        ren_base renb(pixf_);
+</I>&gt;<i> @@ -306,7 +306,7 @@
+</I>&gt;<i>                                   Feature const&amp; feature,
+</I>&gt;<i>                                   proj_transform const&amp; prj_trans)
+</I>&gt;<i>     {
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; ren_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt; ren_base;
+</I>&gt;<i>        typedef coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i>        typedef agg::renderer_outline_aa&lt;ren_base&gt; renderer_oaa;
+</I>&gt;<i>        typedef agg::rasterizer_outline_aa&lt;renderer_oaa&gt;  
+</I>&gt;<i> rasterizer_outline_aa;
+</I>&gt;<i> @@ -496,7 +496,7 @@
+</I>&gt;<i>     {
+</I>&gt;<i>        typedef  coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i>        typedef  
+</I>&gt;<i> agg::line_image_pattern&lt;agg::pattern_filter_bilinear_rgba8&gt;  
+</I>&gt;<i> pattern_type;
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; renderer_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt;  
+</I>&gt;<i> renderer_base;
+</I>&gt;<i>        typedef agg::renderer_outline_image&lt;renderer_base,  
+</I>&gt;<i> pattern_type&gt; renderer_type;
+</I>&gt;<i>        typedef agg::rasterizer_outline_aa&lt;renderer_type&gt;  
+</I>&gt;<i> rasterizer_type;
+</I>&gt;<i>
+</I>&gt;<i> @@ -526,7 +526,7 @@
+</I>&gt;<i>                                   proj_transform const&amp; prj_trans)
+</I>&gt;<i>     {
+</I>&gt;<i>        typedef coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; ren_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt; ren_base;
+</I>&gt;<i>        typedef agg::wrap_mode_repeat wrap_x_type;
+</I>&gt;<i>        typedef agg::wrap_mode_repeat wrap_y_type;
+</I>&gt;<i>        typedef agg::pixfmt_alpha_blend_rgba&lt;agg::blender_rgba32,
+</I>&gt;<i> @@ -601,7 +601,7 @@
+</I>&gt;<i>                                   proj_transform const&amp; prj_trans)
+</I>&gt;<i>     {
+</I>&gt;<i>        typedef  coord_transform2&lt;CoordTransform,geometry2d&gt; path_type;
+</I>&gt;<i> -      typedef agg::renderer_base&lt;agg::pixfmt_rgba32&gt; ren_base;
+</I>&gt;<i> +      typedef agg::renderer_base&lt;agg::pixfmt_rgba32_plain&gt; ren_base;
+</I>&gt;<i>        typedef agg::renderer_scanline_aa_solid&lt;ren_base&gt; renderer;
+</I>&gt;<i>        arrow arrow_;
+</I>&gt;<i>        //double k = ::pow(1.2,  
+</I>&gt;<i> 0.7);&lt;blend_error.png&gt;_______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000404.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+	<LI>Next message: <A HREF="000437.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#410">[ date ]</a>
+              <a href="thread.html#410">[ thread ]</a>
+              <a href="subject.html#410">[ subject ]</a>
+              <a href="author.html#410">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

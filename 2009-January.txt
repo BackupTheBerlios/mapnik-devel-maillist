@@ -1,0 +1,937 @@
+From artem.mapnik at googlemail.com  Mon Jan  5 13:12:59 2009
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Mon, 5 Jan 2009 12:12:59 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <da9d28170901050353u1f7735f4w44234cd03c0cc103@mail.gmail.com>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+	<da9d28170901050353u1f7735f4w44234cd03c0cc103@mail.gmail.com>
+Message-ID: <1db3452c0901050412u7dc56e66r5cce0076b11399c1@mail.gmail.com>
+
+Hi Brian,I was about to contact you regarding the patch :)
+Thanks!
+Artem
+
+2009/1/5 Brian Quinion <openstreetmap at brian.quinion.co.uk>
+
+> Just realised that I didn't actually include the patch in my post!
+> Really attached this time...
+>
+> On Fri, Dec 26, 2008 at 1:43 AM, Brian Quinion
+> <openstreetmap at brian.quinion.co.uk> wrote:
+> > The attached patch allows symbols images to be merged using a variety
+> > of methods (hue, sat, lum, colourize, and combinations) it adds the
+> > following xml stylesheet option:
+> >
+> > composition_method="colorize"
+> >
+> > defaults to "copy".
+> >
+> > If anyone can think of a better name for this functionality let me
+> > know - I couldn't think of a good one!
+> >
+> > Also adds generic hsl2rgb and rgs2hsl used for the above functionality.
+> >
+> > Cheers,
+> > --
+> >  Brian
+> >
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090105/45add84e/attachment.html>
+
+From artem at mapnik.org  Thu Jan  8 12:29:47 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 8 Jan 2009 11:29:47 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+Message-ID: <421900FC-2919-4133-A031-3FA43F0B8519@mapnik.org>
+
+Hi Brian,
+
+Thanks for very much for your contribution!
+I'm looking at integrating compositing modes into Mapnik.  I've got  
+couple comments/questions regarding your patch.
+
+I'd like to understand more about individual modes and how they relate  
+to SVG spec (see below)
+
+#define COMPOSITION_METHOD_COPY 0
+#define COMPOSITION_METHOD_HUE 1
+#define COMPOSITION_METHOD_SAT 2
+#define COMPOSITION_METHOD_LUM 3
+#define COMPOSITION_METHOD_HUESAT 11
+#define COMPOSITION_METHOD_HUELUM 12
+#define COMPOSITION_METHOD_SATLUM 13
+#define COMPOSITION_METHOD_COLORIZE1 20
+#define COMPOSITION_METHOD_COLORIZE2 21
+#define COMPOSITION_METHOD_COLORIZE3 22
+
+Also, AGG library (which is used by mapnik) has compositing  
+implementation compatible with SVG 1.2 :
+
+   enum comp_op_e
+     {
+         comp_op_clear,         //----comp_op_clear
+         comp_op_src,           //----comp_op_src
+         comp_op_dst,           //----comp_op_dst
+         comp_op_src_over,      //----comp_op_src_over
+         comp_op_dst_over,      //----comp_op_dst_over
+         comp_op_src_in,        //----comp_op_src_in
+         comp_op_dst_in,        //----comp_op_dst_in
+         comp_op_src_out,       //----comp_op_src_out
+         comp_op_dst_out,       //----comp_op_dst_out
+         comp_op_src_atop,      //----comp_op_src_atop
+         comp_op_dst_atop,      //----comp_op_dst_atop
+         comp_op_xor,           //----comp_op_xor
+         comp_op_plus,          //----comp_op_plus
+         comp_op_minus,         //----comp_op_minus
+         comp_op_multiply,      //----comp_op_multiply
+         comp_op_screen,        //----comp_op_screen
+         comp_op_overlay,       //----comp_op_overlay
+         comp_op_darken,        //----comp_op_darken
+         comp_op_lighten,       //----comp_op_lighten
+         comp_op_color_dodge,   //----comp_op_color_dodge
+         comp_op_color_burn,    //----comp_op_color_burn
+         comp_op_hard_light,    //----comp_op_hard_light
+         comp_op_soft_light,    //----comp_op_soft_light
+         comp_op_difference,    //----comp_op_difference
+         comp_op_exclusion,     //----comp_op_exclusion
+         comp_op_contrast,      //----comp_op_contrast
+         comp_op_invert,        //----comp_op_invert
+         comp_op_invert_rgb,    //----comp_op_invert_rgb
+
+         end_of_comp_op_e
+     };
+
+I just wonder if perhaps using/extending AGG would be a better path  
+for adding compositing support in Mapnik?
+
+Thanks again!
+
+Artem
+
+
+On 26 Dec 2008, at 01:43, Brian Quinion wrote:
+
+> The attached patch allows symbols images to be merged using a variety
+> of methods (hue, sat, lum, colourize, and combinations) it adds the
+> following stylesheet option:
+>
+> composition_method="colorize"
+>
+> defaults to "copy".
+>
+> If anyone can think of a better name for this functionality let me
+> know - I couldn't think of a good one!
+>
+> Also adds generic hsl2rgb and rgs2hsl used for the above  
+> functionality.
+>
+> Cheers,
+> --
+> Brian
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From openstreetmap at brian.quinion.co.uk  Thu Jan  8 14:34:53 2009
+From: openstreetmap at brian.quinion.co.uk (Brian Quinion)
+Date: Thu, 8 Jan 2009 13:34:53 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <421900FC-2919-4133-A031-3FA43F0B8519@mapnik.org>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+	<421900FC-2919-4133-A031-3FA43F0B8519@mapnik.org>
+Message-ID: <da9d28170901080534l6424a657m1941737af7f6c10b@mail.gmail.com>
+
+Hi,
+
+> Thanks for very much for your contribution!
+> I'm looking at integrating compositing modes into Mapnik.  I've got couple
+> comments/questions regarding your patch.
+> I'd like to understand more about individual modes and how they relate to
+> SVG spec (see below)
+
+I seem to have missed quite a few options I could have taken advantage
+of.  Let me look into this and get back to you...
+
+--
+ Brian
+
+
+From artem.mapnik at googlemail.com  Tue Jan 13 00:14:43 2009
+From: artem.mapnik at googlemail.com (Artem Pavlenko)
+Date: Mon, 12 Jan 2009 23:14:43 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <1db3452c0901050412u7dc56e66r5cce0076b11399c1@mail.gmail.com>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+	<da9d28170901050353u1f7735f4w44234cd03c0cc103@mail.gmail.com>
+	<1db3452c0901050412u7dc56e66r5cce0076b11399c1@mail.gmail.com>
+Message-ID: <1db3452c0901121514y58092b04nb262158f20efb6e9@mail.gmail.com>
+
+Hi Brian,
+I started experimenting with compositing mode using AGG :
+http://trac.mapnik.org/wiki/Compositing
+
+I wonder if you had a chance to compare your implementation etc.
+
+Cheers
+Artem
+
+2009/1/5 Artem Pavlenko <artem.mapnik at googlemail.com>
+
+> Hi Brian,I was about to contact you regarding the patch :)
+> Thanks!
+> Artem
+>
+> 2009/1/5 Brian Quinion <openstreetmap at brian.quinion.co.uk>
+>
+> Just realised that I didn't actually include the patch in my post!
+>> Really attached this time...
+>>
+>> On Fri, Dec 26, 2008 at 1:43 AM, Brian Quinion
+>> <openstreetmap at brian.quinion.co.uk> wrote:
+>> > The attached patch allows symbols images to be merged using a variety
+>> > of methods (hue, sat, lum, colourize, and combinations) it adds the
+>> > following xml stylesheet option:
+>> >
+>> > composition_method="colorize"
+>> >
+>> > defaults to "copy".
+>> >
+>> > If anyone can think of a better name for this functionality let me
+>> > know - I couldn't think of a good one!
+>> >
+>> > Also adds generic hsl2rgb and rgs2hsl used for the above functionality.
+>> >
+>> > Cheers,
+>> > --
+>> >  Brian
+>> >
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090112/ab7dd7db/attachment.html>
+
+From openstreetmap at brian.quinion.co.uk  Tue Jan 13 00:30:56 2009
+From: openstreetmap at brian.quinion.co.uk (Brian Quinion)
+Date: Mon, 12 Jan 2009 23:30:56 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <1db3452c0901121514y58092b04nb262158f20efb6e9@mail.gmail.com>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+	<da9d28170901050353u1f7735f4w44234cd03c0cc103@mail.gmail.com>
+	<1db3452c0901050412u7dc56e66r5cce0076b11399c1@mail.gmail.com>
+	<1db3452c0901121514y58092b04nb262158f20efb6e9@mail.gmail.com>
+Message-ID: <da9d28170901121530w78aa4e2fu903e238b1ca20fbc@mail.gmail.com>
+
+On Mon, Jan 12, 2009 at 11:14 PM, Artem Pavlenko
+<artem.mapnik at googlemail.com> wrote:
+> Hi Brian,
+> I started experimenting with compositing mode using AGG
+> : http://trac.mapnik.org/wiki/Compositing
+> I wonder if you had a chance to compare your implementation etc.
+
+Like your test case :-)
+
+I got part way through writing a reply and got interrupted never to
+return... anyway:
+
+> Also, AGG library (which is used by mapnik) has compositing implementation
+> compatible with SVG 1.2 :
+
+I've had a look through and I think the that only one that has a
+direct equivalent is COMPOSITION_METHOD_COPY which is effectively
+comp_op_src_over.  All the methods I've defined are performed in the
+hsl colour domain which gives them at least subtlety different results
+however COMPOSITION_METHOD_COLORIZE3 is nearly comp_op_multiply and
+COMPOSITION_METHOD_COLORIZE1 is nearly comp_op_darken (Colour burn)
+and I think for most practical purposes they will produce similar
+enough results.
+
+None of the others seems to have a direct equivalent but half of them
+where included for completeness.  HUE, SAT & LUM are probably the only
+real losses.
+
+> I just wonder if perhaps using/extending AGG would be a better path for
+> adding compositing support in Mapnik?
+
+I can see the point but I tend to get lost in the agg templates - I
+started to try to work out what was required which is what delayed my
+reply!
+
+However given what you've already done with your samples I'm guessing
+I'll be able to extend it from there.  If you commit the code so far I
+can re-write my patch to extend agg instead.  I've no idea if they
+will want it upsteam - after all there will be no direct equivalent in
+SVG.
+
+--
+ Brian
+
+
+From artem at mapnik-consulting.com  Tue Jan 13 00:53:09 2009
+From: artem at mapnik-consulting.com (Artem Pavlenko)
+Date: Mon, 12 Jan 2009 23:53:09 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+In-Reply-To: <da9d28170901121530w78aa4e2fu903e238b1ca20fbc@mail.gmail.com>
+References: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+	<da9d28170901050353u1f7735f4w44234cd03c0cc103@mail.gmail.com>
+	<1db3452c0901050412u7dc56e66r5cce0076b11399c1@mail.gmail.com>
+	<1db3452c0901121514y58092b04nb262158f20efb6e9@mail.gmail.com>
+	<da9d28170901121530w78aa4e2fu903e238b1ca20fbc@mail.gmail.com>
+Message-ID: <7e70f38d0901121553j6d2276bas73dd3ed9a3ae7ca@mail.gmail.com>
+
+2009/1/12 Brian Quinion <openstreetmap at brian.quinion.co.uk>
+
+> On Mon, Jan 12, 2009 at 11:14 PM, Artem Pavlenko
+> <artem.mapnik at googlemail.com> wrote:
+> > Hi Brian,
+> > I started experimenting with compositing mode using AGG
+> > : http://trac.mapnik.org/wiki/Compositing
+> > I wonder if you had a chance to compare your implementation etc.
+>
+> Like your test case :-)
+>
+> I got part way through writing a reply and got interrupted never to
+> return... anyway:
+>
+> > Also, AGG library (which is used by mapnik) has compositing
+> implementation
+> > compatible with SVG 1.2 :
+>
+> I've had a look through and I think the that only one that has a
+> direct equivalent is COMPOSITION_METHOD_COPY which is effectively
+> comp_op_src_over.  All the methods I've defined are performed in the
+> hsl colour domain which gives them at least subtlety different results
+> however COMPOSITION_METHOD_COLORIZE3 is nearly comp_op_multiply and
+> COMPOSITION_METHOD_COLORIZE1 is nearly comp_op_darken (Colour burn)
+> and I think for most practical purposes they will produce similar
+> enough results.
+>
+> None of the others seems to have a direct equivalent but half of them
+> where included for completeness.  HUE, SAT & LUM are probably the only
+> real losses.
+>
+> > I just wonder if perhaps using/extending AGG would be a better path for
+> > adding compositing support in Mapnik?
+>
+> I can see the point but I tend to get lost in the agg templates - I
+> started to try to work out what was required which is what delayed my
+> reply!
+>
+
+Yes, AGG is not easy to navigate sometimes.
+
+>
+> However given what you've already done with your samples I'm guessing
+> I'll be able to extend it from there.  If you commit the code so far I
+> can re-write my patch to extend agg instead.  I've no idea if they
+> will want it upsteam - after all there will be no direct equivalent in
+> SVG.
+
+
+It would be great to integrate H, S, L modes (and more!). Eventually, I'd
+like to support compositing modes for all symbolizers.
+
+So far I just using following simple program for testing.
+
+/*****************************************************************************
+ *
+ * This file is part of Mapnik (c++ mapping toolkit)
+ *
+ * Copyright (C) 2009 Artem Pavlenko
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
+ USA
+ *
+ *****************************************************************************/
+//$Id$
+#include <mapnik/graphics.hpp>
+#include <mapnik/image_reader.hpp>
+#include <mapnik/image_data.hpp>
+#include <mapnik/image_util.hpp>
+#include <mapnik/graphics.hpp>
+
+#include "agg_rendering_buffer.h"
+#include "agg_rasterizer_scanline_aa.h"
+#include "agg_scanline_u.h"
+#include "agg_renderer_scanline.h"
+#include "agg_pixfmt_rgba.h"
+
+#include <iostream>
+
+int main (int argc, char** argv)
+{
+   using namespace mapnik;
+
+   typedef agg::rgba8 color;
+   typedef agg::order_bgra order;
+   typedef agg::pixel32_type pixel_type;
+   typedef agg::comp_op_adaptor_rgba<color, order> blender_type;
+   typedef agg::pixfmt_custom_blend_rgba<blender_type,
+agg::rendering_buffer> pixfmt_type;
+   typedef agg::renderer_base<pixfmt_type> renderer_type;
+
+   typedef agg::comp_op_adaptor_rgba<color, order> blender_type;
+
+   std::cout << " Compositing modes demo ...\n";
+
+   Image32 overlay(442,295);
+
+get_image_reader("/Users/artem/Desktop/overlay.png","png")->read(0,0,overlay.data());
+
+   std::auto_ptr<ImageReader>
+reader(get_image_reader("/Users/artem/Desktop/map.png","png"));
+   if (reader.get())
+   {
+      unsigned width  = reader->width();
+      unsigned height = reader->height();
+      Image32 image(width,height);
+      reader->read(0,0,image.data());
+
+      agg::rendering_buffer source(image.raw_data(),width,height, width *
+4);
+      agg::rendering_buffer
+mask(overlay.raw_data(),overlay.width(),overlay.height(), overlay.width() *
+4);
+      //agg::pixfmt_rgba32_plain pixf(source);
+      agg::pixfmt_custom_blend_rgba<blender_type, agg::rendering_buffer>
+pixf(source);
+      agg::pixfmt_custom_blend_rgba<blender_type, agg::rendering_buffer>
+pixf2(mask);
+      typedef agg::renderer_base<pixfmt_type> renderer_type;
+
+      pixf.comp_op(agg::comp_op_contrast);
+      //pixf.comp_op(agg::comp_op_invert_rgb);
+
+      renderer_type ren(pixf);
+      agg::renderer_base<pixfmt_type> rb(pixf);
+
+      rb.blend_from(pixf2,0,35,100);
+         //image.set_rectangle_alpha2(overlay,35,100,0.5);
+
+
+      save_to_file(image,
+"/Users/artem/Desktop/compositing/contrast.png","png");
+
+   }
+   return EXIT_SUCCESS;
+}
+
+
+
+
+>
+> --
+>  Brian
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090112/549beb0d/attachment.html>
+
+From blake at hailmail.net  Wed Jan 14 16:45:42 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 14 Jan 2009 07:45:42 -0800
+Subject: [Mapnik-devel] Next Mapnik release: 0.6.x series!
+Message-ID: <637476B3-C519-49BC-B6DC-38973D3A864B@hailmail.net>
+
+Mapnik-dev,
+
+Based on discussion in #mapnik IRC on freenode.net, we've decided that  
+our next release target is 0.6.0, given the major enhancements to the  
+codebase including ICU (Unicode) and Cairo support as well as distinct  
+improvements to the Scons build system and the methods available in  
+the python bindings.
+
+Artem has been busy making commits and closing tickets towards this  
+goal. Many recent patches have now landed in trunk, including those  
+from Jon Burgess (numerous), Robert Coup (PostGIS Optimizations),  
+Justin Bronn (Scons build), and Leslie Wu (Memory Datasource).
+
+I have been organizing and sorting all Trac tickets for the 0.6.0  
+milestone:
+http://tinyurl.com/0-6-milestone-priorities
+
+Here's what you can do:
+
+  - If you have any outstanding patches, please post them to Trac  
+__now__.
+  - If you have any opinions/thoughts on the existing tickets against  
+the 0.6.0 milestone, please comment on them.
+  - If you have yet to contribute to Mapnik, considering finding a  
+ticket, noting in the comments you are going to work on it, and  
+starting to work.
+
+We've got 38 Active Tickets slated for the 0.6.0 milestone, and as we  
+close or defer those remaining tickets in the following weeks I hope  
+to set a formal release schedule.
+
+Thanks!
+
+Dane
+
+
+
+From panbin at cad.zju.edu.cn  Thu Jan 15 12:25:37 2009
+From: panbin at cad.zju.edu.cn (=?gb2312?B?xcux8w==?=)
+Date: Thu, 15 Jan 2009 19:25:37 +0800
+Subject: [Mapnik-devel] How can I align the street name with the street
+	direction?
+Message-ID: <9964201217B74294B7F58B7261C1F000@200812220954>
+
+Deal all, 
+     I'm freshman to the mapnik, how can I make the street name on the map align with the street? here is my map,
+the names all cross the line? Another question is how to write Chinese character on the map?
+
+Thanks
+Best regards!
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090115/7069cd37/attachment.html>
+
+From oshaniuk at cogniance.com  Fri Jan 23 15:06:27 2009
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Fri, 23 Jan 2009 16:06:27 +0200
+Subject: [Mapnik-devel] Using raster datasources
+Message-ID: <b658f7060901230606g6b3b31b9qb4f7d60f41e13d7a@mail.gmail.com>
+
+Hi All,
+
+There is a problem with rendering map, using raster layer:
+
+1. I have rendered image fox lox,loy,hix,hiy via mapnik, using map with srs:
+
++proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0
++k=1.0 +units=m +nadgrids=@null +no_defs +over
+
+2. I'm rendering new image in mapnik for the same lox,loy,hix,hiy and same
+size in pixels, adding a layer to style.xml:
+
+<Layer name="prerendered" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0
++lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over"
+status="1" clear_label_cache="0">
+  <StyleName>raster</StyleName>
+  <Datasource>
+     <Parameter name="file">/mnt/var/img/test.tif</Parameter>
+     <Parameter name="format">tiff</Parameter>
+     <Parameter name="hix">117407.275446</Parameter>
+     <Parameter name="hiy">6770486.217388</Parameter>
+     <Parameter name="lox">78271.516964</Parameter>
+     <Parameter name="loy">6731350.458906</Parameter>
+     <Parameter name="type">raster</Parameter>
+  </Datasource>
+  </Layer>
+
+as a result I'm getting image with prerendered image shifted up for some
+pixels (Only UP, North - I'm was playing with UK map)
+
+But, following the logic, these images should apply exactly one to one.
+Maybe someone face such problem before?
+
+--
+
+RO
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090123/cd926b6c/attachment.html>
+
+From artem at mapnik-consulting.com  Sat Jan 24 11:33:08 2009
+From: artem at mapnik-consulting.com (Artem Pavlenko)
+Date: Sat, 24 Jan 2009 10:33:08 +0000
+Subject: [Mapnik-devel] Using raster datasources
+In-Reply-To: <b658f7060901230606g6b3b31b9qb4f7d60f41e13d7a@mail.gmail.com>
+References: <b658f7060901230606g6b3b31b9qb4f7d60f41e13d7a@mail.gmail.com>
+Message-ID: <7e70f38d0901240233q338cc0c2y47f7b0f728ac42ac@mail.gmail.com>
+
+HI Oleg,
+
+Any chance you could post Python/C++ script you're using. It is
+difficult to see the problem otherwise.
+
+Regards,
+Artem
+
+2009/1/23 Oleg Shaniuk <oshaniuk at cogniance.com>:
+> Hi All,
+>
+> There is a problem with rendering map, using raster layer:
+>
+> 1. I have rendered image fox lox,loy,hix,hiy via mapnik, using map with srs:
+>
+> +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0
+> +k=1.0 +units=m +nadgrids=@null +no_defs +over
+>
+> 2. I'm rendering new image in mapnik for the same lox,loy,hix,hiy and same
+> size in pixels, adding a layer to style.xml:
+>
+> <Layer name="prerendered" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0
+> +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over"
+> status="1" clear_label_cache="0">
+>   <StyleName>raster</StyleName>
+>   <Datasource>
+>      <Parameter name="file">/mnt/var/img/test.tif</Parameter>
+>      <Parameter name="format">tiff</Parameter>
+>      <Parameter name="hix">117407.275446</Parameter>
+>      <Parameter name="hiy">6770486.217388</Parameter>
+>      <Parameter name="lox">78271.516964</Parameter>
+>      <Parameter name="loy">6731350.458906</Parameter>
+>      <Parameter name="type">raster</Parameter>
+>   </Datasource>
+>   </Layer>
+>
+> as a result I'm getting image with prerendered image shifted up for some
+> pixels (Only UP, North - I'm was playing with UK map)
+>
+> But, following the logic, these images should apply exactly one to one.
+> Maybe someone face such problem before?
+>
+> --
+>
+> RO
+>
+> --
+>
+> --
+> RO
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From oshaniuk at cogniance.com  Mon Jan 26 11:10:55 2009
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Mon, 26 Jan 2009 12:10:55 +0200
+Subject: [Mapnik-devel] Using raster datasources
+In-Reply-To: <7e70f38d0901240233q338cc0c2y47f7b0f728ac42ac@mail.gmail.com>
+References: <b658f7060901230606g6b3b31b9qb4f7d60f41e13d7a@mail.gmail.com>
+	<7e70f38d0901240233q338cc0c2y47f7b0f728ac42ac@mail.gmail.com>
+Message-ID: <b658f7060901260210h1bab8b1ar1db7877da2f519ed@mail.gmail.com>
+
+Ok, here is some parts of code:
+
+Notes:
+
+code c++
+
+size (in pixels) of raster image is the same, as size of image being
+rendered
+
+and raster was rendered for the same bbox( doesn't matter since we setting
+this
+
+bbox for raster and map at once, so, I can't get why raster is shifted up -
+so it doesn't
+
+cover resulting image.
+
+The projection for raster layer is the same, as for Map:
+
+Layer raster_l(hs, map->srs() );
+
+Ok, here is code below:
+
+> rendering{
+>
+> ....
+>
+> Envelope<double> bbox(p0x, p0y, p1x,p1y);
+>
+> // pti - structure containing info to build valid path to a valid raster
+> file
+> update_raster(pti,map,bbox);
+>
+> map->resize(size, size);
+> map->zoomToBox(bbox);
+>
+> Image32 img = Image32(size, size);
+>
+> agg_renderer<Image32> ren = new agg_renderer<Image32>(map,img);
+>
+> ren->apply();
+>
+> ...
+>
+> }
+>
+> void update_raster( struct tileinfo* pti, Map& map,Envelope<double>& bbox)
+> {
+>   char rampname[PATH_MAX];
+>   struct stat s;
+>
+>   tileinfo_to_ramp(rampname,PATH_MAX, pti);
+>
+>   if(stat(rampname, &s)) {
+>       sprintf(rampname,"/mnt/var/raster/defaultramp.tif");
+>   }
+>
+>
+>   // 1. cycle styles to ensure - no other layer "raster" is included
+>   // 2. insert new raster with valid tiff
+>
+>   std::vector<Layer>& layers = map->layers();
+>   std::vector<Layer>::iterator li;
+>
+>   std::string raster("raster");
+>
+
+  // desciption of this class a bit below
+>   find_layer_predicate flp(raster);
+>
+>   Layer raster_l(hs, map->srs() );
+>
+>   raster_l.add_style(raster);
+>
+>   char ds[64];
+>
+>   { // set up datasource
+>    parameters p;
+>    p["type"]=raster.c_str();
+>    p["file"]=rampname;
+>    p["format"]="tiff";
+>    sprintf(ds,"%f", bbox.minx());
+>    p["lox"]= ds;
+>    sprintf(ds,"%f", bbox.miny());
+>    p["loy"]= ds;
+>    sprintf(ds,"%f", bbox.maxx());
+>    p["hix"]= ds;
+>    sprintf(ds,"%f", bbox.maxy());
+>    p["hiy"]= ds;
+>
+>    raster_l.set_datasource(datasource_cache::instance()->create(p));
+>   }
+>
+>   // predicate to find_if - class "find_layer_predicate"
+>   // with overloaded "()" operator - returns true,
+>   // if layer.name() equals to string in predicate.cmp;
+>
+>   li = find_if( layers.begin(), layers.end(), flp );
+>
+>   if(li != layers.end()) {
+>    *li = raster_l; // here we replace layer
+>   } else { // we should insert raster element to right pos
+>   std::string cp("coast-poly");
+>
+>   flp.cmp = cp; // replace search string to predicate
+>
+>   li = find_if(layers.begin(), layers.end(), flp );
+>
+>   if(li != layers.end()) { // here we insert hs layer
+>    ++li;
+>    std::cout << "Raster inserted before:" << li->name() << std::endl;
+>
+>    layers.insert(li, raster_l);
+>   } else {
+>    std::cout << "WARNING: can't insert raster layer to style "
+>              << pti->styleID << std::endl;
+>   }
+>   }
+>
+>   //save_map(*map, "/tmp/style.xml");
+> }
+>
+>
+
+On Sat, Jan 24, 2009 at 12:33 PM, Artem Pavlenko <
+artem at mapnik-consulting.com> wrote:
+
+> HI Oleg,
+>
+> Any chance you could post Python/C++ script you're using. It is
+> difficult to see the problem otherwise.
+>
+> Regards,
+> Artem
+>
+> 2009/1/23 Oleg Shaniuk <oshaniuk at cogniance.com>:
+> > Hi All,
+> >
+> > There is a problem with rendering map, using raster layer:
+> >
+> > 1. I have rendered image fox lox,loy,hix,hiy via mapnik, using map with
+> srs:
+> >
+> > +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0
+> > +k=1.0 +units=m +nadgrids=@null +no_defs +over
+> >
+> > 2. I'm rendering new image in mapnik for the same lox,loy,hix,hiy and
+> same
+> > size in pixels, adding a layer to style.xml:
+> >
+> > <Layer name="prerendered" srs="+proj=merc +a=6378137 +b=6378137
+> +lat_ts=0.0
+> > +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs
+> +over"
+> > status="1" clear_label_cache="0">
+> >   <StyleName>raster</StyleName>
+> >   <Datasource>
+> >      <Parameter name="file">/mnt/var/img/test.tif</Parameter>
+> >      <Parameter name="format">tiff</Parameter>
+> >      <Parameter name="hix">117407.275446</Parameter>
+> >      <Parameter name="hiy">6770486.217388</Parameter>
+> >      <Parameter name="lox">78271.516964</Parameter>
+> >      <Parameter name="loy">6731350.458906</Parameter>
+> >      <Parameter name="type">raster</Parameter>
+> >   </Datasource>
+> >   </Layer>
+> >
+> > as a result I'm getting image with prerendered image shifted up for some
+> > pixels (Only UP, North - I'm was playing with UK map)
+> >
+> > But, following the logic, these images should apply exactly one to one.
+> > Maybe someone face such problem before?
+> >
+> > --
+> >
+> > RO
+> >
+> > --
+> >
+> > --
+> > RO
+> >
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> >
+>
+
+
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090126/901eaea2/attachment.html>
+
+From kunitoki at gmail.com  Tue Jan 27 15:54:54 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Tue, 27 Jan 2009 15:54:54 +0100
+Subject: [Mapnik-devel] initial OGR support,
+	needs testing and happy coders to improve 	support
+Message-ID: <93db2faf0901270654w141c1131x1b87f218988811d7@mail.gmail.com>
+
+hi to all
+i'm new to mapnik and i need some hard coder to check out an input plugin, i
+wrote the ogr (feature) plugin and i need someone to test it.
+i've started implementing this 1 hour ago off my head, and i'll probably
+made some mistakes but sure it could be useful as starting point.
+
+i cannot test right now cause i'm having some problems when running my scons
+compiled version of mapnik:
+
+    http://pastebin.com/m202ba10b
+
+(using my distro packages works as expected but compiling by hand is doing
+this, and my python is 2.5.2 only... no others).
+
+anyway i'll apreciate any ideas and fix to my code (probably things can be
+done clearer too), especially i don't know if the ogr_features
+conversion from ogr (unsigned char* WKB) to mapnik (char* WKB) is correct.
+
+cheers
+
+Lucio Asnaghi
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ogr_input_plugin.tar.gz
+Type: application/x-gzip
+Size: 10876 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.bin>
+
+From blake at hailmail.net  Wed Jan 28 21:51:45 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 28 Jan 2009 12:51:45 -0800
+Subject: [Mapnik-devel] initial OGR support,
+	needs testing and happy coders to improve 	support
+In-Reply-To: <93db2faf0901270654w141c1131x1b87f218988811d7@mail.gmail.com>
+References: <93db2faf0901270654w141c1131x1b87f218988811d7@mail.gmail.com>
+Message-ID: <E1D861B8-13AE-44ED-B186-3BCB9958EAC1@hailmail.net>
+
+Hi Lucio,
+
+Thanks so much for the patch!
+
+The second patch linked from http://trac.mapnik.org/ticket/170, I've  
+applied to trunk with minor modifications.
+
+This is a fantastic thing to have in the next 0.6.0 release, so I look  
+forward to testing further.
+
+Dane
+
+
+On Jan 27, 2009, at 6:54 AM, kRAkEn/gORe wrote:
+
+> hi to all
+> i'm new to mapnik and i need some hard coder to check out an input  
+> plugin, i wrote the ogr (feature) plugin and i need someone to test  
+> it.
+> i've started implementing this 1 hour ago off my head, and i'll  
+> probably made some mistakes but sure it could be useful as starting  
+> point.
+>
+> i cannot test right now cause i'm having some problems when running  
+> my scons compiled version of mapnik:
+>
+>     http://pastebin.com/m202ba10b
+>
+> (using my distro packages works as expected but compiling by hand is  
+> doing this, and my python is 2.5.2 only... no others).
+>
+> anyway i'll apreciate any ideas and fix to my code (probably things  
+> can be done clearer too), especially i don't know if the ogr_features
+> conversion from ogr (unsigned char* WKB) to mapnik (char* WKB) is  
+> correct.
+>
+> cheers
+>
+> Lucio Asnaghi
+> < 
+> ogr_input_plugin 
+> .tar.gz>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090128/fffeff28/attachment.html>
+

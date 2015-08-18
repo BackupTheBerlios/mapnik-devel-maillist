@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik stuck in recursive loop?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1178927997.28551.74.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000151.html">
+   <LINK REL="Next"  HREF="000153.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik stuck in recursive loop?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20stuck%20in%20recursive%20loop%3F&In-Reply-To=%3C1178927997.28551.74.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik stuck in recursive loop?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sat May 12 01:59:56 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000151.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+        <LI>Next message: <A HREF="000153.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#152">[ date ]</a>
+              <a href="thread.html#152">[ thread ]</a>
+              <a href="subject.html#152">[ subject ]</a>
+              <a href="author.html#152">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, 2007-05-12 at 00:05 +0100, Jon Burgess wrote:
+&gt;<i> On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+</I>&gt;<i> &gt; I've found that Mapnik is segfaulting while trying to render some OSM
+</I>&gt;<i> &gt; tiles with the latest planet dump. The stack trace has hundreds of
+</I>&gt;<i> &gt; frames which all look very similar - it looks to me like this algorithm
+</I>&gt;<i> &gt; is stuck in a recursive loop and has overflowed the stack:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; (gdb) bt 10
+</I>&gt;<i> &gt; #0  0x00002aaab0c53ee0 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+</I>&gt;<i> &gt;     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+</I>&gt;<i> &gt; #1  0x00002aaab0c54302 in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/quad_tree.hpp:179
+</I>&gt;<i> &gt; #2  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #3  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #4  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #5  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #6  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #7  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #8  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+</I>&gt;<i> &gt;     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/quad_tree.hpp:189
+</I>&gt;<i> &gt; #9  0x00002aaab0c5441f in mapnik::quad_tree&lt;mapnik::Envelope&lt;double&gt;
+</I>&gt;<i> &gt; &gt;::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; This happens when I do the following command with the latest
+</I>&gt;<i> &gt; planet.osm/osm2pgsql/mapnik/osm.xml
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; $ echo 10531 6454 14 | ./render_from_list.py
+</I>&gt;<i> &gt; 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+</I>&gt;<i> &gt; 35.639441068973944)
+</I>&gt;<i> &gt; Segmentation fault
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> Looking at quad_tree.hpp do_insert_data(), it looks like it is dividing
+</I>&gt;<i> up node* into smaller and smaller pieces until the box is no longer
+</I>&gt;<i> contained within the extent of a single child node. Unfortunately it
+</I>&gt;<i> seems that this recursion is unbounded if the box is of zero size, which
+</I>&gt;<i> is in the case which causes the crash:
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> (gdb) p box-&gt;minx_
+</I>&gt;<i> $8 = 421.98901139097484
+</I>&gt;<i> (gdb) p box-&gt;maxx_
+</I>&gt;<i> $9 = 421.98901139097484
+</I>&gt;<i> (gdb) p box-&gt;miny_
+</I>&gt;<i> $10 = 12.967983092237455
+</I>&gt;<i> (gdb) p box-&gt;maxy_
+</I>&gt;<i> $11 = 12.967983092237455
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> (gdb) p box
+</I>&gt;<i> $1 = (
+</I>&gt;<i>     const mapnik::Envelope&lt;double&gt; &amp;) @0x7fffaf6092c0:
+</I>&gt;<i> {&lt;boost::addable&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik::Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;, boost::detail::empty_base, boost::detail::true_t&gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; = {&lt;boost::addable1&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik::Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;, boost::detail::empty_base, boost::detail::true_t&gt; &gt;&gt; = {&lt;boost::subtractable&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; = {&lt;boost::subtractable1&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt; &gt;&gt; = {&lt;boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;&gt; = {&lt;boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::detail::empty_base&gt;&gt; = {&lt;&gt; = {&lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, minx_ = 421.98901139097484,
+</I>&gt;<i>   miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+</I>&gt;<i> 12.967983092237455}
+</I>&gt;<i> (gdb) p node_extent
+</I>&gt;<i> $2 = (
+</I>&gt;<i>     const mapnik::Envelope&lt;double&gt; &amp;) @0xbe8390:
+</I>&gt;<i> {&lt;boost::addable&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik::Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;, boost::detail::empty_base, boost::detail::true_t&gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; = {&lt;boost::addable1&lt;mapnik::Envelope&lt;double&gt;,boost::subtractable&lt;mapnik::Envelope&lt;double&gt;, boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;, boost::detail::empty_base, boost::detail::true_t&gt; &gt;&gt; = {&lt;boost::subtractable&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;,boost::detail::empty_base,boost::detail::true_t&gt;&gt; = {&lt;boost::subtractable1&lt;mapnik::Envelope&lt;double&gt;,boost::dividable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt; &gt;&gt; = {&lt;boost::dividable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;, double, boost::detail::empty_base&gt; &gt;&gt; = {&lt;boost::multipliable2&lt;mapnik::Envelope&lt;double&gt;,double,boost::detail::empty_base&gt;&gt; = {&lt;&gt; = {&lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, &lt;No data fields&gt;}, minx_ = 421.98901139097478,
+</I>&gt;<i>   miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+</I>&gt;<i> 12.967983092237455}
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>
+I've managed to isolate the problem down to a single way with
+osm_id=4361612 being returned in the following query:
+
+start layer processing : planet roads text osm
+datasource = 0x796f30
+Envelope(5719935.700636307,4222560.145075075,5724827.670446561,4227452.114885329)
+borrow 0x777330
+select asbinary(way) as geom,&quot;highway&quot;,&quot;length&quot;,&quot;name&quot; from (select
+way,highway,landuse,&quot;natural&quot;,man_made,waterway,tourism,learning,amenity,place,name,char_length(name) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads where way &amp;&amp; setSRID('BOX3D(5719935.700636307 4222560.145075075,5724827.670446561 4227452.114885329)'::box3d,4326)
+return 0x777330
+
+Program received signal SIGSEGV, Segmentation fault.
+
+
+Grabbing this data from the DB...
+
+gis=# select &quot;osm_id&quot;,&quot;highway&quot;,&quot;length&quot;,&quot;name&quot; from (select
+osm_id,way,highway,landuse,&quot;natural&quot;,man_made,waterway,tourism,learning,amenity,place,name,char_length(name) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL and osm_id=4361612) as roads where way &amp;&amp; setSRID('BOX3D(5719935.700636307 4222560.145075075,5724827.670446561 4227452.114885329)'::box3d,4326);
+ osm_id  | highway | length |       name
+---------+---------+--------+------------------
+ 4361612 | trunk   |     17 | Besat Expressway
+(1 row)
+
+
+The length shows as 17, but there are only 16 obvious charaters in the
+name. I dumped the output to a file and did a hex dump. This shows the
+name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+
+gis=# COPY (select name,char_length(name) from planet_osm_line where
+osm_id=4361612) TO '/tmp/copytest.out';
+COPY 1
+
+$ od -A x -t x1z /tmp/copytest.out
+000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73  &gt;...Besat Express&lt;
+000010 77 61 79 09 31 37 0a                             &gt;way.17.&lt;
+000017
+
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000151.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+	<LI>Next message: <A HREF="000153.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#152">[ date ]</a>
+              <a href="thread.html#152">[ thread ]</a>
+              <a href="subject.html#152">[ subject ]</a>
+              <a href="author.html#152">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

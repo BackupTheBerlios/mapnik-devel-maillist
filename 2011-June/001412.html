@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC: Windows build system, week 2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001421.html">
+   <LINK REL="Next"  HREF="001413.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC: Windows build system, week 2</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] GSoC: Windows build system, week 2">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Thu Jun  9 16:43:13 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001421.html">[Mapnik-devel] Map buffer_size
+</A></li>
+        <LI>Next message: <A HREF="001413.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1412">[ date ]</a>
+              <a href="thread.html#1412">[ thread ]</a>
+              <a href="subject.html#1412">[ subject ]</a>
+              <a href="author.html#1412">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>A bit delayed because of personal reasons, but here's what's been done
+the last week.
+
+I've worked on getting both static and dynamic builds working from the
+generated Visual Studio files (until now I only tried static builds).
+Dependency libraries use different sometimes rather obscure ways to
+get symbols exported from dll's so it took some tedious sifting
+through makefiles etc. to get things working.
+
+I added more libraries; main missing one is ICU, which is next on the
+list. I've included more elaborate builds of the various components as
+when compared to my earlier builds that I use for php_mapnik; for
+example I'm building libxml2 with all optional components.
+
+To get some variation I also started on an MSI (WiX-based) installer
+and scripts to automate the whole build, from getting a checkout to
+making the installer package. This way the whole process can be tested
+on the build bot.
+
+Overall progress is satisfactory, if a bit tedious at times. My Python
+is getting better but I'm still tripped up sometimes either by the
+language or the libraries I'm using; but that comes with the territory
+I guess :)
+
+cheers,
+
+roel
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001421.html">[Mapnik-devel] Map buffer_size
+</A></li>
+	<LI>Next message: <A HREF="001413.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1412">[ date ]</a>
+              <a href="thread.html#1412">[ thread ]</a>
+              <a href="subject.html#1412">[ subject ]</a>
+              <a href="author.html#1412">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

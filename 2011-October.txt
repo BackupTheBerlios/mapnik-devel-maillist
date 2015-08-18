@@ -1,0 +1,1453 @@
+From dodobas at geoinfo.geof.hr  Fri Oct  7 07:34:50 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Fri, 07 Oct 2011 07:34:50 +0200
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+Message-ID: <4E8E8F7A.4030003@geoinfo.geof.hr>
+
+hi all,
+
+not sure if someone noticed but BerliOS is going to shutdown ->
+http://developer.berlios.de/forum/forum.php?forum_id=37450
+
+Is this going to affect Mapnik?
+
+Dra?en
+
+-- 
+Dra?en Odoba?i?, dipl.ing.surv.
+Junior researcher, Department of Geoinformation Science
+Faculty of Geodesy, University of Zagreb
+Direct: +385 1 4639369
+Mobile: +385 98 790379
+e-mail/jabber: dodobas at geoinfo.geof.hr
+               dodobasic at gmail.com
+
+
+From dane at dbsgeo.com  Mon Oct 10 22:43:05 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 10 Oct 2011 13:43:05 -0700
+Subject: [Mapnik-devel] Mapnik moving to git/github
+Message-ID: <2DE9A44D-E318-4932-87F1-F961E4B107E6@dbsgeo.com>
+
+Artem and I are planning to move the official mapnik repository to git (and to host on github) this week.
+
+We've received nothing put positive feedback after my initial query [1], and now that Mapnik 2.0.0 has been
+released we are looking at this migration:
+
+svn -> git (and hosting from svn.mapnik.org to github.com)
+trac -> git issues/wiki
+
+Both trac, and the read-only svn access to mapnik sources will remain live for the time being: http://svn.mapnik.org/.
+
+But, we plan to disable write access tomorrow, and further wiki edits, issues, and commits should happen at github as of tomorrow.
+
+The git repository can be found at https://github.com/mapnik-org/mapnik, but after the full migration of tickets/wiki is finished and tested it may live at https://github.com/mapnik/mapnik.
+
+We will be sending more updates soon.
+
+Cheers,
+
+Dane
+
+[1] http://lists.berlios.de/pipermail/mapnik-devel/2011-August/001472.html
+
+From dane at dbsgeo.com  Mon Oct 10 22:45:54 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 10 Oct 2011 13:45:54 -0700
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+In-Reply-To: <4E8E8F7A.4030003@geoinfo.geof.hr>
+References: <4E8E8F7A.4030003@geoinfo.geof.hr>
+Message-ID: <95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+
+
+On Oct 6, 2011, at 10:34 PM, Dra?en Odoba?i? wrote:
+
+> hi all,
+> 
+> not sure if someone noticed but BerliOS is going to shutdown ->
+> http://developer.berlios.de/forum/forum.php?forum_id=37450
+> 
+
+Yes, we noticed but thanks for the heads up as well.
+
+> Is this going to affect Mapnik?
+
+We are planning on migration to git/github [1], and so downloads (the only thing currently hosted at berlios) will be hosted at github soon.
+
+[1] http://lists.berlios.de/pipermail/mapnik-devel/2011-October/001480.html
+
+> 
+> Dra?en
+> 
+> -- 
+> Dra?en Odoba?i?, dipl.ing.surv.
+> Junior researcher, Department of Geoinformation Science
+> Faculty of Geodesy, University of Zagreb
+> Direct: +385 1 4639369
+> Mobile: +385 98 790379
+> e-mail/jabber: dodobas at geoinfo.geof.hr
+>               dodobasic at gmail.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dodobas at geoinfo.geof.hr  Tue Oct 11 09:41:53 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Tue, 11 Oct 2011 09:41:53 +0200
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+In-Reply-To: <95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+References: <4E8E8F7A.4030003@geoinfo.geof.hr>
+	<95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+Message-ID: <4E93F341.5020703@geoinfo.geof.hr>
+
+On 10.10.2011 22:45, Dane Springmeyer wrote:
+> 
+> 
+> We are planning on migration to git/github [1], and so downloads (the
+> only thing currently hosted at berlios) will be hosted at github
+> soon.
+> 
+> [1]
+> http://lists.berlios.de/pipermail/mapnik-devel/2011-October/001480.html
+>
+> 
+
+
+What about mailing lists ?
+
+Dra?en
+
+
+
+
+From artem at mapnik.org  Tue Oct 11 10:37:06 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 11 Oct 2011 09:37:06 +0100
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+In-Reply-To: <4E93F341.5020703@geoinfo.geof.hr>
+References: <4E8E8F7A.4030003@geoinfo.geof.hr>
+	<95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+	<4E93F341.5020703@geoinfo.geof.hr>
+Message-ID: <CAOoUnzkBVC2BgZQ-Hf2YGsFs3+b9jijqT187OaP2Scj6XbpzNQ@mail.gmail.com>
+
+2011/10/11 Dra?en Odoba?i? <dodobas at geoinfo.geof.hr>:
+> On 10.10.2011 22:45, Dane Springmeyer wrote:
+>>
+>>
+>> We are planning on migration to git/github [1], and so downloads (the
+>> only thing currently hosted at berlios) will be hosted at github
+>> soon.
+>>
+>> [1]
+>> http://lists.berlios.de/pipermail/mapnik-devel/2011-October/001480.html
+>>
+>>
+>
+>
+> What about mailing lists ?
+
+Good point! We'll need to find a new home for mailing lists.
+Artem
+>
+> Dra?en
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From dapal at debian.org  Tue Oct 11 10:45:06 2011
+From: dapal at debian.org (David Paleino)
+Date: Tue, 11 Oct 2011 10:45:06 +0200
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+References: <4E8E8F7A.4030003@geoinfo.geof.hr>
+	<95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+	<4E93F341.5020703@geoinfo.geof.hr>
+	<CAOoUnzkBVC2BgZQ-Hf2YGsFs3+b9jijqT187OaP2Scj6XbpzNQ@mail.gmail.com>
+Message-ID: <20111011104506.45083bfc@local>
+
+On Tue, 11 Oct 2011 09:37:06 +0100, Artem Pavlenko wrote:
+
+> 2011/10/11 Dra?en Odoba?i? <dodobas at geoinfo.geof.hr>:
+>
+> > What about mailing lists ?
+> 
+> Good point! We'll need to find a new home for mailing lists.
+
+I can suggest using alioth.debian.org -- contrary to what most people think,
+Alioth is not Debian-specific, it's used by third-parties too. Think of SANE,
+minicom and bash-completion, for example :)
+
+The mailing list would then be <name>@lists.alioth.debian.org . Surely the
+"debian.org" in the server address might look weird :)
+
+-- 
+ . ''`.   Debian developer | http://wiki.debian.org/DavidPaleino
+ : :'  : Linuxer #334216 --|-- http://www.hanskalabs.net/
+ `. `'`  GPG: 1392B174 ----|---- http://deb.li/dapal
+   `-   2BAB C625 4E66 E7B8 450A C3E1 E6AA 9017 1392 B174
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/a11e3b0c/attachment.pgp>
+
+From dodobas at geoinfo.geof.hr  Tue Oct 11 16:50:32 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Tue, 11 Oct 2011 16:50:32 +0200
+Subject: [Mapnik-devel] BerliOS will be closed on 31.12.2011
+In-Reply-To: <CAOoUnzkBVC2BgZQ-Hf2YGsFs3+b9jijqT187OaP2Scj6XbpzNQ@mail.gmail.com>
+References: <4E8E8F7A.4030003@geoinfo.geof.hr>
+	<95A836DA-457E-4F31-9DBE-FC216795E74E@dbsgeo.com>
+	<4E93F341.5020703@geoinfo.geof.hr>
+	<CAOoUnzkBVC2BgZQ-Hf2YGsFs3+b9jijqT187OaP2Scj6XbpzNQ@mail.gmail.com>
+Message-ID: <4E9457B8.5080609@geoinfo.geof.hr>
+
+On 11.10.2011 10:37, Artem Pavlenko wrote:
+> 
+> Good point! We'll need to find a new home for mailing lists.
+> Artem
+
+Maybe http://lists.osgeo.org/mailman/listinfo ?
+
+Dra?en
+
+
+From zerebubuth at gmail.com  Tue Oct 11 14:02:33 2011
+From: zerebubuth at gmail.com (Matt Amos)
+Date: Tue, 11 Oct 2011 13:02:33 +0100
+Subject: [Mapnik-devel] three patches
+Message-ID: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+
+for your delectation*, three patches for fixes/enhancements we've
+developed at MapQuest:
+
+mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+placement along a line. it seems what was happening previously was
+that the label box was being expanded to the size of the shield and
+being used to place text. however, this was not giving the right
+answer where dx/dy were being used. the patch expands line placement
+to include "additional boxes", i.e: when searching for a line
+placement it checks that some boxes offset from the position can be
+placed.
+
+mapnik_expose-label-collision-detector.patch: this exposes the label
+collision detector (4!?) via python and adds a new
+render_with_detector function to allow the detector to be passed into
+the rendering process which means you can keep the detector between
+render invocations. possible uses include clearing out areas of the
+map you know you'll want to render something in later (e.g: key /
+label / compass rose) or to get some layers as a separate image to be
+composited later. this patch only does this for the agg renderer,
+although it should be pretty simple to extend to the other renderers.
+
+mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+plugin which can pull raster data from a constant-stride tile grid on
+disk. this may be of use to anyone with very large background images
+to composite in. the motivation was that it be more compact and faster
+than including all the rasters, each with its own entry, when they're
+in a rectangular grid anyway.
+
+enjoy!
+
+cheers,
+
+matt
+
+*: and in this transitional period, probably not worth attempting to
+put into SVN - i'm happy to submit these as pull requests once
+Mapnik's in github.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_add-multi-tile-policy.patch
+Type: text/x-patch
+Size: 12278 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_expose-label-collision-detector.patch
+Type: text/x-patch
+Size: 19036 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0001.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_shield-placement-bug.patch
+Type: text/x-patch
+Size: 4513 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0002.bin>
+
+From dane at dbsgeo.com  Wed Oct 12 01:41:14 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 11 Oct 2011 16:41:14 -0700
+Subject: [Mapnik-devel] Mapnik moving to git/github
+In-Reply-To: <2DE9A44D-E318-4932-87F1-F961E4B107E6@dbsgeo.com>
+References: <2DE9A44D-E318-4932-87F1-F961E4B107E6@dbsgeo.com>
+Message-ID: <050C3619-C686-476B-8E1F-B05441F591C6@dbsgeo.com>
+
+Okay,
+
+The migration to git/github is complete, and committers should feel free to push changes to: https://github.com/mapnik/mapnik
+
+Issues and milestones have also been transferred: https://github.com/mapnik/mapnik/issues/milestones
+
+The wiki has not yet been moved as this will be a gradual/manual process.
+
+Other smaller migration tasks remain and will be tracked at https://github.com/mapnik/mapnik/issues/907
+
+Dane
+
+
+On Oct 10, 2011, at 1:43 PM, Dane Springmeyer wrote:
+
+> Artem and I are planning to move the official mapnik repository to git (and to host on github) this week.
+> 
+> We've received nothing put positive feedback after my initial query [1], and now that Mapnik 2.0.0 has been
+> released we are looking at this migration:
+> 
+> svn -> git (and hosting from svn.mapnik.org to github.com)
+> trac -> git issues/wiki
+> 
+> Both trac, and the read-only svn access to mapnik sources will remain live for the time being: http://svn.mapnik.org/.
+> 
+> But, we plan to disable write access tomorrow, and further wiki edits, issues, and commits should happen at github as of tomorrow.
+> 
+> The git repository can be found at https://github.com/mapnik-org/mapnik, but after the full migration of tickets/wiki is finished and tested it may live at https://github.com/mapnik/mapnik.
+> 
+> We will be sending more updates soon.
+> 
+> Cheers,
+> 
+> Dane
+> 
+> [1] http://lists.berlios.de/pipermail/mapnik-devel/2011-August/001472.html
+
+
+
+From dane at dbsgeo.com  Wed Oct 12 01:44:24 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 11 Oct 2011 16:44:24 -0700
+Subject: [Mapnik-devel] three patches
+In-Reply-To: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+References: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+Message-ID: <A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+
+Matt,
+
+Looks like some awesome work. I'm excited to say (since we're now live at
+https://github.com/mapnik/mapnik/) that I'd love to see each of these as pull requests :)
+
+Cheers,
+
+Dane
+
+On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+
+> for your delectation*, three patches for fixes/enhancements we've
+> developed at MapQuest:
+> 
+> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+> placement along a line. it seems what was happening previously was
+> that the label box was being expanded to the size of the shield and
+> being used to place text. however, this was not giving the right
+> answer where dx/dy were being used. the patch expands line placement
+> to include "additional boxes", i.e: when searching for a line
+> placement it checks that some boxes offset from the position can be
+> placed.
+> 
+> mapnik_expose-label-collision-detector.patch: this exposes the label
+> collision detector (4!?) via python and adds a new
+> render_with_detector function to allow the detector to be passed into
+> the rendering process which means you can keep the detector between
+> render invocations. possible uses include clearing out areas of the
+> map you know you'll want to render something in later (e.g: key /
+> label / compass rose) or to get some layers as a separate image to be
+> composited later. this patch only does this for the agg renderer,
+> although it should be pretty simple to extend to the other renderers.
+> 
+> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+> plugin which can pull raster data from a constant-stride tile grid on
+> disk. this may be of use to anyone with very large background images
+> to composite in. the motivation was that it be more compact and faster
+> than including all the rasters, each with its own entry, when they're
+> in a rectangular grid anyway.
+> 
+> enjoy!
+> 
+> cheers,
+> 
+> matt
+> 
+> *: and in this transitional period, probably not worth attempting to
+> put into SVN - i'm happy to submit these as pull requests once
+> Mapnik's in github.
+> <mapnik_add-multi-tile-policy.patch><mapnik_expose-label-collision-detector.patch><mapnik_shield-placement-bug.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From curtly.boon at gmail.com  Wed Oct 12 08:46:48 2011
+From: curtly.boon at gmail.com (Ben Crane)
+Date: Wed, 12 Oct 2011 07:46:48 +0100
+Subject: [Mapnik-devel] Cairo and MapNik: Installing on Windows 7
+Message-ID: <CAE9uu8yHOAMDNbcWbJ7VOaxPpt5Xi9cmp3Tj_h8gWGV2GpWwrg@mail.gmail.com>
+
+Hey all,
+
+Love MapNik - great piece of kit - I've been looking at writing out to SVG
+using the Cairo extension/add-on and am having a couple problems with it.
+
+The biggest problem is confusion as to how to add this to Python / MapNik :)
+
+
+I am running MapNik (manual install) / Python 2.6 on Windows 7 and it's
+working fine - but I keep hearing about Cairo and pyCairo and finding the
+installation information mostly geared towards *nix. Can anyone help me
+understand what I need to do to install the libs so I can get Cairo working
+? I am relatively new to MapNik/Python but have a little knowledge *always a
+dangerous thing*.
+
+Many thanx,
+Ben
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111012/23efecbb/attachment.html>
+
+From artem at mapnik.org  Wed Oct 12 10:55:07 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Oct 2011 09:55:07 +0100
+Subject: [Mapnik-devel] three patches
+In-Reply-To: <A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+References: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+	<A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+Message-ID: <CAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g@mail.gmail.com>
+
+Great, thanks, Matt!
+Will merge into master asap.
+Artem
+
+On 12 October 2011 00:44, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Matt,
+>
+> Looks like some awesome work. I'm excited to say (since we're now live at
+> https://github.com/mapnik/mapnik/) that I'd love to see each of these as pull requests :)
+>
+> Cheers,
+>
+> Dane
+>
+> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+>
+>> for your delectation*, three patches for fixes/enhancements we've
+>> developed at MapQuest:
+>>
+>> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+>> placement along a line. it seems what was happening previously was
+>> that the label box was being expanded to the size of the shield and
+>> being used to place text. however, this was not giving the right
+>> answer where dx/dy were being used. the patch expands line placement
+>> to include "additional boxes", i.e: when searching for a line
+>> placement it checks that some boxes offset from the position can be
+>> placed.
+>>
+>> mapnik_expose-label-collision-detector.patch: this exposes the label
+>> collision detector (4!?) via python and adds a new
+>> render_with_detector function to allow the detector to be passed into
+>> the rendering process which means you can keep the detector between
+>> render invocations. possible uses include clearing out areas of the
+>> map you know you'll want to render something in later (e.g: key /
+>> label / compass rose) or to get some layers as a separate image to be
+>> composited later. this patch only does this for the agg renderer,
+>> although it should be pretty simple to extend to the other renderers.
+>>
+>> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+>> plugin which can pull raster data from a constant-stride tile grid on
+>> disk. this may be of use to anyone with very large background images
+>> to composite in. the motivation was that it be more compact and faster
+>> than including all the rasters, each with its own entry, when they're
+>> in a rectangular grid anyway.
+>>
+>> enjoy!
+>>
+>> cheers,
+>>
+>> matt
+>>
+>> *: and in this transitional period, probably not worth attempting to
+>> put into SVN - i'm happy to submit these as pull requests once
+>> Mapnik's in github.
+>> <mapnik_add-multi-tile-policy.patch><mapnik_expose-label-collision-detector.patch><mapnik_shield-placement-bug.patch>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From dane at dbsgeo.com  Wed Oct 12 19:56:36 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 12 Oct 2011 10:56:36 -0700
+Subject: [Mapnik-devel] three patches
+In-Reply-To: <CAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g@mail.gmail.com>
+References: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+	<A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+	<CAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g@mail.gmail.com>
+Message-ID: <8D1EC375-0C7C-434F-B301-1AB7EF716119@dbsgeo.com>
+
+Artem/Matt
+
+What do you think about keeping master as the development line for the next stable release: 2.0.1, and create
+a branch for 2.1?. So Matt's pull requests would go into that 2.1 branch, or simple wait until after 2.1 is released
+and master is ready for the push on 2.1 and ready to accept new features?
+
+This is why I branched for the addition of the new CSV plugin and have queued it up as a pull request, 
+(https://github.com/mapnik/mapnik/pull/912) thinking I would just wait to hit the button to merge after 2.0.1 is out.
+
+I guess the alternative would be equally easy: to branch now for 2.0.1 and simply `git cherry-pick` the stable fixes we
+need for 2.0.1 as they land in master (which would likely be released as 2.1 or 3.x depending on how exciting things get).
+
+Dane
+
+* note: 37 open issues for the stable 2.0.1: https://github.com/mapnik/mapnik/issues?milestone=14&state=open
+
+
+On Oct 12, 2011, at 1:55 AM, Artem Pavlenko wrote:
+
+> Great, thanks, Matt!
+> Will merge into master asap.
+> Artem
+> 
+> On 12 October 2011 00:44, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>> Matt,
+>> 
+>> Looks like some awesome work. I'm excited to say (since we're now live at
+>> https://github.com/mapnik/mapnik/) that I'd love to see each of these as pull requests :)
+>> 
+>> Cheers,
+>> 
+>> Dane
+>> 
+>> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+>> 
+>>> for your delectation*, three patches for fixes/enhancements we've
+>>> developed at MapQuest:
+>>> 
+>>> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+>>> placement along a line. it seems what was happening previously was
+>>> that the label box was being expanded to the size of the shield and
+>>> being used to place text. however, this was not giving the right
+>>> answer where dx/dy were being used. the patch expands line placement
+>>> to include "additional boxes", i.e: when searching for a line
+>>> placement it checks that some boxes offset from the position can be
+>>> placed.
+>>> 
+>>> mapnik_expose-label-collision-detector.patch: this exposes the label
+>>> collision detector (4!?) via python and adds a new
+>>> render_with_detector function to allow the detector to be passed into
+>>> the rendering process which means you can keep the detector between
+>>> render invocations. possible uses include clearing out areas of the
+>>> map you know you'll want to render something in later (e.g: key /
+>>> label / compass rose) or to get some layers as a separate image to be
+>>> composited later. this patch only does this for the agg renderer,
+>>> although it should be pretty simple to extend to the other renderers.
+>>> 
+>>> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+>>> plugin which can pull raster data from a constant-stride tile grid on
+>>> disk. this may be of use to anyone with very large background images
+>>> to composite in. the motivation was that it be more compact and faster
+>>> than including all the rasters, each with its own entry, when they're
+>>> in a rectangular grid anyway.
+>>> 
+>>> enjoy!
+>>> 
+>>> cheers,
+>>> 
+>>> matt
+>>> 
+>>> *: and in this transitional period, probably not worth attempting to
+>>> put into SVN - i'm happy to submit these as pull requests once
+>>> Mapnik's in github.
+>>> <mapnik_add-multi-tile-policy.patch><mapnik_expose-label-collision-detector.patch><mapnik_shield-placement-bug.patch>_______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+
+
+
+From zerebubuth at gmail.com  Wed Oct 12 20:15:49 2011
+From: zerebubuth at gmail.com (Matt Amos)
+Date: Wed, 12 Oct 2011 19:15:49 +0100
+Subject: [Mapnik-devel] three patches
+In-Reply-To: <8D1EC375-0C7C-434F-B301-1AB7EF716119@dbsgeo.com>
+References: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+	<A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+	<CAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g@mail.gmail.com>
+	<8D1EC375-0C7C-434F-B301-1AB7EF716119@dbsgeo.com>
+Message-ID: <CAMaOB6GEZzgNdKXvyNSL4zqm3e-tpFOSfjp5cT2MfPHB+bEvbw@mail.gmail.com>
+
+On Wed, Oct 12, 2011 at 6:56 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Artem/Matt
+>
+> What do you think about keeping master as the development line for the next stable release: 2.0.1, and create
+> a branch for 2.1?. So Matt's pull requests would go into that 2.1 branch, or simple wait until after 2.1 is released
+> and master is ready for the push on 2.1 and ready to accept new features?
+
+is 2.0.1 frozen? ideally, i'd like to see the bug fix for line shield
+placements in the 2.0.1 release if at all possible.
+
+> This is why I branched for the addition of the new CSV plugin and have queued it up as a pull request,
+> (https://github.com/mapnik/mapnik/pull/912) thinking I would just wait to hit the button to merge after 2.0.1 is out.
+>
+> I guess the alternative would be equally easy: to branch now for 2.0.1 and simply `git cherry-pick` the stable fixes we
+> need for 2.0.1 as they land in master (which would likely be released as 2.1 or 3.x depending on how exciting things get).
+
+in my experience a branch-for-stability approach is better, but git
+gives us so much flexibility that maybe it doesn't matter as much as
+with SVN.
+
+cheers,
+
+matt
+
+> Dane
+>
+> * note: 37 open issues for the stable 2.0.1: https://github.com/mapnik/mapnik/issues?milestone=14&state=open
+>
+>
+> On Oct 12, 2011, at 1:55 AM, Artem Pavlenko wrote:
+>
+>> Great, thanks, Matt!
+>> Will merge into master asap.
+>> Artem
+>>
+>> On 12 October 2011 00:44, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>> Matt,
+>>>
+>>> Looks like some awesome work. I'm excited to say (since we're now live at
+>>> https://github.com/mapnik/mapnik/) that I'd love to see each of these as pull requests :)
+>>>
+>>> Cheers,
+>>>
+>>> Dane
+>>>
+>>> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+>>>
+>>>> for your delectation*, three patches for fixes/enhancements we've
+>>>> developed at MapQuest:
+>>>>
+>>>> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+>>>> placement along a line. it seems what was happening previously was
+>>>> that the label box was being expanded to the size of the shield and
+>>>> being used to place text. however, this was not giving the right
+>>>> answer where dx/dy were being used. the patch expands line placement
+>>>> to include "additional boxes", i.e: when searching for a line
+>>>> placement it checks that some boxes offset from the position can be
+>>>> placed.
+>>>>
+>>>> mapnik_expose-label-collision-detector.patch: this exposes the label
+>>>> collision detector (4!?) via python and adds a new
+>>>> render_with_detector function to allow the detector to be passed into
+>>>> the rendering process which means you can keep the detector between
+>>>> render invocations. possible uses include clearing out areas of the
+>>>> map you know you'll want to render something in later (e.g: key /
+>>>> label / compass rose) or to get some layers as a separate image to be
+>>>> composited later. this patch only does this for the agg renderer,
+>>>> although it should be pretty simple to extend to the other renderers.
+>>>>
+>>>> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+>>>> plugin which can pull raster data from a constant-stride tile grid on
+>>>> disk. this may be of use to anyone with very large background images
+>>>> to composite in. the motivation was that it be more compact and faster
+>>>> than including all the rasters, each with its own entry, when they're
+>>>> in a rectangular grid anyway.
+>>>>
+>>>> enjoy!
+>>>>
+>>>> cheers,
+>>>>
+>>>> matt
+>>>>
+>>>> *: and in this transitional period, probably not worth attempting to
+>>>> put into SVN - i'm happy to submit these as pull requests once
+>>>> Mapnik's in github.
+>>>> <mapnik_add-multi-tile-policy.patch><mapnik_expose-label-collision-detector.patch><mapnik_shield-placement-bug.patch>_______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>
+>
+
+
+From dane at dbsgeo.com  Wed Oct 12 21:25:21 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 12 Oct 2011 12:25:21 -0700
+Subject: [Mapnik-devel] three patches
+In-Reply-To: <CAMaOB6GEZzgNdKXvyNSL4zqm3e-tpFOSfjp5cT2MfPHB+bEvbw@mail.gmail.com>
+References: <CAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X+gr1nMEoUw@mail.gmail.com>
+	<A82D1A30-E615-4193-BED1-A7160DF96E31@dbsgeo.com>
+	<CAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g@mail.gmail.com>
+	<8D1EC375-0C7C-434F-B301-1AB7EF716119@dbsgeo.com>
+	<CAMaOB6GEZzgNdKXvyNSL4zqm3e-tpFOSfjp5cT2MfPHB+bEvbw@mail.gmail.com>
+Message-ID: <6B0C3F3D-5A8D-47D5-A2E3-33874F8AA622@dbsgeo.com>
+
+
+On Oct 12, 2011, at 11:15 AM, Matt Amos wrote:
+
+> On Wed, Oct 12, 2011 at 6:56 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>> Artem/Matt
+>> 
+>> What do you think about keeping master as the development line for the next stable release: 2.0.1, and create
+>> a branch for 2.1?. So Matt's pull requests would go into that 2.1 branch, or simple wait until after 2.1 is released
+>> and master is ready for the push on 2.1 and ready to accept new features?
+> 
+> is 2.0.1 frozen? ideally, i'd like to see the bug fix for line shield
+> placements in the 2.0.1 release if at all possible.
+
+2.0.1 is wide open for bug fixes. So, yes the shield fix is excellent - just noted that they other two are features that make sense for 2.1.
+
+> 
+>> This is why I branched for the addition of the new CSV plugin and have queued it up as a pull request,
+>> (https://github.com/mapnik/mapnik/pull/912) thinking I would just wait to hit the button to merge after 2.0.1 is out.
+>> 
+>> I guess the alternative would be equally easy: to branch now for 2.0.1 and simply `git cherry-pick` the stable fixes we
+>> need for 2.0.1 as they land in master (which would likely be released as 2.1 or 3.x depending on how exciting things get).
+> 
+> in my experience a branch-for-stability approach is better, but git
+> gives us so much flexibility that maybe it doesn't matter as much as
+> with SVN.
+
+I'm cool with either, and keen to learn and adapt with git. At this point, taking this as a case study
+I'm inclined to call master 2.1 (and merge all 4 current pull requests asap) and branch for 2.0.1 (and cherry-pick your shields fix).
+
+Thanks for your thoughts!
+
+> 
+> cheers,
+> 
+> matt
+> 
+>> Dane
+>> 
+>> * note: 37 open issues for the stable 2.0.1: https://github.com/mapnik/mapnik/issues?milestone=14&state=open
+>> 
+>> 
+>> On Oct 12, 2011, at 1:55 AM, Artem Pavlenko wrote:
+>> 
+>>> Great, thanks, Matt!
+>>> Will merge into master asap.
+>>> Artem
+>>> 
+>>> On 12 October 2011 00:44, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>>> Matt,
+>>>> 
+>>>> Looks like some awesome work. I'm excited to say (since we're now live at
+>>>> https://github.com/mapnik/mapnik/) that I'd love to see each of these as pull requests :)
+>>>> 
+>>>> Cheers,
+>>>> 
+>>>> Dane
+>>>> 
+>>>> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+>>>> 
+>>>>> for your delectation*, three patches for fixes/enhancements we've
+>>>>> developed at MapQuest:
+>>>>> 
+>>>>> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+>>>>> placement along a line. it seems what was happening previously was
+>>>>> that the label box was being expanded to the size of the shield and
+>>>>> being used to place text. however, this was not giving the right
+>>>>> answer where dx/dy were being used. the patch expands line placement
+>>>>> to include "additional boxes", i.e: when searching for a line
+>>>>> placement it checks that some boxes offset from the position can be
+>>>>> placed.
+>>>>> 
+>>>>> mapnik_expose-label-collision-detector.patch: this exposes the label
+>>>>> collision detector (4!?) via python and adds a new
+>>>>> render_with_detector function to allow the detector to be passed into
+>>>>> the rendering process which means you can keep the detector between
+>>>>> render invocations. possible uses include clearing out areas of the
+>>>>> map you know you'll want to render something in later (e.g: key /
+>>>>> label / compass rose) or to get some layers as a separate image to be
+>>>>> composited later. this patch only does this for the agg renderer,
+>>>>> although it should be pretty simple to extend to the other renderers.
+>>>>> 
+>>>>> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+>>>>> plugin which can pull raster data from a constant-stride tile grid on
+>>>>> disk. this may be of use to anyone with very large background images
+>>>>> to composite in. the motivation was that it be more compact and faster
+>>>>> than including all the rasters, each with its own entry, when they're
+>>>>> in a rectangular grid anyway.
+>>>>> 
+>>>>> enjoy!
+>>>>> 
+>>>>> cheers,
+>>>>> 
+>>>>> matt
+>>>>> 
+>>>>> *: and in this transitional period, probably not worth attempting to
+>>>>> put into SVN - i'm happy to submit these as pull requests once
+>>>>> Mapnik's in github.
+>>>>> <mapnik_add-multi-tile-policy.patch><mapnik_expose-label-collision-detector.patch><mapnik_shield-placement-bug.patch>_______________________________________________
+>>>>> Mapnik-devel mailing list
+>>>>> Mapnik-devel at lists.berlios.de
+>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>> 
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>> 
+>> 
+>> 
+
+
+
+From dane at dbsgeo.com  Mon Oct 17 23:07:26 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 17 Oct 2011 14:07:26 -0700
+Subject: [Mapnik-devel] Release plan for mapnik 2.0.1 and 2.1.x
+Message-ID: <DBFB1DB3-E8CD-4B47-99BE-042ABD047307@dbsgeo.com>
+
+devel-
+
+I've just created a 2.0.1-dev branch [1] for the 2.0.1 milestone [2].
+
+Stable fixes that land in master can be cherry-picked into this stable branch and added to the CHANGELOG.
+
+This leaves master open for any fixes or new features as master is planned as the 2.1.x release [3].
+
+Dane
+
+[1] https://github.com/mapnik/mapnik/tree/2.0.1-dev
+[2] https://github.com/mapnik/mapnik/issues?milestone=14
+[3] https://github.com/mapnik/mapnik/issues?milestone=8
+
+From krysstaufe.1 at laposte.net  Wed Oct 19 02:10:22 2011
+From: krysstaufe.1 at laposte.net (Krysst)
+Date: Wed, 19 Oct 2011 02:10:22 +0200
+Subject: [Mapnik-devel] Raster issue with Mapnik 2 ?
+In-Reply-To: <DBFB1DB3-E8CD-4B47-99BE-042ABD047307@dbsgeo.com>
+References: <DBFB1DB3-E8CD-4B47-99BE-042ABD047307@dbsgeo.com>
+Message-ID: <4E9E156E.1070308@laposte.net>
+
+Hi,
+
+I need your opinion on this issue.
+
+--------------------------
+-- THE PROBLEM ---
+--------------------------
+First, the normal rendering under mapnik 0.7.1 :
+http://francetopo.fr/mapnik2/mapnik0.7.1.jpg
+
+Then, the abnormal rendering under mapnik 2 :
+http://francetopo.fr/mapnik2/mapnik2.jpg
+
+The "explanation" :
+http://francetopo.fr/mapnik2/mapnik2b.jpg
+
+What you see on these pictures :
+* soil ocupation (the green) is vector data from OpenStreetMap : all correct
+* relief shadowing comes from Geotiffs : correct at the top of the 
+picture, more and more fucked up as you go down... till there is nothing 
+left to rasterize (the no shadow band), and then starts again with a 
+correct line and so on.
+
+-----------------------
+-- MY SETTING ---
+-----------------------
+The raster dataset producing the relief shadowing is composed of four 
+2Gbytes GeoTiff, combined under a gdal VRT.
+
+I use a french specific projection (Lambert 93 - EPSG:2154) :
+srs="+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 
++y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+
+My vector & raster datas already are in EPSG:2154, so is there no 
+re-projection at all during the rendering process.
+
+I compiled mapnik 2 binaries with these libraries (debian SID) :
+* proj4 4.7.0.1,
+* gdal 1.7.3-6,
+* geos 3.2.2-3.
+* libboost 1.46.1-7
+* python 2.6
+
+--------------------------------------------------
+-- WHAT I TRIED UNSUCCESSFULLY ---
+--------------------------------------------------
+* mapnik 2 binaries : from the debian SID repository and compiled by myself
+* mapnik driver : raster and gdal
+* format : tiff + tfw, geotiff, png, gdal vrt...
+* tiled and not tiled geotiff
+* band and pixel interleave
+* generate the rasters with OL+tilecache and with nik2img
+* bicubic, lanczos scaling method
+* cut the Geotiffs in smaller files (5000x5000 in place of 25000x25000)
+* ...
+
+----------------------------
+-- WHAT WORKED ---
+----------------------------
+Changing the pixel size of my raster dataset to a square one !
+Original dataset had a pixel size of 21.000208352291551m x 
+23.158451421093591m, if I resample it to 21m x 21m, it seems to work 
+perfectly.
+
+---------------------------
+-- MY QUESTIONS ---
+---------------------------
+What do you think is the problem : GDAL ? Mapnik 2 ? Do I need to open a 
+ticket ?
+
+
+Thanks for your help.
+
+
+From curtly.boon at gmail.com  Wed Oct 19 09:19:48 2011
+From: curtly.boon at gmail.com (Ben Crane)
+Date: Wed, 19 Oct 2011 08:19:48 +0100
+Subject: [Mapnik-devel] Cairo and MapNik: Installing on Windows 7
+In-Reply-To: <CAE9uu8yHOAMDNbcWbJ7VOaxPpt5Xi9cmp3Tj_h8gWGV2GpWwrg@mail.gmail.com>
+References: <CAE9uu8yHOAMDNbcWbJ7VOaxPpt5Xi9cmp3Tj_h8gWGV2GpWwrg@mail.gmail.com>
+Message-ID: <CAE9uu8w=z9z-h6Kb-tP_2g_LaHSHvR2fLbYRdbV9FHEVzxcFVQ@mail.gmail.com>
+
+Hey all,
+
+Does anyone have any advice/tips on this ? I'm really stuck moving forward
+
+Ben
+
+_______________________________
+
+On Wed, Oct 12, 2011 at 7:46 AM, Ben Crane <curtly.boon at gmail.com> wrote:
+
+> Hey all,
+>
+> Love MapNik - great piece of kit - I've been looking at writing out to SVG
+> using the Cairo extension/add-on and am having a couple problems with it.
+>
+> The biggest problem is confusion as to how to add this to Python / MapNik
+> :)
+>
+> I am running MapNik (manual install) / Python 2.6 on Windows 7 and it's
+> working fine - but I keep hearing about Cairo and pyCairo and finding the
+> installation information mostly geared towards *nix. Can anyone help me
+> understand what I need to do to install the libs so I can get Cairo working
+> ? I am relatively new to MapNik/Python but have a little knowledge *always a
+> dangerous thing*.
+>
+> Many thanx,
+> Ben
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111019/28347662/attachment.html>
+
+From artem at mapnik.org  Wed Oct 19 13:02:07 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 19 Oct 2011 12:02:07 +0100
+Subject: [Mapnik-devel] Cairo and MapNik: Installing on Windows 7
+In-Reply-To: <CAE9uu8w=z9z-h6Kb-tP_2g_LaHSHvR2fLbYRdbV9FHEVzxcFVQ@mail.gmail.com>
+References: <CAE9uu8yHOAMDNbcWbJ7VOaxPpt5Xi9cmp3Tj_h8gWGV2GpWwrg@mail.gmail.com>
+	<CAE9uu8w=z9z-h6Kb-tP_2g_LaHSHvR2fLbYRdbV9FHEVzxcFVQ@mail.gmail.com>
+Message-ID: <CAOoUnzn6H+G8-WmJ8_4e5pxxAUvEMTe1rgCszq6GBYMZNSfhLw@mail.gmail.com>
+
+Hi Ben,
+
+Assuming you're using win32 binaries from:
+http://download.berlios.de/mapnik/mapnik-0.7.1-win32-py25_26.zip ,
+there is no support for cairo backend. This is something we're
+planning to add in mapnik2.0.x.
+
+Regards,
+Artem
+
+On 19 October 2011 08:19, Ben Crane <curtly.boon at gmail.com> wrote:
+> Hey all,
+>
+> Does anyone have any advice/tips on this ? I'm really stuck moving forward
+>
+> Ben
+>
+> _______________________________
+>
+> On Wed, Oct 12, 2011 at 7:46 AM, Ben Crane <curtly.boon at gmail.com> wrote:
+>>
+>> Hey all,
+>>
+>> Love MapNik - great piece of kit - I've been looking at writing out to SVG
+>> using the Cairo extension/add-on and am having a couple problems with it.
+>>
+>> The biggest problem is confusion as to how to add this to Python / MapNik
+>> :)
+>>
+>> I am running MapNik (manual install) / Python 2.6 on Windows 7 and it's
+>> working fine - but I keep hearing about Cairo and pyCairo and finding the
+>> installation information mostly geared towards *nix. Can anyone help me
+>> understand what I need to do to install the libs so I can get Cairo working
+>> ? I am relatively new to MapNik/Python but have a little knowledge *always a
+>> dangerous thing*.
+>>
+>> Many thanx,
+>> Ben
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From artem at mapnik.org  Wed Oct 19 13:08:46 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 19 Oct 2011 12:08:46 +0100
+Subject: [Mapnik-devel] Raster issue with Mapnik 2 ?
+In-Reply-To: <4E9E156E.1070308@laposte.net>
+References: <DBFB1DB3-E8CD-4B47-99BE-042ABD047307@dbsgeo.com>
+	<4E9E156E.1070308@laposte.net>
+Message-ID: <CAOoUnzkjqBDEvNxG60yftU-9Aj61Qz2yk1Kb5EjhvJB1seYg1w@mail.gmail.com>
+
+Hi,
+
+Internally mapnik expects pixels to be square, so this sounds like a
+gdal.input issue, also latest gdal version 1.8.1 might work
+(untested).  Please, create an issue on
+
+https://github.com/mapnik/mapnik/issues?sort=created&direction=desc&state=open
+
+Thanks for reporting this!
+Artem
+
+On 19 October 2011 01:10, Krysst <krysstaufe.1 at laposte.net> wrote:
+> Hi,
+>
+> I need your opinion on this issue.
+>
+> --------------------------
+> -- THE PROBLEM ---
+> --------------------------
+> First, the normal rendering under mapnik 0.7.1 :
+> http://francetopo.fr/mapnik2/mapnik0.7.1.jpg
+>
+> Then, the abnormal rendering under mapnik 2 :
+> http://francetopo.fr/mapnik2/mapnik2.jpg
+>
+> The "explanation" :
+> http://francetopo.fr/mapnik2/mapnik2b.jpg
+>
+> What you see on these pictures :
+> * soil ocupation (the green) is vector data from OpenStreetMap : all correct
+> * relief shadowing comes from Geotiffs : correct at the top of the picture,
+> more and more fucked up as you go down... till there is nothing left to
+> rasterize (the no shadow band), and then starts again with a correct line
+> and so on.
+>
+> -----------------------
+> -- MY SETTING ---
+> -----------------------
+> The raster dataset producing the relief shadowing is composed of four
+> 2Gbytes GeoTiff, combined under a gdal VRT.
+>
+> I use a french specific projection (Lambert 93 - EPSG:2154) :
+> srs="+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000
+> +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+>
+> My vector & raster datas already are in EPSG:2154, so is there no
+> re-projection at all during the rendering process.
+>
+> I compiled mapnik 2 binaries with these libraries (debian SID) :
+> * proj4 4.7.0.1,
+> * gdal 1.7.3-6,
+> * geos 3.2.2-3.
+> * libboost 1.46.1-7
+> * python 2.6
+>
+> --------------------------------------------------
+> -- WHAT I TRIED UNSUCCESSFULLY ---
+> --------------------------------------------------
+> * mapnik 2 binaries : from the debian SID repository and compiled by myself
+> * mapnik driver : raster and gdal
+> * format : tiff + tfw, geotiff, png, gdal vrt...
+> * tiled and not tiled geotiff
+> * band and pixel interleave
+> * generate the rasters with OL+tilecache and with nik2img
+> * bicubic, lanczos scaling method
+> * cut the Geotiffs in smaller files (5000x5000 in place of 25000x25000)
+> * ...
+>
+> ----------------------------
+> -- WHAT WORKED ---
+> ----------------------------
+> Changing the pixel size of my raster dataset to a square one !
+> Original dataset had a pixel size of 21.000208352291551m x
+> 23.158451421093591m, if I resample it to 21m x 21m, it seems to work
+> perfectly.
+>
+> ---------------------------
+> -- MY QUESTIONS ---
+> ---------------------------
+> What do you think is the problem : GDAL ? Mapnik 2 ? Do I need to open a
+> ticket ?
+>
+>
+> Thanks for your help.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From krysstaufe.1 at laposte.net  Wed Oct 19 15:18:36 2011
+From: krysstaufe.1 at laposte.net (Krysst)
+Date: Wed, 19 Oct 2011 15:18:36 +0200
+Subject: [Mapnik-devel] Raster issue with Mapnik 2 ?
+In-Reply-To: <CAOoUnzkjqBDEvNxG60yftU-9Aj61Qz2yk1Kb5EjhvJB1seYg1w@mail.gmail.com>
+References: <DBFB1DB3-E8CD-4B47-99BE-042ABD047307@dbsgeo.com>	<4E9E156E.1070308@laposte.net>
+	<CAOoUnzkjqBDEvNxG60yftU-9Aj61Qz2yk1Kb5EjhvJB1seYg1w@mail.gmail.com>
+Message-ID: <4E9ECE2C.2030908@laposte.net>
+
+Hi,
+
+First, sorry for posting in "Release plan for mapnik 2.0.1 and 2.1.x", I 
+don't understand what I did...
+
+Second, thank you for the answer. I'm gonna do some tests with GDAL 1.8 
+before posting a ticket.
+
+Regards.
+
+
+Le 19/10/2011 13:08, Artem Pavlenko a ?crit :
+> Hi,
+>
+> Internally mapnik expects pixels to be square, so this sounds like a
+> gdal.input issue, also latest gdal version 1.8.1 might work
+> (untested).  Please, create an issue on
+>
+> https://github.com/mapnik/mapnik/issues?sort=created&direction=desc&state=open
+>
+> Thanks for reporting this!
+> Artem
+>
+> On 19 October 2011 01:10, Krysst<krysstaufe.1 at laposte.net>  wrote:
+>> Hi,
+>>
+>> I need your opinion on this issue.
+>>
+>> --------------------------
+>> -- THE PROBLEM ---
+>> --------------------------
+>> First, the normal rendering under mapnik 0.7.1 :
+>> http://francetopo.fr/mapnik2/mapnik0.7.1.jpg
+>>
+>> Then, the abnormal rendering under mapnik 2 :
+>> http://francetopo.fr/mapnik2/mapnik2.jpg
+>>
+>> The "explanation" :
+>> http://francetopo.fr/mapnik2/mapnik2b.jpg
+>>
+>> What you see on these pictures :
+>> * soil ocupation (the green) is vector data from OpenStreetMap : all correct
+>> * relief shadowing comes from Geotiffs : correct at the top of the picture,
+>> more and more fucked up as you go down... till there is nothing left to
+>> rasterize (the no shadow band), and then starts again with a correct line
+>> and so on.
+>>
+>> -----------------------
+>> -- MY SETTING ---
+>> -----------------------
+>> The raster dataset producing the relief shadowing is composed of four
+>> 2Gbytes GeoTiff, combined under a gdal VRT.
+>>
+>> I use a french specific projection (Lambert 93 - EPSG:2154) :
+>> srs="+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000
+>> +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+>>
+>> My vector&  raster datas already are in EPSG:2154, so is there no
+>> re-projection at all during the rendering process.
+>>
+>> I compiled mapnik 2 binaries with these libraries (debian SID) :
+>> * proj4 4.7.0.1,
+>> * gdal 1.7.3-6,
+>> * geos 3.2.2-3.
+>> * libboost 1.46.1-7
+>> * python 2.6
+>>
+>> --------------------------------------------------
+>> -- WHAT I TRIED UNSUCCESSFULLY ---
+>> --------------------------------------------------
+>> * mapnik 2 binaries : from the debian SID repository and compiled by myself
+>> * mapnik driver : raster and gdal
+>> * format : tiff + tfw, geotiff, png, gdal vrt...
+>> * tiled and not tiled geotiff
+>> * band and pixel interleave
+>> * generate the rasters with OL+tilecache and with nik2img
+>> * bicubic, lanczos scaling method
+>> * cut the Geotiffs in smaller files (5000x5000 in place of 25000x25000)
+>> * ...
+>>
+>> ----------------------------
+>> -- WHAT WORKED ---
+>> ----------------------------
+>> Changing the pixel size of my raster dataset to a square one !
+>> Original dataset had a pixel size of 21.000208352291551m x
+>> 23.158451421093591m, if I resample it to 21m x 21m, it seems to work
+>> perfectly.
+>>
+>> ---------------------------
+>> -- MY QUESTIONS ---
+>> ---------------------------
+>> What do you think is the problem : GDAL ? Mapnik 2 ? Do I need to open a
+>> ticket ?
+>>
+>>
+>> Thanks for your help.
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+
+
+From feverzsj at hotmail.com  Thu Oct 20 03:43:50 2011
+From: feverzsj at hotmail.com (zzsj)
+Date: Thu, 20 Oct 2011 09:43:50 +0800
+Subject: [Mapnik-devel] line placement is extremely slow for long road
+Message-ID: <SNT143-ds20917290FC05116F30EF69CEEB0@phx.gbl>
+
+hi, list
+While rendering osm data, some tile takes much more time than others. But the output tile seems to only contain a little part of a very long road. The profiler says almost 100% time is taken by find_line_placements. It seems the algorithm tries to iterate along the whole road each time with a little distance advanced. Is this a normal behaviour?
+
+regards, zsj
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111020/13a8f7c6/attachment.html>
+
+From feverzsj at hotmail.com  Wed Oct 26 11:22:17 2011
+From: feverzsj at hotmail.com (zzsj)
+Date: Wed, 26 Oct 2011 17:22:17 +0800
+Subject: [Mapnik-devel] line placement is extremely slow for long road
+Message-ID: <SNT143-ds12EE8C032580C07DEF616CCEED0@phx.gbl>
+
+>>hi, list
+>>While rendering osm data, some tile takes much more time than others. But the output tile seems to only contain a little part of a very long road. The profiler says almost 100% time is taken by find_line_placements. It seems the algorithm tries to iterate along the whole road each time with a little distance advanced. Is this a normal behaviour?
+ 
+>>regards, zsj
+
+hi, all 
+I've tried tweaking the issue. Thanks to the agg::conv_clip_polyline, simply passing a clipped path to the placement_finder could dramatically boost the find_line_placements/find_point_placements to some acceptable performance.
+agg's conversion pipeline like agg::conv_clip_polyline/conv_clip_polygon may tweak the agg_renderer for other cases (for example: clip before transform/stroking path, if the transformation/stroking are costly). Furthermore, turn off rasterizer's clipping while vertex source level clip is used (for most of my test cases, just a little speed gain).
+
+regards, zsj
+
+From curtly.boon at gmail.com  Thu Oct 27 16:08:04 2011
+From: curtly.boon at gmail.com (Ben Crane)
+Date: Thu, 27 Oct 2011 15:08:04 +0100
+Subject: [Mapnik-devel] Oracle/MapNik and Windows
+In-Reply-To: <CAE9uu8xSV47_8XHcLmer2Z=_07Q=vRV7W4KitAXrEe9ES0KT=A@mail.gmail.com>
+References: <CAE9uu8xSV47_8XHcLmer2Z=_07Q=vRV7W4KitAXrEe9ES0KT=A@mail.gmail.com>
+Message-ID: <CAE9uu8wAxW4-FK393iPg9eO00douyGKczscEsYys7vnPX=ja1g@mail.gmail.com>
+
+Hi all,
+
+I'm now completely confused. I have MapNik installed, Python2.6, OSGeo4W and
+still have no idea how to install the Oracle OCI driver for use in
+Python/MapNik...I have tried using the OGR library but when I reference OCI
+as part of the OGR setup within my XML scripts for MapNik it cannot find the
+OCI driver even though I have installed the OCI driver from the Advanced
+section of the OSGeo4W installer.
+
+It's got to the point now where I have no idea what to do or where to go. I
+can connect to Oracle via the command line using SQLPlus and can connect
+using OGRINFO from within OSGeo4W but no way does it work when running the
+python script on my mapnik XML doc. In fact I'm having problems with all
+other mapnik requests now so it looks like I've broken it so will have to
+remove and re-install but without the Oracle functionality as default I can
+see this just happening again and I've spent 2/3 days trying to get this to
+work and I'm frustrated especially since it works so brilliantly with
+SHP/TAB files but I really need to avoid using a filesystem in anyway shape
+or form. Postgresql is an option but all our data is in Oracle so
+transfering is just not going to work.
+
+I don't understand what scons are ? where the OCI.dll's have to go, what has
+to be built and where...it's just been so frustrating with bits of info in a
+variety of places and I can't work out if all the help docs are just for
+linux or windows or a combination.
+
+Has anyone been down this road before ? Does anyone understand how to add
+extra functionality/plugins in a windows environment simply ?
+
+*I have no hassles whatsoever* *in adding to the wiki docs for MapNik for
+Windows users on how to do add functionality or make modifications so
+despite my protestations I am more than willing to contribute to MapNik wiki
+notes/docs once I've got it working to help others*
+
+Ben
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111027/ae2c0a41/attachment.html>
+
+From dane at dbsgeo.com  Thu Oct 27 18:19:17 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 27 Oct 2011 09:19:17 -0700
+Subject: [Mapnik-devel] line placement is extremely slow for long road
+In-Reply-To: <SNT143-ds12EE8C032580C07DEF616CCEED0@phx.gbl>
+References: <SNT143-ds12EE8C032580C07DEF616CCEED0@phx.gbl>
+Message-ID: <B96A985A-AFF3-4685-954F-D73772C05249@dbsgeo.com>
+
+zsj,
+
+awesome work and investigations. We have a few issues as part of the 'performance' label (which groups performance work across all milestones) here:
+
+https://github.com/mapnik/mapnik/issues?labels=performance&sort=created&direction=desc&state=open&page=1
+
+You will note #876 and #840 - both contain notes on perf boost using clipping and relate to text placement/rendering speeds. Both also need to to be cleaned up and broken out into new issues (for the patches that did not land).
+
+So, it would be excellent if you could contribute your ideas on those issues, and feel free to create new issues with pull requests for your experimentations.
+
+Other notes is that the move to github lost patches, so you may want to view the archived tickets on trac to get oriented: http://trac.mapnik.org/ticket/840 and http://trac.mapnik.org/ticket/876.
+
+Dane
+
+
+On Oct 26, 2011, at 2:22 AM, zzsj wrote:
+
+>>> hi, list
+>>> While rendering osm data, some tile takes much more time than others. But the output tile seems to only contain a little part of a very long road. The profiler says almost 100% time is taken by find_line_placements. It seems the algorithm tries to iterate along the whole road each time with a little distance advanced. Is this a normal behaviour?
+> 
+>>> regards, zsj
+> 
+> hi, all 
+> I've tried tweaking the issue. Thanks to the agg::conv_clip_polyline, simply passing a clipped path to the placement_finder could dramatically boost the find_line_placements/find_point_placements to some acceptable performance.
+> agg's conversion pipeline like agg::conv_clip_polyline/conv_clip_polygon may tweak the agg_renderer for other cases (for example: clip before transform/stroking path, if the transformation/stroking are costly). Furthermore, turn off rasterizer's clipping while vertex source level clip is used (for most of my test cases, just a little speed gain).
+> 
+> regards, zsj
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Thu Oct 27 18:29:33 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 27 Oct 2011 09:29:33 -0700
+Subject: [Mapnik-devel] Oracle/MapNik and Windows
+In-Reply-To: <CAE9uu8wAxW4-FK393iPg9eO00douyGKczscEsYys7vnPX=ja1g@mail.gmail.com>
+References: <CAE9uu8xSV47_8XHcLmer2Z=_07Q=vRV7W4KitAXrEe9ES0KT=A@mail.gmail.com>
+	<CAE9uu8wAxW4-FK393iPg9eO00douyGKczscEsYys7vnPX=ja1g@mail.gmail.com>
+Message-ID: <C73D0F7D-465C-4894-BC94-5B4A96303D9E@dbsgeo.com>
+
+Hi Ben,
+
+If you are using the mapnik windows binaries (as per [1]), then these do not support oracle.
+It is our hope and intention to support more features in the windows binaries (and make it 
+easier to build them yourself), but at this point this effort is stalled [2].
+
+So, we do not have a mechanism (on Windows) at this time to make it easy to add more 
+mapnik plugins beyond what come with the binaries [3].
+
+So, at this time you would need to compile mapnik from source. 
+Because this is very demanding on windows, what is the chance you can run on linux?
+
+If you must run on windows perhaps you should look into using MapServer? 
+http://www.maptools.org/ms4w/index.phtml?page=README_INSTALL.html#oracle-10g-11g
+
+Dane
+
+[1] http://trac.mapnik.org/wiki/WindowsInstallation
+[2] http://mapnik.org/news/2011/aug/25/gsoc_2011_wrapup/
+[3] http://trac.mapnik.org/wiki/WindowsInstallation#SupportedFeatures
+
+On Oct 27, 2011, at 7:08 AM, Ben Crane wrote:
+
+> Hi all,
+> 
+> I'm now completely confused. I have MapNik installed, Python2.6, OSGeo4W and still have no idea how to install the Oracle OCI driver for use in Python/MapNik...I have tried using the OGR library but when I reference OCI as part of the OGR setup within my XML scripts for MapNik it cannot find the OCI driver even though I have installed the OCI driver from the Advanced section of the OSGeo4W installer.
+> 
+> It's got to the point now where I have no idea what to do or where to go. I can connect to Oracle via the command line using SQLPlus and can connect using OGRINFO from within OSGeo4W but no way does it work when running the python script on my mapnik XML doc. In fact I'm having problems with all other mapnik requests now so it looks like I've broken it so will have to remove and re-install but without the Oracle functionality as default I can see this just happening again and I've spent 2/3 days trying to get this to work and I'm frustrated especially since it works so brilliantly with SHP/TAB files but I really need to avoid using a filesystem in anyway shape or form. Postgresql is an option but all our data is in Oracle so transfering is just not going to work.
+> 
+> I don't understand what scons are ? where the OCI.dll's have to go, what has to be built and where...it's just been so frustrating with bits of info in a variety of places and I can't work out if all the help docs are just for linux or windows or a combination.
+> 
+> Has anyone been down this road before ? Does anyone understand how to add extra functionality/plugins in a windows environment simply ?
+> 
+> I have no hassles whatsoever in adding to the wiki docs for MapNik for Windows users on how to do add functionality or make modifications so despite my protestations I am more than willing to contribute to MapNik wiki notes/docs once I've got it working to help others
+> 
+> Ben
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dodobas at geoinfo.geof.hr  Sun Oct 30 12:43:11 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Sun, 30 Oct 2011 12:43:11 +0100
+Subject: [Mapnik-devel] Mapnik2 include files / namespaces
+Message-ID: <4EAD384F.5090005@geoinfo.geof.hr>
+
+Hi,
+
+i was trying to install mapnik and mapnik2 packages on Archlinux,
+however after successfully installing mapnik, installation of mapnik2
+detects that some files already exist on the filesystem:
+
+mapnik2: /usr/bin/shapeindex exists in filesystem
+mapnik2: /usr/include/mapnik/agg_renderer.hpp exists in filesystem
+mapnik2: /usr/include/mapnik/arrow.hpp exists in filesystem
+mapnik2: /usr/include/mapnik/attribute.hpp exists in filesystem
+mapnik2: /usr/include/mapnik/attribute_collector.hpp exists in filesystem
+mapnik2: /usr/include/mapnik/attribute_descriptor.hpp exists in filesystem
+...
+
+The wiki http://trac.mapnik.org/wiki/Mapnik2 states
+"""
+We ultimately plan to release Mapnik2 using the standard '>>> import
+mapnik' namespace, ...
+"""
+
+Is this still valid?
+
+Is it possible to make mapnik and mapnik2 coexist on the same system,
+possibly even accommodate future releases like mapnik3, mapnik4, ...?
+
+If I simply overwrite header files will mapnik and tools that depend on
+mapnik simply continue to work?
+
+Dra?en
+
+

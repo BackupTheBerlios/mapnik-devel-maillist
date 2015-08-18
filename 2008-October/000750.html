@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C640d8a340810080030h43e58bf2t905caf7c0f13fb9%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000745.html">
+   <LINK REL="Next"  HREF="000746.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Oleg</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C640d8a340810080030h43e58bf2t905caf7c0f13fb9%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">mon.casier at gmail.com
+       </A><BR>
+    <I>Wed Oct  8 09:30:42 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000745.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000746.html">[Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left	text
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#750">[ date ]</a>
+              <a href="thread.html#750">[ thread ]</a>
+              <a href="subject.html#750">[ subject ]</a>
+              <a href="author.html#750">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Yeah, I agree with Alberto - DB tuning can give a boost, but it's pretty
+complicated task. Also, check if your system has enougth RAM and don't
+hesistate caching. Rendering on such zoom levels means a lot of data to be
+passed into render - provide maximum speed here to get all from mapnik.
+
+2008/10/8 Alberto Gim&#233;nez E. &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">albergimenez at gmail.com</A>&gt;
+
+&gt;<i> Hi, Andreas
+</I>&gt;<i>
+</I>&gt;<i> If you're using the OSM Postgresql schema don't expect to much performance
+</I>&gt;<i> gains, the schema is not well suited for large datasets.
+</I>&gt;<i> Maybe if you start to separate concepts in the schema should help, for
+</I>&gt;<i> example a separate table for waterway lines, road lines, etc. so the
+</I>&gt;<i> database engine doesn't has to filter dummy queries in lineal order. The
+</I>&gt;<i> GIST indexes helps a lot.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> So would you say there's a faster database backend? What's about MySQL?
+</I>&gt;&gt;<i> Or the OSM binary API? Are there any PostgreSQL test applications to
+</I>&gt;&gt;<i> find my bottlenecks? I don't know how to tune PostgreSQL.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does it help to remove data in the database that I don't use?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i> I don't know if MySQL would give  a better performance. I think there is a
+</I>&gt;<i> page for tunning postgresql in the OSM wiki, but I don't remember where :(.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Alberto Gim&#233;nez E.
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/54d6bd9d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/54d6bd9d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000745.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000746.html">[Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left	text
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#750">[ date ]</a>
+              <a href="thread.html#750">[ thread ]</a>
+              <a href="subject.html#750">[ subject ]</a>
+              <a href="author.html#750">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

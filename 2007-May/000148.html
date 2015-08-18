@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Fw: Clearing label cache in mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Fw%3A%20Clearing%20label%20cache%20in%20mapnik&In-Reply-To=%3C99B9A3CA-979C-445D-85A9-79CFA12B9CE9%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000149.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Fw: Clearing label cache in mapnik</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Fw%3A%20Clearing%20label%20cache%20in%20mapnik&In-Reply-To=%3C99B9A3CA-979C-445D-85A9-79CFA12B9CE9%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Fw: Clearing label cache in mapnik">artem at mapnik.org
+       </A><BR>
+    <I>Tue May  1 09:56:30 CEST 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000149.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#148">[ date ]</a>
+              <a href="thread.html#148">[ thread ]</a>
+              <a href="subject.html#148">[ subject ]</a>
+              <a href="author.html#148">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Nick,
+
+I added 'clear_text_label_cache' functionality in r477.  Layer object  
+has got 'clear_label_cache'  property which is false by default.
+Let me know if this works for you.
+Cheers,
+Artem
+
+
+On 30 Apr 2007, at 19:06, Nick Whitelegg wrote:
+
+&gt;&gt;<i> Hi Nick,
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 23 Mar 2007, at 10:15, Nick Whitelegg wrote:
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Hello Artem,
+</I>&gt;<i>
+</I>&gt;&gt;&gt;<i> Was thinking of trying to do a quick fix of this myself. Where in  
+</I>&gt;&gt;&gt;<i> the
+</I>&gt;<i> code
+</I>&gt;&gt;&gt;<i> should I be looking?
+</I>&gt;<i>
+</I>&gt;<i> Hello Artem,
+</I>&gt;<i>
+</I>&gt;<i> I think I'm finally getting round to doing this.
+</I>&gt;<i>
+</I>&gt;<i> Could you give me some pointers as to which variables represent label
+</I>&gt;<i> cache, it's a little hard to see from the source.
+</I>&gt;<i>
+</I>&gt;<i> Looking at the code of agg_renderer.cpp it looks like:
+</I>&gt;<i>
+</I>&gt;<i> template &lt;typename T&gt;   void agg_renderer&lt;T&gt;::process(text_symbolizer
+</I>&gt;<i> const&amp; sym,                               Feature const&amp; feature,
+</I>&gt;<i>                         proj_transform const&amp; prj_trans)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> handles drawing features on text, though it's unclear what stops text
+</I>&gt;<i> being drawn if label cache fills up. Is it the find_placements ()  
+</I>&gt;<i> method?
+</I>&gt;<i> Is there anything I can do in this method to force the label on the
+</I>&gt;<i> feature to always be drawn?
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Nick
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070501/296037f1/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070501/296037f1/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000149.html">[Mapnik-devel] Mapnik stuck in recursive loop?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#148">[ date ]</a>
+              <a href="thread.html#148">[ thread ]</a>
+              <a href="subject.html#148">[ subject ]</a>
+              <a href="author.html#148">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

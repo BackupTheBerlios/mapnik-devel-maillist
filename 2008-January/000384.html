@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] C++ Demo crash in current SVN
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20Demo%20crash%20in%20current%20SVN&In-Reply-To=%3C4784356E.8090704%40smartrak.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000383.html">
+   <LINK REL="Next"  HREF="000390.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] C++ Demo crash in current SVN</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20Demo%20crash%20in%20current%20SVN&In-Reply-To=%3C4784356E.8090704%40smartrak.co.nz%3E"
+       TITLE="[Mapnik-devel] C++ Demo crash in current SVN">dave at smartrak.co.nz
+       </A><BR>
+    <I>Wed Jan  9 03:46:06 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000383.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+        <LI>Next message: <A HREF="000390.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#384">[ date ]</a>
+              <a href="thread.html#384">[ thread ]</a>
+              <a href="subject.html#384">[ subject ]</a>
+              <a href="author.html#384">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm running a freshly installed Ubuntu 7.10, mapnik from current SVN 
+(r586, problem happened with r585 also).
+I've built and installed mapnik non-debug using the scons make system.
+
+When I build the c++ demo and run it, it segfaults.
+Building a debug mapnik and building the c++ demo against that, 
+everything is fine.
+Editing the SConstruct file to remove the -O2 flag makes a release build 
+that works, but is about 2x slower!
+
+If you change the line:
+m.set_background(color_factory::from_string(&quot;white&quot;));
+in the c++ demo to set a color without using the factory, everything is 
+okay. (ex: m.set_background(Color(255, 255, 255)); )
+Alternatively, if you remove all of the calls to create_filter 
+everything is okay, but totally useless as you have no filtering.
+
+The python demo works fine, which is a bit strange as it creates the 
+background color in the same way.
+
+If run under valgrind it seems to report the error has something to do 
+with boost::spirit.
+(I've added the -g flag to get line numbers)
+<A HREF="http://pastebin.com/m70eab41e">http://pastebin.com/m70eab41e</A>
+
+Anyone else getting the same behavior?
+
+Dave.
+
+*GCC version (Standard ubuntu):*
+gcc -v
+Using built-in specs.
+Target: i486-linux-gnu
+Configured with: ../src/configure -v 
+--enable-languages=c,c++,fortran,objc,obj-c++,treelang --prefix=/usr 
+--enable-shared --with-system-zlib --libexecdir=/usr/lib 
+--without-included-gettext --enable-threads=posix --enable-nls 
+--with-gxx-include-dir=/usr/include/c++/4.1.3 --program-suffix=-4.1 
+--enable-__cxa_atexit --enable-clocale=gnu --enable-libstdcxx-debug 
+--enable-mpfr --enable-checking=release i486-linux-gnu
+Thread model: posix
+gcc version 4.1.3 20070929 (prerelease) (Ubuntu 4.1.2-16ubuntu2)
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/f228dab5/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/f228dab5/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000383.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+	<LI>Next message: <A HREF="000390.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#384">[ date ]</a>
+              <a href="thread.html#384">[ thread ]</a>
+              <a href="subject.html#384">[ subject ]</a>
+              <a href="author.html#384">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

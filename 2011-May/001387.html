@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Colorizer and data types
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3C4DC40DEB.9080909%40ecometrica.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001389.html">
+   <LINK REL="Next"  HREF="001390.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Colorizer and data types</H1>
+    <B>Maxime Dupuis</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3C4DC40DEB.9080909%40ecometrica.ca%3E"
+       TITLE="[Mapnik-devel] Raster Colorizer and data types">maxime.dupuis at ecometrica.ca
+       </A><BR>
+    <I>Fri May  6 17:04:11 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001389.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+        <LI>Next message: <A HREF="001390.html">[Mapnik-devel] Creating a choropleth map of USA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1387">[ date ]</a>
+              <a href="thread.html#1387">[ thread ]</a>
+              <a href="subject.html#1387">[ subject ]</a>
+              <a href="author.html#1387">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+I took a look at the changeset; seems promising!
+
+I don't have time today to check if everything works perfectly for what 
+we had in mind, but I'll be sure to report bugs if I find any.
+
+Thanks, awesome work!
+Max
+
+
+On 11-05-03 09:25 PM, Dane Springmeyer wrote:
+&gt;<i> Maxime,
+</I>&gt;<i>
+</I>&gt;<i> I've just merged into trunk the awesome work by Ben Moores and Rob Coup:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107">https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107</A>
+</I>&gt;<i>
+</I>&gt;<i> I notice you have a few stale forks of mapnik on github. Can you take 
+</I>&gt;<i> a look at this work and make sure it captures the fixes you also had 
+</I>&gt;<i> in mind?
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Nov 11, 2010, at 1:13 PM, Maxime Dupuis wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Robert,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'll file the bug either tonight or tomorrow morning and I'll attach 
+</I>&gt;&gt;<i> a geotiff I had problems with.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Do you have any written plans for the refactor? How you plan to do 
+</I>&gt;&gt;<i> things code wise? Do you have a ETA for that refactor?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, how can I help? I'd be more than happy to assist you guys in 
+</I>&gt;&gt;<i> that process.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks!
+</I>&gt;&gt;<i> -MD
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup 
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">robert.coup at koordinates.com</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">robert.coup at koordinates.com</A>&gt;&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Hi Maxime,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis
+</I>&gt;&gt;<i>     &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">maxime.dupuis at ecometrica.org</A>
+</I>&gt;&gt;<i>     &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">maxime.dupuis at ecometrica.org</A>&gt;&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         This is my first message on the dev mailing list, so bare
+</I>&gt;&gt;<i>         with me. :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Welcome :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         I started using mapnik only a month ago and I had to use the
+</I>&gt;&gt;<i>         new gdal Raster Colorizer to colormap a geotif.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     I'm glad you figured it out! Dane &amp; Nino &amp; I spent a wee bit of
+</I>&gt;&gt;<i>     time a couple of weeks back looking at how to simplify the
+</I>&gt;&gt;<i>     RasterColorizer declaration so it's more flexible and a whole lot
+</I>&gt;&gt;<i>     simpler :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         The problem, I think, lies in the way the band data is read
+</I>&gt;&gt;<i>         and stored in memory. When mapnik calls gdal's RasterIO()
+</I>&gt;&gt;<i>         method, it asks for data in GDT_Byte and stores it in the
+</I>&gt;&gt;<i>         image_data_32's pData_ attribute. That attribute's pointer,
+</I>&gt;&gt;<i>         however, is retrived as a pointer of unsigned chars (which
+</I>&gt;&gt;<i>         makes sense since it asks gdal for GDT_Byte data) while it's
+</I>&gt;&gt;<i>         really a pointer of unsigned ints.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         Also, I looked at how qgis did it, because I had no problem
+</I>&gt;&gt;<i>         colormapping with it and I came up to the conclusion that the
+</I>&gt;&gt;<i>         best way for mapnik to do color mapping is to use the
+</I>&gt;&gt;<i>         ImageData template as, well, a template rather than use the
+</I>&gt;&gt;<i>         typdef image_data_32 everywhere. But I'm not the best person
+</I>&gt;&gt;<i>         to judge that as I'm not involved in mapnik's development.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Can you file a ticket and assign it to me (rcoup), preferably
+</I>&gt;&gt;<i>     attaching an example image &amp; xml file? When I refactor the
+</I>&gt;&gt;<i>     colorizer I'll make sure we're doing sane things with non-byte
+</I>&gt;&gt;<i>     data, and I'll check that your case works too.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Thanks,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>     Rob :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110506/b1e7877c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110506/b1e7877c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001389.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+	<LI>Next message: <A HREF="001390.html">[Mapnik-devel] Creating a choropleth map of USA
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1387">[ date ]</a>
+              <a href="thread.html#1387">[ thread ]</a>
+              <a href="subject.html#1387">[ subject ]</a>
+              <a href="author.html#1387">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

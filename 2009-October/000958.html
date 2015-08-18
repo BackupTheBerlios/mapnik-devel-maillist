@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Worst time taken by Mapnik while rendering map...	Please help me!!!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Worst%20time%20taken%20by%20Mapnik%20while%20rendering%20map...%0A%09Please%20help%20me%21%21%21&In-Reply-To=%3Cfb300571.1ca463e.22342a.4e89%40decos.in%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000959.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Worst time taken by Mapnik while rendering map...	Please help me!!!</H1>
+    <B>Balram Chavan</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Worst%20time%20taken%20by%20Mapnik%20while%20rendering%20map...%0A%09Please%20help%20me%21%21%21&In-Reply-To=%3Cfb300571.1ca463e.22342a.4e89%40decos.in%3E"
+       TITLE="[Mapnik-devel] Worst time taken by Mapnik while rendering map...	Please help me!!!">balram.chavan at decos.in
+       </A><BR>
+    <I>Tue Oct  6 06:39:00 CEST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000959.html">[Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#958">[ date ]</a>
+              <a href="thread.html#958">[ thread ]</a>
+              <a href="subject.html#958">[ subject ]</a>
+              <a href="author.html#958">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi friends, 
+
+Hope you find this mail in good health. 
+
+I have created a map rendering application using Mapnik &amp; Python. I have implemented basic operation on map rendering too. 
+
+The major problem is large time taken by Mapnik to render a map. 
+
+I am rendering a map by firing queries on postgreSql database &amp; assigning this data to various layers of map &amp; finally rendering map by calling function render_to_file(). 
+I have defined various styles &amp; rules function similar to osm.xml style sheet with filter, maxscale &amp; minscale parameters to filter our data at various zoom level. 
+
+When I am rendering map using Europe data &amp; it is taking  time about 5 to 6 minutes for rendering map image. 
+Again whenever I perform some operation like zoom in, zoom out, pan etc ; it takes same amount of time. 
+
+Most people recommended tile server as solution to this problem but  I can&#8217;t use tile server. 
+Because I have to provide &#8220;route planning &amp; management&#8221; as one of the feature of my project, and I guess this will not be possible using tile server. 
+
+I guessed using &#8220;estimate_extent &amp; extent&#8221; parameter in PostGIS function could help me out of this. 
+But when I tried it skipped most of the data from query result and rendered map with very low details. 
+
+Could you please help me out of this problem? 
+Please do provide me some concrete solution for this issue. 
+
+Expecting your helping hands toward me. 
+
+Thanks in Advance 
+
+Balram 
+ 
+
+  
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091006/68c9e9f0/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091006/68c9e9f0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000959.html">[Mapnik-devel] CC'ing this list from [Mapnik-Trac] ?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#958">[ date ]</a>
+              <a href="thread.html#958">[ thread ]</a>
+              <a href="subject.html#958">[ subject ]</a>
+              <a href="author.html#958">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

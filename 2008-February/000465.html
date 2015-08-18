@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Protect access to proj4 with a mutex
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Protect%20access%20to%20proj4%20with%20a%20mutex&In-Reply-To=%3CB71A0117-CAEA-43FA-8604-A2EA116EE1BB%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000464.html">
+   <LINK REL="Next"  HREF="000466.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Protect access to proj4 with a mutex</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Protect%20access%20to%20proj4%20with%20a%20mutex&In-Reply-To=%3CB71A0117-CAEA-43FA-8604-A2EA116EE1BB%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Protect access to proj4 with a mutex">artem at mapnik.org
+       </A><BR>
+    <I>Mon Feb  4 10:54:55 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000464.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+        <LI>Next message: <A HREF="000466.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#465">[ date ]</a>
+              <a href="thread.html#465">[ thread ]</a>
+              <a href="subject.html#465">[ subject ]</a>
+              <a href="author.html#465">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+&gt;<i> The attached patch adds a global mutex to protect all access to the
+</I>&gt;<i> proj4 library and ensure that only one thread can be inside a call to
+</I>&gt;<i> the library at a time.
+</I>&gt;<i>
+</I>&gt;<i> Jon Burgess has confirmed that this fixes the the rendering problems
+</I>&gt;<i> he was seeing when trying to do multithreaded rendering.
+</I>&gt;<i>
+</I>&gt;<i> The problem (as discovered with valgrind's helgrind tool) is that the
+</I>&gt;<i> library has a global error variable called pj_errno and if one thread
+</I>&gt;<i> writes to that and then another one reads it then the wrong thread can
+</I>&gt;<i> think it has seen an error and things go pear shaped.
+</I>
+Hi Tom,
+
+Thanks for the patch. Somehow I was hoping that only initialization  
+parts of libproj4 are problematic, but it looks like fundamental  
+design flaw.
+Having mutex locks for each coordinate transformation sounds  
+expensive to me, buy we have no real alternatives at the moment.
+
+So, here is my plan:
+1. apply your patch
+2. provide an optional  flag (at compile time) to build core library  
+and data source plug-ins as multithreaded, applying synchronization  
+where appropriate and linking to multithreaded versions of boost, or  
+single threaded. For example, there is no much to gain from  
+supporting multiple threads in Python bindings - all calls are  
+already protected by GIL (global interpreter lock).  In fact, the  
+above will improve bindings performance.
+
+In a long run, we'll have to make a decision whether using proj4 is a  
+good idea.
+&gt;<i>
+</I>&gt;<i> Tom
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+</I>&gt;<i> <A HREF="http://www.compton.nu/&lt;mapnik-projection-lock.patch">http://www.compton.nu/&lt;mapnik-projection-lock.patch</A>&gt;________
+</I>
+Artem
+
+&gt;<i> _______________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000464.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+	<LI>Next message: <A HREF="000466.html">[Mapnik-devel] Protect access to proj4 with a mutex
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#465">[ date ]</a>
+              <a href="thread.html#465">[ thread ]</a>
+              <a href="subject.html#465">[ subject ]</a>
+              <a href="author.html#465">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

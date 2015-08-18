@@ -1,0 +1,60 @@
+From dave at smartrak.biz  Fri Sep 15 01:57:34 2006
+From: dave at smartrak.biz (Dave Leaver)
+Date: Fri, 15 Sep 2006 11:57:34 +1200
+Subject: [Mapnik-devel] color.hpp patch
+Message-ID: <236B4D6E6137CE4BBA94F247930D63BE02C162@stkdns.smartrak.biz>
+
+This patch:
+* Adds set_alpha()
+* Reorders the get/set color functions to be red() green() blue() alpha() (code tidyness)
+* Changes the internal color variable to be named abgr_ instead of rgba_ since that is the order the colors are stored in it.
+
+Check it out, should be worth commiting it all :)
+
+Dave.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060915/e448a4fb/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: color.patch
+Type: application/octet-stream
+Size: 2940 bytes
+Desc: color.patch
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060915/e448a4fb/attachment.obj>
+
+From artem at pavlenko.uklinux.net  Fri Sep 15 10:00:32 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Fri, 15 Sep 2006 09:00:32 +0100
+Subject: [Mapnik-devel] color.hpp patch
+In-Reply-To: <236B4D6E6137CE4BBA94F247930D63BE02C162@stkdns.smartrak.biz>
+References: <236B4D6E6137CE4BBA94F247930D63BE02C162@stkdns.smartrak.biz>
+Message-ID: <450A5DA0.40602@pavlenko.uklinux.net>
+
+Hi Dave,
+I've committed your patch. Thanks very much.
+Artem.
+
+
+Dave Leaver wrote:
+>
+> This patch:
+> * Adds set_alpha()
+> * Reorders the get/set color functions to be red() green() blue() 
+> alpha() (code tidyness)
+> * Changes the internal color variable to be named abgr_ instead of 
+> rgba_ since that is the order the colors are stored in it.
+>
+> Check it out, should be worth commiting it all :)
+>
+> Dave.
+>
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+

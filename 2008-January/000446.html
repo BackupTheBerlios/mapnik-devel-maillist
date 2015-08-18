@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20iconv%20test%20in%20SConstruct%20fails%20on%20Ubuntu&In-Reply-To=%3C8D0D5C72-FAD2-4106-A7D4-6EBA56202177%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000445.html">
+   <LINK REL="Next"  HREF="000447.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] iconv test in SConstruct fails on Ubuntu</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20iconv%20test%20in%20SConstruct%20fails%20on%20Ubuntu&In-Reply-To=%3C8D0D5C72-FAD2-4106-A7D4-6EBA56202177%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] iconv test in SConstruct fails on Ubuntu">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jan 23 22:06:38 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000445.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000447.html">[Mapnik-devel] Upside-down labels
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Jon
+Applied in r610
+Thanks
+On 23 Jan 2008, at 20:52, Jon Burgess wrote:
+
+&gt;<i>
+</I>&gt;<i> On Thu, 2008-01-24 at 09:19 +1300, David Leaver wrote:
+</I>&gt;&gt;<i> I'm on Ubuntu 7.10, and the recently added iconv test fails. If I  
+</I>&gt;&gt;<i> remove
+</I>&gt;&gt;<i> the test for it, the build goes fine.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The libc6-dev package includes iconv.h, but there is no libiconv in
+</I>&gt;&gt;<i> ubuntu (it is part of libc as far as I can tell).
+</I>&gt;&gt;<i> <A HREF="http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h">http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Could the test be changed to only check for the header or something?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dave.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Same here on Fedora 8. The attached patch made the missing libconv
+</I>&gt;<i> non-fatal for me.
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i> &lt;iconv-optional.patch&gt;_______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000445.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000447.html">[Mapnik-devel] Upside-down labels
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#446">[ date ]</a>
+              <a href="thread.html#446">[ thread ]</a>
+              <a href="subject.html#446">[ subject ]</a>
+              <a href="author.html#446">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

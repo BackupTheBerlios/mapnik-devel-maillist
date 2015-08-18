@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Segmentation fault when running rundemo.py
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C74F5E71A-F596-40BD-9EA2-1EFA80BFFE88%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000492.html">
+   <LINK REL="Next"  HREF="000493.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Segmentation fault when running rundemo.py</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C74F5E71A-F596-40BD-9EA2-1EFA80BFFE88%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Segmentation fault when running rundemo.py">artem at mapnik.org
+       </A><BR>
+    <I>Fri Feb 22 21:51:17 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000492.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+        <LI>Next message: <A HREF="000493.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 22 Feb 2008, at 18:59, Justin Bronn wrote:
+
+&gt;<i> Artem,
+</I>&gt;<i>
+</I>&gt;&gt;<i> I don't have access to OS X 10.5 and I can not reproduce this on 10.4
+</I>&gt;&gt;<i> It would be very useful if someone could rebuild Mapnik with  
+</I>&gt;&gt;<i> optimization and debug flags enabled : -O2 -g  -DDEBUG
+</I>&gt;&gt;<i> and find what is causing this segmentation fault.
+</I>&gt;<i>
+</I>&gt;<i> The attached patch for filter_factory.hpp fixes the segfault  
+</I>&gt;<i> problem for non-debug builds on my installation of 10.5 (Leopard).  
+</I>&gt;<i> The patch requires no changing of the compilation flags.
+</I>&gt;<i>
+</I>&gt;<i> I'm still perplexed as to why it would work in the first place even  
+</I>&gt;<i> when DEBUG was set -- any ideas?
+</I>&gt;<i>
+</I>&gt;<i> The compiler macros in the patch came from my previous patch (now  
+</I>&gt;<i> commented due to ICU unicode support) in unicode.cpp.
+</I>&gt;<i>
+</I>&gt;<i> -Justin
+</I>&gt;<i> Index: include/mapnik/filter_factory.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/filter_factory.hpp	(revision 655)
+</I>&gt;<i> +++ include/mapnik/filter_factory.hpp	(working copy)
+</I>&gt;<i> @@ -41,7 +41,11 @@
+</I>&gt;<i>              stack&lt;shared_ptr&lt;filter&lt;FeatureT&gt; &gt; &gt; filters;
+</I>&gt;<i>              stack&lt;shared_ptr&lt;expression&lt;FeatureT&gt; &gt; &gt; exps;
+</I>&gt;<i>              filter_grammar&lt;FeatureT&gt; grammar(filters,exps);
+</I>&gt;<i> +#if (!defined(OSX_LEOPARD) &amp;&amp; defined(DARWIN)) || defined(SUNOS)  
+</I>&gt;<i> || defined(FREEBSD)
+</I>&gt;<i>              char const *text = str.c_str();
+</I>&gt;<i> +#else
+</I>&gt;<i> +            char * text = const_cast&lt;char*&gt;(str.data());
+</I>&gt;<i> +#endif
+</I>&gt;<i>              parse_info&lt;&gt; info = parse(text, grammar, space_p);
+</I>&gt;<i>              if ( ! info.full) {
+</I>&gt;<i>                  std::ostringstream os;
+</I>
+
+Justin,
+
+Thanks for the patch. I think the problem is a little bit more subtle  
+and related to how UnicodeString is constructed in filter_parser.
+When compiled with DEBUG flags, often compiler fills un-initialized  
+memory with zeros, also it might use different data alignment which  
+would explain why it 'magically' worked. I don't think we should be  
+using data() method (which is not guaranteed to return zero- 
+terminated string) or const cast, though.
+
+I have some ideas and I'll come up with fix asap. Could, please,  
+verify that  sizeof(wchar_t) == 4 on Max OS X ?
+
+Cheers
+Artem
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000492.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+	<LI>Next message: <A HREF="000493.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#490">[ date ]</a>
+              <a href="thread.html#490">[ thread ]</a>
+              <a href="subject.html#490">[ subject ]</a>
+              <a href="author.html#490">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

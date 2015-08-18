@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Possible problems with concurrent database requests?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Possible%20problems%20with%20concurrent%20database%0A%20requests%3F&In-Reply-To=%3C1273895910.20595.1375172431%40webmail.messagingengine.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001172.html">
+   <LINK REL="Next"  HREF="001174.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Possible problems with concurrent database requests?</H1>
+    <B>Dane Blakely Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Possible%20problems%20with%20concurrent%20database%0A%20requests%3F&In-Reply-To=%3C1273895910.20595.1375172431%40webmail.messagingengine.com%3E"
+       TITLE="[Mapnik-devel] Possible problems with concurrent database requests?">blake at hailmail.net
+       </A><BR>
+    <I>Sat May 15 05:58:30 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001172.html">[Mapnik-devel] Possible problems with concurrent database	requests?
+</A></li>
+        <LI>Next message: <A HREF="001174.html">[Mapnik-devel] common attributes of image_32 and image_data_32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1173">[ date ]</a>
+              <a href="thread.html#1173">[ thread ]</a>
+              <a href="subject.html#1173">[ subject ]</a>
+              <a href="author.html#1173">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good digging Frederik. You are already past my depth of research on
+this, but I've hit this error before and flagged for followup as a
+ticket thinking that it might be nice to recover from such at thing.
+However, in your case sounds like the error was a good pointer, so
+default behavior should likely stay the same:
+
+<A HREF="http://trac.mapnik.org/ticket/499">http://trac.mapnik.org/ticket/499</A>
+
+dane
+
+
+On Fri, 14 May 2010 21:44 +0200, &quot;Frederik Ramm&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>&gt;
+wrote:
+&gt;<i> Hi,
+</I>&gt;<i> 
+</I>&gt;<i> Frederik Ramm wrote:
+</I>&gt;<i> &gt; I am seeing sporadic &quot;standard exception: remote end has closed 
+</I>&gt;<i> &gt; connection unexpectedly&quot; error messages which originate from the libpq 
+</I>&gt;<i> &gt; library. I can however verify that the PostgreSQL server processes are 
+</I>&gt;<i> &gt; still alive and don't have any reason to complain.
+</I>&gt;<i> 
+</I>&gt;<i> Turned out it was two different instances of Mapnik attempting to share 
+</I>&gt;<i> the same TCP connection with PostgreSQL. Well, not *attempting*, they 
+</I>&gt;<i> did share the connection and then became confused by what they received. 
+</I>&gt;<i> (&quot;huh? I never asked for THAT!&quot;) - I had a bug in my module 
+</I>&gt;<i> initialisation in Apache.
+</I>&gt;<i> 
+</I>&gt;<i> Thanks for not laughing.
+</I>&gt;<i> 
+</I>&gt;<i> Bye
+</I>&gt;<i> Frederik
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23'33&quot;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001172.html">[Mapnik-devel] Possible problems with concurrent database	requests?
+</A></li>
+	<LI>Next message: <A HREF="001174.html">[Mapnik-devel] common attributes of image_32 and image_data_32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1173">[ date ]</a>
+              <a href="thread.html#1173">[ thread ]</a>
+              <a href="subject.html#1173">[ subject ]</a>
+              <a href="author.html#1173">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

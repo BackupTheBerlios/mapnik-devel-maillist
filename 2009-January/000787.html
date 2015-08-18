@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20initial%20OGR%20support%2C%0A%09needs%20testing%20and%20happy%20coders%20to%20improve%20%09support&In-Reply-To=%3C93db2faf0901270654w141c1131x1b87f218988811d7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000786.html">
+   <LINK REL="Next"  HREF="000788.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support</H1>
+    <B>kRAkEn/gORe</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20initial%20OGR%20support%2C%0A%09needs%20testing%20and%20happy%20coders%20to%20improve%20%09support&In-Reply-To=%3C93db2faf0901270654w141c1131x1b87f218988811d7%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support">kunitoki at gmail.com
+       </A><BR>
+    <I>Tue Jan 27 15:54:54 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000786.html">[Mapnik-devel] Using raster datasources
+</A></li>
+        <LI>Next message: <A HREF="000788.html">[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#787">[ date ]</a>
+              <a href="thread.html#787">[ thread ]</a>
+              <a href="subject.html#787">[ subject ]</a>
+              <a href="author.html#787">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>hi to all
+i'm new to mapnik and i need some hard coder to check out an input plugin, i
+wrote the ogr (feature) plugin and i need someone to test it.
+i've started implementing this 1 hour ago off my head, and i'll probably
+made some mistakes but sure it could be useful as starting point.
+
+i cannot test right now cause i'm having some problems when running my scons
+compiled version of mapnik:
+
+    <A HREF="http://pastebin.com/m202ba10b">http://pastebin.com/m202ba10b</A>
+
+(using my distro packages works as expected but compiling by hand is doing
+this, and my python is 2.5.2 only... no others).
+
+anyway i'll apreciate any ideas and fix to my code (probably things can be
+done clearer too), especially i don't know if the ogr_features
+conversion from ogr (unsigned char* WKB) to mapnik (char* WKB) is correct.
+
+cheers
+
+Lucio Asnaghi
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ogr_input_plugin.tar.gz
+Type: application/x-gzip
+Size: 10876 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090127/5269875b/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000786.html">[Mapnik-devel] Using raster datasources
+</A></li>
+	<LI>Next message: <A HREF="000788.html">[Mapnik-devel] initial OGR support,	needs testing and happy coders to improve 	support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#787">[ date ]</a>
+              <a href="thread.html#787">[ thread ]</a>
+              <a href="subject.html#787">[ subject ]</a>
+              <a href="author.html#787">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] patch: python bindings on Mac OS X
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3C71A90991-9B54-4365-9161-6A1662872399%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000229.html">
+   <LINK REL="Next"  HREF="000231.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] patch: python bindings on Mac OS X</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3C71A90991-9B54-4365-9161-6A1662872399%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] patch: python bindings on Mac OS X">artem at mapnik.org
+       </A><BR>
+    <I>Tue Aug 28 14:02:19 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000229.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+        <LI>Next message: <A HREF="000231.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#230">[ date ]</a>
+              <a href="thread.html#230">[ thread ]</a>
+              <a href="subject.html#230">[ subject ]</a>
+              <a href="author.html#230">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 27 Aug 2007, at 13:30, David Siegel wrote:
+
+&gt;<i> On 27.08.2007, at 03:10, David Siegel wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> hi,
+</I>&gt;&gt;<i> i just compiled mapnik on Mac OS X and fixed some minor issues:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> plugins/input/postgis/SConscript:
+</I>&gt;&gt;<i> - added boost_thread-mt to darwin builds
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> demo/c++/rundemo.cpp:
+</I>&gt;&gt;<i> - setBackground() is now set_background()
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> bindings/python/SConscript:
+</I>&gt;&gt;<i> - added boost_thread-mt to darwin builds
+</I>&gt;&gt;<i> - changed builder to LoadableModule which builds a so called &quot;bundle&quot;
+</I>&gt;&gt;<i>    on darwin and a shared library on all other systems.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> SConstruct:
+</I>&gt;&gt;<i> - freetype-config is now searched in the path.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> with the attached patch applied the python bindings work like charme.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> the patch is against revision 511. Could someone please verify
+</I>&gt;&gt;<i> that it doesn't break the linux build?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Some additional info about the LoadableModule builder:
+</I>&gt;<i>
+</I>&gt;<i> Documentation seems to be sparse. I found it mentioned in a release
+</I>&gt;<i> note or something. It is also mentioned briefly in the man page:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.scons.org/doc/0.97/HTML/scons-man.html">http://www.scons.org/doc/0.97/HTML/scons-man.html</A>
+</I>&gt;<i>
+</I>&gt;<i> The configuration parameters are documented here:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html">http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html</A>
+</I>&gt;<i>
+</I>&gt;<i> search for LDMODULE*
+</I>&gt;<i>
+</I>&gt;<i> I just noticed that the default value of LDMODULEPREFIX (which is
+</I>&gt;<i> 'lib' on linux) will break the python module. It should be set to ''
+</I>&gt;<i> for all platforms. I could supply another patch but maybe someone
+</I>&gt;<i> else could fill this bit in before commit?
+</I>&gt;<i>
+</I>&gt;<i> cheers,
+</I>&gt;<i>     d.
+</I>
+Applied in r512. Thanks very much!
+What os x are you building on ?
+
+Cheers
+Artem
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070828/dcd83a58/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070828/dcd83a58/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000229.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+	<LI>Next message: <A HREF="000231.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#230">[ date ]</a>
+              <a href="thread.html#230">[ thread ]</a>
+              <a href="subject.html#230">[ subject ]</a>
+              <a href="author.html#230">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

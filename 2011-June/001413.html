@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC: Windows build system, week 2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBLU0-SMTP83C2B1B94266C3F609A27BCE670%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001412.html">
+   <LINK REL="Next"  HREF="001414.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC: Windows build system, week 2</H1>
+    <B>feverzsj</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBLU0-SMTP83C2B1B94266C3F609A27BCE670%40phx.gbl%3E"
+       TITLE="[Mapnik-devel] GSoC: Windows build system, week 2">feverzsj at hotmail.com
+       </A><BR>
+    <I>Sat Jun 11 16:33:55 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001412.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+        <LI>Next message: <A HREF="001414.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1413">[ date ]</a>
+              <a href="thread.html#1413">[ thread ]</a>
+              <a href="subject.html#1413">[ subject ]</a>
+              <a href="author.html#1413">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/6/9 22:43, Roel Vanhout wrote:
+&gt;<i> A bit delayed because of personal reasons, but here's what's been done
+</I>&gt;<i> the last week.
+</I>&gt;<i>
+</I>&gt;<i> I've worked on getting both static and dynamic builds working from the
+</I>&gt;<i> generated Visual Studio files (until now I only tried static builds).
+</I>&gt;<i> Dependency libraries use different sometimes rather obscure ways to
+</I>&gt;<i> get symbols exported from dll's so it took some tedious sifting
+</I>&gt;<i> through makefiles etc. to get things working.
+</I>&gt;<i>
+</I>&gt;<i> I added more libraries; main missing one is ICU, which is next on the
+</I>&gt;<i> list. I've included more elaborate builds of the various components as
+</I>&gt;<i> when compared to my earlier builds that I use for php_mapnik; for
+</I>&gt;<i> example I'm building libxml2 with all optional components.
+</I>&gt;<i>
+</I>&gt;<i> To get some variation I also started on an MSI (WiX-based) installer
+</I>&gt;<i> and scripts to automate the whole build, from getting a checkout to
+</I>&gt;<i> making the installer package. This way the whole process can be tested
+</I>&gt;<i> on the build bot.
+</I>&gt;<i>
+</I>&gt;<i> Overall progress is satisfactory, if a bit tedious at times. My Python
+</I>&gt;<i> is getting better but I'm still tripped up sometimes either by the
+</I>&gt;<i> language or the libraries I'm using; but that comes with the territory
+</I>&gt;<i> I guess :)
+</I>&gt;<i>
+</I>&gt;<i> cheers,
+</I>&gt;<i>
+</I>&gt;<i> roel
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+hi Roel
+It's great to hear some one working on the windows build system. 
+Although, it's a real pain to make such automation on windows, 
+especially for projects with lots of third party dependencies like mapnik.
+AFAIK, the most practicable and convenient solution to handle these 
+dependencies is precompile and pack them all in one place. But still, 
+making a debug lib could be tricky on windows. Also note the SideBySide 
+Assembly problem.
+
+regards , zsj
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001412.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+	<LI>Next message: <A HREF="001414.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1413">[ date ]</a>
+              <a href="thread.html#1413">[ thread ]</a>
+              <a href="subject.html#1413">[ subject ]</a>
+              <a href="author.html#1413">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

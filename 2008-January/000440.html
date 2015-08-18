@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text placement update
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20update&In-Reply-To=%3C47F09CCC-3E28-4C07-9A5E-30BB9BFFAF05%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000435.html">
+   <LINK REL="Next"  HREF="000449.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text placement update</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20update&In-Reply-To=%3C47F09CCC-3E28-4C07-9A5E-30BB9BFFAF05%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Text placement update">artem at mapnik.org
+       </A><BR>
+    <I>Mon Jan 21 23:13:37 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000435.html">[Mapnik-devel] Text placement update
+</A></li>
+        <LI>Next message: <A HREF="000449.html">[Mapnik-devel] Text placement update (ShieldSymbolizer)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#440">[ date ]</a>
+              <a href="thread.html#440">[ thread ]</a>
+              <a href="subject.html#440">[ subject ]</a>
+              <a href="author.html#440">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dave,
+
+I created ShieldSymbolizer demo for you: <A HREF="http://trac.mapnik.org/wiki/">http://trac.mapnik.org/wiki/</A> 
+ShieldSymbolizerTests
+Let me if you need anything else.
+Cheers
+Artem
+
+On 21 Jan 2008, at 17:35, Dave Leaver wrote:
+
+&gt;<i> Putting samples outside of trunk / in another repository should be  
+</I>&gt;<i> fine, so long as they are easy to get a checkout of to use them.
+</I>&gt;<i> Some instructions in the test directory should do the job.
+</I>&gt;<i>
+</I>&gt;<i> Dave.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: Artem Pavlenko [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>]
+</I>&gt;<i> Sent: Tue 1/22/2008 5:16 AM
+</I>&gt;<i> To: Dave Leaver
+</I>&gt;<i> Cc: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Text placement update
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On 21 Jan 2008, at 03:30, David Leaver wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; I've committed a fairly hefty change to the text placement code,
+</I>&gt;<i> &gt; returning the behavior of the previous placement code, but with the
+</I>&gt;<i> &gt; improved efficiency of the new code (hopefully :) ).
+</I>&gt;<i> &gt; Log: <A HREF="http://trac.mapnik.org/changeset/597">http://trac.mapnik.org/changeset/597</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; The displacement code is different now, better in some cases and  
+</I>&gt;<i> worse
+</I>&gt;<i> &gt; in others.
+</I>&gt;<i> &gt; Related bug: <A HREF="http://trac.mapnik.org/ticket/38">http://trac.mapnik.org/ticket/38</A>
+</I>&gt;<i>
+</I>&gt;<i> Good stuff. It seems to work fine for me, I'll do more testing  
+</I>&gt;<i> tonight.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I've got some good ideas for improving the character placement
+</I>&gt;<i> &gt; based on
+</I>&gt;<i> &gt; Roberts patch and some ideas of my own, which I will investigate.
+</I>&gt;<i>
+</I>&gt;<i> Great!
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; If someone has example code + datafiles I could use to test
+</I>&gt;<i> &gt; ShieldSymbolizer I could port it to use the new code also. Perhaps
+</I>&gt;<i> &gt; someone would be kind enough to create a test for it, demonstrating
+</I>&gt;<i> &gt; what
+</I>&gt;<i> &gt; it is meant to do? C++ or Python is fine, you can use the existing
+</I>&gt;<i> &gt; test
+</I>&gt;<i> &gt; datafiles I have added to SVN.
+</I>&gt;<i>
+</I>&gt;<i> Yes, I'll create some test data from OSM for you. I like having
+</I>&gt;<i> samples in SVN but perhaps it'd be better to move them into to a
+</I>&gt;<i> separate directory (in trunk at the moment) ? What do you think?
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Dave.
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080121/9512e07b/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080121/9512e07b/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000435.html">[Mapnik-devel] Text placement update
+</A></li>
+	<LI>Next message: <A HREF="000449.html">[Mapnik-devel] Text placement update (ShieldSymbolizer)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#440">[ date ]</a>
+              <a href="thread.html#440">[ thread ]</a>
+              <a href="subject.html#440">[ subject ]</a>
+              <a href="author.html#440">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

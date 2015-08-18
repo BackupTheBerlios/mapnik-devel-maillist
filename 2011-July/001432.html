@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CCAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001433.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux</H1>
+    <B>Stella Laurenzo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CCAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux">stella at laurenzo.org
+       </A><BR>
+    <I>Tue Jul  5 21:56:37 CEST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001433.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1432">[ date ]</a>
+              <a href="thread.html#1432">[ thread ]</a>
+              <a href="subject.html#1432">[ subject ]</a>
+              <a href="author.html#1432">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+I've got a fix for the issue I reported where input plugins were not being
+linked against their dependent libraries (except for on OSX).  I don't know
+how you are taking commits to SVN, but it is here and attached:
+
+<A HREF="https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4">https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4</A>
+
+&lt;<A HREF="https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4">https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4</A>&gt;I
+only had the dependencies to build the following plugins, so I can't verify
+the others (although I did make the exact same changes to each).  If others
+can verify plugin builds not on this list, that would be superb:
+
+
+   - gdal
+   - ogr
+   - postgis
+   - raster
+   - shape
+   - sqlite
+
+To verify, ensure that the plugin links against mapnik2 (ldd plugin.input)
+and that it loads/functions.
+
+I verified that everything builds and seems to function with my jni tests on
+Linux x86_64 (Ubuntu 10.10) and OSX Snow Leopard (32bit).
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik2-81f6e45b85b2ed3a38e8.diff
+Type: text/x-patch
+Size: 14126 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001433.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1432">[ date ]</a>
+              <a href="thread.html#1432">[ thread ]</a>
+              <a href="subject.html#1432">[ subject ]</a>
+              <a href="author.html#1432">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

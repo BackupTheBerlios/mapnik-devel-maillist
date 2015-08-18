@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with local projections and worldwide data	extent
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%20data%0A%09extent&In-Reply-To=%3C4BB3AF91.6090302%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001127.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with local projections and worldwide data	extent</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20local%20projections%20and%20worldwide%20data%0A%09extent&In-Reply-To=%3C4BB3AF91.6090302%40remote.org%3E"
+       TITLE="[Mapnik-devel] Problem with local projections and worldwide data	extent">frederik at remote.org
+       </A><BR>
+    <I>Wed Mar 31 22:24:49 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001127.html">[Mapnik-devel] Ocean feature coloring
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1128">[ date ]</a>
+              <a href="thread.html#1128">[ thread ]</a>
+              <a href="subject.html#1128">[ subject ]</a>
+              <a href="author.html#1128">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+    I'm having trouble rendering something in several exotic 
+projections, for example epsg:31468 which is commonly used in Germany 
+and only defined for a rather small area.
+
+I have a database in epsg:4326 covering all of the world, and in my 
+style sheet I am defining
+
+&lt;Parameter name=&quot;extent&quot;&gt;-180,-85,180,85&lt;/Parameter&gt;
+
+for all data sources. Running images in any projection that is valid for 
+this whole extent works fine (debugging from nik2img, with Mapnik 0.7.1):
+
+Step: 10 // --&gt; SRID: +init=epsg:4326
+Step: 11 // --&gt; Map extent: 
+Envelope(11.0097035573,49.01,12.9602964427,50.76)
+Step: 12 // --&gt; Map long/lat bbox: 
+Envelope(11.0097035573,49.01,12.9602964427,50.76)
+Step: 13 // --&gt; Map center: Coord(11.985,49.885)
+Step: 14 // --&gt; Map long/lat center: Coord(11.985,49.885)
+Step: 15 // --&gt; Map scale denominator: 2749987.42078
+Step: 16 // --&gt; Extent of all layers: 
+Envelope(-180.0,-85.0666032764,180.0,85.0)
+Step: 17 // --&gt; Long/lat extent of all layers: 
+Envelope(-180.0,-85.0666032764,180.0,85.0)
+Step: 18 // --&gt; Long/lat center of all layers: Coord(0.0,-0.0333016381899)
+Step: 19 // --&gt; Layers intersecting map: [world, coast-poly,
+
+etc.
+
+However, if I do the same with epsg:31468 (I am using the -b parameter 
+to nik2img and specifying an area for which that projection is 
+definitely defined) I get
+
+Step: 10 // --&gt; SRID: +init=epsg:31468
+Step: 11 // --&gt; Map extent: 
+Envelope(4389656.16103,5430541.90021,4606589.44871,5625166.44553)
+Step: 12 // --&gt; Map long/lat bbox: 
+Envelope(10.490481472,49.0023092212,13.5089566571,50.7522196667)
+Step: 13 // --&gt; Map center: Coord(4498122.80487,5527854.17287)
+Step: 14 // --&gt; Map long/lat center: Coord(11.9997190646,49.8772644439)
+Step: 15 // --&gt; Map scale denominator: 2747382.06271
+Step: 16 // --&gt; Extent of all layers: 
+Envelope(-3.14156014609,-1.48460172944,3.1144412121,1.48342809868)
+Step: 17 // --&gt; Long/lat extent of all layers: 
+Envelope(-25.4095106175,0.00372451805217,-25.4094660839,0.00374592328912)
+Step: 18 // --&gt; Long/lat center of all layers: 
+Coord(-25.4094883507,0.00373522067065)
+Step: 19 // --&gt; No layers intersecting map!
+
+Is it possible that I am running into that same bug which also causes 
+epsg:900913 to not work if the extent is set to +/- 90 degrees latitude? 
+IIRC the reason was that Mapnik first projects the extent of all layers 
+into the destination projection to find out whether there is any 
+intersection, and in this case that operation will certainly yield garbage.
+
+Will I be able to fix it by simply changing the code to project the map 
+extent into the data source extent and *then* find out if there is an 
+intersection? Or have you been down that road already and encountered a 
+different problem?
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23'33&quot;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001127.html">[Mapnik-devel] Ocean feature coloring
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1128">[ date ]</a>
+              <a href="thread.html#1128">[ thread ]</a>
+              <a href="subject.html#1128">[ subject ]</a>
+              <a href="author.html#1128">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] GCC 4.3 one-liners
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20GCC%204.3%20one-liners&In-Reply-To=%3C364d303b0803231623x74b76e47m53e5b981f0435eff%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000558.html">
+   <LINK REL="Next"  HREF="000561.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] GCC 4.3 one-liners</H1>
+    <B>Christopher Brown</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20GCC%204.3%20one-liners&In-Reply-To=%3C364d303b0803231623x74b76e47m53e5b981f0435eff%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] [PATCH] GCC 4.3 one-liners">snecklifter at gmail.com
+       </A><BR>
+    <I>Mon Mar 24 00:23:55 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000558.html">[Mapnik-devel] Stable series
+</A></li>
+        <LI>Next message: <A HREF="000561.html">[Mapnik-devel] [PATCH] GCC 4.3 one-liners
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi mapnik dudes,
+
+Fedora is building with gcc 4.3 and the following trivial changes are
+needed. If these could be checked in along with my previous ppc64
+patch I would be grateful. Kevin Sharp has graciously agreed for me to
+take this on and I hope to have mapnik included in the Fedora 8 and
+onwards repositories Real Soon Now. Feel free to follow its progress
+and make comment should you so wish:
+
+<A HREF="https://bugzilla.redhat.com/show_bug.cgi?id=234581">https://bugzilla.redhat.com/show_bug.cgi?id=234581</A>
+
+====================================================
+
+
+--- include/mapnik/vertex_vector.hpp.orig       2008-03-23
+21:02:21.000000000 +0000
++++ include/mapnik/verte--- include/mapnik/vertex_vector.hpp.orig
+ 2008-03-23 21:02:21.000000000 +0000
++++ include/mapnik/vertex_vector.hpp    2008-03-23 21:04:00.000000000 +0000
+@@ -37,6 +37,7 @@
+ #include &lt;boost/tuple/tuple.hpp&gt;
+ // stl
+ #include &lt;vector&gt;
++#include &lt;cstring&gt;
+
+ namespace mapnik
+ {
+--- include/mapnik/quad_tree.hpp.orig   2008-03-23 21:42:19.000000000 +0000
++++ include/mapnik/quad_tree.hpp        2008-03-23 21:42:43.000000000 +0000
+@@ -30,6 +30,7 @@
+ #include &lt;boost/noncopyable.hpp&gt;
+ // stl
+ #include &lt;vector&gt;
++#include &lt;cstring&gt;
+
+ namespace mapnik
+ {
+--- include/mapnik/image_data.hpp.orig  2008-03-23 22:04:22.000000000 +0000
++++ include/mapnik/image_data.hpp       2008-03-23 22:04:44.000000000 +0000
+@@ -27,6 +27,7 @@
+
+ #include &lt;mapnik/octree.hpp&gt;
+ #include &lt;cassert&gt;
++#include &lt;cstring&gt;
+
+ // When using Sun's C++ compiler, use the `std` namespace to get
+memcpy, memset routines.
+ #ifdef __SUNPRO_CC
+ --- include/mapnik/enumeration.hpp.orig        2008-03-23
+22:22:53.000000000 +0000
++++ include/mapnik/enumeration.hpp      2008-03-23 22:37:29.000000000 +0000
+@@ -28,6 +28,7 @@
+ #include &lt;vector&gt;
+ #include &lt;bitset&gt;
+ #include &lt;iostream&gt;
++#include &lt;cstdlib&gt;
+
+ namespace mapnik {
+
+--- plugins/input/shape/shapefile.hpp.orig      2008-03-23
+22:48:10.000000000 +0000
++++ plugins/input/shape/shapefile.hpp   2008-03-23 22:49:05.000000000 +0000
+@@ -32,6 +32,8 @@
+ #include &lt;boost/iostreams/device/file.hpp&gt;
+ #include &lt;boost/iostreams/device/mapped_file.hpp&gt;
+
++#include &lt;cstring&gt;
++
+ using mapnik::Envelope;
+
+ struct shape_record
+x_vector.hpp    2008-03-23 21:04:00.000000000 +0000
+@@ -37,6 +37,7 @@
+ #include &lt;boost/tuple/tuple.hpp&gt;
+ // stl
+ #include &lt;vector&gt;
++#include &lt;cstring&gt;
+
+ namespace mapnik
+ {
+--- include/mapnik/quad_tree.hpp.orig   2008-03-23 21:42:19.000000000 +0000
++++ include/mapnik/quad_tree.hpp        2008-03-23 21:42:43.000000000 +0000
+@@ -30,6 +30,7 @@
+ #include &lt;boost/noncopyable.hpp&gt;
+ // stl
+ #include &lt;vector&gt;
++#include &lt;cstring&gt;
+
+ namespace mapnik
+ {
+--- include/mapnik/image_data.hpp.orig  2008-03-23 22:04:22.000000000 +0000
++++ include/mapnik/image_data.hpp       2008-03-23 22:04:44.000000000 +0000
+@@ -27,6 +27,7 @@
+
+ #include &lt;mapnik/octree.hpp&gt;
+ #include &lt;cassert&gt;
++#include &lt;cstring&gt;
+
+ // When using Sun's C++ compiler, use the `std` namespace to get
+memcpy, memset routines.
+ #ifdef __SUNPRO_CC
+ --- include/mapnik/enumeration.hpp.orig        2008-03-23
+22:22:53.000000000 +0000
++++ include/mapnik/enumeration.hpp      2008-03-23 22:37:29.000000000 +0000
+@@ -28,6 +28,7 @@
+ #include &lt;vector&gt;
+ #include &lt;bitset&gt;
+ #include &lt;iostream&gt;
++#include &lt;cstdlib&gt;
+
+ namespace mapnik {
+
+--- plugins/input/shape/shapefile.hpp.orig      2008-03-23
+22:48:10.000000000 +0000
++++ plugins/input/shape/shapefile.hpp   2008-03-23 22:49:05.000000000 +0000
+@@ -32,6 +32,8 @@
+ #include &lt;boost/iostreams/device/file.hpp&gt;
+ #include &lt;boost/iostreams/device/mapped_file.hpp&gt;
+
++#include &lt;cstring&gt;
++
+ using mapnik::Envelope;
+
+ struct shape_record
+
+
+========================================================
+
+Cheers
+
+-- 
+Christopher Brown
+
+<A HREF="http://www.chruz.com">http://www.chruz.com</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000558.html">[Mapnik-devel] Stable series
+</A></li>
+	<LI>Next message: <A HREF="000561.html">[Mapnik-devel] [PATCH] GCC 4.3 one-liners
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#559">[ date ]</a>
+              <a href="thread.html#559">[ thread ]</a>
+              <a href="subject.html#559">[ subject ]</a>
+              <a href="author.html#559">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

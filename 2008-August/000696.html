@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Building with Boost 1.33
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2B985.7070002%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000695.html">
+   <LINK REL="Next"  HREF="000698.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Building with Boost 1.33</H1>
+    <B>Justin Bronn</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2B985.7070002%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Building with Boost 1.33">jbronn at gmail.com
+       </A><BR>
+    <I>Mon Aug 25 15:54:13 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000695.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+        <LI>Next message: <A HREF="000698.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i> It looks like boost_system is not even available in Ubuntu 7.04
+</I>&gt;<i> packages of Boost 1.33.1
+</I>&gt;<i> 
+</I>&gt;<i> <A HREF="http://packages.ubuntu.com/search?keywords=libboost&amp;suite=feisty">http://packages.ubuntu.com/search?keywords=libboost&amp;suite=feisty</A>
+</I>&gt;<i> 
+</I>&gt;<i> It tells me that building Mapnik on Ubuntu 7.04 is not supported,
+</I>&gt;<i> unless users make their own build of Boost (simple task).
+</I>
+The `boost_system` library is only required for Boost versions &gt; 1.35 
+(as noted in the INSTALL file).  Did you install the dev packages so 
+boost headers were included?  Here's how I installed boost:
+
+$ sudo apt-get install libboost-thread-dev libboost-filesystem-dev 
+libboost-regex-dev libboost-iostreams-dev libboost-program-options-dev 
+libboost-python-dev
+
+I'm pretty sure it's supported -- I created an Ubuntu 7.04 VM to test 
+and was able to build and run the demo OK.
+
+&gt;<i> I wanted to submit my notes as ticket comment, but have no idea how to
+</I>&gt;<i> register and authorize. Is it possible to get Mapnik Trac account?
+</I>
+I think I registered at <A HREF="http://trac.mapnik.org/register">http://trac.mapnik.org/register</A> -- but that URL 
+doesn't appear to work anymore.
+
+-Justin
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000695.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+	<LI>Next message: <A HREF="000698.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#696">[ date ]</a>
+              <a href="thread.html#696">[ thread ]</a>
+              <a href="subject.html#696">[ subject ]</a>
+              <a href="author.html#696">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

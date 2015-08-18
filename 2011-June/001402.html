@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cairo backend - Unstable?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C4DE67805.1040004%40ahlzen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001403.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cairo backend - Unstable?</H1>
+    <B>Lars Ahlzen</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3C4DE67805.1040004%40ahlzen.com%3E"
+       TITLE="[Mapnik-devel] Cairo backend - Unstable?">lars at ahlzen.com
+       </A><BR>
+    <I>Wed Jun  1 19:33:57 CEST 2011</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001403.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1402">[ date ]</a>
+              <a href="thread.html#1402">[ thread ]</a>
+              <a href="subject.html#1402">[ subject ]</a>
+              <a href="author.html#1402">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 5/31/2011 3:59 PM, Dane Springmeyer wrote:
+&gt;&gt;<i> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+</I>&gt;<i> Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+</I>
+Yeah, after seeing more random errors I had the same thought, so I ran 
+some tests the other day - this time with a single thread. Indeed, it 
+appears to be stable.
+
+The cairo renderer is supposed to support multiple threads (one Map per 
+thread), right? If so, what's the most useful information I can provide 
+at this point to track it down? More trace output?
+
+- Lars
+
+-- 
+Lars Ahlzen
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001403.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1402">[ date ]</a>
+              <a href="thread.html#1402">[ thread ]</a>
+              <a href="subject.html#1402">[ subject ]</a>
+              <a href="author.html#1402">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

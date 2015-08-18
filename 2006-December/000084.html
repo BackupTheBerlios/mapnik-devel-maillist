@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] PATCH for BIDI labels support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20PATCH%20for%20BIDI%20labels%20support&In-Reply-To=%3Cb8dc1f520612120134q7700d44bhf21f4b8c9b5ea766%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000081.html">
+   <LINK REL="Next"  HREF="000093.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] PATCH for BIDI labels support</H1>
+    <B>Ehud Shabtai</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20PATCH%20for%20BIDI%20labels%20support&In-Reply-To=%3Cb8dc1f520612120134q7700d44bhf21f4b8c9b5ea766%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] PATCH for BIDI labels support">eshabtai at gmail.com
+       </A><BR>
+    <I>Tue Dec 12 10:34:59 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000081.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+        <LI>Next message: <A HREF="000093.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#84">[ date ]</a>
+              <a href="thread.html#84">[ thread ]</a>
+              <a href="subject.html#84">[ subject ]</a>
+              <a href="author.html#84">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+The attached patch adds support for right to left languages by using
+the fribidi library.
+
+I'm not familiar with scons, so I'm not sure I handled the
+modifications correctly.
+
+To enable BIDI support specify BIDI=1 as an option to scons.
+If the BIDI option is omitted, the bidi support will not be compiled.
+
+-- 
+Ehud Shabtai
+<A HREF="http://www.freemap.co.il/map/">http://www.freemap.co.il/map/</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_bidi.patch
+Type: text/x-patch
+Size: 2535 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061212/9dfa5d2f/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061212/9dfa5d2f/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000081.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+	<LI>Next message: <A HREF="000093.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#84">[ date ]</a>
+              <a href="thread.html#84">[ thread ]</a>
+              <a href="subject.html#84">[ subject ]</a>
+              <a href="author.html#84">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

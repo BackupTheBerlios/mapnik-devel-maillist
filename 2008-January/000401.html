@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] C++ Demo crash in current SVN
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20Demo%20crash%20in%20current%20SVN&In-Reply-To=%3C7F4D2783-74E6-4C09-AF25-73706AB7CC50%40artcom.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000409.html">
+   <LINK REL="Next"  HREF="000385.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] C++ Demo crash in current SVN</H1>
+    <B>David Siegel</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20C%2B%2B%20Demo%20crash%20in%20current%20SVN&In-Reply-To=%3C7F4D2783-74E6-4C09-AF25-73706AB7CC50%40artcom.de%3E"
+       TITLE="[Mapnik-devel] C++ Demo crash in current SVN">david at artcom.de
+       </A><BR>
+    <I>Wed Jan  9 20:25:50 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000409.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+        <LI>Next message: <A HREF="000385.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#401">[ date ]</a>
+              <a href="thread.html#401">[ thread ]</a>
+              <a href="subject.html#401">[ subject ]</a>
+              <a href="author.html#401">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 09.01.2008, at 03:46, David Leaver wrote:
+
+&gt;<i> I'm running a freshly installed Ubuntu 7.10, mapnik from current SVN  
+</I>&gt;<i> (r586, problem happened with r585 also).
+</I>&gt;<i> I've built and installed mapnik non-debug using the scons make system.
+</I>&gt;<i>
+</I>&gt;<i> When I build the c++ demo and run it, it segfaults.
+</I>&gt;<i> Building a debug mapnik and building the c++ demo against that,  
+</I>&gt;<i> everything is fine.
+</I>&gt;<i> Editing the SConstruct file to remove the -O2 flag makes a release  
+</I>&gt;<i> build that works, but is about 2x slower!
+</I>&gt;<i>
+</I>&gt;<i> If you change the line:
+</I>&gt;<i> m.set_background(color_factory::from_string(&quot;white&quot;));
+</I>&gt;<i> in the c++ demo to set a color without using the factory, everything  
+</I>&gt;<i> is okay. (ex: m.set_background(Color(255, 255, 255)); )
+</I>&gt;<i> Alternatively, if you remove all of the calls to create_filter  
+</I>&gt;<i> everything is okay, but totally useless as you have no filtering.
+</I>&gt;<i>
+</I>
+Interesting. I had a very similar problem on Mac OS X 10.5. It turned  
+out that it was caused by the -finline-functions flag. So it was over  
+optimization, too. Although -O2 works fine, though. My current  
+solution is to disable function inlining for filter_factory.cpp only  
+which seems to work. I expect the performance penalty to be minimal  
+because filters are only parsed on startup once. I will check in my  
+fix tonight. At least it will help to play with different optimization  
+settings for filter_factory.cpp
+
+gcc -v
+Using built-in specs.
+Target: i686-apple-darwin9
+Configured with: /var/tmp/gcc/gcc-5465~16/src/configure --disable- 
+checking -enable-werror --prefix=/usr --mandir=/share/man --enable- 
+languages=c,objc,c++,obj-c++ --program-transform-name=/^[cg][^.-]*$/s/ 
+$/-4.0/ --with-gxx-include-dir=/include/c++/4.0.0 --with-slibdir=/usr/ 
+lib --build=i686-apple-darwin9 --with-arch=apple --with-tune=generic -- 
+host=i686-apple-darwin9 --target=i686-apple-darwin9
+Thread model: posix
+gcc version 4.0.1 (Apple Inc. build 5465)
+
+Cheers
+	d.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000409.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+	<LI>Next message: <A HREF="000385.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#401">[ date ]</a>
+              <a href="thread.html#401">[ thread ]</a>
+              <a href="subject.html#401">[ subject ]</a>
+              <a href="author.html#401">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

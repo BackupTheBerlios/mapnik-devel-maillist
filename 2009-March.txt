@@ -1,0 +1,986 @@
+From blake at hailmail.net  Tue Mar  3 18:55:46 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 3 Mar 2009 09:55:46 -0800
+Subject: [Mapnik-devel] 0.6.0 release schedule
+Message-ID: <1161D7C6-C76F-4DF1-8BBE-660786AB85FE@hailmail.net>
+
+Dev -
+
+We're planning to release 0.6.0 in one month from now: the first week  
+of April, 2009.
+
+Please check out http://trac.mapnik.org/milestone/0.6.0 if you'd like  
+to contribute.
+
+Dane
+
+
+
+
+
+
+From oshaniuk at cogniance.com  Tue Mar  3 18:56:40 2009
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Tue, 3 Mar 2009 19:56:40 +0200
+Subject: [Mapnik-devel] 0.6.0 release schedule
+In-Reply-To: <1161D7C6-C76F-4DF1-8BBE-660786AB85FE@hailmail.net>
+References: <1161D7C6-C76F-4DF1-8BBE-660786AB85FE@hailmail.net>
+Message-ID: <b658f7060903030956u8b5160ewb0b4eede5d6b2d0@mail.gmail.com>
+
+WOW! Great News!
+
+On Tue, Mar 3, 2009 at 7:55 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Dev -
+>
+> We're planning to release 0.6.0 in one month from now: the first week
+> of April, 2009.
+>
+> Please check out http://trac.mapnik.org/milestone/0.6.0 if you'd like
+> to contribute.
+>
+> Dane
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090303/e6f042b0/attachment.html>
+
+From blake at hailmail.net  Thu Mar  5 07:44:46 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 4 Mar 2009 22:44:46 -0800
+Subject: [Mapnik-devel] CHANGELOG
+Message-ID: <075B4924-9875-4468-85A1-A8B1A5273C62@hailmail.net>
+
+Dev,
+
+With r1000 I've updated the CHANGELOG back to around the time of the  
+last release.
+
+http://trac.mapnik.org/changeset/999
+http://trac.mapnik.org/changeset/1000
+
+It would be great if you could correct any unclear notes or expand on  
+the changes where appropriate.
+
+But, most of all please from now on attach a new CHANGELOG message  
+along with EACH commit to trunk for any notable changes to the API,  
+for new functionality, or major tickets closed that affect usability.
+
+Thanks!
+
+Dane
+
+
+
+From ebraithwaite at nrlssc.navy.mil  Thu Mar  5 15:19:07 2009
+From: ebraithwaite at nrlssc.navy.mil (Braithwaite, Edward F.)
+Date: Thu, 5 Mar 2009 08:19:07 -0600
+Subject: [Mapnik-devel] Input plugins question
+Message-ID: <q_tIGIXTW0-6To8P-qls4a6UAaqcbq2Gw0nmVDNOANGC-u6kd0oscBkEg8Tb3oUr@cipher.nrlssc.navy.mil>
+
+
+
+Hi, I'd mentioned before that I was going to be working on a plugin for some 
+of our custom datatypes. I've been able to write a basic plugin that will read 
+a text file containing the various point, lines, polygons that I want to plot 
+on a map.  What I have not been able to figure out is how to apply filtering to 
+the text dataset (or any new dataset I have) like I have been doing with the 
+shapefiles -- rule1.set_filter(create_filter()). Does the filtering get applied 
+using the boost libraries filter template or is it somewhere else?
+
+Also, I haven't yet figured out how to put text on the maps that I produce 
+using my input plugin. Can someone just point me in the direction I should 
+look for that?
+
+Is there any sort of data flow description for the mapnik toolkit that might be 
+of help to me??? For some of this, I've been able to make it work, but I don't 
+totally understand why it works.
+
+Thanks,
+Edward Braithwaite
+
+
+-- 
+
+
+_________________________________
+Edward F. Braithwaite III
+Naval Research Lab
+Code 7430-Seafloor Sciences
+Building 1005, B-24
+Stennis Space Center, MS 39529
+228-688-4828 phone
+228-688-5752 fax
+ebraithwaite at nrlssc.navy.mil
+
+
+
+From artem at mapnik.org  Thu Mar  5 16:00:26 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 5 Mar 2009 15:00:26 +0000
+Subject: [Mapnik-devel] Input plugins question
+In-Reply-To: <q_tIGIXTW0-6To8P-qls4a6UAaqcbq2Gw0nmVDNOANGC-u6kd0oscBkEg8Tb3oUr@cipher.nrlssc.navy.mil>
+References: <q_tIGIXTW0-6To8P-qls4a6UAaqcbq2Gw0nmVDNOANGC-u6kd0oscBkEg8Tb3oUr@cipher.nrlssc.navy.mil>
+Message-ID: <7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3@mail.gmail.com>
+
+Hi Edward,
+
+Great to hear you're making a progress!
+
+(inline)
+
+2009/3/5 Braithwaite, Edward F. <ebraithwaite at nrlssc.navy.mil>:
+>
+>
+> Hi, I'd mentioned before that I was going to be working on a plugin for some
+> of our custom datatypes. I've been able to write a basic plugin that will read
+> a text file containing the various point, lines, polygons that I want to plot
+> on a map. ?What I have not been able to figure out is how to apply filtering to
+> the text dataset (or any new dataset I have) like I have been doing with the
+> shapefiles -- rule1.set_filter(create_filter()). Does the filtering get applied
+> using the boost libraries filter template or is it somewhere else?
+
+Yes, all filtering is implementing in code library. For this to work
+properly you need to ensure that features you return in  featureset
+next() method have all relevant properties set. You should use
+mapnik::query object to get a list of required properties.
+
+>
+> Also, I haven't yet figured out how to put text on the maps that I produce
+> using my input plugin. Can someone just point me in the direction I should
+> look for that?
+
+This is directly related to how you create features (see above).
+>
+> Is there any sort of data flow description for the mapnik toolkit that might be
+> of help to me??? For some of this, I've been able to make it work, but I don't
+> totally understand why it works.
+
+I'm afraid we don't have a detailed data flow,yet. I think the best is
+to study the source and post here. Also, there is a #mapnik IRC
+channel where someone might be able to help.
+>
+> Thanks,
+> Edward Braithwaite
+>
+>
+Regards,
+Artem
+> --
+>
+>
+> _________________________________
+> Edward F. Braithwaite III
+> Naval Research Lab
+> Code 7430-Seafloor Sciences
+> Building 1005, B-24
+> Stennis Space Center, MS 39529
+> 228-688-4828 phone
+> 228-688-5752 fax
+> ebraithwaite at nrlssc.navy.mil
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From lists at brachttal.net  Thu Mar  5 18:44:02 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Thu, 5 Mar 2009 18:44:02 +0100
+Subject: [Mapnik-devel] Socket access in input plugin
+Message-ID: <20090305184402.609f1374@frodo.mittelerde>
+
+Hello,
+
+I'm planning to develop a plugin that uses a TCP socket.
+
+Would you prefer an implementation in SVN that uses plain socket
+functions and maybe some little #ifdef WIN32 where needed or the usage
+of boost_asio?
+
+regards
+Andreas
+
+
+From ebraithwaite at nrlssc.navy.mil  Fri Mar  6 15:27:42 2009
+From: ebraithwaite at nrlssc.navy.mil (Braithwaite, Edward F.)
+Date: Fri, 6 Mar 2009 08:27:42 -0600
+Subject: [Mapnik-devel] Input plugins question
+In-Reply-To: <7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3@mail.gmail.com>
+References: <q_tIGIXTW0-6To8P-qls4a6UAaqcbq2Gw0nmVDNOANGC-u6kd0oscBkEg8Tb3oUr@cipher.nrlssc.navy.mil>
+	<7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3@mail.gmail.com>
+Message-ID: <Lyxfs9JEZEO7g0nSzUytVNCukYRLJZitE-PpjD7nE_19HQ-JqxdslfcqutgrUcCP@cipher.nrlssc.navy.mil>
+
+Ok, I'm getting a little closer on the filtering and labels. Your reply sent me 
+in the right direction. Thanks.
+
+Now I have a different problem.
+Some of the polygons we use have an outer ring and an inner ring...much like a 
+donut. The inner ring basically punched a hole in the polygon and the 
+background should be visible...can this be done with mapnik? Can someone point 
+me in the right direction?
+
+Thanks,
+Edward
+
+
+
+On Thursday 05 March 2009 09:00:26 you wrote:
+> Hi Edward,
+>
+> Great to hear you're making a progress!
+>
+> (inline)
+>
+> 2009/3/5 Braithwaite, Edward F. <ebraithwaite at nrlssc.navy.mil>:
+> > Hi, I'd mentioned before that I was going to be working on a plugin for
+> > some of our custom datatypes. I've been able to write a basic plugin that
+> > will read a text file containing the various point, lines, polygons that
+> > I want to plot on a map. ?What I have not been able to figure out is how
+> > to apply filtering to the text dataset (or any new dataset I have) like I
+> > have been doing with the shapefiles -- rule1.set_filter(create_filter()).
+> > Does the filtering get applied using the boost libraries filter template
+> > or is it somewhere else?
+>
+> Yes, all filtering is implementing in code library. For this to work
+> properly you need to ensure that features you return in  featureset
+> next() method have all relevant properties set. You should use
+> mapnik::query object to get a list of required properties.
+>
+> > Also, I haven't yet figured out how to put text on the maps that I
+> > produce using my input plugin. Can someone just point me in the direction
+> > I should look for that?
+>
+> This is directly related to how you create features (see above).
+>
+> > Is there any sort of data flow description for the mapnik toolkit that
+> > might be of help to me??? For some of this, I've been able to make it
+> > work, but I don't totally understand why it works.
+>
+> I'm afraid we don't have a detailed data flow,yet. I think the best is
+> to study the source and post here. Also, there is a #mapnik IRC
+> channel where someone might be able to help.
+>
+> > Thanks,
+> > Edward Braithwaite
+>
+> Regards,
+> Artem
+>
+> > --
+-- 
+
+
+_________________________________
+Edward F. Braithwaite III
+Naval Research Lab
+Code 7430-Seafloor Sciences
+Building 1005, B-24
+Stennis Space Center, MS 39529
+228-688-4828 phone
+228-688-5752 fax
+ebraithwaite at nrlssc.navy.mil
+
+
+From lists at brachttal.net  Fri Mar  6 18:03:41 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 6 Mar 2009 18:03:41 +0100
+Subject: [Mapnik-devel] Socket access in input plugin
+In-Reply-To: <7e70f38d0903050948i7b8ca4bcw8ea6eb2ece8975f5@mail.gmail.com>
+References: <20090305184402.609f1374@frodo.mittelerde>
+	<7e70f38d0903050948i7b8ca4bcw8ea6eb2ece8975f5@mail.gmail.com>
+Message-ID: <20090306180341.45067b04@frodo.mittelerde>
+
+Am Thu, 5 Mar 2009 17:48:29 +0000 schrieb Artem Pavlenko:
+
+Hello Artem,
+
+I tried libasio, but wasn't happy with the version in Ubuntu 8.04. I
+run into some bugs. Not sure if they're fixed in recent version. Also
+not the boost::asio version is included in Ubuntu. This leads me to use
+plain sockets for the plugin. Maybe later if boost::asio is better
+supported for Linux distributions I'll rewrite it.
+
+regards
+Andreas
+
+> Hi Andreas,
+> boost::asio would be cool!
+> Artem
+> 
+> 2009/3/5 Andreas Volz <lists at brachttal.net>:
+> > Hello,
+> >
+> > I'm planning to develop a plugin that uses a TCP socket.
+> >
+> > Would you prefer an implementation in SVN that uses plain socket
+> > functions and maybe some little #ifdef WIN32 where needed or the
+> > usage of boost_asio?
+> >
+> > regards
+> > Andreas
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> 
+
+
+From jburgess777 at googlemail.com  Fri Mar  6 18:33:38 2009
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Fri, 06 Mar 2009 17:33:38 +0000
+Subject: [Mapnik-devel] Input plugins question
+In-Reply-To: <Lyxfs9JEZEO7g0nSzUytVNCukYRLJZitE-PpjD7nE_19HQ-JqxdslfcqutgrUcCP@cipher.nrlssc.navy.mil>
+References: <q_tIGIXTW0-6To8P-qls4a6UAaqcbq2Gw0nmVDNOANGC-u6kd0oscBkEg8Tb3oUr@cipher.nrlssc.navy.mil>
+	<7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3@mail.gmail.com>
+	<Lyxfs9JEZEO7g0nSzUytVNCukYRLJZitE-PpjD7nE_19HQ-JqxdslfcqutgrUcCP@cipher.nrlssc.navy.mil>
+Message-ID: <1236360818.20557.5.camel@localhost.localdomain>
+
+On Fri, 2009-03-06 at 08:27 -0600, Braithwaite, Edward F. wrote:
+> Ok, I'm getting a little closer on the filtering and labels. Your
+> reply sent me 
+> in the right direction. Thanks.
+> 
+> Now I have a different problem.
+> Some of the polygons we use have an outer ring and an inner
+> ring...much like a 
+> donut. The inner ring basically punched a hole in the polygon and the 
+> background should be visible...can this be done with mapnik? Can
+> someone point 
+> me in the right direction?
+
+That should work fine. These are supported in the postgis plugin too.
+They are created via the code in the WKB reader, see read_polygon() in
+src/wkb.cpp. Each ring is added via a move_to + several line_to.
+
+	Jon
+
+
+
+
+From oshaniuk at cogniance.com  Fri Mar  6 20:16:22 2009
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Fri, 6 Mar 2009 21:16:22 +0200
+Subject: [Mapnik-devel] Socket access in input plugin
+In-Reply-To: <20090306180341.45067b04@frodo.mittelerde>
+References: <20090305184402.609f1374@frodo.mittelerde>
+	<7e70f38d0903050948i7b8ca4bcw8ea6eb2ece8975f5@mail.gmail.com>
+	<20090306180341.45067b04@frodo.mittelerde>
+Message-ID: <b658f7060903061116n6cc73159uba3bba4c9eb040fd@mail.gmail.com>
+
+Andreas,
+
+suppose, you should verify if asio has these bugs, describe your problem
+here - maybe someone will help you(I'll be unavailable at least next 3-4
+weeks) - don't run into platform dependency now, if there is no different
+ways. You also can post tickets to boost team - it will prevent some tickets
+for you in __future__ ;)
+
+Cheers
+
+--
+
+RO
+
+On Fri, Mar 6, 2009 at 7:03 PM, Andreas Volz <lists at brachttal.net> wrote:
+
+> Am Thu, 5 Mar 2009 17:48:29 +0000 schrieb Artem Pavlenko:
+>
+> Hello Artem,
+>
+> I tried libasio, but wasn't happy with the version in Ubuntu 8.04. I
+> run into some bugs. Not sure if they're fixed in recent version. Also
+> not the boost::asio version is included in Ubuntu. This leads me to use
+> plain sockets for the plugin. Maybe later if boost::asio is better
+> supported for Linux distributions I'll rewrite it.
+>
+> regards
+> Andreas
+>
+> > Hi Andreas,
+> > boost::asio would be cool!
+> > Artem
+> >
+> > 2009/3/5 Andreas Volz <lists at brachttal.net>:
+> > > Hello,
+> > >
+> > > I'm planning to develop a plugin that uses a TCP socket.
+> > >
+> > > Would you prefer an implementation in SVN that uses plain socket
+> > > functions and maybe some little #ifdef WIN32 where needed or the
+> > > usage of boost_asio?
+> > >
+> > > regards
+> > > Andreas
+> > > _______________________________________________
+> > > Mapnik-devel mailing list
+> > > Mapnik-devel at lists.berlios.de
+> > > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> > >
+> >
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090306/adb966f8/attachment.html>
+
+From lists at brachttal.net  Sun Mar 15 17:21:58 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 15 Mar 2009 17:21:58 +0100
+Subject: [Mapnik-devel] Socket access in input plugin
+In-Reply-To: <b658f7060903061116n6cc73159uba3bba4c9eb040fd@mail.gmail.com>
+References: <20090305184402.609f1374@frodo.mittelerde>
+	<7e70f38d0903050948i7b8ca4bcw8ea6eb2ece8975f5@mail.gmail.com>
+	<20090306180341.45067b04@frodo.mittelerde>
+	<b658f7060903061116n6cc73159uba3bba4c9eb040fd@mail.gmail.com>
+Message-ID: <20090315172158.541be8f1@frodo.mittelerde>
+
+Am Fri, 6 Mar 2009 21:16:22 +0200 schrieb Oleg Shaniuk:
+
+Hello Oleg,
+
+I found the problem yet as ticket:
+
+https://svn.boost.org/trac/boost/ticket/2456
+
+So I've seen no need to report it again.
+
+regards
+Andreas
+
+> Andreas,
+> 
+> suppose, you should verify if asio has these bugs, describe your
+> problem here - maybe someone will help you(I'll be unavailable at
+> least next 3-4 weeks) - don't run into platform dependency now, if
+> there is no different ways. You also can post tickets to boost team -
+> it will prevent some tickets for you in __future__ ;)
+> 
+> Cheers
+> 
+> --
+> 
+> RO
+> 
+> On Fri, Mar 6, 2009 at 7:03 PM, Andreas Volz <lists at brachttal.net>
+> wrote:
+> 
+> > Am Thu, 5 Mar 2009 17:48:29 +0000 schrieb Artem Pavlenko:
+> >
+> > Hello Artem,
+> >
+> > I tried libasio, but wasn't happy with the version in Ubuntu 8.04. I
+> > run into some bugs. Not sure if they're fixed in recent version.
+> > Also not the boost::asio version is included in Ubuntu. This leads
+> > me to use plain sockets for the plugin. Maybe later if boost::asio
+> > is better supported for Linux distributions I'll rewrite it.
+> >
+> > regards
+> > Andreas
+> >
+> > > Hi Andreas,
+> > > boost::asio would be cool!
+> > > Artem
+> > >
+> > > 2009/3/5 Andreas Volz <lists at brachttal.net>:
+> > > > Hello,
+> > > >
+> > > > I'm planning to develop a plugin that uses a TCP socket.
+> > > >
+> > > > Would you prefer an implementation in SVN that uses plain socket
+> > > > functions and maybe some little #ifdef WIN32 where needed or the
+> > > > usage of boost_asio?
+> > > >
+> > > > regards
+> > > > Andreas
+> > > > _______________________________________________
+> > > > Mapnik-devel mailing list
+> > > > Mapnik-devel at lists.berlios.de
+> > > > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> > > >
+> > >
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> 
+> 
+> 
+> -- 
+> --
+> RO
+
+
+From lists at brachttal.net  Sun Mar 15 17:28:18 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 15 Mar 2009 17:28:18 +0100
+Subject: [Mapnik-devel] Plugin features not showing
+Message-ID: <20090315172818.022a5838@frodo.mittelerde>
+
+Hello,
+
+I created a small plugin that should display a point feature on the
+map. Here is a small stripped down example:
+
+http://tux-style.de/tmp/mapnik-kismet/mapnik_kismet.tar.gz
+
+Currently I create the icon at a static position on the map for
+testing. If I render the map at this position it's not shown and I
+don't understand why. It seems something is missing. Could you please
+help me?
+
+In the file are also two XML files available which I use for testing.
+
+From debugging I see that the featureset_ptr is filled and returned.
+
+Any ideas?
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sun Mar 15 22:22:09 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 15 Mar 2009 22:22:09 +0100
+Subject: [Mapnik-devel] Plugin features not showing
+In-Reply-To: <20090315172818.022a5838@frodo.mittelerde>
+References: <20090315172818.022a5838@frodo.mittelerde>
+Message-ID: <20090315222209.49901730@frodo.mittelerde>
+
+Am Sun, 15 Mar 2009 17:28:18 +0100 schrieb Andreas Volz:
+
+> Hello,
+> 
+> I created a small plugin that should display a point feature on the
+> map. Here is a small stripped down example:
+> 
+> http://tux-style.de/tmp/mapnik-kismet/mapnik_kismet.tar.gz
+> 
+> Currently I create the icon at a static position on the map for
+> testing. If I render the map at this position it's not shown and I
+> don't understand why. It seems something is missing. Could you please
+> help me?
+> 
+> In the file are also two XML files available which I use for testing.
+> 
+> From debugging I see that the featureset_ptr is filled and returned.
+> 
+> Any ideas?
+
+Ok, meanwhile I found out that my example coordinates were in the
+wrong format. If I use mercator then it seems to work. :-)
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sun Mar 22 09:42:22 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 22 Mar 2009 09:42:22 +0100
+Subject: [Mapnik-devel] Birdview in Mapnik?
+Message-ID: <20090322094222.17bb6545@frodo.mittelerde>
+
+Hello,
+
+I thought about a birdview in mapnik. Have plans to develop such a
+feature? I don't talk about 3D maps.
+
+In the first idea I would simply scale the map image to generate a
+z-axis. The icon layer I wouldn't do that as I expect it to look
+strange. There I would scale each icon itself regarding it's "z-axis"
+and then draw it.
+
+What do you think?
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sun Mar 22 23:28:25 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 22 Mar 2009 23:28:25 +0100
+Subject: [Mapnik-devel] [Announce] kismet input plugin available in SVN
+Message-ID: <20090322232825.68c395f1@frodo.mittelerde>
+
+Hello,
+
+I've just commited a new input plugin for kismet support. I added a Makefile.am
+for myself. If you need a SConstruct file please add one yourself.
+
+Features:
+---------
+* Connects to a running kismet_server with GPS support activated
+* Displays little WLAN icons on the map.
+
+TODO / Problems:
+----------------
+* Should show WPA/WEP/OPEN WLAN with a different icon
+* Reconnect to kismet_server after disconnect
+* Bounding box envelope isn't used
+* Only shows live found WLAN (no memory/database storage)
+* WGS84->Mercator conversation is hard coded
+* Not yet tested for Win32
+
+Use this minimal XML to display it. For real cases you should integrate
+it into your big XML:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map>
+<Map bgcolor="#b5d0d0" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+
+  <Style name="kismet">
+    <Rule>
+      <MaxScaleDenominator>2000000</MaxScaleDenominator>
+      <MinScaleDenominator>100</MinScaleDenominator>
+      <Filter>[internet_access]='wlan'</Filter>
+      <PointSymbolizer file = "/home/andreas/src/osm/mapnik/symbols/wlan.png" type="png" width="32" height="32" />
+      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="8" fill="#636" dy="-10" halo_radius="1" wrap_width="0"/>
+    </Rule>
+  </Style>
+
+<!-- Layer -->
+
+  <Layer name="kismet" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>kismet</StyleName>
+    <Datasource>
+      <Parameter name="type">kismet</Parameter>
+      <Parameter name="host">localhost</Parameter>
+      <Parameter name="port">2501</Parameter>
+      <Parameter name="estimate_extent">false</Parameter>
+      <Parameter name="extent">-20037508,-19929239,20037508,19929239</Parameter>
+    </Datasource>
+  </Layer>
+
+</Map>
+
+
+You could use this icon if you like. I think it fits well:
+
+http://openclipart.org/people/pinterb7/pinterb7_wlan_accesspoint.svg
+
+Today I drove around for some time in my car and it looks really nice. :-)
+
+My battery was empty before I had a chance to capture a video. But I hope
+to try this again in the next days.
+
+Go out and test the new plugin if you like. I'm really interested in your experiences.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Mon Mar 23 00:26:15 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 23 Mar 2009 00:26:15 +0100
+Subject: [Mapnik-devel] [Announce] kismet input plugin available in SVN
+In-Reply-To: <20090322232825.68c395f1@frodo.mittelerde>
+References: <20090322232825.68c395f1@frodo.mittelerde>
+Message-ID: <20090323002615.60c8dfb1@frodo.mittelerde>
+
+Am Sun, 22 Mar 2009 23:28:25 +0100 schrieb Andreas Volz:
+
+> Hello,
+> 
+> I've just commited a new input plugin for kismet support. I added a
+> Makefile.am for myself. If you need a SConstruct file please add one
+> yourself.
+> 
+> ...
+> 
+> TODO / Problems:
+> ----------------
+> ...
+> * WGS84->Mercator conversation is hard coded
+
+==> This one is fixed in SVN (thanks jburgess)
+
+So you need to do this in a XML file:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map>
+<Map bgcolor="#b5d0d0" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+
+  <Style name="kismet">
+    <Rule>
+      <MaxScaleDenominator>2000000</MaxScaleDenominator>
+      <MinScaleDenominator>100</MinScaleDenominator>
+      <Filter>[internet_access]='wlan'</Filter>
+      <PointSymbolizer file = "/home/andreas/src/osm/mapnik/symbols/wlan.png" type="png" width="32" height="32" />
+      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="8" fill="#636" dy="-10" halo_radius="1" wrap_width="0"/>
+    </Rule>
+  </Style>
+
+<!-- Layer -->
+
+  <Layer name="kismet" status="on" srs="+proj=latlong +datum=WGS84">
+    <StyleName>kismet</StyleName>
+    <Datasource>
+      <Parameter name="type">kismet</Parameter>
+      <Parameter name="host">localhost</Parameter>
+      <Parameter name="port">2501</Parameter>
+      <Parameter name="estimate_extent">false</Parameter>
+      <Parameter name="extent">-179,-85,179,85</Parameter>
+    </Datasource>
+  </Layer>
+
+</Map>
+
+BTW: Am I allowed to list and document it here[1] as it's not yet released?
+
+[1] http://trac.mapnik.org/wiki/PluginArchitecture
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Fri Mar 27 00:41:16 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 27 Mar 2009 00:41:16 +0100
+Subject: [Mapnik-devel] Missing header files in SVN
+Message-ID: <20090327004116.08a290ae@frodo.mittelerde>
+
+Hello,
+
+I found errors while compiling stuff in utils:
+
+In file included from main.cpp:25:
+pgsql2sqlite.hpp:29:34: error: connection_manager.hpp: No such file or directory
+pgsql2sqlite.hpp:30:31: error: cursorresultset.hpp: No such file or
+directory
+
+...and...
+
+shapeindex.cpp:34:25: Fehler: shapefile.hpp: No such file or directory
+shapeindex.cpp:35:24: Fehler: shape_io.hpp: No such file or directory
+
+Are there files missing in SVN?
+
+regards
+Andreas
+
+
+From blake at hailmail.net  Mon Mar 30 07:36:51 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 29 Mar 2009 22:36:51 -0700
+Subject: [Mapnik-devel] Updated Mapnik Python API documentation
+Message-ID: <231382C5-7049-4A9B-A626-952C136DC8BC@hailmail.net>
+
+Mapnik-dev,
+
+In prep for the 0.6.0 release, I've replaced the old 'docs/epydocs'  
+folder in trunk with a newly generated set of HTML api docs generated  
+with epydoc.
+
+These are still woefully lacking in proper docstrings for many  
+important classes, but I've worked hard to start on method and  
+property docstrings for at least the Map [1] and Layer [2] classes  
+(see the bottom of their pages), and the major functions, which appear  
+on the main page here:
+
+http://svn.mapnik.org/trunk/docs/api_docs/python/index.html
+
+Log any thoughts/comments/problems here: http://trac.mapnik.org/ticket/265
+
+Dane
+
+[1] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Map-class.html
+[2] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Layer-class.html
+
+
+From kleptog at gmail.com  Mon Mar 30 12:24:24 2009
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Mon, 30 Mar 2009 12:24:24 +0200
+Subject: [Mapnik-devel] Updated Mapnik Python API documentation
+In-Reply-To: <231382C5-7049-4A9B-A626-952C136DC8BC@hailmail.net>
+References: <231382C5-7049-4A9B-A626-952C136DC8BC@hailmail.net>
+Message-ID: <2fc2c5f10903300324p75683657l7f7bfd3ae06260c2@mail.gmail.com>
+
+Awesome, nice work. The python interface documentation has been
+somewhat lacking  :)
+
+Mvg,
+
+On Mon, Mar 30, 2009 at 7:36 AM, Dane Springmeyer <blake at hailmail.net> wrote:
+> Mapnik-dev,
+>
+> In prep for the 0.6.0 release, I've replaced the old 'docs/epydocs'
+> folder in trunk with a newly generated set of HTML api docs generated
+> with epydoc.
+>
+> These are still woefully lacking in proper docstrings for many
+> important classes, but I've worked hard to start on method and
+> property docstrings for at least the Map [1] and Layer [2] classes
+> (see the bottom of their pages), and the major functions, which appear
+> on the main page here:
+>
+> http://svn.mapnik.org/trunk/docs/api_docs/python/index.html
+>
+> Log any thoughts/comments/problems here: http://trac.mapnik.org/ticket/265
+>
+> Dane
+>
+> [1] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Map-class.html
+> [2] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Layer-class.html
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From blake at hailmail.net  Tue Mar 31 00:32:14 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 30 Mar 2009 15:32:14 -0700
+Subject: [Mapnik-devel] SVN account/password
+In-Reply-To: <931913.27155.qm@web26608.mail.ukl.yahoo.com>
+References: <931913.27155.qm@web26608.mail.ukl.yahoo.com>
+Message-ID: <57E2EAA0-FC52-4BA1-8790-5C288D401C3D@hailmail.net>
+
+Hey Nick,
+
+Osm plugin is looking good. Do you think you could take a look at:
+
+http://trac.mapnik.org/ticket/275
+
+Thanks,
+Dane
+
+
+On Feb 15, 2009, at 2:38 AM, Nick Whitelegg wrote:
+
+>
+> Have got some new OSM plugin code I'd like to commit. Have committed  
+> to Mapnik SVN before, but almost a year ago now. Do I need a  
+> password, or an SSH key? Tried using the SSH key from last year,  
+> though I'm on a different machine now (albeit with the same IP  
+> address) but it's still asking for a password. If a password is  
+> required, could I have an account, or alternatively, could someone  
+> remind me of the procedure for committing using an SSH key?
+>
+> Thanks,
+> Nick
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090330/69ec35b9/attachment.html>
+
+From blake at hailmail.net  Tue Mar 31 00:34:21 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 30 Mar 2009 15:34:21 -0700
+Subject: [Mapnik-devel] initial OGR support,
+	needs testing and happy  coders to improve support
+In-Reply-To: <93db2faf0901290052h5aa75590gb71d107d64f6f27f@mail.gmail.com>
+References: <93db2faf0901270654w141c1131x1b87f218988811d7@mail.gmail.com>
+	<E1D861B8-13AE-44ED-B186-3BCB9958EAC1@hailmail.net>
+	<93db2faf0901290052h5aa75590gb71d107d64f6f27f@mail.gmail.com>
+Message-ID: <DB46E11A-FA7F-49EC-99DE-AFABEB6597DC@hailmail.net>
+
+Hey Lucio,
+
+Do you think you could quickly write up some docstrings for the OCCI  
+plugin?
+
+http://trac.mapnik.org/ticket/274
+
+Also would be great if you could review what I added for the OGR plugin.
+
+Thanks!
+
+Dane
+
+On Jan 29, 2009, at 12:52 AM, kRAkEn/gORe wrote:
+
+> nice, 3rd patch is waiting for your consideration :)
+>
+>
+> On Wed, Jan 28, 2009 at 8:51 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+> Hi Lucio,
+>
+> Thanks so much for the patch!
+>
+> The second patch linked from http://trac.mapnik.org/ticket/170, I've  
+> applied to trunk with minor modifications.
+>
+> This is a fantastic thing to have in the next 0.6.0 release, so I  
+> look forward to testing further.
+>
+> Dane
+>
+>
+> On Jan 27, 2009, at 6:54 AM, kRAkEn/gORe wrote:
+>
+>> hi to all
+>> i'm new to mapnik and i need some hard coder to check out an input  
+>> plugin, i wrote the ogr (feature) plugin and i need someone to test  
+>> it.
+>> i've started implementing this 1 hour ago off my head, and i'll  
+>> probably made some mistakes but sure it could be useful as starting  
+>> point.
+>>
+>> i cannot test right now cause i'm having some problems when running  
+>> my scons compiled version of mapnik:
+>>
+>>     http://pastebin.com/m202ba10b
+>>
+>> (using my distro packages works as expected but compiling by hand  
+>> is doing this, and my python is 2.5.2 only... no others).
+>>
+>> anyway i'll apreciate any ideas and fix to my code (probably things  
+>> can be done clearer too), especially i don't know if the ogr_features
+>> conversion from ogr (unsigned char* WKB) to mapnik (char* WKB) is  
+>> correct.
+>>
+>> cheers
+>>
+>> Lucio Asnaghi
+>> < 
+>> ogr_input_plugin 
+>> .tar.gz>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090330/ad754d9b/attachment.html>
+

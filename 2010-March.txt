@@ -1,0 +1,4147 @@
+From Simpson.Brad at geoeye.com  Tue Mar  9 01:02:25 2010
+From: Simpson.Brad at geoeye.com (Simpson Brad-C-Lockheed)
+Date: Mon, 8 Mar 2010 17:02:25 -0700
+Subject: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+In-Reply-To: <B5B5EDE0-CF1A-419E-9076-081AF8C41655@hailmail.net>
+References: <4B420E4877773244A5DE388033C7E8002ECC9CA30B@MS1.geoeye.com>
+	<AB0A1897-A8EF-40DB-8DB2-0D3E28D3578B@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F13FC8713@MS1.geoeye.com>
+	<D2C1AA8F-DDC8-45D3-ABCE-C52BD4E10365@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F13FC8E87@MS1.geoeye.com>
+	<A2E219BA-9E22-495F-8EB0-11811628E9C1@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F13FC8F7A@MS1.geoeye.com>
+	<F3D8DFB7-C738-4297-9B9D-84452DC2034E@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F13FC8FC6@MS1.geoeye.com>
+	<8B505F90-8106-475F-978F-79ACE71CF7CF@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F140B5192@MS1.geoeye.com>
+	<03DD2A56-1301-42CC-A7CD-570ACB0ECD54@hailmail.net>
+	<4B420E4877773244A5DE388033C7E8002F141587F2@MS1.geoeye.com>
+	<B5B5EDE0-CF1A-419E-9076-081AF8C41655@hailmail.net>
+Message-ID: <4B420E4877773244A5DE388033C7E8002F154F118F@MS1.geoeye.com>
+
+Dane,
+
+I attached the output of scons (running with the ignore errors option) and the script I used to build Mapnik.  The build script is essentially the scons output after a set of group edits, plus adding some echo statements to track progress.  Perhaps this could be of help to the developers.
+
+I have a couple more issues:
+
+[1]  I noticed Mapnik will encounter a segment violation if the xml I provide has errors.  Since you can't catch segment violations in a try-catch block, does Mapnik provide a way of checking xml before trying to render it?
+
+[2]  I'm using the LinePatterSymbolizer to render railroad tracks.  It actually looks pretty good.  However, I had to use a tiff file for the pattern instead of a png file.  The png file resulted in no output, and no error.  When I switched to the tiff file I got the expected result.  Is this a known Mapnik problem?  [I believe I'm generating png files correctly since they work with the PointSymbolizer correctly, plus I'm generating the railroad tiff file from a png file.]
+
+Brad
+
+From: Dane Springmeyer [mailto:blake at hailmail.net]
+Sent: Friday, February 26, 2010 11:17 AM
+To: Simpson Brad-C-Lockheed
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+
+Hi Brad,
+
+On Feb 25, 2010, at 2:45 PM, Simpson Brad-C-Lockheed wrote:
+
+
+Hi Dane,
+
+Good suggestion about building under Linux to see if the same problems occur.  It turns out I built Mapnik under Linux when I was first evaluating it.  However, none of the initial work involved Mico.
+
+Okay, good to know.
+
+
+In fact, we may not have the source to Mico v2.3.7 in order to build it under Linux.  [Mico was supplied to us on our HP-UX systems pre-built.]  Perhaps I can find it on the web.  We are going to have a meeting Monday, however, to discuss upgrading to a newer multithreaded version of Mico.  So all of this may be overcome by events.
+
+Okay, I hope that these possibilities can help you out.
+
+
+
+Regarding using SCons to build Mapnik under HP-UX, unfortunately I lost the notes on the modifications to the SCons directories [over zealous during code cleanup].  I had to make changes to various files in the scons/scons-local-1.2.0/SCons area.  Even though the gnu compiler was installed, scons was trying to use the aCC compiler.
+
+Ah, okay, this sounds similar to SCons bug that I've also seen affect Solaris. In the future you could try installing the latest SCons on your system and then instead of running the "local" scons just do:
+
+scons configure && scons install
+
+Our local copy is just for convenience and perhaps the latest scons sources have addressed this issue.
+
+
+I fixed the compiler choice, but the arguments for compilation and linking had unrecognized options.
+
+Okay, which may be a problem with some of the flags in our Scons implementation specific to Mapnik.
+
+
+  After playing with it for a bit and getting frustrated, I finally decided to build with the ignore errors options.  I  saved all the commands into a file, made group edits, and ended up with a working build script.  I can send a copy of this script if desired.
+
+Sure, it would be a good reference at the least. I won't  have access to an HP-UX machine to test anytime soon, but perhaps others might benefit.
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: build
+Type: application/octet-stream
+Size: 70595 bytes
+Desc: build
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sconsBuild.log
+Type: application/octet-stream
+Size: 67587 bytes
+Desc: sconsBuild.log
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100308/80be87ae/attachment-0001.obj>
+
+From artem at mapnik.org  Tue Mar  9 14:00:58 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 9 Mar 2010 13:00:58 +0000
+Subject: [Mapnik-devel] Mapnik for Mobile
+In-Reply-To: <4B84447D.4060305@stormtide.ca>
+References: <4B84447D.4060305@stormtide.ca>
+Message-ID: <7e70f38d1003090500jf854f1dke458aa9b9efc67ed@mail.gmail.com>
+
+This post got lost somehow. Re-posting:
+
+On 23 February 2010 21:11, Kevin McArthur <kevin at stormtide.ca> wrote:
+> Hi Everyone,
+>
+> I'm currently working on an Offline Marine Mapping (S-57/S-52) project
+> for iPhone OS and Mapnik's rendering engine would be ideal. However,
+> there's a snag -- Mapnik is licensed under the LGPL, and iPhone
+> applications are required to be statically linked for sale in the App
+> Store. In my case, this would mean releasing application code publicly
+> should I choose to include Mapnik in my project.
+>
+> I'm not sure if there is any room for variance in the licensing
+> conditions for Mapnik -- but other LGPL projects like cocos2d (
+> http://www.cocos2d-iphone.org/wiki/doku.php/faq ) have created static
+> linking exemptions while still maintaining the copyleft ideals. I'm
+> happy to contribute what I can to further the development of the mapnik
+> libraries, but for it to be useful in my application development, I
+> would need a similar license exemption.
+>
+> Admittedly, with the iPhone DRM system, and such an exemption, the
+> ability to modify a released application is restricted [eg to apply a
+> newer version of mapnik] -- so this may be a negative consideration in
+> granting such an exemption for those F/LOSS purists. So with that said,
+> I hope the reason for selecting the LGPL was more about
+> change-the-library-release-your-changes than the freedom-to-tinker thing
+> -- but I'll leave that decision as an exercise to the list.
+>
+> Is there any interest in creating an iPhone compatible version of Mapnik
+> with a static linking exemption?
+>
+> --
+>
+> Kevin McArthur
+> Director
+> StormTide Digital Studios Inc
+> http://www.stormtide.ca
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From blake at hailmail.net  Tue Mar  9 20:58:51 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 9 Mar 2010 11:58:51 -0800
+Subject: [Mapnik-devel] Mapnik and Google Summer of Code 2010
+Message-ID: <4E3C0E58-BD0F-42B9-B083-C28FAA5EA8AC@hailmail.net>
+
+Okay,
+
+Google Summer of Code 2010 was announced yesterday [1], and  
+organizations have until friday to submit applications.
+
+It is essential that any Mapnik users that are interested in mentoring  
+a project (or just have project ideas), please TODAY or TOMORROW, add  
+to this page:
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas
+
+and skim:
+
+http://trac.mapnik.org/wiki/GSOC2010
+
+I think we generally in good shape on the application, but I would  
+welcome any feedback (or edits):
+
+http://trac.mapnik.org/wiki/GSOC2010/Application
+
+Also, the OSGEO foundation has successfully been involved with GSOC  
+for the last several years and have also applied with some project  
+ideas involving Mapnik:
+
+http://wiki.osgeo.org/wiki/OSGeo_Cartographic_Engine#Ideas_for_Summer_of_Code_2010_Project
+
+Hopefully we'll both get accepted and mentors can encourage cross  
+collaboration between several students, but possibly also just focus  
+resources on the issues in Mapnik that are shared: notably multi- 
+resolution/scalable output for vector formats and paper printing.
+
+Please, please edit the wiki(s) with any thoughts. Extra points for  
+condensing ideas and cross-linking!
+
+Thanks,
+
+Dane
+
+[1] http://google-opensource.blogspot.com/2010/03/google-summer-of-code-applications-now.html
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100309/9ca641e3/attachment.html>
+
+From blake at hailmail.net  Tue Mar  9 22:45:30 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 9 Mar 2010 13:45:30 -0800
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik and Google Summer of Code
+	2010
+In-Reply-To: <4E3C0E58-BD0F-42B9-B083-C28FAA5EA8AC@hailmail.net>
+References: <4E3C0E58-BD0F-42B9-B083-C28FAA5EA8AC@hailmail.net>
+Message-ID: <20FA0A2E-27EE-4BEE-89FB-DD581CB541F2@hailmail.net>
+
+Hey All,
+
+If you are thinking this sounds great, but your'e not sure what it  
+means to be a mentor, here is a great summary:
+
+...from: http://en.flossmanuals.net/GSoCMentoringGuide
+
+"Mentor: Mentors are those people from the community who volunteer to  
+work with a student. Mentors provide guidance such as pointers to  
+useful documentation, code reviews, etc. In addition to providing  
+students with feedback and pointers, a mentor acts as an ambassador to  
+help student contributors integrate into their project's community.  
+Some organizations choose to assign more than one mentor to each of  
+their students. Many members of the community provide guidance to  
+their project's GSoC students without mentoring in an "official"  
+capacity, much as they would answer anyone's questions on the project  
+mailing list or IRC channel."
+
+I think this idea of having two mentors is particularly relevant for  
+Mapnik, one focused on interacting and advising the student (the lead  
+mentor) and another who can support the lead mentor with understanding  
+the Mapnik C++ internals (if needed).
+
+Several ideas listed by Mike and Tom at the current page seem like a  
+good fit for this:
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas
+
+I would be happy to be a supporting member for you guys from the 'C++  
+internals point of view,' and the "how could this work in Mapnik point  
+of view"
+
+Are there others that could also take this role? Provided C++/ 
+feasibility support specifically?
+
+Dane
+
+
+
+On Mar 9, 2010, at 11:58 AM, Dane Springmeyer wrote:
+
+> Okay,
+>
+> Google Summer of Code 2010 was announced yesterday [1], and  
+> organizations have until friday to submit applications.
+>
+> It is essential that any Mapnik users that are interested in  
+> mentoring a project (or just have project ideas), please TODAY or  
+> TOMORROW, add to this page:
+>
+> http://trac.mapnik.org/wiki/GSOC2010/Ideas
+>
+> and skim:
+>
+> http://trac.mapnik.org/wiki/GSOC2010
+>
+> I think we generally in good shape on the application, but I would  
+> welcome any feedback (or edits):
+>
+> http://trac.mapnik.org/wiki/GSOC2010/Application
+>
+> Also, the OSGEO foundation has successfully been involved with GSOC  
+> for the last several years and have also applied with some project  
+> ideas involving Mapnik:
+>
+> http://wiki.osgeo.org/wiki/OSGeo_Cartographic_Engine#Ideas_for_Summer_of_Code_2010_Project
+>
+> Hopefully we'll both get accepted and mentors can encourage cross  
+> collaboration between several students, but possibly also just focus  
+> resources on the issues in Mapnik that are shared: notably multi- 
+> resolution/scalable output for vector formats and paper printing.
+>
+> Please, please edit the wiki(s) with any thoughts. Extra points for  
+> condensing ideas and cross-linking!
+>
+> Thanks,
+>
+> Dane
+>
+> [1] http://google-opensource.blogspot.com/2010/03/google-summer-of-code-applications-now.html
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From dane.springmeyer at gmail.com  Tue Mar  9 20:56:36 2010
+From: dane.springmeyer at gmail.com (Dane Springmeyer)
+Date: Tue, 9 Mar 2010 11:56:36 -0800
+Subject: [Mapnik-devel] Mapnik and Google Summer of Code
+Message-ID: <925C1C51-4955-4EEA-BCC7-10686B74060B@gmail.com>
+
+Okay,
+
+Google Summer of Code 2010 was announced yesterday [1], and  
+organizations have until friday to submit applications.
+
+It is essential that any Mapnik users that are interested in mentoring  
+a project (or just have project ideas), please TODAY or TOMORROW, add  
+to this page:
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas
+
+and skim:
+
+http://trac.mapnik.org/wiki/GSOC2010
+
+I think we generally in good shape on the application, but I would  
+welcome any feedback (or edits):
+
+http://trac.mapnik.org/wiki/GSOC2010/Application
+
+Also, the OSGEO foundation has successfully been involved with GSOC  
+for the last several years and have also applied with some project  
+ideas involving Mapnik:
+
+http://wiki.osgeo.org/wiki/OSGeo_Cartographic_Engine#Ideas_for_Summer_of_Code_2010_Project
+
+Hopefully we'll both get accepted and mentors can encourage cross  
+collaboration between several students, but possibly also just focus  
+resources on the issues in Mapnik that are shared: notably multi- 
+resolution/scalable output for vector formats and paper printing.
+
+Please, please edit the wiki(s) with any thoughts. Extra points for  
+condensing ideas and cross-linking!
+
+Thanks,
+
+Dane
+
+[1] http://google-opensource.blogspot.com/2010/03/google-summer-of-code-applications-now.html
+
+
+
+
+From anatolecadet at msn.com  Wed Mar 10 17:05:23 2010
+From: anatolecadet at msn.com (Anatole)
+Date: Wed, 10 Mar 2010 08:05:23 -0800 (PST)
+Subject: [Mapnik-devel] installing mapnik
+Message-ID: <27851868.post@talk.nabble.com>
+
+
+Hello everyboy,
+
+I'm new in MapNik. when i
+Run "C:\Python25\python.exe" , then type at a python prompt: from mapnik
+import *
+I receive an error.
+
+Could you help me please?
+Here's the link i follow : http://trac.mapnik.org/wiki/WindowsInstallation
+
+Thank you
+ 
+-- 
+View this message in context: http://old.nabble.com/installing-mapnik-tp27851868p27851868.html
+Sent from the Mapnik - Devel mailing list archive at Nabble.com.
+
+
+
+From blake at hailmail.net  Wed Mar 10 18:12:47 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 10 Mar 2010 09:12:47 -0800
+Subject: [Mapnik-devel] test
+Message-ID: <9D152BC3-B26B-4B60-8D99-B123B2821F56@hailmail.net>
+
+testing to make sure the lag in messages arriving to mapnik-devel is  
+gone....
+
+please ignore.
+
+dane
+
+
+
+From mrudowski1 at gmail.com  Thu Mar 11 01:38:55 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Thu, 11 Mar 2010 01:38:55 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing user options
+Message-ID: <4B983B9F.5020809@gmail.com>
+
+Hi,
+
+In http://trac.mapnik.org/ticket/477 few months ago I presented fixes
+adding basic semi alpha support, that are already included in 0.7.0.
+
+Today I attached patch adding full support using hextree instead of
+octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+I used some new approaches with tree reduction and color quantization,
+to limit negative effects: time and file size increase.
+
+As proposed in mentioned ticket, I also added support for user control
+over some parameters of quantization algorithm using image type string.
+Parsed options are separated with ':' and based on existing discussion I
+added support for those in png256:
+
+- c=256 - limit number of colors (default 256), works with octree and
+hextree
+
+- t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+2-full alfa range, default is 2, works with octree and hextree
+
+- m=o - choose quantization method, available options: o-existing
+octree, h-new hextree with optimizations, default is octree
+
+- g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+method, default value 2.0 worked best with most of my test images, value
+1.0 means no gamma correction.
+
+So tu use new format i.e. in python:
+  view.save("test.png",'png256:m=h')
+or other example in c++:
+  save_to_file(vw, "test.png", "png256:t=1:c=128");
+
+
+What I'm asking now is what do You thing about such parameters and what
+about names: full or one letter like above? I have also some doubts
+about name of m parameter(method?) but q as for quantization could be
+mistaken for quality.
+
+
+As for hextree, new method should give more smooth images in case of
+transparent maps i.e. hybrid like overlayed on some satellite images.
+Also used optimization should help with maps using hillshading or any
+form of rasters with gradients. Actually was my biggest motivation for
+changes: to improve tiles like that:
+  http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png
+and now it looks:
+  http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png
+Difference in transparency support is less noticeable in common maps
+(look at edge of red line):
+  http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png
+after changes:
+  http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png
+
+Time and file size increase or decrease depends on content and image
+size, but shouldn't be much in common situation. However I decided to
+make old behaviour default, because for most maps without transparent
+background or elevation colored/shaded rasters, existing method should
+give acceptable and little bit smaller files.
+
+Using less than 64-94 colors is not recommended, because returned
+palette isn't optimal then. Using 96-128 should give acceptable quality
+with some file size reduction, but probably not more then 10%-20%.
+
+
+If mentioned changes are acceptable, especially proposed parameters, I
+will apply it to 0.7.1 and soon port to trunk code. Also some testing
+and feedback would be nice. I did my test with different cases, but they
+were rather corner cases.
+
+Best regards,
+Marcin Rudowski
+
+
+From artem at mapnik.org  Thu Mar 11 11:27:34 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 11 Mar 2010 10:27:34 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <4B983B9F.5020809@gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+Message-ID: <7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+
+On 11 March 2010 00:38, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+> Hi,
+>
+> In http://trac.mapnik.org/ticket/477 few months ago I presented fixes
+> adding basic semi alpha support, that are already included in 0.7.0.
+>
+> Today I attached patch adding full support using hextree instead of
+> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+> I used some new approaches with tree reduction and color quantization,
+> to limit negative effects: time and file size increase.
+>
+> As proposed in mentioned ticket, I also added support for user control
+> over some parameters of quantization algorithm using image type string.
+> Parsed options are separated with ':' and based on existing discussion I
+> added support for those in png256:
+>
+> - c=256 - limit number of colors (default 256), works with octree and
+> hextree
+>
+> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+> 2-full alfa range, default is 2, works with octree and hextree
+>
+> - m=o - choose quantization method, available options: o-existing
+> octree, h-new hextree with optimizations, default is octree
+>
+> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+> method, default value 2.0 worked best with most of my test images, value
+> 1.0 means no gamma correction.
+>
+> So tu use new format i.e. in python:
+> ?view.save("test.png",'png256:m=h')
+> or other example in c++:
+> ?save_to_file(vw, "test.png", "png256:t=1:c=128");
+>
+>
+> What I'm asking now is what do You thing about such parameters and what
+> about names: full or one letter like above? I have also some doubts
+> about name of m parameter(method?) but q as for quantization could be
+> mistaken for quality.
+>
+>
+> As for hextree, new method should give more smooth images in case of
+> transparent maps i.e. hybrid like overlayed on some satellite images.
+> Also used optimization should help with maps using hillshading or any
+> form of rasters with gradients. Actually was my biggest motivation for
+> changes: to improve tiles like that:
+> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png
+> and now it looks:
+> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png
+> Difference in transparency support is less noticeable in common maps
+> (look at edge of red line):
+> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png
+> after changes:
+> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png
+>
+> Time and file size increase or decrease depends on content and image
+> size, but shouldn't be much in common situation. However I decided to
+> make old behaviour default, because for most maps without transparent
+> background or elevation colored/shaded rasters, existing method should
+> give acceptable and little bit smaller files.
+>
+> Using less than 64-94 colors is not recommended, because returned
+> palette isn't optimal then. Using 96-128 should give acceptable quality
+> with some file size reduction, but probably not more then 10%-20%.
+>
+>
+> If mentioned changes are acceptable, especially proposed parameters, I
+> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+> and feedback would be nice. I did my test with different cases, but they
+> were rather corner cases.
+>
+
+Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+
+I like extra parameters for image writers, not sure what's the best approach :
+
+png256:t=1:c=128  ( similar to proj4 syntax, compact but cryptic)
+
+or perhaps longer but more user friendly (separate named parameters,
+more typing but clearer meaning):
+
+type='png' colors=128  transparency_mode=1
+
+Not sure myself ???
+
+Also, png256 seems wrong name generally.
+
+Artem
+
+> Marcin Rudowski
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From mrudowski1 at gmail.com  Thu Mar 11 12:18:21 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Thu, 11 Mar 2010 12:18:21 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+	<7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+Message-ID: <aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+
+2010/3/11 Artem Pavlenko <artem at mapnik.org>:
+> On 11 March 2010 00:38, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+>> Hi,
+>>
+>> In http://trac.mapnik.org/ticket/477 few months ago I presented fixes
+>> adding basic semi alpha support, that are already included in 0.7.0.
+>>
+>> Today I attached patch adding full support using hextree instead of
+>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+>> I used some new approaches with tree reduction and color quantization,
+>> to limit negative effects: time and file size increase.
+>>
+>> As proposed in mentioned ticket, I also added support for user control
+>> over some parameters of quantization algorithm using image type string.
+>> Parsed options are separated with ':' and based on existing discussion I
+>> added support for those in png256:
+>>
+>> - c=256 - limit number of colors (default 256), works with octree and
+>> hextree
+>>
+>> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+>> 2-full alfa range, default is 2, works with octree and hextree
+>>
+>> - m=o - choose quantization method, available options: o-existing
+>> octree, h-new hextree with optimizations, default is octree
+>>
+>> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+>> method, default value 2.0 worked best with most of my test images, value
+>> 1.0 means no gamma correction.
+>>
+>> So tu use new format i.e. in python:
+>> ?view.save("test.png",'png256:m=h')
+>> or other example in c++:
+>> ?save_to_file(vw, "test.png", "png256:t=1:c=128");
+>>
+>>
+>> What I'm asking now is what do You thing about such parameters and what
+>> about names: full or one letter like above? I have also some doubts
+>> about name of m parameter(method?) but q as for quantization could be
+>> mistaken for quality.
+>>
+>>
+>> As for hextree, new method should give more smooth images in case of
+>> transparent maps i.e. hybrid like overlayed on some satellite images.
+>> Also used optimization should help with maps using hillshading or any
+>> form of rasters with gradients. Actually was my biggest motivation for
+>> changes: to improve tiles like that:
+>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png
+>> and now it looks:
+>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png
+>> Difference in transparency support is less noticeable in common maps
+>> (look at edge of red line):
+>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png
+>> after changes:
+>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png
+>>
+>> Time and file size increase or decrease depends on content and image
+>> size, but shouldn't be much in common situation. However I decided to
+>> make old behaviour default, because for most maps without transparent
+>> background or elevation colored/shaded rasters, existing method should
+>> give acceptable and little bit smaller files.
+>>
+>> Using less than 64-94 colors is not recommended, because returned
+>> palette isn't optimal then. Using 96-128 should give acceptable quality
+>> with some file size reduction, but probably not more then 10%-20%.
+>>
+>>
+>> If mentioned changes are acceptable, especially proposed parameters, I
+>> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+>> and feedback would be nice. I did my test with different cases, but they
+>> were rather corner cases.
+>>
+>
+> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+>
+
+Great to hear.
+
+I'm using 0.7.1 for development, because it is easier for me (no need
+to compile separate boost for mapnik).
+Except for eventual naming conventions it is quite ready to commit to
+0.7.1 and also it doesn't change anything with default values. To use
+new features one must change format parameters in his application, so
+nothing should be broken.
+Dane, what do You think? (CC in case of list lags).
+
+Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+code doesn't differ much, mostly changes in types names.
+
+> I like extra parameters for image writers, not sure what's the best approach :
+>
+> png256:t=1:c=128 ?( similar to proj4 syntax, compact but cryptic)
+>
+> or perhaps longer but more user friendly (separate named parameters,
+> more typing but clearer meaning):
+>
+> type='png' colors=128 ?transparency_mode=1
+>
+> Not sure myself ???
+
+I considered passing parameters with format/type parameter in two ways:
+- short: "png256:c=128:t=1" or "jpeg:q=85" (alternative to current jpeg85)
+- long: "png256:colors=128:transparency=1" or "jpeg:quality=85"
+
+I implemented first one, because I imagined situation of passing
+format to rendering service in url (wms?) and first one is more
+compact. But = could be problem in urls, maybe just omit it (ie:
+"png256:c128:t1:o", "png256:c96:h", "png256:colors128:hextree")?
+
+As I think about it now, best of two is two use both :) so short and
+long names could be accepted. About '=' I'm not sure.
+
+>
+> Also, png256 seems wrong name generally.
+>
+
+My proposition is png8 for indexed png format. With 16 colors or less
+it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+image with max 256 colors.
+
+For compatibility, png256 should be also recognized, i.e. it would be
+synonym of png8:c=256 and could accept other parameters, except number
+of colors (or not).
+
+-- 
+Marcin Rudowski
+
+
+From artem at mapnik.org  Thu Mar 11 17:19:21 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 11 Mar 2010 16:19:21 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+	<7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+	<aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+Message-ID: <7e70f38d1003110819m298a6ffdn64aa3658a6449e48@mail.gmail.com>
+
+Hi Marcin,
+
+I'm getting a few errors compiling 0.7.1 + your hex-tree patch on
+windows.  Basically, vc++ doesn't allow declarations like:
+
+unsigned limits[TRANSPARENCY_LEVELS+1];
+
+where TRANSPARENCY_LEVELS is not static. I'm not sure what size for
+the array gcc pick ups in this case but it's seems reasonable
+constraint. It can be fixed by using std::vector<> or make the whole
+method templated on number of transparency levels etc.
+Do you have time to fix this for 0.7.1 release?
+
+re: naming - I'm fine with your proposed schema for the current
+release, we can always look into this later on.
+
+Regards,
+Artem
+
+On 11 March 2010 11:18, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+> 2010/3/11 Artem Pavlenko <artem at mapnik.org>:
+>> On 11 March 2010 00:38, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+>>> Hi,
+>>>
+>>> In http://trac.mapnik.org/ticket/477 few months ago I presented fixes
+>>> adding basic semi alpha support, that are already included in 0.7.0.
+>>>
+>>> Today I attached patch adding full support using hextree instead of
+>>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+>>> I used some new approaches with tree reduction and color quantization,
+>>> to limit negative effects: time and file size increase.
+>>>
+>>> As proposed in mentioned ticket, I also added support for user control
+>>> over some parameters of quantization algorithm using image type string.
+>>> Parsed options are separated with ':' and based on existing discussion I
+>>> added support for those in png256:
+>>>
+>>> - c=256 - limit number of colors (default 256), works with octree and
+>>> hextree
+>>>
+>>> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+>>> 2-full alfa range, default is 2, works with octree and hextree
+>>>
+>>> - m=o - choose quantization method, available options: o-existing
+>>> octree, h-new hextree with optimizations, default is octree
+>>>
+>>> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+>>> method, default value 2.0 worked best with most of my test images, value
+>>> 1.0 means no gamma correction.
+>>>
+>>> So tu use new format i.e. in python:
+>>> ?view.save("test.png",'png256:m=h')
+>>> or other example in c++:
+>>> ?save_to_file(vw, "test.png", "png256:t=1:c=128");
+>>>
+>>>
+>>> What I'm asking now is what do You thing about such parameters and what
+>>> about names: full or one letter like above? I have also some doubts
+>>> about name of m parameter(method?) but q as for quantization could be
+>>> mistaken for quality.
+>>>
+>>>
+>>> As for hextree, new method should give more smooth images in case of
+>>> transparent maps i.e. hybrid like overlayed on some satellite images.
+>>> Also used optimization should help with maps using hillshading or any
+>>> form of rasters with gradients. Actually was my biggest motivation for
+>>> changes: to improve tiles like that:
+>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png
+>>> and now it looks:
+>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png
+>>> Difference in transparency support is less noticeable in common maps
+>>> (look at edge of red line):
+>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png
+>>> after changes:
+>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png
+>>>
+>>> Time and file size increase or decrease depends on content and image
+>>> size, but shouldn't be much in common situation. However I decided to
+>>> make old behaviour default, because for most maps without transparent
+>>> background or elevation colored/shaded rasters, existing method should
+>>> give acceptable and little bit smaller files.
+>>>
+>>> Using less than 64-94 colors is not recommended, because returned
+>>> palette isn't optimal then. Using 96-128 should give acceptable quality
+>>> with some file size reduction, but probably not more then 10%-20%.
+>>>
+>>>
+>>> If mentioned changes are acceptable, especially proposed parameters, I
+>>> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+>>> and feedback would be nice. I did my test with different cases, but they
+>>> were rather corner cases.
+>>>
+>>
+>> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+>> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+>>
+>
+> Great to hear.
+>
+> I'm using 0.7.1 for development, because it is easier for me (no need
+> to compile separate boost for mapnik).
+> Except for eventual naming conventions it is quite ready to commit to
+> 0.7.1 and also it doesn't change anything with default values. To use
+> new features one must change format parameters in his application, so
+> nothing should be broken.
+> Dane, what do You think? (CC in case of list lags).
+>
+> Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+> code doesn't differ much, mostly changes in types names.
+>
+>> I like extra parameters for image writers, not sure what's the best approach :
+>>
+>> png256:t=1:c=128 ?( similar to proj4 syntax, compact but cryptic)
+>>
+>> or perhaps longer but more user friendly (separate named parameters,
+>> more typing but clearer meaning):
+>>
+>> type='png' colors=128 ?transparency_mode=1
+>>
+>> Not sure myself ???
+>
+> I considered passing parameters with format/type parameter in two ways:
+> - short: "png256:c=128:t=1" or "jpeg:q=85" (alternative to current jpeg85)
+> - long: "png256:colors=128:transparency=1" or "jpeg:quality=85"
+>
+> I implemented first one, because I imagined situation of passing
+> format to rendering service in url (wms?) and first one is more
+> compact. But = could be problem in urls, maybe just omit it (ie:
+> "png256:c128:t1:o", "png256:c96:h", "png256:colors128:hextree")?
+>
+> As I think about it now, best of two is two use both :) so short and
+> long names could be accepted. About '=' I'm not sure.
+>
+>>
+>> Also, png256 seems wrong name generally.
+>>
+>
+> My proposition is png8 for indexed png format. With 16 colors or less
+> it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+> image with max 256 colors.
+>
+> For compatibility, png256 should be also recognized, i.e. it would be
+> synonym of png8:c=256 and could accept other parameters, except number
+> of colors (or not).
+>
+> --
+> Marcin Rudowski
+>
+
+
+From artem at mapnik.org  Thu Mar 11 17:27:18 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 11 Mar 2010 16:27:18 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <7e70f38d1003110819m298a6ffdn64aa3658a6449e48@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+	<7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+	<aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+	<7e70f38d1003110819m298a6ffdn64aa3658a6449e48@mail.gmail.com>
+Message-ID: <7e70f38d1003110827x4743f075se723f1dbd86a3299@mail.gmail.com>
+
+OK, dynamic arrays on stack are in C99, hence fine with gcc , but vc++
+doesn't support C99.
+Artem
+
+On 11 March 2010 16:19, Artem Pavlenko <artem at mapnik.org> wrote:
+> Hi Marcin,
+>
+> I'm getting a few errors compiling 0.7.1 + your hex-tree patch on
+> windows. ?Basically, vc++ doesn't allow declarations like:
+>
+> unsigned limits[TRANSPARENCY_LEVELS+1];
+>
+> where TRANSPARENCY_LEVELS is not static. I'm not sure what size for
+> the array gcc pick ups in this case but it's seems reasonable
+> constraint. It can be fixed by using std::vector<> or make the whole
+> method templated on number of transparency levels etc.
+> Do you have time to fix this for 0.7.1 release?
+>
+> re: naming - I'm fine with your proposed schema for the current
+> release, we can always look into this later on.
+>
+> Regards,
+> Artem
+>
+> On 11 March 2010 11:18, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+>> 2010/3/11 Artem Pavlenko <artem at mapnik.org>:
+>>> On 11 March 2010 00:38, Marcin Rudowski <mrudowski1 at gmail.com> wrote:
+>>>> Hi,
+>>>>
+>>>> In http://trac.mapnik.org/ticket/477 few months ago I presented fixes
+>>>> adding basic semi alpha support, that are already included in 0.7.0.
+>>>>
+>>>> Today I attached patch adding full support using hextree instead of
+>>>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+>>>> I used some new approaches with tree reduction and color quantization,
+>>>> to limit negative effects: time and file size increase.
+>>>>
+>>>> As proposed in mentioned ticket, I also added support for user control
+>>>> over some parameters of quantization algorithm using image type string.
+>>>> Parsed options are separated with ':' and based on existing discussion I
+>>>> added support for those in png256:
+>>>>
+>>>> - c=256 - limit number of colors (default 256), works with octree and
+>>>> hextree
+>>>>
+>>>> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+>>>> 2-full alfa range, default is 2, works with octree and hextree
+>>>>
+>>>> - m=o - choose quantization method, available options: o-existing
+>>>> octree, h-new hextree with optimizations, default is octree
+>>>>
+>>>> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+>>>> method, default value 2.0 worked best with most of my test images, value
+>>>> 1.0 means no gamma correction.
+>>>>
+>>>> So tu use new format i.e. in python:
+>>>> ?view.save("test.png",'png256:m=h')
+>>>> or other example in c++:
+>>>> ?save_to_file(vw, "test.png", "png256:t=1:c=128");
+>>>>
+>>>>
+>>>> What I'm asking now is what do You thing about such parameters and what
+>>>> about names: full or one letter like above? I have also some doubts
+>>>> about name of m parameter(method?) but q as for quantization could be
+>>>> mistaken for quality.
+>>>>
+>>>>
+>>>> As for hextree, new method should give more smooth images in case of
+>>>> transparent maps i.e. hybrid like overlayed on some satellite images.
+>>>> Also used optimization should help with maps using hillshading or any
+>>>> form of rasters with gradients. Actually was my biggest motivation for
+>>>> changes: to improve tiles like that:
+>>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png
+>>>> and now it looks:
+>>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png
+>>>> Difference in transparency support is less noticeable in common maps
+>>>> (look at edge of red line):
+>>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png
+>>>> after changes:
+>>>> ?http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png
+>>>>
+>>>> Time and file size increase or decrease depends on content and image
+>>>> size, but shouldn't be much in common situation. However I decided to
+>>>> make old behaviour default, because for most maps without transparent
+>>>> background or elevation colored/shaded rasters, existing method should
+>>>> give acceptable and little bit smaller files.
+>>>>
+>>>> Using less than 64-94 colors is not recommended, because returned
+>>>> palette isn't optimal then. Using 96-128 should give acceptable quality
+>>>> with some file size reduction, but probably not more then 10%-20%.
+>>>>
+>>>>
+>>>> If mentioned changes are acceptable, especially proposed parameters, I
+>>>> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+>>>> and feedback would be nice. I did my test with different cases, but they
+>>>> were rather corner cases.
+>>>>
+>>>
+>>> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+>>> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+>>>
+>>
+>> Great to hear.
+>>
+>> I'm using 0.7.1 for development, because it is easier for me (no need
+>> to compile separate boost for mapnik).
+>> Except for eventual naming conventions it is quite ready to commit to
+>> 0.7.1 and also it doesn't change anything with default values. To use
+>> new features one must change format parameters in his application, so
+>> nothing should be broken.
+>> Dane, what do You think? (CC in case of list lags).
+>>
+>> Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+>> code doesn't differ much, mostly changes in types names.
+>>
+>>> I like extra parameters for image writers, not sure what's the best approach :
+>>>
+>>> png256:t=1:c=128 ?( similar to proj4 syntax, compact but cryptic)
+>>>
+>>> or perhaps longer but more user friendly (separate named parameters,
+>>> more typing but clearer meaning):
+>>>
+>>> type='png' colors=128 ?transparency_mode=1
+>>>
+>>> Not sure myself ???
+>>
+>> I considered passing parameters with format/type parameter in two ways:
+>> - short: "png256:c=128:t=1" or "jpeg:q=85" (alternative to current jpeg85)
+>> - long: "png256:colors=128:transparency=1" or "jpeg:quality=85"
+>>
+>> I implemented first one, because I imagined situation of passing
+>> format to rendering service in url (wms?) and first one is more
+>> compact. But = could be problem in urls, maybe just omit it (ie:
+>> "png256:c128:t1:o", "png256:c96:h", "png256:colors128:hextree")?
+>>
+>> As I think about it now, best of two is two use both :) so short and
+>> long names could be accepted. About '=' I'm not sure.
+>>
+>>>
+>>> Also, png256 seems wrong name generally.
+>>>
+>>
+>> My proposition is png8 for indexed png format. With 16 colors or less
+>> it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+>> image with max 256 colors.
+>>
+>> For compatibility, png256 should be also recognized, i.e. it would be
+>> synonym of png8:c=256 and could accept other parameters, except number
+>> of colors (or not).
+>>
+>> --
+>> Marcin Rudowski
+>>
+>
+
+
+From mrudowski1 at gmail.com  Thu Mar 11 18:19:45 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Thu, 11 Mar 2010 18:19:45 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <7e70f38d1003110827x4743f075se723f1dbd86a3299@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com>	
+	<7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>	
+	<aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>	
+	<7e70f38d1003110819m298a6ffdn64aa3658a6449e48@mail.gmail.com>
+	<7e70f38d1003110827x4743f075se723f1dbd86a3299@mail.gmail.com>
+Message-ID: <4B992631.6080309@gmail.com>
+
+W dniu 11.03.2010 17:27, Artem Pavlenko pisze:
+> OK, dynamic arrays on stack are in C99, hence fine with gcc , but vc++
+> doesn't support C99.
+> Artem
+> 
+> On 11 March 2010 16:19, Artem Pavlenko <artem at mapnik.org> wrote:
+>> Hi Marcin,
+>>
+>> I'm getting a few errors compiling 0.7.1 + your hex-tree patch on
+>> windows.  Basically, vc++ doesn't allow declarations like:
+>>
+>> unsigned limits[TRANSPARENCY_LEVELS+1];
+>>
+>> where TRANSPARENCY_LEVELS is not static. I'm not sure what size for
+>> the array gcc pick ups in this case but it's seems reasonable
+>> constraint. It can be fixed by using std::vector<> or make the whole
+>> method templated on number of transparency levels etc.
+>> Do you have time to fix this for 0.7.1 release?
+>>
+>>
+
+
+I thought that declaring TRANSPARENCY_LEVELS as const would be enough
+for such constructions in 21st century compilers ;)
+
+Simple fix is to add:
+  #define MAX_OCTREE_LEVELS 4
+and use it instead of TRANSPARENCY_LEVELS in [] declarations, so that
+all affected arrays will have enough room for all cases of trans_mode,
+and their size will be known at compile time like earlier was. I just
+attached it like that in #477 ticket.
+
+Using std::vector<> unfortunately needs much more changes:
+- declaration of arrays and parameters of reduce_*
+- adding additional copy-constructor to octree
+probably other, I just decided on first solution, when gcc give me few
+hundrets lines of error message across all possible template classes of
+stl/mapnik/boost just to say, octree needs new constructor.
+
+
+-- 
+Marcin Rudowski
+
+
+From blake at hailmail.net  Thu Mar 11 19:02:14 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 11 Mar 2010 10:02:14 -0800
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+	<7e70f38d1003110227j125cbc22vac6804085f2dbaf3@mail.gmail.com>
+	<aa4b7a0d1003110318i1b8c4d97gcd2277542fa79387@mail.gmail.com>
+Message-ID: <E565A82C-99F8-4C87-94D0-085F6376A9A3@hailmail.net>
+
+>>>
+>>
+>> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+>> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+>>
+>
+
+++ :)
+
+> Great to hear.
+>
+> I'm using 0.7.1 for development, because it is easier for me (no need
+> to compile separate boost for mapnik).
+> Except for eventual naming conventions it is quite ready to commit to
+> 0.7.1 and also it doesn't change anything with default values. To use
+> new features one must change format parameters in his application, so
+> nothing should be broken.
+> Dane, what do You think? (CC in case of list lags).
+>
+sounds good, thanks!
+
+> Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+> code doesn't differ much, mostly changes in types names.
+>
+>> I like extra parameters for image writers, not sure what's the best  
+>> approach :
+>>
+>> png256:t=1:c=128  ( similar to proj4 syntax, compact but cryptic)
+>>
+>> or perhaps longer but more user friendly (separate named parameters,
+>> more typing but clearer meaning):
+>>
+>> type='png' colors=128  transparency_mode=1
+>>
+>> Not sure myself ???
+>
+> I considered passing parameters with format/type parameter in two  
+> ways:
+> - short: "png256:c=128:t=1" or "jpeg:q=85" (alternative to current  
+> jpeg85)
+> - long: "png256:colors=128:transparency=1" or "jpeg:quality=85"
+>
+> I implemented first one, because I imagined situation of passing
+> format to rendering service in url (wms?) and first one is more
+> compact. But = could be problem in urls, maybe just omit it (ie:
+> "png256:c128:t1:o", "png256:c96:h", "png256:colors128:hextree")?
+>
+> As I think about it now, best of two is two use both :) so short and
+> long names could be accepted. About '=' I'm not sure.
+>
+>>
+>> Also, png256 seems wrong name generally.
+>>
+>
+> My proposition is png8 for indexed png format. With 16 colors or less
+> it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+> image with max 256 colors.
+>
+
+Yes, that is my thinking, mimetype is image/png8, so seems moving to  
+that naming makes sense (a good change to make in trunk since we have  
+other incompatible changes coming there).
+
+> For compatibility, png256 should be also recognized, i.e. it would be
+> synonym of png8:c=256 and could accept other parameters, except number
+> of colors (or not).
+
+good thinking!
+
+>
+> -- 
+> Marcin Rudowski
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100311/182d6473/attachment.html>
+
+From blake at hailmail.net  Fri Mar 12 20:07:08 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 12 Mar 2010 11:07:08 -0800
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik and Google Summer of Code
+	2010
+In-Reply-To: <20FA0A2E-27EE-4BEE-89FB-DD581CB541F2@hailmail.net>
+References: <4E3C0E58-BD0F-42B9-B083-C28FAA5EA8AC@hailmail.net>
+	<20FA0A2E-27EE-4BEE-89FB-DD581CB541F2@hailmail.net>
+Message-ID: <3A8739EE-7214-4134-AEF8-FB353C24BDCB@hailmail.net>
+
+Update on GSOC:
+
+I've just submitted our application:
+
+http://trac.mapnik.org/wiki/GSOC2010/Application
+
+Google staff will be reviewing our ideas page (http://trac.mapnik.org/wiki/GSOC2010/Ideas 
+) and our application next week and will announce if we are accepted  
+as a mentoring organization by next Thursday, March 18th.
+
+Please add to/update/comment upon this ideas page:
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas
+
+and I'll let everyone know next week if we are accepted.
+
+Thanks!
+
+Dane
+
+
+
+On Mar 9, 2010, at 1:45 PM, Dane Springmeyer wrote:
+
+> Hey All,
+>
+> If you are thinking this sounds great, but your'e not sure what it  
+> means to be a mentor, here is a great summary:
+>
+> ...from: http://en.flossmanuals.net/GSoCMentoringGuide
+>
+> "Mentor: Mentors are those people from the community who volunteer  
+> to work with a student. Mentors provide guidance such as pointers to  
+> useful documentation, code reviews, etc. In addition to providing  
+> students with feedback and pointers, a mentor acts as an ambassador  
+> to help student contributors integrate into their project's  
+> community. Some organizations choose to assign more than one mentor  
+> to each of their students. Many members of the community provide  
+> guidance to their project's GSoC students without mentoring in an  
+> "official" capacity, much as they would answer anyone's questions on  
+> the project mailing list or IRC channel."
+>
+> I think this idea of having two mentors is particularly relevant for  
+> Mapnik, one focused on interacting and advising the student (the  
+> lead mentor) and another who can support the lead mentor with  
+> understanding the Mapnik C++ internals (if needed).
+>
+> Several ideas listed by Mike and Tom at the current page seem like a  
+> good fit for this:
+>
+> http://trac.mapnik.org/wiki/GSOC2010/Ideas
+>
+> I would be happy to be a supporting member for you guys from the 'C+ 
+> + internals point of view,' and the "how could this work in Mapnik  
+> point of view"
+>
+> Are there others that could also take this role? Provided C++/ 
+> feasibility support specifically?
+>
+> Dane
+>
+>
+>
+> On Mar 9, 2010, at 11:58 AM, Dane Springmeyer wrote:
+>
+>> Okay,
+>>
+>> Google Summer of Code 2010 was announced yesterday [1], and  
+>> organizations have until friday to submit applications.
+>>
+>> It is essential that any Mapnik users that are interested in  
+>> mentoring a project (or just have project ideas), please TODAY or  
+>> TOMORROW, add to this page:
+>>
+>> http://trac.mapnik.org/wiki/GSOC2010/Ideas
+>>
+>> and skim:
+>>
+>> http://trac.mapnik.org/wiki/GSOC2010
+>>
+>> I think we generally in good shape on the application, but I would  
+>> welcome any feedback (or edits):
+>>
+>> http://trac.mapnik.org/wiki/GSOC2010/Application
+>>
+>> Also, the OSGEO foundation has successfully been involved with GSOC  
+>> for the last several years and have also applied with some project  
+>> ideas involving Mapnik:
+>>
+>> http://wiki.osgeo.org/wiki/OSGeo_Cartographic_Engine#Ideas_for_Summer_of_Code_2010_Project
+>>
+>> Hopefully we'll both get accepted and mentors can encourage cross  
+>> collaboration between several students, but possibly also just  
+>> focus resources on the issues in Mapnik that are shared: notably  
+>> multi-resolution/scalable output for vector formats and paper  
+>> printing.
+>>
+>> Please, please edit the wiki(s) with any thoughts. Extra points for  
+>> condensing ideas and cross-linking!
+>>
+>> Thanks,
+>>
+>> Dane
+>>
+>> [1] http://google-opensource.blogspot.com/2010/03/google-summer-of-code-applications-now.html
+>>
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From frederik at remote.org  Mon Mar 15 09:15:54 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Mon, 15 Mar 2010 09:15:54 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <4B983B9F.5020809@gmail.com>
+References: <4B983B9F.5020809@gmail.com>
+Message-ID: <4B9DECBA.7090403@remote.org>
+
+Hi,
+
+Marcin Rudowski wrote:
+> Today I attached patch adding full support using hextree instead of
+> octree (same idea as with RGB, but extended to 4 dimensions: RGBA).
+
+Did this introduce a new dependency on boost/unordered_map.hpp? This 
+breaks building on Debian lenny (where only boost 1.35 is available - 
+unordered_map seems to have been introduced in 1.36). I don't know how 
+hard (or important) it is to work around this. Just saying.
+
+Bye
+Frederik
+
+
+
+From artem at mapnik.org  Mon Mar 15 10:01:21 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 15 Mar 2010 09:01:21 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <4B9DECBA.7090403@remote.org>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+Message-ID: <7e70f38d1003150201y129cd18fq4ec9885f8da7fa6b@mail.gmail.com>
+
+Yes, it did. On trunk I get:
+
+grep -rn 'boost/unordered_map.hpp' --include=*.{cpp,hpp} .
+./include/mapnik/hextree.hpp:32:#include <boost/unordered_map.hpp>
+./include/mapnik/image_cache.hpp:35:#include <boost/unordered_map.hpp>
+
+You should be able to use std::tr1::unordered_map (GCC) as a replacement.
+
+Regards,
+Artem
+
+On 15 March 2010 08:15, Frederik Ramm <frederik at remote.org> wrote:
+> Hi,
+>
+> Marcin Rudowski wrote:
+>>
+>> Today I attached patch adding full support using hextree instead of
+>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA).
+>
+> Did this introduce a new dependency on boost/unordered_map.hpp? This breaks
+> building on Debian lenny (where only boost 1.35 is available - unordered_map
+> seems to have been introduced in 1.36). I don't know how hard (or important)
+> it is to work around this. Just saying.
+>
+> Bye
+> Frederik
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From mrudowski1 at gmail.com  Mon Mar 15 10:21:21 2010
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Mon, 15 Mar 2010 10:21:21 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <7e70f38d1003150201y129cd18fq4ec9885f8da7fa6b@mail.gmail.com>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+	<7e70f38d1003150201y129cd18fq4ec9885f8da7fa6b@mail.gmail.com>
+Message-ID: <4B9DFC11.9010202@gmail.com>
+
+W dniu 15.03.2010 10:01, Artem Pavlenko pisze:
+> Yes, it did. On trunk I get:
+> 
+> grep -rn 'boost/unordered_map.hpp' --include=*.{cpp,hpp} .
+> ./include/mapnik/hextree.hpp:32:#include <boost/unordered_map.hpp>
+> ./include/mapnik/image_cache.hpp:35:#include <boost/unordered_map.hpp>
+> 
+> You should be able to use std::tr1::unordered_map (GCC) as a replacement.
+> 
+
+Not sure if using tr1 won't break builds in some enviroments.
+
+I just committed fix to 0.7.1-dev branch, using simple stl:map in case
+of boost<1.36, so that it works, just few % slower (not including mapnik
+rendering, just png saving).
+http://trac.mapnik.org/changeset/1694
+
+Trunk already needs higher version of boost, so it doesn't need it.
+
+-- 
+Marcin Rudowski
+
+
+From frederik at remote.org  Mon Mar 15 10:27:02 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Mon, 15 Mar 2010 10:27:02 +0100
+Subject: [Mapnik-devel] png256: transparency support + passing
+	user	options
+In-Reply-To: <4B9DF864.4060800@compton.nu>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+	<4B9DF864.4060800@compton.nu>
+Message-ID: <4B9DFD66.2050304@remote.org>
+
+Hi,
+
+Tom Hughes wrote:
+>> Did this introduce a new dependency on boost/unordered_map.hpp? This
+>> breaks building on Debian lenny (where only boost 1.35 is available -
+>> unordered_map seems to have been introduced in 1.36). I don't know how
+>> hard (or important) it is to work around this. Just saying.
+> 
+> Mapnik requires 1.41 now anyway doesn't it?
+
+The 0.7.1 branch compiled ok with 1.35 until recently. I don't know 
+about trunk though.
+
+Bye
+Frederik
+
+
+From tom at compton.nu  Mon Mar 15 10:05:40 2010
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 15 Mar 2010 09:05:40 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing
+	user	options
+In-Reply-To: <4B9DECBA.7090403@remote.org>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+Message-ID: <4B9DF864.4060800@compton.nu>
+
+On 15/03/10 08:15, Frederik Ramm wrote:
+
+> Marcin Rudowski wrote:
+>> Today I attached patch adding full support using hextree instead of
+>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA).
+>
+> Did this introduce a new dependency on boost/unordered_map.hpp? This
+> breaks building on Debian lenny (where only boost 1.35 is available -
+> unordered_map seems to have been introduced in 1.36). I don't know how
+> hard (or important) it is to work around this. Just saying.
+
+Mapnik requires 1.41 now anyway doesn't it?
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://compton.nu/
+
+
+From artem at mapnik.org  Mon Mar 15 11:29:08 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 15 Mar 2010 10:29:08 +0000
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <4B9DF864.4060800@compton.nu>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+	<4B9DF864.4060800@compton.nu>
+Message-ID: <7e70f38d1003150329i7aaf69d0h921d55e2f0d1a3d7@mail.gmail.com>
+
+On 15 March 2010 09:05, Tom Hughes <tom at compton.nu> wrote:
+> On 15/03/10 08:15, Frederik Ramm wrote:
+>
+>> Marcin Rudowski wrote:
+>>>
+>>> Today I attached patch adding full support using hextree instead of
+>>> octree (same idea as with RGB, but extended to 4 dimensions: RGBA).
+>>
+>> Did this introduce a new dependency on boost/unordered_map.hpp? This
+>> breaks building on Debian lenny (where only boost 1.35 is available -
+>> unordered_map seems to have been introduced in 1.36). I don't know how
+>> hard (or important) it is to work around this. Just saying.
+>
+> Mapnik requires 1.41 now anyway doesn't it?
+
+
+trunk (aka mapnik2)  yes
+
+Artem
+
+
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://compton.nu/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From blake at hailmail.net  Mon Mar 15 19:22:52 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 15 Mar 2010 11:22:52 -0700
+Subject: [Mapnik-devel] png256: transparency support + passing user
+	options
+In-Reply-To: <4B9DFC11.9010202@gmail.com>
+References: <4B983B9F.5020809@gmail.com> <4B9DECBA.7090403@remote.org>
+	<7e70f38d1003150201y129cd18fq4ec9885f8da7fa6b@mail.gmail.com>
+	<4B9DFC11.9010202@gmail.com>
+Message-ID: <521D9B00-EFC3-40C6-9D71-09A399134FB8@hailmail.net>
+
+Marcin,
+
+Thanks for the fix. I can confirm that current 0.7.1-dev with your  
+change works just fine on Ubuntu 8.10 with boost 1.34 from packages.
+
+Fredrik, nice catch!
+
+Dane
+
+
+On Mar 15, 2010, at 2:21 AM, Marcin Rudowski wrote:
+
+> W dniu 15.03.2010 10:01, Artem Pavlenko pisze:
+>> Yes, it did. On trunk I get:
+>>
+>> grep -rn 'boost/unordered_map.hpp' --include=*.{cpp,hpp} .
+>> ./include/mapnik/hextree.hpp:32:#include <boost/unordered_map.hpp>
+>> ./include/mapnik/image_cache.hpp:35:#include <boost/ 
+>> unordered_map.hpp>
+>>
+>> You should be able to use std::tr1::unordered_map (GCC) as a  
+>> replacement.
+>>
+>
+> Not sure if using tr1 won't break builds in some enviroments.
+>
+> I just committed fix to 0.7.1-dev branch, using simple stl:map in case
+> of boost<1.36, so that it works, just few % slower (not including  
+> mapnik
+> rendering, just png saving).
+> http://trac.mapnik.org/changeset/1694
+>
+> Trunk already needs higher version of boost, so it doesn't need it.
+>
+> -- 
+> Marcin Rudowski
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dbsgeo at gmail.com  Tue Mar 16 00:30:31 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Mon, 15 Mar 2010 16:30:31 -0700
+Subject: [Mapnik-devel] Mapnik 0.7.1 upcoming release
+Message-ID: <CD881C93-4326-42DA-BB57-78D0A4A5E780@gmail.com>
+
+I'm excited to announce that all tickets have been closed against  
+Mapnik 0.7.1, a bugfix release and the last planned release in the  
+0.7.x series.
+
+We are looking to tag the release and have new Windows and OS X  
+binaries available by the end of this week.
+
+If you are able, please help by compiling, installing, and running the  
+unit tests to try to catch any problems that should be addressed  
+before releasing.
+
+Report any problems compiling, any test failures, or any runtime  
+issues with your applications to the mailing list or as Trac tickets.
+
+Detailed instructions below.
+
+* Note that Mapnik 0.7.1 does not change any of the current  
+dependencies needed to compile. Many of you are aware that current  
+trunk (aka Mapnik2) requires at least Boost 1.41, but this is not the  
+case with 0.7.1.
+
+Dane
+
+[1] http://trac.mapnik.org/milestone/0.7.1
+
+=======================
+
+Download the sources here:
+
+svn co http://svn.mapnik.org/branches/0.7.1-dev/
+
+Then compile sources and install
+
+$ cd 0.7.1-dev/
+$ python scons/scons.py install
+
+Finally, install nose from http://somethingaboutorange.com/mrl/projects/nose/0.11.1/ 
+.
+
+And in the 0.7.1-dev/ folder run the tests:
+
+$ python tests/run_tests.py
+
+At the end of the verbose output you should get:
+
+'OK (TODO=5)'
+
+
+From artem at mapnik.org  Tue Mar 16 09:18:17 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 16 Mar 2010 08:18:17 +0000
+Subject: [Mapnik-devel] Mapnik 0.7.1 upcoming release
+In-Reply-To: <CD881C93-4326-42DA-BB57-78D0A4A5E780@gmail.com>
+References: <CD881C93-4326-42DA-BB57-78D0A4A5E780@gmail.com>
+Message-ID: <7e70f38d1003160118s730dec1dve872913297285102@mail.gmail.com>
+
+Great work, Dane!
+
+
+On OS X 10.6 + gcc version 4.0.1 (Apple Inc. build 5465) 32-bit I get:
+
+Ran 84 tests in 1.620s
+OK (TODO=5)
+
+
+And output from rundemo.py :
+
+.....
+9 maps have been rendered in the current directory:
+- demo.png
+- demo256.png
+- demo64_binary_transparency.png
+- demo128_colors_hextree_no_alpha.png
+- demo_high.jpg
+- demo_low.jpg
+- demo.svg
+- demo.pdf
+- demo.ps
+
+.....
+
+I'll test on 64-bit OS X, Ubuntu 9.10 and Vista later on. Windows
+build needs some attention but otherwise 0.7.1 is looking good.
+
+Regards,
+Artem
+
+On 15 March 2010 23:30, Dane Springmeyer <dbsgeo at gmail.com> wrote:
+> I'm excited to announce that all tickets have been closed against Mapnik
+> 0.7.1, a bugfix release and the last planned release in the 0.7.x series.
+>
+> We are looking to tag the release and have new Windows and OS X binaries
+> available by the end of this week.
+>
+> If you are able, please help by compiling, installing, and running the unit
+> tests to try to catch any problems that should be addressed before
+> releasing.
+>
+> Report any problems compiling, any test failures, or any runtime issues with
+> your applications to the mailing list or as Trac tickets.
+>
+> Detailed instructions below.
+>
+> * Note that Mapnik 0.7.1 does not change any of the current dependencies
+> needed to compile. Many of you are aware that current trunk (aka Mapnik2)
+> requires at least Boost 1.41, but this is not the case with 0.7.1.
+>
+> Dane
+>
+> [1] http://trac.mapnik.org/milestone/0.7.1
+>
+> =======================
+>
+> Download the sources here:
+>
+> svn co http://svn.mapnik.org/branches/0.7.1-dev/
+>
+> Then compile sources and install
+>
+> $ cd 0.7.1-dev/
+> $ python scons/scons.py install
+>
+> Finally, install nose from
+> http://somethingaboutorange.com/mrl/projects/nose/0.11.1/.
+>
+> And in the 0.7.1-dev/ folder run the tests:
+>
+> $ python tests/run_tests.py
+>
+> At the end of the verbose output you should get:
+>
+> 'OK (TODO=5)'
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From blake at hailmail.net  Thu Mar 18 22:37:57 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 18 Mar 2010 14:37:57 -0700
+Subject: [Mapnik-devel] Mapnik accepted as mentoring org to Google Summer of
+	Code 2010!
+Message-ID: <1256CDE3-5E9F-4FC9-91CC-4869C658FD12@hailmail.net>
+
+It is formal and exciting, our application was accepted today to be  
+part of Google Summer of code!
+
+We are one of 150 free and open source projects that made the cut:
+
+http://google-opensource.blogspot.com/2010/03/meet-your-mentors-announcing-accepted.html?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+GoogleOpenSourceBlog+%28Google+Open+Source+Blog%29
+
+Now is the time for Mapnik users and developers that have an interest  
+in mentoring a project to get more involved.
+
+Please feel free to contact me if you are interested and/or have any  
+questions. You can also create an account and apply to be a mentor at:
+
+http://socghop.appspot.com/gsoc/mentor/request/google/gsoc2010/mapnik
+
+(beware the site is slow right now due to lots of excited people doing  
+the same)
+
+Also between now and March 29th, when Student applications are due,  
+we'll likely be hearing from students that are interested and looking  
+for more information. Everyone should feel free to encourage them and  
+offer ideas and support on the mailing list and IRC. Everyone should  
+also feel free to further add to or edit our ideas page:
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas
+
+Cheers,
+
+Dane
+
+
+
+
+From ccaarlooss at gmail.com  Sat Mar 20 03:02:41 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Fri, 19 Mar 2010 20:02:41 -0600
+Subject: [Mapnik-devel] Introduction
+Message-ID: <ee5da36b1003191902v72880542j825c90234da2b84f@mail.gmail.com>
+
+Good evening,
+
+My name is Carlos L?pez Garc?s, I'm from Mexico and I'm very interested in
+Mapnik's ideas. The idea of Open Source software has attracted my attention
+for quite a long time, but I hadn't seen a project like Mapnik until I
+looked at the GSoC's organizations list. It combines many of the things that
+interest me, like programming. science, geometry and computer graphics.
+
+I'm a student of computer engineering, I'll graduate in December 2010 and my
+career has focused mainly on computer graphics and a bit on artificial
+intelligence. My intention is to contribute to the project as much as I can.
+
+Well, I just wanted to introduce myself and say hello to the community!
+
+- Carlos L?pez Garc?s
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100319/459e1dfc/attachment.html>
+
+From ccaarlooss at gmail.com  Sun Mar 21 06:29:20 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Sun, 21 Mar 2010 00:29:20 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+Message-ID: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+
+Good evening Mapnik community,
+
+I've been searching for information about the 'Better Print Support' project
+idea and I was wondiering if anyone could tell me how to contact Tom Carden.
+He submitted the project idea, so I thought it would be a good idea to ask
+him about it. Any suggestions will be really appreciated. Thanks.
+
+Kind regards
+
+Carlos Enrique L?pez Garc?s
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100321/fba058fa/attachment.html>
+
+From robert.coup at onetrackmind.co.nz  Sun Mar 21 06:52:06 2010
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Sun, 21 Mar 2010 18:52:06 +1300
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+Message-ID: <c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+
+Hi Carlos,
+
+2010/3/21 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>:
+> Good evening Mapnik community,
+> I've been searching for information about the 'Better Print Support' project
+> idea and I was wondiering if anyone could tell me how to contact Tom Carden.
+> He submitted the project idea, so I thought it would be a good idea to ask
+> him about it. Any suggestions will be really appreciated. Thanks.
+
+It's also worth having a look at the code on the (abandoned) wxpdf
+branch. See this post (and others by Ben) to have a look:
+
+http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00140.html
+
+it has/had some cool features which could be worth porting to a
+Cairo-based PDF renderer.
+ * paper sizes/scale calculations
+ * grids/graticules
+ * overlay images, including other PDFs
+ * scale bars
+ * borders around the map, with coordinates
+ * outputting map layers as true PDF layers. This allows turning on &
+off individual layers in a PDF viewer.
+
+The addition of SVG symbol support makes things more scalable too...
+
+Rob :)
+
+
+From grahamjones139 at googlemail.com  Sun Mar 21 14:01:46 2010
+From: grahamjones139 at googlemail.com (Graham Jones)
+Date: Sun, 21 Mar 2010 13:01:46 +0000
+Subject: [Mapnik-devel] [Mapnik-users] Better Print Support GSoC's
+	project
+In-Reply-To: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+Message-ID: <6c50fdc51003210601v4ea7887el5528cf9b3b0ba8b1@mail.gmail.com>
+
+Carlos,
+I think you find him if you google his name and OpenStreetMap.
+Apologies if that is the wrong one!
+
+Regards,
+
+Graham
+
+On Mar 21, 2010 8:48 AM, "Carlos Enrique L?pez Garc?s" <ccaarlooss at gmail.com>
+wrote:
+
+Good evening Mapnik community,
+
+I've been searching for information about the 'Better Print Support' project
+idea and I was wondiering if anyone could tell me how to contact Tom Carden.
+He submitted the project idea, so I thought it would be a good idea to ask
+him about it. Any suggestions will be really appreciated. Thanks.
+
+Kind regards
+
+Carlos Enrique L?pez Garc?s
+
+_______________________________________________
+Mapnik-users mailing list
+Mapnik-users at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/mapnik-users
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100321/af19e38e/attachment.html>
+
+From cartinus at xs4all.nl  Sun Mar 21 15:05:50 2010
+From: cartinus at xs4all.nl (Cartinus)
+Date: Sun, 21 Mar 2010 15:05:50 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+Message-ID: <201003211505.50274.cartinus@xs4all.nl>
+
+On Sunday 21 March 2010 06:29:20 Carlos Enrique L?pez Garc?s wrote:
+> Good evening Mapnik community,
+>
+> I've been searching for information about the 'Better Print Support'
+> project idea and I was wondiering if anyone could tell me how to contact
+> Tom Carden. He submitted the project idea, so I thought it would be a good
+> idea to ask him about it. Any suggestions will be really appreciated.
+> Thanks.
+>
+> Kind regards
+>
+> Carlos Enrique L?pez Garc?s
+
+I'm 99% sure it is the guy you find when you search for
+"tom carden site:lists.openstreetmap.org" with Google.
+
+-- 
+m.v.g.,
+Cartinus
+
+
+From cmarqu42 at googlemail.com  Mon Mar 22 00:06:05 2010
+From: cmarqu42 at googlemail.com (Colin Marquardt)
+Date: Mon, 22 Mar 2010 00:06:05 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com> 
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+Message-ID: <814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+
+2010/3/21 Robert Coup <robert.coup at onetrackmind.co.nz>:
+> http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00140.html
+>
+> it has/had some cool features which could be worth porting to a
+> Cairo-based PDF renderer.
+> ?* paper sizes/scale calculations
+> ?* grids/graticules
+> ?* overlay images, including other PDFs
+> ?* scale bars
+> ?* borders around the map, with coordinates
+> ?* outputting map layers as true PDF layers. This allows turning on &
+> off individual layers in a PDF viewer.
+
+Good suggestions. I'm adding some more, even if these go way beyond
+what could be expected of a single GSoC project - but it would be cool
+to have them all :)
+
+* ability to merge multiple layers (hillshading, contour lines,
+highlighting of routes or POIs, ...)
+* Copyright/Attribution line (e.g. CC requires the full URL to the
+license on printed maps)
+* "North" arrow (important with a rotated map, see
+http://www.ancalime.de/rotated.html)
+* Legend tailored to what is actually seen on the printed map (vs.
+what is in the style file for this zoomlevel)
+* Gazetteer (take a look at http://maposmatic.org), maybe including a
+list of interesting features (hotels, public transport stations, ...)
+
+Cheers
+  Colin
+
+
+From blake at hailmail.net  Mon Mar 22 03:45:49 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 21 Mar 2010 19:45:49 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+	<814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+Message-ID: <E4D74149-A833-4661-B690-1A3F04E23B97@hailmail.net>
+
+Carlos,
+
+Welcome! We've already chatted on IRC, but its great to see you  
+posting to the list already.
+
+Robert,
+
+Great ideas. I'd totally forgot about the amazing stuff started in  
+that PDF branch. I think it came before my involvement with Mapnik. Do  
+you have any cool sample output you could share? Maybe post to a new  
+ticket that targets porting the featureset over to the Cairo backend?
+
+Colin,
+
+Likewise, I forgot how cool Holger's rotated maps were! Wow! http://www.ancalime.de/rotated.html
+
+I've updated the GSOC "better printed maps" entry to try to link to  
+some existing tickets and if I've missed some of these ideas please  
+create new tickets to capture them or otherwise edit the GSOC page.
+
+http://trac.mapnik.org/wiki/GSOC2010/Ideas#BetterPrintSupport
+
+Right now the more ideas the better, so we can flesh out related  
+topics. The time will come for both students, mentors, and the Mapnik  
+community to hone in on the right feasible/fun subtopics, but for  
+right now let's keep collecting the material.
+
+Thanks!
+
+Dane
+
+
+
+On Mar 21, 2010, at 4:06 PM, Colin Marquardt wrote:
+
+> 2010/3/21 Robert Coup <robert.coup at onetrackmind.co.nz>:
+>> http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00140.html
+>>
+>> it has/had some cool features which could be worth porting to a
+>> Cairo-based PDF renderer.
+>>  * paper sizes/scale calculations
+>>  * grids/graticules
+>>  * overlay images, including other PDFs
+>>  * scale bars
+>>  * borders around the map, with coordinates
+>>  * outputting map layers as true PDF layers. This allows turning on &
+>> off individual layers in a PDF viewer.
+>
+> Good suggestions. I'm adding some more, even if these go way beyond
+> what could be expected of a single GSoC project - but it would be cool
+> to have them all :)
+>
+> * ability to merge multiple layers (hillshading, contour lines,
+> highlighting of routes or POIs, ...)
+> * Copyright/Attribution line (e.g. CC requires the full URL to the
+> license on printed maps)
+> * "North" arrow (important with a rotated map, see
+> http://www.ancalime.de/rotated.html)
+> * Legend tailored to what is actually seen on the printed map (vs.
+> what is in the style file for this zoomlevel)
+> * Gazetteer (take a look at http://maposmatic.org), maybe including a
+> list of interesting features (hotels, public transport stations, ...)
+>
+> Cheers
+>  Colin
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From tom at compton.nu  Mon Mar 22 09:29:28 2010
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 22 Mar 2010 08:29:28 +0000
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+	<814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+Message-ID: <4BA72A68.40601@compton.nu>
+
+On 21/03/10 23:06, Colin Marquardt wrote:
+
+> * Copyright/Attribution line (e.g. CC requires the full URL to the
+> license on printed maps)
+
+No it does not. It says "with the Work" which most certainly does not 
+mean it has to be overlayed on top of the map. It also says "to the 
+extent reasonably practicable" so it's not at all absolute.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://compton.nu/
+
+
+From robert.coup at onetrackmind.co.nz  Mon Mar 22 10:55:22 2010
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Mon, 22 Mar 2010 22:55:22 +1300
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <4BA72A68.40601@compton.nu>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+	<814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com>
+	<4BA72A68.40601@compton.nu>
+Message-ID: <c5097ac41003220255v2f9c1f43k24c207141f5b3ab3@mail.gmail.com>
+
+On Mon, Mar 22, 2010 at 9:29 PM, Tom Hughes <tom at compton.nu> wrote:
+> On 21/03/10 23:06, Colin Marquardt wrote:
+>
+>> * Copyright/Attribution line (e.g. CC requires the full URL to the
+>> license on printed maps)
+>
+> No it does not. It says "with the Work" which most certainly does not mean
+> it has to be overlayed on top of the map. It also says "to the extent
+> reasonably practicable" so it's not at all absolute.
+
+And any attribution required under a CC license is completely up to
+the licensor. Some may say "nothing", "my name", "url", "logo", or
+"full page at min 60pt Comic Sans and this photo of a frog" - and they
+can easily say "stick it on the map" if they wanted.
+
+Rob :)
+
+
+From cmarqu42 at googlemail.com  Fri Mar 26 00:44:25 2010
+From: cmarqu42 at googlemail.com (Colin Marquardt)
+Date: Fri, 26 Mar 2010 00:44:25 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <4BA72A68.40601@compton.nu>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com> 
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com> 
+	<814384661003211606s5cc6daa6obc6dabf9ac6ac6fd@mail.gmail.com> 
+	<4BA72A68.40601@compton.nu>
+Message-ID: <814384661003251644y79951648mef88bb4574a597fa@mail.gmail.com>
+
+2010/3/22 Tom Hughes <tom at compton.nu>:
+> On 21/03/10 23:06, Colin Marquardt wrote:
+>
+>> * Copyright/Attribution line (e.g. CC requires the full URL to the
+>> license on printed maps)
+>
+> No it does not. It says "with the Work" which most certainly does not mean
+> it has to be overlayed on top of the map. It also says "to the extent
+> reasonably practicable" so it's not at all absolute.
+
+I stand corrected. I incorrectly attributed (ha!) to CC what OSM
+recommends on its "Legal FAQ" wiki page (and even made it sound more
+strict than how it's actually written there).
+
+Cheers
+  Colin
+
+
+From ccaarlooss at gmail.com  Sat Mar 27 11:16:49 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Sat, 27 Mar 2010 04:16:49 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+Message-ID: <ee5da36b1003270316q106dafc5jff8e33752f842bda@mail.gmail.com>
+
+Good evening, and thanks again for your replies. I wanted to do some
+research before replying again, so I include here my interpretation of each
+of your ideas. I'll start with the ideas that Robert Coup kindly shared. I'd
+appreciate if you could tell me if I misunderstood something:
+
+As I understand, based on the discussion thread 'Mapnik viewer and OSM
+rendering' (
+http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00096.html),
+there is an experimental branch developed by Ben Moores in which wxpdfdoc (
+http://wxcode.sourceforge.net/components/wxpdfdoc/, a c++ library for
+creating PDF documents) is used to render maps on PDF documents and many of
+the features mentioned below are already included.
+
+Ideas from Robert Coup:
+-----------------------------------
+
+Port features from wxpdf (/branches/experimental-pdf/) to a Cairo-based PDF
+renderer, including:
+
+- Adding a border to the map to show coordinates: I interpret this as
+displaying a frame around the map that shows the longitude and latitude
+coordinates. The more the map is zoomed in, the more exact the coordinates
+will be.
+
+- Grids: I interpret this as displaying the longitude and latitude lines
+over the map.
+
+- Scale bars: Display the chart that shows the scale of the map graphically
+(http://en.wikipedia.org/wiki/Linear_scale).
+
+- Overlay images, including other PDFs: Does the 'overlay' concept have the
+same meaning as in Google Maps? According to Google Maps' documentation, an
+overlay is an object attached to a coordinate, like the markers used to
+point to places (
+http://code.google.com/apis/maps/documentation/mapplets/overlays.html#Markers).
+If this is true, then this feature is about displaying these overlay images
+on the exact points indicated by the associated coordinates (considering
+that the units used for displaying on the screen and printing on a document
+are different, am I right?). I'm not sure if I understand the part
+'including other PDFs', though.
+
+- Paper sizes/scale calculations: I read that images are displayed on paper
+based on DPI units, so some calculations are needed to scale the maps to fit
+different paper sizes. Tom Hughes mentions in the same thread that there are
+some issues that need to be considered when tranlating the units used by
+Mapnik and those of Cairo.
+
+- Map layers as PDF layers: According to what I read, the objects displayed
+on a PDF page can be organized in layers, which can be hidden. As a map is
+rendered in layers, whose order is defined by a Mapnik configuration file (
+http://trac.mapnik.org/wiki/XMLConfigReference), a PDF layer may be mapped
+to a map layer. Hiding a PDF layer in a PDF viewer should cause the 'status'
+attribute of the corresponding map layer to be set to OFF, causing it not be
+rendered.
+
+Finally, I read that Tom Hughes wrote a Cairo-based renderer, but I would
+like to ask you if these features are already covered by it.
+
+I'll do some research before replying to Mr. Pavlenko's and Mr. Marquardt
+ideas. There's also an idea from Ben Moores about automatic legend
+generation; is it related to what you say about legends, Mr. Marquardt?
+
+Thanks,
+
+Carlos L?pez
+
+2010/3/20 Robert Coup <robert.coup at onetrackmind.co.nz>
+
+> Hi Carlos,
+>
+> 2010/3/21 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>:
+> > Good evening Mapnik community,
+> > I've been searching for information about the 'Better Print Support'
+> project
+> > idea and I was wondiering if anyone could tell me how to contact Tom
+> Carden.
+> > He submitted the project idea, so I thought it would be a good idea to
+> ask
+> > him about it. Any suggestions will be really appreciated. Thanks.
+>
+> It's also worth having a look at the code on the (abandoned) wxpdf
+> branch. See this post (and others by Ben) to have a look:
+>
+> http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00140.html
+>
+> it has/had some cool features which could be worth porting to a
+> Cairo-based PDF renderer.
+>  * paper sizes/scale calculations
+>  * grids/graticules
+>  * overlay images, including other PDFs
+>  * scale bars
+>  * borders around the map, with coordinates
+>  * outputting map layers as true PDF layers. This allows turning on &
+> off individual layers in a PDF viewer.
+>
+> The addition of SVG symbol support makes things more scalable too...
+>
+> Rob :)
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100327/2890bd2c/attachment.html>
+
+From blake at hailmail.net  Mon Mar 29 03:57:35 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 28 Mar 2010 18:57:35 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003270316q106dafc5jff8e33752f842bda@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+	<ee5da36b1003270316q106dafc5jff8e33752f842bda@mail.gmail.com>
+Message-ID: <AB9DEB5F-1477-49D6-B622-0359BA09C656@hailmail.net>
+
+Hello Carlos,
+
+First of all - really great approach. Summarizing your understanding  
+as a way to frame further questions is really helpful, so thanks for  
+this effort.
+
+I assume that Robert and others will also respond, but I'll provide my  
+thoughts inline...
+
+On Mar 27, 2010, at 3:16 AM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good evening, and thanks again for your replies. I wanted to do some  
+> research before replying again, so I include here my interpretation  
+> of each of your ideas. I'll start with the ideas that Robert Coup  
+> kindly shared. I'd appreciate if you could tell me if I  
+> misunderstood something:
+>
+> As I understand, based on the discussion thread 'Mapnik viewer and  
+> OSM rendering' (http://www.mail-archive.com/mapnik-devel at lists.berlios.de/msg00096.html 
+> ), there is an experimental branch developed by Ben Moores in which  
+> wxpdfdoc (http://wxcode.sourceforge.net/components/wxpdfdoc/, a c++  
+> library for creating PDF documents) is used to render maps on PDF  
+> documents and many of the features mentioned below are already  
+> included.
+
+Yes!
+
+I personally was not very familiar with this branch, and would be  
+curious from Robert to have some pointers to the virtues of wxpdfdoc.
+
+>
+> Ideas from Robert Coup:
+> -----------------------------------
+>
+> Port features from wxpdf (/branches/experimental-pdf/) to a Cairo- 
+> based PDF renderer, including:
+>
+> - Adding a border to the map to show coordinates: I interpret this  
+> as displaying a frame around the map that shows the longitude and  
+> latitude coordinates. The more the map is zoomed in, the more exact  
+> the coordinates will be.
+
+good description.
+
+>
+> - Grids: I interpret this as displaying the longitude and latitude  
+> lines over the map.
+>
+
+yes
+
+> - Scale bars: Display the chart that shows the scale of the map  
+> graphically (http://en.wikipedia.org/wiki/Linear_scale).
+>
+
+Yes, this can take a few different forms but in general the idea is to  
+graphically display the relationship between real world distance and  
+map distance.
+
+Very recently a Mapnik user added scales using pycairo, which could  
+act as a guide for porting/exposing these features in C++/Mapnik Core.
+
+http://oliverobrien.co.uk/2010/03/map-adornments-with-cairo/
+
+> - Overlay images, including other PDFs: Does the 'overlay' concept  
+> have the same meaning as in Google Maps? According to Google Maps'  
+> documentation, an overlay is an object attached to a coordinate,  
+> like the markers used to point to places (http://code.google.com/apis/maps/documentation/mapplets/overlays.html#Markers 
+> ). If this is true, then this feature is about displaying these  
+> overlay images on the exact points indicated by the associated  
+> coordinates (considering that the units used for displaying on the  
+> screen and printing on a document are different, am I right?). I'm  
+> not sure if I understand the part 'including other PDFs', though.
+
+Yes, I think you are on the right track. Robert will likely clarify,  
+but I imagine the idea is that you could combine map information from  
+Mapnik with existing PDF documents that do not have an explicit  
+geographical reference. These PDF's could likely contain anything,  
+points, lines, polygons, or text and would be positioned on the page  
+in screen coordinates rather than geographical coordinates, but this  
+is just a guess.
+
+>
+> - Paper sizes/scale calculations: I read that images are displayed  
+> on paper based on DPI units, so some calculations are needed to  
+> scale the maps to fit different paper sizes. Tom Hughes mentions in  
+> the same thread that there are some issues that need to be  
+> considered when tranlating the units used by Mapnik and those of  
+> Cairo.
+
+Yes, these are core issues that should be worked out, tested,  
+investigated pretty early. I see you are playing around with http://trac.mapnik.org/ticket/343 
+, which is great.
+
+>
+> - Map layers as PDF layers: According to what I read, the objects  
+> displayed on a PDF page can be organized in layers, which can be  
+> hidden. As a map is rendered in layers, whose order is defined by a  
+> Mapnik configuration file (http://trac.mapnik.org/wiki/XMLConfigReference 
+> ), a PDF layer may be mapped to a map layer.
+
+Yes, mostly. Basically most recent PDF viewers support the idea of  
+layers, such that users can turn various layers on and off, adding  
+interactivity and usefulness of the document, particularly when map  
+data is included. Being able to maintain the exact "<Layer>" elements  
+created by a user authoring a Mapnik XML file as "layers" in the  
+resulting PDF file would be an excellent thing, but potentially users  
+would also want combinations of Mapnik <Layer>'s to be exposed as PDF  
+"layers".
+
+> Hiding a PDF layer in a PDF viewer should cause the 'status'  
+> attribute of the corresponding map layer to be set to OFF, causing  
+> it not be rendered.
+>
+
+Not exactly. The 'status' attribute for Mapnik does determine whether  
+the user wants the layer rendered. But this only applies to Mapnik and  
+once the PDF was written this attribute does not apply, as some other  
+mechanism in the PDF viewer would be used by the user to turn on and  
+off the layers.
+
+> Finally, I read that Tom Hughes wrote a Cairo-based renderer, but I  
+> would like to ask you if these features are already covered by it.
+
+They are not yet supported by our usage in the Cairo renderer. But the  
+Cairo API could certainly be used to implement these within Mapnik.
+
+
+Great stuff. Keep on asking questions!
+
+Thanks,
+
+Dane
+
+>
+> I'll do some research before replying to Mr. Pavlenko's and Mr.  
+> Marquardt ideas. There's also an idea from Ben Moores about  
+> automatic legend generation; is it related to what you say about  
+> legends, Mr. Marquardt?
+>
+> Thanks,
+>
+> Carlos L?pez
+>
+> 2010/3/20 Robert Coup <robert.coup at onetrackmind.co.nz>
+> Hi Carlos,
+>
+> 2010/3/21 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>:
+> > Good evening Mapnik community,
+> > I've been searching for information about the 'Better Print  
+> Support' project
+> > idea and I was wondiering if anyone could tell me how to contact  
+> Tom Carden.
+> > He submitted the project idea, so I thought it would be a good  
+> idea to ask
+> > him about it. Any suggestions will be really appreciated. Thanks.
+>
+> It's also worth having a look at the code on the (abandoned) wxpdf
+> branch. See this post (and others by Ben) to have a look:
+>
+> http://www.mail-archive.com/mapnik-devel at lists.berlios.de/ 
+> msg00140.html
+>
+> it has/had some cool features which could be worth porting to a
+> Cairo-based PDF renderer.
+>  * paper sizes/scale calculations
+>  * grids/graticules
+>  * overlay images, including other PDFs
+>  * scale bars
+>  * borders around the map, with coordinates
+>  * outputting map layers as true PDF layers. This allows turning on &
+> off individual layers in a PDF viewer.
+>
+> The addition of SVG symbol support makes things more scalable too...
+>
+> Rob :)
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100328/fc31e499/attachment.html>
+
+From robert.coup at onetrackmind.co.nz  Mon Mar 29 04:24:44 2010
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Mon, 29 Mar 2010 15:24:44 +1300
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <AB9DEB5F-1477-49D6-B622-0359BA09C656@hailmail.net>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<c5097ac41003202252p442de5b9m2aa938229283184@mail.gmail.com>
+	<ee5da36b1003270316q106dafc5jff8e33752f842bda@mail.gmail.com>
+	<AB9DEB5F-1477-49D6-B622-0359BA09C656@hailmail.net>
+Message-ID: <c5097ac41003281924w250a7ef7veea9ec36de19c90c@mail.gmail.com>
+
+Hi Carlos,
+
+2010/3/29 Dane Springmeyer <blake at hailmail.net>:
+> First of all - really great approach. Summarizing your understanding as a
+> way to frame further questions is really helpful, so thanks for this effort.
+
++1 , great to see :)
+
+> - Adding a border to the map to show coordinates: I interpret this as
+> displaying a frame around the map that shows the longitude and latitude
+> coordinates. The more the map is zoomed in, the more exact the coordinates
+> will be.
+>
+
+may include non-geographic projections (ie. coordinates other than
+latitude & longitude). eg. New Zealand Transverse Mercator
+(http://spatialreference.org/ref/epsg/2193/)
+
+>
+> - Grids: I interpret this as displaying the longitude and latitude lines
+> over the map.
+
+likewise, the units may be in meters rather than degrees.
+
+> - Overlay images, including other PDFs: Does the 'overlay' concept have the
+> same meaning as in Google Maps? According to Google Maps' documentation, an
+> overlay is an object attached to a coordinate, like the markers used to
+> point to places
+> (http://code.google.com/apis/maps/documentation/mapplets/overlays.html#Markers).
+> If this is true, then this feature is about displaying these overlay images
+> on the exact points indicated by the associated coordinates (considering
+> that the units used for displaying on the screen and printing on a document
+> are different, am I right?). I'm not sure if I understand the part
+> 'including other PDFs', though.
+
+I was thinking adding other stuff to a "document". So maybe a
+watermark, legend, logo, version/id/user/date information, or having
+some way of fitting a map into a report. Isn't really a major, I think
+you can do that stuff with PDF tools (better to do it outside mapnik
+if its possible).
+
+> - Paper sizes/scale calculations: I read that images are displayed on paper
+> based on DPI units, so some calculations are needed to scale the maps to fit
+> different paper sizes. Tom Hughes mentions in the same thread that there are
+> some issues that need to be considered when tranlating the units used by
+> Mapnik and those of Cairo.
+>
+> Yes, these are core issues that should be worked out, tested, investigated
+> pretty early. I see you are playing around
+> with?http://trac.mapnik.org/ticket/343, which is great.
+
+Also things like making sure the scale is a "round" number (eg.
+1:1000, not 1:992.68), or specifying a fixed scale.
+
+One use case is being able to fit an extent inside an A3 sheet at
+either 1:1000, 1:5000, or 1:10000 scale, whichever is smallest.
+
+Mapnik doesn't need to do all that, just expose a way for the user to
+calculate things.
+
+> - Map layers as PDF layers: According to what I read, the objects displayed
+> on a PDF page can be organized in layers, which can be hidden. As a map is
+> rendered in layers, whose order is defined by a Mapnik configuration file
+> (http://trac.mapnik.org/wiki/XMLConfigReference), a PDF layer may be mapped
+> to a map layer.
+>
+> Yes, mostly. Basically most recent PDF viewers support the idea of layers,
+> such that users can turn various layers on and off, adding interactivity and
+> usefulness of the document, particularly when map data is included. Being
+> able to maintain the exact "<Layer>" elements created by a user authoring a
+> Mapnik XML file as "layers" in the resulting PDF file would be an excellent
+> thing, but potentially users would also want combinations of Mapnik
+> <Layer>'s to be exposed as PDF "layers".
+
+Ben's original work mapped Mapnik Layers to PDF Layers. Basically
+Adobe Acrobat reader has a layers panel when you open such a PDF, and
+you can show/hide layers. It was only for layers that were actually
+rendered by mapnik, so as Dane said, status=off layers wouldn't be in
+the PDF at all.
+
+Rob :)
+
+
+From ccaarlooss at gmail.com  Mon Mar 29 14:07:46 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Mon, 29 Mar 2010 06:07:46 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+Message-ID: <ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+
+Good evening.
+
+I just wanted to share the way I understand the project, so here's an email
+I sent to Mr. Springmeyer. I'd appreciate any feedback you could give me:
+
+Good evening Mr. Springmeyer, how are you?
+
+I'm sending you this email to see if you could answer me some questions I
+have about the 'Better Print Support' and to let you know about the picture
+I have of it. Since you are visiting Mike Migurski and Tom Carden tomorrow,
+it would be great if you could also share this email with them to make sure
+that these ideas and questions make sense.
+
+Talking to Waldemar and reading some resources in the OpenStreetMap wiki, I
+found out that a major need this project has is the capability to customize
+the way a map is printed in digital file formats, such as PDF, Illustrator's
+and Inkcape's, so it can later be printed to paper of various sizes. People
+find it hard to print a map correctly because difficult extra steps are
+necessary, which require the knowledge of other tools, and the results are
+sometimes inaccurate. To mention examples of the former issue, Nicolas
+Marichal says that lacking the capability of turning on/off specific layers
+the resulting map files tend to be too large to be handled properly
+(Waldemar showed me a PDF file generated with MapOSMatic that was really
+large and that caused his PDF viewer to crash (I hope this is what Nicolas
+Marichal was talking about)), containing unnecessary elements the user may
+not want to see in her map. About the latter issue, he mentions that some
+elements are sometimes displayed in wrong positions ("water areas sometimes
+appear wrong, as if the city is flooded"); I guess this is the result of
+resizing or scaling the map.
+
+To overcome these problems, you suggest that OSM's "Easy Printable Maps"
+project should be based upon the work done in the "Better Print Support"
+project, which will address some of the issues mentioned above. The
+existence of tickets #343, #320, #389 and #358 is a sign that the intention
+of improving Mapnik in these areas has existed for quite a long time now.
+Reading the description of these tickets, I realize that they are indeed
+related to what Graham Jones identifies as the main concerns of these two
+projects, namely 'resolution', 'rendering options' and 'scale'. I'll comment
+on these tickets next (please, tell me if any of the ideas I've mentioned so
+far are wrong):
+
+Ticket #343 (Add a resolution parameter to Map object): The goal here would
+be to be possible for the user to specify the resolution at which the map
+should be printed in the digital file (pdf, ai, inkscape, etc.), expressed
+as a scaling factor that would manipulate the size of symbols, fonts, lines,
+etc. The scaling should be done in such a way that the spatial relationships
+between elements is preserved (to prevent lakes from moving, for example).
+My question here would be if the capability of specifying a custom
+resolution parameter is what you refer to as 'multi-resolution'.
+
+Ticket #389 (Add optional but explicit units everywhere): As I understand,
+Mapnik currently uses PPIs as the unit for specifying the resolution of the
+map, but it is desirable that other measurement units, like mm, cm and
+microns, be used as well (I'm not completely sure about this, though). As
+the title of this ticket states, it should be possible to specify everything
+that's measurable inside the map using various units (Robert Coup mentions
+in his reply to my latest message in the mailing list that longitude and
+latitude lines should also be displayed using units other than degrees, like
+meters). Finally, the default unit should be pixels.
+
+Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+
+Ticket #358 (Implementation of map borders and coordinate grids similar to
+those provided by GMT): The features discussed in this ticket are those that
+Robert Coup suggested (in his reply to my message in the mailing list) and
+that are already implemented in the experimental-pdf branch, but using
+WXPDFDOC. The idea here is to provide these features with a Cairo-based
+renderer.
+
+My questions for Mr. Migurski and Mr. Carden would be:
+
+#1 I don't fully understand what they mean with "use the same renderer for
+web cartography as multi-resolution cartography". I interpret the sentence
+as providing support for producing maps with different resolutions within
+the same renderer (Cairo-based preferably).
+
+#2 Does my vision of the project agree with theirs?
+
+I'll post the contents of this email in the mailing list too. Maybe other
+members might want to add their comments.
+
+Thanks in advance.
+
+Carlos Enrique L?pez Garc?s
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100329/0e28acfb/attachment.html>
+
+From dbsgeo at gmail.com  Mon Mar 29 17:49:21 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Mon, 29 Mar 2010 08:49:21 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+Message-ID: <FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+
+
+On Mar 29, 2010, at 5:07 AM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good evening.
+>
+> I just wanted to share the way I understand the project, so here's  
+> an email I sent to Mr. Springmeyer. I'd appreciate any feedback you  
+> could give me:
+>
+> Good evening Mr. Springmeyer, how are you?
+>
+
+Great, thanks!
+
+> I'm sending you this email to see if you could answer me some  
+> questions I have about the 'Better Print Support' and to let you  
+> know about the picture I have of it. Since you are visiting Mike  
+> Migurski and Tom Carden tomorrow, it would be great if you could  
+> also share this email with them to make sure that these ideas and  
+> questions make sense.
+>
+
+You bet, nice thought!
+
+> Talking to Waldemar and reading some resources in the OpenStreetMap  
+> wiki, I found out that a major need this project has is the  
+> capability to customize the way a map is printed in digital file  
+> formats, such as PDF, Illustrator's and Inkcape's, so it can later  
+> be printed to paper of various sizes.
+
+Exactly.
+
+> People find it hard to print a map correctly because difficult extra  
+> steps are necessary,
+
+Yes and no regarding extra steps.
+
+Some users main goal is to enhance/customize Mapnik maps with the  
+target of post-processing the output. Other users may not be concerned  
+about any postprocessing, and rather just need customized maps at  
+higher resolution, or rotated, or with auto-generated scalebars.
+
+> which require the knowledge of other tools, and the results are  
+> sometimes inaccurate.
+
+Perhaps inaccurate, but more likely not aesthetically perfect or  
+otherwise hard to get the GIS data into a design application to be  
+edited further.
+
+> To mention examples of the former issue, Nicolas Marichal says that  
+> lacking the capability of turning on/off specific layers the  
+> resulting map files tend to be too large to be handled properly  
+> (Waldemar showed me a PDF file generated with MapOSMatic that was  
+> really large and that caused his PDF viewer to crash (I hope this is  
+> what Nicolas Marichal was talking about)),
+
+Interesting. I've not noticed this problem before of the PDF output  
+being too big. It would be good to know more about which PDF viewer  
+Waldermar was using to try to investigate more why it crashed.
+
+That does bring up another interesting idea - that perhaps we should  
+add the ability to smooth/simplify the vector output generated by the  
+cairo_renderer to allow for smaller file sizes. However, usually when  
+users want to print out maps they intend to print to large paper, and  
+so a bigger PDF is better. But certainly in some cases smaller output  
+could be desirable. I'm not sure that is within the realm of "better  
+print support" but it is an interesting idea nonetheless.
+
+I think Nicolas was referring to a different problem for his use case.  
+I think he has primarily used the 'Export' function to generate a PDF  
+from this page:
+
+http://www.openstreetmap.org/export/
+
+In this case the PDF is generated from the default 'osm.xml' located at:
+
+http://svn.openstreetmap.org/applications/rendering/mapnik/
+
+I think there are two key problems here for users that want PDF output  
+to post-process, both of which could be solved nicely through a web  
+interface + some custom stylesheets.
+
+1) That 'Export' interface on the openstreetmap/export page does not  
+have a web based mechanism to allow for turning on or off layers  
+(essentially setting the <Layer status="off">), which Mapnik supports.  
+So this could be supported by writing a web application to expose  
+options to the user to control which layers Mapnik renders.
+
+2) The default 'osm.xml' style has some very sophisticated and complex  
+logic to display various OpenStreetMap features that targets nice  
+looking PNG output, not vector (PDF/SVG) output.
+
+For example, because the "Painters Algorithm" is used in Mapnik  
+problems like nice looking "Road Casings" are solved by drawing  
+repeated features several times with different symbolizers. While this  
+looks good in PNG output (and likely just as nice to the eye in PDF/ 
+SVG output), if the goal is post processing (vector output) this  
+approach leads to many overlapping lines that are very difficult to  
+later edit/select/change. Potentially in Inkscape or Illustrator a  
+user would be wanting just the raw road line or a few types of roads,  
+as single lines part of one layer, because the look of nice road  
+casings could be achieved through different methods in the design  
+application.
+
+So, a large part of this problem could again be solved by a web-based  
+interface that allowed the user to choose between a few different  
+Mapnik XML styles that could be written (I could help with this as I'm  
+sure many other Mapnik users!) to produce more simple layers and  
+styling. Basically, new XML styles and layers could be created that  
+better match the exact types of OSM features the user might want to  
+post-process, and the web interface could allow some level of  
+customization that exposed the ability to combine or separate features  
+into different layers.
+
+I must note that my ideas here will not solve all of the issues  
+Nicholas raises, but I think they would help a lot and are the easier  
+and more rewarding first steps. To solve all of the issues at once  
+that Nicholas raises one might be better off with a very different  
+approach, which is to use/extent the osm2ai script that is specially  
+designed around turning osm data into basic vectors for adobe  
+illustrator. A web interface built for this project could potentially  
+add that as an option too, but overall I see great value to furthering  
+Mapnik's support for better post-processable output because Mapnik  
+works with more than just OSM data and most of these ideas,  
+particularly those that could be solved through a web interface to  
+customize output, would also benefit users that seek PNG output too.
+
+> containing unnecessary elements the user may not want to see in her  
+> map. About the latter issue, he mentions that some elements are  
+> sometimes displayed in wrong positions ("water areas sometimes  
+> appear wrong, as if the city is flooded"); I guess this is the  
+> result of resizing or scaling the map.
+>
+
+Regarding wrong display, the "flooding" issue may be easily solved in  
+his case by updated osm coastline data, but perhaps it also has  
+resulted from bad conversion of polygons to svg/pdf vectors. This is  
+something that could use more investigation and would be a good ticket  
+at mapnik trac.
+
+> To overcome these problems, you suggest that OSM's "Easy Printable  
+> Maps" project should be based upon the work done in the "Better  
+> Print Support" project, which will address some of the issues  
+> mentioned above.
+
+Yes, as above. But certainly a web interface to make printing maps  
+easier (and better looking, or better for post-processing) could also  
+integrate a few other tools than Mapnik is beneficial.
+
+> The existence of tickets #343, #320, #389 and #358 is a sign that  
+> the intention of improving Mapnik in these areas has existed for  
+> quite a long time now.
+
+Yes, exactly, although they are actually not that old. I think they  
+are just now really gaining attention and need and thats when things  
+really start getting done :)
+
+> Reading the description of these tickets, I realize that they are  
+> indeed related to what Graham Jones identifies as the main concerns  
+> of these two projects, namely 'resolution', 'rendering options' and  
+> 'scale'. I'll comment on these tickets next (please, tell me if any  
+> of the ideas I've mentioned so far are wrong):
+
+Yes!
+
+>
+> Ticket #343 (Add a resolution parameter to Map object): The goal  
+> here would be to be possible for the user to specify the resolution  
+> at which the map should be printed in the digital file (pdf, ai,  
+> inkscape, etc.), expressed as a scaling factor that would manipulate  
+> the size of symbols, fonts, lines, etc. The scaling should be done  
+> in such a way that the spatial relationships between elements is  
+> preserved (to prevent lakes from moving, for example). My question  
+> here would be if the capability of specifying a custom resolution  
+> parameter is what you refer to as 'multi-resolution'.
+
+Yes. I think my term "multi-resolution" is a bit confusing. Maybe  
+variable-resolution is more appropriate, but either way you are  
+certainly understanding.
+
+I created #343 and wrote the initial patch very quickly and I need to  
+look back to fix up and improve. I will do this this week. My thinking  
+now is that even if we do not have the proper ability to scale symbols  
+yet (#320), adding this functionality would still help immensely. The  
+main task here will be testing and fine-tuning to make sure that the  
+scaling is appropriate and flexible enough (I will comment more on the  
+ticket).
+
+Also, for a concise discussion of this idea (in a different software  
+project), see also:
+
+http://igorbrejc.net/openstreetmap/maperitive-bitmap-scaling
+
+>
+> Ticket #389 (Add optional but explicit units everywhere): As I  
+> understand, Mapnik currently uses PPIs as the unit for specifying  
+> the resolution of the map, but it is desirable that other  
+> measurement units, like mm, cm and microns, be used as well (I'm not  
+> completely sure about this, though).
+
+We should take more with Mike Migurski about this. I think that my  
+comment on that ticket may be off topic.
+
+> As the title of this ticket states, it should be possible to specify  
+> everything that's measurable inside the map using various units  
+> (Robert Coup mentions in his reply to my latest message in the  
+> mailing list that longitude and latitude lines should also be  
+> displayed using units other than degrees, like meters). Finally, the  
+> default unit should be pixels.
+>
+
+Yes, great description. Basically I think Mapnik should be able to  
+convert various units so that users that think better in units other  
+than pixels could more easily author stylesheets - this is  
+particularly relevant to Cascadenik. But the idea may go beyond this,  
+so we should check with Mike.
+
+> Ticket #320 (SVG-Based Symbolizers): I don't have enough information  
+> to comment here, but Mr. Pavlenko said he is interested in an SVG  
+> renderer.
+>
+
+Yes, this one is hard and my feeling is that it is not within the  
+scope of GSOC, but I'd be happy to be wrong. The main functionality  
+here is already implemented, but the Mapnik developers need to discuss  
+further about the approach. I think that Artem is interested in using  
+the more basic support inside AGG for reading/rendering SVG instead/in  
+addition to RSVG, but we should hear more from him.
+
+Also, I think his idea for an SVG renderer is different. #320 is about  
+being able to read/render SVG symbols and I think what an  
+'svg_renderer.cpp' would be about is writing a new output renderer  
+that would be very good at authoring SVG (better than Cairo). This  
+could be very very useful for Nicholas and others than desire optimal  
+SVG output for post-processing. I think Nicholas used the PDF output  
+in the past over SVG because Cairo's PDF output is slightly better  
+supported than SVG, though SVG may be more desirable/flexibly for post- 
+processing in general.
+
+> Ticket #358 (Implementation of map borders and coordinate grids  
+> similar to those provided by GMT): The features discussed in this  
+> ticket are those that Robert Coup suggested (in his reply to my  
+> message in the mailing list) and that are already implemented in the  
+> experimental-pdf branch, but using WXPDFDOC. The idea here is to  
+> provide these features with a Cairo-based renderer.
+>
+
+Yes.
+
+> My questions for Mr. Migurski and Mr. Carden would be:
+>
+> #1 I don't fully understand what they mean with "use the same  
+> renderer for web cartography as multi-resolution cartography". I  
+> interpret the sentence as providing support for producing maps with  
+> different resolutions within the same renderer (Cairo-based  
+> preferably).
+>
+Yes, you are understanding right. I actually added that line - sorry  
+it is not very clear! :) Mostly what I am getting at is that Mapnik  
+Core should be extended (as discusssed above) so that variable  
+resolution output is better supported both in the cairo_renderer  
+output (PDF/SVG) and in the agg_renderer (PNG).
+
+> #2 Does my vision of the project agree with theirs?
+>
+
+Yes, but we should hear from them as well soon.
+
+> I'll post the contents of this email in the mailing list too. Maybe  
+> other members might want to add their comments.
+>
+
+Yes, please. I hope that others add comments as I am just thinking  
+through my experience of hearing from users and thinking about how to  
+better solve problems in Mapnik. Other users will have more clear  
+ideas on many subjects.
+
+> Thanks in advance.
+>
+> Carlos Enrique L?pez Garc?s
+
+Thank you Carlos - amazing research, discussion, and ideas. Great stuff.
+
+Dane
+
+
+
+From artem at mapnik.org  Mon Mar 29 21:03:28 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 29 Mar 2010 20:03:28 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+Message-ID: <j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+
+Hi Carlos,
+
+Thanks for your research!
+(replying inline re: svg_renderer)
+
+....
+>> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+>> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+>>
+>
+> Yes, this one is hard and my feeling is that it is not within the scope of
+> GSOC, but I'd be happy to be wrong. The main functionality here is already
+> implemented, but the Mapnik developers need to discuss further about the
+> approach. I think that Artem is interested in using the more basic support
+> inside AGG for reading/rendering SVG instead/in addition to RSVG, but we
+> should hear more from him.
+>
+> Also, I think his idea for an SVG renderer is different. #320 is about being
+> able to read/render SVG symbols and I think what an 'svg_renderer.cpp' would
+> be about is writing a new output renderer that would be very good at
+> authoring SVG (better than Cairo). This could be very very useful for
+> Nicholas and others than desire optimal SVG output for post-processing. I
+> think Nicholas used the PDF output in the past over SVG because Cairo's PDF
+> output is slightly better supported than SVG, though SVG may be more
+> desirable/flexibly for post-processing in general.
+>
+
+Dane, you're right I was thinking about svg_renderer which would
+extend feature_style_processor e.g
+
+struct svg_renderer : feature_style_processor<svg_renderer> {}
+
+and would render to SVG file. There are some nice features we can add
+like  - simplifications, smoothing etc. Perhaps different policies to
+control how SVG elements constructed, layering, embedded
+fonts/symbols.
+Also, it would be possible to load and edit such SVG in popular apps
+like Illustrator, Inkscape. Implementation can be based on existing
+agg and cairo renderers.
+
+Thinking more about SVG based symbols, I reckon it would be feasible
+to implement this over summer. I can certainly provide guidance and
+help on this one. I just now modified svg_test which comes with agg2.4
+( adding css color parsing from mapnik) and I was able to display
+demo.svg (generated with rundemo.py). Most building blocks are already
+there. For I/O we can re-use existing XML parsing framework (mapnik)
+and add fast spirit based parser for <path .../> elements for example.
+Sounds like fun to me;).
+
+Thoughts?
+
+Regards,
+Artem
+
+
+From artem at mapnik.org  Mon Mar 29 21:39:22 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 29 Mar 2010 20:39:22 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+Message-ID: <y2l7e70f38d1003291239q860e7beeka3f9a0f0e19843eb@mail.gmail.com>
+
+2010/3/29 Artem Pavlenko <artem at mapnik.org>:
+> Hi Carlos,
+>
+> Thanks for your research!
+> (replying inline re: svg_renderer)
+>
+> ....
+>>> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+>>> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+>>>
+>>
+>> Yes, this one is hard and my feeling is that it is not within the scope of
+>> GSOC, but I'd be happy to be wrong. The main functionality here is already
+>> implemented, but the Mapnik developers need to discuss further about the
+>> approach. I think that Artem is interested in using the more basic support
+>> inside AGG for reading/rendering SVG instead/in addition to RSVG, but we
+>> should hear more from him.
+>>
+>> Also, I think his idea for an SVG renderer is different. #320 is about being
+>> able to read/render SVG symbols and I think what an 'svg_renderer.cpp' would
+>> be about is writing a new output renderer that would be very good at
+>> authoring SVG (better than Cairo). This could be very very useful for
+>> Nicholas and others than desire optimal SVG output for post-processing. I
+>> think Nicholas used the PDF output in the past over SVG because Cairo's PDF
+>> output is slightly better supported than SVG, though SVG may be more
+>> desirable/flexibly for post-processing in general.
+>>
+>
+> Dane, you're right I was thinking about svg_renderer which would
+> extend feature_style_processor e.g
+>
+> struct svg_renderer : feature_style_processor<svg_renderer> {}
+>
+> and would render to SVG file. There are some nice features we can add
+> like ?- simplifications, smoothing etc. Perhaps different policies to
+> control how SVG elements constructed, layering, embedded
+> fonts/symbols.
+> Also, it would be possible to load and edit such SVG in popular apps
+> like Illustrator, Inkscape. Implementation can be based on existing
+> agg and cairo renderers.
+>
+> Thinking more about SVG based symbols, I reckon it would be feasible
+> to implement this over summer. I can certainly provide guidance and
+> help on this one. I just now modified svg_test which comes with agg2.4
+> ( adding css color parsing from mapnik) and I was able to display
+> demo.svg (generated with rundemo.py). Most building blocks are already
+> there. For I/O we can re-use existing XML parsing framework (mapnik)
+> and add fast spirit based parser for <path .../> elements for example.
+> Sounds like fun to me;).
+
+
+BTW, full SVG support would be hard, I agree, I'm thinking about
+subset of SVG e.g SVG tiny 1.2 minus
+animations and fancy stuff like that. Good test for the reader and
+internal data structures would loading and rendering SVG map generated
+with cairo_renderer or even new shiny svg_renderer. Also, this can be
+a base for a standalone SVG viewer.. but main purpose is to
+efficiently render SVG symbols applying transformations.
+
+>
+> Thoughts?
+>
+> Regards,
+> Artem
+>
+
+
+From waldemar.quevedo at gmail.com  Mon Mar 29 22:27:57 2010
+From: waldemar.quevedo at gmail.com (waldemar quevedo)
+Date: Mon, 29 Mar 2010 14:27:57 -0600
+Subject: [Mapnik-devel] [Mapnik-users] Better Print Support GSoC's
+	project
+In-Reply-To: <ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+Message-ID: <8e1a591003291327y132a41dbn4bc1b29c9579a3ae@mail.gmail.com>
+
+Very interesting discussion indeed, thanks Carlos for your thourough
+research. We were just discussing this late yesterday and already sent and
+email this morning, thanks for that!
+I have taken into consideration what was discussed and I think that if we're
+both accepted we should tackle first mapnik's rendering options, resolution
+and scale issues so that we do not become too dependent at the end of the
+projects.
+Maybe one way of decoupling the projects (specially mine, the web front end
+project since mapnik is a huge dependency) would be to make a third schedule
+for the proposal, one where we both specify the way we are going are going
+to collaborate. This way we would both work on having a solid proposal for
+each project without depending too much on the other project. If one of us
+is not chosen then we would carry on and work on the original schedule, and
+if we're both selected we would work on the 3rd schedule (which would only
+be sent to the maling list and mapnik/osm community not to Google). What do
+you think?
+
+Here is a draft of my current proposal for the OSM project, please tell me
+your thoughts, I will update it later today:
+http://wiki.openstreetmap.org/wiki/Google_Summer_of_Code/2010/Student_Applications#Draft_application:_Better_Print_Support:_OpenPaperMaps.3F
+
+I would also like to point out Carlos and I go to the same school, have some
+classes together and have been meeting all week to work on this project. If
+we're both accepted we would have a similar working flow so that we're both
+at the same page.
+
+Thank you all for your suggestions and good luck at the Where2.0 conference!
+
+- Waldemar
+
+2010/3/29 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>
+
+> Good evening.
+>
+> I just wanted to share the way I understand the project, so here's an email
+> I sent to Mr. Springmeyer. I'd appreciate any feedback you could give me:
+>
+> Good evening Mr. Springmeyer, how are you?
+>
+> I'm sending you this email to see if you could answer me some questions I
+> have about the 'Better Print Support' and to let you know about the picture
+> I have of it. Since you are visiting Mike Migurski and Tom Carden tomorrow,
+> it would be great if you could also share this email with them to make sure
+> that these ideas and questions make sense.
+>
+> Talking to Waldemar and reading some resources in the OpenStreetMap wiki, I
+> found out that a major need this project has is the capability to customize
+> the way a map is printed in digital file formats, such as PDF, Illustrator's
+> and Inkcape's, so it can later be printed to paper of various sizes. People
+> find it hard to print a map correctly because difficult extra steps are
+> necessary, which require the knowledge of other tools, and the results are
+> sometimes inaccurate. To mention examples of the former issue, Nicolas
+> Marichal says that lacking the capability of turning on/off specific layers
+> the resulting map files tend to be too large to be handled properly
+> (Waldemar showed me a PDF file generated with MapOSMatic that was really
+> large and that caused his PDF viewer to crash (I hope this is what Nicolas
+> Marichal was talking about)), containing unnecessary elements the user may
+> not want to see in her map. About the latter issue, he mentions that some
+> elements are sometimes displayed in wrong positions ("water areas sometimes
+> appear wrong, as if the city is flooded"); I guess this is the result of
+> resizing or scaling the map.
+>
+> To overcome these problems, you suggest that OSM's "Easy Printable Maps"
+> project should be based upon the work done in the "Better Print Support"
+> project, which will address some of the issues mentioned above. The
+> existence of tickets #343, #320, #389 and #358 is a sign that the intention
+> of improving Mapnik in these areas has existed for quite a long time now.
+> Reading the description of these tickets, I realize that they are indeed
+> related to what Graham Jones identifies as the main concerns of these two
+> projects, namely 'resolution', 'rendering options' and 'scale'. I'll comment
+> on these tickets next (please, tell me if any of the ideas I've mentioned so
+> far are wrong):
+>
+> Ticket #343 (Add a resolution parameter to Map object): The goal here would
+> be to be possible for the user to specify the resolution at which the map
+> should be printed in the digital file (pdf, ai, inkscape, etc.), expressed
+> as a scaling factor that would manipulate the size of symbols, fonts, lines,
+> etc. The scaling should be done in such a way that the spatial relationships
+> between elements is preserved (to prevent lakes from moving, for example).
+> My question here would be if the capability of specifying a custom
+> resolution parameter is what you refer to as 'multi-resolution'.
+>
+> Ticket #389 (Add optional but explicit units everywhere): As I understand,
+> Mapnik currently uses PPIs as the unit for specifying the resolution of the
+> map, but it is desirable that other measurement units, like mm, cm and
+> microns, be used as well (I'm not completely sure about this, though). As
+> the title of this ticket states, it should be possible to specify everything
+> that's measurable inside the map using various units (Robert Coup mentions
+> in his reply to my latest message in the mailing list that longitude and
+> latitude lines should also be displayed using units other than degrees, like
+> meters). Finally, the default unit should be pixels.
+>
+> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+>
+> Ticket #358 (Implementation of map borders and coordinate grids similar to
+> those provided by GMT): The features discussed in this ticket are those that
+> Robert Coup suggested (in his reply to my message in the mailing list) and
+> that are already implemented in the experimental-pdf branch, but using
+> WXPDFDOC. The idea here is to provide these features with a Cairo-based
+> renderer.
+>
+> My questions for Mr. Migurski and Mr. Carden would be:
+>
+> #1 I don't fully understand what they mean with "use the same renderer for
+> web cartography as multi-resolution cartography". I interpret the sentence
+> as providing support for producing maps with different resolutions within
+> the same renderer (Cairo-based preferably).
+>
+> #2 Does my vision of the project agree with theirs?
+>
+> I'll post the contents of this email in the mailing list too. Maybe other
+> members might want to add their comments.
+>
+> Thanks in advance.
+>
+> Carlos Enrique L?pez Garc?s
+>
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100329/38d34ce5/attachment.html>
+
+From grahamjones139 at googlemail.com  Mon Mar 29 22:56:42 2010
+From: grahamjones139 at googlemail.com (Graham Jones)
+Date: Mon, 29 Mar 2010 21:56:42 +0100
+Subject: [Mapnik-devel] [Mapnik-users] Better Print Support GSoC's
+	project
+In-Reply-To: <8e1a591003291327y132a41dbn4bc1b29c9579a3ae@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<8e1a591003291327y132a41dbn4bc1b29c9579a3ae@mail.gmail.com>
+Message-ID: <6c50fdc51003291356k22c06ed1q44e6b398dbb68a41@mail.gmail.com>
+
+Waldemar,
+I like the idea of you collaborating as the two projects are very closely
+related - one is the 'user' front end, while the other is the processing
+part.
+
+You do need to be careful that you are both working on different projects,
+but collaborating, rather than working on a larger joint one:
+
+The GSoC FAQ says:
+
+   1. Can a group apply for and work on a single proposal?
+
+   No, only an individual may work on a given project. Of course, students
+   should feel free to collaborate with others to accomplish their project
+   goals.
+
+My recommendation would be for you to get on with your Danjo front end to
+allow the user to select different style sheets (or edit the stylesheet) to
+do different mapnik rendering, add POIs etc. so that you get something
+working fast.
+Carlos can work on the better quality output for mapnik, and as long as you
+know what his new options are going to look like, you can bear these in mind
+when you produce your code.
+If you find that you can not improve the output further without improvements
+to Mapnik (as you state in your proposal), then you could help with the
+mapnik bit at the end.
+
+My concern is the mid term evaluations (that you need to pass to get paid!).
+ I can't remember what the questions are, but I think it is about progress
+towards your project goals - if you concentrate on mapnik first it will be
+difficult to argue progress towards your goals?
+
+Anyway, those are my suggestions, but you may want to read the GSoC FAQ
+yourself to check if I am wrong!
+
+I hope this helps!
+
+Regards
+
+
+Graham.
+
+2010/3/29 waldemar quevedo <waldemar.quevedo at gmail.com>
+
+> Very interesting discussion indeed, thanks Carlos for your thourough
+> research. We were just discussing this late yesterday and already sent and
+> email this morning, thanks for that!
+> I have taken into consideration what was discussed and I think that if
+> we're both accepted we should tackle first mapnik's rendering options,
+> resolution and scale issues so that we do not become too dependent at the
+> end of the projects.
+> Maybe one way of decoupling the projects (specially mine, the web front end
+> project since mapnik is a huge dependency) would be to make a third schedule
+> for the proposal, one where we both specify the way we are going are going
+> to collaborate. This way we would both work on having a solid proposal for
+> each project without depending too much on the other project. If one of us
+> is not chosen then we would carry on and work on the original schedule, and
+> if we're both selected we would work on the 3rd schedule (which would only
+> be sent to the maling list and mapnik/osm community not to Google). What do
+> you think?
+>
+> Here is a draft of my current proposal for the OSM project, please tell me
+> your thoughts, I will update it later today:
+> http://wiki.openstreetmap.org/wiki/Google_Summer_of_Code/2010/Student_Applications#Draft_application:_Better_Print_Support:_OpenPaperMaps.3F
+>
+> I would also like to point out Carlos and I go to the same school, have
+> some classes together and have been meeting all week to work on this
+> project. If we're both accepted we would have a similar working flow so that
+> we're both at the same page.
+>
+> Thank you all for your suggestions and good luck at the Where2.0
+> conference!
+>
+> - Waldemar
+>
+> 2010/3/29 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>
+>
+>> Good evening.
+>>
+>> I just wanted to share the way I understand the project, so here's an
+>> email I sent to Mr. Springmeyer. I'd appreciate any feedback you could give
+>> me:
+>>
+>> Good evening Mr. Springmeyer, how are you?
+>>
+>> I'm sending you this email to see if you could answer me some questions I
+>> have about the 'Better Print Support' and to let you know about the picture
+>> I have of it. Since you are visiting Mike Migurski and Tom Carden tomorrow,
+>> it would be great if you could also share this email with them to make sure
+>> that these ideas and questions make sense.
+>>
+>> Talking to Waldemar and reading some resources in the OpenStreetMap wiki,
+>> I found out that a major need this project has is the capability to
+>> customize the way a map is printed in digital file formats, such as PDF,
+>> Illustrator's and Inkcape's, so it can later be printed to paper of various
+>> sizes. People find it hard to print a map correctly because difficult extra
+>> steps are necessary, which require the knowledge of other tools, and the
+>> results are sometimes inaccurate. To mention examples of the former issue,
+>> Nicolas Marichal says that lacking the capability of turning on/off specific
+>> layers the resulting map files tend to be too large to be handled properly
+>> (Waldemar showed me a PDF file generated with MapOSMatic that was really
+>> large and that caused his PDF viewer to crash (I hope this is what Nicolas
+>> Marichal was talking about)), containing unnecessary elements the user may
+>> not want to see in her map. About the latter issue, he mentions that some
+>> elements are sometimes displayed in wrong positions ("water areas sometimes
+>> appear wrong, as if the city is flooded"); I guess this is the result of
+>> resizing or scaling the map.
+>>
+>> To overcome these problems, you suggest that OSM's "Easy Printable Maps"
+>> project should be based upon the work done in the "Better Print Support"
+>> project, which will address some of the issues mentioned above. The
+>> existence of tickets #343, #320, #389 and #358 is a sign that the intention
+>> of improving Mapnik in these areas has existed for quite a long time now.
+>> Reading the description of these tickets, I realize that they are indeed
+>> related to what Graham Jones identifies as the main concerns of these two
+>> projects, namely 'resolution', 'rendering options' and 'scale'. I'll comment
+>> on these tickets next (please, tell me if any of the ideas I've mentioned so
+>> far are wrong):
+>>
+>> Ticket #343 (Add a resolution parameter to Map object): The goal here
+>> would be to be possible for the user to specify the resolution at which the
+>> map should be printed in the digital file (pdf, ai, inkscape, etc.),
+>> expressed as a scaling factor that would manipulate the size of symbols,
+>> fonts, lines, etc. The scaling should be done in such a way that the spatial
+>> relationships between elements is preserved (to prevent lakes from moving,
+>> for example). My question here would be if the capability of specifying a
+>> custom resolution parameter is what you refer to as 'multi-resolution'.
+>>
+>> Ticket #389 (Add optional but explicit units everywhere): As I understand,
+>> Mapnik currently uses PPIs as the unit for specifying the resolution of the
+>> map, but it is desirable that other measurement units, like mm, cm and
+>> microns, be used as well (I'm not completely sure about this, though). As
+>> the title of this ticket states, it should be possible to specify everything
+>> that's measurable inside the map using various units (Robert Coup mentions
+>> in his reply to my latest message in the mailing list that longitude and
+>> latitude lines should also be displayed using units other than degrees, like
+>> meters). Finally, the default unit should be pixels.
+>>
+>> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+>> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+>>
+>> Ticket #358 (Implementation of map borders and coordinate grids similar to
+>> those provided by GMT): The features discussed in this ticket are those that
+>> Robert Coup suggested (in his reply to my message in the mailing list) and
+>> that are already implemented in the experimental-pdf branch, but using
+>> WXPDFDOC. The idea here is to provide these features with a Cairo-based
+>> renderer.
+>>
+>> My questions for Mr. Migurski and Mr. Carden would be:
+>>
+>> #1 I don't fully understand what they mean with "use the same renderer for
+>> web cartography as multi-resolution cartography". I interpret the sentence
+>> as providing support for producing maps with different resolutions within
+>> the same renderer (Cairo-based preferably).
+>>
+>> #2 Does my vision of the project agree with theirs?
+>>
+>> I'll post the contents of this email in the mailing list too. Maybe other
+>> members might want to add their comments.
+>>
+>> Thanks in advance.
+>>
+>> Carlos Enrique L?pez Garc?s
+>>
+>>
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>>
+>>
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+
+
+-- 
+Dr. Graham Jones
+Hartlepool, UK
+email: grahamjones139 at gmail.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100329/85e65794/attachment.html>
+
+From blake at hailmail.net  Tue Mar 30 01:24:09 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 29 Mar 2010 16:24:09 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Better Print Support GSoC's
+	project
+In-Reply-To: <6c50fdc51003291356k22c06ed1q44e6b398dbb68a41@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<8e1a591003291327y132a41dbn4bc1b29c9579a3ae@mail.gmail.com>
+	<6c50fdc51003291356k22c06ed1q44e6b398dbb68a41@mail.gmail.com>
+Message-ID: <6A3E95F3-E64C-406D-B2F8-45331D99263C@hailmail.net>
+
+Waldermar and Graham,
+
+Seems like great thinking! I'm very excited about the collaboration  
+already and please keep on asking questions as they come up. Very  
+excited too to see the applications come together!
+
+Cheers,
+
+Dane
+
+
+On Mar 29, 2010, at 1:56 PM, Graham Jones wrote:
+
+> Waldemar,
+> I like the idea of you collaborating as the two projects are very  
+> closely related - one is the 'user' front end, while the other is  
+> the processing part.
+>
+> You do need to be careful that you are both working on different  
+> projects, but collaborating, rather than working on a larger joint  
+> one:
+>
+> The GSoC FAQ says:
+> Can a group apply for and work on a single proposal?
+> No, only an individual may work on a given project. Of course,  
+> students should feel free to collaborate with others to accomplish  
+> their project goals.
+>
+> My recommendation would be for you to get on with your Danjo front  
+> end to allow the user to select different style sheets (or edit the  
+> stylesheet) to do different mapnik rendering, add POIs etc. so that  
+> you get something working fast.
+> Carlos can work on the better quality output for mapnik, and as long  
+> as you know what his new options are going to look like, you can  
+> bear these in mind when you produce your code.
+> If you find that you can not improve the output further without  
+> improvements to Mapnik (as you state in your proposal), then you  
+> could help with the mapnik bit at the end.
+>
+> My concern is the mid term evaluations (that you need to pass to get  
+> paid!).  I can't remember what the questions are, but I think it is  
+> about progress towards your project goals - if you concentrate on  
+> mapnik first it will be difficult to argue progress towards your  
+> goals?
+>
+> Anyway, those are my suggestions, but you may want to read the GSoC  
+> FAQ yourself to check if I am wrong!
+>
+> I hope this helps!
+>
+> Regards
+>
+>
+> Graham.
+>
+> 2010/3/29 waldemar quevedo <waldemar.quevedo at gmail.com>
+> Very interesting discussion indeed, thanks Carlos for your thourough  
+> research. We were just discussing this late yesterday and already  
+> sent and email this morning, thanks for that!
+> I have taken into consideration what was discussed and I think that  
+> if we're both accepted we should tackle first mapnik's rendering  
+> options, resolution and scale issues so that we do not become too  
+> dependent at the end of the projects.
+> Maybe one way of decoupling the projects (specially mine, the web  
+> front end project since mapnik is a huge dependency) would be to  
+> make a third schedule for the proposal, one where we both specify  
+> the way we are going are going to collaborate. This way we would  
+> both work on having a solid proposal for each project without  
+> depending too much on the other project. If one of us is not chosen  
+> then we would carry on and work on the original schedule, and if  
+> we're both selected we would work on the 3rd schedule (which would  
+> only be sent to the maling list and mapnik/osm community not to  
+> Google). What do you think?
+>
+> Here is a draft of my current proposal for the OSM project, please  
+> tell me your thoughts, I will update it later today: http://wiki.openstreetmap.org/wiki/Google_Summer_of_Code/2010/Student_Applications#Draft_application 
+> :_Better_Print_Support:_OpenPaperMaps.3F
+>
+> I would also like to point out Carlos and I go to the same school,  
+> have some classes together and have been meeting all week to work on  
+> this project. If we're both accepted we would have a similar working  
+> flow so that we're both at the same page.
+>
+> Thank you all for your suggestions and good luck at the Where2.0  
+> conference!
+>
+> - Waldemar
+>
+> 2010/3/29 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>
+> Good evening.
+>
+> I just wanted to share the way I understand the project, so here's  
+> an email I sent to Mr. Springmeyer. I'd appreciate any feedback you  
+> could give me:
+>
+> Good evening Mr. Springmeyer, how are you?
+>
+> I'm sending you this email to see if you could answer me some  
+> questions I have about the 'Better Print Support' and to let you  
+> know about the picture I have of it. Since you are visiting Mike  
+> Migurski and Tom Carden tomorrow, it would be great if you could  
+> also share this email with them to make sure that these ideas and  
+> questions make sense.
+>
+> Talking to Waldemar and reading some resources in the OpenStreetMap  
+> wiki, I found out that a major need this project has is the  
+> capability to customize the way a map is printed in digital file  
+> formats, such as PDF, Illustrator's and Inkcape's, so it can later  
+> be printed to paper of various sizes. People find it hard to print a  
+> map correctly because difficult extra steps are necessary, which  
+> require the knowledge of other tools, and the results are sometimes  
+> inaccurate. To mention examples of the former issue, Nicolas  
+> Marichal says that lacking the capability of turning on/off specific  
+> layers the resulting map files tend to be too large to be handled  
+> properly (Waldemar showed me a PDF file generated with MapOSMatic  
+> that was really large and that caused his PDF viewer to crash (I  
+> hope this is what Nicolas Marichal was talking about)), containing  
+> unnecessary elements the user may not want to see in her map. About  
+> the latter issue, he mentions that some elements are sometimes  
+> displayed in wrong positions ("water areas sometimes appear wrong,  
+> as if the city is flooded"); I guess this is the result of resizing  
+> or scaling the map.
+>
+> To overcome these problems, you suggest that OSM's "Easy Printable  
+> Maps" project should be based upon the work done in the "Better  
+> Print Support" project, which will address some of the issues  
+> mentioned above. The existence of tickets #343, #320, #389 and #358  
+> is a sign that the intention of improving Mapnik in these areas has  
+> existed for quite a long time now. Reading the description of these  
+> tickets, I realize that they are indeed related to what Graham Jones  
+> identifies as the main concerns of these two projects, namely  
+> 'resolution', 'rendering options' and 'scale'. I'll comment on these  
+> tickets next (please, tell me if any of the ideas I've mentioned so  
+> far are wrong):
+>
+> Ticket #343 (Add a resolution parameter to Map object): The goal  
+> here would be to be possible for the user to specify the resolution  
+> at which the map should be printed in the digital file (pdf, ai,  
+> inkscape, etc.), expressed as a scaling factor that would manipulate  
+> the size of symbols, fonts, lines, etc. The scaling should be done  
+> in such a way that the spatial relationships between elements is  
+> preserved (to prevent lakes from moving, for example). My question  
+> here would be if the capability of specifying a custom resolution  
+> parameter is what you refer to as 'multi-resolution'.
+>
+> Ticket #389 (Add optional but explicit units everywhere): As I  
+> understand, Mapnik currently uses PPIs as the unit for specifying  
+> the resolution of the map, but it is desirable that other  
+> measurement units, like mm, cm and microns, be used as well (I'm not  
+> completely sure about this, though). As the title of this ticket  
+> states, it should be possible to specify everything that's  
+> measurable inside the map using various units (Robert Coup mentions  
+> in his reply to my latest message in the mailing list that longitude  
+> and latitude lines should also be displayed using units other than  
+> degrees, like meters). Finally, the default unit should be pixels.
+>
+> Ticket #320 (SVG-Based Symbolizers): I don't have enough information  
+> to comment here, but Mr. Pavlenko said he is interested in an SVG  
+> renderer.
+>
+> Ticket #358 (Implementation of map borders and coordinate grids  
+> similar to those provided by GMT): The features discussed in this  
+> ticket are those that Robert Coup suggested (in his reply to my  
+> message in the mailing list) and that are already implemented in the  
+> experimental-pdf branch, but using WXPDFDOC. The idea here is to  
+> provide these features with a Cairo-based renderer.
+>
+> My questions for Mr. Migurski and Mr. Carden would be:
+>
+> #1 I don't fully understand what they mean with "use the same  
+> renderer for web cartography as multi-resolution cartography". I  
+> interpret the sentence as providing support for producing maps with  
+> different resolutions within the same renderer (Cairo-based  
+> preferably).
+>
+> #2 Does my vision of the project agree with theirs?
+>
+> I'll post the contents of this email in the mailing list too. Maybe  
+> other members might want to add their comments.
+>
+> Thanks in advance.
+>
+> Carlos Enrique L?pez Garc?s
+>
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+>
+>
+> -- 
+> Dr. Graham Jones
+> Hartlepool, UK
+> email: grahamjones139 at gmail.com
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100329/231e4c0c/attachment.html>
+
+From ccaarlooss at gmail.com  Tue Mar 30 17:52:40 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Tue, 30 Mar 2010 09:52:40 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+Message-ID: <ee5da36b1003300852h4df6e662i4b4a6fa4117dfc90@mail.gmail.com>
+
+Thank you Mr. Pavlenko, Mr. Springmeyer, Mr. Jones, Mr. Coup and Waldemar
+for your replies.
+
+Sorry for replying so late. I've been reading a bit about the SVG format
+specification, but I don't feel I can reply properly to your ideas right now
+Mr. Pavlenko. I'll continue with my research about it this afternoon and
+will have something to comment with tonight.
+
+Thank you for your patience
+
+Carlos Enrique L?pez Garc?s
+
+
+2010/3/29 Artem Pavlenko <artem at mapnik.org>
+
+> Hi Carlos,
+>
+> Thanks for your research!
+> (replying inline re: svg_renderer)
+>
+> ....
+> >> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+> >> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+> >>
+> >
+> > Yes, this one is hard and my feeling is that it is not within the scope
+> of
+> > GSOC, but I'd be happy to be wrong. The main functionality here is
+> already
+> > implemented, but the Mapnik developers need to discuss further about the
+> > approach. I think that Artem is interested in using the more basic
+> support
+> > inside AGG for reading/rendering SVG instead/in addition to RSVG, but we
+> > should hear more from him.
+> >
+> > Also, I think his idea for an SVG renderer is different. #320 is about
+> being
+> > able to read/render SVG symbols and I think what an 'svg_renderer.cpp'
+> would
+> > be about is writing a new output renderer that would be very good at
+> > authoring SVG (better than Cairo). This could be very very useful for
+> > Nicholas and others than desire optimal SVG output for post-processing. I
+> > think Nicholas used the PDF output in the past over SVG because Cairo's
+> PDF
+> > output is slightly better supported than SVG, though SVG may be more
+> > desirable/flexibly for post-processing in general.
+> >
+>
+> Dane, you're right I was thinking about svg_renderer which would
+> extend feature_style_processor e.g
+>
+> struct svg_renderer : feature_style_processor<svg_renderer> {}
+>
+> and would render to SVG file. There are some nice features we can add
+> like  - simplifications, smoothing etc. Perhaps different policies to
+> control how SVG elements constructed, layering, embedded
+> fonts/symbols.
+> Also, it would be possible to load and edit such SVG in popular apps
+> like Illustrator, Inkscape. Implementation can be based on existing
+> agg and cairo renderers.
+>
+> Thinking more about SVG based symbols, I reckon it would be feasible
+> to implement this over summer. I can certainly provide guidance and
+> help on this one. I just now modified svg_test which comes with agg2.4
+> ( adding css color parsing from mapnik) and I was able to display
+> demo.svg (generated with rundemo.py). Most building blocks are already
+> there. For I/O we can re-use existing XML parsing framework (mapnik)
+> and add fast spirit based parser for <path .../> elements for example.
+> Sounds like fun to me;).
+>
+> Thoughts?
+>
+> Regards,
+> Artem
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100330/86388878/attachment.html>
+
+From ccaarlooss at gmail.com  Wed Mar 31 11:46:01 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Wed, 31 Mar 2010 03:46:01 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+Message-ID: <x2zee5da36b1003310246u8522e37fx6644f55fae54c1fd@mail.gmail.com>
+
+Good evening Mr. Pavlenko
+
+Here's what I understand about your ideas:
+
+There are currently two main renderers, one based on Cairo and the other on
+AGG. The idea is to develop a third one that would not use this kind of
+graphics libraries, but rather use SVG as output. Two main concerns drive
+this initiative: Performance and scalability.
+
+Concern #1: Performance. In your first reply to this thread, you mention
+that the Cairo-based renderer is kind of slow, so an SVG output generator
+using Boost.Spirit.Karma would be considerably faster. I read that both
+Cairo and AGG are able to do it, but Spirit would increase performance,
+right?
+
+Concern #2: Scalability. Since the main virtue of SVG is that of making the
+image scalable, this feature would be relatively straightforward to
+implement. Furthermore, SVG is a common format, widely used by many
+applications (Inkscape and Adobe Illustrator, for instance).
+
+About the implementation, I understand that agg_renderer and cairo_renderer
+are subclasses of feature_style_processor. This class does the basic
+processing of the map, iterating over its defined layers and rules. The
+subclasses (cairo_renderer and agg_renderer) are responsible of defining the
+way each symbolizer is rendered, using each a different API (Cairo and AGG,
+respectively). The svg_renderer would be based on Spirit to produce the
+image in XML format.
+
+I haven't read about how an SVG image can be embedded in a PDF file. My
+question is, would this require the implementation of a separate PDF
+renderer for SVG, just as Robert Coup says about a Cairo-based one?
+
+Thanks,
+
+Carlos Enrique L?pez Garc?s
+
+2010/3/29 Artem Pavlenko <artem at mapnik.org>
+
+> Hi Carlos,
+>
+> Thanks for your research!
+> (replying inline re: svg_renderer)
+>
+> ....
+> >> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+> >> comment here, but Mr. Pavlenko said he is interested in an SVG renderer.
+> >>
+> >
+> > Yes, this one is hard and my feeling is that it is not within the scope
+> of
+> > GSOC, but I'd be happy to be wrong. The main functionality here is
+> already
+> > implemented, but the Mapnik developers need to discuss further about the
+> > approach. I think that Artem is interested in using the more basic
+> support
+> > inside AGG for reading/rendering SVG instead/in addition to RSVG, but we
+> > should hear more from him.
+> >
+> > Also, I think his idea for an SVG renderer is different. #320 is about
+> being
+> > able to read/render SVG symbols and I think what an 'svg_renderer.cpp'
+> would
+> > be about is writing a new output renderer that would be very good at
+> > authoring SVG (better than Cairo). This could be very very useful for
+> > Nicholas and others than desire optimal SVG output for post-processing. I
+> > think Nicholas used the PDF output in the past over SVG because Cairo's
+> PDF
+> > output is slightly better supported than SVG, though SVG may be more
+> > desirable/flexibly for post-processing in general.
+> >
+>
+> Dane, you're right I was thinking about svg_renderer which would
+> extend feature_style_processor e.g
+>
+> struct svg_renderer : feature_style_processor<svg_renderer> {}
+>
+> and would render to SVG file. There are some nice features we can add
+> like  - simplifications, smoothing etc. Perhaps different policies to
+> control how SVG elements constructed, layering, embedded
+> fonts/symbols.
+> Also, it would be possible to load and edit such SVG in popular apps
+> like Illustrator, Inkscape. Implementation can be based on existing
+> agg and cairo renderers.
+>
+> Thinking more about SVG based symbols, I reckon it would be feasible
+> to implement this over summer. I can certainly provide guidance and
+> help on this one. I just now modified svg_test which comes with agg2.4
+> ( adding css color parsing from mapnik) and I was able to display
+> demo.svg (generated with rundemo.py). Most building blocks are already
+> there. For I/O we can re-use existing XML parsing framework (mapnik)
+> and add fast spirit based parser for <path .../> elements for example.
+> Sounds like fun to me;).
+>
+> Thoughts?
+>
+> Regards,
+> Artem
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100331/ee6d52a0/attachment.html>
+
+From artem at mapnik.org  Wed Mar 31 14:04:22 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 31 Mar 2010 13:04:22 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <x2zee5da36b1003310246u8522e37fx6644f55fae54c1fd@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+	<x2zee5da36b1003310246u8522e37fx6644f55fae54c1fd@mail.gmail.com>
+Message-ID: <y2t7e70f38d1003310504p932f8a66l84d8fb94a445fae6@mail.gmail.com>
+
+Hi Carlos,
+
+(inline)
+
+2010/3/31 Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com>:
+>
+> Good evening Mr. Pavlenko
+>
+> Here's what I understand about your ideas:
+>
+> There are currently two main renderers, one based on Cairo and the other on
+> AGG. The idea is to develop a third one that would not use this kind of
+> graphics libraries, but rather use SVG as output.
+
+Correct.
+
+ Two main concerns drive
+> this initiative: Performance and scalability.
+
+The main goal would be to output optimised SVG with a finer control.
+This can't be achieved with cairo backend. Some important features
+would be - layers, embedded/external symbols/fonts. While
+cairo_renderer can output SVGs they are is not very useful for
+post-editing in Adobe Illustrator, Inkscape etc.
+
+So I see main concerns in this order :
+
+1) Optimised/User friendly SVG
+2) Improved performance
+
+(more below)
+
+> Concern #1: Performance. In your first reply to this thread, you mention
+> that the Cairo-based renderer is kind of slow, so an SVG output generator
+> using Boost.Spirit.Karma would be considerably faster. I read that both
+> Cairo and AGG are able to do it, but Spirit would increase performance,
+> right?
+
+Yes, using boost::spirit::karma should result in better performance.
+
+
+> Concern #2: Scalability. Since the main virtue of SVG is that of making the
+> image scalable, this feature would be relatively straightforward to
+> implement. Furthermore, SVG is a common format, widely used by many
+> applications (Inkscape and Adobe Illustrator, for instance).
+
+Yes, SVG is by definition scalable.
+
+> About the implementation, I understand that agg_renderer and cairo_renderer
+> are subclasses of feature_style_processor. This class does the basic
+> processing of the map, iterating over its defined layers and rules. The
+> subclasses (cairo_renderer and agg_renderer) are responsible of defining the
+> way each symbolizer is rendered, using each a different API (Cairo and AGG,
+> respectively). The svg_renderer would be based on Spirit to produce the
+> image in XML format.
+
+Correct.
+
+>
+> I haven't read about how an SVG image can be embedded in a PDF file. My
+> question is, would this require the implementation of a separate PDF
+> renderer for SVG, just as Robert Coup says about a Cairo-based one?
+>
+
+OK, SVG->PDF needs some r&d, it should be easy, though.
+
+re:Cairo - it hasn't fine control required to implement features we're
+discussing, Robert could verify this please?
+
+
+> Thanks,
+>
+> Carlos Enrique L?pez Garc?s
+>
+
+Regards,
+Artem
+
+
+> 2010/3/29 Artem Pavlenko <artem at mapnik.org>
+>>
+>> Hi Carlos,
+>>
+>> Thanks for your research!
+>> (replying inline re: svg_renderer)
+>>
+>> ....
+>> >> Ticket #320 (SVG-Based Symbolizers): I don't have enough information to
+>> >> comment here, but Mr. Pavlenko said he is interested in an SVG
+>> >> renderer.
+>> >>
+>> >
+>> > Yes, this one is hard and my feeling is that it is not within the scope
+>> > of
+>> > GSOC, but I'd be happy to be wrong. The main functionality here is
+>> > already
+>> > implemented, but the Mapnik developers need to discuss further about the
+>> > approach. I think that Artem is interested in using the more basic
+>> > support
+>> > inside AGG for reading/rendering SVG instead/in addition to RSVG, but we
+>> > should hear more from him.
+>> >
+>> > Also, I think his idea for an SVG renderer is different. #320 is about
+>> > being
+>> > able to read/render SVG symbols and I think what an 'svg_renderer.cpp'
+>> > would
+>> > be about is writing a new output renderer that would be very good at
+>> > authoring SVG (better than Cairo). This could be very very useful for
+>> > Nicholas and others than desire optimal SVG output for post-processing.
+>> > I
+>> > think Nicholas used the PDF output in the past over SVG because Cairo's
+>> > PDF
+>> > output is slightly better supported than SVG, though SVG may be more
+>> > desirable/flexibly for post-processing in general.
+>> >
+>>
+>> Dane, you're right I was thinking about svg_renderer which would
+>> extend feature_style_processor e.g
+>>
+>> struct svg_renderer : feature_style_processor<svg_renderer> {}
+>>
+>> and would render to SVG file. There are some nice features we can add
+>> like ?- simplifications, smoothing etc. Perhaps different policies to
+>> control how SVG elements constructed, layering, embedded
+>> fonts/symbols.
+>> Also, it would be possible to load and edit such SVG in popular apps
+>> like Illustrator, Inkscape. Implementation can be based on existing
+>> agg and cairo renderers.
+>>
+>> Thinking more about SVG based symbols, I reckon it would be feasible
+>> to implement this over summer. I can certainly provide guidance and
+>> help on this one. I just now modified svg_test which comes with agg2.4
+>> ( adding css color parsing from mapnik) and I was able to display
+>> demo.svg (generated with rundemo.py). Most building blocks are already
+>> there. For I/O we can re-use existing XML parsing framework (mapnik)
+>> and add fast spirit based parser for <path .../> elements for example.
+>> Sounds like fun to me;).
+>>
+>> Thoughts?
+>>
+>> Regards,
+>> Artem
+>
+>
+
+
+From estrada.adam at gmail.com  Wed Mar 31 21:07:15 2010
+From: estrada.adam at gmail.com (Adam Estrada)
+Date: Wed, 31 Mar 2010 15:07:15 -0400
+Subject: [Mapnik-devel] Ocean feature coloring
+Message-ID: <l2nab1f86bc1003311207z3c8edaa2scb708ddc46ea1cae@mail.gmail.com>
+
+All,
+
+I am rendering the OSM data as a WMS using ogcserver. All of my oceans are
+rendering as light gray or white tiles rather than the default blue. Does
+anyone know why that may be happening? I am using all the default
+configurations from generate_xml.py and ogcserver.
+
+Thanks in advance,
+Adam
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100331/c4c05a1f/attachment.html>
+
+From dbsgeo at gmail.com  Wed Mar 31 21:14:50 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Wed, 31 Mar 2010 12:14:50 -0700
+Subject: [Mapnik-devel] Ocean feature coloring
+In-Reply-To: <l2nab1f86bc1003311207z3c8edaa2scb708ddc46ea1cae@mail.gmail.com>
+References: <l2nab1f86bc1003311207z3c8edaa2scb708ddc46ea1cae@mail.gmail.com>
+Message-ID: <921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C@gmail.com>
+
+Because WMS servers expect the client to decide/specify the background  
+color.
+
+The two Query parameters that determine this are:
+
+transparent={true|false}
+
+and
+
+bgcolor=OGC HEX
+
+So if you want a certain color, specify it and make sure to pass  
+transparent=FALSE
+
+Dane
+
+
+
+On Mar 31, 2010, at 12:07 PM, Adam Estrada wrote:
+
+> All,
+>
+> I am rendering the OSM data as a WMS using ogcserver. All of my  
+> oceans are rendering as light gray or white tiles rather than the  
+> default blue. Does anyone know why that may be happening? I am using  
+> all the default configurations from generate_xml.py and ogcserver.
+>
+> Thanks in advance,
+> Adam
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From frederik at remote.org  Wed Mar 31 22:24:49 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Wed, 31 Mar 2010 22:24:49 +0200
+Subject: [Mapnik-devel] Problem with local projections and worldwide data
+	extent
+Message-ID: <4BB3AF91.6090302@remote.org>
+
+Hi,
+
+    I'm having trouble rendering something in several exotic 
+projections, for example epsg:31468 which is commonly used in Germany 
+and only defined for a rather small area.
+
+I have a database in epsg:4326 covering all of the world, and in my 
+style sheet I am defining
+
+<Parameter name="extent">-180,-85,180,85</Parameter>
+
+for all data sources. Running images in any projection that is valid for 
+this whole extent works fine (debugging from nik2img, with Mapnik 0.7.1):
+
+Step: 10 // --> SRID: +init=epsg:4326
+Step: 11 // --> Map extent: 
+Envelope(11.0097035573,49.01,12.9602964427,50.76)
+Step: 12 // --> Map long/lat bbox: 
+Envelope(11.0097035573,49.01,12.9602964427,50.76)
+Step: 13 // --> Map center: Coord(11.985,49.885)
+Step: 14 // --> Map long/lat center: Coord(11.985,49.885)
+Step: 15 // --> Map scale denominator: 2749987.42078
+Step: 16 // --> Extent of all layers: 
+Envelope(-180.0,-85.0666032764,180.0,85.0)
+Step: 17 // --> Long/lat extent of all layers: 
+Envelope(-180.0,-85.0666032764,180.0,85.0)
+Step: 18 // --> Long/lat center of all layers: Coord(0.0,-0.0333016381899)
+Step: 19 // --> Layers intersecting map: [world, coast-poly,
+
+etc.
+
+However, if I do the same with epsg:31468 (I am using the -b parameter 
+to nik2img and specifying an area for which that projection is 
+definitely defined) I get
+
+Step: 10 // --> SRID: +init=epsg:31468
+Step: 11 // --> Map extent: 
+Envelope(4389656.16103,5430541.90021,4606589.44871,5625166.44553)
+Step: 12 // --> Map long/lat bbox: 
+Envelope(10.490481472,49.0023092212,13.5089566571,50.7522196667)
+Step: 13 // --> Map center: Coord(4498122.80487,5527854.17287)
+Step: 14 // --> Map long/lat center: Coord(11.9997190646,49.8772644439)
+Step: 15 // --> Map scale denominator: 2747382.06271
+Step: 16 // --> Extent of all layers: 
+Envelope(-3.14156014609,-1.48460172944,3.1144412121,1.48342809868)
+Step: 17 // --> Long/lat extent of all layers: 
+Envelope(-25.4095106175,0.00372451805217,-25.4094660839,0.00374592328912)
+Step: 18 // --> Long/lat center of all layers: 
+Coord(-25.4094883507,0.00373522067065)
+Step: 19 // --> No layers intersecting map!
+
+Is it possible that I am running into that same bug which also causes 
+epsg:900913 to not work if the extent is set to +/- 90 degrees latitude? 
+IIRC the reason was that Mapnik first projects the extent of all layers 
+into the destination projection to find out whether there is any 
+intersection, and in this case that operation will certainly yield garbage.
+
+Will I be able to fix it by simply changing the code to project the map 
+extent into the data source extent and *then* find out if there is an 
+intersection? Or have you been down that road already and encountered a 
+different problem?
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From robert.coup at onetrackmind.co.nz  Wed Mar 31 22:39:16 2010
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Thu, 1 Apr 2010 09:39:16 +1300
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <y2t7e70f38d1003310504p932f8a66l84d8fb94a445fae6@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+	<x2zee5da36b1003310246u8522e37fx6644f55fae54c1fd@mail.gmail.com>
+	<y2t7e70f38d1003310504p932f8a66l84d8fb94a445fae6@mail.gmail.com>
+Message-ID: <i2hc5097ac41003311339ne8126881hdf9611ecc32d04a4@mail.gmail.com>
+
+2010/4/1 Artem Pavlenko <artem at mapnik.org>:
+>> I haven't read about how an SVG image can be embedded in a PDF file. My
+>> question is, would this require the implementation of a separate PDF
+>> renderer for SVG, just as Robert Coup says about a Cairo-based one?
+>>
+>
+> OK, SVG->PDF needs some r&d, it should be easy, though.
+>
+> re:Cairo - it hasn't fine control required to implement features we're
+> discussing, Robert could verify this please?
+>
+
+It does stuff well, but it does lack flexibility. Last time I looked
+it didn't do things like layers, re-using symbols, etc - it was
+reasonably "dumb". Would need some more investigation. Might be an
+option to work on Cairo to improve it if all it needs is some better
+hooks for client apps to do things at various points during the
+process...
+
+Converting SVG to PDF is reasonably straightforward, as they're both
+vector formats. I think there are also a number of tools to add PDF
+docs together (at a sub-page level).
+
+Rob :)
+
+

@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Call for better documentation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Call%20for%20better%20documentation&In-Reply-To=%3CA98E8A23-7E6C-408F-A60A-D36C7FBF1784%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000218.html">
+   <LINK REL="Next"  HREF="000195.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Call for better documentation</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Call%20for%20better%20documentation&In-Reply-To=%3CA98E8A23-7E6C-408F-A60A-D36C7FBF1784%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Call for better documentation">artem at mapnik.org
+       </A><BR>
+    <I>Tue Jul 31 10:54:50 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000218.html">[Mapnik-devel] Call for better documentation
+</A></li>
+        <LI>Next message: <A HREF="000195.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#219">[ date ]</a>
+              <a href="thread.html#219">[ thread ]</a>
+              <a href="subject.html#219">[ subject ]</a>
+              <a href="author.html#219">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 31 Jul 2007, at 08:50, Andreas Volz wrote:
+
+&gt;<i> Am Sun, 29 Jul 2007 11:56:50 +0100 schrieb Artem Pavlenko:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi Andreas,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 28 Jul 2007, at 08:32, Andreas Volz wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Am Tue, 24 Jul 2007 20:22:17 +0200 schrieb Andreas Volz:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Am Tue, 24 Jul 2007 08:52:21 +0100 schrieb Artem Pavlenko:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> Here is a doxygen demo of the Mapnik API. You don't see any
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> comments, because there're non. But I think it does yet give a
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> good overview. Needs some fine tunning.
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html">http://tux-style.de/osm/mapnik/doxygen/html/hierarchy.html</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Looks very promising. It certainly gives a good overview and
+</I>&gt;&gt;&gt;&gt;&gt;<i> reminds me about things to clean up.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I created a first patch to document map.hpp.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch">http://tux-style.de/osm/mapnik/patches/mapnik_doxygen.patch</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Perhaps it's a little &quot;over-documented&quot;, but it's an example how to
+</I>&gt;&gt;&gt;&gt;<i> document the API.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Please add the directory and the patch
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="http://tux-style.de/osm/mapnik/patches/doxygen/">http://tux-style.de/osm/mapnik/patches/doxygen/</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> below mapnik/docs in SVN. Then you could simply execute doxygen in
+</I>&gt;&gt;&gt;&gt;<i> this directory and the docs are generated in html.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Did you review my patch and new files? Could I go on with
+</I>&gt;&gt;&gt;<i> documenting the public API like this? Perhaps you could give me a
+</I>&gt;&gt;&gt;<i> SVN write access.
+</I>&gt;&gt;&gt;<i> Currently I like only to add docs. I would ask before changing any
+</I>&gt;&gt;&gt;<i> code.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Sorry, it's taking so long. I had a very brief look at your patch.
+</I>&gt;&gt;<i> There are a couple things need fixing, but It's fine otherwise.
+</I>&gt;&gt;<i> I'd like to look into BoostBook (<A HREF="http://www.boost.org/doc/html/">http://www.boost.org/doc/html/</A>
+</I>&gt;&gt;<i> boostbook.html) as a more high-level doc system. Maybe, I'll find
+</I>&gt;&gt;<i> some time today.
+</I>&gt;<i>
+</I>&gt;<i> I didn't know it before. It looks nice. I used docbook before and it
+</I>&gt;<i> was good.
+</I>&gt;<i>
+</I>
+Yes, it is my plan to replace scons with Boost.Build.v2, which in  
+turn integrates with BoostBook.
+I'm already using BBv2 to build win32 binaries.
+&gt;&gt;<i> re: SVN  Send me your public key (ssh) off list!
+</I>&gt;<i>
+</I>&gt;<i> OK
+</I>
+&gt;<i>
+</I>&gt;<i> Andreas
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070731/4b3d00b0/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070731/4b3d00b0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000218.html">[Mapnik-devel] Call for better documentation
+</A></li>
+	<LI>Next message: <A HREF="000195.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#219">[ date ]</a>
+              <a href="thread.html#219">[ thread ]</a>
+              <a href="subject.html#219">[ subject ]</a>
+              <a href="author.html#219">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Gentoo ebuild
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gentoo%20ebuild&In-Reply-To=%3C44BA4514.9090708%40fsfe.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000019.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Gentoo ebuild</H1>
+    <B>Federico Fissore</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gentoo%20ebuild&In-Reply-To=%3C44BA4514.9090708%40fsfe.org%3E"
+       TITLE="[Mapnik-devel] Gentoo ebuild">federico at fsfe.org
+       </A><BR>
+    <I>Sun Jul 16 15:54:28 CEST 2006</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000019.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#18">[ date ]</a>
+              <a href="thread.html#18">[ thread ]</a>
+              <a href="subject.html#18">[ subject ]</a>
+              <a href="author.html#18">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello all
+
+i've created a gentoo ebuild for building and installing mapnik on 
+gentoo boxes
+Please get it from <A HREF="http://bugs.gentoo.org/show_bug.cgi?id=140599">http://bugs.gentoo.org/show_bug.cgi?id=140599</A>
+
+I had to patch che SConstruct files in order to allow users to change 
+optimization level and to make the scons procedure NOT create ANY file 
+outside what in gentoo is called the &quot;sandbox&quot; (the safe place where 
+ebuilds are build before being integrated into the system)
+
+OK and now a question: I dunno if you have used SWIG for the python 
+bindings but I wanted you to use it because that easily leaded to the 
+creation of java bindings, that are what I'm looking for.
+
+I've dedicated two hours to java bindings using swig (in the manual the 
+way I've followed is called &quot;SWIG for the truly lazy&quot;) but I wasn't 
+successfull.
+
+Attached you find the tiny swig interface created and here is the 
+command use to wrap it with swig
+cd bindings/java
+swig -v -java -c++ -I../../include -I/usr/include Map.i
+
+This lead to buildable but incomplete Map.java class. In particular the 
+following error occurs
+../../include/map.hpp:92: Error: Syntax error in input(1).
+
+Hope this could help someone, and that someone could help me ;)
+
+Bye
+
+-- 
+:<i> Federico Fissore
+</I>:<i>   Blog : <A HREF="http://www.fridrik.it/blog/">http://www.fridrik.it/blog/</A>
+</I>:<i> Jabber : <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">federico at jabber.fsfe.org</A>
+</I>---------+-----------------------------------------------------
+    []   : &quot;Whatever you do will be insignificant,
+  [][][] |        but it is very important that you do it.&quot;
+    ||   :                                              Gandhi
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: Map.i
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060716/1420f692/attachment.ksh">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060716/1420f692/attachment.ksh</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000019.html">[Mapnik-devel] Gentoo ebuild
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#18">[ date ]</a>
+              <a href="thread.html#18">[ thread ]</a>
+              <a href="subject.html#18">[ subject ]</a>
+              <a href="author.html#18">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

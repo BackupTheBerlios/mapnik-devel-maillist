@@ -1,0 +1,1044 @@
+From reid at umn.edu  Thu Jun 14 23:39:47 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Thu, 14 Jun 2007 16:39:47 -0500
+Subject: [Mapnik-devel] Python example
+Message-ID: <4671B5A3.1070906@umn.edu>
+
+Hi,
+
+As promised some months ago, attached is the script we use to drive 
+Python. I hope that it will be of some use as an example. It is 
+BSD-licensed, so anyone should be able to use it.
+
+It works with r484 on the SVN trunk.
+
+Thanks,
+
+Reid
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: tilecache_update.py
+Type: text/x-python
+Size: 11167 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070614/31138eac/attachment.py>
+
+From artem at mapnik.org  Fri Jun 15 15:00:16 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 15 Jun 2007 14:00:16 +0100
+Subject: [Mapnik-devel] Python example
+In-Reply-To: <4671B5A3.1070906@umn.edu>
+References: <4671B5A3.1070906@umn.edu>
+Message-ID: <08B69964-7637-41FB-B2DC-DA9BBCA88A8D@mapnik.org>
+
+Hi Reid,
+
+Looks good. Could you provide:
+
+import pyserver_glue
+import conf
+import db_glue
+
+to make it into working example. Are you using Tiger/Line dataset or  
+anything else free ? Would be great to have sample data and perhaps  
+some screenshots?
+
+Thanks for contributing
+Artem
+
+On 14 Jun 2007, at 22:39, Reid Priedhorsky wrote:
+
+> Hi,
+>
+> As promised some months ago, attached is the script we use to drive  
+> Python. I hope that it will be of some use as an example. It is BSD- 
+> licensed, so anyone should be able to use it.
+>
+> It works with r484 on the SVN trunk.
+>
+> Thanks,
+>
+> Reid
+> #!/usr/bin/python
+> #
+> # Copyright (c) 2007 Regents of the University of Minnesota.
+> # All rights reserved.
+> #
+> # NOTE: This particular file is licensed differently, as follows.
+> #
+> # Redistribution and use in source and binary forms, with or without
+> # modification, are permitted provided that the following  
+> conditions are met:
+> #
+> #    * Redistributions of source code must retain the above  
+> copyright notice,
+> #      this list of conditions and the following disclaimer.
+> #
+> #    * Redistributions in binary form must reproduce the above  
+> copyright
+> #      notice, this list of conditions and the following disclaimer  
+> in the
+> #      documentation and/or other materials provided with the  
+> distribution.
+> #
+> #     * Neither the name of the University of Minnesota nor the  
+> names of its
+> #       contributors may be used to endorse or promote products  
+> derived from
+> #       this software without specific prior written permission.
+> #
+> # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND  
+> CONTRIBUTORS "AS IS"
+> # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  
+> TO, THE
+> # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A  
+> PARTICULAR PURPOSE
+> # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR  
+> CONTRIBUTORS BE
+> # LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+> # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+> # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR  
+> BUSINESS
+> # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,  
+> WHETHER IN
+> # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR  
+> OTHERWISE)
+> # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF  
+> ADVISED OF THE
+> # POSSIBILITY OF SUCH DAMAGE.
+>
+> usage = '''
+> Basic usage:
+>
+>   $ export LD_LIBRARY_PATH=/export/scratch/reid/python/lib: 
+> $LD_LIBRARY_PATH
+>   $ export PYSERVER_HOME=/export/scratch/reid/cyclingproject/pyserver
+>   $ ./tilecache_update.py ZOOM_MIN ZOOM_MAX [XMIN YMIN XMAX YMAX]
+>
+>   If extents are omitted, use the extents of data present in database.
+>
+> To rebuild a particular tile (useful for debugging):
+>
+>   $ ./tilecache_update.py --tile ZOOM/TILENAME
+>
+>   e.g. "--tile 13/229_2429.png".
+>
+> '''
+>
+> import re
+> import os
+> import sys
+>
+> import pyserver_glue
+> import conf
+> import db_glue
+>
+> from mapnik import *
+>
+>
+> # Supress chatter
+> quiet = False
+>
+> # Data sources
+>
+> datasource_bmpolygons = PostGIS(host=conf.db_host,
+>                                 dbname=conf.db_name,
+>                                 user=conf.db_user,
+>                                 password=conf.db_password,
+>                                 table='bmpolygon_joined_current')
+> datasource_byways = PostGIS(host=conf.db_host,
+>                             dbname=conf.db_name,
+>                             user=conf.db_user,
+>                             password=conf.db_password,
+>                             table='byway_joined_current')
+>
+> # Draw params (from database)
+> draw_param = dict()
+>
+> # Number the layers in order to give them unique names
+> layer_num = 1
+>
+> # Some constants
+> LABEL_FONT = 'DejaVu Sans Book'
+> DRAW_CLASS_SMALL = 11
+> DRAW_CLASS_MEDIUM = 21
+> DRAW_CLASS_LARGE = 31
+> DRAW_CLASS_SUPER = 41
+> DRAW_CLASS_OPENSPACE = 2
+> DRAW_CLASS_WATER = 3
+> DRAW_CLASS_SHADOW = 1
+> DRAW_CLASS_BACKGROUND = 4
+>
+>
+> def main():
+>
+>    db = db_glue.new()
+>
+>    # Parse args (ugly!)
+>    try:
+>       if (sys.argv[1] == '--tile'):
+>          m = re.match(r'^(\d+)/(\d+)_(\d+)(.png)?$', sys.argv[2])
+>          zoom_min = zoom_max = int(m.group(1))
+>          xi = int(m.group(2))
+>          yi = int(m.group(3))
+>          p_info('Rebulding tile: zoom %d, (%d, %d)' % (zoom_min,  
+> xi, yi))
+>          xmin = xmax = tileindex_to_coord(zoom_min, xi) + 0.000001
+>          ymin = ymax = tileindex_to_coord(zoom_min, yi) + 0.000001
+>       else:
+>          zoom_min = int(sys.argv[1])
+>          zoom_max = int(sys.argv[2])
+>          try:
+>             xmin = float(sys.argv[3])
+>             ymin = float(sys.argv[4])
+>             xmax = float(sys.argv[5])
+>             ymax = float(sys.argv[6])
+>          except IndexError, x:
+>             # Use data in database
+>             result = db.sql('''
+> SELECT
+>   xmin(extent(geometry)),
+>   ymin(extent(geometry)),
+>   xmax(extent(geometry)),
+>   ymax(extent(geometry))
+> FROM byway_joined_current
+>       ''')[0]
+>             xmin = result['xmin']
+>             ymin = result['ymin']
+>             xmax = result['xmax']
+>             ymax = result['ymax']
+>    except Exception, x:
+>       print 'Usage error: %s' % (x)
+>       print usage
+>       sys.exit(1)
+>
+>    # Build draw parameter table
+>    result = db.sql('SELECT * FROM draw_param_joined');
+>    for row in result:
+>       dc_code = row['draw_class_code']
+>       if (not draw_param.has_key(dc_code)):
+>          draw_param[dc_code] = dict()
+>
+>       draw_param[dc_code]['color'] = '#%x' % (row['color'])
+>
+>       zoom = row['zoom']
+>       if (zoom is not None):
+>          if (not draw_param[dc_code].has_key(zoom)):
+>             draw_param[dc_code][zoom] = dict()
+>          draw_param[dc_code][zoom]['width'] = float(row['width'])
+>          draw_param[dc_code][zoom]['label'] = bool(row['label'])
+>
+>    p_info('Updating cache from (%8f, %8f) to (%8f, %8f)'
+>           % (xmin, ymin, xmax, ymax))
+>
+>    for zoom in xrange(zoom_min, zoom_max + 1):
+>       xmin_i = coord_to_tileindex(zoom, xmin)
+>       ymin_i = coord_to_tileindex(zoom, ymin)
+>       xmax_i = coord_to_tileindex(zoom, xmax)
+>       ymax_i = coord_to_tileindex(zoom, ymax)
+>       p_info('Working on zoom level %d, tiles (%d, %d) through (%d,  
+> %d)'
+>              % (zoom, xmin_i, ymin_i, xmax_i, ymax_i))
+>       for xi in xrange(xmin_i, xmax_i + 1):
+>          for yi in xrange(ymin_i, ymax_i + 1):
+>             dirname = '%s/main/%d' % (conf.tile_dir, zoom)
+>             filename = '%d_%d.png' % (xi, yi)
+>             tile_xmin = tileindex_to_coord(zoom, xi)
+>             tile_ymin = tileindex_to_coord(zoom, yi)
+>             tile_xmax = tileindex_to_coord(zoom, xi + 1)
+>             tile_ymax = tileindex_to_coord(zoom, yi + 1)
+>             p_info('Creating tile %s: (%.2f, %.2f), (%.2f, %.2f)'
+>                    % (filename, tile_xmin, tile_ymin, tile_xmax,  
+> tile_ymax))
+>
+>             # Main map
+>
+>             m = Map(conf.tile_size, conf.tile_size)
+>             m.background = Color(draw_param[DRAW_CLASS_BACKGROUND] 
+> ['color'])
+>
+>             add_bmpolygons(m, zoom, DRAW_CLASS_OPENSPACE)
+>             add_bmpolygons(m, zoom, DRAW_CLASS_WATER)
+>
+>             add_shadows(m, zoom, DRAW_CLASS_SMALL)
+>             add_shadows(m, zoom, DRAW_CLASS_MEDIUM)
+>             add_shadows(m, zoom, DRAW_CLASS_LARGE)
+>             add_byways(m, zoom, DRAW_CLASS_SMALL)
+>             add_byways(m, zoom, DRAW_CLASS_MEDIUM)
+>             add_byways(m, zoom, DRAW_CLASS_LARGE)
+>             add_shadows(m, zoom, DRAW_CLASS_SUPER)
+>             add_byways(m, zoom, DRAW_CLASS_SUPER)
+>
+>             add_labels(m, zoom, DRAW_CLASS_OPENSPACE,
+>                        datasource_bmpolygons,  
+> label_placement.POINT_PLACEMENT)
+>             add_labels(m, zoom, DRAW_CLASS_WATER,
+>                        datasource_bmpolygons,  
+> label_placement.POINT_PLACEMENT)
+>             add_labels(m, zoom, DRAW_CLASS_SMALL,
+>                        datasource_byways,  
+> label_placement.LINE_PLACEMENT)
+>             add_labels(m, zoom, DRAW_CLASS_MEDIUM,
+>                        datasource_byways,  
+> label_placement.LINE_PLACEMENT)
+>             add_labels(m, zoom, DRAW_CLASS_LARGE,
+>                        datasource_byways,  
+> label_placement.LINE_PLACEMENT)
+>             add_labels(m, zoom, DRAW_CLASS_SUPER,
+>                        datasource_byways,  
+> label_placement.LINE_PLACEMENT)
+>
+>             m.zoom_to_box(Envelope(tile_xmin, tile_ymin, tile_xmax,  
+> tile_ymax))
+>             render_tile(m, dirname, filename)
+>
+>
+> def add_bmpolygons(m, zoom, dc_code):
+>    add_bmpolygon_layer(m, dc_code, draw_param[dc_code]['color'])
+>
+>
+> def add_byways(m, zoom, dc_code):
+>    if (draw_param[dc_code].has_key(zoom)
+>        and draw_param[dc_code][zoom]['width'] > 0):
+>       add_line_layer(m, dc_code, draw_param[dc_code]['color'],
+>                      draw_param[dc_code][zoom]['width'])
+>
+>
+> def add_shadows(m, zoom, dc_code):
+>    if (draw_param[dc_code].has_key(zoom)
+>        and draw_param[dc_code][zoom]['width'] >= 0):
+>       width = draw_param[dc_code][zoom]['width']
+>       if (width == 0):
+>          width = 1
+>       else:
+>          width += 2
+>       add_line_layer(m, dc_code, draw_param[DRAW_CLASS_SHADOW] 
+> ['color'], width)
+>
+>
+> def add_labels(m, zoom, dc_code, datasource, placement_rule):
+>    if (draw_param[dc_code].has_key(zoom)
+>        and draw_param[dc_code][zoom]['label']):
+>       font_size = max(conf.tile_min_font, draw_param[dc_code][zoom] 
+> ['width'])
+>       add_label_layer(m, dc_code, font_size, datasource,  
+> placement_rule)
+>
+>
+> def add_bmpolygon_layer(m, dc_code, color):
+>
+>    rul = Rule()
+>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+>    rul.symbols.append(PolygonSymbolizer(Color(color)))
+>
+>    sty = Style()
+>    sty.rules.append(rul)
+>
+>    name = get_layer_name()
+>    lay = Layer(name)
+>    lay.datasource = datasource_bmpolygons
+>
+>    m.append_style(name, sty)
+>    lay.styles.append(name)
+>    m.layers.append(lay)
+>
+>
+> def add_label_layer(m, dc_code, point_size, datasource,  
+> placement_rule):
+>    sym = TextSymbolizer('name', LABEL_FONT, int(point_size), Color 
+> ('black'))
+>    sym.label_placement = placement_rule
+>    sym.halo_fill = Color(draw_param[dc_code]['color'])
+>    sym.halo_radius = 1
+>
+>    rul = Rule()
+>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+>    rul.symbols.append(sym)
+>
+>    sty = Style()
+>    sty.rules.append(rul)
+>
+>    name = get_layer_name()
+>    lay = Layer(name)
+>    lay.datasource = datasource
+>
+>    m.append_style(name, sty)
+>    lay.styles.append(name)
+>    m.layers.append(lay)
+>
+>
+> def add_line_layer(m, dc_code, color, width):
+>
+>    stk = Stroke()
+>    stk.color = Color(color)
+>    stk.width = width
+>    stk.line_cap = line_cap.ROUND_CAP
+>    stk.line_join = line_join.ROUND_JOIN
+>
+>    rul = Rule()
+>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+>    rul.symbols.append(LineSymbolizer(stk))
+>
+>    sty = Style()
+>    sty.rules.append(rul)
+>
+>    name = get_layer_name()
+>    lay = Layer(name)
+>    lay.datasource = datasource_byways
+>
+>    m.append_style(name, sty)
+>    lay.styles.append(name)
+>    m.layers.append(lay)
+>
+>
+> def coord_to_tileindex(zoom, c):
+>    '''Return the tile index containing coordinate c at zoom level  
+> zoom. See
+>    the technical documentation for more information.'''
+>    return int(c / meters_per_tile(zoom))
+>
+>
+> def get_layer_name():
+>    global layer_num
+>    name = 'layer_%d' % (layer_num)
+>    layer_num += 1
+>    return name
+>
+>
+> def meters_per_tile(zoom):
+>    return 1.0 * conf.tile_size / 2**(zoom-16)
+>
+>
+> def render_tile(map_, dirname, filename):
+>    '''Render the map map_ into the given filename, replacing  
+> atomically any
+>    existing file with that filename.'''
+>    render_to_file(map_, dirname + '/temp.png', 'png')
+>    os.system('convert %s -colors 256 -quality 100 png:%s'
+>              % (dirname + '/temp.png', dirname + '/temp2.png'))
+>    os.chmod(dirname + '/temp2.png', 0664)
+>    os.rename(dirname + '/temp2.png', dirname + '/' + filename)
+>
+>
+> def tileindex_to_coord(zoom, i):
+>    '''Return the coordinate of the smaller edge of tile with index  
+> i.'''
+>    return (i * meters_per_tile(zoom))
+>
+>
+> def p_info(s):
+>    if (not quiet):
+>       print s
+>
+>
+> if (__name__ == '__main__'):
+>    main()
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070615/196a6eee/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Jun 20 21:58:14 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 20 Jun 2007 20:58:14 +0100
+Subject: [Mapnik-devel] loading of fonts in python binding?
+Message-ID: <1182369494.15207.21.camel@localhost.localdomain>
+
+I've been having problems with fonts in Mapnik and discovered that only
+the DejaVu Sans font was being loaded by default. I was wondering
+whether the python bindings should be trying to load all the fonts which
+get installed into the Mapnik directory as per the attached patch?
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-python-fonts.patch
+Type: text/x-patch
+Size: 631 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/5d684be1/attachment.bin>
+
+From jburgess777 at googlemail.com  Wed Jun 20 22:21:39 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 20 Jun 2007 21:21:39 +0100
+Subject: [Mapnik-devel] support for allow_overlap missing from load_map?
+Message-ID: <1182370899.15207.29.camel@localhost.localdomain>
+
+Looking at load_map.cpp there doesn't appear to be any handling of the
+allow_overlap XML attribute?
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Wed Jun 20 22:23:01 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 20 Jun 2007 21:23:01 +0100
+Subject: [Mapnik-devel] loading of fonts in python binding?
+In-Reply-To: <1182369494.15207.21.camel@localhost.localdomain>
+References: <1182369494.15207.21.camel@localhost.localdomain>
+Message-ID: <E5C30DA4-00E4-4B32-B53B-2260AFCF18A6@mapnik.org>
+
+
+On 20 Jun 2007, at 20:58, Jon Burgess wrote:
+
+> I've been having problems with fonts in Mapnik and discovered that  
+> only
+> the DejaVu Sans font was being loaded by default. I was wondering
+> whether the python bindings should be trying to load all the fonts  
+> which
+> get installed into the Mapnik directory as per the attached patch?
+>
+> 	Jon
+>
+> <mapnik-python-fonts.patch>
+
+Thanks, Jon! I was planning to do something similar for while.  
+Applied r487.
+
+Cheers
+
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/532729bb/attachment.html>
+
+From artem at mapnik.org  Wed Jun 20 22:42:12 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 20 Jun 2007 21:42:12 +0100
+Subject: [Mapnik-devel] support for allow_overlap missing from load_map?
+In-Reply-To: <1182370899.15207.29.camel@localhost.localdomain>
+References: <1182370899.15207.29.camel@localhost.localdomain>
+Message-ID: <BA7C78D3-3A64-438F-822B-331F3DA07B28@mapnik.org>
+
+
+On 20 Jun 2007, at 21:21, Jon Burgess wrote:
+
+> Looking at load_map.cpp there doesn't appear to be any handling of the
+> allow_overlap XML attribute?
+>
+> 	Jon
+>
+
+Ok, it didn't make it to load_map.cpp , yet. If set to 'true' labels  
+don't ask label_cache for a placement and there's no record in  
+label_cache. I guess you're trying to improve labeling for the case  
+when tube symbol wins over city name ? This flag might be to inflexible.
+
+I'll add allow_overlap to both point and text_symbolizer. Let see if  
+it'll improve labeling. Other things to try :
+	1. z_ordering text labels,
+   	2. try a set of allowed text positions
+         3.  more comprehensive label_cache where you can intersect  
+labels from different layers. Perhaps each data node can have extra  
+data identifying layer index ...?
+
+Artem
+
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/46acb41d/attachment.html>
+
+From toby.collett at onetrackmind.co.nz  Wed Jun 20 22:12:07 2007
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Thu, 21 Jun 2007 08:12:07 +1200
+Subject: [Mapnik-devel] loading of fonts in python binding?
+In-Reply-To: <1182369494.15207.21.camel@localhost.localdomain>
+References: <1182369494.15207.21.camel@localhost.localdomain>
+Message-ID: <1182370327.10134.0.camel@torpedo.onetrackmind.co.nz>
+
+I vote for this one as well, I had made a similar change to my local
+tree,
+
+Toby
+
+On Wed, 2007-06-20 at 20:58 +0100, Jon Burgess wrote:
+> I've been having problems with fonts in Mapnik and discovered that only
+> the DejaVu Sans font was being loaded by default. I was wondering
+> whether the python bindings should be trying to load all the fonts which
+> get installed into the Mapnik directory as per the attached patch?
+> 
+> 	Jon
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Wed Jun 20 23:11:32 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 20 Jun 2007 22:11:32 +0100
+Subject: [Mapnik-devel] support for allow_overlap missing from load_map?
+In-Reply-To: <1182370899.15207.29.camel@localhost.localdomain>
+References: <1182370899.15207.29.camel@localhost.localdomain>
+Message-ID: <A8E3439C-C2C7-4A4B-805C-DC8E3A296034@mapnik.org>
+
+
+On 20 Jun 2007, at 21:21, Jon Burgess wrote:
+
+> Looking at load_map.cpp there doesn't appear to be any handling of the
+> allow_overlap XML attribute?
+>
+> 	Jon
+>
+
+In r488  - added 'allow_overlap' parsing for both Point and Text  
+symbolizers. Text symbolizer ignored by renderer at the moment.
+
+Cheers
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/67b10bc5/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Jun 20 23:20:58 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 20 Jun 2007 22:20:58 +0100
+Subject: [Mapnik-devel] support for allow_overlap missing from load_map?
+In-Reply-To: <BA7C78D3-3A64-438F-822B-331F3DA07B28@mapnik.org>
+References: <1182370899.15207.29.camel@localhost.localdomain>
+	<BA7C78D3-3A64-438F-822B-331F3DA07B28@mapnik.org>
+Message-ID: <1182374458.15207.42.camel@localhost.localdomain>
+
+On Wed, 2007-06-20 at 21:42 +0100, Artem Pavlenko wrote:
+> 
+> On 20 Jun 2007, at 21:21, Jon Burgess wrote:
+> 
+> > Looking at load_map.cpp there doesn't appear to be any handling of
+> > the
+> > allow_overlap XML attribute?
+> > 
+> > 
+> > Jon
+> > 
+> > 
+> 
+> 
+> Ok, it didn't make it to load_map.cpp , yet. If set to 'true' labels
+> don't ask label_cache for a placement and there's no record in
+> label_cache. I guess you're trying to improve labeling for the case
+> when tube symbol wins over city name ? This flag might be to
+> inflexible. 
+> 
+I was not really trying to implement anything yet. I noticed that there
+were allow_overlap lines in the osm.xml file and wondered what this flag
+would do. Then I found that the code seemed to be missing :-)
+> 
+> I'll add allow_overlap to both point and text_symbolizer. Let see if
+> it'll improve labeling. Other things to try : 
+> 1. z_ordering text labels,
+>    2. try a set of allowed text positions 
+>         3.  more comprehensive label_cache where you can intersect
+> labels from different layers. Perhaps each data node can have extra
+> data identifying layer index ...?
+> 
+Using the z_order might be an easy way to do it. 
+
+Another thought was to have a tolerance attribute which allowed a label
+to be placed anywhere within a given radius. If this was specified in
+metres then we could probably assume that any city label can be moved by
+1km, town 100m, village 20m. For unusually large or small populated
+areas we could override this with a special key/value pair in the OSM
+DB. 
+
+  Jon
+
+
+
+
+From jburgess777 at googlemail.com  Wed Jun 20 23:38:16 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 20 Jun 2007 22:38:16 +0100
+Subject: [Mapnik-devel] text placement beyond limit of road
+Message-ID: <1182375496.15207.47.camel@localhost.localdomain>
+
+I noticed 2 roads in an H shape where vertical road names have been
+moved beyond the limit of the roads, presumably due to a clash with the
+horizontal name. See the attached image.
+
+Should the vertical names be restricted to prevent them extending
+significantly past the end of the roads?
+
+	Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-text1.png
+Type: image/png
+Size: 20694 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/2c45158a/attachment.png>
+
+From artem at mapnik.org  Thu Jun 21 00:09:47 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 20 Jun 2007 23:09:47 +0100
+Subject: [Mapnik-devel] text placement beyond limit of road
+In-Reply-To: <1182375496.15207.47.camel@localhost.localdomain>
+References: <1182375496.15207.47.camel@localhost.localdomain>
+Message-ID: <0CF3785F-2B65-4C41-871E-9F1203FA82F7@mapnik.org>
+
+
+On 20 Jun 2007, at 22:38, Jon Burgess wrote:
+
+> I noticed 2 roads in an H shape where vertical road names have been
+> moved beyond the limit of the roads, presumably due to a clash with  
+> the
+> horizontal name. See the attached image.
+>
+> Should the vertical names be restricted to prevent them extending
+> significantly past the end of the roads?
+>
+
+Yes, sounds reasonable. I'll try to tweak placement_finder to fail  
+when text string doesn't fit well.
+Artem
+
+> 	Jon
+>
+>
+> <mapnik-text1.png>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070620/5f4bfa52/attachment.html>
+
+From vspader at 10east.com  Thu Jun 21 17:42:03 2007
+From: vspader at 10east.com (Vince Spader)
+Date: Thu, 21 Jun 2007 11:42:03 -0400
+Subject: [Mapnik-devel] text placement beyond limit of road
+In-Reply-To: <0CF3785F-2B65-4C41-871E-9F1203FA82F7@mapnik.org>
+References: <1182375496.15207.47.camel@localhost.localdomain>
+	<0CF3785F-2B65-4C41-871E-9F1203FA82F7@mapnik.org>
+Message-ID: <467A9C4B.8040709@10east.com>
+
+I just committed a patch to the subversion trunk that should fix this issue.
+
+--Vincent Spader
+
+Artem Pavlenko wrote:
+> 
+> On 20 Jun 2007, at 22:38, Jon Burgess wrote:
+> 
+>> I noticed 2 roads in an H shape where vertical road names have been
+>> moved beyond the limit of the roads, presumably due to a clash with the
+>> horizontal name. See the attached image.
+>>
+>> Should the vertical names be restricted to prevent them extending
+>> significantly past the end of the roads?
+>>
+> 
+> Yes, sounds reasonable. I'll try to tweak placement_finder to fail when 
+> text string doesn't fit well.
+> Artem
+> 
+>> Jon
+>>
+>>
+>> <mapnik-text1.png>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de <mailto:Mapnik-devel at lists.berlios.de>
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+> Artem Pavlenko
+> http://mapnik.org
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-- 
+Vincent Spader                      Email: vspader at 10east.com
+Junior Open Systems Engineer        Phone: 904-220-3627
+10 East Corp.                         FAX: 904-384-1038
+
+
+From jburgess777 at googlemail.com  Thu Jun 21 23:05:31 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 21 Jun 2007 22:05:31 +0100
+Subject: [Mapnik-devel] text placement beyond limit of road
+In-Reply-To: <467A9C4B.8040709@10east.com>
+References: <1182375496.15207.47.camel@localhost.localdomain>
+	<0CF3785F-2B65-4C41-871E-9F1203FA82F7@mapnik.org>
+	<467A9C4B.8040709@10east.com>
+Message-ID: <1182459931.7868.0.camel@localhost.localdomain>
+
+This fixes the rendering problem I was seeing in this example.
+Thanks for fixing it so promptly.
+
+	Jon
+
+
+On Thu, 2007-06-21 at 11:42 -0400, Vince Spader wrote:
+> I just committed a patch to the subversion trunk that should fix this issue.
+> 
+> --Vincent Spader
+> 
+> Artem Pavlenko wrote:
+> > 
+> > On 20 Jun 2007, at 22:38, Jon Burgess wrote:
+> > 
+> >> I noticed 2 roads in an H shape where vertical road names have been
+> >> moved beyond the limit of the roads, presumably due to a clash with the
+> >> horizontal name. See the attached image.
+> >>
+> >> Should the vertical names be restricted to prevent them extending
+> >> significantly past the end of the roads?
+> >>
+> > 
+> > Yes, sounds reasonable. I'll try to tweak placement_finder to fail when 
+> > text string doesn't fit well.
+> > Artem
+> > 
+> >> Jon
+> >>
+> >>
+> >> <mapnik-text1.png>
+> >> _______________________________________________
+> >> Mapnik-devel mailing list
+> >> Mapnik-devel at lists.berlios.de <mailto:Mapnik-devel at lists.berlios.de>
+> >> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> > 
+> > Artem Pavlenko
+> > http://mapnik.org
+> > 
+> > 
+> > 
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+
+From stephan.holl at intevation.de  Wed Jun 27 16:41:42 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Wed, 27 Jun 2007 16:41:42 +0200
+Subject: [Mapnik-devel] Using the osm.xml
+Message-ID: <20070627164142.173e1021@thoe.hq.intevation.de>
+
+Hello mapnik-users,
+
+I tried the WMS-interface of mapnik described here[1] and I am
+wondering if I could use the osm.xml description-file to make mapnik
+act as a WMS-server.
+
+Since my example creates the styles in the script, I like to read in
+that file.
+
+Is this possible? If so, could you point me to some sort of
+documentation, please?
+
+Best regards
+
+	Stephan
+
+[1] http://www.perrygeo.net/wordpress/?p=49
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+
+From artem at mapnik.org  Thu Jun 28 10:33:55 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 28 Jun 2007 09:33:55 +0100
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <20070627164142.173e1021@thoe.hq.intevation.de>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+Message-ID: <B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+
+Hello Stephan,
+
+On 27 Jun 2007, at 15:41, Stephan Holl wrote:
+
+> Hello mapnik-users,
+>
+> I tried the WMS-interface of mapnik described here[1] and I am
+> wondering if I could use the osm.xml description-file to make mapnik
+> act as a WMS-server.
+
+> Since my example creates the styles in the script, I like to read in
+> that file.
+>
+> Is this possible?
+
+Yes, sure.
+> If so, could you point me to some sort of
+> documentation, please?
+>
+There aren't any documentations or examples on this topic, you're the  
+first one to come up with this approach:)
+You'll  have to modify wms  to allow specifying bunch of mapniks  
+layers as one wms layer or something like that. I'm not very familiar  
+with implementation details, but it shouldn't be too hard. Jean- 
+Francois Doyon has written WMS and he might have better suggestions.
+
+On the other hand, have you looked at TileCache? I personally think  
+it's by far better solution for serving maps (vs WMS). It is also  
+speaks WMS internally and you might be able to extract relevant bits.
+
+HTH
+Cheers,
+Artem
+
+
+> Best regards
+>
+> 	Stephan
+>
+> [1] http://www.perrygeo.net/wordpress/?p=49
+> -- 
+> Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/ 
+> ~stephan
+> Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B  
+> 18998
+> Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver  
+> Wagner
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070628/31ca29cc/attachment.html>
+
+From stephan.holl at intevation.de  Thu Jun 28 11:40:30 2007
+From: stephan.holl at intevation.de (Stephan Holl)
+Date: Thu, 28 Jun 2007 11:40:30 +0200
+Subject: [Mapnik-devel] Using the osm.xml
+In-Reply-To: <B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+References: <20070627164142.173e1021@thoe.hq.intevation.de>
+	<B12B8E1C-CC80-4E2C-B3E0-5BDE833E195E@mapnik.org>
+Message-ID: <20070628114030.7c26ee32@thoe.hq.intevation.de>
+
+Hello Artem,
+
+Artem Pavlenko <artem at mapnik.org>, [20070628 - 09:33:55]
+
+> Hello Stephan,
+> 
+> On 27 Jun 2007, at 15:41, Stephan Holl wrote:
+> 
+> > Hello mapnik-users,
+> >
+> > I tried the WMS-interface of mapnik described here[1] and I am
+> > wondering if I could use the osm.xml description-file to make mapnik
+> > act as a WMS-server.
+> 
+> > Since my example creates the styles in the script, I like to read in
+> > that file.
+> >
+> > Is this possible?
+> 
+> Yes, sure.
+> > If so, could you point me to some sort of
+> > documentation, please?
+> >
+> There aren't any documentations or examples on this topic, you're
+> the first one to come up with this approach:)
+
+OK, thanks.
+
+> You'll  have to modify wms  to allow specifying bunch of mapniks  
+> layers as one wms layer or something like that. I'm not very
+> familiar with implementation details, but it shouldn't be too hard.
+> Jean- Francois Doyon has written WMS and he might have better
+> suggestions.
+> 
+> On the other hand, have you looked at TileCache? I personally think  
+> it's by far better solution for serving maps (vs WMS). It is also  
+> speaks WMS internally and you might be able to extract relevant bits.
+
+Yes, I had briefly, but I think I should do it in more detail now. My
+goal is to support the OpenStreetMap-data via an OGC-conform
+WMS-service. AFAIK TileCache is WMS-C and does not support 'untiled'
+WMS-requests like normal desktop-WMS-clients do.
+
+But thanks for your help though. I'll look into TileCache then.
+
+Best regards
+
+	Stephan
+
+-- 
+Stephan Holl <stephan.holl at intevation.de>, http://intevation.de/~stephan
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr?ck - HR B 18998
+Gesch?ftsf?hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+

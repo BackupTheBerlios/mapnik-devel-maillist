@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support Project: Work so far
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20Project%3A%20Work%20so%20far&In-Reply-To=%3CAANLkTimuWswpJdkRcAHO9xH1aldPFWrOUthGLdP3DB4G%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="001179.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support Project: Work so far</H1>
+    <B>Carlos Enrique L&#243;pez Garc&#233;s</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20Project%3A%20Work%20so%20far&In-Reply-To=%3CAANLkTimuWswpJdkRcAHO9xH1aldPFWrOUthGLdP3DB4G%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Better Print Support Project: Work so far">carlos.lopez.garces at gmail.com
+       </A><BR>
+    <I>Thu Jun  3 10:38:03 CEST 2010</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="001179.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1178">[ date ]</a>
+              <a href="thread.html#1178">[ thread ]</a>
+              <a href="subject.html#1178">[ subject ]</a>
+              <a href="author.html#1178">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Good evening, how are you?
+
+I just wanted to inform you what I've been doing this week. I haven't
+written code to submit a patch, rather I've been doing some experiments with
+cairo_renderer trying to find the pieces of code that affect the size of
+symbolizers. You can see the results of these experiments here:
+<A HREF="http://redmine.openpapermaps.com/projects/mapnikgsoc/wiki/Attempts">http://redmine.openpapermaps.com/projects/mapnikgsoc/wiki/Attempts</A> as well
+as the descriptions of the changes I made to the code to produce the images
+shown there.
+
+Before yesterday's afternoon, it seemed to me that the best place to apply
+the scale factor was in cairo_context class, since it makes the calls
+directly to Cairo's context. However, after the experiment I ran with the
+text_symbolizer, in which I modified the size of the text inside
+cairo_context::add_text, I realized that some of the adjustments made
+previously in cairo_renderer_base::process(text_symbolizer) were lost,
+specifically those related to collision detection.
+
+The changes I've tried so far mimic in some sense those of the first patch
+of ticket 343 and I've gotten similar results (the thick roads, for
+instance). The thick roads result from the fact that I'm only changing the
+width of the line, but not its length. As the length of lines is determined
+by the position of the points that make up the path of the line, it seemed
+difficult, at first glance, to change the position of these points based on
+the scale factor to then shrink or stretch the length, which I assume would
+be done using some technique as the one described here:
+<A HREF="http://www.mathopenref.com/dilate.html.">http://www.mathopenref.com/dilate.html.</A>
+
+Therefore, my last thought was that maybe the answer could lie in the use of
+Cairo's operations, specifically the scale transformation, and so I've been
+studying the API with some examples, as my knowledge of Cairo is quite
+limited.
+
+Any advice or feedback is welcome.
+
+Thanks
+
+Carlos L&#243;pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100603/49c0d04a/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100603/49c0d04a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="001179.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1178">[ date ]</a>
+              <a href="thread.html#1178">[ thread ]</a>
+              <a href="subject.html#1178">[ subject ]</a>
+              <a href="author.html#1178">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

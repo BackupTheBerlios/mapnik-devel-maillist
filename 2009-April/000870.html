@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik+Oracle
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%2BOracle&In-Reply-To=%3C93db2faf0904150237i2e5d6b07rabfb9178ae8c3e13%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000869.html">
+   <LINK REL="Next"  HREF="000873.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik+Oracle</H1>
+    <B>kRAkEn/gORe</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%2BOracle&In-Reply-To=%3C93db2faf0904150237i2e5d6b07rabfb9178ae8c3e13%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik+Oracle">kunitoki at gmail.com
+       </A><BR>
+    <I>Wed Apr 15 11:37:48 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000869.html">[Mapnik-devel] Mapnik+Oracle
+</A></li>
+        <LI>Next message: <A HREF="000873.html">[Mapnik-devel] XML relative paths
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#870">[ date ]</a>
+              <a href="thread.html#870">[ thread ]</a>
+              <a href="subject.html#870">[ subject ]</a>
+              <a href="author.html#870">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+i'm the developer behind the oracle support for mapnik.
+i have developed it by using the oracle-instantclient-basic package (cause
+my mapping servers are separate from my oracle database servers) that you
+can find here
+<A HREF="http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxsoft.html">http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxsoft.html</A>
+
+The version you need to download is 10.2.0.3, cause 11 isn't actually
+tested.
+Be careful you set the correct path in config.py:
+
+OCCI_INCLUDES='/usr/lib/oracle/10.2.0.3/client/include'
+OCCI_LIBS='/usr/lib/oracle/10.2.0.3/client/lib'
+
+or whatever other place you put it.
+
+I have updated the wiki here <A HREF="http://trac.mapnik.org/wiki/OCCI">http://trac.mapnik.org/wiki/OCCI</A> so feel free
+to report if you got any other problem.
+
+Hope this helps.
+
+ps. if i get the time i will test it with the new oracle XE (express), but
+from what i know, it doesn't have full spatial support, so some functions
+could be missing at all.
+
+
+Cheers
+
+Lucio
+
+
+On Tue, Apr 14, 2009 at 7:45 PM, &#1057;&#1077;&#1088;&#1075;&#1077;&#1081; &#1042;&#1083;&#1072;&#1089;&#1086;&#1074; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vlasovsv at gmail.com</A>&gt; wrote:
+
+&gt;<i> Dear developers.
+</I>&gt;<i> I want to compile mapinic with Oracle support.
+</I>&gt;<i> I perform following actions:
+</I>&gt;<i>
+</I>&gt;<i> python scons/scons.py configure INPUT_PLUGINS=raster,shape,occi
+</I>&gt;<i> BOOST_LIBS=/usr/lib BOOST_LIBS=/usr/include/boost PROJ_LIBS=/usr/lib
+</I>&gt;<i> OCCI_LIBS=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/lib
+</I>&gt;<i> OCCI_INCLUDES=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/rdbms/public
+</I>&gt;<i>
+</I>&gt;<i> Then python outputs following text:
+</I>&gt;<i> Checking for requested plugins dependencies...
+</I>&gt;<i> Checking for C++ library ociei... no
+</I>&gt;<i> Checking for C++ header file boost/python/detail/config.hpp... yes
+</I>&gt;<i> Checking for pkg-config... yes
+</I>&gt;<i> Checking for pycairo... yes
+</I>&gt;<i> All Required dependencies found!
+</I>&gt;<i> Overwriting and re-saving file 'config.py'...
+</I>&gt;<i> Will hold custom path variables from commandline and python config
+</I>&gt;<i> file(s)...
+</I>&gt;<i> However, these optional dependencies were not found:
+</I>&gt;<i> - ociei
+</I>&gt;<i>
+</I>&gt;<i> System: Ubuntu 8.10 Oracle XE Client.
+</I>&gt;<i>
+</I>&gt;<i> The question: what libraries does the plugin need and where can I find them
+</I>&gt;<i> if they are not included in client distribution?
+</I>&gt;<i> --
+</I>&gt;<i> With big respect, Vlasov Serg
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090415/96ef13cd/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090415/96ef13cd/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000869.html">[Mapnik-devel] Mapnik+Oracle
+</A></li>
+	<LI>Next message: <A HREF="000873.html">[Mapnik-devel] XML relative paths
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#870">[ date ]</a>
+              <a href="thread.html#870">[ thread ]</a>
+              <a href="subject.html#870">[ subject ]</a>
+              <a href="author.html#870">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

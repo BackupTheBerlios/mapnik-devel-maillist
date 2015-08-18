@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Gearing up for Mapnik2 release
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gearing%20up%20for%20Mapnik2%20release&In-Reply-To=%3C06F8D4E9-1E4F-445C-BE6C-7F2742E77288%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001313.html">
+   <LINK REL="Next"  HREF="001314.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Gearing up for Mapnik2 release</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Gearing%20up%20for%20Mapnik2%20release&In-Reply-To=%3C06F8D4E9-1E4F-445C-BE6C-7F2742E77288%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Gearing up for Mapnik2 release">dane at dbsgeo.com
+       </A><BR>
+    <I>Thu Jan 13 00:15:45 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001313.html">[Mapnik-devel] Style variation (feature visibility) depending	on feature density
+</A></li>
+        <LI>Next message: <A HREF="001314.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1312">[ date ]</a>
+              <a href="thread.html#1312">[ thread ]</a>
+              <a href="subject.html#1312">[ subject ]</a>
+              <a href="author.html#1312">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Mapnik-devel,
+
+I'm excited to announce that Artem and I are starting to plan for releasing Mapnik2.
+
+First steps are to get squared away on naming, prioritizing tickets, and then we will attempt to set a date.
+
+* Naming *
+
+I propose that Mapnik2 be released as version 2.0.0. 
+
+I'd like to start following <A HREF="http://semver.org/">http://semver.org/</A> as much as possible, and so jumping to 2.0.0 makes not only intuitive sense (because we've been calling the release Mapnik2) but also logical sense because it the API has changed (e.g. a breaking release) because different python objects have been created and XML syntax has also changed.
+
+So, with your approval we will change include/mapnik/version.hpp from 800 --&gt; 200000 (e.g. from 0.8.0 to 2.0.0) [1]
+
+
+* Prioritizing Tickets *
+
+I have created a new, fresh milestone called &quot;Mapnik 2.0&quot; for the 2.0.0 release and pushed all 140 tickets that were previously against it off to a Mapnik 2.1 release. Today Artem and I skimmed through those 140 tickets looking for the feasible and most important ones to tackle before release and attached those back to the 2.0 milestone.
+
+See what we came up with here: <A HREF="https://trac.mapnik.org/milestone/Mapnik%202.0">https://trac.mapnik.org/milestone/Mapnik%202.0</A>
+
+Note: We have not finished going through tickets and we may have missed some, but the list is LONG. Please help my reviewing tickets yourself, and if you find them critical, then attach them to the 2.0 milestone.
+
+<A HREF="https://trac.mapnik.org/milestone/Mapnik%202.1">https://trac.mapnik.org/milestone/Mapnik%202.1</A>
+
+
+* Setting a Date *
+
+I propose a date around 3-4 months from now, with a pre-release (or release candidate) in 1-2 months. But, I feel like I will know more about what is possible as others take a look at and comment on the tickets. Please also step up and assign a ticket to yourself if you can take it on!
+
+Thanks!
+
+Dane
+
+
+[1] you might wonder why both the integer and string representations of version numbers? Well, we follow boost's approach here and there are some functions available in the python bindings to convert back and forth:
+
+&gt;&gt;&gt;<i> import mapnik2
+</I>&gt;&gt;&gt;<i> mapnik2.mapnik_version()
+</I>800
+&gt;&gt;&gt;<i> mapnik2.mapnik_version_string()
+</I>'0.8.0'
+&gt;&gt;&gt;<i> mapnik2.mapnik_version_from_string('0.8.0')
+</I>800
+&gt;&gt;&gt;<i> mapnik2.mapnik_version_from_string('2.0.0')
+</I>200000
+&gt;&gt;&gt;<i> mapnik2.mapnik_version_string(version=200000)
+</I>'2.0.0'
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001313.html">[Mapnik-devel] Style variation (feature visibility) depending	on feature density
+</A></li>
+	<LI>Next message: <A HREF="001314.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1312">[ date ]</a>
+              <a href="thread.html#1312">[ thread ]</a>
+              <a href="subject.html#1312">[ subject ]</a>
+              <a href="author.html#1312">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

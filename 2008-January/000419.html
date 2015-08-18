@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text placement code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3CAFB56660-59A2-43DA-BC75-B7AB5709F5D5%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000418.html">
+   <LINK REL="Next"  HREF="000420.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text placement code</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3CAFB56660-59A2-43DA-BC75-B7AB5709F5D5%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Text placement code">artem at mapnik.org
+       </A><BR>
+    <I>Mon Jan 14 16:18:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000418.html">[Mapnik-devel] Text placement code
+</A></li>
+        <LI>Next message: <A HREF="000420.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#419">[ date ]</a>
+              <a href="thread.html#419">[ thread ]</a>
+              <a href="subject.html#419">[ subject ]</a>
+              <a href="author.html#419">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dave,
+
+On 13 Jan 2008, at 23:21, David Leaver wrote:
+
+&gt;<i> get_ideal_placements currently contains code for handling
+</I>&gt;<i> POINT_PLACEMENT and LINE_PLACEMENT with label_spacing &gt; 0, however  
+</I>&gt;<i> it is
+</I>&gt;<i> never used in these cases.
+</I>&gt;<i>
+</I>&gt;<i> If you edit the statements in:
+</I>&gt;<i>    void agg_renderer&lt;T&gt;::process(text_symbolizer const&amp; sym,
+</I>&gt;<i>                                  Feature const&amp; feature,
+</I>&gt;<i>                                  proj_transform const&amp; prj_trans)
+</I>&gt;<i> to use get_ideal_placements (via
+</I>&gt;<i> finder.find_placements&lt;path_type&gt;(text_placement,path); ) in the
+</I>&gt;<i> label_spacing &gt; 0 case, it seems to perform fine (at least in my small
+</I>&gt;<i> test, the placements themselves were different however)
+</I>
+
+&gt;<i>
+</I>&gt;<i> What benefits/differences is find_placements_with_spacing providing  
+</I>&gt;<i> over
+</I>&gt;<i> find_placements + get_ideal_placements? (or vice versa)
+</I>&gt;<i> _with_spacing is a lot more complicated, but I can only assume it is
+</I>&gt;<i> doing something better?
+</I>
+There are performance issues with using find_placement when  
+label_spacing &gt; 0. You can replicate the problem by having 'long'  
+road geometry but only rendering a small part of it (zoomed in). In  
+this case the original 'find_placement' would calculate lots  
+( placement outside of extent ) causing degradation in performance.   
+I written separate find_placement_with_spacing to address this.
+
+&gt;<i> There seems to be code in _with_spacing to support displacement and  
+</I>&gt;<i> some
+</I>&gt;<i> extra character placement checks, does this mean displacement doesn't
+</I>&gt;<i> work if label_spacing == 0 ?
+</I>
+Displacement code is a quick 'hack' at the moment. We should do  
+something better.
+&gt;<i>
+</I>&gt;<i> It looks that we could replace these similar sets of functionality  
+</I>&gt;<i> with
+</I>&gt;<i> a single code path to handle both cases (with and without
+</I>&gt;<i> label_spacing), as without label_spacing should just be a subset of  
+</I>&gt;<i> with?
+</I>&gt;<i>
+</I>
+I found it is quite difficult to combine different placement  
+strategies without creating a big 'blob' method :). I think having  
+separate smaller blocks are easier to understand/maintain. I spent  
+sometime re-factoring text rendering stuff, but  I'm sure we can  
+improve further.
+&gt;<i> I'll look into implementing this tomorrow if no one has any reasons  
+</I>&gt;<i> why not.
+</I>&gt;<i>
+</I>
+Please, go ahead and I'm happy to help.
+&gt;<i> It does look like some of this code is currently WIP, anyone have any
+</I>&gt;<i> plans in relation to text placement?
+</I>
+Would be nice to implement certain aspects like 'sharp' angles  
+handling...
+&gt;<i> Artem: Does the current text placement code work correctly with the
+</I>&gt;<i> smoothing/curves support you are working on? Or have you done some
+</I>&gt;<i> modifications in there?
+</I>
+placement_finder operates on 'path' concept so it works with 'smooth'  
+paths.
+
+Cheers,
+Artem
+&gt;<i>
+</I>&gt;<i> Thanks.
+</I>&gt;<i> Dave.
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000418.html">[Mapnik-devel] Text placement code
+</A></li>
+	<LI>Next message: <A HREF="000420.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#419">[ date ]</a>
+              <a href="thread.html#419">[ thread ]</a>
+              <a href="subject.html#419">[ subject ]</a>
+              <a href="author.html#419">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

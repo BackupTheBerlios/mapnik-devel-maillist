@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] strict XML branch merged
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20strict%20XML%20branch%20merged&In-Reply-To=%3C67E795E4-C630-45D1-A273-AC8861BF5EEC%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000292.html">
+   <LINK REL="Next"  HREF="000293.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] strict XML branch merged</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20strict%20XML%20branch%20merged&In-Reply-To=%3C67E795E4-C630-45D1-A273-AC8861BF5EEC%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] strict XML branch merged">artem at mapnik.org
+       </A><BR>
+    <I>Sun Sep 30 01:38:46 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000292.html">[Mapnik-devel] strict XML branch merged
+</A></li>
+        <LI>Next message: <A HREF="000293.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#297">[ date ]</a>
+              <a href="thread.html#297">[ thread ]</a>
+              <a href="subject.html#297">[ subject ]</a>
+              <a href="author.html#297">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 25 Sep 2007, at 22:24, David Siegel wrote:
+
+&gt;<i> Hi everyone,
+</I>&gt;<i> I just merged the strict-xml-branch back to the trunk.
+</I>&gt;<i>
+</I>&gt;<i> Changes:
+</I>&gt;<i> Mapnik now raises exceptions on syntax errors in the map file, failed
+</I>&gt;<i> db connections and other configuration errors. So if your setup
+</I>&gt;<i> suddenly stops working, please double check the syntax of the map
+</I>&gt;<i> file. In c++ mapnik::config_error is thrown. It is currently mapped
+</I>&gt;<i> to a python UserWarning. It can be trapped like this:
+</I>&gt;<i>
+</I>&gt;<i> m = Map(512, 512)
+</I>&gt;<i> try:
+</I>&gt;<i>      load_map(m, file)
+</I>&gt;<i> except UserWarning, what:
+</I>&gt;<i>      print &quot;Configuration error:&quot;
+</I>&gt;<i>      print what
+</I>&gt;<i> except RuntimeError, what:
+</I>&gt;<i>      print &quot;Runtime error:&quot;
+</I>&gt;<i>      print what
+</I>&gt;<i>
+</I>&gt;<i> I'd like to map the c++ config_error to a custom python exception,
+</I>&gt;<i> like mapnik.ConfigError. Just got to find out how to do it. So this
+</I>&gt;<i> might change again in a future update.
+</I>&gt;<i>
+</I>&gt;<i> load_map() now takes a third, optional argument. It's a flag
+</I>&gt;<i> indicating how strict you want the loader to be. If set to true
+</I>&gt;<i> (strict mode) mapnik aborts on missing assets, like icons, etc.
+</I>&gt;<i> Otherwise it just prints a warning. The parameter currently defaults
+</I>&gt;<i> to false (non-strict).
+</I>&gt;<i>
+</I>&gt;<i> The error handling is not complete yet, but i think it's a good
+</I>&gt;<i> start. Let me know what you think.
+</I>&gt;<i> Ah, and if you happen to find a file that is broken but succedes to
+</I>&gt;<i> parse or worse a file that is OK but fails just send me the file plus
+</I>&gt;<i> some info and I'll take a look at it.
+</I>&gt;<i>
+</I>&gt;<i> Another minor change is the behaviour of the srs attribute. If a
+</I>&gt;<i> layer does not specify a srs attribute it inherits the srs of the
+</I>&gt;<i> map. Somehow this behaviour feels more natural to me and it avoids a
+</I>&gt;<i> duplicate default value.
+</I>&gt;<i>
+</I>&gt;<i> Mapnik now supports libxml2. This allows the use of XML entities to
+</I>&gt;<i> define color-sets, db parameters or icon directories. It even can be
+</I>&gt;<i> used to split a single map file into multiple parts.
+</I>&gt;<i>
+</I>&gt;<i> save_map() is implemented now.
+</I>&gt;<i>
+</I>&gt;<i> I also added some very basic tests.
+</I>&gt;<i>
+</I>&gt;<i> cheers,
+</I>&gt;<i> 	david (agnat)
+</I>&gt;<i>
+</I>
+Cool. I'm yet to try it out.
+Also I'm thinking about modifying XML to be more like svg (??) I  
+realized SLD spec which was the basis for current syntax has  
+limitations.
+I'll post some ideas when I'm back home (I'm still getting back from  
+foss4g)
+Artem
+&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070930/56ce5642/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070930/56ce5642/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000292.html">[Mapnik-devel] strict XML branch merged
+</A></li>
+	<LI>Next message: <A HREF="000293.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#297">[ date ]</a>
+              <a href="thread.html#297">[ thread ]</a>
+              <a href="subject.html#297">[ subject ]</a>
+              <a href="author.html#297">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

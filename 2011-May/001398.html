@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC: Windows build system, week 1
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%201&In-Reply-To=%3CBANLkTinnEbTij7%2BeNHg86nv0M%2BntPKJpnw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001396.html">
+   <LINK REL="Next"  HREF="001399.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC: Windows build system, week 1</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%201&In-Reply-To=%3CBANLkTinnEbTij7%2BeNHg86nv0M%2BntPKJpnw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] GSoC: Windows build system, week 1">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Sun May 29 22:40:54 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001396.html">[Mapnik-devel] On Windows support and Visual Studio project files
+</A></li>
+        <LI>Next message: <A HREF="001399.html">[Mapnik-devel] Invitation to connect on LinkedIn
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1398">[ date ]</a>
+              <a href="thread.html#1398">[ thread ]</a>
+              <a href="subject.html#1398">[ subject ]</a>
+              <a href="author.html#1398">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+
+With the first week of GSoC already over, here's my first status
+report. I'm planning to do one each Sunday evening, I'm curious myself
+though how punctual I'm going to be on that point ;)
+
+- The past week (well the past 4 or 5 weeks actually) I've spend on
+the VS project file generator. It's shaping up now - I've started over
+a couple of times and finally settled on the most simple design, the
+one that I started out with the first time. Specs of project- and
+solution files are done in simple yaml files, processed by the 'vs4os'
+Python program and using the Jinja2 template library rendered into
+their output formats. For now I focus on VS9, other versions could be
+added at some point. The most basic functionality works and I can
+build a couple of the simpler mapnik dependencies (zlib, jpeg,
+libtiff). Although I still think that choosing Python is the right
+choice in the given context, my relative lack of experience with it is
+proving a rather painful stumbling block; for example, I spend the
+whole day today on figuring out how unicode support works in Python in
+general, in Visual Studio and in the template library I use; and how
+to make them work together. Not fun but at least it works now :)
+
+For the coming week I have planned:
+- Clean my source tree / directory layout up and check everything into
+a branch in svn. I haven't made one yet because I need to get my ssh
+key to work and that's a royal pain with putty etc so I've been
+putting it off; I'm also working in an old checkout of the 0.7 branch
+I had laying around so I'm going to need to decide first how that
+should work.
+- Do some communications things: blog post (Dane, how do I log on to
+the Mapnik 'news' section? Can I post to the blog myself somehow?),
+finally upload the minutes from the Skype meeting.
+- Get the other dependencies working - Cairo, and maybe if I'm feeling
+masochistic ICU.
+
+Some other things:
+- About the buildbot, is there a machine somewhere that can serve for
+this? To have a Windows buildbot I'd need a Windows machine - shall I
+just start on a bunch of virtual machines and we'll sort it out later
+or is there something in place for that already?
+- I've been getting some mails / im's from people who are interested
+in using Mapnik on Windows, and php_mapnik, and are starting to find
+my wiki page on it. So that's encouraging :) I'm hoping to attract
+more users with some introduction articles for various websites. So I
+was wondering, does anyone have a simple but nice map that is rendered
+with Mapnik, with a small and free data set, that I can use for
+demonstration purposes? The examples on the Mapnik website are OK but
+either complicated or very specialized, I'd like to find an example
+that needs only a few layers and appeals to a wide audience.
+
+
+cheers,
+
+roel
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001396.html">[Mapnik-devel] On Windows support and Visual Studio project files
+</A></li>
+	<LI>Next message: <A HREF="001399.html">[Mapnik-devel] Invitation to connect on LinkedIn
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1398">[ date ]</a>
+              <a href="thread.html#1398">[ thread ]</a>
+              <a href="subject.html#1398">[ subject ]</a>
+              <a href="author.html#1398">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

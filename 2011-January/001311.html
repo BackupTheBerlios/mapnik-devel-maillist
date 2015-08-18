@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20windows&In-Reply-To=%3CAANLkTimRPdDun_7dZF%3DT6dTuXYQkTKCV0LSSCTUppHtX%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001310.html">
+   <LINK REL="Next"  HREF="001308.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on windows</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20windows&In-Reply-To=%3CAANLkTimRPdDun_7dZF%3DT6dTuXYQkTKCV0LSSCTUppHtX%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compiling on windows">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Wed Jan 12 13:50:15 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001310.html">[Mapnik-devel] compiling on windows
+</A></li>
+        <LI>Next message: <A HREF="001308.html">[Mapnik-devel] Style variation (feature visibility) depending on	feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1311">[ date ]</a>
+              <a href="thread.html#1311">[ thread ]</a>
+              <a href="subject.html#1311">[ subject ]</a>
+              <a href="author.html#1311">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Dane,
+
+
+Thanks for your detailed response. Some replies inline:
+
+On Wed, Jan 12, 2011 at 7:06 AM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt; wrote:
+&gt;<i> A full debug compiled Mapnik binary on windows has never been offered, so great to hear you have done that - others may be quite interested in that.
+</I>
+I suggest I document the steps needed to make a build, rather than
+provide debug binaries, since that's so compiler and
+circumstance-specific. I 'documented' everything in a batch file, I'll
+comment that some more and put it on the wiki. It'll never be as
+straightforward as ./configure &amp;&amp; make but just knowing that it can be
+done may already a major factor for others to give mapnik a shot...
+
+&gt;&gt;<i> I made my own
+</I>&gt;&gt;<i> project files for mapnik and the libraries that use a build system
+</I>&gt;&gt;<i> that isn't directly supported by VS. (i.e., that nmake can't handle).
+</I>&gt;<i> Which build system?
+</I>
+freetype uses autotools I think (don't remember by heart), icu
+provides visual studio project files for windows, but only for VS10.
+On unix it uses autotools also, I believe. My goal was to build with
+only the tools provided by Visual Studio (vs9, in my case, but I think
+it will work with at least 7 and 8, also).
+
+&gt;&gt;<i> (snip me using static library)
+</I>&gt;<i> Interesting. Are you sure you need it? Or is that just your preference? ICU in particular really seems like a pain unless shared.
+</I>
+True, I don't really *need* it, it's a deployment issue, and also a
+bit of laziness on my part. Linking everything into one big binary
+removes the hassle of the dllimport/export issues (especially with
+third party libraries with their own build system) and syncing
+compiler, cret and stl settings (_CRT_NO_WARNINGS,
+_CRT_BIND_TO_LATEST_VERSION, _DISABLE_DEBUG_ITERATORS, etc.).
+
+I may be able to get away with just providing the data part of icu in
+a dll, although I haven't looked into it any more since I got it to
+compile with the stub data file. It needs to be fixed though because
+everything that has an ascii value of over 127 shows as a ? in the
+result images.
+
+&gt;<i> (snip static building)
+</I>&gt;<i> Certainly a worthwhile consideration, thanks. You can attach a patch to trac.mapnik.org.
+</I>
+<A HREF="https://trac.mapnik.org/ticket/694">https://trac.mapnik.org/ticket/694</A>
+
+&gt;&gt;<i> They seem to make no effort
+</I>&gt;&gt;<i> whatsoever to support non-POSIX systems (specifically, Windows...).
+</I>
+It is quite clear from the tone in this that I was still quite annoyed
+with the library when I wrote my mail ;)
+
+&gt;<i> you mean the build system, or does the library function also suboptimal on windows?
+</I>
+Just the build system, I didn't get any further, nor have I ever used
+it consciously. Considering that it's just a few functions it would be
+hard to mess that up, though ;) So I think the actual functioning is
+fine, I mean I have no reason to believe otherwise.
+
+&gt;<i> Okay, again please attach this change to a patch at trac.mapnik.org and we will take a look to consider including.
+</I>
+<A HREF="https://trac.mapnik.org/ticket/691">https://trac.mapnik.org/ticket/691</A>
+
+&gt;&gt;<i> * rint() doesn't exist on VC. I added one in a private header, whose #include I #ifdef WIN32'd.
+</I>&gt;<i> Hmmm, not sure what went wrong there, that was a known issue that should be handled here: <A HREF="https://trac.mapnik.org/browser/tags/release-0.7.1/include/mapnik/global.hpp#L163">https://trac.mapnik.org/browser/tags/release-0.7.1/include/mapnik/global.hpp#L163</A>
+</I>
+Oh I see, I hadn't found that one. Thing is that _WINDOWS isn't
+defined by default, it needs to be set in the build tools, which
+hadn't. _WIN32 is guaranteed to exist, with some caveats - patch and
+notes at <A HREF="https://trac.mapnik.org/ticket/693">https://trac.mapnik.org/ticket/693</A> .
+
+&gt;&gt;<i> * I had to introduce some braces around calls to min/max (both in std:: and numeric_limits).
+</I>&gt;<i> Okay, also please supply this as a patch on trac.mapnik.org.
+</I>
+<A HREF="https://trac.mapnik.org/ticket/692">https://trac.mapnik.org/ticket/692</A> - note that I only yesterday
+realized that this is only an issue when &lt;windows.h&gt; is included, so
+when libldtl is used, this doesn't happen (I think, as long as
+&lt;windows.h&gt; isn't included for something else. So the two are related.
+
+&gt;<i> In mapnik trunk we've upgraded our usage of ptree so that it is compatible with the syntax in the actual released ptree versions, and so trunk no longer needs this copy (and I just removed it: <A HREF="http://trac.mapnik.org/changeset/2515">http://trac.mapnik.org/changeset/2515</A>).
+</I>
+Oh I see, no worries then.
+
+&gt;&gt;<i> so that I can maybe find
+</I>&gt;&gt;<i> out if I can leave out parts of icu all together.
+</I>&gt;<i> That would be not be impossible, but difficult.
+</I>
+Yes I think the long-term solution is to just include it in full, as
+the data turns out to be necessary in many more cases than I
+originally suspected. I'll have to investigate the icu build system
+and configuration options further when/if this becomes relevant (to
+me).
+
+&gt;&gt;<i> - how much of all code paths in mapnik does rundemo.cpp exercise?
+</I>&gt;<i> Quite a bit, perhaps 70-80 % of C++ api. It mainly misses datasources other than shapefiles.
+</I>
+Ok that's nice, then I have some reasonable level of confidence in
+there not being many platform/build issues in my tree.
+
+&gt;&gt;<i> Is there a more comprehensive (c++) test
+</I>&gt;&gt;<i> suite somewhere?
+</I>&gt;<i> No. Because the Python bindings expose the vast majority of functionality (as they are abstract C++ classes) we mainly test via python, but certainly C++ tests are very much needed to. We have a few started in trunk/tests/cpp_tests but we need many more.
+</I>
+Ok thanks, I hadn't looked at trunk much yet. If the C++ is exercised
+through the Python then that's OK too, I'd say. Once I become more
+familiar with the code I'll have a feeling for myself what features
+are used in rundemo.cpp, I was asking because I don't know the mapnik
+API yet.
+
+&gt;&gt;<i> should I forget about the current stable and use mapnik2?
+</I>&gt;<i> Mapnik2 may need a little love to compile on windows. If you are up for helping (it certainly seems like you have the capacity!) with this I would encourage you to ride on trunk.
+</I>
+I'm going to get started with 0.7.1 at first, I'll keep an eye on the
+blog to learn more about Mapnik2, what it's design goals are, what are
+the shortcomings of v1 etc. If I know the v1 api to a reasonable
+extent, I'll be in a better position when switching to v2 to have
+something to compare to.
+
+
+cheers,
+
+roel
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001310.html">[Mapnik-devel] compiling on windows
+</A></li>
+	<LI>Next message: <A HREF="001308.html">[Mapnik-devel] Style variation (feature visibility) depending on	feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1311">[ date ]</a>
+              <a href="thread.html#1311">[ thread ]</a>
+              <a href="subject.html#1311">[ subject ]</a>
+              <a href="author.html#1311">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

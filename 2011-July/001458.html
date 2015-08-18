@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Metawriter questions?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Metawriter%20questions%3F&In-Reply-To=%3C4E2F949A.6030001%40shaw.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001457.html">
+   <LINK REL="Next"  HREF="001459.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Metawriter questions?</H1>
+    <B>David Eastcott</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Metawriter%20questions%3F&In-Reply-To=%3C4E2F949A.6030001%40shaw.ca%3E"
+       TITLE="[Mapnik-devel] Metawriter questions?">david.eastcott at shaw.ca
+       </A><BR>
+    <I>Wed Jul 27 06:31:22 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001457.html">[Mapnik-devel] Midterm GSOC meeting notes
+</A></li>
+        <LI>Next message: <A HREF="001459.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1458">[ date ]</a>
+              <a href="thread.html#1458">[ thread ]</a>
+              <a href="subject.html#1458">[ subject ]</a>
+              <a href="author.html#1458">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I have just started working with the metawriter features and they work well for a single image or for 'tiles'.
+
+I've come across a couple a couple issues that I have to work around because I am creating large image sets
+(in excess of 500K px per axis).
+
+
+1.  Essential I load the map once then 'pan', render, save image, and repeat till all of map is saved.  Each time I
+pan/render/save, the metawriter creates the json file, but it over-writes the previous iterations file.
+
+Is there a way that the meta writer could append to an existing file so that a single file is created for all iterations?
+
+I have a simple work-around that creates a new file for each iteration by programmaticaly changing a replacement variable,
+then post-process the discrete files into a single one.
+
+
+2.  Is there a way to disable/inhibit the metawriters operation without having to modify/create a second set of xml file(s)?
+
+I tried using the clear() method on the returned value from map.metawriters(), but the metawriter generates and error message:
+Metawriter JSON: Failed to open file //_hospital_meta.json: Permission denied
+
+BTW, I am currently using 2984 of the trunk.
+
+Best regards
+Dave
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001457.html">[Mapnik-devel] Midterm GSOC meeting notes
+</A></li>
+	<LI>Next message: <A HREF="001459.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1458">[ date ]</a>
+              <a href="thread.html#1458">[ thread ]</a>
+              <a href="subject.html#1458">[ subject ]</a>
+              <a href="author.html#1458">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

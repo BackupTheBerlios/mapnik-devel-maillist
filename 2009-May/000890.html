@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] SVG-based symbolizers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SVG-based%20symbolizers&In-Reply-To=%3Ce260aad40905131418w21c416afv70baf9a40ebf58f0%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000889.html">
+   <LINK REL="Next"  HREF="000901.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] SVG-based symbolizers</H1>
+    <B>Craig de Stigter</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SVG-based%20symbolizers&In-Reply-To=%3Ce260aad40905131418w21c416afv70baf9a40ebf58f0%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] SVG-based symbolizers">craig.destigter at koordinates.com
+       </A><BR>
+    <I>Wed May 13 23:18:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000889.html">[Mapnik-devel] Segfault in gdal.input when opening shared file
+</A></li>
+        <LI>Next message: <A HREF="000901.html">[Mapnik-devel] SVG-based symbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#890">[ date ]</a>
+              <a href="thread.html#890">[ thread ]</a>
+              <a href="subject.html#890">[ subject ]</a>
+              <a href="author.html#890">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>We've been looking at implementing ticket
+320&lt;<A HREF="http://trac.mapnik.org/ticket/320">http://trac.mapnik.org/ticket/320</A>&gt;to add SVG symbolizers. I
+wondered if anyone else has feedback before we go
+ahead and write code? Here's the plan:
+
+   1. Read SVG symbols:
+      - SVG parsing using Gnome's librsvg &lt;<A HREF="http://librsvg.sourceforge.net/">http://librsvg.sourceforge.net/</A>&gt;
+   2. Image rendering abstraction to get away from
+ImageData?&lt;<A HREF="http://trac.mapnik.org/wiki/ImageData">http://trac.mapnik.org/wiki/ImageData</A>&gt;32
+   (the current &quot;symbol&quot; data class):
+      - Something like an
+AbstractImage?&lt;<A HREF="http://trac.mapnik.org/wiki/AbstractImage">http://trac.mapnik.org/wiki/AbstractImage</A>&gt;class,
+wrapping width, height and rendering functions (
+      ImageData? &lt;<A HREF="http://trac.mapnik.org/wiki/ImageData">http://trac.mapnik.org/wiki/ImageData</A>&gt;32 and
+VectorImage?&lt;<A HREF="http://trac.mapnik.org/wiki/VectorImage">http://trac.mapnik.org/wiki/VectorImage</A>&gt;can derive from
+this)
+      - Make calls to point_symbolizer.get_image() return an
+AbstractImage?&lt;<A HREF="http://trac.mapnik.org/wiki/AbstractImage">http://trac.mapnik.org/wiki/AbstractImage</A>&gt;(i.e. a
+      VectorImage? &lt;<A HREF="http://trac.mapnik.org/wiki/VectorImage">http://trac.mapnik.org/wiki/VectorImage</A>&gt; for SVG
+      symbolizers, and a ImageData? &lt;<A HREF="http://trac.mapnik.org/wiki/ImageData">http://trac.mapnik.org/wiki/ImageData</A>&gt;32
+      for raster symbolizers)
+   3. Actually render the vector data:
+      - Overload Mapnik's cairo_context::add_image() for
+VectorImage?&lt;<A HREF="http://trac.mapnik.org/wiki/VectorImage">http://trac.mapnik.org/wiki/VectorImage</A>&gt;to render the
+abstracted image as a cairo surface instead of raster data.
+      librsvg can already draw into a cairo surface.
+      - Initially make the AGG renderer rely on Cairo for SVG rendering. If
+      someone really wants to make this cleaner they could extend librsvg to
+      render to AGG. That looks like too much work for little gain at
+the moment.
+      So, we could:
+         - Render a surface using Cairo
+         - Rasterize surface and pass it back to AGG as an
+ImageData?&lt;<A HREF="http://trac.mapnik.org/wiki/ImageData">http://trac.mapnik.org/wiki/ImageData</A>&gt;32
+
+
+This means:
+
+   - SVG symbol support would depend on both librsvg and cairo
+   - It'd be a backwards-compatible extension of the existing way to use
+   images, by adding support for type=SVG in addition to existing PNG support.
+   - It'll apply to both point and shield symbolizers
+
+
+
+Thanks and regards
+
+Craig de Stigter
+
+-- 
+Koordinates Ltd
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web <A HREF="http://www.koordinates.com">http://www.koordinates.com</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090514/5ba4434f/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090514/5ba4434f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000889.html">[Mapnik-devel] Segfault in gdal.input when opening shared file
+</A></li>
+	<LI>Next message: <A HREF="000901.html">[Mapnik-devel] SVG-based symbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#890">[ date ]</a>
+              <a href="thread.html#890">[ thread ]</a>
+              <a href="subject.html#890">[ subject ]</a>
+              <a href="author.html#890">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

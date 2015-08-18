@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] rounding off values
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20rounding%20off%20values&In-Reply-To=%3Calpine.DEB.1.00.0906251913280.9763%40albiorix%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000927.html">
+   <LINK REL="Next"  HREF="000929.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] rounding off values</H1>
+    <B>ivom</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20rounding%20off%20values&In-Reply-To=%3Calpine.DEB.1.00.0906251913280.9763%40albiorix%3E"
+       TITLE="[Mapnik-devel] rounding off values">ivo.vdmaagdenberg at pandora.be
+       </A><BR>
+    <I>Thu Jun 25 19:13:47 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000927.html">[Mapnik-devel] OSX builds with XCode in SVN
+</A></li>
+        <LI>Next message: <A HREF="000929.html">[Mapnik-devel] osm2pgsql error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#928">[ date ]</a>
+              <a href="thread.html#928">[ thread ]</a>
+              <a href="subject.html#928">[ subject ]</a>
+              <a href="author.html#928">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I have a nice mapnik layer of which the results are visible under 
+<A HREF="http://fietscomfort.openstreetmap.be/?zoom=16&amp;lat=51.21213&amp;lon=4.42138&amp;layers=B0TFTFT">http://fietscomfort.openstreetmap.be/?zoom=16&amp;lat=51.21213&amp;lon=4.42138&amp;layers=B0TFTFT</A>
+
+something strangs happens to some of the calculated numbers in the comfort 
+tiles, where the rounding clearly does not work properly. example:
+
+<A HREF="http://fietscomfort.openstreetmap.be/fietsroutes-comfort/16/33572/21878.png">http://fietscomfort.openstreetmap.be/fietsroutes-comfort/16/33572/21878.png</A>
+
+the rendering of the numbers is based a style and the layer declarations , 
+which follow below.
+
+any hint on the reasons for the round function not always working as 
+expected? maybe there are alternative ways to accomplish the same, 
+suggestions are welcome, since this is about the most complex query i've 
+written so far :)
+
+bye,
+ivom
+
+    &lt;Style name=&quot;comfort-text&quot;&gt;
+      &lt;Rule&gt;
+        &lt;MaxScaleDenominator&gt;&amp;maxscale_zoom12;&lt;/MaxScaleDenominator&gt;
+        &lt;MinScaleDenominator&gt;&amp;minscale_zoom18;&lt;/MinScaleDenominator&gt;
+        &lt;ShieldSymbolizer name=&quot;comfort&quot; face_name=&quot;DejaVu Sans Bold&quot; 
+size=&quot;11&quot; fill=&quot;white&quot; placement=&quot;line&quot; 
+file=&quot;&amp;mapnik_symbols;/tru_shield3.png&quot; type=&quot;png&quot; width=&quot;31&quot; height=&quot;17&quot; 
+min_distance=&quot;30&quot; spacing=&quot;500&quot;/&gt;
+      &lt;/Rule&gt;
+    &lt;/Style&gt;
+
+    &lt;Layer name=&quot;comfort lines&quot; status=&quot;on&quot; srs=&quot;&amp;srs900913;&quot;&gt;
+      &lt;StyleName&gt;comfort-text&lt;/StyleName&gt;
+      &lt;Datasource&gt;&lt;Parameter name=&quot;table&quot;&gt;
+(
+select
+   cast(&quot;cycleway:comfort&quot; as numeric) as com
+   ,(round(((34-cast(&quot;cycleway:comfort&quot; as numeric))/2.8),1)) as comfort
+   ,way
+   from planet_osm_line
+   where (cycleway='track' or cycleway='lane' or highway='cycleway')
+     and &quot;cycleway:comfort&quot; IS NOT NULL
+   order by z_order
+) as roads
+        &lt;/Parameter&gt;
+        &amp;layer-settings;
+      &lt;/Datasource&gt;
+    &lt;/Layer&gt;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000927.html">[Mapnik-devel] OSX builds with XCode in SVN
+</A></li>
+	<LI>Next message: <A HREF="000929.html">[Mapnik-devel] osm2pgsql error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#928">[ date ]</a>
+              <a href="thread.html#928">[ thread ]</a>
+              <a href="subject.html#928">[ subject ]</a>
+              <a href="author.html#928">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

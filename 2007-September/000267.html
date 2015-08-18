@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik rendering inside an Apache module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C1190053466.15029.94.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000264.html">
+   <LINK REL="Next"  HREF="000268.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik rendering inside an Apache module</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C1190053466.15029.94.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik rendering inside an Apache module">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Mon Sep 17 20:24:26 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000264.html">[Mapnik-devel] Problem rendering interlaced PNG?
+</A></li>
+        <LI>Next message: <A HREF="000268.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#267">[ date ]</a>
+              <a href="thread.html#267">[ thread ]</a>
+              <a href="subject.html#267">[ subject ]</a>
+              <a href="author.html#267">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I've put together a C implementation of the scripts used to render and
+serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+run into a scalability issue with Mapnik PostgreSQL connections. 
+
+I have Apache running with multiple processes and each of these has an
+instance of the Mapnik renderer. Each Mapnik instance wants to open
+about 10 connections to the PostgreSQL database. Postgres complains when
+I get above 100 connections so this puts a serious limit on the number
+of Apache processes I can run. In addition Mapnik keeps a pool of idle
+connections open so even when one httpd is not doing any rendering it
+can prevent another from getting a new connection.
+
+There are a few different ways I can think of to solve this. I wonder if
+anyone has any other suggestions on the best way to proceed:-
+
+- Increase the number of allowed PostgreSQL connections.
+- Use a threaded model in Apache.
+- Spawn a small number of rendering processes and share these between
+app the Apache processes.
+- Use some higher level pooling of PostgreSQL connections (pgpool).
+- Reduce or eliminate the pooling in Mapnik (e.g. close connections
+which are idle after a timeout)
+
+At the moment I'm favouring the option of spawning off a shared
+rendering task. Any thoughts?
+
+	Jon
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000264.html">[Mapnik-devel] Problem rendering interlaced PNG?
+</A></li>
+	<LI>Next message: <A HREF="000268.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#267">[ date ]</a>
+              <a href="thread.html#267">[ thread ]</a>
+              <a href="subject.html#267">[ subject ]</a>
+              <a href="author.html#267">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

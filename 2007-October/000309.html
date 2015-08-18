@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python argument types did not match C++ signature
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20argument%20types%20did%20not%20match%20C%2B%2B%20signature&In-Reply-To=%3C8C8DA37B-2B95-48A4-B911-88AFB218B0B6%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000308.html">
+   <LINK REL="Next"  HREF="000316.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python argument types did not match C++ signature</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20argument%20types%20did%20not%20match%20C%2B%2B%20signature&In-Reply-To=%3C8C8DA37B-2B95-48A4-B911-88AFB218B0B6%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Python argument types did not match C++ signature">artem at mapnik.org
+       </A><BR>
+    <I>Wed Oct 17 17:43:47 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000308.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+        <LI>Next message: <A HREF="000316.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#309">[ date ]</a>
+              <a href="thread.html#309">[ thread ]</a>
+              <a href="subject.html#309">[ subject ]</a>
+              <a href="author.html#309">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 14 Oct 2007, at 15:03, David Siegel wrote:
+
+&gt;<i> Hi, Artem,
+</I>&gt;<i> Hi Matt,
+</I>&gt;<i>
+</I>&gt;<i> fixed in revision 551
+</I>&gt;<i>
+</I>&gt;<i> I was certain this would be handled by implicit conversion, but I  
+</I>&gt;<i> didn't test it. Sorry. Apparently boost pythons enum_ wrapper  
+</I>&gt;<i> converts the value to long at some point loosing the type  
+</I>&gt;<i> information. I checked in a workaround that resolves the issue by  
+</I>&gt;<i> allowing implicit conversion from long. This isn't the best  
+</I>&gt;<i> solution because it makes the enumeration wrapper less strict. The  
+</I>&gt;<i> best way to fix this is to write a generic binding helper for  
+</I>&gt;<i> enumeration wrappers. I will take a look into it.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 	david (agnat)
+</I>
+
+Thanks, David!
+
+I was thinking about reflecting enumerations in Python. Here is  
+approach that doesn't make enumeration wrapper less strict in c++:
+
+
+template &lt;typename T&gt;
+struct mapnik_enumeration_to_python
+{
+       static PyObject* convert(T const&amp; v)
+       {
+          return ::PyInt_FromLong(v);
+       }
+};
+
+
+
+void export_stroke ()
+{
+     using namespace mapnik;
+     using namespace boost::python;
+
+
+     enum_&lt;line_cap_enum&gt;(&quot;line_cap&quot;)
+         .value(&quot;BUTT_CAP&quot;,BUTT_CAP)
+         .value(&quot;SQUARE_CAP&quot;,SQUARE_CAP)
+         .value(&quot;ROUND_CAP&quot;,ROUND_CAP)
+         ;
+     enum_&lt;line_join_enum&gt;(&quot;line_join&quot;)
+         .value(&quot;MITER_JOIN&quot;,MITER_JOIN)
+         .value(&quot;MITER_REVERT_JOIN&quot;,MITER_REVERT_JOIN)
+         .value(&quot;ROUND_JOIN&quot;,ROUND_JOIN)
+         .value(&quot;BEVEL_JOIN&quot;,BEVEL_JOIN)
+         ;
+
+     implicitly_convertible&lt;line_join_enum,line_join_e&gt;();
+     implicitly_convertible&lt;line_cap_enum,line_cap_e&gt;();
+
+      
+to_python_converter&lt;line_join_e,mapnik_enumeration_to_python&lt;line_join_e 
+ &gt; &gt;();
+      
+to_python_converter&lt;line_cap_e,mapnik_enumeration_to_python&lt;line_cap_e&gt;  
+ &gt;();
+
+.............
+
+
+to_python converter can be implemented to be more useful, at the  
+moment it just converts to PyInt.
+
+Let me know your thoughts?
+
+Regards
+Artem
+
+&gt;<i>
+</I>&gt;<i> On 13.10.2007, at 23:35, Artem Pavlenko wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Matt,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This is a problem with  Python bindings in r550, not  
+</I>&gt;&gt;<i> installation.  I haven't investigated properly, but I think  
+</I>&gt;&gt;<i> enumeration wrappers are causing this.
+</I>&gt;&gt;<i> It should be straight forward to fix by providing explicit  
+</I>&gt;&gt;<i> conversion from enum to wrapper type in mapnik_stroke.cpp.
+</I>&gt;&gt;<i> I'm away and I won't be able to fix this till next Wednesday.  
+</I>&gt;&gt;<i> David Siegel implemented  those wrappers as well as libxml map  
+</I>&gt;&gt;<i> loader.  David,
+</I>&gt;&gt;<i> could you look into this?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Regards
+</I>&gt;&gt;<i> Artem
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 13 Oct 2007, at 21:08, Matthew Perry wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm running Ubuntu 7.10 and have successfully (or so I thought)
+</I>&gt;&gt;&gt;<i> installed mapnik (svn revision 550). My few test cases using the
+</I>&gt;&gt;&gt;<i> python bindings are working fine but the included python demo has  
+</I>&gt;&gt;&gt;<i> some
+</I>&gt;&gt;&gt;<i> problems:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> python rundemo.py
+</I>&gt;&gt;&gt;<i> size = 3
+</I>&gt;&gt;&gt;<i> encoding=latin1
+</I>&gt;&gt;&gt;<i> file=../data/boundaries
+</I>&gt;&gt;&gt;<i> type=shape
+</I>&gt;&gt;&gt;<i> size = 2
+</I>&gt;&gt;&gt;<i> file=../data/qcdrainage
+</I>&gt;&gt;&gt;<i> type=shape
+</I>&gt;&gt;&gt;<i> size = 2
+</I>&gt;&gt;&gt;<i> file=../data/ontdrainage
+</I>&gt;&gt;&gt;<i> type=shape
+</I>&gt;&gt;&gt;<i> size = 2
+</I>&gt;&gt;&gt;<i> file=../data/boundaries_l
+</I>&gt;&gt;&gt;<i> type=shape
+</I>&gt;&gt;&gt;<i> size = 2
+</I>&gt;&gt;&gt;<i> file=../data/roads
+</I>&gt;&gt;&gt;<i> type=shape
+</I>&gt;&gt;&gt;<i> Traceback (most recent call last):
+</I>&gt;&gt;&gt;<i>   File &quot;rundemo.py&quot;, line 185, in &lt;module&gt;
+</I>&gt;&gt;&gt;<i>     roads34_rule_stk.line_cap = line_cap.ROUND_CAP
+</I>&gt;&gt;&gt;<i> Boost.Python.ArgumentError: Python argument types in
+</I>&gt;&gt;&gt;<i>     None.None(Stroke, mapnik._mapnik.line_cap)
+</I>&gt;&gt;&gt;<i> did not match C++ signature:
+</I>&gt;&gt;&gt;<i>     None(mapnik::stroke {lvalue},  
+</I>&gt;&gt;&gt;<i> mapnik::enumeration&lt;mapnik::line_cap_enum, 3&gt;)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm not sure if this is a problem with the install or the demo  
+</I>&gt;&gt;&gt;<i> itself.
+</I>&gt;&gt;&gt;<i> Any thought?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> -- 
+</I>&gt;&gt;&gt;<i> Matthew T. Perry
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> &quot;Never ascribe to malice, that which can be adequately explained by
+</I>&gt;&gt;&gt;<i> incompetence.&quot;
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Artem Pavlenko
+</I>&gt;&gt;<i> <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071017/89caa21e/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071017/89caa21e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000308.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+	<LI>Next message: <A HREF="000316.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#309">[ date ]</a>
+              <a href="thread.html#309">[ thread ]</a>
+              <a href="subject.html#309">[ subject ]</a>
+              <a href="author.html#309">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

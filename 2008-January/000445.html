@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20iconv%20test%20in%20SConstruct%20fails%20on%20Ubuntu&In-Reply-To=%3C1201121545.20807.21.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000444.html">
+   <LINK REL="Next"  HREF="000446.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] iconv test in SConstruct fails on Ubuntu</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20iconv%20test%20in%20SConstruct%20fails%20on%20Ubuntu&In-Reply-To=%3C1201121545.20807.21.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] iconv test in SConstruct fails on Ubuntu">jburgess at uklinux.net
+       </A><BR>
+    <I>Wed Jan 23 21:52:25 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000444.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000446.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#445">[ date ]</a>
+              <a href="thread.html#445">[ thread ]</a>
+              <a href="subject.html#445">[ subject ]</a>
+              <a href="author.html#445">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Thu, 2008-01-24 at 09:19 +1300, David Leaver wrote:
+&gt;<i> I'm on Ubuntu 7.10, and the recently added iconv test fails. If I remove 
+</I>&gt;<i> the test for it, the build goes fine.
+</I>&gt;<i> 
+</I>&gt;<i> The libc6-dev package includes iconv.h, but there is no libiconv in 
+</I>&gt;<i> ubuntu (it is part of libc as far as I can tell).
+</I>&gt;<i> <A HREF="http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h">http://packages.ubuntu.com/cgi-bin/search_contents.pl?word=iconv.h</A>
+</I>&gt;<i> 
+</I>&gt;<i> Could the test be changed to only check for the header or something?
+</I>&gt;<i> 
+</I>&gt;<i> Dave.
+</I>&gt;<i> 
+</I>
+Same here on Fedora 8. The attached patch made the missing libconv
+non-fatal for me.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: iconv-optional.patch
+Type: text/x-patch
+Size: 381 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080123/4f05c803/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080123/4f05c803/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000444.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000446.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#445">[ date ]</a>
+              <a href="thread.html#445">[ thread ]</a>
+              <a href="subject.html#445">[ subject ]</a>
+              <a href="author.html#445">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

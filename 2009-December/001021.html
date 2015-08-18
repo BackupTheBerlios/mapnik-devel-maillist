@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Correcting an offset in a layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3C4B302281.9060708%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001020.html">
+   <LINK REL="Next"  HREF="001022.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Correcting an offset in a layer</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3C4B302281.9060708%40gmx.de%3E"
+       TITLE="[Mapnik-devel] Correcting an offset in a layer">ekkehart at gmx.de
+       </A><BR>
+    <I>Tue Dec 22 02:36:01 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001020.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+        <LI>Next message: <A HREF="001022.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1021">[ date ]</a>
+              <a href="thread.html#1021">[ thread ]</a>
+              <a href="subject.html#1021">[ subject ]</a>
+              <a href="author.html#1021">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi!
+
+Am 21.12.2009 22:53, schrieb Marcin Rudowski:
+&gt;<i> I don't remember specifics, but I had problem with quite big (20km?)
+</I>&gt;<i> offset north or south because of wrong ellipsoid reprojection and
+</I>&gt;<i> needed to specify correct proj4 parameters to gdal to override ones
+</I>&gt;<i> quest from hgt file format.
+</I>
+I have tried different modifications in the projection from working 
+examples, but they all produced the same output, I guess it was just 
+different ways of describing the same projection.
+
+The difference is just about 50-100m. I believe it may be a result of 
+the sample size of the SRTM data and the hillshading method.
+
+&gt;<i> Maybe try my -tr value in place of suggested 30 from wiki.
+</I>
+I am already using a -tr of 76.437 as recommended in other pages.
+
+Moving everything south by 70? meters would solve the problem, but how 
+could I do that? In the previous implementation, I used gdal2tiles to 
+create the tiles and could add a pixel offset in python to compensate.
+
+But now it is a rendering chain with a series of geotiff images and 
+mapnik to render them, so I don't know where and how I could introduce 
+an additional offset of a few meters to compensate for the mismatch.
+
+Is there a way to tell mapnik to move everything a little?
+
+bye
+	Nop
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001020.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+	<LI>Next message: <A HREF="001022.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1021">[ date ]</a>
+              <a href="thread.html#1021">[ thread ]</a>
+              <a href="subject.html#1021">[ subject ]</a>
+              <a href="author.html#1021">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

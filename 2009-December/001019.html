@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Correcting an offset in a layer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3C4B2FDE5E.6090205%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001018.html">
+   <LINK REL="Next"  HREF="001020.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Correcting an offset in a layer</H1>
+    <B>Nop</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Correcting%20an%20offset%20in%20a%20layer&In-Reply-To=%3C4B2FDE5E.6090205%40gmx.de%3E"
+       TITLE="[Mapnik-devel] Correcting an offset in a layer">ekkehart at gmx.de
+       </A><BR>
+    <I>Mon Dec 21 21:45:18 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001018.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+        <LI>Next message: <A HREF="001020.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1019">[ date ]</a>
+              <a href="thread.html#1019">[ thread ]</a>
+              <a href="subject.html#1019">[ subject ]</a>
+              <a href="author.html#1019">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi!
+
+
+I am building a map with several layers containing OSM geometry and
+hillshading+contours. The hillshading roughly follows the instructions
+on <A HREF="http://wiki.openstreetmap.org/wiki/HikingBikingMaps,">http://wiki.openstreetmap.org/wiki/HikingBikingMaps,</A> but is
+eventually rendered with a RasterSymbolizer in mapnik.
+
+Now I have the problem that the hillshading and the geometry do not
+quite match. It seems the hillshading is offset some constant distance
+to the north and west. I have attached a picture that illustrates the
+problem. Obviously, the stream is at the lowest point of the valley and
+not on the south slope. The red ways on the north side end on the top of 
+the slope.
+
+Now I am looking for a way to correct this offset. Do you have any idea
+on how to do this? Maybe by some preprocessing step/gdal tool? Or is
+there a way to adjust the projection so mapnik puts it in the right place?
+
+thank you
+
+	Nop
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: offset.png
+Type: image/png
+Size: 41071 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091221/b944e7e9/attachment.png">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091221/b944e7e9/attachment.png</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001018.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+	<LI>Next message: <A HREF="001020.html">[Mapnik-devel] Correcting an offset in a layer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1019">[ date ]</a>
+              <a href="thread.html#1019">[ thread ]</a>
+              <a href="subject.html#1019">[ subject ]</a>
+              <a href="author.html#1019">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Docs%20for%20%3CFileSource%3E/%3CDataSource%3E%20and%20relative%0A%09paths%20%2Afrom%2A%20XML%20location&In-Reply-To=%3CF556F197-8DB6-41B4-8E92-7C2C33E4376A%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000842.html">
+   <LINK REL="Next"  HREF="000857.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Docs%20for%20%3CFileSource%3E/%3CDataSource%3E%20and%20relative%0A%09paths%20%2Afrom%2A%20XML%20location&In-Reply-To=%3CF556F197-8DB6-41B4-8E92-7C2C33E4376A%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location">blake at hailmail.net
+       </A><BR>
+    <I>Mon Apr  6 18:42:46 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000842.html">[Mapnik-devel] Python support with autotools
+</A></li>
+        <LI>Next message: <A HREF="000857.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#843">[ date ]</a>
+              <a href="thread.html#843">[ thread ]</a>
+              <a href="subject.html#843">[ subject ]</a>
+              <a href="author.html#843">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Martijn,
+
+You may have noticed that I liked your option to specify a &quot;base&quot;  
+prefix path for the shapefile and raster datasources, and so I've  
+added that same logic to the GDAL,OGR, and SQLite plugins (<A HREF="http://trac.mapnik.org/changeset/1042">http://trac.mapnik.org/changeset/1042</A> 
+)
+
+In the process of adding that I noticed that we don't have any  
+documentation on the Wiki about using these features added in:
+<A HREF="http://trac.mapnik.org/changeset/574">http://trac.mapnik.org/changeset/574</A>
+
+Do you think you could create a few pages describing their usage?
+
+Also, I'm currently pondering this issue: Allowing any relative paths  
+in the XML file to be relative to the filesystem location of the XML  
+file itself. I think this would be yet another really valuable option  
+for flexibly holding the right paths to datasources and symbols in xml.
+
+I've stubbed a ticket for it here: <A HREF="http://trac.mapnik.org/ticket/147">http://trac.mapnik.org/ticket/147</A>
+I'm interested in ideas for the right approach to implement something  
+like this.
+
+Dane
+
+
+
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000842.html">[Mapnik-devel] Python support with autotools
+</A></li>
+	<LI>Next message: <A HREF="000857.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#843">[ date ]</a>
+              <a href="thread.html#843">[ thread ]</a>
+              <a href="subject.html#843">[ subject ]</a>
+              <a href="author.html#843">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

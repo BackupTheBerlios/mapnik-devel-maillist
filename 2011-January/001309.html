@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Style variation (feature visibility) depending on feature density
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Style%20variation%20%28feature%20visibility%29%20depending%0A%20on%20feature%20density&In-Reply-To=%3CAANLkTi%3D-rvqj3fNgfwCL%3DJ-mdpvdbq56EHSZ9Xc70e8n%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001308.html">
+   <LINK REL="Next"  HREF="001313.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Style variation (feature visibility) depending on feature density</H1>
+    <B>M&#8737;rtin Koppenhoefer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Style%20variation%20%28feature%20visibility%29%20depending%0A%20on%20feature%20density&In-Reply-To=%3CAANLkTi%3D-rvqj3fNgfwCL%3DJ-mdpvdbq56EHSZ9Xc70e8n%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Style variation (feature visibility) depending on feature density">dieterdreist at gmail.com
+       </A><BR>
+    <I>Tue Jan 11 23:44:37 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001308.html">[Mapnik-devel] Style variation (feature visibility) depending on	feature density
+</A></li>
+        <LI>Next message: <A HREF="001313.html">[Mapnik-devel] Style variation (feature visibility) depending	on feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1309">[ date ]</a>
+              <a href="thread.html#1309">[ thread ]</a>
+              <a href="subject.html#1309">[ subject ]</a>
+              <a href="author.html#1309">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2011/1/10 Frederik Ramm &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>&gt;:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> &#160; I wonder if anyone has invested some thought, or even code, into ways to
+</I>&gt;<i> control feature visibility depending on how much data there actually is.
+</I>
+
+a similar problem occurs for cities: when to display a city. This
+could be handled much better if the context were taken into account.
+There is the concept of topographic isolation:
+<A HREF="http://en.wikipedia.org/wiki/Topographic_isolation">http://en.wikipedia.org/wiki/Topographic_isolation</A>
+(the german article is better):
+<A HREF="http://de.wikipedia.org/wiki/Dominanz_%28Geographie%29">http://de.wikipedia.org/wiki/Dominanz_%28Geographie%29</A>
+
+I'm not sure how you could do this in the case of a road, maybe you
+could calculate for every midpoint between 2 nodes it's &quot;topographic
+isolation&quot; (distance to the next road of at least the same class), and
+then calculate the medium for the way, but I guess this would be quite
+expensive ;-)
+
+For point features this is less effort, but might still be a lot.
+
+cheers,
+Martin
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001308.html">[Mapnik-devel] Style variation (feature visibility) depending on	feature density
+</A></li>
+	<LI>Next message: <A HREF="001313.html">[Mapnik-devel] Style variation (feature visibility) depending	on feature density
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1309">[ date ]</a>
+              <a href="thread.html#1309">[ thread ]</a>
+              <a href="subject.html#1309">[ subject ]</a>
+              <a href="author.html#1309">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

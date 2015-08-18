@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik rendering inside an Apache module
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000268.html">
+   <LINK REL="Next"  HREF="000279.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik rendering inside an Apache module</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rendering%20inside%20an%20Apache%20module&In-Reply-To=%3C8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik rendering inside an Apache module">artem at mapnik.org
+       </A><BR>
+    <I>Tue Sep 18 16:10:42 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000268.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+        <LI>Next message: <A HREF="000279.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#278">[ date ]</a>
+              <a href="thread.html#278">[ thread ]</a>
+              <a href="subject.html#278">[ subject ]</a>
+              <a href="author.html#278">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 17 Sep 2007, at 19:46, Christopher Schmidt wrote:
+
+&gt;<i> On Mon, Sep 17, 2007 at 07:24:26PM +0100, Jon Burgess wrote:
+</I>&gt;&gt;<i> I've put together a C implementation of the scripts used to render  
+</I>&gt;&gt;<i> and
+</I>&gt;&gt;<i> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+</I>&gt;&gt;<i> run into a scalability issue with Mapnik PostgreSQL connections.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I have Apache running with multiple processes and each of these  
+</I>&gt;&gt;<i> has an
+</I>&gt;&gt;<i> instance of the Mapnik renderer. Each Mapnik instance wants to open
+</I>&gt;&gt;<i> about 10 connections to the PostgreSQL database. Postgres  
+</I>&gt;&gt;<i> complains when
+</I>&gt;&gt;<i> I get above 100 connections so this puts a serious limit on the  
+</I>&gt;&gt;<i> number
+</I>&gt;&gt;<i> of Apache processes I can run. In addition Mapnik keeps a pool of  
+</I>&gt;&gt;<i> idle
+</I>&gt;&gt;<i> connections open so even when one httpd is not doing any rendering it
+</I>&gt;&gt;<i> can prevent another from getting a new connection.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> There are a few different ways I can think of to solve this. I  
+</I>&gt;&gt;<i> wonder if
+</I>&gt;&gt;<i> anyone has any other suggestions on the best way to proceed:-
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Increase the number of allowed PostgreSQL connections.
+</I>&gt;<i>
+</I>&gt;<i> I've used this route when I had the same problem with
+</I>&gt;<i> mod_python/TileCache.
+</I>
+Sounds a bit too hack-ish :) . There was bug in postgis plug-in,  
+fixed in r529.
+Cheers
+Artem
+&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> -- 
+</I>&gt;<i> Christopher Schmidt
+</I>&gt;<i> MetaCarta
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/c8ad9cf7/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/c8ad9cf7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000268.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+	<LI>Next message: <A HREF="000279.html">[Mapnik-devel] Mapnik rendering inside an Apache module
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#278">[ date ]</a>
+              <a href="thread.html#278">[ thread ]</a>
+              <a href="subject.html#278">[ subject ]</a>
+              <a href="author.html#278">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

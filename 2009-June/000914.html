@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0	inWindows XP pro
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Solution%20to%20problems%20Installing%20Mapnik%200.6.0%0A%09inWindows%20XP%20pro&In-Reply-To=%3CE58932E0-FD5E-4DFE-9148-33ABBC747FAF%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000913.html">
+   <LINK REL="Next"  HREF="000915.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0	inWindows XP pro</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Solution%20to%20problems%20Installing%20Mapnik%200.6.0%0A%09inWindows%20XP%20pro&In-Reply-To=%3CE58932E0-FD5E-4DFE-9148-33ABBC747FAF%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0	inWindows XP pro">blake at hailmail.net
+       </A><BR>
+    <I>Mon Jun  1 01:16:25 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000913.html">[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in	Windows XP pro
+</A></li>
+        <LI>Next message: <A HREF="000915.html">[Mapnik-devel] Announcing Quantumnik - Mapfile authoring in Quantum	GIS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#914">[ date ]</a>
+              <a href="thread.html#914">[ thread ]</a>
+              <a href="subject.html#914">[ subject ]</a>
+              <a href="author.html#914">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Joseph,
+
+You should not need to change the paths in the 'paths.py' file, those  
+simply help the python bindings pull in the dll's for specific  
+datasources.
+
+Dane
+
+
+On May 23, 2009, at 9:21 PM, &#38816;&#20255;&#24179;(Joseph) wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> Please see the attachment jpg picture.
+</I>&gt;<i>
+</I>&gt;<i> At runtime,the mapnik depend on some dll.if all dependent is  
+</I>&gt;<i> ok,follow:
+</I>&gt;<i>
+</I>&gt;<i> set env:
+</I>&gt;<i>
+</I>&gt;<i> PATH: add %mapnik_0_6_0_root%\lib
+</I>&gt;<i>
+</I>&gt;<i> to use python binding,set PYTHONPATH to %mapnik_0_6_0_root%\site- 
+</I>&gt;<i> packages
+</I>&gt;<i>
+</I>&gt;<i> and modify the site-packages\mapnik\paths.py,set &quot;mapniklibpath&quot; to  
+</I>&gt;<i> right path.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &#21457;&#20214;&#20154;&#65306; Harry Gomez
+</I>&gt;<i> &#21457;&#36865;&#26102;&#38388;&#65306; 2009-05-24  12:01:01
+</I>&gt;<i> &#25910;&#20214;&#20154;&#65306; mapnik-devel
+</I>&gt;<i> &#25220;&#36865;&#65306;
+</I>&gt;<i> &#20027;&#39064;&#65306; [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0  
+</I>&gt;<i> inWindows XP pro
+</I>&gt;<i> Hello,
+</I>&gt;<i> I was having problems installing mapnik on my PC. I had followed the  
+</I>&gt;<i> wiki instructions to a T(atleast I thought). I had downloaded Mapnik  
+</I>&gt;<i> 0.6.0 and Python 2.5. I installed Python and Mapnik 0.6.0 and set up  
+</I>&gt;<i> the system variables but I didnt get it to work. I later installed  
+</I>&gt;<i> Visual Studio 6 to but mapnik still did not work.
+</I>&gt;<i> &#180;
+</I>&gt;<i> How did I get this to work, I did the following:
+</I>&gt;<i> -I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)
+</I>&gt;<i> -Got rid of all the system and user variables I had set up.
+</I>&gt;<i> I installed the following programs in order:
+</I>&gt;<i> -Visual C++ 9
+</I>&gt;<i> -Python 2.5 and set up the Pythonpath
+</I>&gt;<i> -unzipped Mapnik to the correct folder nad set up both the system  
+</I>&gt;<i> and user variables.
+</I>&gt;<i>
+</I>&gt;<i> After I did this I followed the trac wiki guide to install Mapnik  
+</I>&gt;<i> and everything worked. I am not quite sure what was wrong but I  
+</I>&gt;<i> guess that the system variables were being pointing to the wrong  
+</I>&gt;<i> files and installing the programs in the order I did and set up the  
+</I>&gt;<i> system variables as I installed the programs helped solve this.(I  
+</I>&gt;<i> probably had a typo at first, who know I just know that now it  
+</I>&gt;<i> works!!!)
+</I>&gt;<i> Take care and keep up the good work.
+</I>&gt;<i>
+</I>&gt;<i> &lt;mapnik moudles.jpg&gt;
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090531/c49e05b7/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090531/c49e05b7/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000913.html">[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in	Windows XP pro
+</A></li>
+	<LI>Next message: <A HREF="000915.html">[Mapnik-devel] Announcing Quantumnik - Mapfile authoring in Quantum	GIS
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#914">[ date ]</a>
+              <a href="thread.html#914">[ thread ]</a>
+              <a href="subject.html#914">[ subject ]</a>
+              <a href="author.html#914">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

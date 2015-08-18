@@ -1,0 +1,155 @@
+From jleslie at placebase.com  Sat May 13 08:54:30 2006
+From: jleslie at placebase.com (John Leslie)
+Date: Sat, 13 May 2006 02:54:30 -0400 (EDT)
+Subject: [Mapnik-devel] Handling of null values in numeric .dbf columns
+Message-ID: <41082.10.238.10.70.1147503270.webmail@10.238.10.70>
+
+When mapnik parses dbf files, it looks like the string version of all
+numeric columns is passed directly to mapnik::fromString(), by
+dbf_file::add_attribute() (plugins/input/shape/dbffile.cpp).  This can
+cause a problem when the numeric column contains a null value (which is
+valid, as far as shapefiles are concerned).  in this case,
+mapnik::fromString() throws a BadConversion, which aborts things.
+
+It seems like the length of the string should be checked, to make sure
+there's some data there to pass along to fromString to begin with.  Also,
+if the column does contain data, but it is truly malformed, maybe it
+should be treated as though it were null, with some sort of warning?  I
+suppose this is a judgement call.
+
+Anyways, a simple check of the string length seems to fix the problem with
+the null value:
+
+--- plugins/input/shape/dbffile.cpp     (revision 249)
++++ plugins/input/shape/dbffile.cpp     (working copy)
+@@ -140,14 +140,18 @@
+                 if (fields_[col].dec_>0)
+                 {
+                     double d;
+-                    fromString(str,d);
+-                    boost::put(f,name,d);
++                    if (str.length() > 0) {
++                       fromString(str,d);
++                       boost::put(f,name,d);
++                   }
+                 }
+                 else
+                 {
+                     int i;
+-                    fromString(str,i);
+-                    boost::put(f,name,i);
++                   if (str.length() > 0) {
++                       fromString(str,i);
++                        boost::put(f,name,i);
++                   }
+
+Regards,
+
+John Leslie <jleslie at placebase.com>
+
+
+
+
+
+
+From artem at pavlenko.uklinux.net  Sat May 13 11:25:51 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Sat, 13 May 2006 10:25:51 +0100
+Subject: [Mapnik-devel] Handling of null values in numeric .dbf columns
+In-Reply-To: <41082.10.238.10.70.1147503270.webmail@10.238.10.70>
+References: <41082.10.238.10.70.1147503270.webmail@10.238.10.70>
+Message-ID: <4465A61F.2000002@pavlenko.uklinux.net>
+
+Hi John,
+This sounds reasonable and I'll integrate your patch.
+Thanks!
+Artem
+
+
+John Leslie wrote:
+> When mapnik parses dbf files, it looks like the string version of all
+> numeric columns is passed directly to mapnik::fromString(), by
+> dbf_file::add_attribute() (plugins/input/shape/dbffile.cpp).  This can
+> cause a problem when the numeric column contains a null value (which is
+> valid, as far as shapefiles are concerned).  in this case,
+> mapnik::fromString() throws a BadConversion, which aborts things.
+>
+> It seems like the length of the string should be checked, to make sure
+> there's some data there to pass along to fromString to begin with.  Also,
+> if the column does contain data, but it is truly malformed, maybe it
+> should be treated as though it were null, with some sort of warning?  I
+> suppose this is a judgement call.
+>
+> Anyways, a simple check of the string length seems to fix the problem with
+> the null value:
+>
+> --- plugins/input/shape/dbffile.cpp     (revision 249)
+> +++ plugins/input/shape/dbffile.cpp     (working copy)
+> @@ -140,14 +140,18 @@
+>                  if (fields_[col].dec_>0)
+>                  {
+>                      double d;
+> -                    fromString(str,d);
+> -                    boost::put(f,name,d);
+> +                    if (str.length() > 0) {
+> +                       fromString(str,d);
+> +                       boost::put(f,name,d);
+> +                   }
+>                  }
+>                  else
+>                  {
+>                      int i;
+> -                    fromString(str,i);
+> -                    boost::put(f,name,i);
+> +                   if (str.length() > 0) {
+> +                       fromString(str,i);
+> +                        boost::put(f,name,i);
+> +                   }
+>
+> Regards,
+>
+> John Leslie <jleslie at placebase.com>
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> http://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>   
+
+
+From pavlenko at berlios.de  Mon May 22 22:42:41 2006
+From: pavlenko at berlios.de (Artem Pavlenko)
+Date: Mon, 22 May 2006 21:42:41 +0100
+Subject: [Mapnik-devel] New Release 0.3.0
+Message-ID: <44722241.1080006@users.berlios.de>
+
+Dear List,
+
+I'm pleased to announce a new release of Mapnik - 0.3.0. It's been a 
+long time but we have lots of new features, bug fixes, improvements.
+
+Here are the major features:
+
+1. License changed from GPL to LGPL
+2. Python-based WMS server (WMS 1.1.1 and 1.3.0)
+3. New Renderer interface
+4. New Feature model
+5. Font engine and text symbolization
+6. Python and C++ demos
+7. win32 support - yes, mapnik can be compiled (tested with vc-8_0) and 
+happily runs
+on windows now. (In the future win32 binaries and/or build instructions 
+will be provided)
+8. x86_64 support
+
+Cheers
+Artem
+
+ 
+
+

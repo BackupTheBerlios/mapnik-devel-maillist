@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Support%20for%20PolygonPatternSymbolizer%20in%20load_map%3F&In-Reply-To=%3C45740784.2000909%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000073.html">
+   <LINK REL="Next"  HREF="000075.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Support%20for%20PolygonPatternSymbolizer%20in%20load_map%3F&In-Reply-To=%3C45740784.2000909%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Mon Dec  4 12:33:24 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000073.html">[Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?
+</A></li>
+        <LI>Next message: <A HREF="000075.html">[Mapnik-devel] Text placement patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I added support for PolygonPatternSymbolizer in load_map.cpp.
+I suggest we use patterns carefully though, it is easy to overload map :).
+
+
+....
+&lt;Rule&gt;
+      &lt;Filter&gt;[leisure] = 'park'&lt;/Filter&gt;
+      &lt;MaxScaleDenominator&gt;2000000&lt;/MaxScaleDenominator&gt;
+      &lt;PolygonPatternSymbolizer file=&quot;/home/artem/pattern2.png&quot; 
+type=&quot;png&quot; width=&quot;64&quot; height=&quot;64&quot;/&gt;
+&lt;/Rule&gt;
+....
+
+and resulting map : <A HREF="http://media.mapnik.org/images/polygon_pattern.png">http://media.mapnik.org/images/polygon_pattern.png</A>
+
+Have lots of fun,
+Artem
+
+Jon Burgess wrote:
+&gt;<i> A question was asked on OSM IRC about supporting areas rendered using a
+</I>&gt;<i> repeated symbol pattern as a fill. Is that what PolygonPatternSymbolizer
+</I>&gt;<i> is for? 
+</I>&gt;<i>
+</I>&gt;<i> I see there is no entry to support PolygonPatternSymbolizer in
+</I>&gt;<i> load_map.cpp, is this an oversight or is the code not ready for use?
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000073.html">[Mapnik-devel] Support for PolygonPatternSymbolizer in load_map?
+</A></li>
+	<LI>Next message: <A HREF="000075.html">[Mapnik-devel] Text placement patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#74">[ date ]</a>
+              <a href="thread.html#74">[ thread ]</a>
+              <a href="subject.html#74">[ subject ]</a>
+              <a href="author.html#74">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

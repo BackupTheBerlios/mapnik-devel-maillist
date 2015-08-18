@@ -1,0 +1,1126 @@
+From blake at hailmail.net  Thu Dec  2 23:23:02 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 2 Dec 2010 14:23:02 -0800
+Subject: [Mapnik-devel] help finding solution to lack of exception handling
+	with boost python on open solaris 64 bit
+Message-ID: <827B3364-5590-4394-AB72-BE04437BFFF7@hailmail.net>
+
+Hello,
+
+I recently recompiled my C++ app (mapnik.org, which uses boost python for python binding) with -m64 flags for 64 bit operation and this broke the boost python exception handling.
+
+Instead of C++ exceptions being propagated to python exceptions, I get segmentation faults (core dump).
+
+I have a long dependency chain that all needs to be 64 bit, so I'm really stuck unless I can find a way to restore boost python's ability to handle exceptions without crashing.
+
+Exceptions are very common during setup of mapnik, and are needed to report basic configuration issues as a user gets set up.
+
+I'm desperate to try anything that might help - anyone have any suggestions?
+
+What i have tried so far:
+
+1) recompiling all apps with -02 instead of -03
+2) making sure all apps are compiled with the exact same version of gcc (at least all the C++ libraries I have compiled from source)
+3) ensured that all dynamic libraries link to the same libgcc_s.so.1 and libstdc++.so.6.
+4) tried with both boost 1.44 and 1.45
+
+I'm out of ideas - anyone have suggestions to try?
+
+More info below.
+
+Dane
+
+--------------
+
+With 32bit boost, python, and mapnik, exceptions worked fine.
+
+This is on opensolaris:
+
+$ cat /etc/release
+                      OpenSolaris Development snv_133 X86
+          Copyright 2010 Sun Microsystems, Inc.  All Rights Reserved.
+                       Use is subject to license terms.
+                          Assembled 15 February 2010
+
+with the sun provided 64 bit python26:
+
+$ /usr/bin/amd64/python --version
+Python 2.6.4
+
+Both boost and mapnik are compiled with a *custom* compiled gcc 44:
+
+$ /opt/ts/gcc/4.4/bin/g++ -v       
+Using built-in specs.
+Target: i386-pc-solaris2.11
+Configured with: .././configure --prefix=/opt/ts/gcc/4.4 --bindir=/opt/ts/gcc/4.4/bin --libdir=/opt/ts/gcc/4.4/lib --mandir=/opt/ts/gcc/4.4/share/man --datadir=/opt/ts/gcc/4.4/share --includedir=/opt/ts/gcc/4.4/include --infodir=/opt/ts/gcc/4.4/share/info --libexecdir=/opt/ts/gcc/4.4/lib --sysconfdir=/etc/opt/ts --disable-nls --disable-static --with-gnu-as --with-as=/usr/gnu/bin/as --without-gnu-ld --with-ld=/usr/ccs/bin/ld --enable-threads=posix --enable-shared --enable-multilib --enable-nls --without-x --with-system-zlib --enable-languages=c,c++,f95,objc --with-mpfr=/opt/ts --with-gmp=/opt/ts
+Thread model: posix
+gcc version 4.4.4 (GCC) 
+
+( I was unable to get boost compiled with the gcc 3.4.3 or gcc 4.3.3 provided by sun packages, for more info see: http://trac.mapnik.org/wiki/OpenSolarisInstallation/TroubleShooting)
+
+
+So, instead of throwing an understandable exception, boost python crashes and this is what a normal backtrace looks like in gbd:
+
+(gdb) bt
+#0  0x000000000005f666 in ?? ()
+#1  0xfffffd7fff2ec5d1 in _Unwind_RaiseException_Body () from /usr/lib/amd64/libc.so.1
+#2  0xfffffd7fff2ec855 in _Unwind_RaiseException () from /usr/lib/amd64/libc.so.1
+#3  0xfffffd7ffa98bb39 in __cxa_throw (obj=<value optimized out>, tinfo=0x1, dest=0x474e5543432b2b00)
+   at ../../../../.././libstdc++-v3/libsupc++/eh_throw.cc:78
+#4  0xfffffd7ff3aa2de2 in boost::python::throw_error_already_set () from /usr/local/lib/libboost_python.so.1.44.0
+#5  0xfffffd7ff3a9ae31 in boost::python::objects::function::argument_error () from /usr/local/lib/libboost_python.so.1.44.0
+#6  0xfffffd7ff3a9b4fb in boost::python::objects::function::call () from /usr/local/lib/libboost_python.so.1.44.0
+#7  0xfffffd7ff3a9b730 in boost::detail::function::void_function_ref_invoker0<boost::python::objects::(anonymous namespace)::bind_return, void>::invoke () from /usr/local/lib/libboost_python.so.1.44.0
+#8  0xfffffd7ff3aa3053 in boost::python::detail::exception_handler::operator() () from /usr/local/lib/libboost_python.so.1.44.0
+#9  0xfffffd7ff28fb1b2 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<std::exception, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke ()
+  from /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+#10 0xfffffd7ff3aa2e25 in boost::python::handle_exception_impl () from /usr/local/lib/libboost_python.so.1.44.0
+#11 0xfffffd7ff3a97d50 in function_call () from /usr/local/lib/libboost_python.so.1.44.0
+#12 0xfffffd7ff6ff9aad in PyObject_Call () from /usr/lib/amd64/libpython2.6.so.1.0
+#13 0xfffffd7ff700af29 in instancemethod_call () from /usr/lib/amd64/libpython2.6.so.1.0
+#14 0xfffffd7ff6ff9aad in PyObject_Call () from /usr/lib/amd64/libpython2.6.so.1.0
+#15 0xfffffd7ff705d8a1 in slot_tp_init () from /usr/lib/amd64/libpython2.6.so.1.0
+#16 0xfffffd7ff7051c06 in type_call () from /usr/lib/amd64/libpython2.6.so.1.0
+#17 0xfffffd7ff6ff9aad in PyObject_Call () from /usr/lib/amd64/libpython2.6.so.1.0
+#18 0xfffffd7ff709c1c0 in do_call () from /usr/lib/amd64/libpython2.6.so.1.0
+#19 0xfffffd7ff709b672 in call_function () from /usr/lib/amd64/libpython2.6.so.1.0
+#20 0xfffffd7ff709810d in PyEval_EvalFrameExReal () from /usr/lib/amd64/libpython2.6.so.1.0
+#21 0xfffffd7ff7094d9d in PyEval_EvalFrameEx () from /usr/lib/amd64/libpython2.6.so.1.0
+#22 0xfffffd7ff709a27d in PyEval_EvalCodeEx () from /usr/lib/amd64/libpython2.6.so.1.0
+#23 0xfffffd7ff7094caa in PyEval_EvalCode () from /usr/lib/amd64/libpython2.6.so.1.0
+#24 0xfffffd7ff70bd385 in run_mod () from /usr/lib/amd64/libpython2.6.so.1.0
+#25 0xfffffd7ff70bd27c in PyRun_StringFlags () from /usr/lib/amd64/libpython2.6.so.1.0
+#26 0xfffffd7ff70bc53d in PyRun_SimpleStringFlags () from /usr/lib/amd64/libpython2.6.so.1.0
+#27 0xfffffd7ff70ca5f0 in Py_Main () from /usr/lib/amd64/libpython2.6.so.1.0
+#28 0x0000000000400b3c in _start ()
+
+
+Here is the output of ldd for both the main mapnik library and the mapnik python bindings:
+
+$ ldd /usr/local/lib/libmapnik.so
+       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+       libz.so.1 =>     /lib/64/libz.so.1
+       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+       libboost_filesystem.so.1.44.0 =>         /usr/local/lib/libboost_filesystem.so.1.44.0
+       libboost_regex.so.1.44.0 =>      /usr/local/lib/libboost_regex.so.1.44.0
+       libxml2.so.2 =>  /lib/64/libxml2.so.2
+       libboost_thread.so.1.44.0 =>     /usr/local/lib/libboost_thread.so.1.44.0
+       libboost_system.so.1.44.0 =>     /usr/local/lib/libboost_system.so.1.44.0
+       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+       libm.so.2 =>     /lib/64/libm.so.2
+       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+       libc.so.1 =>     /lib/64/libc.so.1
+       libdl.so.1 =>    /lib/64/libdl.so.1
+       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+       libpthread.so.1 =>       /lib/64/libpthread.so.1
+       librt.so.1 =>    /lib/64/librt.so.1
+       libsocket.so.1 =>        /lib/64/libsocket.so.1
+       libnsl.so.1 =>   /lib/64/libnsl.so.1
+       libmp.so.2 =>    /lib/64/libmp.so.2
+       libmd.so.1 =>    /lib/64/libmd.so.1
+       libscf.so.1 =>   /lib/64/libscf.so.1
+       libuutil.so.1 =>         /lib/64/libuutil.so.1
+       libgen.so.1 =>   /lib/64/libgen.so.1
+       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+
+$ ldd /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so 
+       libmapnik.so =>  /usr/local/lib/libmapnik.so
+       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+       libboost_python.so.1.44.0 =>     /usr/local/lib/libboost_python.so.1.44.0
+       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+       libm.so.2 =>     /lib/64/libm.so.2
+       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+       libz.so.1 =>     /lib/64/libz.so.1
+       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+       libboost_filesystem.so.1.44.0 =>         /usr/local/lib/libboost_filesystem.so.1.44.0
+       libboost_regex.so.1.44.0 =>      /usr/local/lib/libboost_regex.so.1.44.0
+       libxml2.so.2 =>  /lib/64/libxml2.so.2
+       libboost_thread.so.1.44.0 =>     /usr/local/lib/libboost_thread.so.1.44.0
+       libboost_system.so.1.44.0 =>     /usr/local/lib/libboost_system.so.1.44.0
+       libc.so.1 =>     /usr/lib/amd64/libc.so.1
+       librt.so.1 =>    /lib/64/librt.so.1
+       libdl.so.1 =>    /lib/64/libdl.so.1
+       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+       libpthread.so.1 =>       /lib/64/libpthread.so.1
+       libsocket.so.1 =>        /lib/64/libsocket.so.1
+       libnsl.so.1 =>   /lib/64/libnsl.so.1
+       libmp.so.2 =>    /lib/64/libmp.so.2
+       libmd.so.1 =>    /lib/64/libmd.so.1
+       libscf.so.1 =>   /lib/64/libscf.so.1
+       libuutil.so.1 =>         /lib/64/libuutil.so.1
+       libgen.so.1 =>   /lib/64/libgen.so.1
+       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+
+Here is a simple way to prompt a segfault:
+
+$ /usr/bin/amd64/python
+Python 2.6.4 (r264:75706, Feb 14 2010, 14:06:28) [C] on sunos5
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mapnik
+>>> m = mapnik.Map(256,256)
+>>> m
+<mapnik._mapnik.Map object at 0x55a1b0>
+# then, prompt a boost python argument error
+>>> m2 = mapnik.Map('foo')
+Segmentation Fault
+
+
+
+
+
+From blake at hailmail.net  Sat Dec  4 01:16:58 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 3 Dec 2010 16:16:58 -0800
+Subject: [Mapnik-devel] Fwd: [C++-sig] help finding solution to lack of
+	exception handling with boost python on open solaris 64 bit
+References: <788FA1AF-8DAD-42C0-99ED-ED25AE18BE51@hailmail.net>
+Message-ID: <DA8CC558-9FC8-4D94-8F5A-76A22186F50D@hailmail.net>
+
+mapnik-devel,
+
+lots of ideas offered on my issue on cplusplus-sig at python.org helped my solve it. Long cc' was rejected to mapnik-devel, so forwarding my response...
+
+Dane
+
+Begin forwarded message:
+
+> From: Dane Springmeyer <blake at hailmail.net>
+> Date: December 3, 2010 3:47:31 PM PST
+> To: Development of Python/C++ integration <cplusplus-sig at python.org>
+> Cc: mapnik-devel <mapnik-devel at lists.berlios.de>
+> Subject: Re: [C++-sig] help finding solution to lack of exception handling with boost python on open solaris 64 bit
+> Reply-To: Development of Python/C++ integration <cplusplus-sig at python.org>
+> 
+> Thanks everyone for your ideas! Exactly what I was looking for.
+> 
+> With your help I I've narrowed it down to duplicate libgcc_s.so versions being imported, as this solves it:
+> 
+> LD_PRELOAD=/usr/sfw/lib/amd64/libgcc_s.so
+> 
+> So I can now do:
+> 
+> LD_PRELOAD=/usr/sfw/lib/amd64/libgcc_s.so /usr/bin/amd64/python -c "import mapnik;mapnik.Map('this should throw exception');"
+> 
+> ...which now throws a proper argument error exception.
+> 
+> So, my error is now clearer: I've been using sun provided 64 bit python compiled with a different gcc version than I built both boost and mapnik with. Why I could get away with this in 32 bit mode is beyond me.
+> 
+> My understanding is that by using LD_PRELOAD I am able to force the libgcc_s.so version that python itself is linked to - to be loaded first (rather than the libgcc_s.so that boost_python and _mapnik.so are linked to). This allows both the exception handling to work again and the program (surprisingly) to run properly (tests pass at least).
+> 
+> I figure, since I was unable to compile boost_python (or boost proper) with the gcc version from sun (and that the sun python was compiled with), my only proper route from here is to compile python myself using my custom version of gcc.
+> 
+> Dane
+> 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101203/6533bbc5/attachment.html>
+
+From charlessolar at gmail.com  Fri Dec  3 01:05:11 2010
+From: charlessolar at gmail.com (Charles Solar)
+Date: Thu, 2 Dec 2010 18:05:11 -0600
+Subject: [Mapnik-devel] [C++-sig] help finding solution to lack of
+ exception handling with boost python on open solaris 64 bit
+In-Reply-To: <827B3364-5590-4394-AB72-BE04437BFFF7@hailmail.net>
+References: <827B3364-5590-4394-AB72-BE04437BFFF7@hailmail.net>
+Message-ID: <AANLkTikUVGvgVGYANc+V1i+-s1gjOYjQvkukrRF2RLw3@mail.gmail.com>
+
+This happens in my application as well, dont know if its a known issue for
+boost python or not..
+I too would like to see a solution; I myself have not had anytime to look
+into it since exceptions are a rare thing in my app.
+I can confirm however that a similar problem occurs on Solaris Sparcv9
+machines, so I am guessing it has something to do with how solaris handles
+64 bit exception handling.  Something boost is not setup to handle I would
+suppose.
+
+Charles
+
+On Thu, Dec 2, 2010 at 4:23 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Hello,
+>
+> I recently recompiled my C++ app (mapnik.org, which uses boost python for
+> python binding) with -m64 flags for 64 bit operation and this broke the
+> boost python exception handling.
+>
+> Instead of C++ exceptions being propagated to python exceptions, I get
+> segmentation faults (core dump).
+>
+> I have a long dependency chain that all needs to be 64 bit, so I'm really
+> stuck unless I can find a way to restore boost python's ability to handle
+> exceptions without crashing.
+>
+> Exceptions are very common during setup of mapnik, and are needed to report
+> basic configuration issues as a user gets set up.
+>
+> I'm desperate to try anything that might help - anyone have any
+> suggestions?
+>
+> What i have tried so far:
+>
+> 1) recompiling all apps with -02 instead of -03
+> 2) making sure all apps are compiled with the exact same version of gcc (at
+> least all the C++ libraries I have compiled from source)
+> 3) ensured that all dynamic libraries link to the same libgcc_s.so.1 and
+> libstdc++.so.6.
+> 4) tried with both boost 1.44 and 1.45
+>
+> I'm out of ideas - anyone have suggestions to try?
+>
+> More info below.
+>
+> Dane
+>
+> --------------
+>
+> With 32bit boost, python, and mapnik, exceptions worked fine.
+>
+> This is on opensolaris:
+>
+> $ cat /etc/release
+>                      OpenSolaris Development snv_133 X86
+>          Copyright 2010 Sun Microsystems, Inc.  All Rights Reserved.
+>                       Use is subject to license terms.
+>                          Assembled 15 February 2010
+>
+> with the sun provided 64 bit python26:
+>
+> $ /usr/bin/amd64/python --version
+> Python 2.6.4
+>
+> Both boost and mapnik are compiled with a *custom* compiled gcc 44:
+>
+> $ /opt/ts/gcc/4.4/bin/g++ -v
+> Using built-in specs.
+> Target: i386-pc-solaris2.11
+> Configured with: .././configure --prefix=/opt/ts/gcc/4.4
+> --bindir=/opt/ts/gcc/4.4/bin --libdir=/opt/ts/gcc/4.4/lib
+> --mandir=/opt/ts/gcc/4.4/share/man --datadir=/opt/ts/gcc/4.4/share
+> --includedir=/opt/ts/gcc/4.4/include --infodir=/opt/ts/gcc/4.4/share/info
+> --libexecdir=/opt/ts/gcc/4.4/lib --sysconfdir=/etc/opt/ts --disable-nls
+> --disable-static --with-gnu-as --with-as=/usr/gnu/bin/as --without-gnu-ld
+> --with-ld=/usr/ccs/bin/ld --enable-threads=posix --enable-shared
+> --enable-multilib --enable-nls --without-x --with-system-zlib
+> --enable-languages=c,c++,f95,objc --with-mpfr=/opt/ts --with-gmp=/opt/ts
+> Thread model: posix
+> gcc version 4.4.4 (GCC)
+>
+> ( I was unable to get boost compiled with the gcc 3.4.3 or gcc 4.3.3
+> provided by sun packages, for more info see:
+> http://trac.mapnik.org/wiki/OpenSolarisInstallation/TroubleShooting)
+>
+>
+> So, instead of throwing an understandable exception, boost python crashes
+> and this is what a normal backtrace looks like in gbd:
+>
+> (gdb) bt
+> #0  0x000000000005f666 in ?? ()
+> #1  0xfffffd7fff2ec5d1 in _Unwind_RaiseException_Body () from
+> /usr/lib/amd64/libc.so.1
+> #2  0xfffffd7fff2ec855 in _Unwind_RaiseException () from
+> /usr/lib/amd64/libc.so.1
+> #3  0xfffffd7ffa98bb39 in __cxa_throw (obj=<value optimized out>,
+> tinfo=0x1, dest=0x474e5543432b2b00)
+>   at ../../../../.././libstdc++-v3/libsupc++/eh_throw.cc:78
+> #4  0xfffffd7ff3aa2de2 in boost::python::throw_error_already_set () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #5  0xfffffd7ff3a9ae31 in boost::python::objects::function::argument_error
+> () from /usr/local/lib/libboost_python.so.1.44.0
+> #6  0xfffffd7ff3a9b4fb in boost::python::objects::function::call () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #7  0xfffffd7ff3a9b730 in
+> boost::detail::function::void_function_ref_invoker0<boost::python::objects::(anonymous
+> namespace)::bind_return, void>::invoke () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #8  0xfffffd7ff3aa3053 in
+> boost::python::detail::exception_handler::operator() () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #9  0xfffffd7ff28fb1b2 in
+> boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool,
+> boost::python::detail::translate_exception<std::exception, void
+> (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>,
+> boost::_bi::value<void (*)(std::exception const&)> > >, bool,
+> boost::python::detail::exception_handler const&, boost::function0<void>
+> const&>::invoke ()
+>  from /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+> #10 0xfffffd7ff3aa2e25 in boost::python::handle_exception_impl () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #11 0xfffffd7ff3a97d50 in function_call () from
+> /usr/local/lib/libboost_python.so.1.44.0
+> #12 0xfffffd7ff6ff9aad in PyObject_Call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #13 0xfffffd7ff700af29 in instancemethod_call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #14 0xfffffd7ff6ff9aad in PyObject_Call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #15 0xfffffd7ff705d8a1 in slot_tp_init () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #16 0xfffffd7ff7051c06 in type_call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #17 0xfffffd7ff6ff9aad in PyObject_Call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #18 0xfffffd7ff709c1c0 in do_call () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #19 0xfffffd7ff709b672 in call_function () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #20 0xfffffd7ff709810d in PyEval_EvalFrameExReal () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #21 0xfffffd7ff7094d9d in PyEval_EvalFrameEx () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #22 0xfffffd7ff709a27d in PyEval_EvalCodeEx () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #23 0xfffffd7ff7094caa in PyEval_EvalCode () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #24 0xfffffd7ff70bd385 in run_mod () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #25 0xfffffd7ff70bd27c in PyRun_StringFlags () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #26 0xfffffd7ff70bc53d in PyRun_SimpleStringFlags () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #27 0xfffffd7ff70ca5f0 in Py_Main () from
+> /usr/lib/amd64/libpython2.6.so.1.0
+> #28 0x0000000000400b3c in _start ()
+>
+>
+> Here is the output of ldd for both the main mapnik library and the mapnik
+> python bindings:
+>
+> $ ldd /usr/local/lib/libmapnik.so
+>       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+>       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+>       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+>       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+>       libz.so.1 =>     /lib/64/libz.so.1
+>       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+>       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+>       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+>       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+>       libboost_filesystem.so.1.44.0 =>
+> /usr/local/lib/libboost_filesystem.so.1.44.0
+>       libboost_regex.so.1.44.0 =>
+>  /usr/local/lib/libboost_regex.so.1.44.0
+>       libxml2.so.2 =>  /lib/64/libxml2.so.2
+>       libboost_thread.so.1.44.0 =>
+> /usr/local/lib/libboost_thread.so.1.44.0
+>       libboost_system.so.1.44.0 =>
+> /usr/local/lib/libboost_system.so.1.44.0
+>       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+>       libm.so.2 =>     /lib/64/libm.so.2
+>       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+>       libc.so.1 =>     /lib/64/libc.so.1
+>       libdl.so.1 =>    /lib/64/libdl.so.1
+>       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+>       libpthread.so.1 =>       /lib/64/libpthread.so.1
+>       librt.so.1 =>    /lib/64/librt.so.1
+>       libsocket.so.1 =>        /lib/64/libsocket.so.1
+>       libnsl.so.1 =>   /lib/64/libnsl.so.1
+>       libmp.so.2 =>    /lib/64/libmp.so.2
+>       libmd.so.1 =>    /lib/64/libmd.so.1
+>       libscf.so.1 =>   /lib/64/libscf.so.1
+>       libuutil.so.1 =>         /lib/64/libuutil.so.1
+>       libgen.so.1 =>   /lib/64/libgen.so.1
+>       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+>
+> $ ldd /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+>       libmapnik.so =>  /usr/local/lib/libmapnik.so
+>       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+>       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+>       libboost_python.so.1.44.0 =>
+> /usr/local/lib/libboost_python.so.1.44.0
+>       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+>       libm.so.2 =>     /lib/64/libm.so.2
+>       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+>       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+>       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+>       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+>       libz.so.1 =>     /lib/64/libz.so.1
+>       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+>       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+>       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+>       libboost_filesystem.so.1.44.0 =>
+> /usr/local/lib/libboost_filesystem.so.1.44.0
+>       libboost_regex.so.1.44.0 =>
+>  /usr/local/lib/libboost_regex.so.1.44.0
+>       libxml2.so.2 =>  /lib/64/libxml2.so.2
+>       libboost_thread.so.1.44.0 =>
+> /usr/local/lib/libboost_thread.so.1.44.0
+>       libboost_system.so.1.44.0 =>
+> /usr/local/lib/libboost_system.so.1.44.0
+>       libc.so.1 =>     /usr/lib/amd64/libc.so.1
+>       librt.so.1 =>    /lib/64/librt.so.1
+>       libdl.so.1 =>    /lib/64/libdl.so.1
+>       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+>       libpthread.so.1 =>       /lib/64/libpthread.so.1
+>       libsocket.so.1 =>        /lib/64/libsocket.so.1
+>       libnsl.so.1 =>   /lib/64/libnsl.so.1
+>       libmp.so.2 =>    /lib/64/libmp.so.2
+>       libmd.so.1 =>    /lib/64/libmd.so.1
+>       libscf.so.1 =>   /lib/64/libscf.so.1
+>       libuutil.so.1 =>         /lib/64/libuutil.so.1
+>       libgen.so.1 =>   /lib/64/libgen.so.1
+>       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+>
+> Here is a simple way to prompt a segfault:
+>
+> $ /usr/bin/amd64/python
+> Python 2.6.4 (r264:75706, Feb 14 2010, 14:06:28) [C] on sunos5
+> Type "help", "copyright", "credits" or "license" for more information.
+> >>> import mapnik
+> >>> m = mapnik.Map(256,256)
+> >>> m
+> <mapnik._mapnik.Map object at 0x55a1b0>
+> # then, prompt a boost python argument error
+> >>> m2 = mapnik.Map('foo')
+> Segmentation Fault
+>
+>
+>
+> _______________________________________________
+> Cplusplus-sig mailing list
+> Cplusplus-sig at python.org
+> http://mail.python.org/mailman/listinfo/cplusplus-sig
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101202/6df7ef75/attachment.html>
+
+From s_sourceforge at nedprod.com  Fri Dec  3 14:51:01 2010
+From: s_sourceforge at nedprod.com (Niall Douglas)
+Date: Fri, 03 Dec 2010 13:51:01 -0000
+Subject: [Mapnik-devel] [C++-sig] help finding solution to lack of
+	exception handling with boost python on open solaris 64 bit
+In-Reply-To: <AANLkTikUVGvgVGYANc+V1i+-s1gjOYjQvkukrRF2RLw3@mail.gmail.com>
+References: <827B3364-5590-4394-AB72-BE04437BFFF7@hailmail.net>,
+	<AANLkTikUVGvgVGYANc+V1i+-s1gjOYjQvkukrRF2RLw3@mail.gmail.com>
+Message-ID: <4CF8F5C5.6749.954DEEF1@s_sourceforge.nedprod.com>
+
+Have you checked to ensure your applications meet the criteria 
+specified in http://www.nedprod.com/programs/gccvisibility.html?
+
+Usually this problem is due to a failure to fully implement this. Or 
+it's a bug in GCC :)
+
+Niall
+
+On 2 Dec 2010 at 18:05, Charles Solar wrote:
+
+> This happens in my application as well, dont know if its a known issue for
+> boost python or not..
+> I too would like to see a solution; I myself have not had anytime to look
+> into it since exceptions are a rare thing in my app.
+> I can confirm however that a similar problem occurs on Solaris Sparcv9
+> machines, so I am guessing it has something to do with how solaris handles
+> 64 bit exception handling.  Something boost is not setup to handle I would
+> suppose.
+> 
+> Charles
+> 
+> On Thu, Dec 2, 2010 at 4:23 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+> 
+> > Hello,
+> >
+> > I recently recompiled my C++ app (mapnik.org, which uses boost python for
+> > python binding) with -m64 flags for 64 bit operation and this broke the
+> > boost python exception handling.
+> >
+> > Instead of C++ exceptions being propagated to python exceptions, I get
+> > segmentation faults (core dump).
+> >
+> > I have a long dependency chain that all needs to be 64 bit, so I'm really
+> > stuck unless I can find a way to restore boost python's ability to handle
+> > exceptions without crashing.
+> >
+> > Exceptions are very common during setup of mapnik, and are needed to report
+> > basic configuration issues as a user gets set up.
+> >
+> > I'm desperate to try anything that might help - anyone have any
+> > suggestions?
+> >
+> > What i have tried so far:
+> >
+> > 1) recompiling all apps with -02 instead of -03
+> > 2) making sure all apps are compiled with the exact same version of gcc (at
+> > least all the C++ libraries I have compiled from source)
+> > 3) ensured that all dynamic libraries link to the same libgcc_s.so.1 and
+> > libstdc++.so.6.
+> > 4) tried with both boost 1.44 and 1.45
+> >
+> > I'm out of ideas - anyone have suggestions to try?
+> >
+> > More info below.
+> >
+> > Dane
+> >
+> > --------------
+> >
+> > With 32bit boost, python, and mapnik, exceptions worked fine.
+> >
+> > This is on opensolaris:
+> >
+> > $ cat /etc/release
+> >                      OpenSolaris Development snv_133 X86
+> >          Copyright 2010 Sun Microsystems, Inc.  All Rights Reserved.
+> >                       Use is subject to license terms.
+> >                          Assembled 15 February 2010
+> >
+> > with the sun provided 64 bit python26:
+> >
+> > $ /usr/bin/amd64/python --version
+> > Python 2.6.4
+> >
+> > Both boost and mapnik are compiled with a *custom* compiled gcc 44:
+> >
+> > $ /opt/ts/gcc/4.4/bin/g++ -v
+> > Using built-in specs.
+> > Target: i386-pc-solaris2.11
+> > Configured with: .././configure --prefix=/opt/ts/gcc/4.4
+> > --bindir=/opt/ts/gcc/4.4/bin --libdir=/opt/ts/gcc/4.4/lib
+> > --mandir=/opt/ts/gcc/4.4/share/man --datadir=/opt/ts/gcc/4.4/share
+> > --includedir=/opt/ts/gcc/4.4/include --infodir=/opt/ts/gcc/4.4/share/info
+> > --libexecdir=/opt/ts/gcc/4.4/lib --sysconfdir=/etc/opt/ts --disable-nls
+> > --disable-static --with-gnu-as --with-as=/usr/gnu/bin/as --without-gnu-ld
+> > --with-ld=/usr/ccs/bin/ld --enable-threads=posix --enable-shared
+> > --enable-multilib --enable-nls --without-x --with-system-zlib
+> > --enable-languages=c,c++,f95,objc --with-mpfr=/opt/ts --with-gmp=/opt/ts
+> > Thread model: posix
+> > gcc version 4.4.4 (GCC)
+> >
+> > ( I was unable to get boost compiled with the gcc 3.4.3 or gcc 4.3.3
+> > provided by sun packages, for more info see:
+> > http://trac.mapnik.org/wiki/OpenSolarisInstallation/TroubleShooting)
+> >
+> >
+> > So, instead of throwing an understandable exception, boost python crashes
+> > and this is what a normal backtrace looks like in gbd:
+> >
+> > (gdb) bt
+> > #0  0x000000000005f666 in ?? ()
+> > #1  0xfffffd7fff2ec5d1 in _Unwind_RaiseException_Body () from
+> > /usr/lib/amd64/libc.so.1
+> > #2  0xfffffd7fff2ec855 in _Unwind_RaiseException () from
+> > /usr/lib/amd64/libc.so.1
+> > #3  0xfffffd7ffa98bb39 in __cxa_throw (obj=<value optimized out>,
+> > tinfo=0x1, dest=0x474e5543432b2b00)
+> >   at ../../../../.././libstdc++-v3/libsupc++/eh_throw.cc:78
+> > #4  0xfffffd7ff3aa2de2 in boost::python::throw_error_already_set () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #5  0xfffffd7ff3a9ae31 in boost::python::objects::function::argument_error
+> > () from /usr/local/lib/libboost_python.so.1.44.0
+> > #6  0xfffffd7ff3a9b4fb in boost::python::objects::function::call () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #7  0xfffffd7ff3a9b730 in
+> > boost::detail::function::void_function_ref_invoker0<boost::python::objects::(anonymous
+> > namespace)::bind_return, void>::invoke () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #8  0xfffffd7ff3aa3053 in
+> > boost::python::detail::exception_handler::operator() () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #9  0xfffffd7ff28fb1b2 in
+> > boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool,
+> > boost::python::detail::translate_exception<std::exception, void
+> > (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>,
+> > boost::_bi::value<void (*)(std::exception const&)> > >, bool,
+> > boost::python::detail::exception_handler const&, boost::function0<void>
+> > const&>::invoke ()
+> >  from /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+> > #10 0xfffffd7ff3aa2e25 in boost::python::handle_exception_impl () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #11 0xfffffd7ff3a97d50 in function_call () from
+> > /usr/local/lib/libboost_python.so.1.44.0
+> > #12 0xfffffd7ff6ff9aad in PyObject_Call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #13 0xfffffd7ff700af29 in instancemethod_call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #14 0xfffffd7ff6ff9aad in PyObject_Call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #15 0xfffffd7ff705d8a1 in slot_tp_init () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #16 0xfffffd7ff7051c06 in type_call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #17 0xfffffd7ff6ff9aad in PyObject_Call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #18 0xfffffd7ff709c1c0 in do_call () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #19 0xfffffd7ff709b672 in call_function () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #20 0xfffffd7ff709810d in PyEval_EvalFrameExReal () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #21 0xfffffd7ff7094d9d in PyEval_EvalFrameEx () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #22 0xfffffd7ff709a27d in PyEval_EvalCodeEx () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #23 0xfffffd7ff7094caa in PyEval_EvalCode () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #24 0xfffffd7ff70bd385 in run_mod () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #25 0xfffffd7ff70bd27c in PyRun_StringFlags () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #26 0xfffffd7ff70bc53d in PyRun_SimpleStringFlags () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #27 0xfffffd7ff70ca5f0 in Py_Main () from
+> > /usr/lib/amd64/libpython2.6.so.1.0
+> > #28 0x0000000000400b3c in _start ()
+> >
+> >
+> > Here is the output of ldd for both the main mapnik library and the mapnik
+> > python bindings:
+> >
+> > $ ldd /usr/local/lib/libmapnik.so
+> >       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+> >       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+> >       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+> >       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+> >       libz.so.1 =>     /lib/64/libz.so.1
+> >       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+> >       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+> >       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+> >       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+> >       libboost_filesystem.so.1.44.0 =>
+> > /usr/local/lib/libboost_filesystem.so.1.44.0
+> >       libboost_regex.so.1.44.0 =>
+> >  /usr/local/lib/libboost_regex.so.1.44.0
+> >       libxml2.so.2 =>  /lib/64/libxml2.so.2
+> >       libboost_thread.so.1.44.0 =>
+> > /usr/local/lib/libboost_thread.so.1.44.0
+> >       libboost_system.so.1.44.0 =>
+> > /usr/local/lib/libboost_system.so.1.44.0
+> >       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+> >       libm.so.2 =>     /lib/64/libm.so.2
+> >       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+> >       libc.so.1 =>     /lib/64/libc.so.1
+> >       libdl.so.1 =>    /lib/64/libdl.so.1
+> >       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+> >       libpthread.so.1 =>       /lib/64/libpthread.so.1
+> >       librt.so.1 =>    /lib/64/librt.so.1
+> >       libsocket.so.1 =>        /lib/64/libsocket.so.1
+> >       libnsl.so.1 =>   /lib/64/libnsl.so.1
+> >       libmp.so.2 =>    /lib/64/libmp.so.2
+> >       libmd.so.1 =>    /lib/64/libmd.so.1
+> >       libscf.so.1 =>   /lib/64/libscf.so.1
+> >       libuutil.so.1 =>         /lib/64/libuutil.so.1
+> >       libgen.so.1 =>   /lib/64/libgen.so.1
+> >       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+> >
+> > $ ldd /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+> >       libmapnik.so =>  /usr/local/lib/libmapnik.so
+> >       libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+> >       libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+> >       libboost_python.so.1.44.0 =>
+> > /usr/local/lib/libboost_python.so.1.44.0
+> >       libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+> >       libm.so.2 =>     /lib/64/libm.so.2
+> >       libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+> >       libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+> >       libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+> >       libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+> >       libz.so.1 =>     /lib/64/libz.so.1
+> >       libproj.so.0 =>  /usr/local/lib/libproj.so.0
+> >       libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+> >       libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+> >       libboost_filesystem.so.1.44.0 =>
+> > /usr/local/lib/libboost_filesystem.so.1.44.0
+> >       libboost_regex.so.1.44.0 =>
+> >  /usr/local/lib/libboost_regex.so.1.44.0
+> >       libxml2.so.2 =>  /lib/64/libxml2.so.2
+> >       libboost_thread.so.1.44.0 =>
+> > /usr/local/lib/libboost_thread.so.1.44.0
+> >       libboost_system.so.1.44.0 =>
+> > /usr/local/lib/libboost_system.so.1.44.0
+> >       libc.so.1 =>     /usr/lib/amd64/libc.so.1
+> >       librt.so.1 =>    /lib/64/librt.so.1
+> >       libdl.so.1 =>    /lib/64/libdl.so.1
+> >       libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+> >       libpthread.so.1 =>       /lib/64/libpthread.so.1
+> >       libsocket.so.1 =>        /lib/64/libsocket.so.1
+> >       libnsl.so.1 =>   /lib/64/libnsl.so.1
+> >       libmp.so.2 =>    /lib/64/libmp.so.2
+> >       libmd.so.1 =>    /lib/64/libmd.so.1
+> >       libscf.so.1 =>   /lib/64/libscf.so.1
+> >       libuutil.so.1 =>         /lib/64/libuutil.so.1
+> >       libgen.so.1 =>   /lib/64/libgen.so.1
+> >       libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+> >
+> > Here is a simple way to prompt a segfault:
+> >
+> > $ /usr/bin/amd64/python
+> > Python 2.6.4 (r264:75706, Feb 14 2010, 14:06:28) [C] on sunos5
+> > Type "help", "copyright", "credits" or "license" for more information.
+> > >>> import mapnik
+> > >>> m = mapnik.Map(256,256)
+> > >>> m
+> > <mapnik._mapnik.Map object at 0x55a1b0>
+> > # then, prompt a boost python argument error
+> > >>> m2 = mapnik.Map('foo')
+> > Segmentation Fault
+> >
+> >
+> >
+> > _______________________________________________
+> > Cplusplus-sig mailing list
+> > Cplusplus-sig at python.org
+> > http://mail.python.org/mailman/listinfo/cplusplus-sig
+> >
+> 
+
+
+-- 
+Technology & Consulting Services - ned Productions Limited.
+http://www.nedproductions.biz/. VAT reg: IE 9708311Q. Company no: 
+472909.
+
+
+
+
+
+From blake at hailmail.net  Sat Dec  4 00:47:31 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 3 Dec 2010 15:47:31 -0800
+Subject: [Mapnik-devel] [C++-sig] help finding solution to lack of
+	exception handling with boost python on open solaris 64 bit
+In-Reply-To: <4CF8F5C5.6749.954DEEF1@s_sourceforge.nedprod.com>
+References: <827B3364-5590-4394-AB72-BE04437BFFF7@hailmail.net>,
+	<AANLkTikUVGvgVGYANc+V1i+-s1gjOYjQvkukrRF2RLw3@mail.gmail.com>
+	<4CF8F5C5.6749.954DEEF1@s_sourceforge.nedprod.com>
+Message-ID: <788FA1AF-8DAD-42C0-99ED-ED25AE18BE51@hailmail.net>
+
+Thanks everyone for your ideas! Exactly what I was looking for.
+
+With your help I I've narrowed it down to duplicate libgcc_s.so versions being imported, as this solves it:
+
+LD_PRELOAD=/usr/sfw/lib/amd64/libgcc_s.so
+
+So I can now do:
+
+LD_PRELOAD=/usr/sfw/lib/amd64/libgcc_s.so /usr/bin/amd64/python -c "import mapnik;mapnik.Map('this should throw exception');"
+
+...which now throws a proper argument error exception.
+
+So, my error is now clearer: I've been using sun provided 64 bit python compiled with a different gcc version than I built both boost and mapnik with. Why I could get away with this in 32 bit mode is beyond me.
+
+My understanding is that by using LD_PRELOAD I am able to force the libgcc_s.so version that python itself is linked to - to be loaded first (rather than the libgcc_s.so that boost_python and _mapnik.so are linked to). This allows both the exception handling to work again and the program (surprisingly) to run properly (tests pass at least).
+
+I figure, since I was unable to compile boost_python (or boost proper) with the gcc version from sun (and that the sun python was compiled with), my only proper route from here is to compile python myself using my custom version of gcc.
+
+Dane
+
+
+>> 
+>> On Thu, Dec 2, 2010 at 4:23 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+>> 
+>>> Hello,
+>>> 
+>>> I recently recompiled my C++ app (mapnik.org, which uses boost python for
+>>> python binding) with -m64 flags for 64 bit operation and this broke the
+>>> boost python exception handling.
+>>> 
+>>> Instead of C++ exceptions being propagated to python exceptions, I get
+>>> segmentation faults (core dump).
+>>> 
+>>> I have a long dependency chain that all needs to be 64 bit, so I'm really
+>>> stuck unless I can find a way to restore boost python's ability to handle
+>>> exceptions without crashing.
+>>> 
+>>> Exceptions are very common during setup of mapnik, and are needed to report
+>>> basic configuration issues as a user gets set up.
+>>> 
+>>> I'm desperate to try anything that might help - anyone have any
+>>> suggestions?
+>>> 
+>>> What i have tried so far:
+>>> 
+>>> 1) recompiling all apps with -02 instead of -03
+>>> 2) making sure all apps are compiled with the exact same version of gcc (at
+>>> least all the C++ libraries I have compiled from source)
+>>> 3) ensured that all dynamic libraries link to the same libgcc_s.so.1 and
+>>> libstdc++.so.6.
+>>> 4) tried with both boost 1.44 and 1.45
+>>> 
+>>> I'm out of ideas - anyone have suggestions to try?
+>>> 
+>>> More info below.
+>>> 
+>>> Dane
+>>> 
+>>> --------------
+>>> 
+>>> With 32bit boost, python, and mapnik, exceptions worked fine.
+>>> 
+>>> This is on opensolaris:
+>>> 
+>>> $ cat /etc/release
+>>>                     OpenSolaris Development snv_133 X86
+>>>         Copyright 2010 Sun Microsystems, Inc.  All Rights Reserved.
+>>>                      Use is subject to license terms.
+>>>                         Assembled 15 February 2010
+>>> 
+>>> with the sun provided 64 bit python26:
+>>> 
+>>> $ /usr/bin/amd64/python --version
+>>> Python 2.6.4
+>>> 
+>>> Both boost and mapnik are compiled with a *custom* compiled gcc 44:
+>>> 
+>>> $ /opt/ts/gcc/4.4/bin/g++ -v
+>>> Using built-in specs.
+>>> Target: i386-pc-solaris2.11
+>>> Configured with: .././configure --prefix=/opt/ts/gcc/4.4
+>>> --bindir=/opt/ts/gcc/4.4/bin --libdir=/opt/ts/gcc/4.4/lib
+>>> --mandir=/opt/ts/gcc/4.4/share/man --datadir=/opt/ts/gcc/4.4/share
+>>> --includedir=/opt/ts/gcc/4.4/include --infodir=/opt/ts/gcc/4.4/share/info
+>>> --libexecdir=/opt/ts/gcc/4.4/lib --sysconfdir=/etc/opt/ts --disable-nls
+>>> --disable-static --with-gnu-as --with-as=/usr/gnu/bin/as --without-gnu-ld
+>>> --with-ld=/usr/ccs/bin/ld --enable-threads=posix --enable-shared
+>>> --enable-multilib --enable-nls --without-x --with-system-zlib
+>>> --enable-languages=c,c++,f95,objc --with-mpfr=/opt/ts --with-gmp=/opt/ts
+>>> Thread model: posix
+>>> gcc version 4.4.4 (GCC)
+>>> 
+>>> ( I was unable to get boost compiled with the gcc 3.4.3 or gcc 4.3.3
+>>> provided by sun packages, for more info see:
+>>> http://trac.mapnik.org/wiki/OpenSolarisInstallation/TroubleShooting)
+>>> 
+>>> 
+>>> So, instead of throwing an understandable exception, boost python crashes
+>>> and this is what a normal backtrace looks like in gbd:
+>>> 
+>>> (gdb) bt
+>>> #0  0x000000000005f666 in ?? ()
+>>> #1  0xfffffd7fff2ec5d1 in _Unwind_RaiseException_Body () from
+>>> /usr/lib/amd64/libc.so.1
+>>> #2  0xfffffd7fff2ec855 in _Unwind_RaiseException () from
+>>> /usr/lib/amd64/libc.so.1
+>>> #3  0xfffffd7ffa98bb39 in __cxa_throw (obj=<value optimized out>,
+>>> tinfo=0x1, dest=0x474e5543432b2b00)
+>>>  at ../../../../.././libstdc++-v3/libsupc++/eh_throw.cc:78
+>>> #4  0xfffffd7ff3aa2de2 in boost::python::throw_error_already_set () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #5  0xfffffd7ff3a9ae31 in boost::python::objects::function::argument_error
+>>> () from /usr/local/lib/libboost_python.so.1.44.0
+>>> #6  0xfffffd7ff3a9b4fb in boost::python::objects::function::call () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #7  0xfffffd7ff3a9b730 in
+>>> boost::detail::function::void_function_ref_invoker0<boost::python::objects::(anonymous
+>>> namespace)::bind_return, void>::invoke () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #8  0xfffffd7ff3aa3053 in
+>>> boost::python::detail::exception_handler::operator() () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #9  0xfffffd7ff28fb1b2 in
+>>> boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool,
+>>> boost::python::detail::translate_exception<std::exception, void
+>>> (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>,
+>>> boost::_bi::value<void (*)(std::exception const&)> > >, bool,
+>>> boost::python::detail::exception_handler const&, boost::function0<void>
+>>> const&>::invoke ()
+>>> from /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+>>> #10 0xfffffd7ff3aa2e25 in boost::python::handle_exception_impl () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #11 0xfffffd7ff3a97d50 in function_call () from
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>> #12 0xfffffd7ff6ff9aad in PyObject_Call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #13 0xfffffd7ff700af29 in instancemethod_call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #14 0xfffffd7ff6ff9aad in PyObject_Call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #15 0xfffffd7ff705d8a1 in slot_tp_init () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #16 0xfffffd7ff7051c06 in type_call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #17 0xfffffd7ff6ff9aad in PyObject_Call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #18 0xfffffd7ff709c1c0 in do_call () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #19 0xfffffd7ff709b672 in call_function () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #20 0xfffffd7ff709810d in PyEval_EvalFrameExReal () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #21 0xfffffd7ff7094d9d in PyEval_EvalFrameEx () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #22 0xfffffd7ff709a27d in PyEval_EvalCodeEx () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #23 0xfffffd7ff7094caa in PyEval_EvalCode () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #24 0xfffffd7ff70bd385 in run_mod () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #25 0xfffffd7ff70bd27c in PyRun_StringFlags () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #26 0xfffffd7ff70bc53d in PyRun_SimpleStringFlags () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #27 0xfffffd7ff70ca5f0 in Py_Main () from
+>>> /usr/lib/amd64/libpython2.6.so.1.0
+>>> #28 0x0000000000400b3c in _start ()
+>>> 
+>>> 
+>>> Here is the output of ldd for both the main mapnik library and the mapnik
+>>> python bindings:
+>>> 
+>>> $ ldd /usr/local/lib/libmapnik.so
+>>>      libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+>>>      libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+>>>      libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+>>>      libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+>>>      libz.so.1 =>     /lib/64/libz.so.1
+>>>      libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+>>>      libproj.so.0 =>  /usr/local/lib/libproj.so.0
+>>>      libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+>>>      libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+>>>      libboost_filesystem.so.1.44.0 =>
+>>> /usr/local/lib/libboost_filesystem.so.1.44.0
+>>>      libboost_regex.so.1.44.0 =>
+>>> /usr/local/lib/libboost_regex.so.1.44.0
+>>>      libxml2.so.2 =>  /lib/64/libxml2.so.2
+>>>      libboost_thread.so.1.44.0 =>
+>>> /usr/local/lib/libboost_thread.so.1.44.0
+>>>      libboost_system.so.1.44.0 =>
+>>> /usr/local/lib/libboost_system.so.1.44.0
+>>>      libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+>>>      libm.so.2 =>     /lib/64/libm.so.2
+>>>      libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+>>>      libc.so.1 =>     /lib/64/libc.so.1
+>>>      libdl.so.1 =>    /lib/64/libdl.so.1
+>>>      libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+>>>      libpthread.so.1 =>       /lib/64/libpthread.so.1
+>>>      librt.so.1 =>    /lib/64/librt.so.1
+>>>      libsocket.so.1 =>        /lib/64/libsocket.so.1
+>>>      libnsl.so.1 =>   /lib/64/libnsl.so.1
+>>>      libmp.so.2 =>    /lib/64/libmp.so.2
+>>>      libmd.so.1 =>    /lib/64/libmd.so.1
+>>>      libscf.so.1 =>   /lib/64/libscf.so.1
+>>>      libuutil.so.1 =>         /lib/64/libuutil.so.1
+>>>      libgen.so.1 =>   /lib/64/libgen.so.1
+>>>      libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+>>> 
+>>> $ ldd /usr/local/lib/python2.6/site-packages/mapnik/64/_mapnik.so
+>>>      libmapnik.so =>  /usr/local/lib/libmapnik.so
+>>>      libpng12.so.0 =>         /usr/lib/64/libpng12.so.0
+>>>      libjpeg.so.62 =>         /usr/lib/64/libjpeg.so.62
+>>>      libboost_python.so.1.44.0 =>
+>>> /usr/local/lib/libboost_python.so.1.44.0
+>>>      libstdc++.so.6 =>        /opt/ts/gcc/4.4/lib/amd64/libstdc++.so.6
+>>>      libm.so.2 =>     /lib/64/libm.so.2
+>>>      libgcc_s.so.1 =>         /opt/ts/gcc/4.4/lib/amd64/libgcc_s.so.1
+>>>      libfreetype.so.6 =>      /usr/lib/64/libfreetype.so.6
+>>>      libltdl.so.3 =>  /usr/lib/64/libltdl.so.3
+>>>      libtiff.so.3 =>  /usr/lib/64/libtiff.so.3
+>>>      libz.so.1 =>     /lib/64/libz.so.1
+>>>      libproj.so.0 =>  /usr/local/lib/libproj.so.0
+>>>      libicuuc.so.44 =>        /usr/local/lib/libicuuc.so.44
+>>>      libicui18n.so.44 =>      /usr/local/lib/libicui18n.so.44
+>>>      libboost_filesystem.so.1.44.0 =>
+>>> /usr/local/lib/libboost_filesystem.so.1.44.0
+>>>      libboost_regex.so.1.44.0 =>
+>>> /usr/local/lib/libboost_regex.so.1.44.0
+>>>      libxml2.so.2 =>  /lib/64/libxml2.so.2
+>>>      libboost_thread.so.1.44.0 =>
+>>> /usr/local/lib/libboost_thread.so.1.44.0
+>>>      libboost_system.so.1.44.0 =>
+>>> /usr/local/lib/libboost_system.so.1.44.0
+>>>      libc.so.1 =>     /usr/lib/amd64/libc.so.1
+>>>      librt.so.1 =>    /lib/64/librt.so.1
+>>>      libdl.so.1 =>    /lib/64/libdl.so.1
+>>>      libicudata.so.44 =>      /usr/local/lib/libicudata.so.44
+>>>      libpthread.so.1 =>       /lib/64/libpthread.so.1
+>>>      libsocket.so.1 =>        /lib/64/libsocket.so.1
+>>>      libnsl.so.1 =>   /lib/64/libnsl.so.1
+>>>      libmp.so.2 =>    /lib/64/libmp.so.2
+>>>      libmd.so.1 =>    /lib/64/libmd.so.1
+>>>      libscf.so.1 =>   /lib/64/libscf.so.1
+>>>      libuutil.so.1 =>         /lib/64/libuutil.so.1
+>>>      libgen.so.1 =>   /lib/64/libgen.so.1
+>>>      libsmbios.so.1 =>        /usr/lib/64/libsmbios.so.1
+>>> 
+>>> Here is a simple way to prompt a segfault:
+>>> 
+>>> $ /usr/bin/amd64/python
+>>> Python 2.6.4 (r264:75706, Feb 14 2010, 14:06:28) [C] on sunos5
+>>> Type "help", "copyright", "credits" or "license" for more information.
+>>>>>> import mapnik
+>>>>>> m = mapnik.Map(256,256)
+>>>>>> m
+>>> <mapnik._mapnik.Map object at 0x55a1b0>
+>>> # then, prompt a boost python argument error
+>>>>>> m2 = mapnik.Map('foo')
+>>> Segmentation Fault
+>>> 
+>>> 
+>>> 
+>>> _______________________________________________
+>>> Cplusplus-sig mailing list
+>>> Cplusplus-sig at python.org
+>>> http://mail.python.org/mailman/listinfo/cplusplus-sig
+>>> 
+>> 
+> 
+> 
+> -- 
+> Technology & Consulting Services - ned Productions Limited.
+> http://www.nedproductions.biz/. VAT reg: IE 9708311Q. Company no: 
+> 472909.
+> 
+> 
+> 
+> _______________________________________________
+> Cplusplus-sig mailing list
+> Cplusplus-sig at python.org
+> http://mail.python.org/mailman/listinfo/cplusplus-sig
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101203/d302789b/attachment.html>
+
+From dodobas at geoinfo.geof.hr  Wed Dec  8 19:00:18 2010
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Wed, 08 Dec 2010 19:00:18 +0100
+Subject: [Mapnik-devel] Spam on trac
+Message-ID: <4CFFC7B2.9010905@geoinfo.geof.hr>
+
+Hi,
+
+trac is being spamed, can someone do something about it?
+
+Dra?en
+
+
+From dane at dbsgeo.com  Wed Dec  8 20:25:10 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 8 Dec 2010 11:25:10 -0800
+Subject: [Mapnik-devel] Spam on trac
+In-Reply-To: <4CFFC7B2.9010905@geoinfo.geof.hr>
+References: <4CFFC7B2.9010905@geoinfo.geof.hr>
+Message-ID: <6DF05927-A5BD-4B9B-9F4C-FB11663982AC@dbsgeo.com>
+
+Yes, thanks for the heads up - I was not on IRC this morning so I did not see this till now.
+
+But, I've deleted the account and am working through deleting the spam tickets now.
+
+Dane
+
+
+On Dec 8, 2010, at 10:00 AM, Dra?en Odoba?i? wrote:
+
+> Hi,
+> 
+> trac is being spamed, can someone do something about it?
+> 
+> Dra?en
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+

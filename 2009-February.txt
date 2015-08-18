@@ -1,0 +1,755 @@
+From nick_whitelegg at yahoo.co.uk  Mon Feb  2 13:46:23 2009
+From: nick_whitelegg at yahoo.co.uk (Nick Whitelegg)
+Date: Mon, 2 Feb 2009 12:46:23 +0000 (GMT)
+Subject: [Mapnik-devel] Plugins: direct input from a stream,
+	rather than from file
+Message-ID: <271889.66973.qm@web26602.mail.ukl.yahoo.com>
+
+Hello everyone,
+
+As part of an application I am developing to allow users to generate Mapnik tiles from .osm files, or from live data via OSMXAPI, on their home machines (allowing their web server to be very lightweight and just serve static tiles with no Postgres installation necessary), I would like to render tiles directly from a stream of OSM data sent back from a URL. However there doesn't seem to be an obvious way to do this with the Mapnik plugin architecture. Has anyone come across this sort of problem and developed their own solution or had thoughts on it?
+
+True, I can dump the response in a .osm and then read it in, but would be nicer to render from the data streamed back directly :-)
+
+Thanks,
+Nick
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090202/399007c8/attachment.html>
+
+From tom at compton.nu  Mon Feb  2 13:55:05 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 02 Feb 2009 12:55:05 +0000
+Subject: [Mapnik-devel] Plugins: direct input from a stream,
+ rather than from file
+In-Reply-To: <271889.66973.qm@web26602.mail.ukl.yahoo.com>
+References: <271889.66973.qm@web26602.mail.ukl.yahoo.com>
+Message-ID: <4986ED29.6090806@compton.nu>
+
+Nick Whitelegg wrote:
+
+> As part of an application I am developing to allow users to generate 
+> Mapnik tiles from .osm files, or from live data via OSMXAPI, on their 
+> home machines (allowing their web server to be very lightweight and just 
+> serve static tiles with no Postgres installation necessary), I would 
+> like to render tiles directly from a stream of OSM data sent back from a 
+> URL. However there doesn't seem to be an obvious way to do this with the 
+> Mapnik plugin architecture. Has anyone come across this sort of problem 
+> and developed their own solution or had thoughts on it?
+
+Didn't you write an OSM plugin for mapnik? So surely it's just a 
+question of extending that plugin to support URLs as well as files as 
+the source? Using libcurl or something is probably the easiest way to do 
+that.
+
+BTW, where are you expecting to stream this data from exactly?
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From nick_whitelegg at yahoo.co.uk  Mon Feb  2 16:08:01 2009
+From: nick_whitelegg at yahoo.co.uk (Nick Whitelegg)
+Date: Mon, 2 Feb 2009 15:08:01 +0000 (GMT)
+Subject: [Mapnik-devel] Plugins: direct input from a stream,
+	rather than from file
+References: <271889.66973.qm@web26602.mail.ukl.yahoo.com>
+	<4986ED29.6090806@compton.nu>
+Message-ID: <35746.94386.qm@web26603.mail.ukl.yahoo.com>
+
+
+
+
+
+
+
+Nick Whitelegg wrote:
+
+>> As part of an application I am developing to allow users to generate Mapnik tiles from .osm files, or from live data via OSMXAPI, on their home machines >>(allowing their web server to be very lightweight and just serve static tiles with no Postgres installation necessary), I would like to render tiles directly from >>a stream of OSM data sent back from a URL. However there doesn't seem to be an obvious way to do this with the Mapnik plugin architecture. Has >>anyone come across this sort of problem and developed their own solution or had thoughts on it?
+
+>Didn't you write an OSM plugin for mapnik? So surely it's just a question of extending that plugin to support URLs as well as files as the source? Using >libcurl or something is probably the easiest way to do that.
+
+Yes that's probably the best approach come to think of it. Was thinking about it a slightly different way, i.e. passing an input stream into mapnik, rather than actually opening the connection to the URL from within the plugin.
+
+>BTW, where are you expecting to stream this data from exactly?
+
+Was thinking of osmxapi. The idea of this app is not so much that people can render huge areas at home, but rather, smaller areas like their county, or similar; it seems to me that seeing that server facilities (notably postgres support) is the biggest hurdle people are likely to come up with if they want to render their own Mapnik based map and home rendering is the best way of getting round this.
+
+Nick
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090202/e9495e52/attachment.html>
+
+From tom at compton.nu  Mon Feb  2 16:17:37 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 02 Feb 2009 15:17:37 +0000
+Subject: [Mapnik-devel] Plugins: direct input from a stream,
+ rather than from file
+In-Reply-To: <35746.94386.qm@web26603.mail.ukl.yahoo.com>
+References: <271889.66973.qm@web26602.mail.ukl.yahoo.com>	<4986ED29.6090806@compton.nu>
+	<35746.94386.qm@web26603.mail.ukl.yahoo.com>
+Message-ID: <49870E91.1080809@compton.nu>
+
+Nick Whitelegg wrote:
+
+>  >BTW, where are you expecting to stream this data from exactly?
+> 
+> Was thinking of osmxapi. The idea of this app is not so much that people 
+> can render huge areas at home, but rather, smaller areas like their 
+> county, or similar; it seems to me that seeing that server facilities 
+> (notably postgres support) is the biggest hurdle people are likely to 
+> come up with if they want to render their own Mapnik based map and home 
+> rendering is the best way of getting round this.
+
+I was just concerned that you were going to suggest that people point it 
+at the main API ;-)
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Thu Feb 12 18:28:58 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 12 Feb 2009 09:28:58 -0800
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <OFC57F8B57.AF7775EE-ON802574CC.005B8940-802574CC.005B9C42@solent-university.ac.uk>
+References: <OFC57F8B57.AF7775EE-ON802574CC.005B8940-802574CC.005B9C42@solent-university.ac.uk>
+Message-ID: <0CF505EC-EAE0-4078-8369-1F2DA9A1BA13@hailmail.net>
+
+Hi Nick,
+
+I've added the OSM plugin to the list of optional plugins able to be  
+built with Scons (INPUT_PLUGINS=osm)
+
+However, there are a bunch of warnings hopefully you can take a look at.
+
+See: http://trac.mapnik.org/ticket/225
+
+Thanks,
+
+Dane
+
+On Sep 22, 2008, at 9:40 AM, Nick Whitelegg wrote:
+
+> There is also an OSM plugin at:
+>
+> http://trac.mapnik.org/browser/trunk/plugins/input/osm
+>
+> It's a bit rough round the edges but basically works.
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From nick_whitelegg at yahoo.co.uk  Fri Feb 13 10:34:00 2009
+From: nick_whitelegg at yahoo.co.uk (Nick Whitelegg)
+Date: Fri, 13 Feb 2009 09:34:00 +0000 (GMT)
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+Message-ID: <783795.70855.qm@web26605.mail.ukl.yahoo.com>
+
+
+
+
+
+
+>Hi Nick,
+
+>I've added the OSM plugin to the list of optional plugins able to be  
+>built with Scons (INPUT_PLUGINS=osm)
+
+>However, there are a bunch of warnings hopefully you can take a look at.
+
+>See: http://trac.mapnik.org/ticket/225
+
+>Thanks,
+
+>Dane
+
+Hello Dane,
+
+OK will look at those, prob over weekend sometime.
+
+Nick
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090213/74fce290/attachment.html>
+
+From ebraithwaite at nrlssc.navy.mil  Fri Feb 13 19:45:23 2009
+From: ebraithwaite at nrlssc.navy.mil (Braithwaite, Edward F.)
+Date: Fri, 13 Feb 2009 12:45:23 -0600
+Subject: [Mapnik-devel] Plugins...where to get started
+Message-ID: <vymDT0kvPb1I2vmuWPNComqgOoQtMcp4Qr_gnFELw1fCfyKx_qKX2nk3i0i7SN5P2edVuU3gEo3lI0VFDm7NCOL2TE-pql8tjBwd2L30FCA@cipher.nrlssc.navy.mil>
+
+Hi, I'm fairly new to using mapnik and have gone through the tutorials and read most of the available documentation...however, I'm going to be working toward developing some plugins for our custom data types I haven't found much (any) documentation on how to get started writing custom plugins. Can anyone point me in the direction of any documentation or help for starting out. I've been looking at the shape file input plugin and I'm muttling through it, but I thought that perhaps there is a better way to get going than that.
+
+Any help is greatly appreciated.
+
+Thanks,
+Edward Braithwaite
+
+
+____________________________
+Edward F. Braithwaite III
+ebraithwaite at nrlssc.navy.mil
+Computer Scientist
+Naval Research Laboratory
+Code 7430, Building 1005, B-24
+Stennis Space Center, MS 39529
+(228) 688-4828
+(228) 688-5752 fax 
+
+
+
+
+From blake at hailmail.net  Fri Feb 13 23:07:08 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 13 Feb 2009 14:07:08 -0800
+Subject: [Mapnik-devel] Plugins...where to get started
+In-Reply-To: <vymDT0kvPb1I2vmuWPNComqgOoQtMcp4Qr_gnFELw1fCfyKx_qKX2nk3i0i7SN5P2edVuU3gEo3lI0VFDm7NCOL2TE-pql8tjBwd2L30FCA@cipher.nrlssc.navy.mil>
+References: <vymDT0kvPb1I2vmuWPNComqgOoQtMcp4Qr_gnFELw1fCfyKx_qKX2nk3i0i7SN5P2edVuU3gEo3lI0VFDm7NCOL2TE-pql8tjBwd2L30FCA@cipher.nrlssc.navy.mil>
+Message-ID: <1C05A4BD-0826-4BD8-8DEB-77F56E238146@hailmail.net>
+
+Hello Edward,
+
+Welcome to Mapnik. That's great you are interested in writing a plugin.
+
+Overall, every plugin defines a 'datasource' which is constructed  
+using a set of key-value parameters (mapnik::parameters) and a  
+'featureset' which defines each feature in the datasource including  
+geometries and attributes.
+
+There is not currently a plugin writing guide, however this page  
+exists to capture that information as new users write plugins:
+http://trac.mapnik.org/wiki/PluginArchitecture
+
+In addition, in Mapnik trunk Kunitoki has recently added several new  
+plugins (for Oracle, OGR formats, and SQlite), therefore checking out  
+the latest changesets will offer you a good perspective on development:
+http://trac.mapnik.org/log/trunk/plugins/input
+
+Beyond that feel free to ask specific questions on the mailing list or  
+in the #mapnik irc channel.
+
+Cheers,
+
+Dane
+
+On Feb 13, 2009, at 10:45 AM, Braithwaite, Edward F. wrote:
+
+> Hi, I'm fairly new to using mapnik and have gone through the  
+> tutorials and read most of the available documentation...however,  
+> I'm going to be working toward developing some plugins for our  
+> custom data types I haven't found much (any) documentation on how to  
+> get started writing custom plugins. Can anyone point me in the  
+> direction of any documentation or help for starting out. I've been  
+> looking at the shape file input plugin and I'm muttling through it,  
+> but I thought that perhaps there is a better way to get going than  
+> that.
+>
+> Any help is greatly appreciated.
+>
+> Thanks,
+> Edward Braithwaite
+>
+>
+> ____________________________
+> Edward F. Braithwaite III
+> ebraithwaite at nrlssc.navy.mil
+> Computer Scientist
+> Naval Research Laboratory
+> Code 7430, Building 1005, B-24
+> Stennis Space Center, MS 39529
+> (228) 688-4828
+> (228) 688-5752 fax
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090213/b5be4a3f/attachment.html>
+
+From nick_whitelegg at yahoo.co.uk  Sun Feb 15 11:38:46 2009
+From: nick_whitelegg at yahoo.co.uk (Nick Whitelegg)
+Date: Sun, 15 Feb 2009 10:38:46 +0000 (GMT)
+Subject: [Mapnik-devel] SVN account/password
+Message-ID: <931913.27155.qm@web26608.mail.ukl.yahoo.com>
+
+
+Have got some new OSM plugin code I'd like to commit. Have committed to Mapnik SVN before, but almost a year ago now. Do I need a password, or an SSH key? Tried using the SSH key from last year, though I'm on a different machine now (albeit with the same IP address) but it's still asking for a password. If a password is required, could I have an account, or alternatively, could someone remind me of the procedure for committing using an SSH key?
+
+Thanks,
+Nick
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090215/ff8f9885/attachment.html>
+
+From artem at mapnik.org  Sun Feb 15 13:44:17 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 15 Feb 2009 12:44:17 +0000
+Subject: [Mapnik-devel] SVN account/password
+In-Reply-To: <931913.27155.qm@web26608.mail.ukl.yahoo.com>
+References: <931913.27155.qm@web26608.mail.ukl.yahoo.com>
+Message-ID: <7e70f38d0902150444o4efe83f1k43f2910427982d98@mail.gmail.com>
+
+Hi Nick,
+
+Make sure you're using 'svn' as a user e.g to check out trunk:
+
+svn co svn+ssh://svn at svn.mapnik.org/trunk mapnik
+
+If you're still having problem send me a new public key.
+
+Cheers,
+Artem
+
+2009/2/15 Nick Whitelegg <nick_whitelegg at yahoo.co.uk>:
+>
+> Have got some new OSM plugin code I'd like to commit. Have committed to
+> Mapnik SVN before, but almost a year ago now. Do I need a password, or an
+> SSH key? Tried using the SSH key from last year, though I'm on a different
+> machine now (albeit with the same IP address) but it's still asking for a
+> password. If a password is required, could I have an account, or
+> alternatively, could someone remind me of the procedure for committing using
+> an SSH key?
+>
+> Thanks,
+> Nick
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From blake at hailmail.net  Tue Feb 17 15:28:22 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 17 Feb 2009 06:28:22 -0800
+Subject: [Mapnik-devel] Fwd: [OSGeo-Discuss] Generic Geometry Library (ggl)
+References: <499AB785.1060402@geodan.nl>
+Message-ID: <26A22D12-B182-4652-8ACB-F27EFC268EF2@hailmail.net>
+
+Another mapping related project using C++/boost...
+
+Cheers,
+Dane
+
+Begin forwarded message:
+
+> From: Barend Gehrels <Barend.Gehrels at geodan.nl>
+> Date: February 17, 2009 5:11:33 AM PST
+> To: OSGeo Discussions <discuss at lists.osgeo.org>
+> Subject: [OSGeo-Discuss] Generic Geometry Library (ggl)
+> Reply-To: OSGeo Discussions <discuss at lists.osgeo.org>
+>
+> Dear list,
+>
+> It is a pleasure for us to announce the Generic Geometry Library  
+> (ggl).
+>
+> It is an Open Source library, written in C++. The library is  
+> template based, and generic. With generic we mean that the  
+> algorithms work not only with the provided geometries, but also with  
+> geometries that are defined by the library user, such as legacy  
+> points, custom linestrings, etc.
+>
+> Because of this the library is following OGC conventions loosely,  
+> not strictly. All algorithms are implemented as standalone  
+> functions, instead of methods on geometries. Nevertheless, OGC  
+> conventions, names and meanings are followed as much as possible.  
+> Not all OGC algorithms are already implemented. On the other hand  
+> the library offers other things such as distance calculations over  
+> the globe.
+>
+> So it is a library modelled as the C++ std:: library and as most  
+> Boost libraries are. The library is proposed to Boost (Boost is a  
+> well-known peer reviewed C++ Library Collection). It is following  
+> the Boost Software License, which is a permissive Open Source License.
+>
+> The library is accessible via SVN at Boost: https://svn.boost.org/svn/boost/sandbox/ggl 
+>  but can also be downloaded from http://geometrylibrary.geodan.nl.  
+> Much documentation and many examples can be found there. Note for  
+> example the Custom Linestring example showing things which cannot so  
+> easily be done with non-template libraries.
+>
+> The library contains projections from PROJ4, converted to C++ . We  
+> first wanted to include PROJ4 as an example, like we did with  
+> ShapeLib and GD. However, we concluded that they fit better being  
+> implemented as C++ templates, so they are automatically converted  
+> (it is reproducable). Like there is a PROJ4 Javascript branch, this  
+> might be considered as a PROJ4 C++ branch. We like your opinion  
+> about this.
+>
+> The library is in "preview 4", it has been submitted as preview to  
+> Boost three times, last year. Based on many comments the library has  
+> been enhanced. We think it is now in a proper shape to be used, and  
+> that algorithms can now be added without that everything is  
+> restructured again.
+>
+> The performance of the library is compared with other C++ OS GIS  
+> libraries and we measured that the library seems to be much faster  
+> than most of them, caused by the template approach.
+>
+> We welcome any type of comment, opinion or cooperation.
+>
+> Barend Gehrels, Geodan, Amsterdam, the Netherlands
+> Bruno Lalande, Paris
+>
+>
+>
+> _______________________________________________
+> Discuss mailing list
+> Discuss at lists.osgeo.org
+> http://lists.osgeo.org/mailman/listinfo/discuss
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090217/e3465981/attachment.html>
+
+From lists at brachttal.net  Thu Feb 26 22:28:11 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Thu, 26 Feb 2009 22:28:11 +0100
+Subject: [Mapnik-devel] Support for external graphic libs or remove cairo
+	request
+Message-ID: <20090226222811.743bbe32@frodo.mittelerde>
+
+Hello,
+
+in my Evas (from EFL/E17 area) application I use Mapnik. Currently I
+use the data() from Image32 and convert it to the native Evas color
+space.
+
+My first idea was to ask if I'm allowed to add #ifdef support for Evas
+to Mapnik. But on IRC the result of the discussion was that this is not
+much liked.
+
+In my (and others) eyes the cairo support does nothing else than
+blowing up the interface for not much benefits. It does nothing else
+than converting the color space and assigning the raw data to it.
+
+Doing that for all sorts of graphic libs isn't useful. So the idea is
+to remove the cairo support and better provide functions to convert the
+raw data to the most common color spaces (ABGR, ARGB, RGBA, BGRA).
+
+Then we could provide examples how to use that raw data in various
+graphical toolkit (like e.g. cairo or Evas).
+
+What do you think about that?
+
+regards
+Andreas
+
+
+From jburgess777 at googlemail.com  Thu Feb 26 23:44:20 2009
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Thu, 26 Feb 2009 22:44:20 +0000
+Subject: [Mapnik-devel] Support for external graphic libs or remove
+ cairo request
+In-Reply-To: <20090226222811.743bbe32@frodo.mittelerde>
+References: <20090226222811.743bbe32@frodo.mittelerde>
+Message-ID: <1235688260.3166.57.camel@localhost.localdomain>
+
+On Thu, 2009-02-26 at 22:28 +0100, Andreas Volz wrote:
+> Hello,
+> 
+> in my Evas (from EFL/E17 area) application I use Mapnik. Currently I
+> use the data() from Image32 and convert it to the native Evas color
+> space.
+> 
+> My first idea was to ask if I'm allowed to add #ifdef support for Evas
+> to Mapnik. But on IRC the result of the discussion was that this is not
+> much liked.
+> 
+> In my (and others) eyes the cairo support does nothing else than
+> blowing up the interface for not much benefits. It does nothing else
+> than converting the color space and assigning the raw data to it.
+
+Can you point at the code in question? The bit I think you are talking
+about is converting from a Cairo ImageSurface to an Image32 and I
+believe it is useful to keep this code in Mapnik. 
+
+Without this there is no bridge between an image rendered by the Mapnik
+Cairo renderer and other internal routines which only operate on an
+Image32. This, for example, makes it trivial to use the png256 support
+code with the Cairo renderer.
+
+Perhaps in the future this will allow us to render SVG symbols with
+Cairo and then use these as an Image32 in the Agg renderer.
+
+
+> Doing that for all sorts of graphic libs isn't useful. So the idea is
+> to remove the cairo support and better provide functions to convert the
+> raw data to the most common color spaces (ABGR, ARGB, RGBA, BGRA).
+
+I disagree with removing the Cairo code as I mentioned above. I think
+Cairo support deserves special support because it is one of the two core
+rendering engines.
+
+I think we should add more generic internal routines to support import /
+export of simple standard image formats but I don't think that means we
+should remove "convenience" functions that make it easy to convert data
+between libraries without needing the user to understand the intricacies
+of the different buffer layouts.
+
+> Then we could provide examples how to use that raw data in various
+> graphical toolkit (like e.g. cairo or Evas).
+
+Example are always good.
+
+Most users do not care how the raw data is formatted and would rather
+get the Mapnik image into Evas, Pycairo, PIL, GEGL or whatever without
+needing to understand the details. If Mapnik can provide support code to
+interface to multiple image libraries then I see this as providing extra
+value. 
+
+The code does not need to be in the core Mapnik routines, maybe it can
+become additional type of binding or plugin.
+
+	Jon
+
+
+
+From tom at compton.nu  Thu Feb 26 23:46:03 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 26 Feb 2009 22:46:03 +0000
+Subject: [Mapnik-devel] Support for external graphic libs or remove
+ cairo request
+In-Reply-To: <20090226222811.743bbe32@frodo.mittelerde>
+References: <20090226222811.743bbe32@frodo.mittelerde>
+Message-ID: <49A71BAB.2000505@compton.nu>
+
+Andreas Volz wrote:
+
+> In my (and others) eyes the cairo support does nothing else than
+> blowing up the interface for not much benefits. It does nothing else
+> than converting the color space and assigning the raw data to it.
+> 
+> Doing that for all sorts of graphic libs isn't useful. So the idea is
+> to remove the cairo support and better provide functions to convert the
+> raw data to the most common color spaces (ABGR, ARGB, RGBA, BGRA).
+> 
+> Then we could provide examples how to use that raw data in various
+> graphical toolkit (like e.g. cairo or Evas).
+> 
+> What do you think about that?
+
+I think you don't understand what the cairo support in mapnik does...
+
+It certainly has nothing to do with colour conversion. What it offers 
+over and above agg is the ability to render to vector formats like SVF 
+and PDF.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From ebraithwaite at nrlssc.navy.mil  Fri Feb 27 20:55:18 2009
+From: ebraithwaite at nrlssc.navy.mil (Braithwaite, Edward F.)
+Date: Fri, 27 Feb 2009 13:55:18 -0600
+Subject: [Mapnik-devel] input plugins question
+Message-ID: <QClBf0X36ffbOfYbO-ptFEF5OJ7QFvkX_lFllx4JDjC2p6Xmz-UPedJPFzCep3i6@cipher.nrlssc.navy.mil>
+
+Hi, I'd mentioned before that I was going to be working on a plugin for some 
+of our custom datatypes. I've been able to write a basic plugin that will read 
+a text file containing the various point, lines, polygons that I want to plot 
+on a map.  What I have not been able to figure out is how to apply filtering to 
+the text dataset (or any new dataset I have) like I have been doing with the 
+shapefiles -- rule1.set_filter(create_filter()). Does the filtering get applied 
+using the boost libraries filter template or is it somewhere else?
+
+Also, I haven't yet figured out how to put text on the maps that I produce 
+using my input plugin. Can someone just point me in the direction I should 
+look for that?
+
+Is there any sort of data flow description for the mapnik toolkit that might be 
+of help to me??? For some of this, I've been able to make it work, but I don't 
+totally understand why it works.
+
+Thanks,
+Edward Braithwaite
+
+
+-- 
+
+
+_________________________________
+Edward F. Braithwaite III
+Naval Research Lab
+Code 7430-Seafloor Sciences
+Building 1005, B-24
+Stennis Space Center, MS 39529
+228-688-4828 phone
+228-688-5752 fax
+ebraithwaite at nrlssc.navy.mil
+
+
+From lists at brachttal.net  Fri Feb 27 22:01:57 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 27 Feb 2009 22:01:57 +0100
+Subject: [Mapnik-devel] Support for external graphic libs or remove
+ cairo request
+In-Reply-To: <49A71BAB.2000505@compton.nu>
+References: <20090226222811.743bbe32@frodo.mittelerde>
+	<49A71BAB.2000505@compton.nu>
+Message-ID: <20090227220157.17a95412@frodo.mittelerde>
+
+Am Thu, 26 Feb 2009 22:46:03 +0000 schrieb Tom Hughes:
+
+> Andreas Volz wrote:
+> 
+> > In my (and others) eyes the cairo support does nothing else than
+> > blowing up the interface for not much benefits. It does nothing else
+> > than converting the color space and assigning the raw data to it.
+> > 
+> > Doing that for all sorts of graphic libs isn't useful. So the idea
+> > is to remove the cairo support and better provide functions to
+> > convert the raw data to the most common color spaces (ABGR, ARGB,
+> > RGBA, BGRA).
+> > 
+> > Then we could provide examples how to use that raw data in various
+> > graphical toolkit (like e.g. cairo or Evas).
+> > 
+> > What do you think about that?
+> 
+> I think you don't understand what the cairo support in mapnik does...
+> 
+> It certainly has nothing to do with colour conversion. What it offers 
+> over and above agg is the ability to render to vector formats like
+> SVF and PDF.
+
+You're right the cairo support in Mapnik is more than I expected
+before. After a second look I found the rendering routines. So forget
+my initial idea about removing.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sat Feb 28 14:53:20 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 28 Feb 2009 14:53:20 +0100
+Subject: [Mapnik-devel] Support for external graphic libs or remove
+ cairo request
+In-Reply-To: <1235688260.3166.57.camel@localhost.localdomain>
+References: <20090226222811.743bbe32@frodo.mittelerde>
+	<1235688260.3166.57.camel@localhost.localdomain>
+Message-ID: <20090228145320.45ceb159@frodo.mittelerde>
+
+Am Thu, 26 Feb 2009 22:44:20 +0000 schrieb Jon Burgess:
+
+Hello,
+
+the core routines for color converting are something like that:
+
+http://codepad.org/i8ZGL5MB
+
+Here only the ABGR to ARGB is implemented. I like to implement more
+conversation routines. And a more generic interface to the routines.
+
+But you're right it's not needed to have that as mapnik internal part.
+
+Maybe it's better to provide it as additional code somewhere. Than
+everyone who likes to attach his own image type with other color space
+cut use the code he needs.
+
+So you think I should better create a mapnik_evas wrapper than
+including evas support directly in mapnik? For me that doesn't mater
+much.
+
+regards
+Andreas
+
+> On Thu, 2009-02-26 at 22:28 +0100, Andreas Volz wrote:
+> > Hello,
+> > 
+> > in my Evas (from EFL/E17 area) application I use Mapnik. Currently I
+> > use the data() from Image32 and convert it to the native Evas color
+> > space.
+> > 
+> > My first idea was to ask if I'm allowed to add #ifdef support for
+> > Evas to Mapnik. But on IRC the result of the discussion was that
+> > this is not much liked.
+> > 
+> > In my (and others) eyes the cairo support does nothing else than
+> > blowing up the interface for not much benefits. It does nothing else
+> > than converting the color space and assigning the raw data to it.
+> 
+> Can you point at the code in question? The bit I think you are talking
+> about is converting from a Cairo ImageSurface to an Image32 and I
+> believe it is useful to keep this code in Mapnik. 
+> 
+> Without this there is no bridge between an image rendered by the
+> Mapnik Cairo renderer and other internal routines which only operate
+> on an Image32. This, for example, makes it trivial to use the png256
+> support code with the Cairo renderer.
+> 
+> Perhaps in the future this will allow us to render SVG symbols with
+> Cairo and then use these as an Image32 in the Agg renderer.
+> 
+> 
+> > Doing that for all sorts of graphic libs isn't useful. So the idea
+> > is to remove the cairo support and better provide functions to
+> > convert the raw data to the most common color spaces (ABGR, ARGB,
+> > RGBA, BGRA).
+> 
+> I disagree with removing the Cairo code as I mentioned above. I think
+> Cairo support deserves special support because it is one of the two
+> core rendering engines.
+> 
+> I think we should add more generic internal routines to support
+> import / export of simple standard image formats but I don't think
+> that means we should remove "convenience" functions that make it easy
+> to convert data between libraries without needing the user to
+> understand the intricacies of the different buffer layouts.
+> 
+> > Then we could provide examples how to use that raw data in various
+> > graphical toolkit (like e.g. cairo or Evas).
+> 
+> Example are always good.
+> 
+> Most users do not care how the raw data is formatted and would rather
+> get the Mapnik image into Evas, Pycairo, PIL, GEGL or whatever without
+> needing to understand the details. If Mapnik can provide support code
+> to interface to multiple image libraries then I see this as providing
+> extra value. 
+> 
+> The code does not need to be in the core Mapnik routines, maybe it can
+> become additional type of binding or plugin.
+> 
+> 	Jon
+> 
+
+

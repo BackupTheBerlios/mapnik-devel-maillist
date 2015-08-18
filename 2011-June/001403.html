@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cairo backend - Unstable?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3CE37C82DB-D8B2-42AB-BD20-A3483BAC535E%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001402.html">
+   <LINK REL="Next"  HREF="001404.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cairo backend - Unstable?</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cairo%20backend%20-%20Unstable%3F&In-Reply-To=%3CE37C82DB-D8B2-42AB-BD20-A3483BAC535E%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Cairo backend - Unstable?">dane at dbsgeo.com
+       </A><BR>
+    <I>Fri Jun  3 20:06:31 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001402.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+        <LI>Next message: <A HREF="001404.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1403">[ date ]</a>
+              <a href="thread.html#1403">[ thread ]</a>
+              <a href="subject.html#1403">[ subject ]</a>
+              <a href="author.html#1403">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Lars,
+
+Yes, I think a race condition here is to blame. As the crash happens in libpixman I've started trying to research if that could be the culprit and found this:
+
+<A HREF="http://lists.freedesktop.org/archives/cairo/2010-December/021268.html">http://lists.freedesktop.org/archives/cairo/2010-December/021268.html</A>
+
+That seems pretty conclusive to me, which is disturbing (see the reply from Otte). So, I guess this means that until pixman becomes thread safe that cairo PNG rendering needs to be called only from one thread, or tile seeding needs to be done multiprocess.
+
+Or, since AGG is thread safe (without mutexes) we could get your font tricks working with Mapnik's AGG backend :)
+
+Dane
+
+On Jun 1, 2011, at 10:33 AM, Lars Ahlzen wrote:
+
+&gt;<i> On 5/31/2011 3:59 PM, Dane Springmeyer wrote:
+</I>&gt;&gt;&gt;<i> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+</I>&gt;&gt;<i> Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+</I>&gt;<i> 
+</I>&gt;<i> Yeah, after seeing more random errors I had the same thought, so I ran some tests the other day - this time with a single thread. Indeed, it appears to be stable.
+</I>&gt;<i> 
+</I>&gt;<i> The cairo renderer is supposed to support multiple threads (one Map per thread), right? If so, what's the most useful information I can provide at this point to track it down? More trace output?
+</I>&gt;<i> 
+</I>&gt;<i> - Lars
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Lars Ahlzen
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+</I>&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001402.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+	<LI>Next message: <A HREF="001404.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1403">[ date ]</a>
+              <a href="thread.html#1403">[ thread ]</a>
+              <a href="subject.html#1403">[ subject ]</a>
+              <a href="author.html#1403">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

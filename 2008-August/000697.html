@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Building with Boost 1.33
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2CD20.4080108%40loskot.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000700.html">
+   <LINK REL="Next"  HREF="000701.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Building with Boost 1.33</H1>
+    <B>Mateusz Loskot</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2CD20.4080108%40loskot.net%3E"
+       TITLE="[Mapnik-devel] Building with Boost 1.33">mateusz at loskot.net
+       </A><BR>
+    <I>Mon Aug 25 17:17:52 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000700.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+        <LI>Next message: <A HREF="000701.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#697">[ date ]</a>
+              <a href="thread.html#697">[ thread ]</a>
+              <a href="subject.html#697">[ subject ]</a>
+              <a href="author.html#697">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane Springmeyer wrote:
+&gt;<i> Mateusz,
+</I>&gt;<i> 
+</I>&gt;<i> Trac registration is down right now. But I want to help get your ticket 
+</I>&gt;<i> filed however we can. You can either send it to me or just post to the 
+</I>&gt;<i> list and I'll scoop it up and put it on trac.
+</I>
+Dane,
+
+Understood. I will use the list.
+
+&gt;<i> I've build mapnik on ubuntu 7.04 with libboost from apt-get, and these 
+</I>&gt;<i> notes started as ubuntu 7.04 notes.. 
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/wiki/UbuntuInstallation">http://trac.mapnik.org/wiki/UbuntuInstallation</A>
+</I>
+Yes, I'm following this guide.
+
+&gt;<i> I'm traveling today (and stepping out now..) but I should have some time 
+</I>&gt;<i> to look at this between flights. Can you send me the output of $ python 
+</I>&gt;<i> scons/scons.py -h
+</I>
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ svn up
+At revision 729.
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ python scons/scons.py -h
+scons: Reading SConscript files ...
+Building on Linux ...
+pkg-config --exists cairomm-1.0
+Checking for C library m... yes
+Checking for C library ltdl... yes
+Checking for C library png... yes
+Checking for C library tiff... yes
+Checking for C library z... yes
+Checking for C library jpeg... yes
+Checking for C library proj... yes
+Checking for C library pq... no
+Checking for C++ library icuuc... yes
+Checking for C++ library icudata... yes
+Checking for C++ library gdal... no
+Checking for C++ library boost_system-mt... no
+Checking for C++ library boost_filesystem-mt... no
+Could not find header or shared library for boost filesystem, exiting!
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$
+
+
+&gt;<i> and let me know what the output looks like of $ ls /usr/lib/libboost* -l
+</I>&gt;<i> or wherever your local installation of boost is...
+</I>
+I've installed all libboost* and boost related packages from the Ubuntu 
+7.04 repository. I use Boost in my own projects and it works well for 
+me, however I configure my projects with Autotools, CMake or Boost BUild 
+and have Zero experience with SCons.
+
+Here is the output you've requested
+
+
+$ ls -1 /usr/lib/libboost* | sort
+/usr/lib/libboost_date_time.a
+/usr/lib/libboost_date_time-gcc-1_33_1.a
+/usr/lib/libboost_date_time-gcc-1_33_1.so
+/usr/lib/libboost_date_time-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_date_time-gcc-mt-1_33_1.a
+/usr/lib/libboost_date_time-gcc-mt-1_33_1.so
+/usr/lib/libboost_date_time-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_date_time.so
+/usr/lib/libboost_filesystem.a
+/usr/lib/libboost_filesystem-gcc-1_33_1.a
+/usr/lib/libboost_filesystem-gcc-1_33_1.so
+/usr/lib/libboost_filesystem-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_filesystem-gcc-mt-1_33_1.a
+/usr/lib/libboost_filesystem-gcc-mt-1_33_1.so
+/usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_filesystem.so
+/usr/lib/libboost_iostreams-gcc-mt-1_33_1.so
+/usr/lib/libboost_iostreams-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_iostreams.so
+/usr/lib/libboost_prg_exec_monitor.a
+/usr/lib/libboost_prg_exec_monitor-gcc-1_33_1.a
+/usr/lib/libboost_prg_exec_monitor-gcc-1_33_1.so
+/usr/lib/libboost_prg_exec_monitor-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_prg_exec_monitor-gcc-mt-1_33_1.a
+/usr/lib/libboost_prg_exec_monitor-gcc-mt-1_33_1.so
+/usr/lib/libboost_prg_exec_monitor-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_prg_exec_monitor.so
+/usr/lib/libboost_program_options.a
+/usr/lib/libboost_program_options-gcc-1_33_1.a
+/usr/lib/libboost_program_options-gcc-1_33_1.so
+/usr/lib/libboost_program_options-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_program_options-gcc-mt-1_33_1.a
+/usr/lib/libboost_program_options-gcc-mt-1_33_1.so
+/usr/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_program_options.so
+/usr/lib/libboost_python-gcc-1_33_1.so
+/usr/lib/libboost_python-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_python-gcc-mt-1_33_1.so
+/usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_python.so
+/usr/lib/libboost_regex.a
+/usr/lib/libboost_regex-gcc-1_33_1.a
+/usr/lib/libboost_regex-gcc-1_33_1.so
+/usr/lib/libboost_regex-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_regex-gcc-mt-1_33_1.a
+/usr/lib/libboost_regex-gcc-mt-1_33_1.so
+/usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_regex.so
+/usr/lib/libboost_serialization.a
+/usr/lib/libboost_serialization-gcc-1_33_1.a
+/usr/lib/libboost_serialization-gcc-mt-1_33_1.a
+/usr/lib/libboost_signals.a
+/usr/lib/libboost_signals-gcc-1_33_1.a
+/usr/lib/libboost_signals-gcc-1_33_1.so
+/usr/lib/libboost_signals-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_signals-gcc-mt-1_33_1.a
+/usr/lib/libboost_signals-gcc-mt-1_33_1.so
+/usr/lib/libboost_signals-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_signals.so
+/usr/lib/libboost_test_exec_monitor.a
+/usr/lib/libboost_test_exec_monitor-gcc-1_33_1.a
+/usr/lib/libboost_test_exec_monitor-gcc-1_33_1.so
+/usr/lib/libboost_test_exec_monitor-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_test_exec_monitor-gcc-mt-1_33_1.a
+/usr/lib/libboost_test_exec_monitor-gcc-mt-1_33_1.so
+/usr/lib/libboost_test_exec_monitor-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_test_exec_monitor.so
+/usr/lib/libboost_thread.a
+/usr/lib/libboost_thread-gcc-mt-1_33_1.a
+/usr/lib/libboost_thread-gcc-mt-1_33_1.so
+/usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_thread.so
+/usr/lib/libboost_unit_test_framework.a
+/usr/lib/libboost_unit_test_framework-gcc-1_33_1.a
+/usr/lib/libboost_unit_test_framework-gcc-1_33_1.so
+/usr/lib/libboost_unit_test_framework-gcc-1_33_1.so.1.33.1
+/usr/lib/libboost_unit_test_framework-gcc-mt-1_33_1.a
+/usr/lib/libboost_unit_test_framework-gcc-mt-1_33_1.so
+/usr/lib/libboost_unit_test_framework-gcc-mt-1_33_1.so.1.33.1
+/usr/lib/libboost_unit_test_framework.so
+/usr/lib/libboost_wave.a
+/usr/lib/libboost_wave-gcc-mt-1_33_1.a
+/usr/lib/libboost_wserialization.a
+/usr/lib/libboost_wserialization-gcc-1_33_1.a
+/usr/lib/libboost_wserialization-gcc-mt-1_33_1.a
+
+
+&gt;<i> My hunch is this is a symlinking issue, where mapnik is not finding the 
+</I>&gt;<i> boost installs perhaps because you have the 'gcc' extension or related 
+</I>&gt;<i> to the mt extension. the OSM mapnik install notes might provide some 
+</I>&gt;<i> ideas for fixing symlinks 
+</I>&gt;<i> (<A HREF="http://wiki.openstreetmap.org/index.php/Mapnik">http://wiki.openstreetmap.org/index.php/Mapnik</A>). And I'd love to look 
+</I>&gt;<i> at this in more detail later today.
+</I>
+
+I'd love to assist in finding the problem (and solving it).
+Thanks!
+
+Best regards,
+-- 
+Mateusz Loskot, <A HREF="http://mateusz.loskot.net">http://mateusz.loskot.net</A>
+Charter Member of OSGeo, <A HREF="http://osgeo.org">http://osgeo.org</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000700.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+	<LI>Next message: <A HREF="000701.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#697">[ date ]</a>
+              <a href="thread.html#697">[ thread ]</a>
+              <a href="subject.html#697">[ subject ]</a>
+              <a href="author.html#697">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

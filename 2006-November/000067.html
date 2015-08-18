@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] label_position_tolerance patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20label_position_tolerance%20patch&In-Reply-To=%3C456D0F94.2050006%40smartrak.biz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000065.html">
+   <LINK REL="Next"  HREF="000068.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] label_position_tolerance patch</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20label_position_tolerance%20patch&In-Reply-To=%3C456D0F94.2050006%40smartrak.biz%3E"
+       TITLE="[Mapnik-devel] label_position_tolerance patch">dave at smartrak.biz
+       </A><BR>
+    <I>Wed Nov 29 05:41:56 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000065.html">[Mapnik-devel] text_spacing patch
+</A></li>
+        <LI>Next message: <A HREF="000068.html">[Mapnik-devel] label_position_tolerance patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>As a follow up to my last patch, heres another one :)
+
+I wasn't happy with how mapnik fudges the labels on roads till it finds 
+a place to put them, So I've made the distance it will test over user 
+configurable.
+
+The new property is text_symbolizer.label_position_tolerance
+The default value (0) uses the current behaviour but for any larger 
+values that distance is how much will be scanned over +/- to try place 
+the label. (with the value 1 trying only the initial position)
+The delta scanning distance is also chosen smartly.
+
+I've attached a stand alone patch which will apply on top of my last 
+patch and also a combined patch with both sets of changes in it.
+
+The text rendering of mapnik with these changes on it is 
+vvvvvvvvvveeeeeeeeerrrrrrrryyyyyyyyy nice.
+Thanks everyone who has done work on them :)
+
+Dave.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: label_position_tolerance_and_text_spacing.patch
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment.ksh">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment.ksh</A>&gt;
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: label_position_tolerance.patch
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment-0001.ksh">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061129/6f3b1db3/attachment-0001.ksh</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000065.html">[Mapnik-devel] text_spacing patch
+</A></li>
+	<LI>Next message: <A HREF="000068.html">[Mapnik-devel] label_position_tolerance patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#67">[ date ]</a>
+              <a href="thread.html#67">[ thread ]</a>
+              <a href="subject.html#67">[ subject ]</a>
+              <a href="author.html#67">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

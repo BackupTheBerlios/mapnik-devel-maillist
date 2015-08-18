@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch for nicer text placement on lines
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20nicer%20text%20placement%20on%20lines&In-Reply-To=%3C1162505405.18665.15.camel%40torpedo.onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000032.html">
+   <LINK REL="Next"  HREF="000034.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch for nicer text placement on lines</H1>
+    <B>Toby Collett</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20nicer%20text%20placement%20on%20lines&In-Reply-To=%3C1162505405.18665.15.camel%40torpedo.onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] Patch for nicer text placement on lines">toby.collett at onetrackmind.co.nz
+       </A><BR>
+    <I>Thu Nov  2 23:10:04 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000032.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+        <LI>Next message: <A HREF="000034.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#33">[ date ]</a>
+              <a href="thread.html#33">[ thread ]</a>
+              <a href="subject.html#33">[ subject ]</a>
+              <a href="author.html#33">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+The first patch had a bug with its default value, use the attached
+instead. Something in the range 0.3-&gt;0.7 seems to work pretty well for
+the max_char_angle_delta property, the default behaviour is as in the
+unpatched version, try follow any angle change.
+
+Toby
+On Fri, 2006-11-03 at 10:52 +1300, Toby Collett wrote:
+&gt;<i> Hi,
+</I>&gt;<i> The attached patch adds a maximum angle delta for text placement (if the
+</I>&gt;<i> angle changes too much between characters it finds an alternate
+</I>&gt;<i> placement), this is specified in the max_char_angle_delta property in
+</I>&gt;<i> radians (feel free to change it to degrees).
+</I>&gt;<i> 
+</I>&gt;<i> It also improves the text placement around corners trying to minimise
+</I>&gt;<i> the distance between the center of the character and the line on each
+</I>&gt;<i> side. This is the major portion of the patch. 
+</I>&gt;<i> 
+</I>&gt;<i> Toby Collett
+</I>&gt;<i> One Track Mind
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000032.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+	<LI>Next message: <A HREF="000034.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#33">[ date ]</a>
+              <a href="thread.html#33">[ thread ]</a>
+              <a href="subject.html#33">[ subject ]</a>
+              <a href="author.html#33">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

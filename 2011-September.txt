@@ -1,0 +1,258 @@
+From artem at mapnik.org  Mon Sep 26 22:05:22 2011
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 26 Sep 2011 21:05:22 +0100
+Subject: [Mapnik-devel] Release 2.0
+Message-ID: <CAOoUnz==4VZdwzrcAzQW51wqv2ZCTJDd0jybuqWvT7uk6UnXYQ@mail.gmail.com>
+
+Dear all,
+
+Very excited to announce that Mapnik 2.0 has been released :
+http://mapnik.org/news/2011/sep/26/release_2_0/
+
+Thanks to everyone for making it happen!
+
+Cheers,
+Artem
+
+
+From oshaniuk at cogniance.com  Tue Sep 27 10:54:46 2011
+From: oshaniuk at cogniance.com (Oleg Shaniuk)
+Date: Tue, 27 Sep 2011 11:54:46 +0300
+Subject: [Mapnik-devel] Release 2.0
+In-Reply-To: <CAOoUnz==4VZdwzrcAzQW51wqv2ZCTJDd0jybuqWvT7uk6UnXYQ@mail.gmail.com>
+References: <CAOoUnz==4VZdwzrcAzQW51wqv2ZCTJDd0jybuqWvT7uk6UnXYQ@mail.gmail.com>
+Message-ID: <CADxSZJrQn4_FVUgaKtpQD0r=eza7Xty-LvB3Ygpjsen4LpAopw@mail.gmail.com>
+
+Great news, Artem!
+--
+RO
+
+
+On Mon, Sep 26, 2011 at 11:05 PM, Artem Pavlenko <artem at mapnik.org> wrote:
+
+> Dear all,
+>
+> Very excited to announce that Mapnik 2.0 has been released :
+> http://mapnik.org/news/2011/sep/26/release_2_0/
+>
+> Thanks to everyone for making it happen!
+>
+> Cheers,
+> Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110927/c4b4a43c/attachment.html>
+
+From manel.clos at ajgirona.cat  Thu Sep 29 11:34:44 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Thu, 29 Sep 2011 11:34:44 +0200
+Subject: [Mapnik-devel] OGCServer and Google Earth
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20371CBC41@mbx.ajgirona.org>
+
+Hi all,
+
+In a WMS request, when bbox ratio and image ratio do not match, ogcserver/mapnik will just show more area instead of streching the image. This does not work ok when trying to use the wms image in Google Earth. While this is solved properly, here is a patch to ogcserver/common.py to make it work:
+
+    def GetMap(self, params):
+        # HACK: check if the image should be strechted
+        bbox_ratio = float(params['bbox'][2] - params['bbox'][0]) / float(params['bbox'][3] - params['bbox'][1])
+        image_ratio = float(params['width']) / float(params['height'])
+        img_height = params['height']
+        resize = False
+        if int(bbox_ratio * 100) != int(image_ratio * 100):
+            params['height'] = int(params['height'] / bbox_ratio)
+            resize = True
+
+        m = self._buildMap(params)
+        im = Image(params['width'], params['height'])
+        render(m, im)
+        format = PIL_TYPE_MAPPING[params['format']]
+        if resize:
+            from PIL import Image as PILImage
+            size = params['width'], params['height']
+            im = PILImage.open(StringIO(im.tostring(format)))
+            size = params['width'], img_height
+            im = im.resize(size)
+            output = StringIO()
+            im.save(output, format=format)
+            return Response(params['format'].replace('8',''), output.getvalue())
+        return Response(params['format'].replace('8',''), im.tostring(format))
+
+
+Manel Clos
+UMAT - 972419417
+Ajuntament de Girona
+
+
+From frederik at remote.org  Fri Sep 30 08:36:48 2011
+From: frederik at remote.org (Frederik Ramm)
+Date: Fri, 30 Sep 2011 08:36:48 +0200
+Subject: [Mapnik-devel] OGCServer and Google Earth
+In-Reply-To: <64FEFB3BDAC1414F80EBF758194587DA20371CBC41@mbx.ajgirona.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA20371CBC41@mbx.ajgirona.org>
+Message-ID: <4E856380.50601@remote.org>
+
+Hi,
+
+On 09/29/2011 11:34 AM, manel.clos at ajgirona.cat wrote:
+> In a WMS request, when bbox ratio and image ratio do not match, ogcserver/mapnik will just show more area instead of streching the image.
+
+This is a violation of the WMS specification which explicitly mandates 
+that the image must be stretched in this case.
+
+The mod_mapnik_wms server (available from OpenStreetMap SVN) does this 
+right - compare
+
+http://full.wms.geofabrik.de/std/demo_key?LAYERS=&FORMAT=image%2Fjpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=7.4403,46.9495,7.4485,46.95560&WIDTH=382&HEIGHT=300
+
+and
+
+http://full.wms.geofabrik.de/std/demo_key?LAYERS=&FORMAT=image%2Fjpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=7.4403,46.9495,7.4485,46.95560&WIDTH=382&HEIGHT=200
+
+- but it uses a very primitive image scaling (omitting or doubling 
+scanlines as required) which leads to less eye-pleasing results than the 
+proper scaling that you have implemented.
+
+The best way to handle this currently is to call Mapnik with an 
+aspect_fix_mode of "ADJUST_CANVAS_HEIGHT" instead of the default which 
+is GROW_BBOX; Mapnik will then return an image that covers exactly the 
+bounding box requested but may not have the correct pixel height. Then 
+you have to stretch or shrink the image vertically to fit the height you 
+wanted.
+
+I am unsure if your patch does this because I cannot see it changing the 
+aspect_fix_mode at all - but maybe that's elsewhere in the code.
+
+I guess what you are looking for is something like an aspect_fix_mode of 
+"SCALE_IMAGE_TO_FIT" but that doesn't exist as far as I know.
+
+The WMS specification does BTW not say what should happen to fonts etc. 
+in this situation. Imagine you make a WMS request and specify twice the 
+height that it would "normally" have. Now our scaling approach would 
+generate lettering with the wrong aspect ratio and all sorts of other 
+ugliness (vertical roads would be half as wide as horizontal roads etc). 
+One would prefer to somehow, instead of scaling the result, influence 
+Mapnik's projection by adding a vertical scale factor directly into the 
+projection code. That would then lead to the desired double-height image 
+with a good look. However, I have a suspicion that WMS allows this kind 
+of non-matching width to accommodate displays that have non-square 
+pixels; and for such cases - i.e. imagine you have a display where each 
+pixel is twice as wide as it is high - you'd really want to have the 
+"wrong" aspect ratio in the image so that it looks right on your screen.
+
+Bye
+Frederik
+
+
+From manel.clos at ajgirona.cat  Fri Sep 30 09:01:52 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Fri, 30 Sep 2011 09:01:52 +0200
+Subject: [Mapnik-devel] OGCServer and Google Earth
+In-Reply-To: <4E856380.50601@remote.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA20371CBC41@mbx.ajgirona.org>
+	<4E856380.50601@remote.org>
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20371CBC49@mbx.ajgirona.org>
+
+Hi Frederik,
+
+The code is just asking mapnik to render into a smaller image, then the image is streched to the requested size, not optimal, but it works. As you said text is the most afected feature.
+
+Because of the reasons you explain perhaps it is not worth it, and the current suboptimal solutions are ok.
+
+Manel.
+
+> -----Mensaje original-----
+> De: mapnik-devel-bounces at lists.berlios.de
+> [mailto:mapnik-devel-bounces at lists.berlios.de] En nombre de
+> Frederik Ramm
+> Enviado el: viernes, 30 de septiembre de 2011 8:37
+> Para: mapnik-devel at lists.berlios.de
+> Asunto: Re: [Mapnik-devel] OGCServer and Google Earth
+>
+> Hi,
+>
+> On 09/29/2011 11:34 AM, manel.clos at ajgirona.cat wrote:
+> > In a WMS request, when bbox ratio and image ratio do not
+> match, ogcserver/mapnik will just show more area instead of
+> streching the image.
+>
+> This is a violation of the WMS specification which explicitly
+> mandates
+> that the image must be stretched in this case.
+>
+> The mod_mapnik_wms server (available from OpenStreetMap SVN)
+> does this
+> right - compare
+>
+> http://full.wms.geofabrik.de/std/demo_key?LAYERS=&FORMAT=image
+> %2Fjpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEP
+> TIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=7.
+> 4403,46.9495,7.4485,46.95560&WIDTH=382&HEIGHT=300
+>
+> and
+>
+> http://full.wms.geofabrik.de/std/demo_key?LAYERS=&FORMAT=image
+> %2Fjpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEP
+> TIONS=application%2Fvnd.ogc.se_inimage&SRS=EPSG%3A4326&BBOX=7.
+> 4403,46.9495,7.4485,46.95560&WIDTH=382&HEIGHT=200
+>
+> - but it uses a very primitive image scaling (omitting or doubling
+> scanlines as required) which leads to less eye-pleasing
+> results than the
+> proper scaling that you have implemented.
+>
+> The best way to handle this currently is to call Mapnik with an
+> aspect_fix_mode of "ADJUST_CANVAS_HEIGHT" instead of the
+> default which
+> is GROW_BBOX; Mapnik will then return an image that covers
+> exactly the
+> bounding box requested but may not have the correct pixel
+> height. Then
+> you have to stretch or shrink the image vertically to fit the
+> height you
+> wanted.
+>
+> I am unsure if your patch does this because I cannot see it
+> changing the
+> aspect_fix_mode at all - but maybe that's elsewhere in the code.
+>
+> I guess what you are looking for is something like an
+> aspect_fix_mode of
+> "SCALE_IMAGE_TO_FIT" but that doesn't exist as far as I know.
+>
+> The WMS specification does BTW not say what should happen to
+> fonts etc.
+> in this situation. Imagine you make a WMS request and specify
+> twice the
+> height that it would "normally" have. Now our scaling approach would
+> generate lettering with the wrong aspect ratio and all sorts of other
+> ugliness (vertical roads would be half as wide as horizontal
+> roads etc).
+> One would prefer to somehow, instead of scaling the result, influence
+> Mapnik's projection by adding a vertical scale factor
+> directly into the
+> projection code. That would then lead to the desired
+> double-height image
+> with a good look. However, I have a suspicion that WMS allows
+> this kind
+> of non-matching width to accommodate displays that have non-square
+> pixels; and for such cases - i.e. imagine you have a display
+> where each
+> pixel is twice as wide as it is high - you'd really want to have the
+> "wrong" aspect ratio in the image so that it looks right on
+> your screen.
+>
+> Bye
+> Frederik
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS with Mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20with%20Mapnik&In-Reply-To=%3C64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77%40mbx.ajgirona.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001312.html">
+   <LINK REL="Next"  HREF="001315.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS with Mapnik</H1>
+    <B>manel.clos at ajgirona.cat</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20with%20Mapnik&In-Reply-To=%3C64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77%40mbx.ajgirona.org%3E"
+       TITLE="[Mapnik-devel] WMS with Mapnik">manel.clos at ajgirona.cat
+       </A><BR>
+    <I>Sat Jan 15 21:58:36 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001312.html">[Mapnik-devel] Gearing up for Mapnik2 release
+</A></li>
+        <LI>Next message: <A HREF="001315.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1314">[ date ]</a>
+              <a href="thread.html#1314">[ thread ]</a>
+              <a href="subject.html#1314">[ subject ]</a>
+              <a href="author.html#1314">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+Here are some ideas about improving Mapnik XML to better support WMS functionality.
+
+Support Layers within Layers (Layer Group)
+- Properties are inherited
+- You can draw / request a Layer Group that has a name
+- title: used in GetCapabilities to better describe layers in the group
+
+Toplevel Map element in mapfile should have some more Layer&#8217;s properties.
+- name: request top level layer (Map) to draw / request all layers (get rid of the __all__ trick in OGCServer in the long term, but support it for compatibility)
+- title: use it in GetCapabilities
+
+If this is ok I'll create a ticket and hopefully have it ready for Mapnik 2.0.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001312.html">[Mapnik-devel] Gearing up for Mapnik2 release
+</A></li>
+	<LI>Next message: <A HREF="001315.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1314">[ date ]</a>
+              <a href="thread.html#1314">[ thread ]</a>
+              <a href="subject.html#1314">[ subject ]</a>
+              <a href="author.html#1314">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

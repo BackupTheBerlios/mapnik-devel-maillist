@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Colorizer and data types
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CBANLkTimbV3UV7LnddEkcAz1WujLLES6pjg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001388.html">
+   <LINK REL="Next"  HREF="001387.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Colorizer and data types</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CBANLkTimbV3UV7LnddEkcAz1WujLLES6pjg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Raster Colorizer and data types">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Sun May  8 13:32:23 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001388.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+        <LI>Next message: <A HREF="001387.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1389">[ date ]</a>
+              <a href="thread.html#1389">[ thread ]</a>
+              <a href="subject.html#1389">[ subject ]</a>
+              <a href="author.html#1389">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Rob,
+
+Thanks, I'll see if I can dig up the old document I once wrote where I
+investigated continuous maps in RGB vs HSL color spaces. Our main use
+case at the time was also height maps, it had pretty pictures and all,
+I hope I can find it :)
+
+I was asking about the docs because I'm keeping track of things I'm
+doing re: building mapnik, and I hope to collate things into one
+bigger, more comprehensive manual/organized wiki at some point
+(although GSoC is focused on coding so I can't spend too much time on
+it in that context). Since I missed that from the wiki page I figured
+I'd ask and have it documented in the mailing list archives before it
+disappears from people's minds :)
+
+cheers,
+
+roel
+
+
+On Sun, May 8, 2011 at 11:32 AM, Robert Coup
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">robert.coup at koordinates.com</A>&gt; wrote:
+&gt;<i> Hi Roel,
+</I>&gt;<i>
+</I>&gt;<i> [Dane/Artem - can we get auto-reply-to-list set for this mailing list?]
+</I>&gt;<i>
+</I>&gt;<i> On Wed, May 4, 2011 at 7:13 PM, Roel Vanhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">roel.vanhout at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Is there more documentation on this feature than the wiki page that is
+</I>&gt;&gt;<i> linked to from the github page
+</I>&gt;&gt;<i> (<A HREF="https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer">https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer</A>)? If
+</I>&gt;&gt;<i> no, I have some questions (I've only been on mapnik-devel since early
+</I>&gt;&gt;<i> this year so I may have missed previous discussion on this, sorry
+</I>&gt;&gt;<i> about that):
+</I>&gt;<i>
+</I>&gt;<i> Not a huge amount more. Dane and Nino and I came up with the specs in
+</I>&gt;<i> October after the GSoC summit and Ben implemented them as a project for
+</I>&gt;<i> Koordinates. The key goal was to get something that solved more use cases
+</I>&gt;<i> than the old RasterColorizer, and that was easier for a user to get their
+</I>&gt;<i> head around.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Why are only GDAL plugins supported? Are there more such
+</I>&gt;&gt;<i> dependencies where rendering depends on the data source type, and if
+</I>&gt;&gt;<i> so are they being kept track of, and is there a plan how to eliminate
+</I>&gt;&gt;<i> them?
+</I>&gt;<i>
+</I>&gt;<i> Quickest results? It's not particularly difficult to extend it to the other
+</I>&gt;<i> raster plugins, and I'd like to see this happen.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Does color blending work in RGB space and RGB space only? If so, the
+</I>&gt;&gt;<i> linear mode (btw may I suggest calling this 'blending-mode' or
+</I>&gt;&gt;<i> something more descriptive than 'mode') is (in my experience) not
+</I>&gt;&gt;<i> going to be very useful I'm afraid. We've had quite bad experiences
+</I>&gt;&gt;<i> with making maps informative with RGB linear interpolation, to the
+</I>&gt;&gt;<i> point where we (at my company) changed the default to HSL and as far
+</I>&gt;&gt;<i> as I remember have never used RGB again because all maps came out
+</I>&gt;&gt;<i> better using HSL.
+</I>&gt;<i>
+</I>&gt;<i> Any examples of RGB vs HSL? RGB is used for everything else in Mapnik...
+</I>&gt;<i> adding support for HSL could be a good addition, and again I suspect
+</I>&gt;<i> wouldn't be overly difficult.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - The documentation/wiki page talks about 'stops' and stop colors,
+</I>&gt;&gt;<i> which I think in the end describes a multi-color gradient, right? I
+</I>&gt;&gt;<i> think it would be better to describe the functionality in those terms,
+</I>&gt;&gt;<i> as I think it's more intuitive. Also it would match better with other
+</I>&gt;&gt;<i> places in mapnik where gradients are used; there could be one central
+</I>&gt;&gt;<i> place where how gradients work in Mapnik is described in abstract form
+</I>&gt;&gt;<i> and only additions that are specific for some use cases would need to
+</I>&gt;&gt;<i> be described separately.
+</I>&gt;<i>
+</I>&gt;<i> The docs will have to move into the Mapnik wiki - github was Ben's scratch
+</I>&gt;<i> space. Happy for contributions/suggestions :)
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - What does the 'epsilon' parameter do? It says it's used for fuzzing
+</I>&gt;&gt;<i> the color, but how does that work?
+</I>&gt;<i>
+</I>&gt;<i> If you have specific values you want to render (eg. 12=red), but your
+</I>&gt;<i> dataset uses floating-point for storage it gets messy. I'll need to dig out
+</I>&gt;<i> where the requirement came from, but there was a real and relatively common
+</I>&gt;<i> use case for it.
+</I>&gt;<i> Rob :)
+</I>&gt;<i> --
+</I>&gt;<i> Koordinates Ltd.
+</I>&gt;<i> PO Box 1604, Shortland St, Auckland 1140, New Zealand
+</I>&gt;<i> Phone +64-9-966 0433 Fax +64-9-969 0045
+</I>&gt;<i> Web <A HREF="http://koordinates.com/">http://koordinates.com/</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001388.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+	<LI>Next message: <A HREF="001387.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1389">[ date ]</a>
+              <a href="thread.html#1389">[ thread ]</a>
+              <a href="subject.html#1389">[ subject ]</a>
+              <a href="author.html#1389">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

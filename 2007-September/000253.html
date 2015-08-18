@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] proposal: better XML support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20proposal%3A%20better%20XML%20support&In-Reply-To=%3C36C14EC0-E81B-4AD5-9B42-00172B4F347D%40artcom.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000245.html">
+   <LINK REL="Next"  HREF="000262.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] proposal: better XML support</H1>
+    <B>David Siegel</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20proposal%3A%20better%20XML%20support&In-Reply-To=%3C36C14EC0-E81B-4AD5-9B42-00172B4F347D%40artcom.de%3E"
+       TITLE="[Mapnik-devel] proposal: better XML support">david at artcom.de
+       </A><BR>
+    <I>Wed Sep 12 22:53:01 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000245.html">[Mapnik-devel] proposal: better XML support
+</A></li>
+        <LI>Next message: <A HREF="000262.html">[Mapnik-devel] proposal: better XML support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#253">[ date ]</a>
+              <a href="thread.html#253">[ thread ]</a>
+              <a href="subject.html#253">[ subject ]</a>
+              <a href="author.html#253">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Artem,
+Hi list,
+
+On Sep 12, 2007, at 10:01 AM, Artem Pavlenko wrote:
+
+
+&gt;<i> Hi David,
+</I>&gt;<i>
+</I>&gt;<i> Sounds good to me! I like the idea of  keeping both ptree and  
+</I>&gt;<i> libxml implementations. I can see  'include' mechanism could be a  
+</I>&gt;<i> winner in some cases. Have you done any benchmarking on  
+</I>&gt;<i> performance : ptree vs libxml ?
+</I>&gt;<i>
+</I>
+No, I haven't done any benchmarking yet. I just got it working  
+yesterday night :-) . My current implementation loads the XML file  
+into a DOM and then populates a boost ptree with the result. The  
+ptree is then processed by the existing load_map(). This keeps the  
+whole parsing logic in one place, but costs a bit performance because  
+the DOM is copied to a ptree. BTW, I think the tinyxml parser does  
+something similar. So this should not be worse. I'd also guess that  
+libxml2 is a bit slower than tinyxml (more overhead). But I think it  
+will be difficult to measure any difference because lots of other  
+stuff happens during load_map(), like loading icon files from disk,  
+establish DB connections, &amp;c.
+But if you insist I'll try to do some benchmarks ...
+
+
+&gt;<i> There is a flag XMLPARSER={spirit,tinyxml} to build ptree with  
+</I>&gt;<i> different impl. We can add libxml to the list?
+</I>&gt;<i>
+</I>
+The current behaviour is as follows: If the (new) XML2_CONFIG build  
+option is set to the xml2-config executable libxml2 is used and  
+HAVE_LIBXML2 is defined. Otherwise it uses the flags currently  
+specified in the toplevel SConstruct script (- 
+DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML that is). I don't want to  
+make changes to the boost code. Future releases of boost will contain  
+the property_tree lib and we might want to drop the local copy.
+
+
+&gt;<i> Also,  how difficult to build libxml on win32?
+</I>&gt;<i>
+</I>
+Good point! I haven't checked that yet, but a quick glance at the  
+google results indicates that it is possible to build it using MSVC.  
+This page has the &quot;official&quot; win32 binaries:
+
+<A HREF="http://www.zlatkovic.com/libxml.en.html">http://www.zlatkovic.com/libxml.en.html</A>
+
+Although this guy seems to use a different (MS) compiler. See 'Notes'  
+on his website...
+
+see below
+
+&gt;<i>
+</I>&gt;<i> On 10 Sep 2007, at 10:13, David Siegel wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Hi,
+</I>&gt;&gt;<i> I would like to implement a libxml2 based version of load_map(). This
+</I>&gt;&gt;<i> would give us XML entities and entity references in the map
+</I>&gt;&gt;<i> description. They can be used as
+</I>&gt;&gt;<i> 	- variables
+</I>&gt;&gt;<i> 	- a simple include mechanism both from disk and from network
+</I>&gt;&gt;<i>
+</I>
+--- snip ---
+
+&gt;&gt;<i>
+</I>&gt;&gt;<i> If you agree that this would be nice to have here is my current plan:
+</I>&gt;&gt;<i> 	1. refactor the current load_map() into smaller functions. (partly
+</I>&gt;&gt;<i> done)
+</I>&gt;&gt;<i> 	2. refactor current load_map() to print warnings on unrecognized
+</I>&gt;&gt;<i> nodes/values. (partly done)
+</I>&gt;&gt;<i> 	3. add the necessary bits and pieces to &lt;build-system-of-the-week&gt;
+</I>&gt;&gt;<i> to choose ptree or libxml2. (partly done)
+</I>&gt;&gt;<i> 	4. implement the new parser.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Great.
+</I>&gt;<i>
+</I>&gt;&gt;<i> If that's OK with you I'd be grateful if nobody else would change
+</I>&gt;&gt;<i> load_map.cpp while I'm at it. Specially (1) is likely to produce huge
+</I>&gt;&gt;<i> ugly conflicts. ;-)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> There is a small possibility I might have to tweak load_map a  
+</I>&gt;<i> little bit (add new entities)  , but we can merge changes back ?
+</I>&gt;<i>
+</I>
+Ok, if you have to tweak it just go ahead. Surely it can be merged  
+later. It just ain't fun. I think the only lines that I haven't  
+touched are the include guards ;-)
+
+
+&gt;<i> Another  option would be to create a branch for libxml stuff and  
+</I>&gt;<i> merge it into the main trunk when it's ready ? I can give you svn  
+</I>&gt;<i> write access just let me know.
+</I>&gt;<i>
+</I>
+That would be great! Thanks a lot.
+
+One more question:
+Currently mapnik ignores unknown elements/attributes in the XML file.  
+This is very XMLish but as a consequence typos are not detected.  
+Other things, like parse errors in filter expressions only print an
+obscure warning. This is fine for the developers, but it's a little  
+bit frustrating for API users that are not familiar with the sources  
+and/or the syntax (like me :-) ).
+
+I personally would prefer a very strict API behaviour:
+Throw exceptions on severe errors like:
+	- XML is not well formed (of course)
+	- unknown elements/attributes in the XML file
+	- syntax errors in filter expressions, colors, &amp;c
+	- failed DB connections
+
+GUI applications could bring up dialogs containing the error  
+description. python scripts could terminate with non zero exit codes  
+instead of writing an empty png.
+For other configuration errors, like missing icons, a warning should  
+suffice. Although GUI applications might want to redirect these  
+warnings to some form of message sink. But this can wait ...
+
+If you agree I'd be happy to help to get at least some of this stuff  
+done.
+
+Another one:
+I noticed that all your files use the following include order:
+#include &lt;std_headers&gt;
+#include &lt;3rd_party.h&gt;
+#include &lt;local_header.hpp&gt;
+
+I'm used to include local headers first. Why do you include them  
+last? Just curious ...
+
+cheers,
+	david
+
+&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i> 	david (agnat)
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko
+</I>&gt;<i> <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000245.html">[Mapnik-devel] proposal: better XML support
+</A></li>
+	<LI>Next message: <A HREF="000262.html">[Mapnik-devel] proposal: better XML support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#253">[ date ]</a>
+              <a href="thread.html#253">[ thread ]</a>
+              <a href="subject.html#253">[ subject ]</a>
+              <a href="author.html#253">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

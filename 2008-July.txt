@@ -1,0 +1,1005 @@
+From tom at compton.nu  Fri Jul 25 01:02:04 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Fri, 25 Jul 2008 00:02:04 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+Message-ID: <d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+
+2008/6/29 Artem Pavlenko <artem at mapnik.org>:
+
+> I just applied your patch. I haven't tested it yet.
+
+I can tell that... I don't think it was really ready to be merged to be honest.
+
+Among other things it completely breaks cairo rendering - the code no
+longer compiles as the routines that I had moved from text_renderer
+into font_face have been moved back.
+
+It is also incomplete even for the agg renderer as only the text
+symbolizer uses fallback - the shield symbolizer for example does not.
+
+I've committed the missing file anyway, so it might compile now if you
+don't have cairo.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From beau at beaugunderson.com  Fri Jul 25 01:21:17 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Thu, 24 Jul 2008 16:21:17 -0700
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+Message-ID: <d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+
+Ah, yes--there are still some issues with it. I was working on this while
+driving down to Panama and back so it didn't get the full attention it
+needed. :)
+
+I'm back home now and will hopefully have some time soon to iron everything
+out.
+
+
+Thanks,
+
+Beau
+
+On Thu, Jul 24, 2008 at 4:02 PM, Tom Hughes <tom at compton.nu> wrote:
+
+> 2008/6/29 Artem Pavlenko <artem at mapnik.org>:
+>
+> > I just applied your patch. I haven't tested it yet.
+>
+> I can tell that... I don't think it was really ready to be merged to be
+> honest.
+>
+> Among other things it completely breaks cairo rendering - the code no
+> longer compiles as the routines that I had moved from text_renderer
+> into font_face have been moved back.
+>
+> It is also incomplete even for the agg renderer as only the text
+> symbolizer uses fallback - the shield symbolizer for example does not.
+>
+> I've committed the missing file anyway, so it might compile now if you
+> don't have cairo.
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080724/f8ef9d68/attachment.html>
+
+From tom at compton.nu  Fri Jul 25 02:25:34 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Fri, 25 Jul 2008 01:25:34 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+Message-ID: <d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+
+2008/7/25 Beau Gunderson <beau at beaugunderson.com>:
+
+> Ah, yes--there are still some issues with it. I was working on this while
+> driving down to Panama and back so it didn't get the full attention it
+> needed. :)
+>
+> I'm back home now and will hopefully have some time soon to iron everything
+> out.
+
+I've just committed some refactoring that splits out stuff from the
+text_renderer again so that cairo can be made to work - cairo is still
+broken for now but I should be able to fix it tomorrow.
+
+I have also made the shield symbolizer in the agg renderer support font sets.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From mattxbart at gmail.com  Fri Jul 25 18:13:07 2008
+From: mattxbart at gmail.com (Matt Bartolome)
+Date: Fri, 25 Jul 2008 09:13:07 -0700
+Subject: [Mapnik-devel] compile error on r714 ubuntu hardy
+Message-ID: <633d34560807250913yef1be66k40999c23cc6f874a@mail.gmail.com>
+
+Hi, I'm getting the following error. I also used the -c option to
+clear the cache, same result.
+
+$ python scons/scons.py BOOST_INCLUDES=/usr/local/include/boost-1_35
+BOOST_LIBS=/usr/local/lib
+scons: Reading SConscript files ...
+Building on Linux ...
+pkg-config --exists cairomm-1.0
+Checking for C library m... (cached) yes
+Checking for C library ltdl... (cached) yes
+Checking for C library png... (cached) yes
+Checking for C library tiff... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C library jpeg... (cached) yes
+Checking for C library proj... (cached) yes
+Checking for C library pq... (cached) yes
+Checking for C++ library icuuc... (cached) yes
+Checking for C++ library icudata... (cached) yes
+Checking for C++ library gdal... (cached) yes
+Checking for C++ library boost_system-mt... (cached) yes
+Checking for C++ library boost_filesystem-mt... (cached) yes
+Checking for C++ library boost_regex-mt... (cached) yes
+Checking for C++ library boost_iostreams-mt... (cached) yes
+Checking for C++ library boost_program_options-mt... (cached) yes
+Checking for C++ library boost_thread-mt... (cached) yes
+Bindings Python version... 2.5
+Python 2.5 prefix... /usr
+pkg-config --exists pycairo
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -o utils/shapeindex/shapeindex utils/shapeindex/shapeindex.o
+src/envelope.o plugins/input/shape/shapefile.o -Lagg -Lsrc
+-L/usr/local/lib -L/usr/lib -lboost_program_options-mt
+-lboost_iostreams-mt
+utils/shapeindex/shapeindex.o: In function `main':
+shapeindex.cpp:(.text+0x143): undefined reference to
+`boost::program_options::options_description::m_default_line_length'
+collect2: ld returned 1 exit status
+scons: *** [utils/shapeindex/shapeindex] Error 1
+scons: building terminated because of errors.
+
+Any suggestions? I want to see the solution to
+http://trac.mapnik.org/ticket/98 in action.
+
+Thanks,
+Matt
+
+
+From blake at hailmail.net  Fri Jul 25 19:45:51 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 25 Jul 2008 10:45:51 -0700
+Subject: [Mapnik-devel] compile error on r714 ubuntu hardy
+In-Reply-To: <633d34560807250913yef1be66k40999c23cc6f874a@mail.gmail.com>
+References: <633d34560807250913yef1be66k40999c23cc6f874a@mail.gmail.com>
+Message-ID: <7132B57E-1FA4-4BD5-875B-984BDF285E2A@hailmail.net>
+
+Hi Matt,
+
+What revision of svn are you building from?
+
+I am able to build on ubuntu 7.10 with boost 1.34 (aptitude installed)  
+using r700, but not after this changeset: http://trac.mapnik.org/changeset/701/trunk/SConstruct
+
+Also, It looks like that patch you'd like to test is against r 700.
+
+If you still run into problems I'd recommend pulling down a fresh svn  
+co (I'm not convinced the -c flag predictably clears the cache).
+
+Cheers,
+
+Dane
+
+On Jul 25, 2008, at 9:13 AM, Matt Bartolome wrote:
+
+> Hi, I'm getting the following error. I also used the -c option to
+> clear the cache, same result.
+>
+> $ python scons/scons.py BOOST_INCLUDES=/usr/local/include/boost-1_35
+> BOOST_LIBS=/usr/local/lib
+> scons: Reading SConscript files ...
+> Building on Linux ...
+> pkg-config --exists cairomm-1.0
+> Checking for C library m... (cached) yes
+> Checking for C library ltdl... (cached) yes
+> Checking for C library png... (cached) yes
+> Checking for C library tiff... (cached) yes
+> Checking for C library z... (cached) yes
+> Checking for C library jpeg... (cached) yes
+> Checking for C library proj... (cached) yes
+> Checking for C library pq... (cached) yes
+> Checking for C++ library icuuc... (cached) yes
+> Checking for C++ library icudata... (cached) yes
+> Checking for C++ library gdal... (cached) yes
+> Checking for C++ library boost_system-mt... (cached) yes
+> Checking for C++ library boost_filesystem-mt... (cached) yes
+> Checking for C++ library boost_regex-mt... (cached) yes
+> Checking for C++ library boost_iostreams-mt... (cached) yes
+> Checking for C++ library boost_program_options-mt... (cached) yes
+> Checking for C++ library boost_thread-mt... (cached) yes
+> Bindings Python version... 2.5
+> Python 2.5 prefix... /usr
+> pkg-config --exists pycairo
+> scons: done reading SConscript files.
+> scons: Building targets ...
+> g++ -o utils/shapeindex/shapeindex utils/shapeindex/shapeindex.o
+> src/envelope.o plugins/input/shape/shapefile.o -Lagg -Lsrc
+> -L/usr/local/lib -L/usr/lib -lboost_program_options-mt
+> -lboost_iostreams-mt
+> utils/shapeindex/shapeindex.o: In function `main':
+> shapeindex.cpp:(.text+0x143): undefined reference to
+> `boost::program_options::options_description::m_default_line_length'
+> collect2: ld returned 1 exit status
+> scons: *** [utils/shapeindex/shapeindex] Error 1
+> scons: building terminated because of errors.
+>
+> Any suggestions? I want to see the solution to
+> http://trac.mapnik.org/ticket/98 in action.
+>
+> Thanks,
+> Matt
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From tom at compton.nu  Sat Jul 26 01:28:23 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sat, 26 Jul 2008 00:28:23 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+	<d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+Message-ID: <d82f70760807251628ud2569fu59899313573cedf@mail.gmail.com>
+
+2008/7/25 Tom Hughes <tom at compton.nu>:
+
+> I've just committed some refactoring that splits out stuff from the
+> text_renderer again so that cairo can be made to work - cairo is still
+> broken for now but I should be able to fix it tomorrow.
+
+The cairo renderer should be working again now.
+
+I'm not convinced that character-by-character font selection is
+necessary (or a good idea) though. I had originally assumed that it
+would be done on a string-by-string basis, with the font that was best
+able to render the whole string being used for the whole thing.
+Changing fonts in the middle of a string could give quite ugly results
+unless the fonts are closely matched.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From tom at compton.nu  Sat Jul 26 01:31:49 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sat, 26 Jul 2008 00:31:49 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+Message-ID: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+
+In r707 Artem uncommented a line in SConstruct that makes it require
+boost_system, but as far as I can see none of the code uses this.
+Certainly mapnik still compiles without it.
+
+The problem is that boost_system is only present in the very latest
+boost (version 1.35.0) which makes compiling mapnik hard on many
+systems if it is required - even Fedora 9 only has boost 1.34.1 and F9
+is only a few months old.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From beau at beaugunderson.com  Sat Jul 26 01:33:26 2008
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Fri, 25 Jul 2008 16:33:26 -0700
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d82f70760807251628ud2569fu59899313573cedf@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+	<d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+	<d82f70760807251628ud2569fu59899313573cedf@mail.gmail.com>
+Message-ID: <d6cb3ab10807251633ie057a66t577689e660eb3520@mail.gmail.com>
+
+My tests with strings with two fonts worked out well--the use case being
+labels on maps of the form "English name (Name in Japanese or Chinese)".
+
+
+Beau
+
+On Fri, Jul 25, 2008 at 4:28 PM, Tom Hughes <tom at compton.nu> wrote:
+
+> 2008/7/25 Tom Hughes <tom at compton.nu>:
+>
+> > I've just committed some refactoring that splits out stuff from the
+> > text_renderer again so that cairo can be made to work - cairo is still
+> > broken for now but I should be able to fix it tomorrow.
+>
+> The cairo renderer should be working again now.
+>
+> I'm not convinced that character-by-character font selection is
+> necessary (or a good idea) though. I had originally assumed that it
+> would be done on a string-by-string basis, with the font that was best
+> able to render the whole string being used for the whole thing.
+> Changing fonts in the middle of a string could give quite ugly results
+> unless the fonts are closely matched.
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080725/71c0ed64/attachment.html>
+
+From jburgess777 at googlemail.com  Sat Jul 26 14:40:04 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 26 Jul 2008 13:40:04 +0100
+Subject: [Mapnik-devel] [patch] fix text placement for strings with no space
+Message-ID: <1217076004.7327.7.camel@localhost.localdomain>
+
+If the placement finder for the text symbolizer does not find a space in
+the string then it fails to set the string_height which stops it
+rendering. 
+
+This causes the names for some peak symbols to be missing from the OSM
+map: http://www.openstreetmap.org/?lat=46.3245&lon=11.5014&zoom=13
+http://trac.openstreetmap.org/ticket/1073
+
+I've also included a trivial cleanup patch which removes an unused
+variable line_count.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: text-placement-single-line.patch
+Type: text/x-patch
+Size: 586 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080726/5ae828ea/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: remove-redundant-line-count.patch
+Type: text/x-patch
+Size: 977 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080726/5ae828ea/attachment-0001.bin>
+
+From jburgess777 at googlemail.com  Sat Jul 26 16:20:57 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 26 Jul 2008 15:20:57 +0100
+Subject: [Mapnik-devel] [patch] improve alignment of wrapped text in text
+	symbolizer
+Message-ID: <1217082057.7327.15.camel@localhost.localdomain>
+
+The attached patch improves the horizontal text alignment by removing
+the width of the trailing space when it causes a line break.
+
+The vertical positioning is improved by making the centre of the top
+text line render consistently at the specified 'dy' offset. Previously
+text wrapped into lots of lines was being shifted down too far.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: text-placement-width-height-fixes.patch
+Type: text/x-patch
+Size: 3076 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080726/eb2cf612/attachment.bin>
+
+From tom at compton.nu  Sun Jul 27 13:08:16 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sun, 27 Jul 2008 12:08:16 +0100
+Subject: [Mapnik-devel] [patch] fix text placement for strings with no
+	space
+In-Reply-To: <1217076004.7327.7.camel@localhost.localdomain>
+References: <1217076004.7327.7.camel@localhost.localdomain>
+Message-ID: <d82f70760807270408q6feb7e81td354a530132d8c8a@mail.gmail.com>
+
+2008/7/26 Jon Burgess <jburgess777 at googlemail.com>:
+
+> If the placement finder for the text symbolizer does not find a space in
+> the string then it fails to set the string_height which stops it
+> rendering.
+>
+> This causes the names for some peak symbols to be missing from the OSM
+> map: http://www.openstreetmap.org/?lat=46.3245&lon=11.5014&zoom=13
+> http://trac.openstreetmap.org/ticket/1073
+>
+> I've also included a trivial cleanup patch which removes an unused
+> variable line_count.
+
+All committed.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From tom at compton.nu  Sun Jul 27 13:12:45 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Sun, 27 Jul 2008 12:12:45 +0100
+Subject: [Mapnik-devel] [patch] improve alignment of wrapped text in
+	text symbolizer
+In-Reply-To: <1217082057.7327.15.camel@localhost.localdomain>
+References: <1217082057.7327.15.camel@localhost.localdomain>
+Message-ID: <d82f70760807270412r1216d44bg6aa7baeefc5f0582@mail.gmail.com>
+
+2008/7/26 Jon Burgess <jburgess777 at googlemail.com>:
+
+> The attached patch improves the horizontal text alignment by removing
+> the width of the trailing space when it causes a line break.
+>
+> The vertical positioning is improved by making the centre of the top
+> text line render consistently at the specified 'dy' offset. Previously
+> text wrapped into lots of lines was being shifted down too far.
+
+Committed.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From snecklifter at gmail.com  Mon Jul 28 16:52:56 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Mon, 28 Jul 2008 15:52:56 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+In-Reply-To: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+References: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+Message-ID: <364d303b0807280752r2319fd9dxef84751496ff7979@mail.gmail.com>
+
+2008/7/26 Tom Hughes <tom at compton.nu>:
+> In r707 Artem uncommented a line in SConstruct that makes it require
+> boost_system, but as far as I can see none of the code uses this.
+> Certainly mapnik still compiles without it.
+>
+> The problem is that boost_system is only present in the very latest
+> boost (version 1.35.0) which makes compiling mapnik hard on many
+> systems if it is required - even Fedora 9 only has boost 1.34.1 and F9
+> is only a few months old.
+
+I am no longer working on mapnik's inclusion in Fedora due to time
+constraints however someone else has taken up the task. The version
+being worked on is 0.5.1 (which I take it the above code is not
+included in) so this would not cause an issue. I imagine the new boost
+would appear in Fedora 10.
+
+Regards
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From snecklifter at gmail.com  Mon Jul 28 17:07:17 2008
+From: snecklifter at gmail.com (Christopher Brown)
+Date: Mon, 28 Jul 2008 16:07:17 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+In-Reply-To: <yeky73mf42v.fsf@vauxhall.uk.cyberscience.com>
+References: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+	<364d303b0807280752r2319fd9dxef84751496ff7979@mail.gmail.com>
+	<yeky73mf42v.fsf@vauxhall.uk.cyberscience.com>
+Message-ID: <364d303b0807280807j733cb063r5a5fc4ddbb5d4f8f@mail.gmail.com>
+
+2008/7/28 Tom Hughes <tom at compton.nu>:
+> In message <364d303b0807280752r2319fd9dxef84751496ff7979 at mail.gmail.com>
+>        Christopher Brown <snecklifter at gmail.com> wrote:
+>
+>> 2008/7/26 Tom Hughes <tom at compton.nu>:
+>>
+>>> In r707 Artem uncommented a line in SConstruct that makes it require
+>>> boost_system, but as far as I can see none of the code uses this.
+>>> Certainly mapnik still compiles without it.
+>>>
+>>> The problem is that boost_system is only present in the very latest
+>>> boost (version 1.35.0) which makes compiling mapnik hard on many
+>>> systems if it is required - even Fedora 9 only has boost 1.34.1 and F9
+>>> is only a few months old.
+>>
+>> I am no longer working on mapnik's inclusion in Fedora due to time
+>> constraints however someone else has taken up the task. The version
+>> being worked on is 0.5.1 (which I take it the above code is not
+>> included in) so this would not cause an issue. I imagine the new boost
+>> would appear in Fedora 10.
+>
+> It was the nasty comments from the person currently trying to package
+> it that led to me trying to build the current code and iron out any
+> problems - the above issue is now the only remaining problem I believe.
+
+I was a little puzzled by it as I don't think the packager has
+commented on this list so far. Can I suggest commenting on the bug
+directly - it seems like it'll be accepted any day now. :)
+
+Regards
+
+-- 
+Christopher Brown
+
+http://www.chruz.com
+
+
+From tom at compton.nu  Mon Jul 28 17:13:07 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 28 Jul 2008 16:13:07 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+In-Reply-To: <364d303b0807280807j733cb063r5a5fc4ddbb5d4f8f@mail.gmail.com>
+	(Christopher Brown's message of "Mon\,
+	28 Jul 2008 16\:07\:17 +0100")
+References: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+	<364d303b0807280752r2319fd9dxef84751496ff7979@mail.gmail.com>
+	<yeky73mf42v.fsf@vauxhall.uk.cyberscience.com>
+	<364d303b0807280807j733cb063r5a5fc4ddbb5d4f8f@mail.gmail.com>
+Message-ID: <yektzeaf3ek.fsf@vauxhall.uk.cyberscience.com>
+
+In message <364d303b0807280807j733cb063r5a5fc4ddbb5d4f8f at mail.gmail.com>
+        Christopher Brown <snecklifter at gmail.com> wrote:
+
+> 2008/7/28 Tom Hughes <tom at compton.nu>:
+>> In message <364d303b0807280752r2319fd9dxef84751496ff7979 at mail.gmail.com>
+>>        Christopher Brown <snecklifter at gmail.com> wrote:
+>>
+>>> I am no longer working on mapnik's inclusion in Fedora due to time
+>>> constraints however someone else has taken up the task. The version
+>>> being worked on is 0.5.1 (which I take it the above code is not
+>>> included in) so this would not cause an issue. I imagine the new boost
+>>> would appear in Fedora 10.
+>>
+>> It was the nasty comments from the person currently trying to package
+>> it that led to me trying to build the current code and iron out any
+>> problems - the above issue is now the only remaining problem I believe.
+>
+> I was a little puzzled by it as I don't think the packager has
+> commented on this list so far. Can I suggest commenting on the bug
+> directly - it seems like it'll be accepted any day now. :)
+
+I was going to comment on the bug (and make the point that asking
+the mapnik developers about the problems might have been a good
+idea) but was waiting till I had an answer to this boost query...
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From tom at compton.nu  Mon Jul 28 16:58:32 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 28 Jul 2008 15:58:32 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+In-Reply-To: <364d303b0807280752r2319fd9dxef84751496ff7979@mail.gmail.com>
+	(Christopher Brown's message of "Mon\,
+	28 Jul 2008 15\:52\:56 +0100")
+References: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+	<364d303b0807280752r2319fd9dxef84751496ff7979@mail.gmail.com>
+Message-ID: <yeky73mf42v.fsf@vauxhall.uk.cyberscience.com>
+
+In message <364d303b0807280752r2319fd9dxef84751496ff7979 at mail.gmail.com>
+        Christopher Brown <snecklifter at gmail.com> wrote:
+
+> 2008/7/26 Tom Hughes <tom at compton.nu>:
+>
+>> In r707 Artem uncommented a line in SConstruct that makes it require
+>> boost_system, but as far as I can see none of the code uses this.
+>> Certainly mapnik still compiles without it.
+>>
+>> The problem is that boost_system is only present in the very latest
+>> boost (version 1.35.0) which makes compiling mapnik hard on many
+>> systems if it is required - even Fedora 9 only has boost 1.34.1 and F9
+>> is only a few months old.
+>
+> I am no longer working on mapnik's inclusion in Fedora due to time
+> constraints however someone else has taken up the task. The version
+> being worked on is 0.5.1 (which I take it the above code is not
+> included in) so this would not cause an issue. I imagine the new boost
+> would appear in Fedora 10.
+
+It was the nasty comments from the person currently trying to package
+it that led to me trying to build the current code and iron out any
+problems - the above issue is now the only remaining problem I believe.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From jburgess777 at googlemail.com  Mon Jul 28 23:24:34 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 28 Jul 2008 22:24:34 +0100
+Subject: [Mapnik-devel] r707 and boost_system
+In-Reply-To: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+References: <d82f70760807251631l40867714ked2c20e817ce0a66@mail.gmail.com>
+Message-ID: <1217280274.3754.6.camel@localhost.localdomain>
+
+On Sat, 2008-07-26 at 00:31 +0100, Tom Hughes wrote:
+> In r707 Artem uncommented a line in SConstruct that makes it require
+> boost_system, but as far as I can see none of the code uses this.
+> Certainly mapnik still compiles without it.
+> 
+
+Setting the last parameter on the line to False makes it optional and,
+as you say, it seems to work fine without it. I've only tested this on
+machines which run boost-1.34.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-boost-system-optional.patch
+Type: text/x-patch
+Size: 516 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080728/a4dbaf82/attachment.bin>
+
+From jburgess777 at googlemail.com  Tue Jul 29 01:05:48 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 29 Jul 2008 00:05:48 +0100
+Subject: [Mapnik-devel] [patch] prevent segv if character not found in any
+	font
+Message-ID: <1217286348.3754.46.camel@localhost.localdomain>
+
+I'm trying out the latest code with some Chinese names and find that the
+current code SEGV's if the character can not be located in any available
+font. 
+
+The font rendering code can not handle the case that we return a NULL
+glyph pointer so instead fall back to the empty square that we always
+used to render for missing characters.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-font-fallback-segv.patch
+Type: text/x-patch
+Size: 587 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080729/cc7b33ae/attachment.bin>
+
+From jburgess777 at googlemail.com  Tue Jul 29 01:35:41 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 29 Jul 2008 00:35:41 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+	<d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+Message-ID: <1217288141.3754.52.camel@localhost.localdomain>
+
+On Fri, 2008-07-25 at 01:25 +0100, Tom Hughes wrote:
+> I have also made the shield symbolizer in the agg renderer support
+> font sets.
+
+The support for fontset_name on shields seems to be missing from
+src/load_map.cpp:
+
+parse_text_symbolizer() wants either a face_name or fontset_name
+parse_shield_symbolizer() insists that you provide face_name
+
+
+Should I have a go at this or did it slip out of your commit?
+
+	Jon
+
+
+
+
+From tom at compton.nu  Tue Jul 29 02:14:01 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Tue, 29 Jul 2008 01:14:01 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <1217288141.3754.52.camel@localhost.localdomain>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com> 
+	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>
+	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com> 
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com> 
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org> 
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com> 
+	<d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+	<1217288141.3754.52.camel@localhost.localdomain>
+Message-ID: <9e3837c64f.tom@loxley.compton.nu>
+
+In message <1217288141.3754.52.camel at localhost.localdomain>
+          Jon Burgess <jburgess777 at googlemail.com> wrote:
+
+> On Fri, 2008-07-25 at 01:25 +0100, Tom Hughes wrote:
+> > I have also made the shield symbolizer in the agg renderer support
+> > font sets.
+> 
+> The support for fontset_name on shields seems to be missing from
+> src/load_map.cpp:
+> 
+> parse_text_symbolizer() wants either a face_name or fontset_name
+> parse_shield_symbolizer() insists that you provide face_name
+> 
+> Should I have a go at this or did it slip out of your commit?
+
+No, I didn't realise there was a problem there - I just looked at
+the agg renderer. Feel free to fix it.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From tom at compton.nu  Tue Jul 29 09:52:07 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Tue, 29 Jul 2008 08:52:07 +0100
+Subject: [Mapnik-devel] [patch] prevent segv if character not found in
+	any font
+In-Reply-To: <1217286348.3754.46.camel@localhost.localdomain> (Jon Burgess's
+	message of "Tue\, 29 Jul 2008 00\:05\:48 +0100")
+References: <1217286348.3754.46.camel@localhost.localdomain>
+Message-ID: <yekljzlf7q0.fsf@vauxhall.uk.cyberscience.com>
+
+In message <1217286348.3754.46.camel at localhost.localdomain>
+        Jon Burgess <jburgess777 at googlemail.com> wrote:
+
+> I'm trying out the latest code with some Chinese names and find that the
+> current code SEGV's if the character can not be located in any available
+> font. 
+>
+> The font rendering code can not handle the case that we return a NULL
+> glyph pointer so instead fall back to the empty square that we always
+> used to render for missing characters.
+
+Committed.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Tue Jul 29 22:03:38 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 29 Jul 2008 13:03:38 -0700
+Subject: [Mapnik-devel] Accessing symbolizer properties with python bindings
+Message-ID: <5E92F928-5C97-408A-9373-60CEBF6B566B@hailmail.net>
+
+I've noticed that is it possible to access the properties of each  
+style and rule of a layer with the python bindings after reading in an  
+xml mapfile with load_map().
+
+However, I can't tell if it possible or exposed yet to access the  
+properties of each symbolizer. Can anyone confirm this or let me know  
+if I am missing some hook.
+
+Here's a simple test that illustrates the lack of attributes available  
+for symbolizers:
+
+ >>> a_style = m.find_style(m.layers[0].styles[0])
+ >>> a_style.rules[0]
+<mapnik._mapnik.Rule object at 0x11875f0>
+
+ >>> dir(a_style.rules[0])
+['__class__', '__delattr__', '__dict__', '__doc__',  
+'__getattribute__', '__hash__', '__init__', '__instance_size__',  
+'__module__', '__new__', '__reduce__', '__reduce_ex__', '__repr__',  
+'__setattr__', '__str__', '__weakref__', 'abstract', 'active',  
+'filter', 'has_else', 'max_scale', 'min_scale', 'name', 'set_else',  
+'symbols', 'title']
+
+ >>> a_style.rules[0].symbols
+<mapnik._mapnik.Symbolizers object at 0x1178490>
+
+ >>> dir(a_style.rules[0].symbols)
+['__class__', '__contains__', '__delattr__', '__delitem__',  
+'__dict__', '__doc__', '__getattribute__', '__getitem__', '__hash__',  
+'__init__', '__instance_size__', '__iter__', '__len__', '__module__',  
+'__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__',  
+'__setitem__', '__str__', '__weakref__', 'append', 'extend']
+
+ >>> dir(a_style.rules[0].symbols[0])
+['__class__', '__delattr__', '__dict__', '__doc__',  
+'__getattribute__', '__hash__', '__init__', '__module__', '__new__',  
+'__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__str__',  
+'__weakref__']
+
+ >>> a_style.rules[0].symbols[0].__class__
+<class 'mapnik._mapnik.Symbolizer'>
+
+
+Ideally, here I'd like to access and modify a PolygonSymbolizer or  
+LineSymbolizer and the attributes such as stroke, color, line_width,  
+etc.
+
+
+Cheers,
+
+Dane
+
+
+
+
+
+
+From tom at compton.nu  Wed Jul 30 01:37:16 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 30 Jul 2008 00:37:16 +0100
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <9e3837c64f.tom@loxley.compton.nu>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>
+	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>
+	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>
+	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>
+	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+	<d6cb3ab10807241621j4d5ebc59r2808678c6e5d7399@mail.gmail.com>
+	<d82f70760807241725g38a5e499y3e7af44aa4beeebc@mail.gmail.com>
+	<1217288141.3754.52.camel@localhost.localdomain>
+	<9e3837c64f.tom@loxley.compton.nu>
+Message-ID: <d82f70760807291637h52633358je04f666dc35c368b@mail.gmail.com>
+
+2008/7/29 Tom Hughes <tom at compton.nu>:
+
+> In message <1217288141.3754.52.camel at localhost.localdomain>
+>          Jon Burgess <jburgess777 at googlemail.com> wrote:
+>
+>> On Fri, 2008-07-25 at 01:25 +0100, Tom Hughes wrote:
+>
+>> The support for fontset_name on shields seems to be missing from
+>> src/load_map.cpp:
+>>
+>> parse_text_symbolizer() wants either a face_name or fontset_name
+>> parse_shield_symbolizer() insists that you provide face_name
+>>
+>> Should I have a go at this or did it slip out of your commit?
+>
+> No, I didn't realise there was a problem there - I just looked at
+> the agg renderer. Feel free to fix it.
+
+Hopefully this should be fixed now.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From blake at hailmail.net  Wed Jul 30 03:54:15 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 29 Jul 2008 18:54:15 -0700
+Subject: [Mapnik-devel] Changeset 720 and cairo python bindings
+Message-ID: <6BA6C1C3-2119-480A-8BD9-3820794EA56F@hailmail.net>
+
+On ubuntu 7.10 I cairo builds and the renderer works with svn r 719.
+
+But after changeset http://trac.mapnik.org/changeset/720 the render3  
+and render4 functions are lost and I get this traceback:
+
+Python argument types in,     mapnik._mapnik.render(Map,  
+cairo.SVGSurface), did not match C++ signature:,      
+render(mapnik::Map, mapnik::Image32 {lvalue}),     render(mapnik::Map,  
+mapnik::Image32 {lvalue}, unsigned int, unsigned int),   File "/usr/ 
+lib/cgi-bin/mapnikserv.py",  line 515,  in <module>,      
+generate_file(format),   File "/usr/lib/cgi-bin/mapnikserv.py",  line  
+318,  in generate_file,     mapnik.render(mapnik_map, surface)
+
+This is my build output:
+
+http://dpaste.com/68352/
+
+-DHAVE_CAIRO and -DHAVE_PYCAIRO are included.
+
+Is there a need to specify a new cairo flag during the scons process  
+or is the code in changeset 720 not working as expected?
+
+Thanks,
+
+Dane
+
+
+
+From tom at compton.nu  Wed Jul 30 09:40:36 2008
+From: tom at compton.nu (Tom Hughes)
+Date: Wed, 30 Jul 2008 08:40:36 +0100
+Subject: [Mapnik-devel] Changeset 720 and cairo python bindings
+In-Reply-To: <6BA6C1C3-2119-480A-8BD9-3820794EA56F@hailmail.net> (Dane
+	Springmeyer's message of "Tue\, 29 Jul 2008 18\:54\:15 -0700")
+References: <6BA6C1C3-2119-480A-8BD9-3820794EA56F@hailmail.net>
+Message-ID: <yek7ib3es5n.fsf@vauxhall.uk.cyberscience.com>
+
+In message <6BA6C1C3-2119-480A-8BD9-3820794EA56F at hailmail.net>
+        Dane Springmeyer <blake at hailmail.net> wrote:
+
+> On ubuntu 7.10 I cairo builds and the renderer works with svn r 719.
+>
+> But after changeset http://trac.mapnik.org/changeset/720 the render3  
+> and render4 functions are lost and I get this traceback:
+
+This should be fixed in r726.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From dave at smartrak.co.nz  Fri Jul 25 01:05:04 2008
+From: dave at smartrak.co.nz (David Leaver)
+Date: Fri, 25 Jul 2008 11:05:04 +1200
+Subject: [Mapnik-devel] Questions about implementing fallback fonts
+In-Reply-To: <d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+References: <d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b@mail.gmail.com>	<2fc2c5f10805262336n34f0dcc4m170668a6bcae3ae7@mail.gmail.com>	<d6cb3ab10805262338r385aafddnb296f5289d71120c@mail.gmail.com>	<d6cb3ab10805270905r8986718v1419bb70e476ea14@mail.gmail.com>	<2fc2c5f10805270917r1aed63ean9816d153eb303de9@mail.gmail.com>	<d6cb3ab10805270921s6c4f8413r9062a26e42fc7b95@mail.gmail.com>	<d6cb3ab10805302345y609fa74aga3bb448acc55b941@mail.gmail.com>	<2fc2c5f10805310213j33b2ee2ek653f1f61220d5122@mail.gmail.com>	<d6cb3ab10805311508q1545a27aiaf47caf5cfa1af42@mail.gmail.com>	<FB5CD304-E5C7-4A6F-B005-C024279047E5@mapnik.org>
+	<d82f70760807241602v101f6ce5s310e376c8b9e0346@mail.gmail.com>
+Message-ID: <48890AA0.2050606@smartrak.co.nz>
+
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080725/584622d1/attachment.html>
+

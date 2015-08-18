@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Possible problems with concurrent database requests?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Possible%20problems%20with%20concurrent%20database%20requests%3F&In-Reply-To=%3C4BED2052.6090503%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001170.html">
+   <LINK REL="Next"  HREF="001172.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Possible problems with concurrent database requests?</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Possible%20problems%20with%20concurrent%20database%20requests%3F&In-Reply-To=%3C4BED2052.6090503%40remote.org%3E"
+       TITLE="[Mapnik-devel] Possible problems with concurrent database requests?">frederik at remote.org
+       </A><BR>
+    <I>Fri May 14 12:05:06 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001170.html">[Mapnik-devel] rule template
+</A></li>
+        <LI>Next message: <A HREF="001172.html">[Mapnik-devel] Possible problems with concurrent database	requests?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1171">[ date ]</a>
+              <a href="thread.html#1171">[ thread ]</a>
+              <a href="subject.html#1171">[ subject ]</a>
+              <a href="author.html#1171">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+    I am debugging a problem in an Apache module I have written, and 
+which uses Mapnik with a PostGIS data source.
+
+I am seeing sporadic &quot;standard exception: remote end has closed 
+connection unexpectedly&quot; error messages which originate from the libpq 
+library. I can however verify that the PostgreSQL server processes are 
+still alive and don't have any reason to complain.
+
+I have found that the problem *only* occurs if I make multiple 
+concurrent requests against my Apache server and this, in turn, leads to 
+different Mapnik instances using the database at the same time.
+
+This has me puzzled because I'm strictly multi-process; I run Apache in 
+prefork mode and neither does my module do anything with threads. I 
+cannot see anything in the whole design where the different Mapnik 
+instances would somehow have a chance of interfering with each other's 
+database connections - yet my testing points in that direction.
+
+Does anybody have a hunch where to look? Can you think of any reason why 
+two processes using Mapnik and talking to the same PostGIS database 
+would somehow interfere with each other?
+
+The mapnik::datasource_cache does not in any way operate across 
+processes, does it?
+
+Bye
+Frederik
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001170.html">[Mapnik-devel] rule template
+</A></li>
+	<LI>Next message: <A HREF="001172.html">[Mapnik-devel] Possible problems with concurrent database	requests?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1171">[ date ]</a>
+              <a href="thread.html#1171">[ thread ]</a>
+              <a href="subject.html#1171">[ subject ]</a>
+              <a href="author.html#1171">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch to convert tests to use nose
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20to%20convert%20tests%20to%20use%20nose&In-Reply-To=%3Cd6cb3ab10904081456i12092f69u7eefc2589766a725%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000843.html">
+   <LINK REL="Next"  HREF="000859.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch to convert tests to use nose</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20to%20convert%20tests%20to%20use%20nose&In-Reply-To=%3Cd6cb3ab10904081456i12092f69u7eefc2589766a725%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Patch to convert tests to use nose">beau at beaugunderson.com
+       </A><BR>
+    <I>Wed Apr  8 23:56:38 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000843.html">[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location
+</A></li>
+        <LI>Next message: <A HREF="000859.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#857">[ date ]</a>
+              <a href="thread.html#857">[ thread ]</a>
+              <a href="subject.html#857">[ subject ]</a>
+              <a href="author.html#857">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Attached is a patch to convert the current tests to use the 'nose'
+testing framework which emulates unittest and is fun to use.
+
+I did this conversion so that testing will be easier (just one easy to
+remember command from the main mapnik directory) and can be easily
+integrated into the buildbot and the SConsruct file.
+
+I hope it also makes it easier for people to contribute tests since
+the format is very easy to understand.
+
+# svn diff | diffstat
+ test_load_map.py |  108 ++++++++++++++++---------------------------------------
+ test_save_map.py |   86 +++++++++++++------------------------------
+ utilities.py     |    4 ++
+ 3 files changed, 63 insertions(+), 135 deletions(-)
+
+(The code ends up quite a bit smaller!)
+
+Try:
+
+# easy_install nose
+# cd tests/python
+# nosetests -v
+
+If we change the directory name from 'python' to 'python_tests' then
+nosetests can be run from the top-level mapnik directory (it discovers
+tests based on the module, file, class, and function names).
+
+Also attached is the current output (there are 4 failing tests; the
+ones that deal with db and datasource). They are broken in the
+previous implementation too.
+
+You can read about nose here:
+
+<A HREF="http://somethingaboutorange.com/mrl/projects/nose/">http://somethingaboutorange.com/mrl/projects/nose/</A>
+
+
+- Beau
+-------------- next part --------------
+# nosetests -v
+test_load_map.test_broken_files('../data/broken_maps/line_cap_style_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/min_scale_denom_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/text_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/point_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/datasource_type_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/datasource_type_missing.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/font_name_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/line_join_style_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/amenity.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/stroke_dasharray_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/line_pattern_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/bool_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/max_scale_denom_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/polygon_pattern_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/color_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/expression_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/bgcolor_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/style_name_missing.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/css_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/db_user_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/db_host_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/missing_icon.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/xml_tag_mismatch.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/shield_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken/does_not_exist.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/whitespace_at_end_of_filter_expression.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/point_symbolizers.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/bool_values.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/osm-styles.xml',) ... ok
+test_save_map.test ... ok
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/datasource_type_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py&quot;, line 182, in runTest
+    self.test(*self.arg)
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py&quot;, line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- &gt;&gt; begin captured stdout &lt;&lt; ---------------------
+Loading ../data/broken_maps/datasource_type_broken.xml
+
+--------------------- &gt;&gt; end captured stdout &lt;&lt; ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/datasource_type_missing.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py&quot;, line 182, in runTest
+    self.test(*self.arg)
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py&quot;, line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- &gt;&gt; begin captured stdout &lt;&lt; ---------------------
+Loading ../data/broken_maps/datasource_type_missing.xml
+
+--------------------- &gt;&gt; end captured stdout &lt;&lt; ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/db_user_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py&quot;, line 182, in runTest
+    self.test(*self.arg)
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py&quot;, line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- &gt;&gt; begin captured stdout &lt;&lt; ---------------------
+Loading ../data/broken_maps/db_user_broken.xml
+
+--------------------- &gt;&gt; end captured stdout &lt;&lt; ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/db_host_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py&quot;, line 182, in runTest
+    self.test(*self.arg)
+  File &quot;/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py&quot;, line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- &gt;&gt; begin captured stdout &lt;&lt; ---------------------
+Loading ../data/broken_maps/db_host_broken.xml
+
+--------------------- &gt;&gt; end captured stdout &lt;&lt; ----------------------
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.277s
+
+FAILED (failures=4)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 040809_new_tests.diff
+Type: application/octet-stream
+Size: 6407 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/7a9ba9fb/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/7a9ba9fb/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000843.html">[Mapnik-devel] Docs for &lt;FileSource&gt;/&lt;DataSource&gt; and relative	paths *from* XML location
+</A></li>
+	<LI>Next message: <A HREF="000859.html">[Mapnik-devel] Patch to convert tests to use nose
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#857">[ date ]</a>
+              <a href="thread.html#857">[ thread ]</a>
+              <a href="subject.html#857">[ subject ]</a>
+              <a href="author.html#857">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

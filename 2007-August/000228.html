@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] patch: python bindings on Mac OS X
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3C33C4715A-A108-4FA2-9126-F4C257BEC0B9%40artcom.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000227.html">
+   <LINK REL="Next"  HREF="000229.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] patch: python bindings on Mac OS X</H1>
+    <B>David Siegel</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3C33C4715A-A108-4FA2-9126-F4C257BEC0B9%40artcom.de%3E"
+       TITLE="[Mapnik-devel] patch: python bindings on Mac OS X">david at artcom.de
+       </A><BR>
+    <I>Mon Aug 27 03:10:03 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000227.html">[Mapnik-devel] Devel with mapnik
+</A></li>
+        <LI>Next message: <A HREF="000229.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#228">[ date ]</a>
+              <a href="thread.html#228">[ thread ]</a>
+              <a href="subject.html#228">[ subject ]</a>
+              <a href="author.html#228">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>hi,
+i just compiled mapnik on Mac OS X and fixed some minor issues:
+
+plugins/input/postgis/SConscript:
+- added boost_thread-mt to darwin builds
+
+demo/c++/rundemo.cpp:
+- setBackground() is now set_background()
+
+bindings/python/SConscript:
+- added boost_thread-mt to darwin builds
+- changed builder to LoadableModule which builds a so called &quot;bundle&quot;
+    on darwin and a shared library on all other systems.
+
+SConstruct:
+- freetype-config is now searched in the path.
+
+with the attached patch applied the python bindings work like charme.
+
+the patch is against revision 511. Could someone please verify
+that it doesn't break the linux build?
+
+cheers,
+    david
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-r511.patch
+Type: application/octet-stream
+Size: 2992 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070827/8f3fe51a/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070827/8f3fe51a/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000227.html">[Mapnik-devel] Devel with mapnik
+</A></li>
+	<LI>Next message: <A HREF="000229.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#228">[ date ]</a>
+              <a href="thread.html#228">[ thread ]</a>
+              <a href="subject.html#228">[ subject ]</a>
+              <a href="author.html#228">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

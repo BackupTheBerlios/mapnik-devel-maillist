@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about implementing fallback fonts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805302354k3315b66exce87ece4adb966df%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000633.html">
+   <LINK REL="Next"  HREF="000635.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about implementing fallback fonts</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805302354k3315b66exce87ece4adb966df%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about implementing fallback fonts">beau at beaugunderson.com
+       </A><BR>
+    <I>Sat May 31 08:54:30 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000633.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+        <LI>Next message: <A HREF="000635.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#634">[ date ]</a>
+              <a href="thread.html#634">[ thread ]</a>
+              <a href="subject.html#634">[ subject ]</a>
+              <a href="author.html#634">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Never mind, should have looked harder. I think this is actually a fix in
+character_dimensions...
+
+On Sat, May 31, 2008 at 12:45 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+wrote:
+
+&gt;<i> I've gotten farther on this patch (cleaned things up, fixed formatting,
+</I>&gt;<i> added logic to require either face_name or fontset_name but not neither or
+</I>&gt;<i> both) but I'm at a new stumbling block and need some opinions.
+</I>&gt;<i>
+</I>&gt;<i> It appears the &quot;hack&quot; I last spoke of currently breaks layout for fonts
+</I>&gt;<i> like Chinese if they are fallen back to. It works, but the characters are
+</I>&gt;<i> all smooshed together.
+</I>&gt;<i>
+</I>&gt;<i> I think the fix for this is to make get_string_info aware of the faces used
+</I>&gt;<i> (i.e. have it do fallback as well) and then change the struct returned to
+</I>&gt;<i> include an array of spacing data for the different faces and update the
+</I>&gt;<i> consumers of that info struct to be able to loop through it for each
+</I>&gt;<i> character and space accordingly.
+</I>&gt;<i>
+</I>&gt;<i> Sound OK?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Beau
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Tue, May 27, 2008 at 10:21 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Yes, there is that hack... I'll need someone who actually knows more about
+</I>&gt;&gt;<i> that section of code to comment I think.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As it stands, it won't affect &quot;regular&quot; font rendering so at least it's
+</I>&gt;&gt;<i> not a regression (because there was only support for 1 font in the past).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Beau
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, May 27, 2008 at 10:17 AM, Martijn van Oosterhout &lt;
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Tue, May 27, 2008 at 6:05 PM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+</I>&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;<i> &gt; That said, it works with my example so it can't be THAT bad--but
+</I>&gt;&gt;&gt;<i> someone
+</I>&gt;&gt;&gt;<i> &gt; competent should look at this and give me some feedback as I'm sure
+</I>&gt;&gt;&gt;<i> there
+</I>&gt;&gt;&gt;<i> &gt; are some optimizations and/or things to make it &quot;fit&quot; a little better
+</I>&gt;&gt;&gt;<i> that
+</I>&gt;&gt;&gt;<i> &gt; could be done.
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt; The patch is available here if someone wants to take a gander:
+</I>&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;<i> &gt;    <A HREF="http://www.beaugunderson.com/fallback_fonts.diff">http://www.beaugunderson.com/fallback_fonts.diff</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Colour me impressed. My feeble C++ knowledge tells me it looks ok. I
+</I>&gt;&gt;&gt;<i> can take care of the formatting if you want. I think a simple
+</I>&gt;&gt;&gt;<i> search/replace of tab with four spaces should do it.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> There's just the one little hack bit about font info, is that related
+</I>&gt;&gt;&gt;<i> to the kerning stuff or is it something unimportant?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Have a nice day,
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/b4b02d5c/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/b4b02d5c/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000633.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+	<LI>Next message: <A HREF="000635.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#634">[ date ]</a>
+              <a href="thread.html#634">[ thread ]</a>
+              <a href="subject.html#634">[ subject ]</a>
+              <a href="author.html#634">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

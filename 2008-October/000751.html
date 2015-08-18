@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000742.html">
+   <LINK REL="Next"  HREF="000752.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Martijn van Oosterhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">kleptog at gmail.com
+       </A><BR>
+    <I>Sun Oct 19 18:45:43 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000742.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000752.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#751">[ date ]</a>
+              <a href="thread.html#751">[ thread ]</a>
+              <a href="subject.html#751">[ subject ]</a>
+              <a href="author.html#751">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, Oct 7, 2008 at 10:21 PM, Andreas Volz &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lists at brachttal.net</A>&gt; wrote:
+&gt;<i> I use mapnik in an application with real time rendering. It works well,
+</I>&gt;<i> but the performance is really bad in big zoom levels.
+</I>
+The problem lies mostly with the fact that you are still fetching all
+the data. Even if you don't render all of it, the query still matches
+everything and mapnik still has to process it.
+
+The way the OSM schema handles this is by making a roads table which
+contains the data needed for lowzoom. And then not touching the
+detailed tables at all. This idea hasn't been pushed through enough
+yet. Really waterways should be split out and probably all
+highway=residential also and only use that at the absolute highest
+zoomlevels.
+
+One thing that could be fixed is have mapnik notice you're only
+rendering a subset of the data and get it to add clauses to the query
+to filter that out earlier. This would significantly reduce the amount
+of data mpanik needs to process.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000742.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000752.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#751">[ date ]</a>
+              <a href="thread.html#751">[ thread ]</a>
+              <a href="subject.html#751">[ subject ]</a>
+              <a href="author.html#751">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

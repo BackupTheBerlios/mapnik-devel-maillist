@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3CAB0A1897-A8EF-40DB-8DB2-0D3E28D3578B%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001066.html">
+   <LINK REL="Next"  HREF="001065.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3CAB0A1897-A8EF-40DB-8DB2-0D3E28D3578B%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem">blake at hailmail.net
+       </A><BR>
+    <I>Wed Feb 17 21:57:21 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001066.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+        <LI>Next message: <A HREF="001065.html">[Mapnik-devel] mapnik on openbsd
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1068">[ date ]</a>
+              <a href="thread.html#1068">[ thread ]</a>
+              <a href="subject.html#1068">[ subject ]</a>
+              <a href="author.html#1068">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Brad,
+
+Thanks very much for this report. I think I am the only Mapnik  
+developer that has had access to a big endian machine to test on. I  
+have thus far only focused on adding support for shapefiles and fixing  
+various rendering problems.
+
+After seeing your report I set up a postgres testing environment and  
+confirmed this problem and also confirmed that your fix works on my  
+big endian system without causing any regressions on little endian  
+testing setups that i have (ubuntu 9.10 64bit and os x 10.5 32 bit).
+
+My sense is that the #ifndef should have been removed when we added an  
+explicit native endianess flag to the AsBinary() function when pulling  
+geometries from Postgis: <A HREF="http://trac.mapnik.org/changeset/1190.">http://trac.mapnik.org/changeset/1190.</A> But  
+I'll need to look a bit closer to be sure.
+
+Either way I have created a ticket <A HREF="http://trac.mapnik.org/ticket/515">http://trac.mapnik.org/ticket/515</A>  
+to trac this issue and have put that in the cue to fix asap.
+
+Thanks,
+
+Dane
+
+
+On Feb 11, 2010, at 9:56 AM, Simpson Brad-C-Lockheed wrote:
+
+&gt;<i> Mapnik developers,
+</I>&gt;<i>
+</I>&gt;<i> Please be aware that the PostGIS interface does not work on machines  
+</I>&gt;<i> with big endian architectures.  I had to modify wkb.cpp in order to  
+</I>&gt;<i> get this to work.
+</I>&gt;<i>
+</I>&gt;<i> Here is what I learned by debugging this problem.  The PostGIS  
+</I>&gt;<i> plugin obtains the result set from the database server in an XDR  
+</I>&gt;<i> format (by design).  Inside wkb.cpp, the wkb_reader routine  
+</I>&gt;<i> determines no byte swapping is necessary by setting needSwap_ = 0.   
+</I>&gt;<i> This causes routines such as read_integer to call read_int32_ndr  
+</I>&gt;<i> (instead of read_int32_xdr), and read_double to call read_double_ndr  
+</I>&gt;<i> (instead of read_double_xdr).  I found the read_[int32|double]_[ndr| 
+</I>&gt;<i> xdr] routines in global.hpp.  The read_int32_ndr and read_double_ndr  
+</I>&gt;<i> performed the expected but unnecessary byte swapping.  Since the  
+</I>&gt;<i> database result set was in an XDR format, converting it to NDR made  
+</I>&gt;<i> the values incompatible with the big endian cpu.
+</I>&gt;<i>
+</I>&gt;<i> To resolve this problem, I modified the lines:
+</I>&gt;<i> #ifndef MAPNIK_BIG_ENDIAN
+</I>&gt;<i>      needSwap_=byteOrder_?wkbXDR:wkbNDR;
+</I>&gt;<i> #else
+</I>&gt;<i>      needSwap_=byteOrder_?wkbNDR:wkbXDR;
+</I>&gt;<i> #endif
+</I>&gt;<i> within wkb_reader to be:
+</I>&gt;<i> //#ifndef MAPNIK_BIG_ENDIAN
+</I>&gt;<i>      needSwap_=byteOrder_?wkbXDR:wkbNDR;
+</I>&gt;<i> //#else
+</I>&gt;<i> //   needSwap_=byteOrder_?wkbNDR:wkbXDR;
+</I>&gt;<i> //#endif
+</I>&gt;<i> This had the effect of setting needSwap_ to true, calling  
+</I>&gt;<i> read_int32_xdr and read_double_xdr (instead of read_int32_ndr and  
+</I>&gt;<i> read_double_ndr), but ultimately no byte swapping is performed.   
+</I>&gt;<i> Thus I could process PostGIS data in my application.
+</I>&gt;<i>
+</I>&gt;<i> Please reply, comment on my change, and let me know what the long  
+</I>&gt;<i> term solution should be.  Also, please test mapnik and supported  
+</I>&gt;<i> plugins on big endian machines prior to future software releases.
+</I>&gt;<i>
+</I>&gt;<i> Sincerely,
+</I>&gt;<i> Brad Simpson
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001066.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+	<LI>Next message: <A HREF="001065.html">[Mapnik-devel] mapnik on openbsd
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1068">[ date ]</a>
+              <a href="thread.html#1068">[ thread ]</a>
+              <a href="subject.html#1068">[ subject ]</a>
+              <a href="author.html#1068">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

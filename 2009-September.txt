@@ -1,0 +1,354 @@
+From andreas at theossoft.net  Tue Sep  1 09:35:29 2009
+From: andreas at theossoft.net (Andreas Theofilu)
+Date: Tue, 1 Sep 2009 09:35:29 +0200
+Subject: [Mapnik-devel] Strange behavior with filters
+Message-ID: <200909010935.30079.andreas@theossoft.net>
+
+Hi,
+
+I currently try to support shape files in my application. To make it for the 
+user as easy as possible, I want to create a default map file, containing all 
+information's to render a beautiful map. Because my application is a KDE 
+program, I want to use the internal paths KDE uses. Therefore I don't use the 
+function "load_map()" to read the map file, but wrote my own parser to read 
+the map files. this allows me, to set the path of a polygon pattern 
+symbolizer, for example, to the place where the picture is really saved.
+
+The parser works now and I can use the shape files. I've played around with 
+various rules in the map file and found out, that every rule containing a 
+"Filter"- condition, doesn't work. So I wrote a small program to just test 
+this, and it works. So there seems no problem with Mapnik itself.
+
+I used the function "save_map()" to see what my applications sets. If I 
+compare the result of "save_map()" with the map file, I can't see any 
+difference. The filter conditions are there as expected. Now I don't 
+understand, why rules with filter conditions in my application are ignored by 
+Mapnik, while they are not in my test application.
+
+I use Mapnik 0.6 on a 64 bit Debian testing. Mapnik was installed from the 
+Debian packages.
+
+The source of my small test program together with a picture of it's result and 
+a small map file I used for tests, is available under:
+
+   http://www.theosys.at/maptest/
+
+I use the shape files from http://download.geofabrik.de/osm/europe.
+
+The following link points to the source of my self written interpreter:
+
+   http://www.theosys.at/websvn/filedetails.php?repname=repos+1&path=%2Fsportwatcher%2Ftrunk%2Fsrc%2Frender.cpp
+
+The function "startDocument()" at line 196 is called before the parser starts 
+and initializes everything.
+The function "startElement()" at line 318 is called every time the parser 
+finds an open element in the XML file. It sets some flags and writes the 
+contents of the attributes, if there are some, into some structures.
+The function "endElement()" at line 866 is called every time the parser finds 
+a close element in the XML file. It calls most of the Mapnik functions and is 
+controlled with the flags set in the previous function.
+The function "characters()" at line 1148 is called every time the parser finds 
+some text between some elements (<Filter> filter condition </Filter>). The 
+filter conditions of the rules are set there (line 1163).
+The function "getMap()" at line 1352 is called to start the parser. Here the 
+XML parser is initialized and started if needed.
+
+To download the whole application type:
+
+   svn co svn://www.theosys.at/sportwatcher/trunk sportwatcher
+
+I know this question sounds like: "Would you please find the error for me". 
+But after several days of debugging I'm at a point where I can't find any 
+explanation for the behavior of my code.
+-- 
+Andreas Theofilu
+http://www.TheosSoft.net/
+
+                     --==| Enjoy the science of Linux! |==--
+
+
+
+
+
+From andreas at theossoft.net  Tue Sep  1 08:45:18 2009
+From: andreas at theossoft.net (Andreas Theofilu)
+Date: Tue, 1 Sep 2009 08:45:18 +0200
+Subject: [Mapnik-devel] Strange behavior with filters
+Message-ID: <200909010845.18717.andreas@theossoft.net>
+
+Hi,
+
+I currently try to support shape files in my application. To make it for the 
+user as easy as possible, I want to create a default map file, containing all 
+information's to render a beautiful map. Because my application is a KDE 
+program, I want to use the internal paths KDE uses. Therefore I don't use the 
+function "load_map()" to read the map file, but wrote my own parser to read 
+the map files. this allows me, to set the path of a polygon pattern 
+symbolizer, for example, to the place where the picture is really saved.
+
+The parser works now and I can use the shape files. I've played around with 
+various rules in the map file and found out, that every rule containing a 
+"Filter"- condition, doesn't work. So I wrote a small program to just test 
+this, and it works. So there seems no problem with Mapnik itself.
+
+I used the function "save_map()" to see what my applications sets. If I 
+compare the result of "save_map()" with the map file, I can't see any 
+difference. The filter conditions are there as expected. Now I don't 
+understand, why rules with filter conditions in my application are ignored by 
+Mapnik, while they are not in my test application.
+
+I use Mapnik 0.6 on a 64 bit Debian testing. Mapnik was installed from the 
+Debian packages.
+
+I've attached the test application to this mail. There is also the PNG file 
+attached, that is produced by the test application and a small map file I use 
+to test my real application. I use the shape files from 
+http://download.geofabrik.de/osm/europe.
+
+The following link points to the source of my self written interpreter:
+
+   http://www.theosys.at/websvn/filedetails.php?repname=repos+1&path=%2Fsportwatcher%2Ftrunk%2Fsrc%2Frender.cpp
+
+To download the whole application type:
+
+   svn co svn://www.theosys.at/sportwatcher/trunk sportwatcher
+
+I know this question sounds like: "Would you please find the error for me". 
+But after several days of debugging I'm at a point where I can't find any 
+explanation for the behavior of my code.
+-- 
+Andreas Theofilu
+http://www.TheosSoft.net/
+
+                     --==| Enjoy the science of Linux! |==--
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: maptest.cpp
+Type: text/x-c++src
+Size: 6950 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090901/aad1fc34/attachment.cpp>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: demo.png
+Type: image/png
+Size: 362997 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090901/aad1fc34/attachment.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shape.xml
+Type: application/xml
+Size: 1117 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090901/aad1fc34/attachment.xml>
+
+From andreas at theossoft.net  Thu Sep  3 15:50:48 2009
+From: andreas at theossoft.net (Andreas Theofilu)
+Date: Thu, 3 Sep 2009 15:50:48 +0200
+Subject: [Mapnik-devel] Mapnik filter expressions and KDE4
+Message-ID: <200909031550.49175.andreas@theossoft.net>
+
+Hi,
+
+I'm developing a KDE application with KDE4 (4.2) and using Mapnik to read some 
+shape files and render a map. The program is written in C++ and I'm using the 
+C++ API to access Mapnik. My application work, but at the moment where I link 
+with KDE libraries, the filter expressions stop work. Mapnik still accept them 
+and if I create a map file with "save_map()" all filter expressions are there. 
+The problem is, that none of them seems to match. A small test program without 
+KDE libraries showed, that the filter expressions do match. But as soon as I 
+link with KDE libraries, the filters stop to work. So only the rules without 
+any filter expression are drawn.
+
+Has anybody run into this problem already? Does anybody know a work around or 
+is there something I should set at compile time? I've tried a lot, but found 
+no solution and I'm not that deep into Mapnik to understand the details of how 
+it applies the filters to shape files.
+
+I'm using Mapnik 0.6.0, the one coming with Debian testing currently. I hope 
+someone can give me a hint or even a solution.
+-- 
+Andreas Theofilu
+http://www.TheosSoft.net/
+
+                     --==| Enjoy the science of Linux! |==--
+
+
+
+From andreas at theossoft.net  Fri Sep  4 13:12:49 2009
+From: andreas at theossoft.net (Andreas Theofilu)
+Date: Fri, 4 Sep 2009 13:12:49 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik filter expressions and KDE4
+In-Reply-To: <200909041203.47194.andreas@theossoft.net>
+References: <200909041203.47194.andreas@theossoft.net>
+Message-ID: <200909041312.50403.andreas@theossoft.net>
+
+Am Freitag, 4. September 2009 12:03:47 schrieb Andreas Theofilu:
+> Hi,
+>
+> I'm developing a KDE application with KDE4 (4.2) and using Mapnik to read
+> some shape files and render a map. The program is written in C++ and I'm
+> using the C++ API to access Mapnik. My application work, but at the moment
+> where I link with KDE libraries, the filter expressions stop work. Mapnik
+> still accept them and if I create a map file with "save_map()" all filter
+> expressions are there. The problem is, that none of them seems to match. A
+> small test program without KDE libraries showed, that the filter
+> expressions do match. But as soon as I link with KDE libraries, the filters
+> stop to work. So only the rules without any filter expression are drawn.
+>
+[...]
+I've found the solution!! It's the compiler option "-fvisibility=hidden". This 
+is set with cmake. To deactivate it, it's enough to add the option
+"-fvisibility=default" and compile the whole program again. Then the filters 
+of Mapnik work as expected.
+-- 
+Andreas Theofilu
+http://www.TheosSoft.net/
+
+                     --==| Enjoy the science of Linux! |==--
+
+
+
+From ekondrashev at rambler.ru  Fri Sep 25 22:34:11 2009
+From: ekondrashev at rambler.ru (Eugen Kondrashev)
+Date: Sat, 26 Sep 2009 00:34:11 +0400
+Subject: [Mapnik-devel] Highlight an object clicking it
+Message-ID: <1052284346.1253910851.157844648.36519@mcgi19.rambler.ru>
+
+Hi!
+I have a quastion about mapnik features.  I've played with mapnik 
+examples for some time, but didn't found an answer.
+So,
+Is there a possibility to highlight a target object by a click?
+For example if we have a map with a number of roads and buildings, is it 
+possible to change a color/size of one road(building) having clicked 
+(x,y) coords only.
+Knowing that output image is depended on applied xml and differs from 
+shape file data, I hardly can imagine if it is possible.
+Please let me know if there is such a possibility and if so, how can i 
+organize it?
+Thanks!
+
+--
+Eugen Kondrashev.
+
+
+From blake at hailmail.net  Sun Sep 27 00:00:43 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sat, 26 Sep 2009 15:00:43 -0700
+Subject: [Mapnik-devel] Highlight an object clicking it
+In-Reply-To: <1052284346.1253910851.157844648.36519@mcgi19.rambler.ru>
+References: <1052284346.1253910851.157844648.36519@mcgi19.rambler.ru>
+Message-ID: <3003A9DC-731C-4BCF-A932-81748D7675B2@hailmail.net>
+
+Yes there is. See the query_point or query_map_point functions of the  
+Mapnik::map class.
+
+Dane
+
+
+
+On Sep 25, 2009, at 1:34 PM, Eugen Kondrashev <ekondrashev at rambler.ru>  
+wrote:
+
+> Hi!
+> I have a quastion about mapnik features.  I've played with mapnik
+> examples for some time, but didn't found an answer.
+> So,
+> Is there a possibility to highlight a target object by a click?
+> For example if we have a map with a number of roads and buildings,  
+> is it
+> possible to change a color/size of one road(building) having clicked
+> (x,y) coords only.
+> Knowing that output image is depended on applied xml and differs from
+> shape file data, I hardly can imagine if it is possible.
+> Please let me know if there is such a possibility and if so, how can i
+> organize it?
+> Thanks!
+>
+> --
+> Eugen Kondrashev.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From blake at hailmail.net  Sun Sep 27 00:42:08 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sat, 26 Sep 2009 15:42:08 -0700
+Subject: [Mapnik-devel] Highlight an object clicking it
+In-Reply-To: <3003A9DC-731C-4BCF-A932-81748D7675B2@hailmail.net>
+References: <1052284346.1253910851.157844648.36519@mcgi19.rambler.ru>
+	<3003A9DC-731C-4BCF-A932-81748D7675B2@hailmail.net>
+Message-ID: <BA784761-DF4C-41A6-8DB8-0984464C90D7@hailmail.net>
+
+while api docs are here:
+
+http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Map-class.html#query_map_point
+
+and some sample usage here:
+
+http://mapnik-utils.googlecode.com/svn/sandbox/testing/query_point/query_features.py
+
+Dane
+
+
+On Sep 26, 2009, at 3:00 PM, Dane Springmeyer wrote:
+
+> Yes there is. See the query_point or query_map_point functions of the
+> Mapnik::map class.
+>
+> Dane
+>
+>
+>
+> On Sep 25, 2009, at 1:34 PM, Eugen Kondrashev <ekondrashev at rambler.ru>
+> wrote:
+>
+>> Hi!
+>> I have a quastion about mapnik features.  I've played with mapnik
+>> examples for some time, but didn't found an answer.
+>> So,
+>> Is there a possibility to highlight a target object by a click?
+>> For example if we have a map with a number of roads and buildings,
+>> is it
+>> possible to change a color/size of one road(building) having clicked
+>> (x,y) coords only.
+>> Knowing that output image is depended on applied xml and differs from
+>> shape file data, I hardly can imagine if it is possible.
+>> Please let me know if there is such a possibility and if so, how  
+>> can i
+>> organize it?
+>> Thanks!
+>>
+>> --
+>> Eugen Kondrashev.
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Mon Sep 28 15:48:30 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 28 Sep 2009 06:48:30 -0700
+Subject: [Mapnik-devel] Commit access for Igor Podolskiy
+Message-ID: <016A60CD-6699-4253-8D0B-4CFB48810E10@hailmail.net>
+
+I'd like to recommend that Igor Podolskiy be granted access to svn  
+trunk. He has showed an excellent eye for detail in providing patches  
+for tickets #29  and #255, and a deep understanding of both mapnik  
+python usage and the need for good docstrings.
+
+Dane
+
+

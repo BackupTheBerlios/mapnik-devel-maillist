@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] text placement beyond limit of road
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20text%20placement%20beyond%20limit%20of%20road&In-Reply-To=%3C1182459931.7868.0.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000178.html">
+   <LINK REL="Next"  HREF="000180.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] text placement beyond limit of road</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20text%20placement%20beyond%20limit%20of%20road&In-Reply-To=%3C1182459931.7868.0.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] text placement beyond limit of road">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Thu Jun 21 23:05:31 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000178.html">[Mapnik-devel] text placement beyond limit of road
+</A></li>
+        <LI>Next message: <A HREF="000180.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#179">[ date ]</a>
+              <a href="thread.html#179">[ thread ]</a>
+              <a href="subject.html#179">[ subject ]</a>
+              <a href="author.html#179">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>This fixes the rendering problem I was seeing in this example.
+Thanks for fixing it so promptly.
+
+	Jon
+
+
+On Thu, 2007-06-21 at 11:42 -0400, Vince Spader wrote:
+&gt;<i> I just committed a patch to the subversion trunk that should fix this issue.
+</I>&gt;<i> 
+</I>&gt;<i> --Vincent Spader
+</I>&gt;<i> 
+</I>&gt;<i> Artem Pavlenko wrote:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; On 20 Jun 2007, at 22:38, Jon Burgess wrote:
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt;&gt; I noticed 2 roads in an H shape where vertical road names have been
+</I>&gt;<i> &gt;&gt; moved beyond the limit of the roads, presumably due to a clash with the
+</I>&gt;<i> &gt;&gt; horizontal name. See the attached image.
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Should the vertical names be restricted to prevent them extending
+</I>&gt;<i> &gt;&gt; significantly past the end of the roads?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Yes, sounds reasonable. I'll try to tweak placement_finder to fail when 
+</I>&gt;<i> &gt; text string doesn't fit well.
+</I>&gt;<i> &gt; Artem
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt;&gt; Jon
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; &lt;mapnik-text1.png&gt;
+</I>&gt;<i> &gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Artem Pavlenko
+</I>&gt;<i> &gt; <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; ------------------------------------------------------------------------
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000178.html">[Mapnik-devel] text placement beyond limit of road
+</A></li>
+	<LI>Next message: <A HREF="000180.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#179">[ date ]</a>
+              <a href="thread.html#179">[ thread ]</a>
+              <a href="subject.html#179">[ subject ]</a>
+              <a href="author.html#179">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

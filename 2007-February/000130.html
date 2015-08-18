@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling mapnik in macos X
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20mapnik%20in%20macos%20X&In-Reply-To=%3C61d499b70702280117qef82ebeha919c689039a6b5a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000127.html">
+   <LINK REL="Next"  HREF="000131.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling mapnik in macos X</H1>
+    <B>bambang</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20mapnik%20in%20macos%20X&In-Reply-To=%3C61d499b70702280117qef82ebeha919c689039a6b5a%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compiling mapnik in macos X">bambang at gmail.com
+       </A><BR>
+    <I>Wed Feb 28 10:17:49 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000127.html">[Mapnik-devel] typo in rundemo.cpp
+</A></li>
+        <LI>Next message: <A HREF="000131.html">[Mapnik-devel] Google Summer of Code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#130">[ date ]</a>
+              <a href="thread.html#130">[ thread ]</a>
+              <a href="subject.html#130">[ subject ]</a>
+              <a href="author.html#130">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dear All,
+
+I finally managed to compile mapnik on my macbook running Macos X ver 10.4.8,
+attached is the patch file.
+
+The patch modifies library related parameters in several SConscript files.
+The compiler (gcc version 4.0.1 (Apple Computer, Inc. build 5250)) is still
+complaining about -pthread error, but It compiles successfully.
+
+To apply this patch just cd to the mapnik source directory and do:
+
+patch -p1 &lt;patch-file&gt;
+
+Please adjust the SConstruct file first and make sure the path to the
+various include and libraries are match with your system.
+
+Cheers.
+
+-bambang-
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: macos.patch
+Type: application/octet-stream
+Size: 5882 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000127.html">[Mapnik-devel] typo in rundemo.cpp
+</A></li>
+	<LI>Next message: <A HREF="000131.html">[Mapnik-devel] Google Summer of Code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#130">[ date ]</a>
+              <a href="thread.html#130">[ thread ]</a>
+              <a href="subject.html#130">[ subject ]</a>
+              <a href="author.html#130">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

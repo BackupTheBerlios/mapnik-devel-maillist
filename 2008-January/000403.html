@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mac 10.4 build problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem&In-Reply-To=%3C44D183B6-80E2-47FA-AEC6-702C00278BFF%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000402.html">
+   <LINK REL="Next"  HREF="000409.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mac 10.4 build problem</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mac%2010.4%20build%20problem&In-Reply-To=%3C44D183B6-80E2-47FA-AEC6-702C00278BFF%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mac 10.4 build problem">blake at hailmail.net
+       </A><BR>
+    <I>Thu Jan 10 01:30:31 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000402.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+        <LI>Next message: <A HREF="000409.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#403">[ date ]</a>
+              <a href="thread.html#403">[ thread ]</a>
+              <a href="subject.html#403">[ subject ]</a>
+              <a href="author.html#403">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I'm running Mac OS 10.4.11 and attempting to build mapnik with scons  
+from the current SVN trunk
+
+I get a error with libtool and libiconv:
+
+ld: Undefined symbols:
+_libiconv
+_libiconv_close
+_libiconv_open
+/usr/bin/libtool: internal link edit command failed
+scons: *** [src/libmapnik.dylib] Error 1
+scons: building terminated because of errors.
+spring:~/mapnik/trunk
+
+and I see a warning just above it:
+
+./boost/property_tree/detail/ptree_implementation.hpp:800: warning:  
+'tmp$value_' may be used uninitialized in this function
+
+i've got libiconv in /usr/libs/ and /usr/local/libs/
+
+-dane
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000402.html">[Mapnik-devel] C++ Demo crash in current SVN
+</A></li>
+	<LI>Next message: <A HREF="000409.html">[Mapnik-devel] Mac 10.4 build problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#403">[ date ]</a>
+              <a href="thread.html#403">[ thread ]</a>
+              <a href="subject.html#403">[ subject ]</a>
+              <a href="author.html#403">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

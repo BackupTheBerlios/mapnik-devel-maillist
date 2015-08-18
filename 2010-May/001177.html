@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support GSoC's project
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3CAANLkTikkrafbhnTw4DCvcGaSrQdVEN0Ukzxct_DKc9AQ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001176.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support GSoC's project</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3CAANLkTikkrafbhnTw4DCvcGaSrQdVEN0Ukzxct_DKc9AQ%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Better Print Support GSoC's project">artem at mapnik.org
+       </A><BR>
+    <I>Thu May 27 17:03:10 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001176.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1177">[ date ]</a>
+              <a href="thread.html#1177">[ thread ]</a>
+              <a href="subject.html#1177">[ subject ]</a>
+              <a href="author.html#1177">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks, Dane!
+
+Carlos, also have a look at SVG spec:
+
+<A HREF="http://www.w3.org/TR/SVG/coords.html#Units">http://www.w3.org/TR/SVG/coords.html#Units</A>
+
+Artem
+
+
+2010/5/27 Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;
+
+&gt;<i> Hello Carlos,
+</I>&gt;<i>
+</I>&gt;<i> Basic shortcomings:
+</I>&gt;<i>
+</I>&gt;<i> 1) Needs to be updated to work with Mapnik2 (lots of changes so it would
+</I>&gt;<i> likely be easiest to start from scratch rather than trying to apply the
+</I>&gt;<i> patch to trunk)
+</I>&gt;<i>
+</I>&gt;<i> 2) Has hardcoded assumptions about Mapnik's assumed pixel size (.00028
+</I>&gt;<i> meters) and conversion to inches .
+</I>&gt;<i>
+</I>&gt;<i>   * My thought is that you should, for now, remove any notion of resolution
+</I>&gt;<i> and rather just start with a raw scale_factor that can be passed by the user
+</I>&gt;<i> from the XML mapfile into the rendering pipeline - this would be a good
+</I>&gt;<i> first step for testing, and resolution assumptions (the therefore units) can
+</I>&gt;<i> come next.
+</I>&gt;<i>   * Also a key limitation currently: what if pixels are of dynamic size or
+</I>&gt;<i> width != height? <A HREF="http://trac.mapnik.org/ticket/196.">http://trac.mapnik.org/ticket/196.</A> Thinking through this
+</I>&gt;<i> now will be beneficial for design.
+</I>&gt;<i>
+</I>&gt;<i> 3) Yes, the way that road casings are traditionally done with multiple
+</I>&gt;<i> overlapping lines (multiple symbolizers in XML) make scaling and maintaining
+</I>&gt;<i> the right look tricky. But, I'd say don't worry about this after you've got
+</I>&gt;<i> the basics working against trunk.
+</I>&gt;<i>
+</I>&gt;<i> 4) One global scale factor may not be enough for users. I think you should
+</I>&gt;<i> consider how to potentially allow users to pass scale factors that may
+</I>&gt;<i> differently affect fonts vs. symbols vs. lines, etc. I've not given much
+</I>&gt;<i> thought to this yet, so I'd be interested to see how you think this could be
+</I>&gt;<i> done cleanly, both in terms of the interface exposed to the user and
+</I>&gt;<i> internally.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On May 26, 2010, at 9:24 PM, Carlos Enrique L&#243;pez Garc&#233;s wrote:
+</I>&gt;<i>
+</I>&gt;<i> Good evening, I was wondering if anyone who applied the patch of ticket 343
+</I>&gt;<i> and analyzed the code could tell me about its shortcomings (things you
+</I>&gt;<i> noticed in the maps when rendered). From the comments of the ticket I see
+</I>&gt;<i> that it has some minor issues like thick road casings. I haven't seen this
+</I>&gt;<i> myself because I haven't run the test script submitted by Mr. Springmeyer;
+</I>&gt;<i> I'm waiting for the world boundaries files to download (
+</I>&gt;<i> <A HREF="http://wiki.openstreetmap.org/wiki/Mapnik">http://wiki.openstreetmap.org/wiki/Mapnik</A>) to be able to do it.
+</I>&gt;<i>
+</I>&gt;<i> Any comment is greatly welcome.
+</I>&gt;<i>
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> Carlos L&#243;pez
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/764c99cb/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100527/764c99cb/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001176.html">[Mapnik-devel] Better Print Support GSoC's project
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1177">[ date ]</a>
+              <a href="thread.html#1177">[ thread ]</a>
+              <a href="subject.html#1177">[ subject ]</a>
+              <a href="author.html#1177">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

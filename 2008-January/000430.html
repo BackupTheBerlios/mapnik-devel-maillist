@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [OSM-dev] relief madness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20relief%20madness&In-Reply-To=%3C8D6FEBBC-5C2D-4F3E-B4CE-B49C0656B40A%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000429.html">
+   <LINK REL="Next"  HREF="000431.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [OSM-dev] relief madness</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20relief%20madness&In-Reply-To=%3C8D6FEBBC-5C2D-4F3E-B4CE-B49C0656B40A%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] [OSM-dev] relief madness">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jan 16 16:27:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000429.html">[Mapnik-devel] [OSM-dev] relief madness
+</A></li>
+        <LI>Next message: <A HREF="000431.html">[Mapnik-devel] Rendering problem when trying to use render() with	offset
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#430">[ date ]</a>
+              <a href="thread.html#430">[ thread ]</a>
+              <a href="subject.html#430">[ subject ]</a>
+              <a href="author.html#430">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+Thanks for the reference.  I did see it a while ago but your email  
+prompt me to look again.
+Basically, my approach is similar - fill voids with data from another  
+source. My intention is to use SRTM3 for making maps and I'm hoping I  
+can get away without accumulating all the data used by CGIAR (I have  
+limited time/resources ..) As for algorithms, AFAIK 'Delta surface  
+filling' delivers best results for this task (and it used by NGA, ESRI).
+
+To summarize, I'd rather use already available data from CGIAR but  
+it's not free for commercial use. I hope my approach will deliver  
+good 'visual' results for making 2D maps , I'm not worried about 3D  
+modeling at this time.
+
+Cheers
+Artem
+
+On 15 Jan 2008, at 23:08, Dane Springmeyer wrote:
+
+&gt;<i> Artem,
+</I>&gt;<i>   That impressive.  In thinking about void filling you might consult
+</I>&gt;<i> this reference on the methods used by others:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://srtm.csi.cgiar.org/SRTMdataProcessingMethodology.asp">http://srtm.csi.cgiar.org/SRTMdataProcessingMethodology.asp</A>
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On Jan 15, 2008, at 2:16 PM, Artem Pavlenko wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I did some more relief hacking today. Here is resampled (to match
+</I>&gt;&gt;<i> SRTM3 resolution) and masked gtopo30 based relief, which looks not
+</I>&gt;&gt;<i> bad at all :
+</I>&gt;&gt;<i> <A HREF="http://artem.dev.openstreetmap.org/files/reliefs/gtopo30.jpg">http://artem.dev.openstreetmap.org/files/reliefs/gtopo30.jpg</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm hoping to use gtopo30 as a 'fill' layer for fixing voids in SRTM3
+</I>&gt;&gt;<i> - delta surface filling.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Artem
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000429.html">[Mapnik-devel] [OSM-dev] relief madness
+</A></li>
+	<LI>Next message: <A HREF="000431.html">[Mapnik-devel] Rendering problem when trying to use render() with	offset
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#430">[ date ]</a>
+              <a href="thread.html#430">[ thread ]</a>
+              <a href="subject.html#430">[ subject ]</a>
+              <a href="author.html#430">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

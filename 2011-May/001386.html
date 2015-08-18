@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Colorizer and data types
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CBANLkTimZWVW%2BNyWrABi8tNioeZSvDEw_eg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001385.html">
+   <LINK REL="Next"  HREF="001388.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Colorizer and data types</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CBANLkTimZWVW%2BNyWrABi8tNioeZSvDEw_eg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Raster Colorizer and data types">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Wed May  4 09:13:12 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001385.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+        <LI>Next message: <A HREF="001388.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1386">[ date ]</a>
+              <a href="thread.html#1386">[ thread ]</a>
+              <a href="subject.html#1386">[ subject ]</a>
+              <a href="author.html#1386">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Is there more documentation on this feature than the wiki page that is
+linked to from the github page
+(<A HREF="https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer">https://github.com/BenMoores/mapnik-trunk/wiki/RasterColorizer</A>)? If
+no, I have some questions (I've only been on mapnik-devel since early
+this year so I may have missed previous discussion on this, sorry
+about that):
+
+- Why are only GDAL plugins supported? Are there more such
+dependencies where rendering depends on the data source type, and if
+so are they being kept track of, and is there a plan how to eliminate
+them?
+- Does color blending work in RGB space and RGB space only? If so, the
+linear mode (btw may I suggest calling this 'blending-mode' or
+something more descriptive than 'mode') is (in my experience) not
+going to be very useful I'm afraid. We've had quite bad experiences
+with making maps informative with RGB linear interpolation, to the
+point where we (at my company) changed the default to HSL and as far
+as I remember have never used RGB again because all maps came out
+better using HSL.
+- The documentation/wiki page talks about 'stops' and stop colors,
+which I think in the end describes a multi-color gradient, right? I
+think it would be better to describe the functionality in those terms,
+as I think it's more intuitive. Also it would match better with other
+places in mapnik where gradients are used; there could be one central
+place where how gradients work in Mapnik is described in abstract form
+and only additions that are specific for some use cases would need to
+be described separately.
+- What does the 'epsilon' parameter do? It says it's used for fuzzing
+the color, but how does that work?
+
+
+cheers,
+
+roel
+
+
+On Wed, May 4, 2011 at 3:25 AM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+&gt;<i> Maxime,
+</I>&gt;<i> I've just merged into trunk the awesome work by Ben Moores and Rob Coup:
+</I>&gt;<i> <A HREF="https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107">https://github.com/mapnik/mapnik2/commit/3b8c06ff8a945913b4aac6d3631cea090e1cb107</A>
+</I>&gt;<i> I notice you have a few stale forks of mapnik on github. Can you take a look
+</I>&gt;<i> at this work and make sure it captures the fixes you also had in mind?
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On Nov 11, 2010, at 1:13 PM, Maxime Dupuis wrote:
+</I>&gt;<i>
+</I>&gt;<i> Hi Robert,
+</I>&gt;<i> I'll file the bug either tonight or tomorrow morning and I'll attach a
+</I>&gt;<i> geotiff I had problems with.
+</I>&gt;<i> Do you have any written plans for the refactor? How you plan to do things
+</I>&gt;<i> code wise? Do you have a ETA for that refactor?
+</I>&gt;<i> Also, how can I help? I'd be more than happy to assist you guys in that
+</I>&gt;<i> process.
+</I>&gt;<i> Thanks!
+</I>&gt;<i> -MD
+</I>&gt;<i> On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">robert.coup at koordinates.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi Maxime,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">maxime.dupuis at ecometrica.org</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This is my first message on the dev mailing list, so bare with me. :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Welcome :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I started using mapnik only a month ago and I had to use the new gdal
+</I>&gt;&gt;&gt;<i> Raster Colorizer to colormap a geotif.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm glad you figured it out! Dane &amp; Nino &amp; I spent a wee bit of time a
+</I>&gt;&gt;<i> couple of weeks back looking at how to simplify the RasterColorizer
+</I>&gt;&gt;<i> declaration so it's more flexible and a whole lot simpler :)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The problem, I think, lies in the way the band data is read and stored in
+</I>&gt;&gt;&gt;<i> memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+</I>&gt;&gt;&gt;<i> GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+</I>&gt;&gt;&gt;<i> attribute's pointer, however, is retrived as a pointer of unsigned chars
+</I>&gt;&gt;&gt;<i> (which makes sense since it asks gdal for GDT_Byte data) while it's really a
+</I>&gt;&gt;&gt;<i> pointer of unsigned ints.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Also, I looked at how qgis did it, because I had no problem colormapping
+</I>&gt;&gt;&gt;<i> with it and I came up to the conclusion that the best way for mapnik to do
+</I>&gt;&gt;&gt;<i> color mapping is to use the ImageData template as, well, a template rather
+</I>&gt;&gt;&gt;<i> than use the typdef image_data_32 everywhere. But I'm not the best person to
+</I>&gt;&gt;&gt;<i> judge that as I'm not involved in mapnik's development.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Can you file a ticket and assign it to me (rcoup), preferably attaching an
+</I>&gt;&gt;<i> example image &amp; xml file? When I refactor the colorizer I'll make sure we're
+</I>&gt;&gt;<i> doing sane things with non-byte data, and I'll check that your case works
+</I>&gt;&gt;<i> too.
+</I>&gt;&gt;<i> Thanks,
+</I>&gt;&gt;<i> Rob :)
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001385.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+	<LI>Next message: <A HREF="001388.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1386">[ date ]</a>
+              <a href="thread.html#1386">[ thread ]</a>
+              <a href="subject.html#1386">[ subject ]</a>
+              <a href="author.html#1386">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

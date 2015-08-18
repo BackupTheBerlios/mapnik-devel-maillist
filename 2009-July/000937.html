@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Complex PostGIS queries - patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Complex%20PostGIS%20queries%20-%20patch&In-Reply-To=%3C4A60530E.2000902%40wikivoyage.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000936.html">
+   <LINK REL="Next"  HREF="000940.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Complex PostGIS queries - patch</H1>
+    <B>Hans Musil</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Complex%20PostGIS%20queries%20-%20patch&In-Reply-To=%3C4A60530E.2000902%40wikivoyage.org%3E"
+       TITLE="[Mapnik-devel] Complex PostGIS queries - patch">hansm at wikivoyage.org
+       </A><BR>
+    <I>Fri Jul 17 12:31:42 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000936.html">[Mapnik-devel] Mapnik split
+</A></li>
+        <LI>Next message: <A HREF="000940.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#937">[ date ]</a>
+              <a href="thread.html#937">[ thread ]</a>
+              <a href="subject.html#937">[ subject ]</a>
+              <a href="author.html#937">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, I'm one of the technical admins of Wikivoyage, a free open content 
+wiki based travel guide. We have plans to make extensive use of Mapnik 
+together - but not only - with OSM data. The table layout of the PostGIS 
+backend will be completely different from what OSM's osm2pgsql generates.
+
+Oh, yes - and I don't like mailing lists. I only will keep subscribed 
+for some days in order to follow the discussion. You always can drop me 
+a message on my Wikivoyage user talk page 
+<A HREF="http://www.wikivoyage.org/de/Benutzer:Hansm">http://www.wikivoyage.org/de/Benutzer:Hansm</A>
+
+As I have seen from the source code, Mapnik makes a *very* simplistic 
+guess about the PostgreSQL table and schema that hold the actual 
+geometry column. If queries given as parameter &quot;table&quot; (actually a bad 
+name) get a little bit more complex, Mapnik fails terribly. However, 
+it's not worth to improve this guess since queries may be really 
+complex. Instead, I wanted to propose two additional optional paramters 
+for postgis_datasource: &quot;table_name&quot; and &quot;schema_name&quot;. Both are used 
+for retrieving the SRID and the geometry field (if not given as 
+parameter). The SRID itself is needed for estimating the extend of the 
+table's geometries.
+
+Here is an example for parameter &quot;table&quot;, that is too complex for Mapnik 
+(it guesses osm_relation_mb to be the geometry table):
+
+&lt;Parameter name=&quot;table&quot;&gt;(SELECT way FROM osm_way WHERE osm_id = ANY 
+(SELECT rm_way FROM osm_relation_mb WHERE rm_relation=62149)) as 
+border&lt;/Parameter&gt;
+
+I have added two patches, one for plugins/input/postgis/postgis.cpp and 
+one for the corresponding header file. Both refere to the up to date svn 
+version.
+
+Cheers,
+
+Hans
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: postgis.cpp.patch
+Type: text/x-diff
+Size: 3122 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment.patch</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: postgis.hpp.patch
+Type: text/x-diff
+Size: 602 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment-0001.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment-0001.patch</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000936.html">[Mapnik-devel] Mapnik split
+</A></li>
+	<LI>Next message: <A HREF="000940.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#937">[ date ]</a>
+              <a href="thread.html#937">[ thread ]</a>
+              <a href="subject.html#937">[ subject ]</a>
+              <a href="author.html#937">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

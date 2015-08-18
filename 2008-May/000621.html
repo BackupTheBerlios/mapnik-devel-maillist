@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about implementing fallback fonts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805261644m59f8d8ddmea25424a444849a2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000619.html">
+   <LINK REL="Next"  HREF="000622.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about implementing fallback fonts</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805261644m59f8d8ddmea25424a444849a2%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about implementing fallback fonts">beau at beaugunderson.com
+       </A><BR>
+    <I>Tue May 27 01:44:27 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000619.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+        <LI>Next message: <A HREF="000622.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#621">[ date ]</a>
+              <a href="thread.html#621">[ thread ]</a>
+              <a href="subject.html#621">[ subject ]</a>
+              <a href="author.html#621">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>More questions already. :)
+
+1. Should FontSet be a top-level element like Layer and Style?
+2. I noticed that other XML nodes are usually referenced from nodes and not
+attributes, i.e.:
+
+   &lt;Layer&gt;
+    &lt;StyleName&gt;style-name&lt;/StyleName&gt;
+   &lt;/Layer&gt;
+
+instead of...
+
+   &lt;Layer stylename=&quot;style-name&quot; /&gt;
+
+Should this be continued for TextSymbolizer? I.e.,
+
+   &lt;TextSymbolizer name=&quot;NAME&quot; size=&quot;15&quot; fill=&quot;black&quot;&gt;
+    &lt;FontSetName&gt;font-set-name&lt;/FontSetName&gt;
+   &lt;/TextSymbolizer&gt;
+
+
+Thanks,
+
+Beau
+
+On Mon, May 26, 2008 at 4:54 PM, Tom Hughes &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>&gt; wrote:
+
+&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">d6cb3ab10805261539w3e35d4cct8f9c73c4fc3bcc6b at mail.gmail.com</A>&gt;
+</I>&gt;<i>           &quot;Beau Gunderson&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; My question is basically how the list of fonts should be implemented in
+</I>&gt;<i> the
+</I>&gt;<i> &gt; XML storage format and in Python.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Is face_name=&quot;Font1,Font2,Font3&quot; acceptable?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I.e.:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    &lt;TextSymbolizer name=&quot;NAME&quot; face_name=&quot;DejaVu Sans Bold,Some Other
+</I>&gt;<i> &gt; UTF-8 Font,Yet Another UTF-8 Font&quot; size=&quot;7&quot; fill=&quot;black&quot; /&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Should you be able to specify a list object in Python? (A list of face
+</I>&gt;<i> name
+</I>&gt;<i> &gt; strings)
+</I>&gt;<i>
+</I>&gt;<i> My thought was that you should probably be able to define a font
+</I>&gt;<i> set in XML and then refer to that set rather than a face in the
+</I>&gt;<i> text symbolizer.
+</I>&gt;<i>
+</I>&gt;<i> Tom
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+</I>&gt;<i> <A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080526/6c3fd66d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080526/6c3fd66d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000619.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+	<LI>Next message: <A HREF="000622.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#621">[ date ]</a>
+              <a href="thread.html#621">[ thread ]</a>
+              <a href="subject.html#621">[ subject ]</a>
+              <a href="author.html#621">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

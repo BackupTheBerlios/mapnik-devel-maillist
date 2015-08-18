@@ -1,0 +1,1709 @@
+From artem at mapnik.org  Tue May  1 09:56:30 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 1 May 2007 08:56:30 +0100
+Subject: [Mapnik-devel] Fw: Clearing label cache in mapnik
+In-Reply-To: <OF62944249.0595830D-ON802572CD.00636811-802572CD.00636DC6@solent-university.ac.uk>
+References: <OF62944249.0595830D-ON802572CD.00636811-802572CD.00636DC6@solent-university.ac.uk>
+Message-ID: <99B9A3CA-979C-445D-85A9-79CFA12B9CE9@mapnik.org>
+
+Hi Nick,
+
+I added 'clear_text_label_cache' functionality in r477.  Layer object  
+has got 'clear_label_cache'  property which is false by default.
+Let me know if this works for you.
+Cheers,
+Artem
+
+
+On 30 Apr 2007, at 19:06, Nick Whitelegg wrote:
+
+>> Hi Nick,
+>
+>> On 23 Mar 2007, at 10:15, Nick Whitelegg wrote:
+>
+>>> Hello Artem,
+>
+>>> Was thinking of trying to do a quick fix of this myself. Where in  
+>>> the
+> code
+>>> should I be looking?
+>
+> Hello Artem,
+>
+> I think I'm finally getting round to doing this.
+>
+> Could you give me some pointers as to which variables represent label
+> cache, it's a little hard to see from the source.
+>
+> Looking at the code of agg_renderer.cpp it looks like:
+>
+> template <typename T>   void agg_renderer<T>::process(text_symbolizer
+> const& sym,                               Feature const& feature,
+>                         proj_transform const& prj_trans)
+>
+>
+> handles drawing features on text, though it's unclear what stops text
+> being drawn if label cache fills up. Is it the find_placements ()  
+> method?
+> Is there anything I can do in this method to force the label on the
+> feature to always be drawn?
+>
+> Thanks,
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070501/296037f1/attachment.html>
+
+From jburgess777 at googlemail.com  Sat May 12 00:34:25 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Fri, 11 May 2007 23:34:25 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+Message-ID: <1178922865.28551.54.camel@localhost.localdomain>
+
+I've found that Mapnik is segfaulting while trying to render some OSM
+tiles with the latest planet dump. The stack trace has hundreds of
+frames which all look very similar - it looks to me like this algorithm
+is stuck in a recursive loop and has overflowed the stack:
+
+(gdb) bt 10
+#0  0x00002aaab0c53ee0 in mapnik::quad_tree<mapnik::Envelope<double>
+>::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+    ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+#1  0x00002aaab0c54302 in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+    box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/quad_tree.hpp:179
+#2  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+    box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/quad_tree.hpp:189
+#3  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+    box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/quad_tree.hpp:189
+#4  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+    box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/quad_tree.hpp:189
+#5  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+    box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/quad_tree.hpp:189
+#6  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+    box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/quad_tree.hpp:189
+#7  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+    box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/quad_tree.hpp:189
+#8  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+    box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/quad_tree.hpp:189
+#9  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+
+
+This happens when I do the following command with the latest
+planet.osm/osm2pgsql/mapnik/osm.xml
+
+$ echo 10531 6454 14 | ./render_from_list.py
+14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+35.639441068973944)
+Segmentation fault
+
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Sat May 12 01:33:02 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 12 May 2007 00:33:02 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1178924729.28551.60.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+Message-ID: <4D020B3A-F6A5-419C-955A-E44086361F2E@mapnik.org>
+
+Jon,
+
+Yes, looks like a bug, I'll fix it asap.
+
+Cheers,
+Artem
+
+On 12 May 2007, at 00:05, Jon Burgess wrote:
+
+> On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+>> I've found that Mapnik is segfaulting while trying to render some OSM
+>> tiles with the latest planet dump. The stack trace has hundreds of
+>> frames which all look very similar - it looks to me like this  
+>> algorithm
+>> is stuck in a recursive loop and has overflowed the stack:
+>>
+>> (gdb) bt 10
+>> #0  0x00002aaab0c53ee0 in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+>>     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+>> #1  0x00002aaab0c54302 in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+>>     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/ 
+>> quad_tree.hpp:179
+>> #2  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+>>     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #3  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+>>     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #4  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+>>     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #5  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+>>     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #6  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+>>     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #7  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+>>     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #8  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+>>     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/ 
+>> quad_tree.hpp:189
+>> #9  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+>>
+>>
+>> This happens when I do the following command with the latest
+>> planet.osm/osm2pgsql/mapnik/osm.xml
+>>
+>> $ echo 10531 6454 14 | ./render_from_list.py
+>> 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+>> 35.639441068973944)
+>> Segmentation fault
+>>
+>
+> Looking at quad_tree.hpp do_insert_data(), it looks like it is  
+> dividing
+> up node* into smaller and smaller pieces until the box is no longer
+> contained within the extent of a single child node. Unfortunately it
+> seems that this recursion is unbounded if the box is of zero size,  
+> which
+> is in the case which causes the crash:
+>
+>
+> (gdb) p box->minx_
+> $8 = 421.98901139097484
+> (gdb) p box->maxx_
+> $9 = 421.98901139097484
+> (gdb) p box->miny_
+> $10 = 12.967983092237455
+> (gdb) p box->maxy_
+> $11 = 12.967983092237455
+>
+>
+> (gdb) p box
+> $1 = (
+>     const mapnik::Envelope<double> &) @0x7fffaf6092c0:
+> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik:: 
+> Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> >, boost::detail::empty_base,  
+> boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t 
+> >> =  
+> {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik: 
+> :Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> >, boost::detail::empty_base,  
+> boost::detail::true_t> >> =  
+> {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapni 
+> k::Envelope<double>, double,  
+> boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base>  
+> >,boost::detail::empty_base,boost::detail::true_t>> =  
+> {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapn 
+> ik::Envelope<double>, double,  
+> boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> > >> =  
+> {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliabl 
+> e2<mapnik::Envelope<double>, double, boost::detail::empty_base> >>  
+> =  
+> {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail:: 
+> empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No  
+> data fields>}, <No data fields>}, <No data fields>}, <No data  
+> fields>}, <No data fields>}, minx_ = 421.98901139097484,
+>   miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+> 12.967983092237455}
+> (gdb) p node_extent
+> $2 = (
+>     const mapnik::Envelope<double> &) @0xbe8390:
+> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik:: 
+> Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> >, boost::detail::empty_base,  
+> boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t 
+> >> =  
+> {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik: 
+> :Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> >, boost::detail::empty_base,  
+> boost::detail::true_t> >> =  
+> {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapni 
+> k::Envelope<double>, double,  
+> boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base>  
+> >,boost::detail::empty_base,boost::detail::true_t>> =  
+> {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapn 
+> ik::Envelope<double>, double,  
+> boost::multipliable2<mapnik::Envelope<double>, double,  
+> boost::detail::empty_base> > >> =  
+> {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliabl 
+> e2<mapnik::Envelope<double>, double, boost::detail::empty_base> >>  
+> =  
+> {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail:: 
+> empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No  
+> data fields>}, <No data fields>}, <No data fields>}, <No data  
+> fields>}, <No data fields>}, minx_ = 421.98901139097478,
+>   miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+> 12.967983092237455}
+>
+>
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070512/107f3ca8/attachment.html>
+
+From jburgess at uklinux.net  Sat May 12 01:05:29 2007
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Sat, 12 May 2007 00:05:29 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1178922865.28551.54.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+Message-ID: <1178924729.28551.60.camel@localhost.localdomain>
+
+On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+> I've found that Mapnik is segfaulting while trying to render some OSM
+> tiles with the latest planet dump. The stack trace has hundreds of
+> frames which all look very similar - it looks to me like this algorithm
+> is stuck in a recursive loop and has overflowed the stack:
+> 
+> (gdb) bt 10
+> #0  0x00002aaab0c53ee0 in mapnik::quad_tree<mapnik::Envelope<double>
+> >::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+>     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+> #1  0x00002aaab0c54302 in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+>     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/quad_tree.hpp:179
+> #2  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+>     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/quad_tree.hpp:189
+> #3  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+>     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/quad_tree.hpp:189
+> #4  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+>     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/quad_tree.hpp:189
+> #5  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+>     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/quad_tree.hpp:189
+> #6  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+>     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/quad_tree.hpp:189
+> #7  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+>     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/quad_tree.hpp:189
+> #8  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+>     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/quad_tree.hpp:189
+> #9  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+> 
+> 
+> This happens when I do the following command with the latest
+> planet.osm/osm2pgsql/mapnik/osm.xml
+> 
+> $ echo 10531 6454 14 | ./render_from_list.py
+> 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+> 35.639441068973944)
+> Segmentation fault
+> 
+
+Looking at quad_tree.hpp do_insert_data(), it looks like it is dividing
+up node* into smaller and smaller pieces until the box is no longer
+contained within the extent of a single child node. Unfortunately it
+seems that this recursion is unbounded if the box is of zero size, which
+is in the case which causes the crash:
+
+
+(gdb) p box->minx_
+$8 = 421.98901139097484
+(gdb) p box->maxx_
+$9 = 421.98901139097484
+(gdb) p box->miny_
+$10 = 12.967983092237455
+(gdb) p box->maxy_
+$11 = 12.967983092237455
+
+
+(gdb) p box
+$1 = (
+    const mapnik::Envelope<double> &) @0x7fffaf6092c0:
+{<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t>> = {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t> >> = {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >,boost::detail::empty_base,boost::detail::true_t>> = {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> > >> = {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >> = {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail::empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, minx_ = 421.98901139097484,
+  miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+12.967983092237455}
+(gdb) p node_extent
+$2 = (
+    const mapnik::Envelope<double> &) @0xbe8390:
+{<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t>> = {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t> >> = {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >,boost::detail::empty_base,boost::detail::true_t>> = {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> > >> = {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >> = {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail::empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, minx_ = 421.98901139097478,
+  miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+12.967983092237455}
+
+
+
+
+
+From jburgess777 at googlemail.com  Sat May 12 01:59:56 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 12 May 2007 00:59:56 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1178924729.28551.60.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+Message-ID: <1178927997.28551.74.camel@localhost.localdomain>
+
+On Sat, 2007-05-12 at 00:05 +0100, Jon Burgess wrote:
+> On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+> > I've found that Mapnik is segfaulting while trying to render some OSM
+> > tiles with the latest planet dump. The stack trace has hundreds of
+> > frames which all look very similar - it looks to me like this algorithm
+> > is stuck in a recursive loop and has overflowed the stack:
+> > 
+> > (gdb) bt 10
+> > #0  0x00002aaab0c53ee0 in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+> >     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+> > #1  0x00002aaab0c54302 in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+> >     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/quad_tree.hpp:179
+> > #2  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+> >     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/quad_tree.hpp:189
+> > #3  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+> >     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/quad_tree.hpp:189
+> > #4  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+> >     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/quad_tree.hpp:189
+> > #5  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+> >     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/quad_tree.hpp:189
+> > #6  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+> >     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/quad_tree.hpp:189
+> > #7  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+> >     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/quad_tree.hpp:189
+> > #8  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+> >     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/quad_tree.hpp:189
+> > #9  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+> > >::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+> > 
+> > 
+> > This happens when I do the following command with the latest
+> > planet.osm/osm2pgsql/mapnik/osm.xml
+> > 
+> > $ echo 10531 6454 14 | ./render_from_list.py
+> > 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+> > 35.639441068973944)
+> > Segmentation fault
+> > 
+> 
+> Looking at quad_tree.hpp do_insert_data(), it looks like it is dividing
+> up node* into smaller and smaller pieces until the box is no longer
+> contained within the extent of a single child node. Unfortunately it
+> seems that this recursion is unbounded if the box is of zero size, which
+> is in the case which causes the crash:
+> 
+> 
+> (gdb) p box->minx_
+> $8 = 421.98901139097484
+> (gdb) p box->maxx_
+> $9 = 421.98901139097484
+> (gdb) p box->miny_
+> $10 = 12.967983092237455
+> (gdb) p box->maxy_
+> $11 = 12.967983092237455
+> 
+> 
+> (gdb) p box
+> $1 = (
+>     const mapnik::Envelope<double> &) @0x7fffaf6092c0:
+> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t>> = {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t> >> = {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >,boost::detail::empty_base,boost::detail::true_t>> = {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> > >> = {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >> = {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail::empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, minx_ = 421.98901139097484,
+>   miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+> 12.967983092237455}
+> (gdb) p node_extent
+> $2 = (
+>     const mapnik::Envelope<double> &) @0xbe8390:
+> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_t>> = {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik::Envelope<double>, boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >, boost::detail::empty_base, boost::detail::true_t> >> = {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >,boost::detail::empty_base,boost::detail::true_t>> = {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<mapnik::Envelope<double>, double, boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> > >> = {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliable2<mapnik::Envelope<double>, double, boost::detail::empty_base> >> = {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail::empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, <No data fields>}, minx_ = 421.98901139097478,
+>   miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+> 12.967983092237455}
+> 
+> 
+
+I've managed to isolate the problem down to a single way with
+osm_id=4361612 being returned in the following query:
+
+start layer processing : planet roads text osm
+datasource = 0x796f30
+Envelope(5719935.700636307,4222560.145075075,5724827.670446561,4227452.114885329)
+borrow 0x777330
+select asbinary(way) as geom,"highway","length","name" from (select
+way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,char_length(name) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads where way && setSRID('BOX3D(5719935.700636307 4222560.145075075,5724827.670446561 4227452.114885329)'::box3d,4326)
+return 0x777330
+
+Program received signal SIGSEGV, Segmentation fault.
+
+
+Grabbing this data from the DB...
+
+gis=# select "osm_id","highway","length","name" from (select
+osm_id,way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,char_length(name) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL and osm_id=4361612) as roads where way && setSRID('BOX3D(5719935.700636307 4222560.145075075,5724827.670446561 4227452.114885329)'::box3d,4326);
+ osm_id  | highway | length |       name
+---------+---------+--------+------------------
+ 4361612 | trunk   |     17 | Besat Expressway
+(1 row)
+
+
+The length shows as 17, but there are only 16 obvious charaters in the
+name. I dumped the output to a file and did a hex dump. This shows the
+name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+
+gis=# COPY (select name,char_length(name) from planet_osm_line where
+osm_id=4361612) TO '/tmp/copytest.out';
+COPY 1
+
+$ od -A x -t x1z /tmp/copytest.out
+000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73  >...Besat Express<
+000010 77 61 79 09 31 37 0a                             >way.17.<
+000017
+
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Sat May 12 14:10:27 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 12 May 2007 13:10:27 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1178927997.28551.74.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+Message-ID: <E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+
+Hi Jon,
+
+On 12 May 2007, at 00:59, Jon Burgess wrote:
+
+> On Sat, 2007-05-12 at 00:05 +0100, Jon Burgess wrote:
+>> On Fri, 2007-05-11 at 23:34 +0100, Jon Burgess wrote:
+>>> I've found that Mapnik is segfaulting while trying to render some  
+>>> OSM
+>>> tiles with the latest planet dump. The stack trace has hundreds of
+>>> frames which all look very similar - it looks to me like this  
+>>> algorithm
+>>> is stuck in a recursive loop and has overflowed the stack:
+>>>
+>>> (gdb) bt 10
+>>> #0  0x00002aaab0c53ee0 in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::split_box (this=0x7fffc66adf98, node_extent=@0xbe7910,
+>>>     ext=0x7fffc5ab2140) at include/mapnik/quad_tree.hpp:199
+>>> #1  0x00002aaab0c54302 in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab22d0,
+>>>     box=@0x7fffc66ad360, n=0xbe7910) at include/mapnik/ 
+>>> quad_tree.hpp:179
+>>> #2  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab23e0,
+>>>     box=@0x7fffc66ad360, n=0xbe78b0) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #3  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab24f0,
+>>>     box=@0x7fffc66ad360, n=0xbe7850) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #4  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2600,
+>>>     box=@0x7fffc66ad360, n=0xbe77f0) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #5  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2710,
+>>>     box=@0x7fffc66ad360, n=0xbe7790) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #6  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2820,
+>>>     box=@0x7fffc66ad360, n=0xbe7730) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #7  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2930,
+>>>     box=@0x7fffc66ad360, n=0xbe76d0) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #8  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2a40,
+>>>     box=@0x7fffc66ad360, n=0xbe7670) at include/mapnik/ 
+>>> quad_tree.hpp:189
+>>> #9  0x00002aaab0c5441f in mapnik::quad_tree<mapnik::Envelope<double>
+>>>> ::do_insert_data (this=0x7fffc66adf98, data=@0x7fffc5ab2b50,
+>>>
+>>>
+>>> This happens when I do the following command with the latest
+>>> planet.osm/osm2pgsql/mapnik/osm.xml
+>>>
+>>> $ echo 10531 6454 14 | ./render_from_list.py
+>>> 14 10531 6454 (51.39404296875, 35.621581899559679) (51.416015625,
+>>> 35.639441068973944)
+>>> Segmentation fault
+>>>
+>>
+>> Looking at quad_tree.hpp do_insert_data(), it looks like it is  
+>> dividing
+>> up node* into smaller and smaller pieces until the box is no longer
+>> contained within the extent of a single child node. Unfortunately it
+>> seems that this recursion is unbounded if the box is of zero size,  
+>> which
+>> is in the case which causes the crash:
+>>
+>>
+>> (gdb) p box->minx_
+>> $8 = 421.98901139097484
+>> (gdb) p box->maxx_
+>> $9 = 421.98901139097484
+>> (gdb) p box->miny_
+>> $10 = 12.967983092237455
+>> (gdb) p box->maxy_
+>> $11 = 12.967983092237455
+>>
+>>
+>> (gdb) p box
+>> $1 = (
+>>     const mapnik::Envelope<double> &) @0x7fffaf6092c0:
+>> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik: 
+>> :Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+>> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> >, boost::detail::empty_base,  
+>> boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_ 
+>> t>> =  
+>> {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik 
+>> ::Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+>> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> >, boost::detail::empty_base,  
+>> boost::detail::true_t> >> =  
+>> {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapn 
+>> ik::Envelope<double>, double,  
+>> boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base>  
+>> >,boost::detail::empty_base,boost::detail::true_t>> =  
+>> {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<map 
+>> nik::Envelope<double>, double,  
+>> boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> > >> =  
+>> {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliab 
+>> le2<mapnik::Envelope<double>, double, boost::detail::empty_base>  
+>> >> =  
+>> {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail: 
+>> :empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No  
+>> data fields>}, <No data fields>}, <No data fields>}, <No data  
+>> fields>}, <No data fields>}, minx_ = 421.98901139097484,
+>>   miny_ = 12.967983092237455, maxx_ = 421.98901139097484, maxy_ =
+>> 12.967983092237455}
+>> (gdb) p node_extent
+>> $2 = (
+>>     const mapnik::Envelope<double> &) @0xbe8390:
+>> {<boost::addable<mapnik::Envelope<double>,boost::subtractable<mapnik: 
+>> :Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+>> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> >, boost::detail::empty_base,  
+>> boost::detail::true_t>,boost::detail::empty_base,boost::detail::true_ 
+>> t>> =  
+>> {<boost::addable1<mapnik::Envelope<double>,boost::subtractable<mapnik 
+>> ::Envelope<double>, boost::dividable2<mapnik::Envelope<double>,  
+>> double, boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> >, boost::detail::empty_base,  
+>> boost::detail::true_t> >> =  
+>> {<boost::subtractable<mapnik::Envelope<double>,boost::dividable2<mapn 
+>> ik::Envelope<double>, double,  
+>> boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base>  
+>> >,boost::detail::empty_base,boost::detail::true_t>> =  
+>> {<boost::subtractable1<mapnik::Envelope<double>,boost::dividable2<map 
+>> nik::Envelope<double>, double,  
+>> boost::multipliable2<mapnik::Envelope<double>, double,  
+>> boost::detail::empty_base> > >> =  
+>> {<boost::dividable2<mapnik::Envelope<double>,double,boost::multipliab 
+>> le2<mapnik::Envelope<double>, double, boost::detail::empty_base>  
+>> >> =  
+>> {<boost::multipliable2<mapnik::Envelope<double>,double,boost::detail: 
+>> :empty_base>> = {<> = {<No data fields>}, <No data fields>}, <No  
+>> data fields>}, <No data fields>}, <No data fields>}, <No data  
+>> fields>}, <No data fields>}, minx_ = 421.98901139097478,
+>>   miny_ = 12.967983092237453, maxx_ = 421.98901139097484, maxy_ =
+>> 12.967983092237455}
+>>
+>>
+>
+> I've managed to isolate the problem down to a single way with
+> osm_id=4361612 being returned in the following query:
+>
+> start layer processing : planet roads text osm
+> datasource = 0x796f30
+> Envelope 
+> (5719935.700636307,4222560.145075075,5724827.670446561,4227452.1148853 
+> 29)
+> borrow 0x777330
+> select asbinary(way) as geom,"highway","length","name" from (select
+> way,highway,landuse,"natural",man_made,waterway,tourism,learning,ameni 
+> ty,place,name,char_length(name) as length from planet_osm_line  
+> where waterway IS NULL and leisure IS NULL and landuse IS NULL) as  
+> roads where way && setSRID('BOX3D(5719935.700636307  
+> 4222560.145075075,5724827.670446561 4227452.114885329)'::box3d,4326)
+> return 0x777330
+>
+> Program received signal SIGSEGV, Segmentation fault.
+>
+>
+> Grabbing this data from the DB...
+>
+> gis=# select "osm_id","highway","length","name" from (select
+> osm_id,way,highway,landuse,"natural",man_made,waterway,tourism,learnin 
+> g,amenity,place,name,char_length(name) as length from  
+> planet_osm_line where waterway IS NULL and leisure IS NULL and  
+> landuse IS NULL and osm_id=4361612) as roads where way && setSRID 
+> ('BOX3D(5719935.700636307 4222560.145075075,5724827.670446561  
+> 4227452.114885329)'::box3d,4326);
+>  osm_id  | highway | length |       name
+> ---------+---------+--------+------------------
+>  4361612 | trunk   |     17 | Besat Expressway
+> (1 row)
+>
+>
+> The length shows as 17, but there are only 16 obvious charaters in the
+> name. I dumped the output to a file and did a hex dump. This shows the
+> name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+>
+> gis=# COPY (select name,char_length(name) from planet_osm_line where
+> osm_id=4361612) TO '/tmp/copytest.out';
+> COPY 1
+>
+> $ od -A x -t x1z /tmp/copytest.out
+> 000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73  >...Besat  
+> Express<
+> 000010 77 61 79 09 31 37 0a                             >way.17.<
+> 000017
+>
+>
+> 	Jon
+>
+>
+>
+
+
+Thanks for doing all the hard work tracing down the problem. I've  
+modified quad_tree to handle empty envelopes by introducing max_depth  
+(in r479). Let me know if it works for you.
+Cheers,
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070512/0a3b4341/attachment.html>
+
+From jburgess777 at googlemail.com  Sat May 12 15:01:29 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 12 May 2007 14:01:29 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+Message-ID: <1178974889.28551.95.camel@localhost.localdomain>
+
+On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> Hi Jon,
+
+
+> > The length shows as 17, but there are only 16 obvious charaters in
+> > the
+> > name. I dumped the output to a file and did a hex dump. This shows
+> > the
+> > name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+> > 
+> > 
+> > gis=# COPY (select name,char_length(name) from planet_osm_line where
+> > osm_id=4361612) TO '/tmp/copytest.out';
+> > COPY 1
+> > 
+> > 
+> > $ od -A x -t x1z /tmp/copytest.out
+> > 000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73  >...Besat
+> > Express<
+> > 000010 77 61 79 09 31 37 0a                             >way.17.<
+> > 000017
+> > 
+
+> > Jon
+> 
+> 
+> Thanks for doing all the hard work tracing down the problem. I've
+> modified quad_tree to handle empty envelopes by introducing max_depth
+> (in r479). Let me know if it works for you.
+> Cheers,
+> Artem Pavlenko
+> http://mapnik.org
+> 
+> 
+Yes this fixes the crash with all the cases I've identified.
+
+I've found that the problem only seems to occur when a name starts with
+the UTF-8 sequence e2 80 8c which is a "ZERO WIDTH NON-JOINER" according
+to http://www.tachyonsoft.com/uc0020.htm
+
+It looks like the text after this initial character does not appear in
+the rendered output. This looks like another related issue. Any idea on
+the cause?
+
+	Jon
+
+
+
+
+
+From artem at mapnik.org  Mon May 14 10:29:05 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 14 May 2007 09:29:05 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1178974889.28551.95.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+Message-ID: <7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+
+
+On 12 May 2007, at 14:01, Jon Burgess wrote:
+
+> On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+>> Hi Jon,
+>
+>
+>>> The length shows as 17, but there are only 16 obvious charaters in
+>>> the
+>>> name. I dumped the output to a file and did a hex dump. This shows
+>>> the
+>>> name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+>>>
+>>>
+>>> gis=# COPY (select name,char_length(name) from planet_osm_line where
+>>> osm_id=4361612) TO '/tmp/copytest.out';
+>>> COPY 1
+>>>
+>>>
+>>> $ od -A x -t x1z /tmp/copytest.out
+>>> 000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73  >...Besat
+>>> Express<
+>>> 000010 77 61 79 09 31 37 0a                             >way.17.<
+>>> 000017
+>>>
+>
+>>> Jon
+>>
+>>
+>> Thanks for doing all the hard work tracing down the problem. I've
+>> modified quad_tree to handle empty envelopes by introducing max_depth
+>> (in r479). Let me know if it works for you.
+>> Cheers,
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+> Yes this fixes the crash with all the cases I've identified.
+>
+> I've found that the problem only seems to occur when a name starts  
+> with
+> the UTF-8 sequence e2 80 8c which is a "ZERO WIDTH NON-JOINER"  
+> according
+> to http://www.tachyonsoft.com/uc0020.htm
+>
+
+I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,   
+non-printable character. Freetype returns zero sized bounding box and  
+this was triggering 'quad_tree' bug.  Are you building Mapnik with  
+fibidi support? FRIBIDI=y ?
+
+> It looks like the text after this initial character does not appear in
+> the rendered output. This looks like another related issue. Any  
+> idea on
+> the cause?
+>
+
+Hmm..not sure. Can be that freetype gets confused after ZWNJ char.  
+Adding 'shaping' is on my TODO list and I'll be looking at this issue  
+as well.
+
+Cheers,
+Artem
+
+> 	Jon
+>
+>
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070514/881b837c/attachment.html>
+
+From jburgess777 at googlemail.com  Mon May 14 22:41:33 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 14 May 2007 21:41:33 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+Message-ID: <1179175293.23409.109.camel@localhost.localdomain>
+
+On Mon, 2007-05-14 at 09:29 +0100, Artem Pavlenko wrote:
+> 
+> On 12 May 2007, at 14:01, Jon Burgess wrote:
+> 
+> > On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> > > Hi Jon,
+> > 
+> > 
+> > 
+> > 
+> > > > The length shows as 17, but there are only 16 obvious charaters
+> > > > in
+> > > > the
+> > > > name. I dumped the output to a file and did a hex dump. This
+> > > > shows
+> > > > the
+> > > > name starts with what looks like a 3 or 4 byte UTF-8 sequence:
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > gis=# COPY (select name,char_length(name) from planet_osm_line
+> > > > where
+> > > > osm_id=4361612) TO '/tmp/copytest.out';
+> > > > COPY 1
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > $ od -A x -t x1z /tmp/copytest.out
+> > > > 000000 e2 80 8c 42 65 73 61 74 20 45 78 70 72 65 73 73
+> > > > >...Besat
+> > > > Express<
+> > > > 000010 77 61 79 09 31 37 0a
+> > > > >way.17.<
+> > > > 000017
+> > > > 
+> > > > 
+> > 
+> > 
+> > > > Jon
+> > > 
+> > > 
+> > > 
+> > > 
+> > > Thanks for doing all the hard work tracing down the problem. I've
+> > > modified quad_tree to handle empty envelopes by introducing
+> > > max_depth
+> > > (in r479). Let me know if it works for you.
+> > > Cheers,
+> > > Artem Pavlenko
+> > > http://mapnik.org
+> > > 
+> > > 
+> > > 
+> > > 
+> > Yes this fixes the crash with all the cases I've identified.
+> > 
+> > 
+> > I've found that the problem only seems to occur when a name starts
+> > with
+> > the UTF-8 sequence e2 80 8c which is a "ZERO WIDTH NON-JOINER"
+> > according
+> > to http://www.tachyonsoft.com/uc0020.htm
+> > 
+> > 
+> 
+> 
+> I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,
+> non-printable character. Freetype returns zero sized bounding box and
+> this was triggering 'quad_tree' bug.  Are you building Mapnik with
+> fibidi support? FRIBIDI=y ?  
+> 
+No, I didn't realise I had too. I only looked through the list of yes/no
+which got printed during the scons check. I didn't look to see if there
+was anything else to turn on.
+
+The failure I get when I enable BIDI but don't have the fribidi-devel
+package installed is pretty un-informative:
+
+$ python scons/scons.py BIDI=1
+scons: Reading SConscript files ...
+Building on Linux ...
+Checking for main() in C library m... no
+Could not find header or shared library for m, exiting!
+
+
+Fortunately the config.log is much clearer:
+
+gcc -o .sconf_temp/conftest_0 .sconf_temp/conftest_0.o -Lagg -Lsrc
+-L/usr/lib64 -L/usr/local/lib64 -lfreetype -lfribidi -lm
+/usr/bin/ld: cannot find -lfribidi
+collect2: ld returned 1 exit status
+scons: *** [.sconf_temp/conftest_0] Error 1
+
+
+Is there some way to avoid the -lfribidi in the initial libm checks?
+
+I'll recompile mapnik with BIDI=1 and see if it makes a difference to
+the rendering of this way.
+
+	Jon
+
+
+
+
+
+From jburgess at uklinux.net  Mon May 14 23:40:51 2007
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Mon, 14 May 2007 22:40:51 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1179175293.23409.109.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+Message-ID: <1179178851.23409.138.camel@localhost.localdomain>
+
+On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+
+> > 
+> > > On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> > I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,
+> > non-printable character. Freetype returns zero sized bounding box and
+> > this was triggering 'quad_tree' bug.  Are you building Mapnik with
+> > fibidi support? FRIBIDI=y ?  
+> > 
+
+With BIDI=1 I now get some roads with empty boxes instead of names. 
+Attached is one example which has several roads appearing like "[] > []"
+
+Is this telling me that I am missing the necessary fonts? If so, what
+should I install?
+
+The equivalent tile on the main OSM site has these roads with no names
+http://tile.openstreetmap.org/15/21060/12900.png
+
+	Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 12900.png
+Type: image/png
+Size: 10220 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070514/b3abd92b/attachment.png>
+
+From jburgess at uklinux.net  Tue May 15 01:25:57 2007
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Tue, 15 May 2007 00:25:57 +0100
+Subject: [Mapnik-devel] Mapnik stuck in recursive loop?
+In-Reply-To: <1179178851.23409.138.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+	<1179178851.23409.138.camel@localhost.localdomain>
+Message-ID: <1179185157.3491.3.camel@localhost.localdomain>
+
+On Mon, 2007-05-14 at 22:40 +0100, Jon Burgess wrote:
+> On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+> 
+> > > 
+> > > > On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> > > I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,
+> > > non-printable character. Freetype returns zero sized bounding box and
+> > > this was triggering 'quad_tree' bug.  Are you building Mapnik with
+> > > fibidi support? FRIBIDI=y ?  
+> > > 
+> 
+> With BIDI=1 I now get some roads with empty boxes instead of names. 
+> Attached is one example which has several roads appearing like "[] > []"
+> 
+> Is this telling me that I am missing the necessary fonts? If so, what
+> should I install?
+> 
+> The equivalent tile on the main OSM site has these roads with no names
+> http://tile.openstreetmap.org/15/21060/12900.png
+> 
+> 	Jon
+> 
+
+I've just noticed that I'm getting '[][][][]' for roads with no names on
+many UK streets see the attached tile. I can only assume this is a side
+effect of recompiling with fribidi enabled (i'll investigate further
+tomorrow).
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: broken-uk.png
+Type: image/png
+Size: 35188 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070515/80b037cf/attachment.png>
+
+From fdahmadi at irib.ir  Tue May 15 13:14:33 2007
+From: fdahmadi at irib.ir (fdahmadi at irib.ir)
+Date: Tue, 15 May 2007 15:44:33 +0430 (IRDT)
+Subject: [Mapnik-devel] (no subject)
+Message-ID: <4224.62.220.120.221.1179227673.squirrel@mailer.irib.ir>
+
+hi pavlenco
+
+please distribute qt gui for mapnik
+thanks
+
+
+
+
+
+
+From jburgess777 at googlemail.com  Tue May 15 22:30:17 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 15 May 2007 21:30:17 +0100
+Subject: [Mapnik-devel] fix for fribidi problem with empty strings
+In-Reply-To: <1179185157.3491.3.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+	<1179178851.23409.138.camel@localhost.localdomain>
+	<1179185157.3491.3.camel@localhost.localdomain>
+Message-ID: <1179261017.3491.88.camel@localhost.localdomain>
+
+On Tue, 2007-05-15 at 00:26 +0100, Jon Burgess wrote:
+> On Mon, 2007-05-14 at 22:40 +0100, Jon Burgess wrote:
+> > On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+> > 
+> > > > 
+> > > > > On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> > > > I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,
+> > > > non-printable character. Freetype returns zero sized bounding box and
+> > > > this was triggering 'quad_tree' bug.  Are you building Mapnik with
+> > > > fibidi support? FRIBIDI=y ?  
+> > > > 
+> > 
+> > With BIDI=1 I now get some roads with empty boxes instead of names. 
+> > Attached is one example which has several roads appearing like "[] > []"
+> > 
+> > Is this telling me that I am missing the necessary fonts? If so, what
+> > should I install?
+> > 
+> > The equivalent tile on the main OSM site has these roads with no names
+> > http://tile.openstreetmap.org/15/21060/12900.png
+> > 
+> > 	Jon
+> > 
+> 
+> I've just noticed that I'm getting '[][][][]' for roads with no names on
+> many UK streets see the attached tile. I can only assume this is a side
+> effect of recompiling with fribidi enabled (i'll investigate further
+> tomorrow).
+> 
+> 	Jon
+> 
+
+I think i've located the cause of this. 
+
+fribidi_log2vis ( ... )
+{
+...
+  if (len == 0)
+    {
+      DBG ("Leaving fribidi_log2vis()\n");
+      return FRIBIDI_TRUE;
+    }
+
+An emptry text field has len==0 so nothing at all gets written to the
+output buffer ('visual' in unicode.hpp) which mapnik leaves
+uninitialised, hence garbage gets printed. Arguably fribidi should
+probably write a terminating NUL into the output buffer in this case.
+
+The attached patch fixes this is one simple way by ensuring the output
+buffer is zero'd. Alternatively, a single NUL at the start or just
+checking for len==0 should work just as well.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-bidi-fix.patch
+Type: text/x-patch
+Size: 500 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070515/48ddcec0/attachment.bin>
+
+From artem at mapnik.org  Tue May 15 23:13:36 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 15 May 2007 22:13:36 +0100
+Subject: [Mapnik-devel] fix for fribidi problem with empty strings
+In-Reply-To: <1179261017.3491.88.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+	<1179178851.23409.138.camel@localhost.localdomain>
+	<1179185157.3491.3.camel@localhost.localdomain>
+	<1179261017.3491.88.camel@localhost.localdomain>
+Message-ID: <E256E5D8-757F-41C3-881F-AC88A4326772@mapnik.org>
+
+
+On 15 May 2007, at 21:30, Jon Burgess wrote:
+
+> On Tue, 2007-05-15 at 00:26 +0100, Jon Burgess wrote:
+>> On Mon, 2007-05-14 at 22:40 +0100, Jon Burgess wrote:
+>>> On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+>>>
+>>>>>
+>>>>>> On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+>>>>> I can see the problem. "ZERO WIDTH NON-JOINER" is an instructive,
+>>>>> non-printable character. Freetype returns zero sized bounding  
+>>>>> box and
+>>>>> this was triggering 'quad_tree' bug.  Are you building Mapnik with
+>>>>> fibidi support? FRIBIDI=y ?
+>>>>>
+>>>
+>>> With BIDI=1 I now get some roads with empty boxes instead of names.
+>>> Attached is one example which has several roads appearing like  
+>>> "[] > []"
+>>>
+>>> Is this telling me that I am missing the necessary fonts? If so,  
+>>> what
+>>> should I install?
+>>>
+>>> The equivalent tile on the main OSM site has these roads with no  
+>>> names
+>>> http://tile.openstreetmap.org/15/21060/12900.png
+>>>
+>>> 	Jon
+>>>
+>>
+>> I've just noticed that I'm getting '[][][][]' for roads with no  
+>> names on
+>> many UK streets see the attached tile. I can only assume this is a  
+>> side
+>> effect of recompiling with fribidi enabled (i'll investigate further
+>> tomorrow).
+>>
+>> 	Jon
+>>
+>
+> I think i've located the cause of this.
+>
+> fribidi_log2vis ( ... )
+> {
+> ...
+>   if (len == 0)
+>     {
+>       DBG ("Leaving fribidi_log2vis()\n");
+>       return FRIBIDI_TRUE;
+>     }
+>
+> An emptry text field has len==0 so nothing at all gets written to the
+> output buffer ('visual' in unicode.hpp) which mapnik leaves
+> uninitialised, hence garbage gets printed. Arguably fribidi should
+> probably write a terminating NUL into the output buffer in this case.
+>
+> The attached patch fixes this is one simple way by ensuring the output
+> buffer is zero'd. Alternatively, a single NUL at the start or just
+> checking for len==0 should work just as well.
+>
+> 	Jon
+>
+> <mapnik-bidi-fix.patch>
+
+Worksforme! Thanks for the patch!
+
+I'm thinking about possibly moving away from iconv + fribidi (current  
+version doesn't support 'shaping') to ICU. Or at least investigate if  
+it would make sense.
+
+Cheers,
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070515/43b9274a/attachment.html>
+
+From jburgess777 at googlemail.com  Tue May 15 23:39:21 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 15 May 2007 22:39:21 +0100
+Subject: [Mapnik-devel] fix for fribidi problem with empty strings
+In-Reply-To: <E256E5D8-757F-41C3-881F-AC88A4326772@mapnik.org>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+	<1179178851.23409.138.camel@localhost.localdomain>
+	<1179185157.3491.3.camel@localhost.localdomain>
+	<1179261017.3491.88.camel@localhost.localdomain>
+	<E256E5D8-757F-41C3-881F-AC88A4326772@mapnik.org>
+Message-ID: <1179265161.3491.97.camel@localhost.localdomain>
+
+On Tue, 2007-05-15 at 22:13 +0100, Artem Pavlenko wrote:
+> 
+> On 15 May 2007, at 21:30, Jon Burgess wrote:
+> 
+> > On Tue, 2007-05-15 at 00:26 +0100, Jon Burgess wrote:
+> > > On Mon, 2007-05-14 at 22:40 +0100, Jon Burgess wrote:
+> > > > On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+> > > > 
+> > > > 
+> > > > > > 
+> > > > > > 
+> > > > > > > On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+> > > > > > I can see the problem. "ZERO WIDTH NON-JOINER" is an
+> > > > > > instructive,
+> > > > > > non-printable character. Freetype returns zero sized
+> > > > > > bounding box and
+> > > > > > this was triggering 'quad_tree' bug.  Are you building
+> > > > > > Mapnik with
+> > > > > > fibidi support? FRIBIDI=y ?  
+> > > > > > 
+> > > > > > 
+> > > > 
+> > > > 
+> > > > With BIDI=1 I now get some roads with empty boxes instead of
+> > > > names. 
+> > > > Attached is one example which has several roads appearing like
+> > > > "[] > []"
+> > > > 
+> > > > 
+> > > > Is this telling me that I am missing the necessary fonts? If so,
+> > > > what
+> > > > should I install?
+> > > > 
+> > > > 
+> > > > The equivalent tile on the main OSM site has these roads with no
+> > > > names
+> > > > http://tile.openstreetmap.org/15/21060/12900.png
+> > > > 
+> > > > 
+> > > > Jon
+> > > > 
+> > > > 
+> > > 
+> > > 
+> > > I've just noticed that I'm getting '[][][][]' for roads with no
+> > > names on
+> > > many UK streets see the attached tile. I can only assume this is a
+> > > side
+> > > effect of recompiling with fribidi enabled (i'll investigate
+> > > further
+> > > tomorrow).
+> > > 
+> > > 
+> > > Jon
+> > > 
+> > > 
+> > 
+> > 
+> > I think i've located the cause of this. 
+> > 
+> > 
+> > fribidi_log2vis ( ... )
+> > {
+> > ...
+> >   if (len == 0)
+> >     {
+> >       DBG ("Leaving fribidi_log2vis()\n");
+> >       return FRIBIDI_TRUE;
+> >     }
+> > 
+> > 
+> > An emptry text field has len==0 so nothing at all gets written to
+> > the
+> > output buffer ('visual' in unicode.hpp) which mapnik leaves
+> > uninitialised, hence garbage gets printed. Arguably fribidi should
+> > probably write a terminating NUL into the output buffer in this
+> > case.
+> > 
+> > 
+> > The attached patch fixes this is one simple way by ensuring the
+> > output
+> > buffer is zero'd. Alternatively, a single NUL at the start or just
+> > checking for len==0 should work just as well.
+> > 
+> > 
+> > Jon
+> > 
+> > <mapnik-bidi-fix.patch>
+> 
+> 
+> Worksforme! Thanks for the patch!  
+> 
+> 
+> I'm thinking about possibly moving away from iconv + fribidi (current
+> version doesn't support 'shaping') to ICU. Or at least investigate if
+> it would make sense. 
+> 
+> 
+> Cheers,
+> 
+> Artem Pavlenko
+> http://mapnik.org
+> 
+> 
+> 
+I looked into the fribidi CVS source to see whether the bug was already
+fixed (it isn't). I did find a fribidi2 which seems to claim it has some
+shaping support. 
+
+http://webcvs.freedesktop.org/fribidi/fribidi2/
+
+
+I don't even know what shaping is so I can't comment on the
+alternatives.
+
+	Jon
+
+
+> 
+
+
+
+From artem at mapnik.org  Tue May 15 23:55:06 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 15 May 2007 22:55:06 +0100
+Subject: [Mapnik-devel] fix for fribidi problem with empty strings
+In-Reply-To: <1179265161.3491.97.camel@localhost.localdomain>
+References: <1178922865.28551.54.camel@localhost.localdomain>
+	<1178924729.28551.60.camel@localhost.localdomain>
+	<1178927997.28551.74.camel@localhost.localdomain>
+	<E243258F-5736-46E6-A3BF-1470D5CF4FDF@mapnik.org>
+	<1178974889.28551.95.camel@localhost.localdomain>
+	<7243C53D-7567-4B24-AEA7-9BDC6D1B66A5@mapnik.org>
+	<1179175293.23409.109.camel@localhost.localdomain>
+	<1179178851.23409.138.camel@localhost.localdomain>
+	<1179185157.3491.3.camel@localhost.localdomain>
+	<1179261017.3491.88.camel@localhost.localdomain>
+	<E256E5D8-757F-41C3-881F-AC88A4326772@mapnik.org>
+	<1179265161.3491.97.camel@localhost.localdomain>
+Message-ID: <40EFF4B9-F539-4FB3-AA6B-643C2D6CD954@mapnik.org>
+
+
+On 15 May 2007, at 22:39, Jon Burgess wrote:
+
+> On Tue, 2007-05-15 at 22:13 +0100, Artem Pavlenko wrote:
+>>
+>> On 15 May 2007, at 21:30, Jon Burgess wrote:
+>>
+>>> On Tue, 2007-05-15 at 00:26 +0100, Jon Burgess wrote:
+>>>> On Mon, 2007-05-14 at 22:40 +0100, Jon Burgess wrote:
+>>>>> On Mon, 2007-05-14 at 21:41 +0100, Jon Burgess wrote:
+>>>>>
+>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>> On Sat, 2007-05-12 at 13:10 +0100, Artem Pavlenko wrote:
+>>>>>>> I can see the problem. "ZERO WIDTH NON-JOINER" is an
+>>>>>>> instructive,
+>>>>>>> non-printable character. Freetype returns zero sized
+>>>>>>> bounding box and
+>>>>>>> this was triggering 'quad_tree' bug.  Are you building
+>>>>>>> Mapnik with
+>>>>>>> fibidi support? FRIBIDI=y ?
+>>>>>>>
+>>>>>>>
+>>>>>
+>>>>>
+>>>>> With BIDI=1 I now get some roads with empty boxes instead of
+>>>>> names.
+>>>>> Attached is one example which has several roads appearing like
+>>>>> "[] > []"
+>>>>>
+>>>>>
+>>>>> Is this telling me that I am missing the necessary fonts? If so,
+>>>>> what
+>>>>> should I install?
+>>>>>
+>>>>>
+>>>>> The equivalent tile on the main OSM site has these roads with no
+>>>>> names
+>>>>> http://tile.openstreetmap.org/15/21060/12900.png
+>>>>>
+>>>>>
+>>>>> Jon
+>>>>>
+>>>>>
+>>>>
+>>>>
+>>>> I've just noticed that I'm getting '[][][][]' for roads with no
+>>>> names on
+>>>> many UK streets see the attached tile. I can only assume this is a
+>>>> side
+>>>> effect of recompiling with fribidi enabled (i'll investigate
+>>>> further
+>>>> tomorrow).
+>>>>
+>>>>
+>>>> Jon
+>>>>
+>>>>
+>>>
+>>>
+>>> I think i've located the cause of this.
+>>>
+>>>
+>>> fribidi_log2vis ( ... )
+>>> {
+>>> ...
+>>>   if (len == 0)
+>>>     {
+>>>       DBG ("Leaving fribidi_log2vis()\n");
+>>>       return FRIBIDI_TRUE;
+>>>     }
+>>>
+>>>
+>>> An emptry text field has len==0 so nothing at all gets written to
+>>> the
+>>> output buffer ('visual' in unicode.hpp) which mapnik leaves
+>>> uninitialised, hence garbage gets printed. Arguably fribidi should
+>>> probably write a terminating NUL into the output buffer in this
+>>> case.
+>>>
+>>>
+>>> The attached patch fixes this is one simple way by ensuring the
+>>> output
+>>> buffer is zero'd. Alternatively, a single NUL at the start or just
+>>> checking for len==0 should work just as well.
+>>>
+>>>
+>>> Jon
+>>>
+>>> <mapnik-bidi-fix.patch>
+>>
+>>
+>> Worksforme! Thanks for the patch!
+>>
+>>
+>> I'm thinking about possibly moving away from iconv + fribidi (current
+>> version doesn't support 'shaping') to ICU. Or at least investigate if
+>> it would make sense.
+>>
+>>
+>> Cheers,
+>>
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+>>
+> I looked into the fribidi CVS source to see whether the bug was  
+> already
+> fixed (it isn't). I did find a fribidi2 which seems to claim it has  
+> some
+> shaping support.
+>
+> http://webcvs.freedesktop.org/fribidi/fribidi2/
+>
+>
+> I don't even know what shaping is so I can't comment on the
+> alternatives.
+
+
+Yes, I saw it as well. I couldn't build fribidi2 on mac but I didn't  
+try hard. I'll try again I guess.
+
+Cheers,
+Artem
+
+>
+> 	Jon
+>
+>
+>>
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070515/ffca5f98/attachment.html>
+
+From jburgess777 at googlemail.com  Sun May 20 17:17:41 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 20 May 2007 16:17:41 +0100
+Subject: [Mapnik-devel] [PATCH] fixup GDAL paths in SConstruct
+Message-ID: <1179674261.30612.38.camel@localhost.localdomain>
+
+The GDAL lines in SConstruct look a bit broken. Causing stuff like:
+
+$ python scons/scons.py -h
+scons: Reading SConscript files ...
+
+scons: *** Path does not exist for option GDAL_LIBS: /usr/local/liblib
+File "SConstruct", line 60, in ?
+
+
+The following patch makes them work for me.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-gdal-libs.patch
+Type: text/x-patch
+Size: 1165 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070520/f19eeccc/attachment.bin>
+
+From artem at mapnik.org  Sun May 20 22:18:14 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 20 May 2007 21:18:14 +0100
+Subject: [Mapnik-devel] [PATCH] fixup GDAL paths in SConstruct
+In-Reply-To: <1179674261.30612.38.camel@localhost.localdomain>
+References: <1179674261.30612.38.camel@localhost.localdomain>
+Message-ID: <FA651550-4034-4DF7-BB8F-74B1729776C6@mapnik.org>
+
+
+On 20 May 2007, at 16:17, Jon Burgess wrote:
+
+> The GDAL lines in SConstruct look a bit broken. Causing stuff like:
+>
+> $ python scons/scons.py -h
+> scons: Reading SConscript files ...
+>
+> scons: *** Path does not exist for option GDAL_LIBS: /usr/local/liblib
+> File "SConstruct", line 60, in ?
+>
+>
+> The following patch makes them work for me.
+>
+> 	Jon
+>
+> <mapnik-gdal-libs.patch>
+
+Applied to the latest trunk. Thanks!
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070520/d5120d9c/attachment.html>
+
+From jburgess777 at googlemail.com  Mon May 28 15:44:27 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 28 May 2007 14:44:27 +0100
+Subject: [Mapnik-devel] Line break in text labels?
+Message-ID: <1180359867.4055.102.camel@localhost.localdomain>
+
+Is there some way to get Mapnik to place a line break in a text label?
+Some places on OSM have multiple name: tags and what I'm attempting to
+do is to get these to appear underneath one another by concatenating
+them with line feeds, i.e.
+
+    <tag k="name" v="Ben Nevis" />
+    <tag k="name:gd" v="Ben Nibheis" />
+
+The line feed seems to be OK in the DB:
+
+gis=> select osm_id,name,"natural" from planet_osm_point where osm_id=8870212;
+ osm_id  |    name     | natural
+---------+-------------+---------
+ 8870212 | Ben Nevis   | peak
+         : Ben Nibheis
+         :
+(1 row)
+
+Mapnik renders the \n as a square box with no line break as per the
+attachment.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ben_nevis.png
+Type: image/png
+Size: 1581 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070528/67e5b7cc/attachment.png>
+

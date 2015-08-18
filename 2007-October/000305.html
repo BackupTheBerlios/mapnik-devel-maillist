@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] New XML format was:  strict XML branch merged
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20XML%20format%20was%3A%20%20strict%20XML%20branch%20merged&In-Reply-To=%3C3F49A69F-240F-4AB5-AECA-968F50780300%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000303.html">
+   <LINK REL="Next"  HREF="000304.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] New XML format was:  strict XML branch merged</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20XML%20format%20was%3A%20%20strict%20XML%20branch%20merged&In-Reply-To=%3C3F49A69F-240F-4AB5-AECA-968F50780300%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] New XML format was:  strict XML branch merged">artem at mapnik.org
+       </A><BR>
+    <I>Mon Oct  8 23:17:49 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000303.html">[Mapnik-devel] New XML format was:  strict XML branch merged
+</A></li>
+        <LI>Next message: <A HREF="000304.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#305">[ date ]</a>
+              <a href="thread.html#305">[ thread ]</a>
+              <a href="subject.html#305">[ subject ]</a>
+              <a href="author.html#305">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+&gt;<i>
+</I>&gt;<i> On 30.09.2007, at 01:38, Artem Pavlenko wrote:
+</I>&gt;<i>
+</I>&gt;<i> --- snip ---
+</I>&gt;<i>
+</I>&gt;&gt;<i> Also I'm thinking about modifying XML to be more like svg (??) I  
+</I>&gt;&gt;<i> realized SLD spec which was the basis for current syntax has  
+</I>&gt;&gt;<i> limitations.
+</I>&gt;&gt;<i> I'll post some ideas when I'm back home (I'm still getting back  
+</I>&gt;&gt;<i> from foss4g)
+</I>&gt;<i>
+</I>&gt;<i> Looking forward to it. I was going to suggest some file format  
+</I>&gt;<i> changes too:
+</I>&gt;<i>
+</I>&gt;<i> 1. Rename &lt;CssParameter/&gt; to &lt;Parameter/&gt;. No need to distinguish  
+</I>&gt;<i> between datasource and symbolizer parameters.
+</I>
+Well, I after playing with SVG for a few days I'm thinking about  
+doing away with &lt;CssParameter/&gt; all together and use attributes  
+instread :
+
+&lt;PolygonSymbolizer fill=&quot;#ff0000&quot; fill-opacity=&quot;0.5&quot; /&gt;
+
+Now we can define schema which would enforce correct attributes -  
+PolygonSymbolizer is a tag with two attributes : fill and fill- 
+opacity, anything else is not allowed. &lt;Parameter&gt; approach doesn't  
+provide this. This is OK for an dynamic type such as &lt;Datasource&gt;,  
+but symbolizers are concrete classes.
+
+&gt;<i>
+</I>&gt;<i> 2. Currently some symbolizers use child nodes to collect  
+</I>&gt;<i> parameters, some use attributes. I think it would be better to use  
+</I>&gt;<i> one pattern only. I currently prefer the child node solution.
+</I>
+Yes, see above.
+&gt;<i>
+</I>&gt;<i> 3. Remove 'type', 'width' and 'height' attributes from symbolizers  
+</I>&gt;<i> that have an image.
+</I>
+Yes, good idea. Maybe still have optional x0,y0,width,height  
+attributes to be able to 'cut' rectangular shape from an image??
+&gt;<i>
+</I>&gt;<i> 4. I like
+</I>&gt;<i> 	&lt;Datasource type=&quot;postgis&quot;&gt;
+</I>&gt;<i> 		&lt;Parameter/&gt;
+</I>&gt;<i> 	&lt;/Datasource&gt;
+</I>&gt;<i> better than
+</I>&gt;<i> 	&lt;Datasource&gt;
+</I>&gt;<i> 		&lt;Parameter name=&quot;type&quot;&gt;postgis&lt;/Parameter&gt;
+</I>&gt;<i> 		&lt;Parameter/&gt;
+</I>&gt;<i> 	&lt;/Datasource&gt;
+</I>&gt;<i>
+</I>
+Yes, I like it too.
+
+&gt;<i> 5. Rename Layer's 'status' attribute to something more expressive  
+</I>&gt;<i> like 'visible'.
+</I>
+Yep.
+&gt;<i>
+</I>&gt;<i> Some might be irrelevant with your new format. Thought I'd post  
+</I>&gt;<i> them anyway.
+</I>&gt;<i>
+</I>
+&gt;<i> Cheers,
+</I>&gt;<i> 	d.
+</I>&gt;<i>
+</I>
+Artem
+
+&gt;<i>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071008/8c68893e/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071008/8c68893e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000303.html">[Mapnik-devel] New XML format was:  strict XML branch merged
+</A></li>
+	<LI>Next message: <A HREF="000304.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#305">[ date ]</a>
+              <a href="thread.html#305">[ thread ]</a>
+              <a href="subject.html#305">[ subject ]</a>
+              <a href="author.html#305">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] reliefs madness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20reliefs%20madness&In-Reply-To=%3CE597A293-11A4-4DE1-A89D-AE93EEDDA132%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000377.html">
+   <LINK REL="Next"  HREF="000382.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] reliefs madness</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20reliefs%20madness&In-Reply-To=%3CE597A293-11A4-4DE1-A89D-AE93EEDDA132%40gmail.com%3E"
+       TITLE="[Mapnik-devel] reliefs madness">artem.mapnik at googlemail.com
+       </A><BR>
+    <I>Tue Jan  8 18:23:02 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000377.html">[Mapnik-devel] [OSM-dev] reliefs follow up
+</A></li>
+        <LI>Next message: <A HREF="000382.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#381">[ date ]</a>
+              <a href="thread.html#381">[ thread ]</a>
+              <a href="subject.html#381">[ subject ]</a>
+              <a href="author.html#381">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Just implemented accurate re-projection (warping) SRTM data into any  
+projection supported by proj4:
+
+<A HREF="http://artem.dev.openstreetmap.org/files/reliefs/natgrid_warp.jpg">http://artem.dev.openstreetmap.org/files/reliefs/natgrid_warp.jpg</A>
+
+( this one in British NatGrid : +proj=tmerc +lat_0=49 +lon_0=-2  
++k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +units=m  
++towgs84=446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894  
++units=m +nodefs )
+
+I guess next step would be to render some tiles with OSM data on top  :D
+
+Artem
+  
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000377.html">[Mapnik-devel] [OSM-dev] reliefs follow up
+</A></li>
+	<LI>Next message: <A HREF="000382.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#381">[ date ]</a>
+              <a href="thread.html#381">[ thread ]</a>
+              <a href="subject.html#381">[ subject ]</a>
+              <a href="author.html#381">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

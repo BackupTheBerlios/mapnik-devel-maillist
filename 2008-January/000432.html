@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Rendering problem when trying to use render()	with offset
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Rendering%20problem%20when%20trying%20to%20use%20render%28%29%0A%09with%20offset&In-Reply-To=%3CF646D817-38D6-413C-B96A-A068F57782F6%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000431.html">
+   <LINK REL="Next"  HREF="000444.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Rendering problem when trying to use render()	with offset</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Rendering%20problem%20when%20trying%20to%20use%20render%28%29%0A%09with%20offset&In-Reply-To=%3CF646D817-38D6-413C-B96A-A068F57782F6%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Rendering problem when trying to use render()	with offset">artem at mapnik.org
+       </A><BR>
+    <I>Sun Jan 20 20:26:36 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000431.html">[Mapnik-devel] Rendering problem when trying to use render() with	offset
+</A></li>
+        <LI>Next message: <A HREF="000444.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#432">[ date ]</a>
+              <a href="thread.html#432">[ thread ]</a>
+              <a href="subject.html#432">[ subject ]</a>
+              <a href="author.html#432">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 20 Jan 2008, at 00:02, Jon Burgess wrote:
+
+&gt;<i> I have been trying to make the OSM tile rendering process as efficient
+</I>&gt;<i> as possble and noticed that the Mapnik code allows an offset to be
+</I>&gt;<i> specified when rendering. I thought this might be a useful improvement
+</I>&gt;<i> to the piece of code which currently renders the tile as 512x512 and
+</I>&gt;<i> then cuts out the 256x256 square in the middle.
+</I>&gt;<i>
+</I>&gt;<i> The old code:
+</I>&gt;<i>
+</I>&gt;<i>   im = Image(512, 512)
+</I>&gt;<i>   render(m, im)
+</I>&gt;<i>   view = im.view(128,128,256,256) # x,y,width,height
+</I>&gt;<i>   save_to_file(&quot;test_view.png&quot;,'png',view)
+</I>&gt;<i>
+</I>&gt;<i> Result: <A HREF="http://www.jburgess.uklinux.net/cut-tile/test_view.png">http://www.jburgess.uklinux.net/cut-tile/test_view.png</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> New code:
+</I>&gt;<i>
+</I>&gt;<i>   im = Image(256, 256)
+</I>&gt;<i>   render(m, im, 128, 128)
+</I>&gt;<i>   save_to_file(&quot;test_offset.png&quot;,'png',im)
+</I>&gt;<i>
+</I>&gt;<i> Result: <A HREF="http://www.jburgess.uklinux.net/cut-tile/test_offset.png">http://www.jburgess.uklinux.net/cut-tile/test_offset.png</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This seems to work fine for 99% of the map but you'll notice in the
+</I>&gt;<i> results above that text label is missing for the pub. Normally this
+</I>&gt;<i> would have extended beyond the edge of the tile but looks like it has
+</I>&gt;<i> been dropped. Is this to be expected?
+</I>
+No. I had a quick look and those offsets only used to initialize view  
+transform and label collision detection is still working with width/ 
+height offset by +-64 pixel (hardcoded)/  I'll change render to use  
+offset_x and offset_y for label placement.
+
+Cheers
+Artem
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The full test code is at:
+</I>&gt;<i> <A HREF="http://www.jburgess.uklinux.net/cut-tile/test.py">http://www.jburgess.uklinux.net/cut-tile/test.py</A>
+</I>&gt;<i>
+</I>&gt;<i> The main OSM map uses the old code and looks OK:
+</I>&gt;<i> <A HREF="http://www.openstreetmap.org/?">http://www.openstreetmap.org/?</A> 
+</I>&gt;<i> lat=50.753698&amp;lon=-1.530211&amp;zoom=18&amp;layers=B0FT
+</I>&gt;<i>
+</I>&gt;<i> The pub has been in OSM for ages so if you've got a recent planet dump
+</I>&gt;<i> loaded already then you should need to update your data. If you want
+</I>&gt;<i> this small area then a file can be found here:
+</I>&gt;<i> <A HREF="http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm">http://www.jburgess.uklinux.net/cut-tile/cut-tile.osm</A>
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000431.html">[Mapnik-devel] Rendering problem when trying to use render() with	offset
+</A></li>
+	<LI>Next message: <A HREF="000444.html">[Mapnik-devel] iconv test in SConstruct fails on Ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#432">[ date ]</a>
+              <a href="thread.html#432">[ thread ]</a>
+              <a href="subject.html#432">[ subject ]</a>
+              <a href="author.html#432">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

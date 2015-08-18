@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] SVG question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SVG%20question&In-Reply-To=%3C223020e60612130725i1047ef21yad4fc5ff7319797f%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000091.html">
+   <LINK REL="Next"  HREF="000092.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] SVG question</H1>
+    <B>Nick Black</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SVG%20question&In-Reply-To=%3C223020e60612130725i1047ef21yad4fc5ff7319797f%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] SVG question">nickblack1 at gmail.com
+       </A><BR>
+    <I>Wed Dec 13 16:25:53 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000091.html">[Mapnik-devel] tiff rendering
+</A></li>
+        <LI>Next message: <A HREF="000092.html">[Mapnik-devel] SVG question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#90">[ date ]</a>
+              <a href="thread.html#90">[ thread ]</a>
+              <a href="subject.html#90">[ subject ]</a>
+              <a href="author.html#90">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I'm trying to produce a line style to represent a railway.  I want it to
+look like:
+
+=|=|=|=|=|=|=
+
+except the two horizontal lines should be continuous, not broken.  So far I
+have this config:
+
+ &lt;Style name=&quot;rail_casing&quot;&gt;
+   &lt;Rule&gt;
+      &lt;LineSymbolizer&gt;
+        &lt;CssParameter name=&quot;stroke&quot;&gt;#b6b5b3&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-width&quot;&gt;5&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linejoin&quot;&gt;miter&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linecap&quot;&gt;butt&lt;/CssParameter&gt;
+      &lt;/LineSymbolizer&gt;
+   &lt;/Rule&gt;
+  &lt;/Style&gt;
+
+  &lt;Style name=&quot;rail&quot;&gt;
+   &lt;Rule&gt;
+      &lt;LineSymbolizer&gt;
+        &lt;CssParameter name=&quot;stroke&quot;&gt;#ffffff&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-width&quot;&gt;3&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linejoin&quot;&gt;miter&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linecap&quot;&gt;butt&lt;/CssParameter&gt;
+      &lt;/LineSymbolizer&gt;
+   &lt;/Rule&gt;
+  &lt;/Style&gt;
+
+ &lt;Style name=&quot;rail_stroke&quot;&gt;
+   &lt;Rule&gt;
+      &lt;LineSymbolizer&gt;
+        &lt;CssParameter name=&quot;stroke&quot;&gt;#a0a0a0&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-width&quot;&gt;5&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linejoin&quot;&gt;miter&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-linecap&quot;&gt;butt&lt;/CssParameter&gt;
+        &lt;CssParameter name=&quot;stroke-dasharray&quot;&gt;0.1,5&lt;/CssParameter&gt;
+      &lt;/LineSymbolizer&gt;
+   &lt;/Rule&gt;
+  &lt;/Style&gt;
+
+With each of these styles applied in this order by seperate layers.  The
+problem with this is that the top most layer should represent the
+perpendicular strokes, something I tried to achieve by reducing the length
+of the stroke to 0.1 - I guess this wont work though.
+
+So is there abother way to acheive what I am trying to?  Is it possible to
+draw perpendicular strokes of m width, every n pixels along the line?
+
+Cheers,
+
+Nick
+
+
+
+
+-- 
+Nick Black
+--------------------------------
+<A HREF="http://www.blairclock.com">http://www.blairclock.com</A>
+---------------------------------
+<A HREF="http://www.blacksworld.net">http://www.blacksworld.net</A>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061213/b17924da/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061213/b17924da/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000091.html">[Mapnik-devel] tiff rendering
+</A></li>
+	<LI>Next message: <A HREF="000092.html">[Mapnik-devel] SVG question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#90">[ date ]</a>
+              <a href="thread.html#90">[ thread ]</a>
+              <a href="subject.html#90">[ subject ]</a>
+              <a href="author.html#90">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

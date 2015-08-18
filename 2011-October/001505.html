@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] line placement is extremely slow for long road
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20line%20placement%20is%20extremely%20slow%20for%20long%20road&In-Reply-To=%3CSNT143-ds12EE8C032580C07DEF616CCEED0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001504.html">
+   <LINK REL="Next"  HREF="001507.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] line placement is extremely slow for long road</H1>
+    <B>zzsj</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20line%20placement%20is%20extremely%20slow%20for%20long%20road&In-Reply-To=%3CSNT143-ds12EE8C032580C07DEF616CCEED0%40phx.gbl%3E"
+       TITLE="[Mapnik-devel] line placement is extremely slow for long road">feverzsj at hotmail.com
+       </A><BR>
+    <I>Wed Oct 26 11:22:17 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001504.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+        <LI>Next message: <A HREF="001507.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1505">[ date ]</a>
+              <a href="thread.html#1505">[ thread ]</a>
+              <a href="subject.html#1505">[ subject ]</a>
+              <a href="author.html#1505">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;<i>hi, list
+</I>&gt;&gt;<i>While rendering osm data, some tile takes much more time than others. But the output tile seems to only contain a little part of a very long road. The profiler says almost 100% time is taken by find_line_placements. It seems the algorithm tries to iterate along the whole road each time with a little distance advanced. Is this a normal behaviour?
+</I> 
+&gt;&gt;<i>regards, zsj
+</I>
+hi, all 
+I've tried tweaking the issue. Thanks to the agg::conv_clip_polyline, simply passing a clipped path to the placement_finder could dramatically boost the find_line_placements/find_point_placements to some acceptable performance.
+agg's conversion pipeline like agg::conv_clip_polyline/conv_clip_polygon may tweak the agg_renderer for other cases (for example: clip before transform/stroking path, if the transformation/stroking are costly). Furthermore, turn off rasterizer's clipping while vertex source level clip is used (for most of my test cases, just a little speed gain).
+
+regards, zsj
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001504.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+	<LI>Next message: <A HREF="001507.html">[Mapnik-devel] line placement is extremely slow for long road
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1505">[ date ]</a>
+              <a href="thread.html#1505">[ thread ]</a>
+              <a href="subject.html#1505">[ subject ]</a>
+              <a href="author.html#1505">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

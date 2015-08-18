@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] ShieldSymbolizer - overlap issue
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20ShieldSymbolizer%20-%20overlap%20issue&In-Reply-To=%3C9527E33F-0270-4683-BD5E-55C4A9EF6EF2%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001324.html">
+   <LINK REL="Next"  HREF="001325.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] ShieldSymbolizer - overlap issue</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20ShieldSymbolizer%20-%20overlap%20issue&In-Reply-To=%3C9527E33F-0270-4683-BD5E-55C4A9EF6EF2%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] ShieldSymbolizer - overlap issue">dane at dbsgeo.com
+       </A><BR>
+    <I>Tue Feb  8 19:41:59 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001324.html">[Mapnik-devel] ShieldSymbolizer - overlap issue
+</A></li>
+        <LI>Next message: <A HREF="001325.html">[Mapnik-devel] Removing autotools from Mapnik trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1332">[ date ]</a>
+              <a href="thread.html#1332">[ thread ]</a>
+              <a href="subject.html#1332">[ subject ]</a>
+              <a href="author.html#1332">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Bruno,
+
+Sounds like you've done a good job exploring an interesting placement edge case. Ideally you could create a trac ticket with sample data and sample styles as well as your patch. 
+
+Dane
+
+On Feb 4, 2011, at 8:20 AM, Bruno B Caponi wrote:
+
+&gt;<i> Mapnik developers,
+</I>&gt;<i> 
+</I>&gt;<i> I'm trying to build some maps with ShiledSymbolizer but I had no success with allow_overlap, label_spacing and minimun_distace properties.
+</I>&gt;<i> 
+</I>&gt;<i> After many tests, I found the problem. Some of my lines have &quot;U turns&quot;, ie, it returns close than itself, and, in this case, the properties minimun_distace and allow_overlap are not used and one Shield could overlap another.
+</I>&gt;<i> 
+</I>&gt;<i> The solution that I found is to update the detector after each shield was placed. I did this in the end of the method &quot;void placement_finder&lt;DetectorT&gt;::find_point_placement( ... )&quot; (placement_finder.cpp:434), where the char envelopes have been moved to placement envelopes queue.
+</I>&gt;<i> 
+</I>&gt;<i> Are there collateral effects? I search for occurences of this method and I guess that is only called by Shield Symbolizer renderer.
+</I>&gt;<i> This is supposed to work this way or is a bug? If it's not a bug, that is a chance to create a new porperty (allow_overlap_itself) in the next release?
+</I>&gt;<i> 
+</I>&gt;<i> Thanks
+</I>&gt;<i> 
+</I>&gt;<i> Bruno Caponi
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001324.html">[Mapnik-devel] ShieldSymbolizer - overlap issue
+</A></li>
+	<LI>Next message: <A HREF="001325.html">[Mapnik-devel] Removing autotools from Mapnik trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1332">[ date ]</a>
+              <a href="thread.html#1332">[ thread ]</a>
+              <a href="subject.html#1332">[ subject ]</a>
+              <a href="author.html#1332">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

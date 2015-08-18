@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] the missing polygons
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20the%20missing%20polygons&In-Reply-To=%3CD8231DBE-C48B-4112-A0A7-35D6C35BECFD%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000324.html">
+   <LINK REL="Next"  HREF="000319.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] the missing polygons</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20the%20missing%20polygons&In-Reply-To=%3CD8231DBE-C48B-4112-A0A7-35D6C35BECFD%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] the missing polygons">artem at mapnik.org
+       </A><BR>
+    <I>Mon Oct 22 22:20:25 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000324.html">[Mapnik-devel] Python support with autotools
+</A></li>
+        <LI>Next message: <A HREF="000319.html">[Mapnik-devel] [Mapnik-users] Mapnik.NET and Win32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#318">[ date ]</a>
+              <a href="thread.html#318">[ thread ]</a>
+              <a href="subject.html#318">[ subject ]</a>
+              <a href="author.html#318">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 22 Oct 2007, at 21:04, Jon Burgess wrote:
+
+&gt;<i> On Mon, 2007-10-22 at 19:35 +0100, Artem Pavlenko wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 20 Oct 2007, at 01:55, Jon Burgess wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> gis=&gt; select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+</I>&gt;&gt;&gt;&gt;<i> estimated_extent('planet_osm_polygon','way') as ext) as tmp;
+</I>&gt;&gt;&gt;&gt;<i>    xmin   |     ymin     |   xmax   |   ymax
+</I>&gt;&gt;&gt;&gt;<i> ----------+--------------+----------+----------
+</I>&gt;&gt;&gt;&gt;<i>  -9971419 | -594031.0625 | 10706760 | 11333172
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> ==&gt; Postgis extent:
+</I>&gt;&gt;&gt;&gt;<i> Envelope(-9971419,-594031.0625,10706760,11333172)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> gis=&gt; select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+</I>&gt;&gt;&gt;&gt;<i> extent(&quot;way&quot;) as ext from &quot;planet_osm_polygon&quot;) as tmp;
+</I>&gt;&gt;&gt;&gt;<i>    xmin    |    ymin    |   xmax   |   ymax
+</I>&gt;&gt;&gt;&gt;<i> -----------+------------+----------+----------
+</I>&gt;&gt;&gt;&gt;<i>  -17568720 | -6845024.5 | 19767786 | 11401454
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> ==&gt; Postgis extent:
+</I>&gt;&gt;&gt;&gt;<i> Envelope(-17568720,-6845024.5,19767786,11401454)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I've not looked into estimated_extent() is derived but it is
+</I>&gt;&gt;&gt;&gt;<i> clearly a very bad estimate in this case.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Jon
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I get very similar results from the Posgres install on tile:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> gis=&gt; select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+</I>&gt;&gt;&gt;<i> estimated_extent('planet_osm_polygon','way') as ext) as tmp;
+</I>&gt;&gt;&gt;<i>    xmin   |     ymin      |   xmax   |  ymax
+</I>&gt;&gt;&gt;<i> ----------+---------------+----------+---------
+</I>&gt;&gt;&gt;<i>  -9973436 | -474337.90625 | 10707879 | 9982616
+</I>&gt;&gt;&gt;<i> (1 row)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> gis=&gt; select xmin(ext),ymin(ext),xmax(ext),ymax(ext) from (select
+</I>&gt;&gt;&gt;<i> extent(&quot;way&quot;) as ext from &quot;planet_osm_polygon&quot;) as tmp;
+</I>&gt;&gt;&gt;<i>    xmin    |    ymin    |   xmax   |   ymax
+</I>&gt;&gt;&gt;<i> -----------+------------+----------+----------
+</I>&gt;&gt;&gt;<i>  -17568720 | -6845024.5 | 19767786 | 11401454
+</I>&gt;&gt;&gt;<i> (1 row)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Artem: Do the estimated extents look more accurate in your DB?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Well, not always. I get very strange result after :
+</I>&gt;&gt;<i> &quot;reindex;&quot; ,&quot;vacuum analyze;&quot;
+</I>&gt;&gt;<i>
+</I>&gt;<i> I get different estimated extents each time I run analyze as well.
+</I>&gt;<i>
+</I>&gt;<i> It seems you can increase the number of data points gathered during  
+</I>&gt;<i> the
+</I>&gt;<i> analyze by doing 'alter table planet_osm_polygon alter column way SET
+</I>&gt;<i> STATISTICS 1000;' and then running 'analyze planet_osm_polygon'.  
+</I>&gt;<i> Setting
+</I>&gt;<i> it to 1000 (which is the maximum) still does not give an estimated
+</I>&gt;<i> extent still does not covers all the data.
+</I>&gt;<i>
+</I>
+Hmm..
+&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Setting all the flags in osm.xml to the Postgis layers to
+</I>&gt;&gt;&gt;<i> estimate_extent=false makes the polygons appear again for me. Does
+</I>&gt;&gt;&gt;<i> this
+</I>&gt;&gt;&gt;<i> effect the time it takes to render a tile or just the initial
+</I>&gt;&gt;&gt;<i> startup
+</I>&gt;&gt;&gt;<i> time?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Only initial start-up time, as datasource caches extent.
+</I>&gt;<i>
+</I>&gt;<i> It is a shame that there appears to be no way to force the DB to cache
+</I>&gt;<i> the real extent information in place of the estimated extent. In  
+</I>&gt;<i> theory
+</I>&gt;<i> we should only ever have to calculate the real extent once for each
+</I>&gt;<i> planet import.
+</I>&gt;<i>
+</I>Yes.
+&gt;<i> Do you think we should remove the estimated extent parameter from the
+</I>&gt;<i> osm.xml file? It seems to me that this is the way to fix this problem
+</I>&gt;<i> properly. Otherwise we need to remove the clip-to-layer-extent code.
+</I>
+Well, another option would be to allow user defined extent which  
+takes priority over calculated one, similar to raster plug-in:
+
+&lt;Datasource ...&gt;
+	&lt;Parameter name=&quot;lox&quot;&gt;2134234.5432&lt;/Parameter&gt;
+	...
+         ...
+&lt;/Datasource&gt;
+
+Or even :
+
+&lt;Datasource ...&gt;
+	&lt;Parameter name=&quot;extent&quot;&gt;2134234.5432,32143,54325,54325432&lt;/Parameter&gt;
+&lt;/Datasource&gt;
+
+&gt;<i>
+</I>&gt;<i> Do you think that one of us should follow up my previous post on
+</I>&gt;<i> mapnik-devel to acknowledge the estimated extent as being the  
+</I>&gt;<i> underlying
+</I>&gt;<i> cause of the issue?
+</I>
+Sure, I'm posting to dev as well.
+
+Artem
+&gt;<i>
+</I>&gt;<i>   Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071022/8d866f82/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071022/8d866f82/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000324.html">[Mapnik-devel] Python support with autotools
+</A></li>
+	<LI>Next message: <A HREF="000319.html">[Mapnik-devel] [Mapnik-users] Mapnik.NET and Win32
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#318">[ date ]</a>
+              <a href="thread.html#318">[ thread ]</a>
+              <a href="subject.html#318">[ subject ]</a>
+              <a href="author.html#318">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

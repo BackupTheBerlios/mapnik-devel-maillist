@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch: Exception for unknown image file type
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%3A%20Exception%20for%20unknown%20image%20file%20type&In-Reply-To=%3C566B3E6D-289B-4B83-AB56-22DA5E4AC899%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000341.html">
+   <LINK REL="Next"  HREF="000343.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch: Exception for unknown image file type</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%3A%20Exception%20for%20unknown%20image%20file%20type&In-Reply-To=%3C566B3E6D-289B-4B83-AB56-22DA5E4AC899%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Patch: Exception for unknown image file type">artem at mapnik.org
+       </A><BR>
+    <I>Wed Dec 19 17:39:07 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000341.html">[Mapnik-devel] Patch: Exception for unknown image file type
+</A></li>
+        <LI>Next message: <A HREF="000343.html">[Mapnik-devel] Rendering error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#342">[ date ]</a>
+              <a href="thread.html#342">[ thread ]</a>
+              <a href="subject.html#342">[ subject ]</a>
+              <a href="author.html#342">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Jochen,
+
+On 19 Dec 2007, at 16:18, Jochen Topf wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i> save_to_file should probably throw an exception if the filetype is
+</I>&gt;<i> unknown (ie. not png, png256, or jpeg) instead of just doing nothing.
+</I>&gt;<i> Patch attached.
+</I>&gt;<i>
+</I>
+Absolutely! applied in r575. If you're testing color reduction,  
+please, give me some feedback.
+I suspect there might be some artifacts with certain maps and we  
+might have to help algorithm a bit.
+Perhaps, we can rank 'important' colours in advance or .. I'd rather  
+avoid building histogram but maybe we have to.
+
+Thanks for your patch!
+Artem
+&gt;<i> Jochen
+</I>&gt;<i> -- 
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298&lt;mapnik-image-type- 
+</I>&gt;<i> exception.diff&gt;_______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000341.html">[Mapnik-devel] Patch: Exception for unknown image file type
+</A></li>
+	<LI>Next message: <A HREF="000343.html">[Mapnik-devel] Rendering error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#342">[ date ]</a>
+              <a href="thread.html#342">[ thread ]</a>
+              <a href="subject.html#342">[ subject ]</a>
+              <a href="author.html#342">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

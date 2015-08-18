@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik's WMS use
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%27s%20WMS%20use&In-Reply-To=%3CD2930B2A-A09B-4113-9FBB-ED7D7947410A%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000703.html">
+   <LINK REL="Next"  HREF="000706.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik's WMS use</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%27s%20WMS%20use&In-Reply-To=%3CD2930B2A-A09B-4113-9FBB-ED7D7947410A%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik's WMS use">blake at hailmail.net
+       </A><BR>
+    <I>Thu Aug 28 17:47:25 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000703.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+        <LI>Next message: <A HREF="000706.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#704">[ date ]</a>
+              <a href="thread.html#704">[ thread ]</a>
+              <a href="subject.html#704">[ subject ]</a>
+              <a href="author.html#704">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Oleg,
+
+If you rebuild mapnik with the debug=y  Scons flag, mapnik should  
+output a variety of information to your apache logs such at the extent  
+of the data and the map, and how many features are processed given the  
+bounding box.
+
+I think if you do this what you will see is that no features are being  
+processed since they are not falling within the WMS query BBOX you are  
+testing.
+
+I think you must have downloaded that world_boundaries_m.shp from  
+OSM?  If I run ogrinfo on that shapefile I get:
+
+$ ogrinfo world_boundaries_m.shp -so -al
+INFO: Open of `world_boundaries_m.shp'
+       using driver `ESRI Shapefile' successful.
+
+Layer name: world_boundaries_m
+Geometry: Polygon
+Feature Count: 3807
+Extent: (-20037400.000000, -19929239.110000) - (20037400.000000,  
+18375854.709643)
+Layer SRS WKT:
+PROJCS[&quot;Mercator&quot;,
+     GEOGCS[&quot;GCS_WGS_1984&quot;,
+         DATUM[&quot;WGS_1984&quot;,
+             SPHEROID[&quot;WGS_1984&quot;,6378137,298.257223563]],
+         PRIMEM[&quot;Greenwich&quot;,0],
+         UNIT[&quot;Degree&quot;,0.017453292519943295]],
+     PROJECTION[&quot;Mercator_1SP&quot;],
+     PARAMETER[&quot;latitude_of_origin&quot;,0],
+     PARAMETER[&quot;central_meridian&quot;,0],
+     PARAMETER[&quot;scale_factor&quot;,1],
+     PARAMETER[&quot;false_easting&quot;,0],
+     PARAMETER[&quot;false_northing&quot;,0],
+     UNIT[&quot;Meter&quot;,1]]
+CAT: Real (16.0)
+FIPS_CNTRY: String (80.0)
+CNTRY_NAME: String (80.0)
+
+
+It seems like for your testing script you will need a shapefile in  
+true unprojected WGS 84(EPSG:4326) coordinates, like the one here:
+<A HREF="http://mapnik-utils.googlecode.com/svn/trunk/sample_data/">http://mapnik-utils.googlecode.com/svn/trunk/sample_data/</A>
+
+Otherwise you will need to modify your script
+
+such that this line:
+
+&gt;&gt;&gt;<i>  lyr = Layer('world', '+init=epsg:4326')
+</I>
+
+becomes:
+
+lyr = Layer('world', '+init=epsg:3395')
+
+
+Which will allow the WMS server to reproject your data. So, using the  
+same query string you should get back a map in EPSG:4326.
+
+If you then want to get map tiles in mercator you'll need to add a  
+line to your ogcserver.conf like:
+
+allowedepsgcodes=4326,3395, # trailing comma is essential
+
+and then test a WMS query string with a  
+bbox=-20037400.000000,-19929239.110000,  
+20037400.000000,18375854.709643 and EPSG=3395
+
+something more like:
+
+<A HREF="http://localhost/fcgi-bin/wms?LAYERS=world&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;EXCEPTIONS=application%2Fvnd.ogc.se_inimage&amp;FORMAT=image%2Fpng&amp;SRS=EPSG%3A3395&amp;BBOX=-20037400.000000,-19929239.110000,%2020037400.000000,18375854.709643&amp;WIDTH=256&amp;HEIGHT=256">http://localhost/fcgi-bin/wms?LAYERS=world&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;EXCEPTIONS=application%2Fvnd.ogc.se_inimage&amp;FORMAT=image%2Fpng&amp;SRS=EPSG%3A3395&amp;BBOX=-20037400.000000,-19929239.110000,%2020037400.000000,18375854.709643&amp;WIDTH=256&amp;HEIGHT=256</A>
+
+
+Dane
+
+
+On Aug 28, 2008, at 7:53 AM, Oleg Shaniuk wrote:
+
+&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> I've checked log, even tried to run apache in debug mode with maximum
+</I>&gt;<i> verbose level (debug), but there is just nothing in log. When I set
+</I>&gt;<i> incorrect coastline file name, I've got an exception; so, it has
+</I>&gt;<i> access to file (I've checked rights for double-sure)
+</I>&gt;<i> My system is ubuntu 8.04, apache2 ( 2.2.8 ubuntu ). Mapnik works well.
+</I>&gt;<i> The confusing thing is white color - seems, it just render empty map,
+</I>&gt;<i> without any styles at all...
+</I>&gt;<i>
+</I>&gt;<i> which reasons at all can cause such behavior?
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Oleg
+</I>&gt;<i>
+</I>&gt;<i> 2008/8/28 Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;:
+</I>&gt;&gt;<i> Hi Oleg,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Your test configuration, including that URL, looks fine.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My guess is that your apache user may not have read permissions for
+</I>&gt;&gt;<i> '/var/mapnik/world_boundaries/world_boundaries_m'
+</I>&gt;&gt;<i> Check your apache logs and if this is the case you'll likely see  
+</I>&gt;&gt;<i> the mapnik
+</I>&gt;&gt;<i> output of 'got exception...'
+</I>&gt;&gt;<i> Or perhaps the Mapnik WMS code is failing for some other reason,  
+</I>&gt;&gt;<i> and the
+</I>&gt;&gt;<i> apache error logs should give you an idea.  If you find anything  
+</I>&gt;&gt;<i> you don't
+</I>&gt;&gt;<i> understand, paste a snippet back to the list.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, what system are you running?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Aug 28, 2008, at 7:10 AM, Oleg Shaniuk wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi All,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm playing with mapnik's WMS features. And I'm getting empty  
+</I>&gt;&gt;&gt;<i> image in
+</I>&gt;&gt;&gt;<i> browser. The interesting thing, if I use the same style and layer,  
+</I>&gt;&gt;&gt;<i> but
+</I>&gt;&gt;&gt;<i> with Map object and render image in python script - it works  
+</I>&gt;&gt;&gt;<i> correct.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Fot the request:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://localhost/fcgi-bin/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=world&amp;FORMAT=image/png&amp;SRS=EPSG:4326&amp;STYLES=&amp;&amp;BBOX=-179,-83,179,83&amp;EXCEPTIONS=application/vnd.ogc.se_inimage&amp;width=600&amp;height=300">http://localhost/fcgi-bin/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=world&amp;FORMAT=image/png&amp;SRS=EPSG:4326&amp;STYLES=&amp;&amp;BBOX=-179,-83,179,83&amp;EXCEPTIONS=application/vnd.ogc.se_inimage&amp;width=600&amp;height=300</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'm getting empty white picture 600x300pix.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> using mapnik 5.1.0
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> My scripts/config:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ######## wms python script for fcgi #########
+</I>&gt;&gt;&gt;<i> #!/usr/bin/python
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> from mapnik.ogcserver.cgiserver import Handler
+</I>&gt;&gt;&gt;<i> import jon.fcgi as fcgi
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> import sys
+</I>&gt;&gt;&gt;<i> sys.path.append('/var/mapnik')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> class WMSHandler(Handler):
+</I>&gt;&gt;&gt;<i>  configpath = '/var/mapnik/ogcserver.conf'
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> fcgi.Server({fcgi.FCGI_RESPONDER: WMSHandler}).run()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ######## ogcserver.config ###############
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # unchanged, except
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> module=worldMapFactory
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> ######## worldMapFactory.py #############
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> #!/usr/bin/python
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> from mapnik.ogcserver.WMS import BaseWMSFactory
+</I>&gt;&gt;&gt;<i> from mapnik import *
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> class WMSFactory(BaseWMSFactory):
+</I>&gt;&gt;&gt;<i> def __init__(self):
+</I>&gt;&gt;&gt;<i>  BaseWMSFactory.__init__(self)
+</I>&gt;&gt;&gt;<i>  sty = Style()
+</I>&gt;&gt;&gt;<i>  rl = Rule()
+</I>&gt;&gt;&gt;<i>  rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+</I>&gt;&gt;&gt;<i>  rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+</I>&gt;&gt;&gt;<i>  sty.rules.append( rl )
+</I>&gt;&gt;&gt;<i>  self.register_style('style1', sty)
+</I>&gt;&gt;&gt;<i>  lyr = Layer('world', '+init=epsg:4326')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>  lyr.title = 'World'
+</I>&gt;&gt;&gt;<i>  lyr.abstract = 'World Test'
+</I>&gt;&gt;&gt;<i>  lyr.queryable = True
+</I>&gt;&gt;&gt;<i>  lyr.datasource =
+</I>&gt;&gt;&gt;<i> Shapefile(file='/var/mapnik/world_boundaries/world_boundaries_m')
+</I>&gt;&gt;&gt;<i>  self.register_layer(lyr,'style1')
+</I>&gt;&gt;&gt;<i>  self.finalize()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> # simple test script (works just fine):
+</I>&gt;&gt;&gt;<i> ######## mapnikTest.py ###########
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> from mapnik import *
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> m = Map(600,300)
+</I>&gt;&gt;&gt;<i> m.background = Color('steelblue')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> sty = Style()
+</I>&gt;&gt;&gt;<i> rl = Rule()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+</I>&gt;&gt;&gt;<i> rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> sty.rules.append( rl )
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> m.append_style('My Style',sty)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> lyr = Layer('world', '+init=epsg:4326')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> lyr.title = 'World Borders'
+</I>&gt;&gt;&gt;<i> lyr.abstract = 'World Test'
+</I>&gt;&gt;&gt;<i> lyr.queryable = True
+</I>&gt;&gt;&gt;<i> lyr.datasource =
+</I>&gt;&gt;&gt;<i> Shapefile(file='/var/mapnik/world_boundaries/world_boundaries_m')
+</I>&gt;&gt;&gt;<i> lyr.styles.append('My Style')
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> m.layers.append(lyr)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> m.zoom_to_box(lyr.envelope())
+</I>&gt;&gt;&gt;<i> render_to_file(m, 'hello_world_in_pure_python.png')
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000703.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+	<LI>Next message: <A HREF="000706.html">[Mapnik-devel] Mapnik's WMS use
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#704">[ date ]</a>
+              <a href="thread.html#704">[ thread ]</a>
+              <a href="subject.html#704">[ subject ]</a>
+              <a href="author.html#704">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

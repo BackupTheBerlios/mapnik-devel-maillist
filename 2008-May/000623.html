@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about implementing fallback fonts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805262338r385aafddnb296f5289d71120c%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000622.html">
+   <LINK REL="Next"  HREF="000624.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about implementing fallback fonts</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805262338r385aafddnb296f5289d71120c%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about implementing fallback fonts">beau at beaugunderson.com
+       </A><BR>
+    <I>Tue May 27 08:38:14 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000622.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+        <LI>Next message: <A HREF="000624.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#623">[ date ]</a>
+              <a href="thread.html#623">[ thread ]</a>
+              <a href="subject.html#623">[ subject ]</a>
+              <a href="author.html#623">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Excellent, both make sense and I've gone ahead and started.
+
+Should have a patch ready in the next couple of days depending on how much
+coding time I get.
+
+
+Beau
+
+On Tue, May 27, 2008 at 12:36 AM, Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt;
+wrote:
+
+&gt;<i> On Tue, May 27, 2008 at 1:44 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; More questions already. :)
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; 1. Should FontSet be a top-level element like Layer and Style?
+</I>&gt;<i>
+</I>&gt;<i> I'd say yes.
+</I>&gt;<i>
+</I>&gt;<i> &gt; 2. I noticed that other XML nodes are usually referenced from nodes and
+</I>&gt;<i> not
+</I>&gt;<i> &gt; attributes, i.e.:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    &lt;Layer&gt;
+</I>&gt;<i> &gt;     &lt;StyleName&gt;style-name&lt;/StyleName&gt;
+</I>&gt;<i> &gt;    &lt;/Layer&gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; instead of...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    &lt;Layer stylename=&quot;style-name&quot; /&gt;
+</I>&gt;<i>
+</I>&gt;<i> This is different. A layer can have multiple styles, hence the latter
+</I>&gt;<i> way would not work.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Should this be continued for TextSymbolizer? I.e.,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;    &lt;TextSymbolizer name=&quot;NAME&quot; size=&quot;15&quot; fill=&quot;black&quot;&gt;
+</I>&gt;<i> &gt;     &lt;FontSetName&gt;font-set-name&lt;/FontSetName&gt;
+</I>&gt;<i> &gt;    &lt;/TextSymbolizer&gt;
+</I>&gt;<i>
+</I>&gt;<i> I'd say stick to fontset=&quot;name&quot;, unless you want to support the text
+</I>&gt;<i> symbolizer having multiple fontsets? I also object on the ground that
+</I>&gt;<i> TextSyboliser currently has no content and adding will make the file
+</I>&gt;<i> more unreadable than it already is. Using an attribute fits better.
+</I>&gt;<i>
+</I>&gt;<i> Have a nice day,
+</I>&gt;<i> --
+</I>&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/48bc2197/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080527/48bc2197/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000622.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+	<LI>Next message: <A HREF="000624.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#623">[ date ]</a>
+              <a href="thread.html#623">[ thread ]</a>
+              <a href="subject.html#623">[ subject ]</a>
+              <a href="author.html#623">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

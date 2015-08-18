@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik weird build error
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20weird%20build%20error&In-Reply-To=%3Cc95f07a90809071931iee0c7abl6c8a8190b3e8c204%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000713.html">
+   <LINK REL="Next"  HREF="000715.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik weird build error</H1>
+    <B>Joseph Gentle</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20weird%20build%20error&In-Reply-To=%3Cc95f07a90809071931iee0c7abl6c8a8190b3e8c204%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik weird build error">josephg at gmail.com
+       </A><BR>
+    <I>Mon Sep  8 04:31:19 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000713.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+        <LI>Next message: <A HREF="000715.html">[Mapnik-devel] Mapnik weird build error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#714">[ date ]</a>
+              <a href="thread.html#714">[ thread ]</a>
+              <a href="subject.html#714">[ subject ]</a>
+              <a href="author.html#714">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey guys. I'm trying to build mapnik 0.5.1 using scons. It gets a weird
+error (below). Has anyone seen anything like this before, or know what to
+make of it?
+
+I'm compiling on a gentoo box. I'm using python 2.5, boost 1.34 and gcc
+4.1.2. Its a 64 bit system (amd64 build profile).
+
+-J
+
+
+g++ -o bindings/python/_mapnik.so -shared
+bindings/python/mapnik_parameters.os bindings/python/mapnik_coord.os
+bindings/python/mapnik_image.os bindings/python/mapnik_featureset.os
+bindings/python/mapnik_projection.os
+bindings/python/mapnik_line_pattern_symbolizer.os
+bindings/python/mapnik_color.os bindings/python/mapnik_datasource.os
+bindings/python/mapnik_layer.os bindings/python/mapnik_point_symbolizer.os
+bindings/python/mapnik_map.os
+bindings/python/mapnik_polygon_pattern_symbolizer.os
+bindings/python/mapnik_datasource_cache.os
+bindings/python/mapnik_shield_symbolizer.os
+bindings/python/mapnik_raster_symbolizer.os
+bindings/python/mapnik_font_engine.os bindings/python/mapnik_query.os
+bindings/python/mapnik_envelope.os bindings/python/mapnik_python.os
+bindings/python/mapnik_rule.os bindings/python/mapnik_filter.os
+bindings/python/mapnik_style.os bindings/python/mapnik_line_symbolizer.os
+bindings/python/mapnik_image_view.os
+bindings/python/mapnik_polygon_symbolizer.os
+bindings/python/mapnik_stroke.os bindings/python/mapnik_text_symbolizer.os
+bindings/python/mapnik_feature.os -Lagg -Lsrc -L/usr/lib64
+-L/usr/local/lib64 -lmapnik -lpng -ljpeg
+-lboost_python-mt`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+referenced in section
+`.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of
+bindings/python/mapnik_datasource_cache.os`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+referenced in section
+       .... (A bunch more similar messages cut for brevity)
+`.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os
+collect2: ld returned 1 exit status
+scons: *** [bindings/python/_mapnik.so] Error 1
+scons: building terminated because of errors.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080908/3bf23e0f/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080908/3bf23e0f/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000713.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+	<LI>Next message: <A HREF="000715.html">[Mapnik-devel] Mapnik weird build error
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#714">[ date ]</a>
+              <a href="thread.html#714">[ thread ]</a>
+              <a href="subject.html#714">[ subject ]</a>
+              <a href="author.html#714">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

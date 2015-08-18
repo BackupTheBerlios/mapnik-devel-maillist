@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Map buffer_size
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20buffer_size&In-Reply-To=%3CE21537F1-E224-495B-9FE2-90E52F89512F%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001410.html">
+   <LINK REL="Next"  HREF="001421.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Map buffer_size</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20buffer_size&In-Reply-To=%3CE21537F1-E224-495B-9FE2-90E52F89512F%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Map buffer_size">dane at dbsgeo.com
+       </A><BR>
+    <I>Mon Jun 13 18:41:47 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001410.html">[Mapnik-devel] Map buffer_size
+</A></li>
+        <LI>Next message: <A HREF="001421.html">[Mapnik-devel] Map buffer_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1416">[ date ]</a>
+              <a href="thread.html#1416">[ thread ]</a>
+              <a href="subject.html#1416">[ subject ]</a>
+              <a href="author.html#1416">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Jun 7, 2011, at 5:24 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt; wrote:
+
+&gt;<i> Hi all,
+</I>&gt;<i> 
+</I>&gt;<i> I've come to a problem related to buffer_size. The Map, with a buffer_size of 128 pixels shows perfect labels and graphics (PointSymbolizer), but it takes some time to draw each tile. Setting buffer_size to 0 almost doubles perceived rendering speed, but with labels not appering correctly (cut).
+</I>
+Yes, a map buffer results in more data being fetched so it can be quite expensive (especially a low zoom levels when buffered tiles overlap more data). So, I've been thinking about trying to optimize by finding early return situations were mapnik can internally skip using it (or using its full size), even if set. This is not an easy task and I've not started coding on it yet. But, some situations are easily avoidable, like where only line/polygon symbolizers are used and a buffer it set - in this case it could likely be completely ignored (which would help applications like TileMill which always assume a map buffer and do not let expect the user to know/set it themselves).
+
+&gt;<i> 
+</I>&gt;<i> With buffer_size=128 I'm getting a blank tile which spends 400ms in the database query and 120ms cpu time (mean) in the render. With buffer_size=0 no SQL queries are fired, so the tile is almost 0-cost.
+</I>
+So, this tile must be being pushed outside of the extent of the layer when a buffer it set?
+
+&gt;<i> 
+</I>&gt;<i> Buffer size needed is predictable, it can be aproximated for LineSymbolizer, ShieldSymbolizer, PointSymbolizer... For Layers with only that symbolizers a buffer size of 10, 20, 30... can be more than enough. The problem is usually the TextSymbolizer, which will require setting a higher value for the buffer_size in the layer.
+</I>&gt;<i> 
+</I>&gt;<i> So, does it make sense to add the buffer_size parameter to layers? If it is defined layer.get_buffered_extent() could be used instead of map.get_buffered_extent(). It looks like a small change that can help a lot optimizing the map rendering.
+</I>
+This is an interesting idea. Last time I looked at feature_style_processor, based on the way that we need to clip and project the map extent (up front) pulling the buffer value from the layer would not be an obviously easy tweak. I'll need to look again. Either way I think this warrants a ticket where we can discuss more. Would you be please create one?
+
+&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Manel Clos
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001410.html">[Mapnik-devel] Map buffer_size
+</A></li>
+	<LI>Next message: <A HREF="001421.html">[Mapnik-devel] Map buffer_size
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1416">[ date ]</a>
+              <a href="thread.html#1416">[ thread ]</a>
+              <a href="subject.html#1416">[ subject ]</a>
+              <a href="author.html#1416">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

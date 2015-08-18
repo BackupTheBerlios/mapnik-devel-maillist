@@ -1,0 +1,771 @@
+From blake at hailmail.net  Mon Jun  1 01:11:20 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 31 May 2009 16:11:20 -0700
+Subject: [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in
+	Windows XP pro
+In-Reply-To: <d65fceb50905232054n44efdb1bx9f82a9f92b68dda3@mail.gmail.com>
+References: <d65fceb50905232054n44efdb1bx9f82a9f92b68dda3@mail.gmail.com>
+Message-ID: <7A9CB8C3-C884-4588-BC80-ADBE7C1D68A7@hailmail.net>
+
+Thanks Harry!
+
+- Dane
+
+On May 23, 2009, at 8:54 PM, Harry Gomez wrote:
+
+> Hello,
+> I was having problems installing mapnik on my PC. I had followed the  
+> wiki instructions to a T(atleast I thought). I had downloaded Mapnik  
+> 0.6.0 and Python 2.5. I installed Python and Mapnik 0.6.0 and set up  
+> the system variables but I didnt get it to work. I later installed  
+> Visual Studio 6 to but mapnik still did not work.
+> ?
+> How did I get this to work, I did the following:
+> -I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)
+> -Got rid of all the system and user variables I had set up.
+> I installed the following programs in order:
+> -Visual C++ 9
+> -Python 2.5 and set up the Pythonpath
+> -unzipped Mapnik to the correct folder nad set up both the system  
+> and user variables.
+>
+> After I did this I followed the trac wiki guide to install Mapnik  
+> and everything worked. I am not quite sure what was wrong but I  
+> guess that the system variables were being pointing to the wrong  
+> files and installing the programs in the order I did and set up the  
+> system variables as I installed the programs helped solve this.(I  
+> probably had a typo at first, who know I just know that now it  
+> works!!!)
+> Take care and keep up the good work.
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Mon Jun  1 01:16:25 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 31 May 2009 16:16:25 -0700
+Subject: [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0
+	inWindows XP pro
+In-Reply-To: <200905241221233307985@gmail.com>
+References: <200905241221233307985@gmail.com>
+Message-ID: <E58932E0-FD5E-4DFE-9148-33ABBC747FAF@hailmail.net>
+
+Hi Joseph,
+
+You should not need to change the paths in the 'paths.py' file, those  
+simply help the python bindings pull in the dll's for specific  
+datasources.
+
+Dane
+
+
+On May 23, 2009, at 9:21 PM, ???(Joseph) wrote:
+
+> Hi,
+>
+> Please see the attachment jpg picture.
+>
+> At runtime,the mapnik depend on some dll.if all dependent is  
+> ok,follow:
+>
+> set env:
+>
+> PATH: add %mapnik_0_6_0_root%\lib
+>
+> to use python binding,set PYTHONPATH to %mapnik_0_6_0_root%\site- 
+> packages
+>
+> and modify the site-packages\mapnik\paths.py,set "mapniklibpath" to  
+> right path.
+>
+>
+>
+>
+>
+> ???? Harry Gomez
+> ????? 2009-05-24  12:01:01
+> ???? mapnik-devel
+> ???
+> ??? [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0  
+> inWindows XP pro
+> Hello,
+> I was having problems installing mapnik on my PC. I had followed the  
+> wiki instructions to a T(atleast I thought). I had downloaded Mapnik  
+> 0.6.0 and Python 2.5. I installed Python and Mapnik 0.6.0 and set up  
+> the system variables but I didnt get it to work. I later installed  
+> Visual Studio 6 to but mapnik still did not work.
+> ?
+> How did I get this to work, I did the following:
+> -I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)
+> -Got rid of all the system and user variables I had set up.
+> I installed the following programs in order:
+> -Visual C++ 9
+> -Python 2.5 and set up the Pythonpath
+> -unzipped Mapnik to the correct folder nad set up both the system  
+> and user variables.
+>
+> After I did this I followed the trac wiki guide to install Mapnik  
+> and everything worked. I am not quite sure what was wrong but I  
+> guess that the system variables were being pointing to the wrong  
+> files and installing the programs in the order I did and set up the  
+> system variables as I installed the programs helped solve this.(I  
+> probably had a typo at first, who know I just know that now it  
+> works!!!)
+> Take care and keep up the good work.
+>
+> <mapnik moudles.jpg>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090531/c49e05b7/attachment.html>
+
+From blake at hailmail.net  Fri Jun  5 01:26:59 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 4 Jun 2009 16:26:59 -0700
+Subject: [Mapnik-devel] Announcing Quantumnik - Mapfile authoring in Quantum
+	GIS
+Message-ID: <47F58E85-C1BA-4066-90DF-AEEBD40DFD77@hailmail.net>
+
+Mapnik Users -
+
+I'd like to announce the first public release of Quantumnik.
+
+This plugin allows QGIS (http://qgis.org/) to be used to style and  
+render Mapnik maps on-the-fly and for xml mapfile export.
+
+There is also basic support for loading (but not parsing) existing XML  
+for dynamic browsing.
+
+Wiki and source is at:
+http://bitbucket.org/springmeyer/quantumnik/
+
+Screencasts for installation and usage can be found at:
+http://dbsgeo.com/
+
+The latest release can be downloaded from:
+http://qgis.dbsgeo.com/
+
+Thanks to Jay D. for early testing.
+
+Cheers,
+
+Dane Springmeyer
+
+
+From blake at hailmail.net  Mon Jun  8 21:54:27 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 8 Jun 2009 12:54:27 -0700
+Subject: [Mapnik-devel] Boost minimum Version
+Message-ID: <FC6975C4-B140-4B99-992B-D06066E76B7F@hailmail.net>
+
+We currently list Boost 1.33 as the minimum version for Mapnik.
+
+I've not been successful getting 1.33 to compile with Mapnik, likely  
+do to boost bugs, but I'm not fully sure.
+
+Anyone have issue with bumping the minimum version to 1.34? At 1.34,  
+boost reorganized and added to the filesystem headers and sticking to  
+this layout will make things cleaner on the Mapnik side.
+
+But,  adding/maintaining a few workarounds to maintain 1.33 support  
+should not be terribly hard. Anyone feel strongly that we should (this  
+being for the next 0.6.1/0.7.0 release)?
+
+Also, anyone know what makes Mapnik incompatible with boost 1.32?
+
+Dane
+
+
+
+From blake at hailmail.net  Mon Jun  8 22:11:03 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 8 Jun 2009 13:11:03 -0700
+Subject: [Mapnik-devel] Supporting PPC architectures
+Message-ID: <A2D32CC4-B6A8-4062-8E7D-8D6CCF896287@hailmail.net>
+
+On IRC Jon Burgess and I have been working through some byte-swapping  
+issues, trying to think through getting Mapnik working right on PPC.
+
+Ideally if byte-swapping and BIG endian handling could be as compact  
+and well organized as possible, so it would be great to get feedback  
+on these tickets:
+
+https://trac.mapnik.org/ticket/355
+https://trac.mapnik.org/ticket/356
+https://trac.mapnik.org/ticket/357
+
+Dane
+
+
+
+From craig.destigter at koordinates.com  Mon Jun  8 23:42:23 2009
+From: craig.destigter at koordinates.com (Craig de Stigter)
+Date: Tue, 9 Jun 2009 09:42:23 +1200
+Subject: [Mapnik-devel] mapnik svn:// server no longer working
+Message-ID: <e260aad40906081442v44c73cc6l9073ae386bd4c8fb@mail.gmail.com>
+
+I have an existing git repo set up to pull from svn://svn.mapnik.org/trunk/
+
+This used to work, but now I'm finding the svn protocol is broken or disabled.
+
+> Connection refused: Can't connect to host 'svn.mapnik.org'
+
+http://svn.mapnik.org/trunk/ still works, but since git doesn't have a
+command to switch/relocate svn sources, I'd prefer not to recreate the
+git repo just to switch to it.
+
+Why did svn:// get disabled, and can we enable it again?
+
+
+Regards
+Craig de Stigter
+
+-- 
+Koordinates Ltd
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://www.koordinates.com
+
+
+From blake at hailmail.net  Tue Jun  9 00:16:27 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 8 Jun 2009 15:16:27 -0700
+Subject: [Mapnik-devel] mapnik svn:// server no longer working
+In-Reply-To: <e260aad40906081442v44c73cc6l9073ae386bd4c8fb@mail.gmail.com>
+References: <e260aad40906081442v44c73cc6l9073ae386bd4c8fb@mail.gmail.com>
+Message-ID: <0E3B1441-5E5C-425E-97FD-7BAB55D02634@hailmail.net>
+
+Hi Craig,
+
+Sorry about that. Restarted - let me know if it does not work. (the  
+mapnik.org machine must have been rebooted)
+
+Dane
+
+
+On Jun 8, 2009, at 2:42 PM, Craig de Stigter wrote:
+
+> I have an existing git repo set up to pull from svn://svn.mapnik.org/ 
+> trunk/
+>
+> This used to work, but now I'm finding the svn protocol is broken or  
+> disabled.
+>
+>> Connection refused: Can't connect to host 'svn.mapnik.org'
+>
+> http://svn.mapnik.org/trunk/ still works, but since git doesn't have a
+> command to switch/relocate svn sources, I'd prefer not to recreate the
+> git repo just to switch to it.
+>
+> Why did svn:// get disabled, and can we enable it again?
+>
+>
+> Regards
+> Craig de Stigter
+>
+> -- 
+> Koordinates Ltd
+> PO Box 1604, Shortland St, Auckland, New Zealand
+> Phone +64-9-966 0433 Fax +64-9-969 0045
+> Web http://www.koordinates.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From lists at brachttal.net  Wed Jun 10 01:12:12 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 10 Jun 2009 01:12:12 +0200
+Subject: [Mapnik-devel] Mapnik split
+Message-ID: <20090610011212.1b763b90@frodo.mittelerde>
+
+Hello,
+
+I'm currently compiling Mapnik again after some autotools updates -
+since 20 minutes. Currently Mapnik has grown to a beast and the boost
+dependency does the rest.
+
+To shorten the compile time and also the complexness of the build
+system I would propose this split: (one for an own package)
+
+- bindings (python)
+- agg
+- scons
+- sources (maybe split to internal/external API)
+- plugins (I would propose one package for all)
+- tinyxml
+
+Think about utils/demo/test?
+
+This is only a raw idea. But in general, What do you think this idea?
+
+regards
+Andreas
+
+
+
+From blake at hailmail.net  Wed Jun 10 09:22:38 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 10 Jun 2009 00:22:38 -0700
+Subject: [Mapnik-devel] Mapnik split
+In-Reply-To: <20090610011212.1b763b90@frodo.mittelerde>
+References: <20090610011212.1b763b90@frodo.mittelerde>
+Message-ID: <D014BDD5-582B-472B-92DA-85AFA467D918@hailmail.net>
+
+Andreas,
+
+Honestly, I don't understand what you are proposing. The codebase is  
+already broken out much as you propose and with SCons, at least, it  
+quite easy to just build or rebuild a portion.
+
+I don't think many people compile the Mapnik codebase very frequently,  
+and I don't find it any slower now than in the past.
+
+Dane
+
+On Jun 9, 2009, at 4:12 PM, Andreas Volz wrote:
+
+> Hello,
+>
+> I'm currently compiling Mapnik again after some autotools updates -
+> since 20 minutes. Currently Mapnik has grown to a beast and the boost
+> dependency does the rest.
+>
+> To shorten the compile time and also the complexness of the build
+> system I would propose this split: (one for an own package)
+>
+> - bindings (python)
+> - agg
+> - scons
+> - sources (maybe split to internal/external API)
+> - plugins (I would propose one package for all)
+> - tinyxml
+>
+> Think about utils/demo/test?
+>
+> This is only a raw idea. But in general, What do you think this idea?
+>
+> regards
+> Andreas
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From craig.destigter at koordinates.com  Thu Jun 11 01:27:31 2009
+From: craig.destigter at koordinates.com (Craig de Stigter)
+Date: Thu, 11 Jun 2009 11:27:31 +1200
+Subject: [Mapnik-devel] Mapnik split
+In-Reply-To: <D014BDD5-582B-472B-92DA-85AFA467D918@hailmail.net>
+References: <20090610011212.1b763b90@frodo.mittelerde>
+	<D014BDD5-582B-472B-92DA-85AFA467D918@hailmail.net>
+Message-ID: <e260aad40906101627v4909e801j580fc52e38778bc1@mail.gmail.com>
+
+It would probably be better to refactor the existing codebase to remove as
+much as possible from the header files.
+At present many of the header files include large portions of code and have
+a lot of includes, which is probably the major reason compiling takes a long
+time.
+
+On Wed, Jun 10, 2009 at 7:22 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+
+> Andreas,
+>
+> Honestly, I don't understand what you are proposing. The codebase is
+> already broken out much as you propose and with SCons, at least, it
+> quite easy to just build or rebuild a portion.
+>
+> I don't think many people compile the Mapnik codebase very frequently,
+> and I don't find it any slower now than in the past.
+>
+> Dane
+>
+> On Jun 9, 2009, at 4:12 PM, Andreas Volz wrote:
+>
+> > Hello,
+> >
+> > I'm currently compiling Mapnik again after some autotools updates -
+> > since 20 minutes. Currently Mapnik has grown to a beast and the boost
+> > dependency does the rest.
+> >
+> > To shorten the compile time and also the complexness of the build
+> > system I would propose this split: (one for an own package)
+> >
+> > - bindings (python)
+> > - agg
+> > - scons
+> > - sources (maybe split to internal/external API)
+> > - plugins (I would propose one package for all)
+> > - tinyxml
+> >
+> > Think about utils/demo/test?
+> >
+> > This is only a raw idea. But in general, What do you think this idea?
+> >
+> > regards
+> > Andreas
+> >
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Koordinates Ltd
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://www.koordinates.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090611/36c5a1b2/attachment.html>
+
+From blake at hailmail.net  Thu Jun 11 22:33:42 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 11 Jun 2009 13:33:42 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.1 roadmap and release
+Message-ID: <96E87DD9-0625-4831-B366-B89D4A722A81@hailmail.net>
+
+Dev-
+
+Artem and I have chatted in #mapnik and we've got a proposed date for  
+the next release -> 0.6.1:
+
+July 10, 2009
+
+Log on to trac to check out the tickets:
+
+http://trac.mapnik.org/milestone/0.6.1
+
+and claim one if you'd like to help.
+
+Cheers,
+
+Dane
+
+
+From blake at hailmail.net  Fri Jun 12 02:58:58 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 11 Jun 2009 17:58:58 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 in Ubuntu Karmic
+Message-ID: <141D90E6-D547-43C6-BC4D-FF73E8768E90@hailmail.net>
+
+Hey all,
+
+I want to send a big thanks out to Dominic Lowe for such great work on  
+packaging Mapnik for Debian.
+
+His quick work after the 0.6.0 has now paid off for Ubuntu, as Mapnik  
+0.6.0 has been accepted into Ubuntu Karmic, the upcoming release.  
+Thanks to Christophe Sauthier, Andres Rodriguez, and likely many  
+others who helped make this happen.
+
+https://launchpad.net/ubuntu/karmic/+source/mapnik/0.6.0-1ubuntu1
+
+This means you can now be using either python25 or python26 on ubuntu  
+and be able to do:
+
+$ apt-get install python-mapnik
+
+Amazing. Don't you wish you could do that on macosx and windows?
+
+Cheers,
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090611/51ad4407/attachment.html>
+
+From blake at hailmail.net  Fri Jun 12 18:10:53 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 12 Jun 2009 09:10:53 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 in Ubuntu Karmic
+In-Reply-To: <141D90E6-D547-43C6-BC4D-FF73E8768E90@hailmail.net>
+References: <141D90E6-D547-43C6-BC4D-FF73E8768E90@hailmail.net>
+Message-ID: <8DC9DA81-FA1C-4DF8-A061-FF31CA585B0C@hailmail.net>
+
+Whoops,
+
+I meant Dominic Hargreaves!
+
+Thanks Dominic :)
+
+Dane
+
+
+On Jun 11, 2009, at 5:58 PM, Dane Springmeyer wrote:
+
+> Hey all,
+>
+> I want to send a big thanks out to Dominic Lowe for such great work  
+> on packaging Mapnik for Debian.
+>
+> His quick work after the 0.6.0 has now paid off for Ubuntu, as  
+> Mapnik 0.6.0 has been accepted into Ubuntu Karmic, the upcoming  
+> release. Thanks to Christophe Sauthier, Andres Rodriguez, and likely  
+> many others who helped make this happen.
+>
+> https://launchpad.net/ubuntu/karmic/+source/mapnik/0.6.0-1ubuntu1
+>
+> This means you can now be using either python25 or python26 on  
+> ubuntu and be able to do:
+>
+> $ apt-get install python-mapnik
+>
+> Amazing. Don't you wish you could do that on macosx and windows?
+>
+> Cheers,
+>
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090612/35c28ef0/attachment.html>
+
+From robert.coup at onetrackmind.co.nz  Sat Jun 13 03:19:02 2009
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Sat, 13 Jun 2009 13:19:02 +1200
+Subject: [Mapnik-devel] [Mapnik-users] Odd behavior with PostGIS
+In-Reply-To: <4A3296A4.4040402@xs4all.nl>
+References: <439dc11e0906110815mf4b0b7es605e699dbf6bb1c0@mail.gmail.com>
+	<1244751754.4709.45.camel@localhost.localdomain>
+	<439dc11e0906111525m63a23a52t397d6c90db27c0a1@mail.gmail.com>
+	<c5097ac40906111715k255e2c1br4ef1d64c389840c3@mail.gmail.com>
+	<4A3296A4.4040402@xs4all.nl>
+Message-ID: <c5097ac40906121819v8480af0x443d3980791828d5@mail.gmail.com>
+
+(cc'ing to mapnik-devel)
+
+On Sat, Jun 13, 2009 at 5:55 AM, Lennard <ldp at xs4all.nl> wrote:
+
+> Robert Coup wrote:
+>
+>
+>>  I've been wondering whether we do something like:
+>>
+>>  table= -> current behaviour
+>>
+>
+> The current behaviour already breaks if you add a filter without adding it
+> to the select in a subquery, unless you're doing 'select *' there.
+
+
+Very true.
+
+
+>
+>   sql= -> all on your own, you need to make sure the
+>> fields/geometries/everything are correct.
+>>
+>
+> +1 though, although I hope it would still add the bbox, obviously.
+
+
+Except the "though" part makes a mess of it :(
+
+Maybe the ability to do a simple substitution in the querystring would
+suffice:
+"SELECT ... FROM ... WHERE my_geom && %(bbox)s"
+
+%(bbox)s gets replaced with st_geomfromtext('POLYGON(( ... ))', 1234)
+
+Make it substitutable multiple times, and if people are doing clever
+[stupid] things with projections (like i do) then they can always wrap it in
+st_setsrid() or st_transform() or whatever they need.
+
+Improvements? What am i missing?
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090613/ad5f052a/attachment.html>
+
+From blake at hailmail.net  Tue Jun 16 19:47:55 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 16 Jun 2009 10:47:55 -0700
+Subject: [Mapnik-devel] OSX builds with XCode in SVN
+Message-ID: <11FACF64-F77A-4F45-8E2C-51E93F45F127@hailmail.net>
+
+Mapnik-dev,
+
+I'm planning to begin work on a macosx-specific build system using the  
+XCode IDE,  The goal behind this is to facilitate more control over  
+the compilation and linking of mapnik and eventually pave a trail  
+towards Universal Framework builds of Mapnik. For those of you not  
+familiar with OSX Frameworks, essentially its a bundling of the  
+dynamic library along with its supporting data and files in a single  
+directory, usually placed in '/Library/Frameworks'.
+
+To this end, and since this is likely to be a long project, I'm  
+thinking about adding this to the mapnik svn repository.
+
+I'm thinking, if there is support and interest for this, I'd place the  
+working files in:
+
+http://svn.mapnik.org/trunk/osx
+
+And when we make releases, this folder (along with the autotools  
+stuff) should be stripped from the tagged release to avoid confusion,  
+since SCons should be the singular tool for builds for most users.
+
+So, can I get a vote +1 / -1 from devs on whether to include this in  
+mapnik svn, or whether to keep separate?
+
+Thanks,
+Dane
+
+
+From ivo.vdmaagdenberg at pandora.be  Thu Jun 25 19:13:47 2009
+From: ivo.vdmaagdenberg at pandora.be (ivom)
+Date: Thu, 25 Jun 2009 19:13:47 +0200 (CEST)
+Subject: [Mapnik-devel] rounding off values
+Message-ID: <alpine.DEB.1.00.0906251913280.9763@albiorix>
+
+Hi all,
+
+I have a nice mapnik layer of which the results are visible under 
+http://fietscomfort.openstreetmap.be/?zoom=16&lat=51.21213&lon=4.42138&layers=B0TFTFT
+
+something strangs happens to some of the calculated numbers in the comfort 
+tiles, where the rounding clearly does not work properly. example:
+
+http://fietscomfort.openstreetmap.be/fietsroutes-comfort/16/33572/21878.png
+
+the rendering of the numbers is based a style and the layer declarations , 
+which follow below.
+
+any hint on the reasons for the round function not always working as 
+expected? maybe there are alternative ways to accomplish the same, 
+suggestions are welcome, since this is about the most complex query i've 
+written so far :)
+
+bye,
+ivom
+
+    <Style name="comfort-text">
+      <Rule>
+        <MaxScaleDenominator>&maxscale_zoom12;</MaxScaleDenominator>
+        <MinScaleDenominator>&minscale_zoom18;</MinScaleDenominator>
+        <ShieldSymbolizer name="comfort" face_name="DejaVu Sans Bold" 
+size="11" fill="white" placement="line" 
+file="&mapnik_symbols;/tru_shield3.png" type="png" width="31" height="17" 
+min_distance="30" spacing="500"/>
+      </Rule>
+    </Style>
+
+    <Layer name="comfort lines" status="on" srs="&srs900913;">
+      <StyleName>comfort-text</StyleName>
+      <Datasource><Parameter name="table">
+(
+select
+   cast("cycleway:comfort" as numeric) as com
+   ,(round(((34-cast("cycleway:comfort" as numeric))/2.8),1)) as comfort
+   ,way
+   from planet_osm_line
+   where (cycleway='track' or cycleway='lane' or highway='cycleway')
+     and "cycleway:comfort" IS NOT NULL
+   order by z_order
+) as roads
+        </Parameter>
+        &layer-settings;
+      </Datasource>
+    </Layer>
+
+
+
+From kaisersoulei at gmail.com  Sun Jun 28 17:05:42 2009
+From: kaisersoulei at gmail.com (Harry Gomez)
+Date: Sun, 28 Jun 2009 10:05:42 -0500
+Subject: [Mapnik-devel] osm2pgsql error
+Message-ID: <d65fceb50906280805v3848ba40y5128cd5fbfe5b30a@mail.gmail.com>
+
+Guys I?m sorry if this is the wrong forum(if it is wrong just reply "wrong
+one dude"),Here goes,
+I am running osm2pgsql and I get the following:
+(by the way the .osm file I am using is uncompressed)
+
+osm2pgsql SVN version 0.66-16099M
+
+Using projection SRS 4326 (LatLong)
+Setting up table: planet_osm_point
+Setting up table: planet_osm_line
+Setting up table: planet_osm_polygon
+Setting up table: planet_osm_roads
+Mid: Ram, scale=10000000
+
+Reading in file: map.osm
+error while opening file map.osm
+
+Any help no matter how trivial will be greatly appreciated.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090628/77e068e4/attachment.html>
+
+From frederik at remote.org  Sun Jun 28 23:30:35 2009
+From: frederik at remote.org (Frederik Ramm)
+Date: Sun, 28 Jun 2009 23:30:35 +0200
+Subject: [Mapnik-devel] osm2pgsql error
+In-Reply-To: <d65fceb50906280805v3848ba40y5128cd5fbfe5b30a@mail.gmail.com>
+References: <d65fceb50906280805v3848ba40y5128cd5fbfe5b30a@mail.gmail.com>
+Message-ID: <4A47E0FB.6090601@remote.org>
+
+Hi,
+
+Harry Gomez wrote:
+> Guys I?m sorry if this is the wrong forum
+
+Well it is not exactly the right forum as osm2pgsql is not a mapnik tool 
+but more of an osm tool, but hey, 90% of people here probably use it.
+
+> Here goes,
+> I am running osm2pgsql and I get the following:
+> (by the way the .osm file I am using is uncompressed)
+> 
+> osm2pgsql SVN version 0.66-16099M
+> 
+> Using projection SRS 4326 (LatLong)
+> Setting up table: planet_osm_point
+> Setting up table: planet_osm_line
+> Setting up table: planet_osm_polygon
+> Setting up table: planet_osm_roads
+> Mid: Ram, scale=10000000
+> 
+> Reading in file: map.osm
+> error while opening file map.osm
+
+It sounds as if you ran something like "osm2pgsql map.osm" where map.osm 
+was not in your current working directory? You have to specify the name 
+of the .osm file to import on the command line, and you either have to 
+give a full path spec, or it has to reside in the current directory.
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+

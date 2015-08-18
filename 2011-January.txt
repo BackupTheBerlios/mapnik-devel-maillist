@@ -1,0 +1,1531 @@
+From geoionescu at gmail.com  Sat Jan  1 20:58:29 2011
+From: geoionescu at gmail.com (George Ionescu)
+Date: Sat, 1 Jan 2011 21:58:29 +0200
+Subject: [Mapnik-devel] Build scripts for Windows
+Message-ID: <AANLkTi=7Wv9jRskhfDELtGpd8kTX6KsKAiYHJuQ9jmMO@mail.gmail.com>
+
+Hello Artem,
+Hi Dane,
+Hello mapnik developers,
+
+while struggling to compile mapnik on Windows, I've succeded to some
+extent: I've succesfully compiled it using Visual Studio by creating
+VS projects and using provided developer binaries from GnuWin32 for
+required dependencies.
+It works, but it's not pretty: the bin folder has a lot of required
+dll's and I experience random crashes which don't happen with the
+provided mapnik binaries (I blame my build process, not the source
+code).
+
+In a message from September, 2010
+(https://lists.berlios.de/pipermail/mapnik-devel/2010-September/001246.html),
+Artem mentioned something about Jamfiles for building mapnik for
+Windows.
+I think build scripts for Windows would be a nice addition, both to
+the 0.7.2-devel branch and to the current mapnik2.
+
+Any chance that build scripts for Windows will soon be included in svn?
+
+Wishing you all a Happy New Year
+Thank you,
+George.
+
+
+From dane at dbsgeo.com  Sun Jan  2 19:11:50 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sun, 2 Jan 2011 10:11:50 -0800
+Subject: [Mapnik-devel] Build scripts for Windows
+In-Reply-To: <AANLkTi=7Wv9jRskhfDELtGpd8kTX6KsKAiYHJuQ9jmMO@mail.gmail.com>
+References: <AANLkTi=7Wv9jRskhfDELtGpd8kTX6KsKAiYHJuQ9jmMO@mail.gmail.com>
+Message-ID: <B1A0616F-27D8-4670-9628-811C1D286437@dbsgeo.com>
+
+On Jan 1, 2011, at 11:58 AM, George Ionescu wrote:
+
+> Hello Artem,
+> Hi Dane,
+
+Hi George.
+
+> Hello mapnik developers,
+> 
+> while struggling to compile mapnik on Windows, I've succeded to some
+> extent: I've succesfully compiled it using Visual Studio by creating
+> VS projects and using provided developer binaries from GnuWin32 for
+> required dependencies.
+
+Ah, no small endeavor - well done!
+
+Any notes on your setup would be a great addition to the wiki - basically the steps you followed, even though I know its not perfect.
+
+I created this page for that kind of info for windows: http://trac.mapnik.org/wiki/WindowsInstallation/Source
+
+> It works, but it's not pretty: the bin folder has a lot of required
+> dll's and I experience random crashes which don't happen with the
+> provided mapnik binaries (I blame my build process, not the source
+> code).
+
+What kind of crashes? Can you try to get out a backtrace?
+
+> 
+> In a message from September, 2010
+> (https://lists.berlios.de/pipermail/mapnik-devel/2010-September/001246.html),
+> Artem mentioned something about Jamfiles for building mapnik for
+> Windows.
+> I think build scripts for Windows would be a nice addition, both to
+> the 0.7.2-devel branch and to the current mapnik2.
+
+Yes, I certainly agree. Artem should see this message soon.
+
+> 
+> Any chance that build scripts for Windows will soon be included in svn?
+> 
+> Wishing you all a Happy New Year
+
+You too!
+
+> Thank you,
+> George.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Mon Jan 10 00:07:31 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 10 Jan 2011 00:07:31 +0100
+Subject: [Mapnik-devel] compiling on windows
+Message-ID: <AANLkTin6PuFo52xcdqLi8Vb+qm7XnhA8MQ-6URk03FTJ@mail.gmail.com>
+
+Hi all,
+
+
+(I hope it's ok to mail this to -devel, I only just subscribed so I
+have yet to get a feel for the audience on both lists)
+
+I just compiled my first test program (only a modified rundemo.cpp,
+really) with mapnik build from source on Windows (using vc9). It seems
+to work now but it was a bit of a pain to get working to be honest, so
+I figured I'd email my suggestions/remarks here before I forget them
+and, if you'd like, help to improve some things in mapnik that would
+make it easier for people doing so in the future. I build all required
+libraries from source too, because it's usually very frustrating to
+build with libraries build by someone else, especially when you want
+to debug versions like I do; I realize there is no very easy way to
+deal with this from a mapnik developer point of view. I made my own
+project files for mapnik and the libraries that use a build system
+that isn't directly supported by VS. (i.e., that nmake can't handle).
+These are basically freetype and icu (and libldtl but see below for
+that one).
+
+- First, I need a 'fully' static build (i.e., all libraries linked
+into one executable, including icu, all the image libraries etc). I
+ended up changing config.hpp so that line 28 read
+#if defined(_WINDOWS) && !defined(MAPNIK_STATIC)
+(i.e., I added the MAPNIK_STATIC flag) because there doesn't seem to
+be a proper way to build mapnik statically on windows. I tried some
+variations on defining the directives that are set there from the
+build settings, but I don't see a good solution that way. I'd like to
+ask to consider to add this to the mapnik source tree, in case anyone
+ever wants to do again what I'm doing.
+
+- Secondly, libldtl (I think that's what it's called, the one that
+wraps dlopen()...) seems to be impossible to build on Windows without
+installing the specific GNU make system. They seem to make no effort
+whatsoever to support non-POSIX systems (specifically, Windows...). I
+ended up patching the source so that this library is not needed at all
+any more. It's just a wrapper around LoadLibrary/GetProcAddress
+anyway, after all. Right now it requires a typedef for the handle type
+and two or three further #ifdef sections; but even those could be
+replaced with a #define, I think, so the amount of changed to the
+mapnik source is very small. I'd like to ask if you'd consider going
+this route directly in the mapnik source, as it would make the life of
+developers using mapnik on Windows (quite a bit) easier. I don't know
+the merit of this library on Linux or Unixy systems (i.e. if it's use
+is worth the effort), it seems like it's just a roundabout way of
+saying dlopen(), but I'm not familiar enough with that situation to
+have an informed opinion. Last I heard there was work being done on a
+library to be included in boost at some point that would tackle this
+problem, so hopefully there'll be a library that works properly on all
+platforms at some point in the future.
+
+- Thirdly, I had to make some changes to the mapnik code to get it to
+compile. They were:
+* rint() doesn't exist on VC. I added one in a private header, whose
+#include I #ifdef WIN32'd. Maybe boost has an implementation of this
+function? I haven't checked, but if so, it may be an idea to use that
+one, to be more platform-independent.
+* I had to introduce some braces around calls to min/max (both in
+std:: and numeric_limits). min and max are unfortunately both macros
+in windows platform headers, for historical reasons, so they clash
+with the use of the stl min/max functions. One way is to #undef the
+macros but this can cause problems in some circumstances. There is
+another, easier and less intrusive workaround, which is to change e.g.
+std::max(1, 2) to (std::max)(1, 2) everywhere it's used. I realize
+this looks a bit strange at first but I'd like to suggest also for
+this one to consider changing this throughout the code - it's only in
+a few places (8 or so max), as I understand it works on all compilers
+(it should I think, but I haven't tried it), and it would allow future
+users on Windows to build without modifications.
+* (not really a change, but...) the order of the boost paths is
+important because you use a local copy of property_tree. Is there a
+reason for this? It may trip up people who don't accidentally notice a
+local boost copy (I did, but like I said, only accidentally). It seems
+to be from a very old copy of boost, too.
+
+- Fourthly (and finally), I building and linking icu is a bit
+involved, mostly because it needs a special data variable that is
+build from various input tools. I ended up using a stub .c file from
+the icu source to get it to compile, but I'm wondering if someone can
+tell me what parts of icu are used by mapnik, so that I can maybe find
+out if I can leave out parts of icu all together. Maybe if I try to
+render a map with chinese characters that it won't work because my
+program is missing this data. I can also check with the icu people if
+there is an easy way to statically link this data, but if it can be
+left out of the mapnik build (if it's not used), that would make it
+easier for everybody I think.
+
+Some last questions then:
+
+- how much of all code paths in mapnik does rundemo.cpp exercise? It
+only uses the shapelib driver, obviously (because that's the only one
+I've build so far and it ran ;) ) but is there more functionality in
+mapnik core that is not used? Is there a more comprehensive (c++) test
+suite somewhere?
+- is there a summary of what is new in mapnik2? Is it
+'production-ready'? Will there be further 7,x releases, will there
+ever be a 1.0, should I forget about the current stable and use
+mapnik2?
+- with the above remarks in mind, how are the win32 binaries on the
+mapnik website build? Some of the above described will flat out make
+it impossible to compile, so are the binaries on the website based on
+a modified version?
+
+Thanks and sorry about the long mail.
+
+
+cheers,
+
+roel
+
+
+From frederik at remote.org  Mon Jan 10 23:49:05 2011
+From: frederik at remote.org (Frederik Ramm)
+Date: Mon, 10 Jan 2011 23:49:05 +0100
+Subject: [Mapnik-devel] Style variation (feature visibility) depending on
+	feature density
+Message-ID: <4D2B8CE1.1010703@remote.org>
+
+Hi,
+
+    I wonder if anyone has invested some thought, or even code, into 
+ways to control feature visibility depending on how much data there 
+actually is.
+
+For example, on the standard OpenStreetMap map, pubs are shown from zoom 
+level 16 on. Which is ok for a place that has lots of pubs like this
+
+http://www.openstreetmap.org/?lat=51.51502&lon=-0.10676&zoom=16&layers=M
+
+but would it not be great for the weary traveller to know, from a much 
+earlier zoom level, that the village of Thompson has a pub while nearby, 
+larger, Watton doesn't?
+
+http://www.openstreetmap.org/?lat=52.552&lon=0.8356&zoom=13&layers=M
+
+Or, another example: If you look at the large empty triangle between the 
+  towns of Gumdag, Serdar, and Gyzyletrek on this map (zoom level 9):
+
+http://www.openstreetmap.org/?lat=38.564&lon=55.331&zoom=9&layers=M
+
+... you would never guess that lots of long-distance desert tracks 
+criss-cross this area because they only come in at zoom level 13. And 
+rightly so, because you would certainly not want the tracks on this zoom 
+level 13 map to appear any sooner:
+
+http://www.openstreetmap.org/?lat=50.3004&lon=8.2687&zoom=13&layers=M
+
+
+There are several ways how this could be handled. One is of course 
+OpenStreetMap specific - simply tag the objects in question in some 
+specific way and produce matching (probably quite complicated) style 
+sheets.
+
+Another way would be having region-specific styles. I understand Mapnik2 
+already has some support for that (rendering North America different 
+from the UK). I haven't looked at this closely but I guess it could 
+probably be extended to much smaller units than countries - so one could 
+have some sort of master shapefile that divides up the world in 
+something like 5 different types of area and then use that to make 
+certain decisions in your style sheets.
+
+A third way, and that's coming back to the subject of this post, is 
+trying to find out how dense a certain feature is. I could then write a 
+style file that specifies a min/max scale denominator like we have now, 
+but in addition I'd specify a "max num features per megapixel" or 
+something. That would allow me to say that I want pubs drawn from zoom 
+level 13 on, but only if there are less than 20 per megapixel or so. For 
+some styles, a megapixel kind of rule might completely replace the scale 
+denominator rule.
+
+Of course this third way (and to a lesser degree the first and second) 
+has many problems - first of all, simply counting features might not be 
+enough (there might only be one feature but it might be very large and 
+complex); second, how would one handle transition areas (large image 
+with 100 pubs in the lower left corner); third, it would be horribly 
+taxing on the PostGIS side ("quick, count the number of pubs in this 1 
+million square kilometer area"), and fourth - it may turn out to be a 
+cartographic nightmare - you pan across the map and see a pub in 
+Thompson but none in London.
+
+Maybe I'm just asking too much?
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+
+
+From dieterdreist at gmail.com  Tue Jan 11 23:44:37 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Tue, 11 Jan 2011 23:44:37 +0100
+Subject: [Mapnik-devel] Style variation (feature visibility) depending
+ on feature density
+In-Reply-To: <4D2B8CE1.1010703@remote.org>
+References: <4D2B8CE1.1010703@remote.org>
+Message-ID: <AANLkTi=-rvqj3fNgfwCL=J-mdpvdbq56EHSZ9Xc70e8n@mail.gmail.com>
+
+2011/1/10 Frederik Ramm <frederik at remote.org>:
+> Hi,
+>
+> ? I wonder if anyone has invested some thought, or even code, into ways to
+> control feature visibility depending on how much data there actually is.
+
+
+a similar problem occurs for cities: when to display a city. This
+could be handled much better if the context were taken into account.
+There is the concept of topographic isolation:
+http://en.wikipedia.org/wiki/Topographic_isolation
+(the german article is better):
+http://de.wikipedia.org/wiki/Dominanz_%28Geographie%29
+
+I'm not sure how you could do this in the case of a road, maybe you
+could calculate for every midpoint between 2 nodes it's "topographic
+isolation" (distance to the next road of at least the same class), and
+then calculate the medium for the way, but I guess this would be quite
+expensive ;-)
+
+For point features this is less effort, but might still be a lot.
+
+cheers,
+Martin
+
+
+From blake at hailmail.net  Wed Jan 12 07:06:59 2011
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 11 Jan 2011 22:06:59 -0800
+Subject: [Mapnik-devel] compiling on windows
+In-Reply-To: <AANLkTin6PuFo52xcdqLi8Vb+qm7XnhA8MQ-6URk03FTJ@mail.gmail.com>
+References: <AANLkTin6PuFo52xcdqLi8Vb+qm7XnhA8MQ-6URk03FTJ@mail.gmail.com>
+Message-ID: <DA47A031-5FE8-49FD-862F-5B655B6BF2A1@hailmail.net>
+
+
+On Jan 9, 2011, at 3:07 PM, Roel Vanhout wrote:
+
+> Hi all,
+> 
+
+Hi Roel!
+
+> 
+> (I hope it's ok to mail this to -devel, I only just subscribed so I
+> have yet to get a feel for the audience on both lists)
+
+Absolutely.
+
+> 
+> I just compiled my first test program (only a modified rundemo.cpp,
+> really) with mapnik build from source on Windows (using vc9).
+
+Nice job!
+
+> It seems
+> to work now but it was a bit of a pain to get working to be honest, so
+> I figured I'd email my suggestions/remarks here before I forget them
+
+Thank you. Certainly building on windows is not a well worn path, and I wish we had better support for Windows.
+
+At the moment none of the main Mapnik developers are using Windows, so we need all the help we can get. 
+
+So, thank you very much for your persistence and for following through on sending comments.
+
+> and, if you'd like, help to improve some things in mapnik that would
+> make it easier for people doing so in the future.
+
+I like the sound of this. :)
+
+> I build all required
+> libraries from source too, because it's usually very frustrating to
+> build with libraries build by someone else, especially when you want
+> to debug versions like I do;
+
+Nice. Yes, Artem (who has built all the Mapnik windows binaries in the past) I think always does source installs from the latest releases to make sure things are optimal.
+
+A full debug compiled Mapnik binary on windows has never been offered, so great to hear you have done that - others may be quite interested in that.
+
+> I realize there is no very easy way to
+> deal with this from a mapnik developer point of view.
+
+I know that Artem uses boost build jam files to semi-automate things and keep things clean (no cygwin/msys).
+
+> I made my own
+> project files for mapnik and the libraries that use a build system
+> that isn't directly supported by VS. (i.e., that nmake can't handle).
+
+Which build system?
+
+> These are basically freetype and icu (and libldtl but see below for
+> that one).
+> 
+
+Yes.
+
+> - First, I need a 'fully' static build (i.e., all libraries linked
+> into one executable, including icu, all the image libraries etc).
+
+Interesting. Are you sure you need it? Or is that just your preference? ICU in particular really seems like a pain unless shared.
+
+> I
+> ended up changing config.hpp so that line 28 read
+> #if defined(_WINDOWS) && !defined(MAPNIK_STATIC)
+> (i.e., I added the MAPNIK_STATIC flag) because there doesn't seem to
+> be a proper way to build mapnik statically on windows.
+
+Okay, yes, makes sense because I don't think anyone has attempted this for windows, rather dynamic linking is more common.
+
+> I tried some
+> variations on defining the directives that are set there from the
+> build settings, but I don't see a good solution that way. I'd like to
+> ask to consider to add this to the mapnik source tree, in case anyone
+> ever wants to do again what I'm doing.
+
+Certainly a worthwhile consideration, thanks. You can attach a patch to trac.mapnik.org.
+
+> 
+> - Secondly, libldtl (I think that's what it's called, the one that
+> wraps dlopen()...)
+
+yep, supposed to wrap dlopen in a cross platform way...
+
+> seems to be impossible to build on Windows without
+> installing the specific GNU make system.
+
+Okay, good to know.
+
+> They seem to make no effort
+> whatsoever to support non-POSIX systems (specifically, Windows...).
+
+you mean the build system, or does the library function also suboptimal on windows?
+
+> I
+> ended up patching the source so that this library is not needed at all
+> any more. It's just a wrapper around LoadLibrary/GetProcAddress
+> anyway, after all.
+
+right.
+
+> Right now it requires a typedef for the handle type
+> and two or three further #ifdef sections; but even those could be
+> replaced with a #define, I think, so the amount of changed to the
+> mapnik source is very small.
+
+Okay, again please attach this change to a patch at trac.mapnik.org and we will take a look to consider including.
+
+> I'd like to ask if you'd consider going
+> this route directly in the mapnik source, as it would make the life of
+> developers using mapnik on Windows (quite a bit) easier.
+
+Okay, yes makes sense to me. I think we should hear from Artem about how he has handled this in the past (I assume ltdl has worked for him).
+
+> I don't know
+> the merit of this library on Linux or Unixy systems (i.e. if it's use
+> is worth the effort),
+
+On linux and mac it works fine, but so does directly using dlopen.
+
+> it seems like it's just a roundabout way of
+> saying dlopen(),
+
+yep, and on mac's at least has very poor error reporting I've recently noticed.
+
+> but I'm not familiar enough with that situation to
+> have an informed opinion. Last I heard there was work being done on a
+> library to be included in boost at some point that would tackle this
+> problem,
+
+Yes, I had heard that too, not sure what turned out...
+
+> so hopefully there'll be a library that works properly on all
+> platforms at some point in the future.
+> 
+> - Thirdly, I had to make some changes to the mapnik code to get it to
+> compile. They were:
+> * rint() doesn't exist on VC. I added one in a private header, whose
+> #include I #ifdef WIN32'd. Maybe boost has an implementation of this
+> function? I haven't checked, but if so, it may be an idea to use that
+> one, to be more platform-independent.
+
+Hmmm, not sure what went wrong there, that was a known issue that should be handled here: https://trac.mapnik.org/browser/tags/release-0.7.1/include/mapnik/global.hpp#L163
+
+I assume you are compiling that release? 0.7.1 is the latest release.
+
+> * I had to introduce some braces around calls to min/max (both in
+> std:: and numeric_limits). min and max are unfortunately both macros
+> in windows platform headers, for historical reasons, so they clash
+> with the use of the stl min/max functions. One way is to #undef the
+> macros but this can cause problems in some circumstances. There is
+> another, easier and less intrusive workaround, which is to change e.g.
+> std::max(1, 2) to (std::max)(1, 2) everywhere it's used. I realize
+> this looks a bit strange at first but I'd like to suggest also for
+> this one to consider changing this throughout the code - it's only in
+> a few places (8 or so max), as I understand it works on all compilers
+> (it should I think, but I haven't tried it), and it would allow future
+> users on Windows to build without modifications.
+
+Okay, also please supply this as a patch on trac.mapnik.org.
+
+> * (not really a change, but...) the order of the boost paths is
+> important because you use a local copy of property_tree.
+
+Yes, this must come first as you noticed. Certainly a gocha, sorry. The reason for this is that the Mapnik code was using boost::ptree before it was available in the standard release.
+
+In mapnik trunk we've upgraded our usage of ptree so that it is compatible with the syntax in the actual released ptree versions, and so trunk no longer needs this copy (and I just removed it: http://trac.mapnik.org/changeset/2515).
+
+> Is there a
+> reason for this? It may trip up people who don't accidentally notice a
+> local boost copy (I did, but like I said, only accidentally). It seems
+> to be from a very old copy of boost, too.
+
+Yes, sorry.
+
+> 
+> - Fourthly (and finally), I building and linking icu is a bit
+> involved, mostly because it needs a special data variable that is
+> build from various input tools.
+
+For building mac osx packages I use the default data as dynamic library option. It's huge, but at runtime only the amount needed is mapped into memory (according to ICU docs).
+
+I've not felt it worth the effort to try to work around this size of the data library, but I certainly agrees with you that it makes for an extra packaging challenge and large size.
+
+> I ended up using a stub .c file from
+> the icu source to get it to compile, but I'm wondering if someone can
+> tell me what parts of icu are used by mapnik,
+
+grep for UnicodeString and you will find that it is used to store all strings within features. So, basically datasources turn data strings into UnicodeStrings before pushing into features, then at render time features are passed from features_style_processor.hpp to by symbolized and any text that is rendered or filtered upon uses these ICU objects.
+
+> so that I can maybe find
+> out if I can leave out parts of icu all together.
+
+That would be not be impossible, but difficult.
+
+> Maybe if I try to
+> render a map with chinese characters that it won't work because my
+> program is missing this data. I can also check with the icu people if
+> there is an easy way to statically link this data,
+
+I would be interested to learn more about the various options here too.
+
+ICU is a very widely used library it seems, but more often provided in the base set of libraries. I used to be able to compile Mapnik 0.7.x against libicucore.dylib (special version shipped by apple) which was nice, but in trunk we now require a very recent version of ICU so that is no longer possible.
+
+> but if it can be
+> left out of the mapnik build (if it's not used), that would make it
+> easier for everybody I think.
+
+Its pretty core ever since: http://mapnik.org/news/2008/feb/20/mapnik_unicode/
+
+And we hope to make more use of ICU in the future:
+
+http://trac.mapnik.org/wiki/InternationalText
+
+> 
+> Some last questions then:
+> 
+> - how much of all code paths in mapnik does rundemo.cpp exercise?
+
+Quite a bit, perhaps 70-80 % of C++ api. It mainly misses datasources other than shapefiles.
+
+> It
+> only uses the shapelib driver, obviously (because that's the only one
+> I've build so far and it ran ;)
+
+Great, I think you should be in good shape then.
+
+> ) but is there more functionality in
+> mapnik core that is not used?
+
+Not a lot.
+
+> Is there a more comprehensive (c++) test
+> suite somewhere?
+
+No. Because the Python bindings expose the vast majority of functionality (as they are abstract C++ classes) we mainly test via python, but certainly C++ tests are very much needed to. We have a few started in trunk/tests/cpp_tests but we need many more.
+
+> - is there a summary of what is new in mapnik2?
+
+No, I will be writing some blog posts in January and February on this however.
+
+> Is it
+> 'production-ready'?
+
+It is production ready from the standpoint that the code runs well in production, and is running in production at some high traffic sites. But, we are fairly actively working on the code base in trunk so if you use it just keep a close eye on commits and ping me if you run into any trouble.
+
+> Will there be further 7,x releases,
+
+Yes, there will be a final release in the 0.7.x series, 0.7.2 which will have some forward compatibility with Mapnik2 and bugfixes. See: http://trac.mapnik.org/milestone/0.7.2
+
+> will there
+> ever be a 1.0,
+
+Unlikely.
+
+> should I forget about the current stable and use
+> mapnik2?
+
+Mapnik2 may need a little love to compile on windows. If you are up for helping (it certainly seems like you have the capacity!) with this I would encourage you to ride on trunk.
+
+> - with the above remarks in mind, how are the win32 binaries on the
+> mapnik website build?
+
+Artem can provide more details.
+
+> Some of the above described will flat out make
+> it impossible to compile, so are the binaries on the website based on
+> a modified version?
+
+No. I think all the fixes should make it upstream.
+
+> 
+> Thanks and sorry about the long mail.
+> 
+
+No worries, great read and thanks for your efforts and support of the Mapnik project.
+
+Cheers,
+
+Dane
+
+
+> 
+> cheers,
+> 
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Wed Jan 12 13:50:15 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Wed, 12 Jan 2011 13:50:15 +0100
+Subject: [Mapnik-devel] compiling on windows
+In-Reply-To: <DA47A031-5FE8-49FD-862F-5B655B6BF2A1@hailmail.net>
+References: <AANLkTin6PuFo52xcdqLi8Vb+qm7XnhA8MQ-6URk03FTJ@mail.gmail.com>
+	<DA47A031-5FE8-49FD-862F-5B655B6BF2A1@hailmail.net>
+Message-ID: <AANLkTimRPdDun_7dZF=T6dTuXYQkTKCV0LSSCTUppHtX@mail.gmail.com>
+
+Hello Dane,
+
+
+Thanks for your detailed response. Some replies inline:
+
+On Wed, Jan 12, 2011 at 7:06 AM, Dane Springmeyer <blake at hailmail.net> wrote:
+> A full debug compiled Mapnik binary on windows has never been offered, so great to hear you have done that - others may be quite interested in that.
+
+I suggest I document the steps needed to make a build, rather than
+provide debug binaries, since that's so compiler and
+circumstance-specific. I 'documented' everything in a batch file, I'll
+comment that some more and put it on the wiki. It'll never be as
+straightforward as ./configure && make but just knowing that it can be
+done may already a major factor for others to give mapnik a shot...
+
+>> I made my own
+>> project files for mapnik and the libraries that use a build system
+>> that isn't directly supported by VS. (i.e., that nmake can't handle).
+> Which build system?
+
+freetype uses autotools I think (don't remember by heart), icu
+provides visual studio project files for windows, but only for VS10.
+On unix it uses autotools also, I believe. My goal was to build with
+only the tools provided by Visual Studio (vs9, in my case, but I think
+it will work with at least 7 and 8, also).
+
+>> (snip me using static library)
+> Interesting. Are you sure you need it? Or is that just your preference? ICU in particular really seems like a pain unless shared.
+
+True, I don't really *need* it, it's a deployment issue, and also a
+bit of laziness on my part. Linking everything into one big binary
+removes the hassle of the dllimport/export issues (especially with
+third party libraries with their own build system) and syncing
+compiler, cret and stl settings (_CRT_NO_WARNINGS,
+_CRT_BIND_TO_LATEST_VERSION, _DISABLE_DEBUG_ITERATORS, etc.).
+
+I may be able to get away with just providing the data part of icu in
+a dll, although I haven't looked into it any more since I got it to
+compile with the stub data file. It needs to be fixed though because
+everything that has an ascii value of over 127 shows as a ? in the
+result images.
+
+> (snip static building)
+> Certainly a worthwhile consideration, thanks. You can attach a patch to trac.mapnik.org.
+
+https://trac.mapnik.org/ticket/694
+
+>> They seem to make no effort
+>> whatsoever to support non-POSIX systems (specifically, Windows...).
+
+It is quite clear from the tone in this that I was still quite annoyed
+with the library when I wrote my mail ;)
+
+> you mean the build system, or does the library function also suboptimal on windows?
+
+Just the build system, I didn't get any further, nor have I ever used
+it consciously. Considering that it's just a few functions it would be
+hard to mess that up, though ;) So I think the actual functioning is
+fine, I mean I have no reason to believe otherwise.
+
+> Okay, again please attach this change to a patch at trac.mapnik.org and we will take a look to consider including.
+
+https://trac.mapnik.org/ticket/691
+
+>> * rint() doesn't exist on VC. I added one in a private header, whose #include I #ifdef WIN32'd.
+> Hmmm, not sure what went wrong there, that was a known issue that should be handled here: https://trac.mapnik.org/browser/tags/release-0.7.1/include/mapnik/global.hpp#L163
+
+Oh I see, I hadn't found that one. Thing is that _WINDOWS isn't
+defined by default, it needs to be set in the build tools, which
+hadn't. _WIN32 is guaranteed to exist, with some caveats - patch and
+notes at https://trac.mapnik.org/ticket/693 .
+
+>> * I had to introduce some braces around calls to min/max (both in std:: and numeric_limits).
+> Okay, also please supply this as a patch on trac.mapnik.org.
+
+https://trac.mapnik.org/ticket/692 - note that I only yesterday
+realized that this is only an issue when <windows.h> is included, so
+when libldtl is used, this doesn't happen (I think, as long as
+<windows.h> isn't included for something else. So the two are related.
+
+> In mapnik trunk we've upgraded our usage of ptree so that it is compatible with the syntax in the actual released ptree versions, and so trunk no longer needs this copy (and I just removed it: http://trac.mapnik.org/changeset/2515).
+
+Oh I see, no worries then.
+
+>> so that I can maybe find
+>> out if I can leave out parts of icu all together.
+> That would be not be impossible, but difficult.
+
+Yes I think the long-term solution is to just include it in full, as
+the data turns out to be necessary in many more cases than I
+originally suspected. I'll have to investigate the icu build system
+and configuration options further when/if this becomes relevant (to
+me).
+
+>> - how much of all code paths in mapnik does rundemo.cpp exercise?
+> Quite a bit, perhaps 70-80 % of C++ api. It mainly misses datasources other than shapefiles.
+
+Ok that's nice, then I have some reasonable level of confidence in
+there not being many platform/build issues in my tree.
+
+>> Is there a more comprehensive (c++) test
+>> suite somewhere?
+> No. Because the Python bindings expose the vast majority of functionality (as they are abstract C++ classes) we mainly test via python, but certainly C++ tests are very much needed to. We have a few started in trunk/tests/cpp_tests but we need many more.
+
+Ok thanks, I hadn't looked at trunk much yet. If the C++ is exercised
+through the Python then that's OK too, I'd say. Once I become more
+familiar with the code I'll have a feeling for myself what features
+are used in rundemo.cpp, I was asking because I don't know the mapnik
+API yet.
+
+>> should I forget about the current stable and use mapnik2?
+> Mapnik2 may need a little love to compile on windows. If you are up for helping (it certainly seems like you have the capacity!) with this I would encourage you to ride on trunk.
+
+I'm going to get started with 0.7.1 at first, I'll keep an eye on the
+blog to learn more about Mapnik2, what it's design goals are, what are
+the shortcomings of v1 etc. If I know the v1 api to a reasonable
+extent, I'll be in a better position when switching to v2 to have
+something to compare to.
+
+
+cheers,
+
+roel
+
+
+From dane at dbsgeo.com  Thu Jan 13 00:15:45 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 12 Jan 2011 15:15:45 -0800
+Subject: [Mapnik-devel] Gearing up for Mapnik2 release
+Message-ID: <06F8D4E9-1E4F-445C-BE6C-7F2742E77288@dbsgeo.com>
+
+Mapnik-devel,
+
+I'm excited to announce that Artem and I are starting to plan for releasing Mapnik2.
+
+First steps are to get squared away on naming, prioritizing tickets, and then we will attempt to set a date.
+
+* Naming *
+
+I propose that Mapnik2 be released as version 2.0.0. 
+
+I'd like to start following http://semver.org/ as much as possible, and so jumping to 2.0.0 makes not only intuitive sense (because we've been calling the release Mapnik2) but also logical sense because it the API has changed (e.g. a breaking release) because different python objects have been created and XML syntax has also changed.
+
+So, with your approval we will change include/mapnik/version.hpp from 800 --> 200000 (e.g. from 0.8.0 to 2.0.0) [1]
+
+
+* Prioritizing Tickets *
+
+I have created a new, fresh milestone called "Mapnik 2.0" for the 2.0.0 release and pushed all 140 tickets that were previously against it off to a Mapnik 2.1 release. Today Artem and I skimmed through those 140 tickets looking for the feasible and most important ones to tackle before release and attached those back to the 2.0 milestone.
+
+See what we came up with here: https://trac.mapnik.org/milestone/Mapnik%202.0
+
+Note: We have not finished going through tickets and we may have missed some, but the list is LONG. Please help my reviewing tickets yourself, and if you find them critical, then attach them to the 2.0 milestone.
+
+https://trac.mapnik.org/milestone/Mapnik%202.1
+
+
+* Setting a Date *
+
+I propose a date around 3-4 months from now, with a pre-release (or release candidate) in 1-2 months. But, I feel like I will know more about what is possible as others take a look at and comment on the tickets. Please also step up and assign a ticket to yourself if you can take it on!
+
+Thanks!
+
+Dane
+
+
+[1] you might wonder why both the integer and string representations of version numbers? Well, we follow boost's approach here and there are some functions available in the python bindings to convert back and forth:
+
+>>> import mapnik2
+>>> mapnik2.mapnik_version()
+800
+>>> mapnik2.mapnik_version_string()
+'0.8.0'
+>>> mapnik2.mapnik_version_from_string('0.8.0')
+800
+>>> mapnik2.mapnik_version_from_string('2.0.0')
+200000
+>>> mapnik2.mapnik_version_string(version=200000)
+'2.0.0'
+
+
+
+
+From dane at dbsgeo.com  Thu Jan 13 00:26:23 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 12 Jan 2011 15:26:23 -0800
+Subject: [Mapnik-devel] Style variation (feature visibility) depending
+	on feature density
+In-Reply-To: <4D2B8CE1.1010703@remote.org>
+References: <4D2B8CE1.1010703@remote.org>
+Message-ID: <1E885AF4-4B6C-4EBF-ABC1-D362A7523436@dbsgeo.com>
+
+Frederik, 
+
+I don't think you are asking too much. Requiring multiple passes over features to get better labeling is, I think an inevitable need. It will be tricky to code properly (and would require a good bit of refactoring of the current code), and demanding on performance, but with smart algorithms doable.
+
+While I've not coded on this topic yet I certainly hope to in the future!
+
+Dane
+
+On Jan 10, 2011, at 2:49 PM, Frederik Ramm wrote:
+
+> Hi,
+> 
+>   I wonder if anyone has invested some thought, or even code, into ways to control feature visibility depending on how much data there actually is.
+> 
+> For example, on the standard OpenStreetMap map, pubs are shown from zoom level 16 on. Which is ok for a place that has lots of pubs like this
+> 
+> http://www.openstreetmap.org/?lat=51.51502&lon=-0.10676&zoom=16&layers=M
+> 
+> but would it not be great for the weary traveller to know, from a much earlier zoom level, that the village of Thompson has a pub while nearby, larger, Watton doesn't?
+> 
+> http://www.openstreetmap.org/?lat=52.552&lon=0.8356&zoom=13&layers=M
+> 
+> Or, another example: If you look at the large empty triangle between the  towns of Gumdag, Serdar, and Gyzyletrek on this map (zoom level 9):
+> 
+> http://www.openstreetmap.org/?lat=38.564&lon=55.331&zoom=9&layers=M
+> 
+> ... you would never guess that lots of long-distance desert tracks criss-cross this area because they only come in at zoom level 13. And rightly so, because you would certainly not want the tracks on this zoom level 13 map to appear any sooner:
+> 
+> http://www.openstreetmap.org/?lat=50.3004&lon=8.2687&zoom=13&layers=M
+> 
+> 
+> There are several ways how this could be handled. One is of course OpenStreetMap specific - simply tag the objects in question in some specific way and produce matching (probably quite complicated) style sheets.
+> 
+> Another way would be having region-specific styles. I understand Mapnik2 already has some support for that (rendering North America different from the UK). I haven't looked at this closely but I guess it could probably be extended to much smaller units than countries - so one could have some sort of master shapefile that divides up the world in something like 5 different types of area and then use that to make certain decisions in your style sheets.
+> 
+> A third way, and that's coming back to the subject of this post, is trying to find out how dense a certain feature is. I could then write a style file that specifies a min/max scale denominator like we have now, but in addition I'd specify a "max num features per megapixel" or something. That would allow me to say that I want pubs drawn from zoom level 13 on, but only if there are less than 20 per megapixel or so. For some styles, a megapixel kind of rule might completely replace the scale denominator rule.
+> 
+> Of course this third way (and to a lesser degree the first and second) has many problems - first of all, simply counting features might not be enough (there might only be one feature but it might be very large and complex); second, how would one handle transition areas (large image with 100 pubs in the lower left corner); third, it would be horribly taxing on the PostGIS side ("quick, count the number of pubs in this 1 million square kilometer area"), and fourth - it may turn out to be a cartographic nightmare - you pan across the map and see a pub in Thompson but none in London.
+> 
+> Maybe I'm just asking too much?
+> 
+> Bye
+> Frederik
+> 
+> -- 
+> Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From manel.clos at ajgirona.cat  Sat Jan 15 21:58:36 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Sat, 15 Jan 2011 21:58:36 +0100
+Subject: [Mapnik-devel] WMS with Mapnik
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+
+Hi all,
+
+Here are some ideas about improving Mapnik XML to better support WMS functionality.
+
+Support Layers within Layers (Layer Group)
+- Properties are inherited
+- You can draw / request a Layer Group that has a name
+- title: used in GetCapabilities to better describe layers in the group
+
+Toplevel Map element in mapfile should have some more Layer?s properties.
+- name: request top level layer (Map) to draw / request all layers (get rid of the __all__ trick in OGCServer in the long term, but support it for compatibility)
+- title: use it in GetCapabilities
+
+If this is ok I'll create a ticket and hopefully have it ready for Mapnik 2.0.
+
+
+From dane at dbsgeo.com  Sat Jan 22 00:01:32 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 21 Jan 2011 18:01:32 -0500
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+Message-ID: <64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+
+Hi manel. Yes, great, a ticket to discuss sounds good. I'm not  
+convinced all these features can/should be added to the existing map  
+XML format. What about an XML or json document that ogcserver could  
+load that points to one or more maps and describes how to group maps  
+or the layers within them?
+
+--- \o/ ---
+Sent from my phone
+
+On Jan 15, 2011, at 3:58 PM, <manel.clos at ajgirona.cat> wrote:
+
+> Hi all,
+>
+> Here are some ideas about improving Mapnik XML to better support WMS  
+> functionality.
+>
+> Support Layers within Layers (Layer Group)
+> - Properties are inherited
+> - You can draw / request a Layer Group that has a name
+> - title: used in GetCapabilities to better describe layers in the  
+> group
+>
+> Toplevel Map element in mapfile should have some more Layer?s proper 
+> ties.
+> - name: request top level layer (Map) to draw / request all layers  
+> (get rid of the __all__ trick in OGCServer in the long term, but  
+> support it for compatibility)
+> - title: use it in GetCapabilities
+>
+> If this is ok I'll create a ticket and hopefully have it ready for  
+> Mapnik 2.0.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From roel.vanhout at gmail.com  Mon Jan 24 14:37:52 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 24 Jan 2011 14:37:52 +0100
+Subject: [Mapnik-devel] mapnik for php
+Message-ID: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+
+(cc to -users as this may be of interest to some people on that list)
+
+Hi,
+
+For the last couple of weeks I've been chipping away at making php
+bindings for mapnik. After the milestones of getting mapnik to compile
+on Windows/MSVC, getting a simple php extension to work in debugging
+mode, wrapping some of the simpler mapnik classes and calling them
+successfully from php userland scripts, I thought it time to inform a
+larger audience of what I'm doing in case anyone is either also
+working on this or has an interest.
+
+My next steps are mostly boring, just wrapping mapnik classes 1:1 to
+equivalent php classes. My planning for the coming time is to focus on
+getting a php version of rundemo.cpp to run and output the correct
+result. I have no timeframe to full completion as this is a personal
+side-project and I can only free up a few hours here and there to work
+on this, at least until I find a sponsor to justify working on it for
+a few days at a time. I'm keeping close to the C++ api for now so that
+I don't have to spend too much time thinking about changes there.  I'm
+adjusting class and method names to be in line with what seems to have
+emerged as the predominant naming standard in php: camelcase for
+classes and camelcase with initial lower letter for method names. I'm
+emulating overloaded constructors and functions too in the cases where
+that's possible, it remains to be seen if that's 'natural' in php.
+
+Which brings me to one of the reasons to write this mail; if there is
+anyone interested in using mapnik from php and has wide experience
+with php, in particular with api design for php libraries, I could use
+someone to brainstorm about the api with. Although I consider myself
+an experieced php developer, I do not have much of a 'feel' for what
+is natural in api design in php, or at least not the extent I do for
+C++. I also do not have experience with the mapnik python bindings, so
+I don't know the approach there; if it follows the C++ api closely or
+tries to fit in with common python idioms. So if anyone is interested
+in discussing this, and/or writing documentation and test cases in
+advance to flesh out the design, please let me know.
+
+Then secondly, a question to Dane and Artem (I think you two are the
+core developers, right?): do you have thoughts on the relationship
+you'd like to see between mapnik C++ and the language bindings? The
+python version seems deeply embedded within mapnik development, is
+that by design or is it for historical reasons that they're in the
+same repository? As I understand it, ogcserver used to be in there as
+well but was factored out, are there any plans to do the same for the
+python bindings or does the way it works now work well? The reason
+that I'm asking is for the hosting of the source of these php
+bindings. At the moment I have them in my own svn repo, inaccessible
+for the public. There are three 'obvious' short-term (working copy)
+and/or long-term (i.e., when the code is at least somewhat feature
+complete) places to host them:
+
+1. as a separate project, e.g. on github (as an aside, is there any
+talk of mapnik moving away from svn? I have no experience with git but
+it seems that with boost moving to git, svn in open source C++ land is
+coming under real pressure, so I figured I'd set up a github account
+to see what all the hubbub (pun not intended) is about).
+2 .in the mapnik source tree
+3. in PECL or the php source tree
+
+Re: 3, I'm not sure what the policy is about acceptance into PECL or
+php proper, when libraries get shipped with php itself, etc.; for a
+project that size it's probably all quite bureaucratic so I'm not
+considering that to be a real option for now.
+
+So please let me know how you feel about this.
+
+Lastly, in case there are people who could use a php version of mapnik
+and want to help out, there are a bunch of tasks that are left before
+this could enter even alpha stage:
+- see if the code compiles on Linux and integrates easily within the
+php build process. This will probably require some m4 tweaking to
+instruct the php build tools, but that seems simple from what I've
+seen so far. The desktop machines I have at the moment all have
+Windows so this is sort of at the bottom of my own list, but I suspect
+it's going to be quite important for many potential users.
+- I'm writing unit tests as I go implementing classes, but there need
+to be some higher-level full programs that exercise all of the code
+for testing and validation. That means, writing the php code, finding
+test data, making known-good results, writing tests to verify
+generated output, checking (manually or with code coverage tools) that
+all features are used in the examples, etc.
+- the above-mentioned documentation, although some minimal form that
+refers people to the C++ docs will get them there 95% of the way I
+think (at least for API docs, there still needs to be some
+comprehensive 'getting started' tutorial that speaks the language of
+the php-only programmer). I'm noticing that not all mapnik C++
+documentation is equally complete or helpful (e.g. what the arguments
+to datasource_cache and font_engine mean, but I've found many
+instances where I just read the code to find out what methods or
+classes do); which I understand, because I myself am not too keen on
+doing something boring like that ;) but I'm just saying that anyone
+offering to write detailed API documentation would be better off
+spending his/her energy on the C++ sources so that there is one good
+source that all language bindings could then refer to.
+
+Again this mail is getting way too long so I'm going to sign off here,
+comments welcome. I'll try to send mail to the list when I reach more
+or less important milestones; at least if there are people interested,
+I don't want to spam the lists with 1000-word rambles that nobody
+reads anyway ;)
+
+
+cheers,
+
+roel
+
+
+PS any news on a next mapnik hackathon? If the location is the problem
+I think I can host here in Maastricht, the Netherlands: nice historic
+town, centrally located in Europe within 1.5 hours of 6 major
+airports. Just suggesting, and in case there is enough interest for
+another one in the next 6 months or so.
+
+
+From dane at dbsgeo.com  Tue Jan 25 03:50:16 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 24 Jan 2011 21:50:16 -0500
+Subject: [Mapnik-devel] Consistency in XML property names
+Message-ID: <0D077863-356B-4AB8-8A0F-A4CF5FC36F47@dbsgeo.com>
+
+Mapnik-devel,
+
+I've got two tickets I'm planning on working on before release:
+
+And renaming all properties that use underscores to dashes:
+https://trac.mapnik.org/ticket/644
+
+Warning when invalid properties are used:
+https://trac.mapnik.org/ticket/110
+
+The former is a breaking change, but I feel like it is needed and it
+is the right time (before releasing Mapnik2).
+
+I will update the upgrade_script accordingly after making the change.
+
+Dane
+
+
+
+
+From dane at dbsgeo.com  Tue Jan 25 04:17:05 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 24 Jan 2011 22:17:05 -0500
+Subject: [Mapnik-devel] mapnik for php
+In-Reply-To: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+References: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+Message-ID: <23A17581-558D-4B9D-B2E8-823D9DEF55B2@dbsgeo.com>
+
+
+On Jan 24, 2011, at 8:37 AM, Roel Vanhout wrote:
+
+> (cc to -users as this may be of interest to some people on that list)
+> 
+> Hi,
+> 
+> For the last couple of weeks I've been chipping away at making php
+> bindings for mapnik. After the milestones of getting mapnik to compile
+> on Windows/MSVC, getting a simple php extension to work in debugging
+> mode, wrapping some of the simpler mapnik classes and calling them
+> successfully from php userland scripts, I thought it time to inform a
+> larger audience of what I'm doing in case anyone is either also
+> working on this or has an interest.
+> 
+> My next steps are mostly boring, just wrapping mapnik classes 1:1 to
+> equivalent php classes. My planning for the coming time is to focus on
+> getting a php version of rundemo.cpp to run and output the correct
+> result. I have no timeframe to full completion as this is a personal
+> side-project and I can only free up a few hours here and there to work
+> on this, at least until I find a sponsor to justify working on it for
+> a few days at a time. I'm keeping close to the C++ api for now so that
+> I don't have to spend too much time thinking about changes there.  I'm
+> adjusting class and method names to be in line with what seems to have
+> emerged as the predominant naming standard in php: camelcase for
+> classes and camelcase with initial lower letter for method names. I'm
+> emulating overloaded constructors and functions too in the cases where
+> that's possible, it remains to be seen if that's 'natural' in php.
+> 
+> Which brings me to one of the reasons to write this mail; if there is
+> anyone interested in using mapnik from php and has wide experience
+> with php, in particular with api design for php libraries, I could use
+> someone to brainstorm about the api with.
+
+I have little to no experience with PHP, but I support your thinking here!
+
+> Although I consider myself
+> an experieced php developer, I do not have much of a 'feel' for what
+> is natural in api design in php, or at least not the extent I do for
+> C++.
+
+Are you wrapping mapnik in a C API or are you able to call directly to the C++?
+
+> I also do not have experience with the mapnik python bindings, so
+> I don't know the approach there; if it follows the C++ api closely or
+> tries to fit in with common python idioms.
+
+Ideally both, within reason. The python bindings are written using boost python, so almost purely in C++. This gives them less than a pure pythonic feel, but makes them very powerful and having very direct access to C++ classes. 
+
+
+> So if anyone is interested
+> in discussing this, and/or writing documentation and test cases in
+> advance to flesh out the design, please let me know.
+> 
+> Then secondly, a question to Dane and Artem (I think you two are the
+> core developers, right?): do you have thoughts on the relationship
+> you'd like to see between mapnik C++ and the language bindings?
+
+Great question. I've only just begun considering that because I've been working on javascript bindings: https://github.com/mapnik/node-mapnik.
+
+My sense is that there is no perfect answer, but just a balance between various considerations.
+
+Here are some bullet points:
+
+Make sure the bindings are easy to install, don't leak, and are fast before wrapping 100% of the api.
+
+Achieving the amount of coverage of the python bindings is no small task, so whatever you do, do it well.
+
+Don't invent new abstractions or change function names unless you have a good reason.
+
+Certainly tailor the bindings to the language where appropriate.
+
+> The
+> python version seems deeply embedded within mapnik development, is
+> that by design or is it for historical reasons that they're in the
+> same repository?
+
+Boost python makes it easy and logical to expose python bindings as mapnik was developed since we use the boost libraries thoughout. They have been used as a way to test and prototype features in C++.
+
+> As I understand it, ogcserver used to be in there as
+> well but was factored out, are there any plans to do the same for the
+> python bindings or does the way it works now work well?
+
+No, ogcserver was pure python so it makes sense to have it separate where more developers could download separately and contribute in pure python. The python bindings, being written in C++ are much easier to build at the same time as mapnik core.
+
+> The reason
+> that I'm asking is for the hosting of the source of these php
+> bindings. At the moment I have them in my own svn repo, inaccessible
+> for the public. There are three 'obvious' short-term (working copy)
+> and/or long-term (i.e., when the code is at least somewhat feature
+> complete) places to host them:
+> 
+> 1. as a separate project, e.g. on github (as an aside, is there any
+> talk of mapnik moving away from svn?
+
+many of us are using git svn. there are not plans to move the central repository away from svn, partly because git svn works so well.
+
+> I have no experience with git but
+> it seems that with boost moving to git, svn in open source C++ land is
+> coming under real pressure, so I figured I'd set up a github account
+> to see what all the hubbub (pun not intended) is about).
+
+It seems like github would be a good spot, or somewhere public people will discover them. If they get a lot of use and are well maintained they could eventually be moved into core.
+
+> 2 .in the mapnik source tree
+> 3. in PECL or the php source tree
+> 
+> Re: 3, I'm not sure what the policy is about acceptance into PECL or
+> php proper, when libraries get shipped with php itself, etc.; for a
+> project that size it's probably all quite bureaucratic so I'm not
+> considering that to be a real option for now.
+> 
+> So please let me know how you feel about this.
+
+github or the like :)
+
+> 
+> Lastly, in case there are people who could use a php version of mapnik
+> and want to help out, there are a bunch of tasks that are left before
+> this could enter even alpha stage:
+> - see if the code compiles on Linux and integrates easily within the
+> php build process. This will probably require some m4 tweaking to
+> instruct the php build tools, but that seems simple from what I've
+> seen so far. The desktop machines I have at the moment all have
+> Windows so this is sort of at the bottom of my own list, but I suspect
+> it's going to be quite important for many potential users.
+> - I'm writing unit tests as I go implementing classes, but there need
+> to be some higher-level full programs that exercise all of the code
+> for testing and validation. That means, writing the php code, finding
+> test data, making known-good results, writing tests to verify
+> generated output, checking (manually or with code coverage tools) that
+> all features are used in the examples, etc.
+> - the above-mentioned documentation, although some minimal form that
+> refers people to the C++ docs will get them there 95% of the way I
+> think (at least for API docs, there still needs to be some
+> comprehensive 'getting started' tutorial that speaks the language of
+> the php-only programmer). I'm noticing that not all mapnik C++
+> documentation is equally complete or helpful (e.g. what the arguments
+> to datasource_cache and font_engine mean, but I've found many
+> instances where I just read the code to find out what methods or
+> classes do); which I understand, because I myself am not too keen on
+> doing something boring like that ;) but I'm just saying that anyone
+> offering to write detailed API documentation would be better off
+> spending his/her energy on the C++ sources so that there is one good
+> source that all language bindings could then refer to.
+
+Well, you need both right? C++ docs won't help PHP or python programmers. If you are going to do api docs they really need to leverage the best of breed tools for each language.
+
+> 
+> Again this mail is getting way too long so I'm going to sign off here,
+> comments welcome. I'll try to send mail to the list when I reach more
+> or less important milestones; at least if there are people interested,
+> I don't want to spam the lists with 1000-word rambles that nobody
+> reads anyway ;)
+> 
+> 
+> cheers,
+> 
+> roel
+> 
+> 
+> PS any news on a next mapnik hackathon? If the location is the problem
+> I think I can host here in Maastricht, the Netherlands: nice historic
+> town, centrally located in Europe within 1.5 hours of 6 major
+> airports. Just suggesting, and in case there is enough interest for
+> another one in the next 6 months or so.
+
+Ya, thanks for offering. I think there is interest just a matter of getting ourself organized :)
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Tue Jan 25 13:31:45 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Tue, 25 Jan 2011 13:31:45 +0100
+Subject: [Mapnik-devel] mapnik for php
+In-Reply-To: <23A17581-558D-4B9D-B2E8-823D9DEF55B2@dbsgeo.com>
+References: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+	<23A17581-558D-4B9D-B2E8-823D9DEF55B2@dbsgeo.com>
+Message-ID: <AANLkTimfWgzr33p+M6NqC4cqU_D9u7t=u=dZ6hczDaLL@mail.gmail.com>
+
+Thanks Dane, some short replies inline:
+
+
+On Tue, Jan 25, 2011 at 4:17 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Are you wrapping mapnik in a C API or are you able to call directly to the C++?
+
+Directly C++, imitating the mapnik C++ object model 1:1. The (php)
+constructor calls new and each method fetches that pointer and calls
+the equivalent C++ method. Quite straightforward really, on purpose,
+for now. The only manual work is in implementing overloaded functions,
+and call the right one depending on the amount and type of arguments.
+
+>> do you have thoughts on the relationship
+>> you'd like to see between mapnik C++ and the language bindings?
+> Here are some bullet points:
+<snip>
+
+Thanks, this is very much in line with my own thoughts, will try to
+stick to this :)
+
+>> 1. as a separate project, e.g. on github (as an aside, is there any
+>> talk of mapnik moving away from svn?
+> many of us are using git svn. there are not plans to move the central repository away from svn, partly because git svn works so well.
+> github or the like :)
+
+Ok thanks, will do. I'm new to git so I didn't know about fancy things
+like git/svn bridges but sounds interesting so am going to look into
+it :)
+
+> Well, you need both right? C++ docs won't help PHP or python programmers. If you are going to do api docs they really need to leverage the best of breed tools for each language.
+
+Well to a certain extent documentation is language agnostic, I feel.
+The easy and superficial things like types and names of arguments are
+easy to extract from the source; maybe weakly typed languages need
+some extra documentation if the purpose of a parameter isn't
+immediately obvious, but for API documentation, imo, it's mostly the
+higher-level information like preconditions, purpose of parameters
+etc. that are useful. For example, to come back to the
+datasource_cache example, what kind of paths are accepted? Only
+absolute? Only filename? Relative? If relative, relative to what (does
+the library guarantee that no chdir() is called, is it relative to
+getcwd() or always relative to the calling binary? If one needs to
+pass in a filename, is it only the basename or the full name including
+extension? Is the extension fixed? (I know the answer to all these
+things by now, it's just an example ;) ) All these things are the same
+for C++, php or python bindings, since they all rely on one underlying
+implementation.
+
+Thinking about it, maybe I would even argue that the biggest part, and
+certainly the most important part (the part that can't be extracted
+from looking at the function/method declaration), is language agnostic
+- not a very interesting debate I admit, but still it would give some
+direction to the direction the documentation would go into. If there
+are going to be 3 apis (c++, python, javascript) (or 4, if I get far
+enough with the php ones ;) ), only the documentation of the types of
+the arguments is going to be language-specific, plus maybe some extra
+methods added to implement specific language idioms (wrap
+getters/setters as member variables, arrays/vectors as iterators, ...)
+It would be nice if everything that is not language specific could be
+factored out into a common part. But let's worry about that when there
+is a significant amount of such documentation ;)
+
+In terms of documentation, I very much like MSDN. It's not perfect,
+but for a set of documents of dozens of API's spanning the better part
+of 2 decades, imo it's remarkably complete and accessible, and 90% of
+the time provides all background required to use a call effectively
+and easily (for example by directly linking background information
+etc.). Compare this to the boost documentation, which usually contains
+an OK introduction in tutorial form but whose api references are often
+disguised as math proofs. boost::date_time is one such library
+(although it has gotten much better in recent releases) that I
+sometimes find impenetrable. I guess it's in the denseness: it assumes
+that you know all the background by heart, and only gives you the most
+canonical form of information. For a casual user or a new user with a
+specific task to do, this is not nice to work with, at least I myself
+don't find it so. I much prefer a form where one can arrive to a page
+from google and learn fundamental concepts gradually if/when
+necessary, rather than one where one needs to sit down for a day, read
+all documentation and design considerations and only then can begin
+use the library.
+
+> Ya, thanks for offering. I think there is interest just a matter of getting ourself organized :)
+
+OK, I don't want to impose myself, but just so you know that I'm
+willing to help out, circumstances permitting.
+
+
+cheers,
+
+roel
+
+
+From ivan at sanchezortega.es  Tue Jan 25 12:53:51 2011
+From: ivan at sanchezortega.es (=?iso-8859-1?q?Iv=E1n_S=E1nchez_Ortega?=)
+Date: Tue, 25 Jan 2011 12:53:51 +0100
+Subject: [Mapnik-devel] [Mapnik-users]  mapnik for php
+In-Reply-To: <23A17581-558D-4B9D-B2E8-823D9DEF55B2@dbsgeo.com>
+References: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+	<23A17581-558D-4B9D-B2E8-823D9DEF55B2@dbsgeo.com>
+Message-ID: <201101251253.55969.ivan@sanchezortega.es>
+
+On Tuesday 25 January 2011 04:17:05 Dane Springmeyer wrote:
+> > Although I consider myself
+> > an experieced php developer, I do not have much of a 'feel' for what
+> > is natural in api design in php, or at least not the extent I do for
+> > C++.
+>
+> Are you wrapping mapnik in a C API or are you able to call directly to the
+> C++?
+
+As far as I know, PHP extensions are written in C, with a lot of magic PHPey 
+stuff thrown in in order to register C functions as PHP functions. See:
+
+http://devzone.zend.com/article/1021
+
+
+
+
+Ideally, though, what is needed is a Parrot[1] library/extension/thingie that 
+will run on any parrot-supported language. Unifying Perl+Python+PHP sounded 
+like a great idea in 2006, but since then I'm mostly unaware of Parrot 
+development.
+
+[1] http://en.wikipedia.org/wiki/Parrot_virtual_machine
+
+
+Cheers,
+-- 
+----------------------------------
+Iv?n S?nchez Ortega <ivan at sanchezortega.es> <ivan at geonerd.org>
+
+Un ordenador no es un televisor ni un microondas, es una herramienta compleja.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: This is a digitally signed message part.
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110125/6a6056e1/attachment.pgp>
+
+From mike at stamen.com  Thu Jan 27 18:49:49 2011
+From: mike at stamen.com (Michal Migurski)
+Date: Thu, 27 Jan 2011 09:49:49 -0800
+Subject: [Mapnik-devel] [Mapnik-users] mapnik for php
+In-Reply-To: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+References: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+Message-ID: <483707D4-E1CE-4879-8597-A2E4F94AA58E@stamen.com>
+
+On Jan 24, 2011, at 5:37 AM, Roel Vanhout wrote:
+
+> For the last couple of weeks I've been chipping away at making php
+> bindings for mapnik.
+
+Yay!
+
+
+> Which brings me to one of the reasons to write this mail; if there is
+> anyone interested in using mapnik from php and has wide experience
+> with php, in particular with api design for php libraries, I could use
+> someone to brainstorm about the api with. Although I consider myself
+> an experieced php developer, I do not have much of a 'feel' for what
+> is natural in api design in php, or at least not the extent I do for
+> C++. I also do not have experience with the mapnik python bindings, so
+> I don't know the approach there; if it follows the C++ api closely or
+> tries to fit in with common python idioms. So if anyone is interested
+> in discussing this, and/or writing documentation and test cases in
+> advance to flesh out the design, please let me know.
+
+I use PHP *a lot* so I'd love to participate in this. I've seen a few styles of PHP C bindings, mostly in one of two camps: OOP and functions. An example of the former would be Memcached and an example of the latter would be GD:
+
+	http://www.php.net/manual/en/class.memcached.php
+	http://www.php.net/manual/en/function.imagecreate.php
+
+Personally, I think PHP's lurch toward object-orientedness over the past few years is misguided, and I'm a big fan of the namespaceless, all-function modules like GD that work by passing resources around. For mapnik, it would make sense to have a single kind of resource: a map object. Everything else, like rules, styles, layers, etc., could be represented with simple associative arrays and plain values.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From roel.vanhout at gmail.com  Fri Jan 28 11:18:22 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Fri, 28 Jan 2011 11:18:22 +0100
+Subject: [Mapnik-devel] [Mapnik-users] mapnik for php
+In-Reply-To: <483707D4-E1CE-4879-8597-A2E4F94AA58E@stamen.com>
+References: <AANLkTimvJsKUoB-d7Sb8BKO_OBg8XcuON-ZEPFTG1NBw@mail.gmail.com>
+	<483707D4-E1CE-4879-8597-A2E4F94AA58E@stamen.com>
+Message-ID: <AANLkTinsBCEw12mmyd-hekg1n7DDCHFA0rWYaG_Z92Lz@mail.gmail.com>
+
+On Thu, Jan 27, 2011 at 6:49 PM, Michal Migurski <mike at stamen.com> wrote:
+> Personally, I think PHP's lurch toward object-orientedness over the past few years is misguided, and I'm a big fan of the namespaceless, all-function modules like GD that work by passing resources around. For mapnik, it would make sense to have a single kind of resource: a map object. Everything else, like rules, styles, layers, etc., could be represented with simple associative arrays and plain values.
+
+Thanks for your thoughts, Mike. Mysql has 'dual bindings' too, and
+there is explicit support for it in the php extension development
+code; and I agree that in some cases one makes more sense than the
+other. Still, it's extra development effort, and time is the main
+constraint at this time. Defining a new, procedural API would be an
+extra task in itself. To take a simple example I'm not sure what the
+best way to represent a color would be. The initial natural thing to
+do would be have rgb components as separate arguments to functions;
+making the alpha component optional like so:
+
+mapnik_set_color($handle, 255, 0, 0);
+
+But then how does one set the color from a css string? Would this
+require overloading all functions that take a color with a string so
+that you'd do
+
+mapnik_set_color($handle, 'indigo');
+
+Or would a color be an array with 'r', 'g', 'b' and 'a' keys? And a
+function mapnik_get_color that would make the previous example work
+like
+
+mapnik_set_color($handle, mapnik_get_color('indigo'));
+
+It's not convenient to have to do
+
+mapnik_set_color($handle, new array('r' => 255, 'g' => 0, 'b' => 0));
+
+And this is just a simple example, because mapnik::color is merely a
+glorified struct...
+
+Either way, if you'd like to discuss this further, maybe we could
+flesh out the api design a bit, but actually implementing it will go
+onto the todo list, after the 1:1 OO version is somewhat complete. For
+example, could you write rundemo.cpp with the procedural php api you
+envisage? That demonstrates most of the concepts I think.
+
+
+cheers,
+
+roel
+
+

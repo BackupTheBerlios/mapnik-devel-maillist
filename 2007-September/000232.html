@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070908013209.340fa0e3%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000233.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070908013209.340fa0e3%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">lists at brachttal.net
+       </A><BR>
+    <I>Sat Sep  8 01:32:09 CEST 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000233.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#232">[ date ]</a>
+              <a href="thread.html#232">[ thread ]</a>
+              <a href="subject.html#232">[ subject ]</a>
+              <a href="author.html#232">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I did a update of my Mapnik system. I updated to the recent Mapnik SVN
+source. I didn't update for at least some weeks. Then I imported OSM
+data with a recent osm2pgsql tool. I used latlong (-l) as import
+option. Now Mapnik crash at start. Here is a gdb backtrace:
+
+registered datasource : postgis
+registered datasource : raster
+registered datasource : shape
+[New Thread -1243878512 (LWP 8910)]
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/station_small.png exception
+caught... bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image file /home/andreas/src/osm/mapnik/symbols/hospital.png
+exception caught...
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/rail_preserved.png exception
+caught... bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/motorway_shield3.png
+exception caught... cannot open image
+file /home/andreas/src/osm/mapnik/symbols/arrow.png exception caught...
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/arrow_back.png exception
+caught...
+Envelope(-20037508.34278925,-19929239.11337915,20037508.34278925,18375854.70964293)
+file_length=3335312 shape_type=5
+datasource=0x80ff270 type=1
+Envelope(-20037497.21084017,-19929239.11337915,20037497.21084017,18379686.99645032)
+file_length=24247658
+shape_type=5
+datasource=0x80b8cf8 type=1
+Envelope(-20100000,-7700000,20000000,15000000)
+file_length=3859622
+shape_type=5
+datasource=0x8103600 type=1
+Envelope(-20037508.3348,-7628011.72404,20000000,14994535.6307)
+file_length=437199658
+shape_type=3
+datasource=0x8103428 type=1
+Envelope(-19940616.76573496,-6979803.136120869,19864212.01086172,11359336.05685957)
+file_length=6689146
+shape_type=5
+datasource=0x80b0f80 type=1
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1242564912 (LWP 8907)]
+0xb7777edf in std::basic_string&lt;char, std::char_traits&lt;char&gt;,
+std::allocator&lt;char&gt; &gt;::basic_string () from /usr/lib/libstdc++.so.6
+(gdb) bt #0  0xb7777edf in std::basic_string&lt;char,
+std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;::basic_string ()
+from /usr/lib/libstdc++.so.6 #1  0xb5ebc8a1 in
+std::_Rb_tree&lt;std::string const, std::pair&lt;std::string const,
+std::string&gt;, std::_Select1st&lt;std::pair&lt;std::string const, std::string&gt;
+&gt;<i>, std::less&lt;std::string const&gt;, std::allocator&lt;std::pair&lt;std::string
+</I>&gt;<i>const, std::string&gt; &gt; &gt;::_M_copy ()
+</I>&gt;<i>from /usr/local/lib/mapnik/input/postgis.input #2  0xb5eb5a0b in
+</I>&gt;<i>postgis_datasource::postgis_datasource ()
+</I>&gt;<i>from /usr/local/lib/mapnik/input/postgis.input #3  0xb5eb8457 in
+</I>&gt;<i>create () from /usr/local/lib/mapnik/input/postgis.input #4
+</I>&gt;<i>0xb7a29a9c in mapnik::datasource_cache::create (params=@0xbfa30970) at
+</I>&gt;<i>src/datasource_cache.cpp:81
+</I>#5  0xb7a86714 in mapnik::load_map (map=@0x808a570,
+filename=@0xbfa31288) at src/load_map.cpp:508 #6  0x08052b08 in
+Navigation::initMapnik (this=0xbfa319ac) at Navigation.cpp:49 #7
+0x08053cb0 in Navigation (this=0xbfa319ac, width=800, height=600) at
+Navigation.cpp:19 #8  0x0804ff9e in main (argc=0, argv=0xbfa33174) at
+enigator.cpp:42
+
+Here are the XML files that I load (both crash):
+
+The XML file from OSM SVN (modified).
+<A HREF="http://tux-style.de/osm/tmp/osm.xml">http://tux-style.de/osm/tmp/osm.xml</A>
+
+An old XML file I got from mapnik_viewer:
+<A HREF="http://tux-style.de/osm/tmp/postgresql.xml">http://tux-style.de/osm/tmp/postgresql.xml</A>
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000233.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#232">[ date ]</a>
+              <a href="thread.html#232">[ thread ]</a>
+              <a href="subject.html#232">[ subject ]</a>
+              <a href="author.html#232">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

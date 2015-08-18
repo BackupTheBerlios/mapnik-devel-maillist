@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C1224625104.21096.108.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000756.html">
+   <LINK REL="Next"  HREF="000743.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C1224625104.21096.108.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Tue Oct 21 23:38:24 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000756.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000743.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, 2008-10-21 at 22:54 +0200, Andreas Volz wrote:
+&gt;<i> Am Tue, 21 Oct 2008 00:04:10 +0100 schrieb Jon Burgess:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; &gt; You mean thats's possible in the XML file only?
+</I>&gt;<i> &gt; &gt; ...
+</I>&gt;<i> &gt; &gt; So how would I do it with the road layer?
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Well, one way to do it _might_ be to turn it into muliple layers,
+</I>&gt;<i> one
+</I>&gt;<i> &gt; with highway=motorway, another with highway=primary, another with
+</I>&gt;<i> &gt; highway=secondary etc.
+</I>&gt;<i> 
+</I>&gt;<i> Now I played some more around with roads in the XML file. What I still
+</I>&gt;<i> not understand is the difference between layer &quot;minor-roads&quot; and
+</I>&gt;<i> &quot;roads&quot;. One gets its data from &quot;planet_osm_line&quot; the other from
+</I>&gt;<i> &quot;planet_osm_roads&quot;. Could you explain that?
+</I>
+The main difference is the intended range of zoom levels. 
+
+Data to be shown at low zooms is in &quot;planet_osm_roads&quot;. and rendered by
+&quot;roads&quot;. This renders up to a highest MaxScaleDenominator 25M [1] or
+zoom 5.
+
+The &quot;planet_osm_roads&quot; data rendered by minor-roads-fill has a highest
+MaxScaleDenominator in minor-roads-fill of 1M [2] or zoom 10.
+
+Arguably this is really a little too high. You would probably speed up
+your rendering significantly if you change this scale to 500k. The way
+that the zooms work, each change in zoom level is a factor of 4 in the
+area and data covered. 
+
+The biggest win occurs when you manage to reduce the highest
+MaxScaleDenominator across all the rules in a style. Mapnik will then
+completely exclude fetching any data for that style at the higher zooms
+(to be more exact, it is probably the range of zooms for all styles of a
+layer, but there is often a close match between the styles and layers). 
+
+In the case of the roads, there are a couple of other rules which
+specify 500k as well. If you wanted to gain much more performance then
+these would all need to be reduced (say to 250k). This obviously changes
+the zoom level that these features start appearing in the rendered
+output. There is a mapping between zoom and scale in the
+zoom-to-scale.txt file.
+
+	Jon
+
+
+1: <A HREF="http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L4211">http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L4211</A>
+2: <A HREF="http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L2210">http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L2210</A>
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000756.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000743.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#757">[ date ]</a>
+              <a href="thread.html#757">[ thread ]</a>
+              <a href="subject.html#757">[ subject ]</a>
+              <a href="author.html#757">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

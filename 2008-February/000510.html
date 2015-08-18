@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20agg_renderer%3CT%3E%20%20%20beginner%20question.&In-Reply-To=%3CC06CCBD0-444F-45BA-9631-5779A11EF083%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000507.html">
+   <LINK REL="Next"  HREF="000514.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20agg_renderer%3CT%3E%20%20%20beginner%20question.&In-Reply-To=%3CC06CCBD0-444F-45BA-9631-5779A11EF083%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.">artem at mapnik.org
+       </A><BR>
+    <I>Tue Feb 26 09:58:47 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000507.html">[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+</A></li>
+        <LI>Next message: <A HREF="000514.html">[Mapnik-devel] Mapnik direct OSM support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#510">[ date ]</a>
+              <a href="thread.html#510">[ thread ]</a>
+              <a href="subject.html#510">[ subject ]</a>
+              <a href="author.html#510">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 26 Feb 2008, at 01:12, Jim Waite wrote:
+
+&gt;<i>
+</I>&gt;<i> Hi
+</I>&gt;<i> As a programmer unfamiliar with templates or the &quot;boost&quot; way of doing
+</I>&gt;<i> things, this may well be a stupid question... but here goes:
+</I>&gt;<i>
+</I>&gt;<i> Why is agg_renderer a template class?
+</I>&gt;<i>
+</I>&gt;<i> It is declared like so:
+</I>&gt;<i>    template &lt;typename T&gt;
+</I>&gt;<i>    class MAPNIK_DECL agg_renderer : public
+</I>&gt;<i> feature_style_processor&lt;agg_renderer&lt;T&gt; &gt;,
+</I>&gt;<i>                                     private boost::noncopyable
+</I>&gt;<i>
+</I>&gt;<i> But the template parameter &quot;T&quot; is never used anywhere in the class
+</I>&gt;<i> definition (other than to pass it through to  
+</I>&gt;<i> feature_style_processor, which
+</I>&gt;<i> seems irrelevant).
+</I>
+Well spotted, this was a bug (harmless:)  that sneaked in quite  
+recently. Fixed in r658.
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> The rundemo.cpp example application uses agg_renderer like so:
+</I>&gt;<i>
+</I>&gt;<i>         Image32 buf(m.getWidth(),m.getHeight());
+</I>&gt;<i>         agg_renderer&lt;Image32&gt; ren(m,buf);
+</I>&gt;<i>
+</I>&gt;<i> To me, it would seem that the programmer's intention is that  
+</I>&gt;<i> agg_renderer
+</I>&gt;<i> could render to whatever class we put inside the &lt;&gt;  (Image32 in  
+</I>&gt;<i> this case).
+</I>
+Yes, the intention was to be able to instantiate agg_renderer with  
+different image types, given they provide suitable interface. In  
+reality. because the way template instantiation mechanism works and  
+how agg_renderer is implemented at the moment, only  
+agg_renderer=&lt;Image32&gt; is accessible from client code. This will  
+change in a future.
+
+&gt;<i> But that's not how the code works (for example, the constructor for
+</I>&gt;<i> agg_renderer always takes an Image32.. no matter how you declare your
+</I>&gt;<i> particular instantiation of agg_renderer).  You cannot do the  
+</I>&gt;<i> following, for
+</I>&gt;<i> example&quot;
+</I>&gt;<i>
+</I>&gt;<i>         SomeOtherSortOfImage buf(m.getWidth(),m.getHeight());
+</I>&gt;<i>         agg_renderer&lt;SomeOtherSortOfImage&gt; ren(m,buf);
+</I>
+OK. try now (r658) and you should get nice compilation error :)
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Thanks for indulging me,
+</I>
+
+&gt;<i> Jim Waite.
+</I>&gt;<i>
+</I>
+Thanks highlighting this
+
+Artem
+&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000507.html">[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+</A></li>
+	<LI>Next message: <A HREF="000514.html">[Mapnik-devel] Mapnik direct OSM support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#510">[ date ]</a>
+              <a href="thread.html#510">[ thread ]</a>
+              <a href="subject.html#510">[ subject ]</a>
+              <a href="author.html#510">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

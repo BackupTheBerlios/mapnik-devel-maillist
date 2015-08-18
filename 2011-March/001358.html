@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%20osm_way%3A%3Aget_bounds&In-Reply-To=%3CAANLkTik1zs%2BMKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001357.html">
+   <LINK REL="Next"  HREF="001359.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds</H1>
+    <B>Vladislav Shikhov</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%20osm_way%3A%3Aget_bounds&In-Reply-To=%3CAANLkTik1zs%2BMKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds">vladshikhov at gmail.com
+       </A><BR>
+    <I>Sat Mar 26 11:51:49 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001357.html">[Mapnik-devel] Trac spam
+</A></li>
+        <LI>Next message: <A HREF="001359.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1358">[ date ]</a>
+              <a href="thread.html#1358">[ thread ]</a>
+              <a href="subject.html#1358">[ subject ]</a>
+              <a href="author.html#1358">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Mapnik devs!
+
+I've been trying mapnik for render tiles from osm source and got some
+crashes with segfaults.
+
+After adding additional debug output I found what
+osm_way::get_bounds() called for osm_node item from
+osm_featureset.cpp:75
+
+I'm going to continue debug, but if you have any idea you are welcome.
+
+-- 
+Vladislav Shikhov
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001357.html">[Mapnik-devel] Trac spam
+</A></li>
+	<LI>Next message: <A HREF="001359.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1358">[ date ]</a>
+              <a href="thread.html#1358">[ thread ]</a>
+              <a href="subject.html#1358">[ subject ]</a>
+              <a href="author.html#1358">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

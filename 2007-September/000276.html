@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problems building r526 on ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20building%20r526%20on%20ubuntu&In-Reply-To=%3CFC9B268B-6144-41EC-9207-79E024A1C42F%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000272.html">
+   <LINK REL="Next"  HREF="000284.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problems building r526 on ubuntu</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20building%20r526%20on%20ubuntu&In-Reply-To=%3CFC9B268B-6144-41EC-9207-79E024A1C42F%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Problems building r526 on ubuntu">artem at mapnik.org
+       </A><BR>
+    <I>Tue Sep 18 12:57:05 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000272.html">[Mapnik-devel] Problems building r526 on ubuntu
+</A></li>
+        <LI>Next message: <A HREF="000284.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#276">[ date ]</a>
+              <a href="thread.html#276">[ thread ]</a>
+              <a href="subject.html#276">[ subject ]</a>
+              <a href="author.html#276">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Matt,
+
+&gt;<i> Hi folks,
+</I>&gt;<i>
+</I>&gt;<i>  Running ubuntu feisty, I've checked out the latest svn trunk and have
+</I>&gt;<i> hit a number of snags:
+</I>&gt;<i>
+</I>&gt;<i> 1)
+</I>&gt;<i> python scons/scons.py PYTHON=/usr/bin/python
+</I>&gt;<i> PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+</I>&gt;<i> BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+</I>&gt;<i> GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+</I>&gt;<i>
+</I>&gt;<i> python: can't open file 'scons/scons.py': [Errno 2] No such file or  
+</I>&gt;<i> directory
+</I>&gt;<i>
+</I>&gt;<i> FIX: Either scons/scons needs to be renamed to scons/scons.py or the
+</I>&gt;<i> INSTALL needs to be updated
+</I>
+Yes, thanks, NSTALL needs updating.
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2)
+</I>&gt;<i> python scons/scons PYTHON=/usr/bin/python
+</I>&gt;<i> PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+</I>&gt;<i> BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+</I>&gt;<i> GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> Building on Linux ...
+</I>&gt;<i> ...
+</I>&gt;<i> Could not find header or shared library for boost thread, exiting!
+</I>&gt;<i>
+</I>&gt;<i> This one has me stumped. I have the ubuntu packages installed:
+</I>&gt;<i>
+</I>&gt;<i> sudo dpkg -l | grep libboost-thread
+</I>&gt;<i> ii  libboost-thread-dev                        1.33.1-9ubuntu3
+</I>&gt;<i>                    portable C++ multi-threading
+</I>&gt;<i> ii  libboost-thread1.33.1                      1.33.1-9ubuntu3
+</I>&gt;<i>                    portable C++ multi-threading
+</I>&gt;<i>
+</I>&gt;<i> This command worked a few months ago. Why is scons now having troubles
+</I>&gt;<i> finding libboost-thread?? Any ideas?
+</I>
+
+Yes, I have some ideas. boost libraries on ubuntu don't follow  
+official boost naming convention i.e multi-treading libs should have - 
+mt .
+You can solve this by passing THREADING=single to scons.  Also, I  
+left checking for boost_system uncommented in SConstruct - only  
+required if you're using boost-1_35. Fixed in r527.
+
+Cheers
+Artem
+
+&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Matthew T. Perry
+</I>&gt;<i> <A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+</I>&gt;<i>
+</I>&gt;<i> &quot;You never change things by fighting the existing reality.
+</I>&gt;<i> To change something, build a new model that makes
+</I>&gt;<i> the existing model obsolete&quot; - R. Buckminster Fuller
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/3cd4daa0/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/3cd4daa0/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000272.html">[Mapnik-devel] Problems building r526 on ubuntu
+</A></li>
+	<LI>Next message: <A HREF="000284.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#276">[ date ]</a>
+              <a href="thread.html#276">[ thread ]</a>
+              <a href="subject.html#276">[ subject ]</a>
+              <a href="author.html#276">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

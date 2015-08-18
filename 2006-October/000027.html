@@ -1,0 +1,483 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text wrapping patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20wrapping%20patch&In-Reply-To=%3C4541146A.3070601%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000026.html">
+   <LINK REL="Next"  HREF="000028.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text wrapping patch</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20wrapping%20patch&In-Reply-To=%3C4541146A.3070601%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] Text wrapping patch">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Thu Oct 26 22:02:50 CEST 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000026.html">[Mapnik-devel] Text wrapping patch
+</A></li>
+        <LI>Next message: <A HREF="000028.html">[Mapnik-devel] Mapnik Web demo!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#27">[ date ]</a>
+              <a href="thread.html#27">[ thread ]</a>
+              <a href="subject.html#27">[ subject ]</a>
+              <a href="author.html#27">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Robert,
+
+Thanks a lot for contributing this patch. I didn't have a chance to play 
+with it yet, I'll do it tomorrow.
+I think it will be great to have text wrapping for things like 
+lakes,parks etc.
+
+Cheers,
+Artem
+
+Robert Coup wrote:
+&gt;<i> Hi All,
+</I>&gt;<i>
+</I>&gt;<i> Patch for text wrapping enclosed - see notes below.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Robert Coup
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Index: include/mapnik/font_engine_freetype.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/font_engine_freetype.hpp	(revision 355)
+</I>&gt;<i> +++ include/mapnik/font_engine_freetype.hpp	(working copy)
+</I>&gt;<i> @@ -219,8 +219,7 @@
+</I>&gt;<i>              : pixmap_(pixmap),
+</I>&gt;<i>                face_(face),
+</I>&gt;<i>                fill_(0,0,0), 
+</I>&gt;<i> -              halo_fill_(255,255,255),
+</I>&gt;<i> -              halo_radius_(0) {}
+</I>&gt;<i> +              halo_fill_(255,255,255) {}
+</I>&gt;<i>      
+</I>&gt;<i>          void set_pixel_size(unsigned size)
+</I>&gt;<i>          {
+</I>&gt;<i> @@ -264,7 +263,9 @@
+</I>&gt;<i>                  double x, y, angle;
+</I>&gt;<i>                  
+</I>&gt;<i>                  path-&gt;vertex(&amp;c, &amp;x, &amp;y, &amp;angle);
+</I>&gt;<i> +//                std::clog &lt;&lt; &quot;   prepare_glyph: &quot; &lt;&lt; (unsigned char)c &lt;&lt; &quot;,&quot; &lt;&lt; x &lt;&lt; &quot;,&quot; &lt;&lt; y &lt;&lt; &quot;,&quot; &lt;&lt; angle &lt;&lt; std::endl;
+</I>&gt;<i>  
+</I>&gt;<i> +
+</I>&gt;<i>                  FT_BBox glyph_bbox; 
+</I>&gt;<i>                  FT_Glyph image;
+</I>&gt;<i>  		
+</I>&gt;<i> @@ -363,8 +364,8 @@
+</I>&gt;<i>                
+</I>&gt;<i>                  width += char_dim.first;
+</I>&gt;<i>                  height = char_dim.second &gt; height ? char_dim.second : height;
+</I>&gt;<i> +                
+</I>&gt;<i>              }
+</I>&gt;<i> -            
+</I>&gt;<i>              info-&gt;set_dimensions(width, height);
+</I>&gt;<i>          }
+</I>&gt;<i>  	
+</I>&gt;<i> @@ -376,6 +377,9 @@
+</I>&gt;<i>  	    
+</I>&gt;<i>              start.x = unsigned(x0 * (1 &lt;&lt; 6)); 
+</I>&gt;<i>              start.y = unsigned((height - y0) * (1 &lt;&lt; 6));
+</I>&gt;<i> +
+</I>&gt;<i> +//            std::clog &lt;&lt; &quot;Render text at: &quot; &lt;&lt; x0 &lt;&lt; &quot;,&quot; &lt;&lt; y0 &lt;&lt; &quot; &quot; &lt;&lt; start.x &lt;&lt; &quot;,&quot; &lt;&lt; start.y &lt;&lt; std::endl;
+</I>&gt;<i> +
+</I>&gt;<i>              // now render transformed glyphs
+</I>&gt;<i>              typename glyphs_t::iterator pos;
+</I>&gt;<i>  
+</I>&gt;<i> @@ -463,6 +467,8 @@
+</I>&gt;<i>          mapnik::Color fill_;
+</I>&gt;<i>          mapnik::Color halo_fill_;
+</I>&gt;<i>          int halo_radius_;
+</I>&gt;<i> +        unsigned text_ratio_;
+</I>&gt;<i> +        unsigned wrap_width_;
+</I>&gt;<i>          glyphs_t glyphs_;
+</I>&gt;<i>      }; 
+</I>&gt;<i>  }
+</I>&gt;<i> Index: include/mapnik/placement_finder.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/placement_finder.hpp	(revision 355)
+</I>&gt;<i> +++ include/mapnik/placement_finder.hpp	(working copy)
+</I>&gt;<i> @@ -67,14 +67,17 @@
+</I>&gt;<i>      double starting_y;
+</I>&gt;<i>      
+</I>&gt;<i>      text_path path;
+</I>&gt;<i> +
+</I>&gt;<i>      
+</I>&gt;<i> -    
+</I>&gt;<i>      //helpers
+</I>&gt;<i>      std::pair&lt;double, double&gt; get_position_at_distance(double target_distance);
+</I>&gt;<i>      double get_total_distance();
+</I>&gt;<i>      void clear_envelopes();
+</I>&gt;<i>      
+</I>&gt;<i>      double total_distance_; //cache for distance
+</I>&gt;<i> +    
+</I>&gt;<i> +    int wrap_width;
+</I>&gt;<i> +    int text_ratio;
+</I>&gt;<i>    };
+</I>&gt;<i>    
+</I>&gt;<i>    class placement_finder : boost::noncopyable
+</I>&gt;<i> Index: include/mapnik/text_symbolizer.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/text_symbolizer.hpp	(revision 355)
+</I>&gt;<i> +++ include/mapnik/text_symbolizer.hpp	(working copy)
+</I>&gt;<i> @@ -42,6 +42,10 @@
+</I>&gt;<i>          text_symbolizer(text_symbolizer const&amp; rhs);
+</I>&gt;<i>          text_symbolizer&amp; operator=(text_symbolizer const&amp; rhs);
+</I>&gt;<i>          std::string const&amp; get_name() const;
+</I>&gt;<i> +        unsigned get_text_ratio() const; // target ratio for text bounding box in pixels
+</I>&gt;<i> +        void set_text_ratio(unsigned ratio);
+</I>&gt;<i> +        unsigned get_wrap_width() const; // target ratio for text bounding box in pixels
+</I>&gt;<i> +        void set_wrap_width(unsigned ratio);
+</I>&gt;<i>          unsigned get_text_size() const;
+</I>&gt;<i>  	std::string const&amp; get_face_name() const;
+</I>&gt;<i>          Color const&amp; get_fill() const;
+</I>&gt;<i> @@ -59,6 +63,8 @@
+</I>&gt;<i>          std::string name_;
+</I>&gt;<i>    std::string face_name_;
+</I>&gt;<i>          unsigned size_;
+</I>&gt;<i> +        unsigned text_ratio_;
+</I>&gt;<i> +        unsigned wrap_width_;
+</I>&gt;<i>          Color fill_;
+</I>&gt;<i>          Color halo_fill_;
+</I>&gt;<i>          unsigned halo_radius_;
+</I>&gt;<i> Index: src/placement_finder.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/placement_finder.cpp	(revision 355)
+</I>&gt;<i> +++ src/placement_finder.cpp	(working copy)
+</I>&gt;<i> @@ -26,6 +26,7 @@
+</I>&gt;<i>  //stl
+</I>&gt;<i>  #include &lt;string&gt;
+</I>&gt;<i>  #include &lt;vector&gt;
+</I>&gt;<i> +#include &lt;assert.h&gt;
+</I>&gt;<i>  
+</I>&gt;<i>  // boost
+</I>&gt;<i>  #include &lt;boost/shared_ptr.hpp&gt;
+</I>&gt;<i> @@ -41,13 +42,13 @@
+</I>&gt;<i>  namespace mapnik
+</I>&gt;<i>  {
+</I>&gt;<i>    placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, std::pair&lt;double, double&gt; dimensions_)
+</I>&gt;<i> -    : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0)
+</I>&gt;<i> +    : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(point_placement), dimensions(dimensions_), has_dimensions(true), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0)
+</I>&gt;<i>    {
+</I>&gt;<i>    }
+</I>&gt;<i>    
+</I>&gt;<i>    //For text
+</I>&gt;<i>    placement::placement(string_info *info_, CoordTransform *ctrans_, const proj_transform *proj_trans_, geometry_ptr geom_, label_placement_e placement_)
+</I>&gt;<i> -    : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0)
+</I>&gt;<i> +    : info(info_), ctrans(ctrans_), proj_trans(proj_trans_), geom(geom_), label_placement(placement_), has_dimensions(false), shape_path(*ctrans_, *geom_, *proj_trans_), total_distance_(-1.0), wrap_width(0), text_ratio(0)
+</I>&gt;<i>    {
+</I>&gt;<i>    }
+</I>&gt;<i>    
+</I>&gt;<i> @@ -372,6 +373,7 @@
+</I>&gt;<i>      return true;
+</I>&gt;<i>    }
+</I>&gt;<i>    
+</I>&gt;<i> +
+</I>&gt;<i>    bool placement_finder::build_path_horizontal(placement *p, double target_distance)
+</I>&gt;<i>    {
+</I>&gt;<i>      double x, y;
+</I>&gt;<i> @@ -382,9 +384,76 @@
+</I>&gt;<i>      double string_width = string_dimensions.first;
+</I>&gt;<i>      double string_height = string_dimensions.second;
+</I>&gt;<i>      
+</I>&gt;<i> -    x = -string_width/2.0;
+</I>&gt;<i> -    y = -string_height/2.0 + 1.0;
+</I>&gt;<i> +    // check if we need to wrap the string
+</I>&gt;<i> +    double wrap_at = string_width + 1;
+</I>&gt;<i> +    if (p-&gt;wrap_width &amp;&amp; string_width &gt; p-&gt;wrap_width)
+</I>&gt;<i> +    {
+</I>&gt;<i> +        if (p-&gt;text_ratio)
+</I>&gt;<i> +            for (int i = 1; ((wrap_at = string_width/i)/(string_height*i)) &gt; p-&gt;text_ratio &amp;&amp; (string_width/i) &gt; p-&gt;wrap_width; ++i);
+</I>&gt;<i> +        else
+</I>&gt;<i> +            wrap_at = p-&gt;wrap_width;
+</I>&gt;<i> +        //std::clog &lt;&lt; &quot;Wrapping string at&quot; &lt;&lt; wrap_at &lt;&lt; std::endl;
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i> +    // work out where our line breaks need to be
+</I>&gt;<i> +    std::vector&lt;int&gt; line_breaks;
+</I>&gt;<i> +    std::vector&lt;double&gt; line_widths;
+</I>&gt;<i> +    if (wrap_at &lt; string_width &amp;&amp; p-&gt;info-&gt;num_characters() &gt; 0)
+</I>&gt;<i> +    {
+</I>&gt;<i> +        int line_count=0; 
+</I>&gt;<i> +        int last_space = 0;
+</I>&gt;<i> +        string_width = 0;
+</I>&gt;<i> +        string_height = 0;
+</I>&gt;<i> +        double line_width = 0;
+</I>&gt;<i> +        double line_height = 0;
+</I>&gt;<i> +        double word_width = 0;
+</I>&gt;<i> +        double word_height = 0;
+</I>&gt;<i> +        for (unsigned int ii = 0; ii &lt; p-&gt;info-&gt;num_characters(); ii++)
+</I>&gt;<i> +        {
+</I>&gt;<i> +            character_info ci;;
+</I>&gt;<i> +            ci = p-&gt;info-&gt;at(ii);
+</I>&gt;<i> +            
+</I>&gt;<i> +            unsigned c = ci.character;
+</I>&gt;<i> +            word_width += ci.width;
+</I>&gt;<i> +            word_height = word_height &gt; ci.height ? word_height : ci.height;
+</I>&gt;<i> +            ++line_count;
+</I>&gt;<i>      
+</I>&gt;<i> +            if (c == ' ')
+</I>&gt;<i> +            {
+</I>&gt;<i> +                last_space = ii;
+</I>&gt;<i> +                line_width += word_width;
+</I>&gt;<i> +                line_height = line_height &gt; word_height ? line_height : word_height;
+</I>&gt;<i> +                word_width = 0;
+</I>&gt;<i> +                word_height = 0;
+</I>&gt;<i> +            }
+</I>&gt;<i> +            if (line_width &gt; 0 &amp;&amp; line_width &gt; wrap_at)
+</I>&gt;<i> +            {
+</I>&gt;<i> +                string_width = string_width &gt; line_width ? string_width : line_width;
+</I>&gt;<i> +                string_height += line_height;
+</I>&gt;<i> +                line_breaks.push_back(last_space);
+</I>&gt;<i> +                line_widths.push_back(line_width);
+</I>&gt;<i> +                ii = last_space;
+</I>&gt;<i> +                line_count = 0;
+</I>&gt;<i> +                line_width = 0;
+</I>&gt;<i> +                line_height = 0;
+</I>&gt;<i> +                word_width = 0;
+</I>&gt;<i> +                word_height = 0;
+</I>&gt;<i> +            }
+</I>&gt;<i> +        }
+</I>&gt;<i> +        line_width += word_width;
+</I>&gt;<i> +        string_width = string_width &gt; line_width ? string_width : line_width;
+</I>&gt;<i> +        line_breaks.push_back(p-&gt;info-&gt;num_characters() + 1);
+</I>&gt;<i> +        line_widths.push_back(line_width);
+</I>&gt;<i> +    }
+</I>&gt;<i> +    if (line_breaks.size() == 0)
+</I>&gt;<i> +    {
+</I>&gt;<i> +        line_breaks.push_back(p-&gt;info-&gt;num_characters() + 1);
+</I>&gt;<i> +        line_widths.push_back(string_width);
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i> +    p-&gt;info-&gt;set_dimensions(string_width, string_height);
+</I>&gt;<i> +    
+</I>&gt;<i> +    assert(p-&gt;geom);
+</I>&gt;<i>      if (p-&gt;geom-&gt;type() == LineString)
+</I>&gt;<i>      {
+</I>&gt;<i>        std::pair&lt;double, double&gt; starting_pos = p-&gt;get_position_at_distance(target_distance);
+</I>&gt;<i> @@ -403,6 +472,14 @@
+</I>&gt;<i>        p-&gt;ctrans-&gt;forward(&amp;p-&gt;starting_x, &amp;p-&gt;starting_y);
+</I>&gt;<i>      }
+</I>&gt;<i>      
+</I>&gt;<i> +    double line_height = 0;
+</I>&gt;<i> +    unsigned int line_number = 0;
+</I>&gt;<i> +    unsigned int index_to_wrap_at = line_breaks[line_number];
+</I>&gt;<i> +    double line_width = line_widths[line_number];
+</I>&gt;<i> +
+</I>&gt;<i> +    x = -line_width/2.0;
+</I>&gt;<i> +    y = string_height/2.0;
+</I>&gt;<i> +
+</I>&gt;<i>      for (unsigned i = 0; i &lt; p-&gt;info-&gt;num_characters(); i++)
+</I>&gt;<i>      {
+</I>&gt;<i>          character_info ci;;
+</I>&gt;<i> @@ -410,26 +487,38 @@
+</I>&gt;<i>          
+</I>&gt;<i>          unsigned c = ci.character;
+</I>&gt;<i>        
+</I>&gt;<i> -        p-&gt;path.add_node(c, x, y, 0.0);
+</I>&gt;<i> -
+</I>&gt;<i> -        Envelope&lt;double&gt; e;
+</I>&gt;<i> -        if (p-&gt;has_dimensions)
+</I>&gt;<i> +        if (i == index_to_wrap_at)
+</I>&gt;<i>          {
+</I>&gt;<i> -            e.init(p-&gt;starting_x - (p-&gt;dimensions.first/2.0), p-&gt;starting_y - (p-&gt;dimensions.second/2.0), p-&gt;starting_x + (p-&gt;dimensions.first/2.0), p-&gt;starting_y + (p-&gt;dimensions.second/2.0));
+</I>&gt;<i> +            index_to_wrap_at = line_breaks[++line_number];
+</I>&gt;<i> +            line_width = line_widths[line_number];
+</I>&gt;<i> +            y -= line_height;
+</I>&gt;<i> +            x = -line_width/2.0;
+</I>&gt;<i> +            line_height = 0;
+</I>&gt;<i> +            continue;
+</I>&gt;<i>          }
+</I>&gt;<i>          else
+</I>&gt;<i>          {
+</I>&gt;<i> -          e.init(p-&gt;starting_x + x, p-&gt;starting_y - y, p-&gt;starting_x + x + ci.width, p-&gt;starting_y - y - ci.height);
+</I>&gt;<i> +            p-&gt;path.add_node(c, x, y, 0.0);
+</I>&gt;<i> +
+</I>&gt;<i> +            Envelope&lt;double&gt; e;
+</I>&gt;<i> +            if (p-&gt;has_dimensions)
+</I>&gt;<i> +            {
+</I>&gt;<i> +                e.init(p-&gt;starting_x - (p-&gt;dimensions.first/2.0), p-&gt;starting_y - (p-&gt;dimensions.second/2.0), p-&gt;starting_x + (p-&gt;dimensions.first/2.0), p-&gt;starting_y + (p-&gt;dimensions.second/2.0));
+</I>&gt;<i> +            }
+</I>&gt;<i> +            else
+</I>&gt;<i> +            {
+</I>&gt;<i> +            e.init(p-&gt;starting_x + x, p-&gt;starting_y - y, p-&gt;starting_x + x + ci.width, p-&gt;starting_y - y - ci.height);
+</I>&gt;<i> +            }
+</I>&gt;<i> +            
+</I>&gt;<i> +            if (!detector_.has_placement(e))
+</I>&gt;<i> +            {
+</I>&gt;<i> +            return false;
+</I>&gt;<i> +            }
+</I>&gt;<i> +            
+</I>&gt;<i> +            p-&gt;envelopes.push(e);
+</I>&gt;<i>          }
+</I>&gt;<i> -        
+</I>&gt;<i> -        if (!detector_.has_placement(e))
+</I>&gt;<i> -        {
+</I>&gt;<i> -          return false;
+</I>&gt;<i> -        }
+</I>&gt;<i> -        
+</I>&gt;<i> -        p-&gt;envelopes.push(e);
+</I>&gt;<i> -      
+</I>&gt;<i>          x += ci.width;
+</I>&gt;<i> +        line_height = line_height &gt; ci.height ? line_height : ci.height;
+</I>&gt;<i>      }
+</I>&gt;<i>      return true;
+</I>&gt;<i>    }
+</I>&gt;<i> Index: src/text_symbolizer.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/text_symbolizer.cpp	(revision 355)
+</I>&gt;<i> +++ src/text_symbolizer.cpp	(working copy)
+</I>&gt;<i> @@ -22,6 +22,9 @@
+</I>&gt;<i>  
+</I>&gt;<i>  //$Id$
+</I>&gt;<i>  
+</I>&gt;<i> +
+</I>&gt;<i> +#include &lt;iostream&gt;
+</I>&gt;<i> +
+</I>&gt;<i>  #include &lt;mapnik/text_symbolizer.hpp&gt;
+</I>&gt;<i>  
+</I>&gt;<i>  namespace mapnik
+</I>&gt;<i> @@ -30,6 +33,8 @@
+</I>&gt;<i>  	: name_(name),
+</I>&gt;<i>      face_name_(face_name),
+</I>&gt;<i>  	  size_(size),
+</I>&gt;<i> +      text_ratio_(0),
+</I>&gt;<i> +      wrap_width_(0),
+</I>&gt;<i>  	  fill_(fill),
+</I>&gt;<i>  	  halo_fill_(Color(255,255,255)),
+</I>&gt;<i>  	  halo_radius_(0),
+</I>&gt;<i> @@ -41,6 +46,8 @@
+</I>&gt;<i>  	: name_(rhs.name_),
+</I>&gt;<i>      face_name_(rhs.face_name_),
+</I>&gt;<i>  	  size_(rhs.size_),
+</I>&gt;<i> +      text_ratio_(rhs.text_ratio_),
+</I>&gt;<i> +      wrap_width_(rhs.wrap_width_),
+</I>&gt;<i>  	  fill_(rhs.fill_),
+</I>&gt;<i>  	  halo_fill_(rhs.halo_fill_),
+</I>&gt;<i>  	  halo_radius_(rhs.halo_radius_),
+</I>&gt;<i> @@ -55,6 +62,8 @@
+</I>&gt;<i>  	name_ = other.name_;
+</I>&gt;<i>    face_name_ = other.face_name_;
+</I>&gt;<i>  	size_ = other.size_;
+</I>&gt;<i> +    text_ratio_ = other.text_ratio_,
+</I>&gt;<i> +    wrap_width_ = other.wrap_width_,
+</I>&gt;<i>  	fill_ = other.fill_;
+</I>&gt;<i>  	halo_fill_ = other.halo_fill_;
+</I>&gt;<i>  	label_p_ = other.label_p_;
+</I>&gt;<i> @@ -73,6 +82,26 @@
+</I>&gt;<i>  	return face_name_;
+</I>&gt;<i>      }
+</I>&gt;<i>      
+</I>&gt;<i> +    unsigned  text_symbolizer::get_text_ratio() const
+</I>&gt;<i> +    {
+</I>&gt;<i> +    return text_ratio_;
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i> +    void  text_symbolizer::set_text_ratio(unsigned ratio) 
+</I>&gt;<i> +    {
+</I>&gt;<i> +        text_ratio_ = ratio;
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i> +    unsigned  text_symbolizer::get_wrap_width() const
+</I>&gt;<i> +    {
+</I>&gt;<i> +    return wrap_width_;
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i> +    void  text_symbolizer::set_wrap_width(unsigned width) 
+</I>&gt;<i> +    {
+</I>&gt;<i> +        wrap_width_ = width;
+</I>&gt;<i> +    }
+</I>&gt;<i> +
+</I>&gt;<i>      unsigned  text_symbolizer::get_text_size() const
+</I>&gt;<i>      {
+</I>&gt;<i>  	return size_;
+</I>&gt;<i> Index: src/agg_renderer.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- src/agg_renderer.cpp	(revision 355)
+</I>&gt;<i> +++ src/agg_renderer.cpp	(working copy)
+</I>&gt;<i> @@ -502,6 +502,8 @@
+</I>&gt;<i>                      ren.get_string_info(text, &amp;info);
+</I>&gt;<i>                   
+</I>&gt;<i>                      placement text_placement(&amp;info, &amp;t_, &amp;prj_trans, geom, sym.get_label_placement());
+</I>&gt;<i> +                    text_placement.text_ratio = sym.get_text_ratio();
+</I>&gt;<i> +                    text_placement.wrap_width = sym.get_wrap_width();
+</I>&gt;<i>                    
+</I>&gt;<i>                      bool found = finder_.find_placement(&amp;text_placement);
+</I>&gt;<i>                      if (!found) {
+</I>&gt;<i> Index: bindings/python/mapnik/ogcserver/common.py
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- bindings/python/mapnik/ogcserver/common.py	(revision 355)
+</I>&gt;<i> +++ bindings/python/mapnik/ogcserver/common.py	(working copy)
+</I>&gt;<i> @@ -384,4 +384,4 @@
+</I>&gt;<i>  class Projection(MapnikProjection):
+</I>&gt;<i>      
+</I>&gt;<i>      def epsgstring(self):
+</I>&gt;<i> -        return self.params().split('=')[1].upper()
+</I>&gt;<i> \ No newline at end of file
+</I>&gt;<i> +        return self.params().split('=')[1].upper()
+</I>&gt;<i> Index: bindings/python/mapnik_text_symbolizer.cpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- bindings/python/mapnik_text_symbolizer.cpp	(revision 355)
+</I>&gt;<i> +++ bindings/python/mapnik_text_symbolizer.cpp	(working copy)
+</I>&gt;<i> @@ -43,6 +43,12 @@
+</I>&gt;<i>                        &amp;text_symbolizer::get_halo_fill,
+</I>&gt;<i>                        return_value_policy&lt;copy_const_reference&gt;()),
+</I>&gt;<i>                        &amp;text_symbolizer::set_halo_fill)
+</I>&gt;<i> +        .add_property(&quot;wrap_width&quot;,
+</I>&gt;<i> +                      &amp;text_symbolizer::get_wrap_width,
+</I>&gt;<i> +                      &amp;text_symbolizer::set_wrap_width)
+</I>&gt;<i> +        .add_property(&quot;text_ratio&quot;,
+</I>&gt;<i> +                      &amp;text_symbolizer::get_text_ratio,
+</I>&gt;<i> +                      &amp;text_symbolizer::set_text_ratio)
+</I>&gt;<i>          .add_property(&quot;halo_radius&quot;,
+</I>&gt;<i>                        &amp;text_symbolizer::get_halo_radius, 
+</I>&gt;<i>                        &amp;text_symbolizer::set_halo_radius)
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000026.html">[Mapnik-devel] Text wrapping patch
+</A></li>
+	<LI>Next message: <A HREF="000028.html">[Mapnik-devel] Mapnik Web demo!
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#27">[ date ]</a>
+              <a href="thread.html#27">[ thread ]</a>
+              <a href="subject.html#27">[ subject ]</a>
+              <a href="author.html#27">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

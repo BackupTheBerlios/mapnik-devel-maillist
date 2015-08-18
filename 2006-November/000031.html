@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with new TextSymbolizer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20new%20TextSymbolizer&In-Reply-To=%3C4548136F.8000202%40methane.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000032.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with new TextSymbolizer</H1>
+    <B>Jean-Fran&#231;ois Doyon</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20new%20TextSymbolizer&In-Reply-To=%3C4548136F.8000202%40methane.ca%3E"
+       TITLE="[Mapnik-devel] Problem with new TextSymbolizer">jfdoyon at methane.ca
+       </A><BR>
+    <I>Wed Nov  1 04:24:31 CET 2006</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000032.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#31">[ date ]</a>
+              <a href="thread.html#31">[ thread ]</a>
+              <a href="subject.html#31">[ subject ]</a>
+              <a href="author.html#31">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+Trying to update the Python demo, and can't seem to get my point labels 
+to appear :(
+
+I know I need to add the face name,, but after having tried 2 or 3 
+things, still no luck.
+
+This would be the obvious candidate:
+
+popplaces_text_symbolizer = TextSymbolizer('GEONAME', 'Bitstream Vera 
+Sans Roman', 10, Color('black'))
+
+I also tried 'Bitstream Vera Sans' and other variations that made sense, 
+base on this output:
+
+[<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jdoyon at pcjflinux</A> fonts]$ ftdump Vera.ttf
+There is 1 face in this file.
+
+----- Face number: 0 -----
+
+font name entries
+    family:     Bitstream Vera Sans
+    style:      Roman
+    postscript: BitstreamVeraSans-Roman
+
+font type entries
+    FreeType driver: truetype
+    sfnt wrapped:    yes
+    type:            scalable
+    direction:       horizontal
+    fixed width:     no
+    glyph names:     yes
+    EM size:         2048
+    global BBox:     (-375,-483):(2636,1901)
+    ascent:          1901
+    descent:         -483
+    text height:     2384
+
+charmaps
+    0: platform: 1, encoding: 0
+    1: platform: 3, encoding: 1
+
+The mapnik Python module initializes with that one font registered:
+
+from mapnik import FontEngine
+FontEngine.instance().register_font('%s/Vera.ttf' % fontscollectionpath)
+
+And this seems to work OK (No errors).
+
+It also definitely sees the data:
+
+start layer processing : Populated Places
+datasource = 0x9a61e10
+Envelope(1405120.04127408,-249015.180277767,1706357.31328276,-23087.22627125698)
+  total shapes read=192
+end layer processing
+
+As it always has ... nothing much has changed there in a while ... 
+Though I'll look at this more in detail.
+
+Any idea what I might be missing?
+
+J.F.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000032.html">[Mapnik-devel] Patch for nicer text placement on lines
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#31">[ date ]</a>
+              <a href="thread.html#31">[ thread ]</a>
+              <a href="subject.html#31">[ subject ]</a>
+              <a href="author.html#31">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

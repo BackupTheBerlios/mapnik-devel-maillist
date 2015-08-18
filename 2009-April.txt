@@ -1,0 +1,3974 @@
+From blake at hailmail.net  Wed Apr  1 16:47:14 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 1 Apr 2009 07:47:14 -0700
+Subject: [Mapnik-devel] Updated Mapnik Python API documentation
+In-Reply-To: <2fc2c5f10903300324p75683657l7f7bfd3ae06260c2@mail.gmail.com>
+References: <231382C5-7049-4A9B-A626-952C136DC8BC@hailmail.net>
+	<2fc2c5f10903300324p75683657l7f7bfd3ae06260c2@mail.gmail.com>
+Message-ID: <3C23F4BB-8C09-4AB4-A1A8-CF020849E99B@hailmail.net>
+
+Hey Marijn,
+
+Thanks!
+
+Dane
+
+
+On Mar 30, 2009, at 3:24 AM, Martijn van Oosterhout wrote:
+
+> Awesome, nice work. The python interface documentation has been
+> somewhat lacking  :)
+>
+> Mvg,
+>
+> On Mon, Mar 30, 2009 at 7:36 AM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Mapnik-dev,
+>>
+>> In prep for the 0.6.0 release, I've replaced the old 'docs/epydocs'
+>> folder in trunk with a newly generated set of HTML api docs generated
+>> with epydoc.
+>>
+>> These are still woefully lacking in proper docstrings for many
+>> important classes, but I've worked hard to start on method and
+>> property docstrings for at least the Map [1] and Layer [2] classes
+>> (see the bottom of their pages), and the major functions, which  
+>> appear
+>> on the main page here:
+>>
+>> http://svn.mapnik.org/trunk/docs/api_docs/python/index.html
+>>
+>> Log any thoughts/comments/problems here: http://trac.mapnik.org/ticket/265
+>>
+>> Dane
+>>
+>> [1] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Map-class.html
+>> [2] http://svn.mapnik.org/trunk/docs/api_docs/python/mapnik._mapnik.Layer-class.html
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+>
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+
+From blake at hailmail.net  Wed Apr  1 16:48:51 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 1 Apr 2009 07:48:51 -0700
+Subject: [Mapnik-devel] Missing header files in SVN
+In-Reply-To: <20090327004116.08a290ae@frodo.mittelerde>
+References: <20090327004116.08a290ae@frodo.mittelerde>
+Message-ID: <E888F22C-481E-485C-8A59-DBD301B47C62@hailmail.net>
+
+Andreas,
+
+I don't think anything is missing, rather pgsql2sqlite needs to look  
+across and get files from the local postgis input plugin.
+
+The shapeindex errors sound the same that perhaps the shapeindex  
+utilities needs the includes of the shape input plugin.
+
+Cheers,
+
+Dane
+
+
+On Mar 26, 2009, at 4:41 PM, Andreas Volz wrote:
+
+> Hello,
+>
+> I found errors while compiling stuff in utils:
+>
+> In file included from main.cpp:25:
+> pgsql2sqlite.hpp:29:34: error: connection_manager.hpp: No such file  
+> or directory
+> pgsql2sqlite.hpp:30:31: error: cursorresultset.hpp: No such file or
+> directory
+>
+> ...and...
+>
+> shapeindex.cpp:34:25: Fehler: shapefile.hpp: No such file or directory
+> shapeindex.cpp:35:24: Fehler: shape_io.hpp: No such file or directory
+>
+> Are there files missing in SVN?
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Wed Apr  1 16:49:45 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 1 Apr 2009 07:49:45 -0700
+Subject: [Mapnik-devel] Birdview in Mapnik?
+In-Reply-To: <20090322094222.17bb6545@frodo.mittelerde>
+References: <20090322094222.17bb6545@frodo.mittelerde>
+Message-ID: <CC7E6372-0A78-43B9-9514-7ADF9FB05D43@hailmail.net>
+
+Have you tried the Building symbolizer?
+
+I'm not sure if I follow your idea- maybe you could post a screenshot  
+of an example?
+
+Dane
+
+
+On Mar 22, 2009, at 1:42 AM, Andreas Volz wrote:
+
+> Hello,
+>
+> I thought about a birdview in mapnik. Have plans to develop such a
+> feature? I don't talk about 3D maps.
+>
+> In the first idea I would simply scale the map image to generate a
+> z-axis. The icon layer I wouldn't do that as I expect it to look
+> strange. There I would scale each icon itself regarding it's "z-axis"
+> and then draw it.
+>
+> What do you think?
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Fri Apr  3 01:28:50 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 2 Apr 2009 16:28:50 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+Message-ID: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+
+Mapnik  Dev,
+
+I announced yesterday on Mapnik-users and forgot to cc: dev.
+
+We've cut the 0.6.0 release on time:
+http://mapnik.org/news/2009/apr/01/release_0_6_0/
+
+See the summary milestone here:
+http://trac.mapnik.org/milestone/0.6.0
+
+Thanks to the many of you who helped make it possible!
+
+My hope is to push out a bugfix 0.6.1 release next, so please file  
+defects against:
+
+http://trac.mapnik.org/milestone/0.6.1
+
+As priorities in this *next* release I'd also like to flag  
+documentation and vetting of new features, such as the OSM, OGR, and  
+SQlite Plugins, the PointDatasource support, and new parameters of the  
+RasterSymbolizer.
+
+Cheers,
+
+Dane
+
+
+
+From lists at brachttal.net  Fri Apr  3 20:42:21 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 3 Apr 2009 20:42:21 +0200
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+Message-ID: <20090403204221.2e924d53@frodo.mittelerde>
+
+Am Thu, 2 Apr 2009 16:28:50 -0700 schrieb Dane Springmeyer:
+
+Hello Dane,
+
+do you think it would be possible to release an alternative package
+with the autotools build environment beside the scons version? Then
+people could choose the build environment they like. I've still some
+open points, but I'll fix them in near future.
+
+And do you think it would be possible to include the kismet plugin in
+the next major release?
+
+regards
+Andreas
+
+> Mapnik  Dev,
+> 
+> I announced yesterday on Mapnik-users and forgot to cc: dev.
+> 
+> We've cut the 0.6.0 release on time:
+> http://mapnik.org/news/2009/apr/01/release_0_6_0/
+> 
+> See the summary milestone here:
+> http://trac.mapnik.org/milestone/0.6.0
+> 
+> Thanks to the many of you who helped make it possible!
+> 
+> My hope is to push out a bugfix 0.6.1 release next, so please file  
+> defects against:
+> 
+> http://trac.mapnik.org/milestone/0.6.1
+> 
+> As priorities in this *next* release I'd also like to flag  
+> documentation and vetting of new features, such as the OSM, OGR, and  
+> SQlite Plugins, the PointDatasource support, and new parameters of
+> the RasterSymbolizer.
+> 
+> Cheers,
+> 
+> Dane
+
+
+From blake at hailmail.net  Fri Apr  3 21:02:25 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 3 Apr 2009 12:02:25 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090403204221.2e924d53@frodo.mittelerde>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+Message-ID: <2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+
+Hi Andreas,
+
+On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+
+> Am Thu, 2 Apr 2009 16:28:50 -0700 schrieb Dane Springmeyer:
+>
+> Hello Dane,
+>
+> do you think it would be possible to release an alternative package
+> with the autotools build environment beside the scons version?
+
+'Beside'? you mean in addition?
+
+Isn't that the way it currently is? Sorry, I'm not very familiar with  
+autotools. Perhaps you mean to include also a pre-build 'configure' as  
+well?
+
+I would love if you could document how to use the autotools stuff,  
+both in trunk and how you imagine it working for releases. See:
+
+http://trac.mapnik.org/ticket/124
+
+
+> Then
+> people could choose the build environment they like. I've still some
+> open points,
+
+Are there tickets for these?
+
+> but I'll fix them in near future.
+>
+
+How soon?  How about for the 0.6.1 release?
+
+http://trac.mapnik.org/milestone/0.6.1
+
+Note: I've assigned a date of two months from now purely as a rough  
+idea of how long it should take to close the existing bug tickets.  
+Other dev's please let me know your opinions and add thoughts to the  
+milestone notes.
+
+> And do you think it would be possible to include the kismet plugin in
+> the next major release?
+>
+
+We tagged 0.6.0 from svn, so the Kismet plugin is there, just not yet  
+part of the SCons build scripts or 'wrapped' with a factory method in  
+the Python Bindings.
+
+These would be the two things in my mind to do next, in addition to  
+documenting on its own wiki page.
+
+> regards
+> Andreas
+
+Thanks!
+
+Dane
+
+
+
+>
+>
+>> Mapnik  Dev,
+>>
+>> I announced yesterday on Mapnik-users and forgot to cc: dev.
+>>
+>> We've cut the 0.6.0 release on time:
+>> http://mapnik.org/news/2009/apr/01/release_0_6_0/
+>>
+>> See the summary milestone here:
+>> http://trac.mapnik.org/milestone/0.6.0
+>>
+>> Thanks to the many of you who helped make it possible!
+>>
+>> My hope is to push out a bugfix 0.6.1 release next, so please file
+>> defects against:
+>>
+>> http://trac.mapnik.org/milestone/0.6.1
+>>
+>> As priorities in this *next* release I'd also like to flag
+>> documentation and vetting of new features, such as the OSM, OGR, and
+>> SQlite Plugins, the PointDatasource support, and new parameters of
+>> the RasterSymbolizer.
+>>
+>> Cheers,
+>>
+>> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From reid at umn.edu  Fri Apr  3 22:17:19 2009
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Fri, 03 Apr 2009 15:17:19 -0500
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+Message-ID: <49D66ECF.7020701@umn.edu>
+
+On 04/03/2009 02:02 PM, Dane Springmeyer wrote:
+> 
+> On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+>>
+>> do you think it would be possible to release an alternative package
+>> with the autotools build environment beside the scons version?
+> 
+> 'Beside'? you mean in addition?
+> 
+> Isn't that the way it currently is? Sorry, I'm not very familiar with  
+> autotools. Perhaps you mean to include also a pre-build 'configure' as  
+> well?
+> 
+> I would love if you could document how to use the autotools stuff,  
+> both in trunk and how you imagine it working for releases. See:
+> 
+> http://trac.mapnik.org/ticket/124
+
+I'd like to add a +1 on this request. I haven't built mapnik since 
+0.5.1, but with that version in my environment (not that weird, just 
+Ubuntu Hardy but installing in a nonstandard location without root) the 
+build process was nothing short of hellish, to be obnoxiously blunt. :) 
+I had to write a script to clean up after the scons install.
+
+I created one or a couple of bugs to this effect.
+
+Anyway, the new 0.6.0 features seem quite compelling, but I'm kind of 
+gun-shy due to my build experiences with 0.5.1. :/
+
+Reid
+
+
+From blake at hailmail.net  Fri Apr  3 22:46:53 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 3 Apr 2009 13:46:53 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <49D66ECF.7020701@umn.edu>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<49D66ECF.7020701@umn.edu>
+Message-ID: <AAF7FF06-DDCC-4BD4-8814-2F2FC0E08557@hailmail.net>
+
+Reid,
+
+Your tickets were one of my guides in a pointed refactor of the SCons  
+behavior for 0.6.0.
+
+Thanks for filing them and I encourage you to install 0.6.0 ASAP so I  
+can have a stern eye on the changes and hopefully catch some glitches.
+
+There is now a PREFIX option *and* a PYTHON_PREFIX option. They are  
+lightly tested and I was hoping you could give it a test run.
+
+Also, here is the list of explicit tickets I closed against the  
+'SCons' component in 0.6.0:
+
+http://tinyurl.com/27-Scons-tickets
+
+and here is a wiki page you should skim for new features/options:
+
+http://trac.mapnik.org/wiki/UsingScons#SummaryofChangesbetween0.5.xand0.6.0
+
+That said, I'm all for an Autotools option, but unless it is  
+documented I can't recommend that route to anyone.
+
+And lastly, the current usage of SCons still *does not* allow for  
+uninstallation of installed files. This looks quite easy to do with  
+SCons tools but it has never been raised as a priority by Mapnik users.
+
+Dane
+
+
+On Apr 3, 2009, at 1:17 PM, Reid Priedhorsky wrote:
+
+> On 04/03/2009 02:02 PM, Dane Springmeyer wrote:
+>>
+>> On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+>>>
+>>> do you think it would be possible to release an alternative package
+>>> with the autotools build environment beside the scons version?
+>>
+>> 'Beside'? you mean in addition?
+>>
+>> Isn't that the way it currently is? Sorry, I'm not very familiar with
+>> autotools. Perhaps you mean to include also a pre-build 'configure'  
+>> as
+>> well?
+>>
+>> I would love if you could document how to use the autotools stuff,
+>> both in trunk and how you imagine it working for releases. See:
+>>
+>> http://trac.mapnik.org/ticket/124
+>
+> I'd like to add a +1 on this request. I haven't built mapnik since
+> 0.5.1, but with that version in my environment (not that weird, just
+> Ubuntu Hardy but installing in a nonstandard location without root)  
+> the
+> build process was nothing short of hellish, to be obnoxiously  
+> blunt. :)
+> I had to write a script to clean up after the scons install.
+>
+> I created one or a couple of bugs to this effect.
+>
+> Anyway, the new 0.6.0 features seem quite compelling, but I'm kind of
+> gun-shy due to my build experiences with 0.5.1. :/
+>
+> Reid
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From lists at brachttal.net  Sun Apr  5 09:19:52 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 09:19:52 +0200
+Subject: [Mapnik-devel] Missing header files in SVN
+In-Reply-To: <E888F22C-481E-485C-8A59-DBD301B47C62@hailmail.net>
+References: <20090327004116.08a290ae@frodo.mittelerde>
+	<E888F22C-481E-485C-8A59-DBD301B47C62@hailmail.net>
+Message-ID: <20090405091952.5b5cfdd2@frodo.mittelerde>
+
+Am Wed, 1 Apr 2009 07:48:51 -0700 schrieb Dane Springmeyer:
+
+You're right. Now it compiles without problems.
+
+regards
+Andreas
+
+> Andreas,
+> 
+> I don't think anything is missing, rather pgsql2sqlite needs to look  
+> across and get files from the local postgis input plugin.
+> 
+> The shapeindex errors sound the same that perhaps the shapeindex  
+> utilities needs the includes of the shape input plugin.
+> 
+> Cheers,
+> 
+> Dane
+> 
+> 
+> On Mar 26, 2009, at 4:41 PM, Andreas Volz wrote:
+> 
+> > Hello,
+> >
+> > I found errors while compiling stuff in utils:
+> >
+> > In file included from main.cpp:25:
+> > pgsql2sqlite.hpp:29:34: error: connection_manager.hpp: No such
+> > file or directory
+> > pgsql2sqlite.hpp:30:31: error: cursorresultset.hpp: No such file or
+> > directory
+> >
+> > ...and...
+> >
+> > shapeindex.cpp:34:25: Fehler: shapefile.hpp: No such file or
+> > directory shapeindex.cpp:35:24: Fehler: shape_io.hpp: No such file
+> > or directory
+> >
+> > Are there files missing in SVN?
+> >
+> > regards
+> > Andreas
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From lists at brachttal.net  Sun Apr  5 09:48:23 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 09:48:23 +0200
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+Message-ID: <20090405094823.4ac0e882@frodo.mittelerde>
+
+Am Fri, 3 Apr 2009 12:02:25 -0700 schrieb Dane Springmeyer:
+
+Hello Dane, 
+
+> Hi Andreas,
+> 
+> On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+> 
+> > Am Thu, 2 Apr 2009 16:28:50 -0700 schrieb Dane Springmeyer:
+> >
+> > Hello Dane,
+> >
+> > do you think it would be possible to release an alternative package
+> > with the autotools build environment beside the scons version?
+> 
+> 'Beside'? you mean in addition?
+> 
+> Isn't that the way it currently is? Sorry, I'm not very familiar
+> with autotools. Perhaps you mean to include also a pre-build
+> 'configure' as well?
+
+Yes, the configure script needs to be included. Without the users have
+to install all the autoconf, automake, libtool stuff.
+
+In normal autotools environment you generate the package with "make
+dist" or "make distcheck". I could simply add a rule to include the
+SConstruct files as extra data. Then packaging would be easier. Or two
+different packages:
+
+mapnik_scons-0.6.0.tar.gz
+mapnik_autotools-0.6.0.tar.gz
+
+each with its own build environment. Many ways are possible.
+
+> I would love if you could document how to use the autotools stuff,  
+
+I started a wiki page for it:
+
+http://trac.mapnik.org/wiki/BuildingwithAutotools
+
+It's only a basic start and I hope more detailed information will be
+added in the future.
+
+> both in trunk and how you imagine it working for releases. See:
+> 
+> http://trac.mapnik.org/ticket/124
+
+I didn't know that ticket. The owner is 'andreas'. I'm a little
+confused. My SVN name is 'andreas', but for some reasons I decided to
+set my trac name to 'audifahrer'. So is this my ticket?
+
+But anyway my account had no email address. I found out that I own
+another ticket as 'audifahrer':
+
+http://trac.mapnik.org/ticket/291
+
+I changed something with agg yesterday. Thanks. I've to check that.
+
+> > Then
+> > people could choose the build environment they like. I've still some
+> > open points,
+> 
+> Are there tickets for these?
+
+No.
+
+> > but I'll fix them in near future.
+> >
+> 
+> How soon?  How about for the 0.6.1 release?
+
+One was the python support that I added at latest. But it's not yet
+complete tested. Another one was the missing utils compile support. I
+fixed that one also.
+
+I think that now all features are supported. What I really need are
+testers and possible tickets. There are many build combinations and it
+needs soooo long to build mapnik on my system. :-(
+
+> http://trac.mapnik.org/milestone/0.6.1
+> 
+> Note: I've assigned a date of two months from now purely as a rough  
+> idea of how long it should take to close the existing bug tickets.  
+> Other dev's please let me know your opinions and add thoughts to the  
+> milestone notes.
+> 
+> > And do you think it would be possible to include the kismet plugin
+> > in the next major release?
+> >
+> 
+> We tagged 0.6.0 from svn, so the Kismet plugin is there, just not
+> yet part of the SCons build scripts or 'wrapped' with a factory
+> method in the Python Bindings.
+
+Would be great, because I've no knowledge of scons and only medium
+knowledge of python. I use only the C++ API.
+
+> These would be the two things in my mind to do next, in addition to  
+> documenting on its own wiki page.
+
+Yes, a separate wiki page for kismet would be nice if more information
+are added.
+
+I recorded a video how it looks while driving around. I'll post it on
+youtube shortly. Maybe I could add a link to the wiki.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sun Apr  5 15:13:21 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 15:13:21 +0200
+Subject: [Mapnik-devel] [Announce] kismet input plugin available in SVN
+In-Reply-To: <20090322232825.68c395f1@frodo.mittelerde>
+References: <20090322232825.68c395f1@frodo.mittelerde>
+Message-ID: <20090405151321.68233e60@frodo.mittelerde>
+
+Am Sun, 22 Mar 2009 23:28:25 +0100 schrieb Andreas Volz:
+
+Hello,
+
+I just uploaded a video from my test drive with the kismet plugin to
+youtube:
+
+http://www.youtube.com/watch?v=On9O8d7AOZA
+
+Green icons:  No encryption
+Orange icons: WEB encryption
+Red icons:    WPA + others encryption
+
+I really like to drive around with my software and see all this little
+nice WLAN icons on the map. :-)
+
+This is the only WLAN feature in my application. But for the future it
+would be possible to automatically connect to WLAN nodes. But that's
+not Mapnik related...
+
+regards
+Andreas
+
+> Hello,
+> 
+> I've just commited a new input plugin for kismet support. I added a
+> Makefile.am for myself. If you need a SConstruct file please add one
+> yourself.
+> 
+> Features:
+> ---------
+> * Connects to a running kismet_server with GPS support activated
+> * Displays little WLAN icons on the map.
+> 
+> TODO / Problems:
+> ----------------
+> * Should show WPA/WEP/OPEN WLAN with a different icon
+> * Reconnect to kismet_server after disconnect
+> * Bounding box envelope isn't used
+> * Only shows live found WLAN (no memory/database storage)
+> * WGS84->Mercator conversation is hard coded
+> * Not yet tested for Win32
+> 
+> Use this minimal XML to display it. For real cases you should
+> integrate it into your big XML:
+> 
+> <?xml version="1.0" encoding="utf-8"?>
+> <!DOCTYPE Map>
+> <Map bgcolor="#b5d0d0" srs="+proj=merc +a=6378137 +b=6378137
+> +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m
+> +nadgrids=@null +no_defs +over">
+> 
+>   <Style name="kismet">
+>     <Rule>
+>       <MaxScaleDenominator>2000000</MaxScaleDenominator>
+>       <MinScaleDenominator>100</MinScaleDenominator>
+>       <Filter>[internet_access]='wlan'</Filter>
+>       <PointSymbolizer file =
+> "/home/andreas/src/osm/mapnik/symbols/wlan.png" type="png" width="32"
+> height="32" /> <TextSymbolizer name="name" face_name="DejaVu Sans
+> Bold" size="8" fill="#636" dy="-10" halo_radius="1" wrap_width="0"/>
+> </Rule> </Style>
+> 
+> <!-- Layer -->
+> 
+>   <Layer name="kismet" status="on" srs="+proj=merc +a=6378137
+> +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m
+> +nadgrids=@null +no_defs +over"> <StyleName>kismet</StyleName>
+> <Datasource> <Parameter name="type">kismet</Parameter>
+>       <Parameter name="host">localhost</Parameter>
+>       <Parameter name="port">2501</Parameter>
+>       <Parameter name="estimate_extent">false</Parameter>
+>       <Parameter
+> name="extent">-20037508,-19929239,20037508,19929239</Parameter>
+> </Datasource> </Layer>
+> 
+> </Map>
+> 
+> 
+> You could use this icon if you like. I think it fits well:
+> 
+> http://openclipart.org/people/pinterb7/pinterb7_wlan_accesspoint.svg
+> 
+> Today I drove around for some time in my car and it looks really
+> nice. :-)
+> 
+> My battery was empty before I had a chance to capture a video. But I
+> hope to try this again in the next days.
+> 
+> Go out and test the new plugin if you like. I'm really interested in
+> your experiences.
+> 
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From blake at hailmail.net  Sun Apr  5 17:49:27 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 5 Apr 2009 08:49:27 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090405094823.4ac0e882@frodo.mittelerde>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+Message-ID: <DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+
+
+On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+
+> Am Fri, 3 Apr 2009 12:02:25 -0700 schrieb Dane Springmeyer:
+>
+> Hello Dane,
+>
+>> Hi Andreas,
+>>
+>> On Apr 3, 2009, at 11:42 AM, Andreas Volz wrote:
+>>
+>>> Am Thu, 2 Apr 2009 16:28:50 -0700 schrieb Dane Springmeyer:
+>>>
+>>> Hello Dane,
+>>>
+>>> do you think it would be possible to release an alternative package
+>>> with the autotools build environment beside the scons version?
+>>
+>> 'Beside'? you mean in addition?
+>>
+>> Isn't that the way it currently is? Sorry, I'm not very familiar
+>> with autotools. Perhaps you mean to include also a pre-build
+>> 'configure' as well?
+>
+> Yes, the configure script needs to be included. Without the users have
+> to install all the autoconf, automake, libtool stuff.
+>
+> In normal autotools environment you generate the package with "make
+> dist" or "make distcheck". I could simply add a rule to include the
+> SConstruct files as extra data. Then packaging would be easier. Or two
+> different packages:
+>
+> mapnik_scons-0.6.0.tar.gz
+> mapnik_autotools-0.6.0.tar.gz
+>
+> each with its own build environment. Many ways are possible.
+>
+
+
+Ah, I see - thanks for the explanation. Perhaps Artem or Dominic will  
+have ideas about the best way to package. Your idea of two different  
+packages sounds good to me.
+
+
+>> I would love if you could document how to use the autotools stuff,
+>
+> I started a wiki page for it:
+>
+> http://trac.mapnik.org/wiki/BuildingwithAutotools
+>
+> It's only a basic start and I hope more detailed information will be
+> added in the future.
+>
+
+Looks great!
+
+>> both in trunk and how you imagine it working for releases. See:
+>>
+>> http://trac.mapnik.org/ticket/124
+>
+> I didn't know that ticket. The owner is 'andreas'. I'm a little
+> confused. My SVN name is 'andreas', but for some reasons I decided to
+> set my trac name to 'audifahrer'. So is this my ticket?
+>
+
+
+Yes, whoever 'andreas' is on trac matters less - I meant to assign it  
+to you :)
+
+> But anyway my account had no email address. I found out that I own
+> another ticket as 'audifahrer':
+>
+> http://trac.mapnik.org/ticket/291
+>
+
+Yes, I just created that yesterday. Do you need help assigning an  
+email to your account?
+
+
+> I changed something with agg yesterday. Thanks. I've to check that.
+>
+>>> Then
+>>> people could choose the build environment they like. I've still some
+>>> open points,
+>>
+>> Are there tickets for these?
+>
+> No.
+>
+>>> but I'll fix them in near future.
+>>>
+>>
+>> How soon?  How about for the 0.6.1 release?
+>
+> One was the python support that I added at latest. But it's not yet
+> complete tested. Another one was the missing utils compile support. I
+> fixed that one also.
+>
+> I think that now all features are supported. What I really need are
+> testers and possible tickets. There are many build combinations and it
+> needs soooo long to build mapnik on my system. :-(
+>
+
+ya.
+
+>> http://trac.mapnik.org/milestone/0.6.1
+>>
+>> Note: I've assigned a date of two months from now purely as a rough
+>> idea of how long it should take to close the existing bug tickets.
+>> Other dev's please let me know your opinions and add thoughts to the
+>> milestone notes.
+>>
+>>> And do you think it would be possible to include the kismet plugin
+>>> in the next major release?
+>>>
+>>
+>> We tagged 0.6.0 from svn, so the Kismet plugin is there, just not
+>> yet part of the SCons build scripts or 'wrapped' with a factory
+>> method in the Python Bindings.
+>
+> Would be great, because I've no knowledge of scons and only medium
+> knowledge of python. I use only the C++ API.
+>
+
+I can do this - it is quite simple. The only work is writing the  
+python docstrings for the options of the kismet plugin.
+
+
+>> These would be the two things in my mind to do next, in addition to
+>> documenting on its own wiki page.
+>
+> Yes, a separate wiki page for kismet would be nice if more information
+> are added.
+>
+> I recorded a video how it looks while driving around. I'll post it on
+> youtube shortly. Maybe I could add a link to the wiki.
+>
+> regards
+> Andreas
+
+
+great, thanks for the update!
+
+Dane
+
+
+
+From lists at brachttal.net  Sun Apr  5 20:55:05 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 20:55:05 +0200
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+Message-ID: <20090405205505.50abe494@frodo.mittelerde>
+
+Am Sun, 5 Apr 2009 08:49:27 -0700 schrieb Dane Springmeyer:
+
+> Yes, I just created that yesterday. Do you need help assigning an  
+> email to your account?
+
+I think I managed this now.
+
+> > I think that now all features are supported. What I really need are
+> > testers and possible tickets. There are many build combinations and
+> > it needs soooo long to build mapnik on my system. :-(
+> >
+> 
+> ya.
+
+At work we've a compile server that does a compile check 30 minutes
+after the last commit and then put the logs online. That's nice :-)
+
+> >> We tagged 0.6.0 from svn, so the Kismet plugin is there, just not
+> >> yet part of the SCons build scripts or 'wrapped' with a factory
+> >> method in the Python Bindings.
+> >
+> > Would be great, because I've no knowledge of scons and only medium
+> > knowledge of python. I use only the C++ API.
+> >
+> 
+> I can do this - it is quite simple. The only work is writing the  
+> python docstrings for the options of the kismet plugin.
+
+Thanks. Would be nice.
+
+regards
+Andreas
+
+
+From blake at hailmail.net  Sun Apr  5 21:08:52 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 5 Apr 2009 12:08:52 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090405205505.50abe494@frodo.mittelerde>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090405205505.50abe494@frodo.mittelerde>
+Message-ID: <B9B95FD7-EA9A-4458-8D46-F63C33CA2831@hailmail.net>
+
+
+On Apr 5, 2009, at 11:55 AM, Andreas Volz wrote:
+
+> Am Sun, 5 Apr 2009 08:49:27 -0700 schrieb Dane Springmeyer:
+>
+>> Yes, I just created that yesterday. Do you need help assigning an
+>> email to your account?
+>
+> I think I managed this now.
+>
+
+Great. You should be getting email notifications whenever the ticket  
+is commented upon/updated.
+
+Let me know if that seems to not be working.
+
+>>> I think that now all features are supported. What I really need are
+>>> testers and possible tickets. There are many build combinations and
+>>> it needs soooo long to build mapnik on my system. :-(
+>>>
+>>
+>> ya.
+>
+> At work we've a compile server that does a compile check 30 minutes
+> after the last commit and then put the logs online. That's nice :-)
+>
+
+Cool, for your own software projects or for Mapnik svn?  Having  
+someone host a Mapnik buildbot  would be really, really cool  
+(really :)).
+
+Could you provide?
+
+>>>> We tagged 0.6.0 from svn, so the Kismet plugin is there, just not
+>>>> yet part of the SCons build scripts or 'wrapped' with a factory
+>>>> method in the Python Bindings.
+>>>
+>>> Would be great, because I've no knowledge of scons and only medium
+>>> knowledge of python. I use only the C++ API.
+>>>
+>>
+>> I can do this - it is quite simple. The only work is writing the
+>> python docstrings for the options of the kismet plugin.
+>
+> Thanks. Would be nice.
+>
+
+Okay. I've added a ticket for this and assigned it to myself:
+
+http://trac.mapnik.org/ticket/293
+
+If you could provide documentation on that ticket or trac about the  
+kismet params that would be helpful.
+
+Dane
+
+
+
+
+From lists at brachttal.net  Sun Apr  5 21:37:57 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 21:37:57 +0200
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <B9B95FD7-EA9A-4458-8D46-F63C33CA2831@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090405205505.50abe494@frodo.mittelerde>
+	<B9B95FD7-EA9A-4458-8D46-F63C33CA2831@hailmail.net>
+Message-ID: <20090405213757.0e75b6f1@frodo.mittelerde>
+
+Am Sun, 5 Apr 2009 12:08:52 -0700 schrieb Dane Springmeyer:
+
+> 
+> On Apr 5, 2009, at 11:55 AM, Andreas Volz wrote:
+> 
+> > Am Sun, 5 Apr 2009 08:49:27 -0700 schrieb Dane Springmeyer:
+> >
+> >> Yes, I just created that yesterday. Do you need help assigning an
+> >> email to your account?
+> >
+> > I think I managed this now.
+> >
+> 
+> Great. You should be getting email notifications whenever the ticket  
+> is commented upon/updated.
+> 
+> Let me know if that seems to not be working.
+> 
+> >>> I think that now all features are supported. What I really need
+> >>> are testers and possible tickets. There are many build
+> >>> combinations and it needs soooo long to build mapnik on my
+> >>> system. :-(
+> >>>
+> >>
+> >> ya.
+> >
+> > At work we've a compile server that does a compile check 30 minutes
+> > after the last commit and then put the logs online. That's nice :-)
+> >
+> 
+> Cool, for your own software projects or for Mapnik svn?  Having  
+> someone host a Mapnik buildbot  would be really, really cool  
+> (really :)).
+> 
+> Could you provide?
+
+Hehe, no. It's a Java project in no way related to Mapnik. :-)
+
+For sure it would be cool. But my system is much to slow to do this
+task. The Enlightenment project builds it's SVN one time a day, but a
+system that builds it each half our needs a lot of power. I think this
+compile bot is several times as fast as my local build at work...
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Sun Apr  5 23:08:51 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 5 Apr 2009 23:08:51 +0200
+Subject: [Mapnik-devel] Python support with autotools
+Message-ID: <20090405230851.31c103a9@frodo.mittelerde>
+
+Hello,
+
+I've not much Python knowledge, but I added it to the build system to
+compile and install at least the same files as scons. If I install it
+to /usr then the mapnik import isn't found. But anyway I tried to run
+it local:
+
+export PYTHONPATH=/home/andreas/src/svn/mapnik/bindings/python/.libs:/home/andreas/src/svn/mapnik/bindings/python/mapnik:/home/andreas/src/svn/mapnik/bindings/python/
+
+> python rundemo.py 
+
+The mapnik library and python bindings must have been compiled and installed successfully before running this script.
+
+Traceback (most recent call last):
+  File "rundemo.py", line 27, in <module>
+    from mapnik import *
+  File "/home/andreas/src/svn/mapnik/bindings/python/mapnik/__init__.py", line 54, in <module>
+    from _mapnik import *
+ImportError: /home/andreas/src/svn/mapnik/bindings/python/.libs/_mapnik.so:
+undefined symbol: _ZTIN5boost6python15instance_holderE
+
+
+But if I look into _mapnik.so:
+
+> nm _mapnik.so | grep _ZTIN5boost6python15instance_holderE
+         U _ZTIN5boost6python15instance_holderE
+
+The symbol is defined in that library. It's the first time I create a python library.
+Could anyone please test it and tell me what's wrong. I'll fix then the build system.
+
+This is what I've installed with 'DESTDIR=/tmp/mapnik_install make install':
+
+http://tux-style.de/tmp/mapnik_install.tar.gz
+
+Does it look good for you?
+
+regards
+Andreas
+
+
+From blake at hailmail.net  Mon Apr  6 18:42:46 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 6 Apr 2009 09:42:46 -0700
+Subject: [Mapnik-devel] Docs for <FileSource>/<DataSource> and relative
+	paths *from* XML location
+Message-ID: <F556F197-8DB6-41B4-8E92-7C2C33E4376A@hailmail.net>
+
+Hi Martijn,
+
+You may have noticed that I liked your option to specify a "base"  
+prefix path for the shapefile and raster datasources, and so I've  
+added that same logic to the GDAL,OGR, and SQLite plugins (http://trac.mapnik.org/changeset/1042 
+)
+
+In the process of adding that I noticed that we don't have any  
+documentation on the Wiki about using these features added in:
+http://trac.mapnik.org/changeset/574
+
+Do you think you could create a few pages describing their usage?
+
+Also, I'm currently pondering this issue: Allowing any relative paths  
+in the XML file to be relative to the filesystem location of the XML  
+file itself. I think this would be yet another really valuable option  
+for flexibly holding the right paths to datasources and symbols in xml.
+
+I've stubbed a ticket for it here: http://trac.mapnik.org/ticket/147
+I'm interested in ideas for the right approach to implement something  
+like this.
+
+Dane
+
+
+
+
+
+
+
+
+
+From lists at brachttal.net  Mon Apr  6 22:05:02 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 6 Apr 2009 22:05:02 +0200
+Subject: [Mapnik-devel] Birdview in Mapnik?
+In-Reply-To: <CC7E6372-0A78-43B9-9514-7ADF9FB05D43@hailmail.net>
+References: <20090322094222.17bb6545@frodo.mittelerde>
+	<CC7E6372-0A78-43B9-9514-7ADF9FB05D43@hailmail.net>
+Message-ID: <20090406220502.44bf1cbc@frodo.mittelerde>
+
+Am Wed, 1 Apr 2009 07:49:45 -0700 schrieb Dane Springmeyer:
+
+Hello Dane,
+
+I tried to create a fake with mock-up with Gimp, but it didn't look
+very nice. So here are some examples what I think:
+
+http://pictures.topspeed.com/IMG/crop/200705/citroen-c4-sillage-5_460x0w.jpg
+http://www.connect.de/testbericht/24974756_dd718fcb53.jpg
+http://picnica.ciao.com/de/165725292.jpg
+http://www.manager-magazin.de/img/0,1020,1183675,00.jpg
+
+Some products call this birdview or 2.5D-view, because it tries to
+simulate a 3-D view. I think they all share the idea to display an
+image of sky, fog or maintains at the top of the view. They scale the
+view at top to simulate depth.
+
+regards
+Andreas
+
+> Have you tried the Building symbolizer?
+> 
+> I'm not sure if I follow your idea- maybe you could post a
+> screenshot of an example?
+> 
+> Dane
+> 
+> 
+> On Mar 22, 2009, at 1:42 AM, Andreas Volz wrote:
+> 
+> > Hello,
+> >
+> > I thought about a birdview in mapnik. Have plans to develop such a
+> > feature? I don't talk about 3D maps.
+> >
+> > In the first idea I would simply scale the map image to generate a
+> > z-axis. The icon layer I wouldn't do that as I expect it to look
+> > strange. There I would scale each icon itself regarding it's
+> > "z-axis" and then draw it.
+> >
+> > What do you think?
+> >
+> > regards
+> > Andreas
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From dom at earth.li  Tue Apr  7 21:51:21 2009
+From: dom at earth.li (Dominic Hargreaves)
+Date: Tue, 7 Apr 2009 20:51:21 +0100
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+Message-ID: <20090407195121.GL20225@urchin.earth.li>
+
+On Sun, Apr 05, 2009 at 08:49:27AM -0700, Dane Springmeyer wrote:
+> 
+> On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+
+> > Yes, the configure script needs to be included. Without the users have
+> > to install all the autoconf, automake, libtool stuff.
+> >
+> > In normal autotools environment you generate the package with "make
+> > dist" or "make distcheck". I could simply add a rule to include the
+> > SConstruct files as extra data. Then packaging would be easier. Or two
+> > different packages:
+> >
+> > mapnik_scons-0.6.0.tar.gz
+> > mapnik_autotools-0.6.0.tar.gz
+> >
+> > each with its own build environment. Many ways are possible.
+> >
+> 
+> 
+> Ah, I see - thanks for the explanation. Perhaps Artem or Dominic will  
+> have ideas about the best way to package. Your idea of two different  
+> packages sounds good to me.
+
+I think trying to maintain two parallel build environments is a bad
+idea, and as far as I 'm concerned the build system for mapnik at the
+moment is scons.
+
+That would have to be changed by consensus, and then have someone make
+sure that the autotools stuff builds the same end result, and then
+remove scons and update documentation. The current half-way house I see
+as damaging to the project, as it simply introduces confusion.
+
+Note that since Dane's good work recently I don't see much difference
+between scons and autotools, although I would like there not to be a
+bundled scons install (as well as not bundling fonts, libagg,
+tinyxml...) in the source package.
+
+Dominic.
+
+-- 
+Dominic Hargreaves | http://www.larted.org.uk/~dom/
+PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+
+
+From artem at mapnik.org  Tue Apr  7 22:44:02 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 7 Apr 2009 21:44:02 +0100
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090407195121.GL20225@urchin.earth.li>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+Message-ID: <7e70f38d0904071344sb336c6fo9f5d9fbac85de505@mail.gmail.com>
+
+Hi Dominic,
+
+Thanks for bringing this to light again:)
+
+(more inline)
+
+2009/4/7 Dominic Hargreaves <dom at earth.li>
+
+> On Sun, Apr 05, 2009 at 08:49:27AM -0700, Dane Springmeyer wrote:
+> >
+> > On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+>
+> > > Yes, the configure script needs to be included. Without the users have
+> > > to install all the autoconf, automake, libtool stuff.
+> > >
+> > > In normal autotools environment you generate the package with "make
+> > > dist" or "make distcheck". I could simply add a rule to include the
+> > > SConstruct files as extra data. Then packaging would be easier. Or two
+> > > different packages:
+> > >
+> > > mapnik_scons-0.6.0.tar.gz
+> > > mapnik_autotools-0.6.0.tar.gz
+> > >
+> > > each with its own build environment. Many ways are possible.
+> > >
+> >
+> >
+> > Ah, I see - thanks for the explanation. Perhaps Artem or Dominic will
+> > have ideas about the best way to package. Your idea of two different
+> > packages sounds good to me.
+>
+> I think trying to maintain two parallel build environments is a bad
+> idea, and as far as I 'm concerned the build system for mapnik at the
+> moment is scons.
+
+
+Correct!
+
+
+>
+>
+> That would have to be changed by consensus, and then have someone make
+> sure that the autotools stuff builds the same end result, and then
+> remove scons and update documentation. The current half-way house I see
+> as damaging to the project, as it simply introduces confusion.
+>
+
+Agree.
+
+>
+> Note that since Dane's good work recently I don't see much difference
+> between scons and autotools,
+
+
+We even have 'configure' step now :)
+
+
+> although I would like there not to be a
+> bundled scons install (as well as not bundling fonts, libagg,
+> tinyxml...) in the source package.
+>
+
+Having local libagg and tinyxml makes building on other than Linux OS a
+better experience.
+Also, libagg is not maintained at the moment and we might add new
+features/fixes (in fact this is already the case).  Bundling scons is quite
+common practice - I don't see a problem here. For example boost libraries
+come with their own build system packaged in source distribution. Having
+_free_ fonts as part of Mapnik works very well for me too.
+
+re: Autotools -  lets make it plain, I don't see Mapnik moving back to using
+Autotools as the main build system any time soon. If anything it'll move to
+Boost.Build.v2 ;)
+
+For Make/Autotools fans there is :
+mapnik-0.1.tar.gz<http://prdownload.berlios.de/mapnik/mapnik-0.1.tar.gz>
+
+Having said that, I don't mind having extra build options in trunk
+(Autotools, CMake etc)
+
+To summarise :  SCons is the official build system for the current Mapnik
+source distribution. For anything else , if it works for you - great.
+
+
+> Dominic.
+>
+
+Thanks,
+
+Artem
+
+>
+> --
+> Dominic Hargreaves | http://www.larted.org.uk/~dom/
+> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/c687ec36/attachment.html>
+
+From lists at brachttal.net  Tue Apr  7 22:54:25 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 7 Apr 2009 22:54:25 +0200
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090407195121.GL20225@urchin.earth.li>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+Message-ID: <20090407225425.423bc7de@frodo.mittelerde>
+
+Am Tue, 7 Apr 2009 20:51:21 +0100 schrieb Dominic Hargreaves:
+
+> On Sun, Apr 05, 2009 at 08:49:27AM -0700, Dane Springmeyer wrote:
+> > 
+> > On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+> 
+> > > Yes, the configure script needs to be included. Without the users
+> > > have to install all the autoconf, automake, libtool stuff.
+> > >
+> > > In normal autotools environment you generate the package with
+> > > "make dist" or "make distcheck". I could simply add a rule to
+> > > include the SConstruct files as extra data. Then packaging would
+> > > be easier. Or two different packages:
+> > >
+> > > mapnik_scons-0.6.0.tar.gz
+> > > mapnik_autotools-0.6.0.tar.gz
+> > >
+> > > each with its own build environment. Many ways are possible.
+> > >
+> > 
+> > 
+> > Ah, I see - thanks for the explanation. Perhaps Artem or Dominic
+> > will have ideas about the best way to package. Your idea of two
+> > different packages sounds good to me.
+> 
+> I think trying to maintain two parallel build environments is a bad
+> idea, and as far as I 'm concerned the build system for mapnik at the
+> moment is scons.
+> 
+> That would have to be changed by consensus, and then have someone make
+> sure that the autotools stuff builds the same end result, and then
+> remove scons and update documentation. The current half-way house I
+> see as damaging to the project, as it simply introduces confusion.
+> 
+> Note that since Dane's good work recently I don't see much difference
+> between scons and autotools, although I would like there not to be a
+> bundled scons install (as well as not bundling fonts, libagg,
+> tinyxml...) in the source package.
+
+I did the initial port to Autotools because more as one year ago
+mapnik didn't build with Debian out of the box. I had to create many
+boost symlinks by hand. Maybe that was because I was doing something
+wrong. Another reason was the support for pkg-config that the rest of
+my builds use. Also the pkg-config --uninstalled function that allows
+to link again libraries in place without installing them. This saves a
+lot of time. Now as I did the port to Autotools I don't like to throw
+it away. Many distributions use the ./configure && make && make install
+way to easy create packages (e.g. gentoo).
+
+But I don't like to vote against scons. If you don't like to switch
+I'll be happy if you simply let the autotools files in SVN for me.
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Tue Apr  7 23:05:01 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 7 Apr 2009 22:05:01 +0100
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090407225425.423bc7de@frodo.mittelerde>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+Message-ID: <7e70f38d0904071405gbd95ff7o12cc62018e8946f0@mail.gmail.com>
+
+Hi Andreas,
+2009/4/7 Andreas Volz <lists at brachttal.net>
+
+> Am Tue, 7 Apr 2009 20:51:21 +0100 schrieb Dominic Hargreaves:
+>
+> > On Sun, Apr 05, 2009 at 08:49:27AM -0700, Dane Springmeyer wrote:
+> > >
+> > > On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+> >
+> > > > Yes, the configure script needs to be included. Without the users
+> > > > have to install all the autoconf, automake, libtool stuff.
+> > > >
+> > > > In normal autotools environment you generate the package with
+> > > > "make dist" or "make distcheck". I could simply add a rule to
+> > > > include the SConstruct files as extra data. Then packaging would
+> > > > be easier. Or two different packages:
+> > > >
+> > > > mapnik_scons-0.6.0.tar.gz
+> > > > mapnik_autotools-0.6.0.tar.gz
+> > > >
+> > > > each with its own build environment. Many ways are possible.
+> > > >
+> > >
+> > >
+> > > Ah, I see - thanks for the explanation. Perhaps Artem or Dominic
+> > > will have ideas about the best way to package. Your idea of two
+> > > different packages sounds good to me.
+> >
+> > I think trying to maintain two parallel build environments is a bad
+> > idea, and as far as I 'm concerned the build system for mapnik at the
+> > moment is scons.
+> >
+> > That would have to be changed by consensus, and then have someone make
+> > sure that the autotools stuff builds the same end result, and then
+> > remove scons and update documentation. The current half-way house I
+> > see as damaging to the project, as it simply introduces confusion.
+> >
+> > Note that since Dane's good work recently I don't see much difference
+> > between scons and autotools, although I would like there not to be a
+> > bundled scons install (as well as not bundling fonts, libagg,
+> > tinyxml...) in the source package.
+>
+> I did the initial port to Autotools because more as one year ago
+> mapnik didn't build with Debian out of the box. I had to create many
+> boost symlinks by hand. Maybe that was because I was doing something
+> wrong.
+
+
+
+> Another reason was the support for pkg-config that the rest of
+> my builds use. Also the pkg-config --uninstalled function that allows
+> to link again libraries in place without installing them. This saves a
+> lot of time. Now as I did the port to Autotools I don't like to throw
+> it away. Many distributions use the ./configure && make && make install
+> way to easy create packages (e.g. gentoo).
+>
+> But I don't like to vote against scons. If you don't like to switch
+> I'll be happy if you simply let the autotools files in SVN for me.
+>
+
+As I mentioned already, I'm very happy to have alternative builds and thanks
+for all your work!
+
+We just have to be clear what is the current official build system so
+maintainers will know where to look.
+
+
+> regards
+> Andreas
+
+
+Cheers,
+Artem
+
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/dda02c80/attachment.html>
+
+From blake at hailmail.net  Tue Apr  7 23:20:35 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 7 Apr 2009 14:20:35 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <20090407225425.423bc7de@frodo.mittelerde>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+Message-ID: <03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+
+
+On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+
+> I did the initial port to Autotools because more as one year ago
+> mapnik didn't build with Debian out of the box. I had to create many
+> boost symlinks by hand.
+
+Yes, :)
+
+> Maybe that was because I was doing something
+> wrong.
+
+Yes, boost library names are pretty complex and our SCons  
+implementation for finding them (needed and) has improved quite a bit.
+
+However, autodetection of boost library names when boost has been  
+installed from source (and the install process did not create any  
+symlinks) still could benefit from improvement and I plan to work on  
+this in trunk before 0.7.0.
+
+> Another reason was the support for pkg-config that the rest of
+> my builds use.
+
+BTW, we are now commonly using built in pkg-config support with Scons  
+to locate a number of dependencies.
+
+> Also the pkg-config --uninstalled function that allows
+> to link again libraries in place without installing them. This saves a
+> lot of time.
+
+Hm, I'm unfamiliar with this.
+
+> Now as I did the port to Autotools I don't like to throw
+> it away. Many distributions use the ./configure && make && make  
+> install
+> way to easy create packages (e.g. gentoo).
+>
+
+I agree, and I'm glad you've started documenting it.
+
+> But I don't like to vote against scons. If you don't like to switch
+> I'll be happy if you simply let the autotools files in SVN for me.
+
+Cool.
+
+So I guess we just need to remove the Autotools stuff when we package  
+releases.
+
+Dane
+
+
+
+
+From beau at beaugunderson.com  Wed Apr  8 00:34:12 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 7 Apr 2009 15:34:12 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+Message-ID: <d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+
+I have a FreeBSD server that could be used as a buildbot/smoketest server;
+is there a widely-used, lightweight system (Python-based preferred) that
+someone could recommend for setting that up?
+
+
+- Beau
+
+
+On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+
+>
+> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>
+> > I did the initial port to Autotools because more as one year ago
+> > mapnik didn't build with Debian out of the box. I had to create many
+> > boost symlinks by hand.
+>
+> Yes, :)
+>
+> > Maybe that was because I was doing something
+> > wrong.
+>
+> Yes, boost library names are pretty complex and our SCons
+> implementation for finding them (needed and) has improved quite a bit.
+>
+> However, autodetection of boost library names when boost has been
+> installed from source (and the install process did not create any
+> symlinks) still could benefit from improvement and I plan to work on
+> this in trunk before 0.7.0.
+>
+> > Another reason was the support for pkg-config that the rest of
+> > my builds use.
+>
+> BTW, we are now commonly using built in pkg-config support with Scons
+> to locate a number of dependencies.
+>
+> > Also the pkg-config --uninstalled function that allows
+> > to link again libraries in place without installing them. This saves a
+> > lot of time.
+>
+> Hm, I'm unfamiliar with this.
+>
+> > Now as I did the port to Autotools I don't like to throw
+> > it away. Many distributions use the ./configure && make && make
+> > install
+> > way to easy create packages (e.g. gentoo).
+> >
+>
+> I agree, and I'm glad you've started documenting it.
+>
+> > But I don't like to vote against scons. If you don't like to switch
+> > I'll be happy if you simply let the autotools files in SVN for me.
+>
+> Cool.
+>
+> So I guess we just need to remove the Autotools stuff when we package
+> releases.
+>
+> Dane
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/f39cf1bc/attachment.html>
+
+From beau at beaugunderson.com  Wed Apr  8 01:30:42 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Tue, 7 Apr 2009 16:30:42 -0700
+Subject: [Mapnik-devel] Mapnik 0.6.0 released
+In-Reply-To: <d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+Message-ID: <d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+
+Ah, apparently BuildBot (Python/Twisted) is the gold standard. It seems like
+it might be easy to setup and apply to the Mapnik build process--and it
+would be easy to add more slaves on other architectures too. I will try
+implementing this tonight.
+
+
+- Beau
+
+On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson <beau at beaugunderson.com>wrote:
+
+> I have a FreeBSD server that could be used as a buildbot/smoketest server;
+> is there a widely-used, lightweight system (Python-based preferred) that
+> someone could recommend for setting that up?
+>
+>
+> - Beau
+>
+>
+>
+> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+>
+>>
+>> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>>
+>> > I did the initial port to Autotools because more as one year ago
+>> > mapnik didn't build with Debian out of the box. I had to create many
+>> > boost symlinks by hand.
+>>
+>> Yes, :)
+>>
+>> > Maybe that was because I was doing something
+>> > wrong.
+>>
+>> Yes, boost library names are pretty complex and our SCons
+>> implementation for finding them (needed and) has improved quite a bit.
+>>
+>> However, autodetection of boost library names when boost has been
+>> installed from source (and the install process did not create any
+>> symlinks) still could benefit from improvement and I plan to work on
+>> this in trunk before 0.7.0.
+>>
+>> > Another reason was the support for pkg-config that the rest of
+>> > my builds use.
+>>
+>> BTW, we are now commonly using built in pkg-config support with Scons
+>> to locate a number of dependencies.
+>>
+>> > Also the pkg-config --uninstalled function that allows
+>> > to link again libraries in place without installing them. This saves a
+>> > lot of time.
+>>
+>> Hm, I'm unfamiliar with this.
+>>
+>> > Now as I did the port to Autotools I don't like to throw
+>> > it away. Many distributions use the ./configure && make && make
+>> > install
+>> > way to easy create packages (e.g. gentoo).
+>> >
+>>
+>> I agree, and I'm glad you've started documenting it.
+>>
+>> > But I don't like to vote against scons. If you don't like to switch
+>> > I'll be happy if you simply let the autotools files in SVN for me.
+>>
+>> Cool.
+>>
+>> So I guess we just need to remove the Autotools stuff when we package
+>> releases.
+>>
+>> Dane
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/8809cf2b/attachment.html>
+
+From blake at hailmail.net  Wed Apr  8 01:35:09 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 7 Apr 2009 16:35:09 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re:  Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<20090403204221.2e924d53@frodo.mittelerde>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+Message-ID: <26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+
+Beau,
+
+That's great news!
+
+Dane
+
+
+On Apr 7, 2009, at 4:30 PM, Beau Gunderson wrote:
+
+> Ah, apparently BuildBot (Python/Twisted) is the gold standard. It  
+> seems like it might be easy to setup and apply to the Mapnik build  
+> process--and it would be easy to add more slaves on other  
+> architectures too. I will try implementing this tonight.
+>
+>
+> - Beau
+>
+> On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson  
+> <beau at beaugunderson.com> wrote:
+> I have a FreeBSD server that could be used as a buildbot/smoketest  
+> server; is there a widely-used, lightweight system (Python-based  
+> preferred) that someone could recommend for setting that up?
+>
+>
+> - Beau
+>
+>
+>
+> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>
+> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>
+> > I did the initial port to Autotools because more as one year ago
+> > mapnik didn't build with Debian out of the box. I had to create many
+> > boost symlinks by hand.
+>
+> Yes, :)
+>
+> > Maybe that was because I was doing something
+> > wrong.
+>
+> Yes, boost library names are pretty complex and our SCons
+> implementation for finding them (needed and) has improved quite a bit.
+>
+> However, autodetection of boost library names when boost has been
+> installed from source (and the install process did not create any
+> symlinks) still could benefit from improvement and I plan to work on
+> this in trunk before 0.7.0.
+>
+> > Another reason was the support for pkg-config that the rest of
+> > my builds use.
+>
+> BTW, we are now commonly using built in pkg-config support with Scons
+> to locate a number of dependencies.
+>
+> > Also the pkg-config --uninstalled function that allows
+> > to link again libraries in place without installing them. This  
+> saves a
+> > lot of time.
+>
+> Hm, I'm unfamiliar with this.
+>
+> > Now as I did the port to Autotools I don't like to throw
+> > it away. Many distributions use the ./configure && make && make
+> > install
+> > way to easy create packages (e.g. gentoo).
+> >
+>
+> I agree, and I'm glad you've started documenting it.
+>
+> > But I don't like to vote against scons. If you don't like to switch
+> > I'll be happy if you simply let the autotools files in SVN for me.
+>
+> Cool.
+>
+> So I guess we just need to remove the Autotools stuff when we package
+> releases.
+>
+> Dane
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/efc2a5ac/attachment.html>
+
+From beau at beaugunderson.com  Wed Apr  8 19:52:48 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 10:52:48 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+Message-ID: <d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+
+Is trunk currently broken, buildwise? I've tried on Linux and FreeBSD and I
+can't get it to build with scons (the one included with Mapnik) or the
+bootstrap file, the error is the same in both cases:
+
+/usr/local/include/boost/python/init.hpp: In instantiation of
+`boost::python::detail::error::more_keywords_than_init_arguments<4, 3>':
+/usr/local/include/boost/python/init.hpp:258:   instantiated from
+`boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+T13, T14>::init(const boost::python::detail::keywords<N>&, const char*)
+[with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+boost::python::optional<const std::string&, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+mpl_::void_, T14 = mpl_::void_]'
+bindings/python/mapnik_map.cpp:161:   instantiated from here
+/usr/local/include/boost/python/init.hpp:71: error: creating array with size
+zero (`-0x00000000000000001')
+/usr/local/include/boost/python/init.hpp: In constructor
+`boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+T13, T14>::init(const boost::python::detail::keywords<N>&, const char*)
+[with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+boost::python::optional<const std::string&, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+mpl_::void_, T14 = mpl_::void_]':
+bindings/python/mapnik_map.cpp:161:   instantiated from here
+/usr/local/include/boost/python/init.hpp:258: error: no type named
+`too_many_keywords' in `struct
+boost::python::detail::error::more_keywords_than_init_arguments<4, 3>'
+
+Mapnik definitely used to build on the FreeBSD machine and it doesn't seem
+like the requirements have changed... On the Linux machine I followed the
+installation guide for Ubuntu 8.10 and it sees all the dependencies but I
+get the same error from the FreeBSD machine.
+
+I think the buildbot will prove useful. :)
+
+
+- Beau
+
+On Tue, Apr 7, 2009 at 4:35 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Beau,
+> That's great news!
+>
+> Dane
+>
+>
+> On Apr 7, 2009, at 4:30 PM, Beau Gunderson wrote:
+>
+> Ah, apparently BuildBot (Python/Twisted) is the gold standard. It seems
+> like it might be easy to setup and apply to the Mapnik build process--and it
+> would be easy to add more slaves on other architectures too. I will try
+> implementing this tonight.
+>
+>
+> - Beau
+>
+> On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson <beau at beaugunderson.com>wrote:
+>
+>> I have a FreeBSD server that could be used as a buildbot/smoketest server;
+>> is there a widely-used, lightweight system (Python-based preferred) that
+>> someone could recommend for setting that up?
+>>
+>>
+>> - Beau
+>>
+>>
+>>
+>> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+>>
+>>>
+>>> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>>>
+>>> > I did the initial port to Autotools because more as one year ago
+>>> > mapnik didn't build with Debian out of the box. I had to create many
+>>> > boost symlinks by hand.
+>>>
+>>> Yes, :)
+>>>
+>>> > Maybe that was because I was doing something
+>>> > wrong.
+>>>
+>>> Yes, boost library names are pretty complex and our SCons
+>>> implementation for finding them (needed and) has improved quite a bit.
+>>>
+>>> However, autodetection of boost library names when boost has been
+>>> installed from source (and the install process did not create any
+>>> symlinks) still could benefit from improvement and I plan to work on
+>>> this in trunk before 0.7.0.
+>>>
+>>> > Another reason was the support for pkg-config that the rest of
+>>> > my builds use.
+>>>
+>>> BTW, we are now commonly using built in pkg-config support with Scons
+>>> to locate a number of dependencies.
+>>>
+>>> > Also the pkg-config --uninstalled function that allows
+>>> > to link again libraries in place without installing them. This saves a
+>>> > lot of time.
+>>>
+>>> Hm, I'm unfamiliar with this.
+>>>
+>>> > Now as I did the port to Autotools I don't like to throw
+>>> > it away. Many distributions use the ./configure && make && make
+>>> > install
+>>> > way to easy create packages (e.g. gentoo).
+>>> >
+>>>
+>>> I agree, and I'm glad you've started documenting it.
+>>>
+>>> > But I don't like to vote against scons. If you don't like to switch
+>>> > I'll be happy if you simply let the autotools files in SVN for me.
+>>>
+>>> Cool.
+>>>
+>>> So I guess we just need to remove the Autotools stuff when we package
+>>> releases.
+>>>
+>>> Dane
+>>>
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/8aad798b/attachment.html>
+
+From blake at hailmail.net  Wed Apr  8 22:13:29 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 8 Apr 2009 13:13:29 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<2ACCA253-4BD4-4A23-828D-90FE4D813C60@hailmail.net>
+	<20090405094823.4ac0e882@frodo.mittelerde>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+Message-ID: <BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+
+Hey Beau,
+
+Yes, it will be useful :)
+
+I'd like to say I was just testing your buildbot, but actually I  
+carelessly added a docstring feature in trunk to the python bindings  
+at 'bindings/python/mapnik_map.cpp:161:' which is only supported in  
+boost 1.34.0 and above I now realize.
+
+So, I bet you are running 1.33.1 and this commit is breaking things: http://trac.mapnik.org/changeset/1080
+
+Can you test latest trunk now? (http://trac.mapnik.org/changeset/1083)
+
+Thanks,
+
+Dane
+
+
+On Apr 8, 2009, at 10:52 AM, Beau Gunderson wrote:
+
+> Is trunk currently broken, buildwise? I've tried on Linux and  
+> FreeBSD and I can't get it to build with scons (the one included  
+> with Mapnik) or the bootstrap file, the error is the same in both  
+> cases:
+>
+> /usr/local/include/boost/python/init.hpp: In instantiation of  
+> `boost::python::detail::error::more_keywords_than_init_arguments<4,  
+> 3>':
+> /usr/local/include/boost/python/init.hpp:258:   instantiated from  
+> `boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  
+> T11, T12, T13, T14>::init(const boost::python::detail::keywords<N>&,  
+> const char*) [with unsigned int N = 4u, T0 = int, T1 = int, T2 =  
+> boost::python::optional<const std::string&, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 =  
+> mpl_::void_, T5 = mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_,  
+> T8 = mpl_::void_, T9 = mpl_::void_, T10 = mpl_::void_, T11 =  
+> mpl_::void_, T12 = mpl_::void_, T13 = mpl_::void_, T14 = mpl_::void_]'
+> bindings/python/mapnik_map.cpp:161:   instantiated from here
+> /usr/local/include/boost/python/init.hpp:71: error: creating array  
+> with size zero (`-0x00000000000000001')
+> /usr/local/include/boost/python/init.hpp: In constructor  
+> `boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  
+> T11, T12, T13, T14>::init(const boost::python::detail::keywords<N>&,  
+> const char*) [with unsigned int N = 4u, T0 = int, T1 = int, T2 =  
+> boost::python::optional<const std::string&, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,  
+> mpl_::void_, mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 =  
+> mpl_::void_, T5 = mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_,  
+> T8 = mpl_::void_, T9 = mpl_::void_, T10 = mpl_::void_, T11 =  
+> mpl_::void_, T12 = mpl_::void_, T13 = mpl_::void_, T14 =  
+> mpl_::void_]':
+> bindings/python/mapnik_map.cpp:161:   instantiated from here
+> /usr/local/include/boost/python/init.hpp:258: error: no type named  
+> `too_many_keywords' in `struct  
+> boost::python::detail::error::more_keywords_than_init_arguments<4, 3>'
+>
+> Mapnik definitely used to build on the FreeBSD machine and it  
+> doesn't seem like the requirements have changed... On the Linux  
+> machine I followed the installation guide for Ubuntu 8.10 and it  
+> sees all the dependencies but I get the same error from the FreeBSD  
+> machine.
+>
+> I think the buildbot will prove useful. :)
+>
+>
+> - Beau
+>
+> On Tue, Apr 7, 2009 at 4:35 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+> Beau,
+>
+> That's great news!
+>
+> Dane
+>
+>
+> On Apr 7, 2009, at 4:30 PM, Beau Gunderson wrote:
+>
+>> Ah, apparently BuildBot (Python/Twisted) is the gold standard. It  
+>> seems like it might be easy to setup and apply to the Mapnik build  
+>> process--and it would be easy to add more slaves on other  
+>> architectures too. I will try implementing this tonight.
+>>
+>>
+>> - Beau
+>>
+>> On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson <beau at beaugunderson.com 
+>> > wrote:
+>> I have a FreeBSD server that could be used as a buildbot/smoketest  
+>> server; is there a widely-used, lightweight system (Python-based  
+>> preferred) that someone could recommend for setting that up?
+>>
+>>
+>> - Beau
+>>
+>>
+>>
+>> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer  
+>> <blake at hailmail.net> wrote:
+>>
+>> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>>
+>> > I did the initial port to Autotools because more as one year ago
+>> > mapnik didn't build with Debian out of the box. I had to create  
+>> many
+>> > boost symlinks by hand.
+>>
+>> Yes, :)
+>>
+>> > Maybe that was because I was doing something
+>> > wrong.
+>>
+>> Yes, boost library names are pretty complex and our SCons
+>> implementation for finding them (needed and) has improved quite a  
+>> bit.
+>>
+>> However, autodetection of boost library names when boost has been
+>> installed from source (and the install process did not create any
+>> symlinks) still could benefit from improvement and I plan to work on
+>> this in trunk before 0.7.0.
+>>
+>> > Another reason was the support for pkg-config that the rest of
+>> > my builds use.
+>>
+>> BTW, we are now commonly using built in pkg-config support with Scons
+>> to locate a number of dependencies.
+>>
+>> > Also the pkg-config --uninstalled function that allows
+>> > to link again libraries in place without installing them. This  
+>> saves a
+>> > lot of time.
+>>
+>> Hm, I'm unfamiliar with this.
+>>
+>> > Now as I did the port to Autotools I don't like to throw
+>> > it away. Many distributions use the ./configure && make && make
+>> > install
+>> > way to easy create packages (e.g. gentoo).
+>> >
+>>
+>> I agree, and I'm glad you've started documenting it.
+>>
+>> > But I don't like to vote against scons. If you don't like to switch
+>> > I'll be happy if you simply let the autotools files in SVN for me.
+>>
+>> Cool.
+>>
+>> So I guess we just need to remove the Autotools stuff when we package
+>> releases.
+>>
+>> Dane
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/45e88bf9/attachment.html>
+
+From beau at beaugunderson.com  Wed Apr  8 22:33:23 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 13:33:23 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+Message-ID: <d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+
+Hmm, that build still fails (though I did get it working by arbitrarily
+picking r1070 and trying that)
+
+I'm using Boost 1.34.1 as evidenced by:
+
+# ldd /usr/lib/python2.5/site-packages/mapnik/_mapnik.so | grep boost
+  libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1 =>
+/usr/lib/libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1 (0xb7b6f000)
+  libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1 =>
+/usr/lib/libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1 (0xb69fa000)
+  libboost_regex-gcc42-mt-1_34_1.so.1.34.1 =>
+/usr/lib/libboost_regex-gcc42-mt-1_34_1.so.1.34.1 (0xb6954000)
+  libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1 =>
+/usr/lib/libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1 (0xb694a000)
+  libboost_program_options-gcc42-mt-1_34_1.so.1.34.1 =>
+/usr/lib/libboost_program_options-gcc42-mt-1_34_1.so.1.34.1 (0xb6914000)
+  libboost_thread-gcc42-mt-1_34_1.so.1.34.1 =>
+/usr/lib/libboost_thread-gcc42-mt-1_34_1.so.1.34.1 (0xb6907000)
+
+(This is what you get if you use apt-get install libboost-dev from Ubuntu
+8.10, "1.34.1-11ubuntu1")
+
+
+- Beau
+
+On Wed, Apr 8, 2009 at 1:13 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> Hey Beau,
+> Yes, it will be useful :)
+>
+> I'd like to say I was just testing your buildbot, but actually I carelessly
+> added a docstring feature in trunk to the python bindings at
+> 'bindings/python/mapnik_map.cpp:161:' which is only supported in boost
+> 1.34.0 and above I now realize.
+>
+> So, I bet you are running 1.33.1 and this commit is breaking things:
+> http://trac.mapnik.org/changeset/1080
+>
+> Can you test latest trunk now? (http://trac.mapnik.org/changeset/1083)<http://trac.mapnik.org/changeset/1083%29>
+>
+> Thanks,
+>
+> Dane
+>
+>
+> On Apr 8, 2009, at 10:52 AM, Beau Gunderson wrote:
+>
+> Is trunk currently broken, buildwise? I've tried on Linux and FreeBSD and I
+> can't get it to build with scons (the one included with Mapnik) or the
+> bootstrap file, the error is the same in both cases:
+>
+> /usr/local/include/boost/python/init.hpp: In instantiation of
+> `boost::python::detail::error::more_keywords_than_init_arguments<4, 3>':
+> /usr/local/include/boost/python/init.hpp:258:   instantiated from
+> `boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+> T13, T14>::init(const boost::python::detail::keywords<N>&, const char*)
+> [with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+> boost::python::optional<const std::string&, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+> mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+> mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+> mpl_::void_, T14 = mpl_::void_]'
+> bindings/python/mapnik_map.cpp:161:   instantiated from here
+> /usr/local/include/boost/python/init.hpp:71: error: creating array with
+> size zero (`-0x00000000000000001')
+> /usr/local/include/boost/python/init.hpp: In constructor
+> `boost::python::init<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+> T13, T14>::init(const boost::python::detail::keywords<N>&, const char*)
+> [with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+> boost::python::optional<const std::string&, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+> mpl_::void_, mpl_::void_>, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+> mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+> mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+> mpl_::void_, T14 = mpl_::void_]':
+> bindings/python/mapnik_map.cpp:161:   instantiated from here
+> /usr/local/include/boost/python/init.hpp:258: error: no type named
+> `too_many_keywords' in `struct
+> boost::python::detail::error::more_keywords_than_init_arguments<4, 3>'
+>
+> Mapnik definitely used to build on the FreeBSD machine and it doesn't seem
+> like the requirements have changed... On the Linux machine I followed the
+> installation guide for Ubuntu 8.10 and it sees all the dependencies but I
+> get the same error from the FreeBSD machine.
+>
+> I think the buildbot will prove useful. :)
+>
+>
+> - Beau
+>
+> On Tue, Apr 7, 2009 at 4:35 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+>
+>> Beau,
+>> That's great news!
+>>
+>> Dane
+>>
+>>
+>> On Apr 7, 2009, at 4:30 PM, Beau Gunderson wrote:
+>>
+>> Ah, apparently BuildBot (Python/Twisted) is the gold standard. It seems
+>> like it might be easy to setup and apply to the Mapnik build process--and it
+>> would be easy to add more slaves on other architectures too. I will try
+>> implementing this tonight.
+>>
+>>
+>> - Beau
+>>
+>> On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson <beau at beaugunderson.com>wrote:
+>>
+>>> I have a FreeBSD server that could be used as a buildbot/smoketest
+>>> server; is there a widely-used, lightweight system (Python-based preferred)
+>>> that someone could recommend for setting that up?
+>>>
+>>>
+>>> - Beau
+>>>
+>>>
+>>>
+>>> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+>>>
+>>>>
+>>>> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+>>>>
+>>>> > I did the initial port to Autotools because more as one year ago
+>>>> > mapnik didn't build with Debian out of the box. I had to create many
+>>>> > boost symlinks by hand.
+>>>>
+>>>> Yes, :)
+>>>>
+>>>> > Maybe that was because I was doing something
+>>>> > wrong.
+>>>>
+>>>> Yes, boost library names are pretty complex and our SCons
+>>>> implementation for finding them (needed and) has improved quite a bit.
+>>>>
+>>>> However, autodetection of boost library names when boost has been
+>>>> installed from source (and the install process did not create any
+>>>> symlinks) still could benefit from improvement and I plan to work on
+>>>> this in trunk before 0.7.0.
+>>>>
+>>>> > Another reason was the support for pkg-config that the rest of
+>>>> > my builds use.
+>>>>
+>>>>  BTW, we are now commonly using built in pkg-config support with Scons
+>>>> to locate a number of dependencies.
+>>>>
+>>>> > Also the pkg-config --uninstalled function that allows
+>>>> > to link again libraries in place without installing them. This saves a
+>>>> > lot of time.
+>>>>
+>>>> Hm, I'm unfamiliar with this.
+>>>>
+>>>> > Now as I did the port to Autotools I don't like to throw
+>>>> > it away. Many distributions use the ./configure && make && make
+>>>> > install
+>>>> > way to easy create packages (e.g. gentoo).
+>>>> >
+>>>>
+>>>> I agree, and I'm glad you've started documenting it.
+>>>>
+>>>> > But I don't like to vote against scons. If you don't like to switch
+>>>> > I'll be happy if you simply let the autotools files in SVN for me.
+>>>>
+>>>> Cool.
+>>>>
+>>>> So I guess we just need to remove the Autotools stuff when we package
+>>>> releases.
+>>>>
+>>>> Dane
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>>
+>>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/1f272f1e/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Apr  8 22:53:52 2009
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 08 Apr 2009 21:53:52 +0100
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+Message-ID: <1239224032.16904.16.camel@localhost.localdomain>
+
+On Wed, 2009-04-08 at 13:33 -0700, Beau Gunderson wrote:
+> Hmm, that build still fails (though I did get it working by
+> arbitrarily picking r1070 and trying that)
+> 
+> I'm using Boost 1.34.1 as evidenced by:
+> 
+> # ldd /usr/lib/python2.5/site-packages/mapnik/_mapnik.so | grep boost
+>   libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1
+> => /usr/lib/libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1
+> (0xb7b6f000)
+>   libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1
+> => /usr/lib/libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1 (0xb69fa000)
+>   libboost_regex-gcc42-mt-1_34_1.so.1.34.1
+> => /usr/lib/libboost_regex-gcc42-mt-1_34_1.so.1.34.1 (0xb6954000)
+>   libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1
+> => /usr/lib/libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1 (0xb694a000)
+>   libboost_program_options-gcc42-mt-1_34_1.so.1.34.1
+> => /usr/lib/libboost_program_options-gcc42-mt-1_34_1.so.1.34.1
+> (0xb6914000)
+>   libboost_thread-gcc42-mt-1_34_1.so.1.34.1
+> => /usr/lib/libboost_thread-gcc42-mt-1_34_1.so.1.34.1 (0xb6907000)
+> 
+> (This is what you get if you use apt-get install libboost-dev from
+> Ubuntu 8.10, "1.34.1-11ubuntu1")
+
+I get the same error on Fedora 10 with boost-1.34.1-17.fc10.x86_64
+Perhaps the boost version check on line 151 needs to be >= 103500?
+
+	Jon
+
+
+
+
+From beau at beaugunderson.com  Wed Apr  8 23:56:38 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 14:56:38 -0700
+Subject: [Mapnik-devel] Patch to convert tests to use nose
+Message-ID: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+
+Attached is a patch to convert the current tests to use the 'nose'
+testing framework which emulates unittest and is fun to use.
+
+I did this conversion so that testing will be easier (just one easy to
+remember command from the main mapnik directory) and can be easily
+integrated into the buildbot and the SConsruct file.
+
+I hope it also makes it easier for people to contribute tests since
+the format is very easy to understand.
+
+# svn diff | diffstat
+ test_load_map.py |  108 ++++++++++++++++---------------------------------------
+ test_save_map.py |   86 +++++++++++++------------------------------
+ utilities.py     |    4 ++
+ 3 files changed, 63 insertions(+), 135 deletions(-)
+
+(The code ends up quite a bit smaller!)
+
+Try:
+
+# easy_install nose
+# cd tests/python
+# nosetests -v
+
+If we change the directory name from 'python' to 'python_tests' then
+nosetests can be run from the top-level mapnik directory (it discovers
+tests based on the module, file, class, and function names).
+
+Also attached is the current output (there are 4 failing tests; the
+ones that deal with db and datasource). They are broken in the
+previous implementation too.
+
+You can read about nose here:
+
+http://somethingaboutorange.com/mrl/projects/nose/
+
+
+- Beau
+-------------- next part --------------
+# nosetests -v
+test_load_map.test_broken_files('../data/broken_maps/line_cap_style_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/min_scale_denom_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/text_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/point_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/datasource_type_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/datasource_type_missing.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/font_name_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/line_join_style_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/amenity.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/stroke_dasharray_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/line_pattern_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/bool_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/max_scale_denom_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/polygon_pattern_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/color_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/expression_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/bgcolor_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/style_name_missing.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/css_value_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/db_user_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/db_host_broken.xml',) ... FAIL
+test_load_map.test_broken_files('../data/broken_maps/missing_icon.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/xml_tag_mismatch.xml',) ... ok
+test_load_map.test_broken_files('../data/broken_maps/shield_symbolizer_broken.xml',) ... ok
+test_load_map.test_broken_files('../data/broken/does_not_exist.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/whitespace_at_end_of_filter_expression.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/point_symbolizers.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/bool_values.xml',) ... ok
+test_load_map.test_good_files('../data/good_maps/osm-styles.xml',) ... ok
+test_save_map.test ... ok
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/datasource_type_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py", line 182, in runTest
+    self.test(*self.arg)
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py", line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- >> begin captured stdout << ---------------------
+Loading ../data/broken_maps/datasource_type_broken.xml
+
+--------------------- >> end captured stdout << ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/datasource_type_missing.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py", line 182, in runTest
+    self.test(*self.arg)
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py", line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- >> begin captured stdout << ---------------------
+Loading ../data/broken_maps/datasource_type_missing.xml
+
+--------------------- >> end captured stdout << ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/db_user_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py", line 182, in runTest
+    self.test(*self.arg)
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py", line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- >> begin captured stdout << ---------------------
+Loading ../data/broken_maps/db_user_broken.xml
+
+--------------------- >> end captured stdout << ----------------------
+
+======================================================================
+FAIL: test_load_map.test_broken_files('../data/broken_maps/db_host_broken.xml',)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/case.py", line 182, in runTest
+    self.test(*self.arg)
+  File "/usr/lib/python2.5/site-packages/nose-0.10.4-py2.5.egg/nose/tools.py", line 87, in newfunc
+    raise AssertionError(message)
+AssertionError: assertBroken() did not raise UserWarning
+-------------------- >> begin captured stdout << ---------------------
+Loading ../data/broken_maps/db_host_broken.xml
+
+--------------------- >> end captured stdout << ----------------------
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.277s
+
+FAILED (failures=4)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 040809_new_tests.diff
+Type: application/octet-stream
+Size: 6407 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/7a9ba9fb/attachment.obj>
+
+From blake at hailmail.net  Thu Apr  9 00:28:38 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 8 Apr 2009 15:28:38 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <1239224032.16904.16.camel@localhost.localdomain>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<DBB9B41A-24EA-4E68-98E0-691221AEFB35@hailmail.net>
+	<20090407195121.GL20225@urchin.earth.li>
+	<20090407225425.423bc7de@frodo.mittelerde>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+Message-ID: <18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+
+
+On Apr 8, 2009, at 1:53 PM, Jon Burgess wrote:
+
+> I get the same error on Fedora 10 with boost-1.34.1-17.fc10.x86_64
+> Perhaps the boost version check on line 151 needs to be >= 103500?
+>
+> 	Jon
+
+
+Sure does need to be >= boost 1.35, thanks Jon. Fixed now in r1084.
+
+Dane
+
+
+
+
+From blake at hailmail.net  Thu Apr  9 00:55:31 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 8 Apr 2009 15:55:31 -0700
+Subject: [Mapnik-devel] Patch to convert tests to use nose
+In-Reply-To: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+References: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+Message-ID: <6283E44F-5B65-4C3D-A951-89D2B527EDAA@hailmail.net>
+
+Beau,
+
+Great stuff. I agree that we need to do whatever we can to make  
+writing tests easier and more effective.
+
+'nose' may be a good framework.
+
+Would you mind starting a ticket on improving testing and outline  
+things you think would be good to implement?
+
+In the meantime I'll take a look at checking out nose.
+
+Cheers,
+Dane
+
+On Apr 8, 2009, at 2:56 PM, Beau Gunderson wrote:
+
+> Attached is a patch to convert the current tests to use the 'nose'
+> testing framework which emulates unittest and is fun to use.
+>
+> I did this conversion so that testing will be easier (just one easy to
+> remember command from the main mapnik directory) and can be easily
+> integrated into the buildbot and the SConsruct file.
+>
+> I hope it also makes it easier for people to contribute tests since
+> the format is very easy to understand.
+>
+> # svn diff | diffstat
+> test_load_map.py |  108 +++++++++++++++ 
+> +---------------------------------------
+> test_save_map.py |   86 +++++++++++++------------------------------
+> utilities.py     |    4 ++
+> 3 files changed, 63 insertions(+), 135 deletions(-)
+>
+> (The code ends up quite a bit smaller!)
+>
+> Try:
+>
+> # easy_install nose
+> # cd tests/python
+> # nosetests -v
+>
+> If we change the directory name from 'python' to 'python_tests' then
+> nosetests can be run from the top-level mapnik directory (it discovers
+> tests based on the module, file, class, and function names).
+>
+> Also attached is the current output (there are 4 failing tests; the
+> ones that deal with db and datasource). They are broken in the
+> previous implementation too.
+>
+> You can read about nose here:
+>
+> http://somethingaboutorange.com/mrl/projects/nose/
+>
+>
+> - Beau
+> < 
+> test_output 
+> .txt 
+> > 
+> <040809_new_tests.diff>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From beau at beaugunderson.com  Thu Apr  9 01:10:04 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 16:10:04 -0700
+Subject: [Mapnik-devel] Patch to convert tests to use nose
+In-Reply-To: <6283E44F-5B65-4C3D-A951-89D2B527EDAA@hailmail.net>
+References: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+	<6283E44F-5B65-4C3D-A951-89D2B527EDAA@hailmail.net>
+Message-ID: <d6cb3ab10904081610p11afbf31mb4093d6cc66263cd@mail.gmail.com>
+
+One more thing--nose won't select tests from .py files that are
+executable by default, so to test you'll have to chmod a-x them or run
+'nosetests --exe -v'.
+
+Made the ticket you asked for:
+
+http://trac.mapnik.org/ticket/300
+
+:)
+
+
+- Beau
+
+On Wed, Apr 8, 2009 at 3:55 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+> Beau,
+>
+> Great stuff. I agree that we need to do whatever we can to make writing
+> tests easier and more effective.
+>
+> 'nose' may be a good framework.
+>
+> Would you mind starting a ticket on improving testing and outline things you
+> think would be good to implement?
+>
+> In the meantime I'll take a look at checking out nose.
+>
+> Cheers,
+> Dane
+>
+> On Apr 8, 2009, at 2:56 PM, Beau Gunderson wrote:
+>
+>> Attached is a patch to convert the current tests to use the 'nose'
+>> testing framework which emulates unittest and is fun to use.
+>>
+>> I did this conversion so that testing will be easier (just one easy to
+>> remember command from the main mapnik directory) and can be easily
+>> integrated into the buildbot and the SConsruct file.
+>>
+>> I hope it also makes it easier for people to contribute tests since
+>> the format is very easy to understand.
+>>
+>> # svn diff | diffstat
+>> test_load_map.py | ?108
+>> ++++++++++++++++---------------------------------------
+>> test_save_map.py | ? 86 +++++++++++++------------------------------
+>> utilities.py ? ? | ? ?4 ++
+>> 3 files changed, 63 insertions(+), 135 deletions(-)
+>>
+>> (The code ends up quite a bit smaller!)
+>>
+>> Try:
+>>
+>> # easy_install nose
+>> # cd tests/python
+>> # nosetests -v
+>>
+>> If we change the directory name from 'python' to 'python_tests' then
+>> nosetests can be run from the top-level mapnik directory (it discovers
+>> tests based on the module, file, class, and function names).
+>>
+>> Also attached is the current output (there are 4 failing tests; the
+>> ones that deal with db and datasource). They are broken in the
+>> previous implementation too.
+>>
+>> You can read about nose here:
+>>
+>> http://somethingaboutorange.com/mrl/projects/nose/
+>>
+>>
+>> - Beau
+>>
+>> <test_output.txt><040809_new_tests.diff>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From blake at hailmail.net  Thu Apr  9 01:17:31 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 8 Apr 2009 16:17:31 -0700
+Subject: [Mapnik-devel] Patch to convert tests to use nose
+In-Reply-To: <d6cb3ab10904081610p11afbf31mb4093d6cc66263cd@mail.gmail.com>
+References: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+	<6283E44F-5B65-4C3D-A951-89D2B527EDAA@hailmail.net>
+	<d6cb3ab10904081610p11afbf31mb4093d6cc66263cd@mail.gmail.com>
+Message-ID: <3ED3DB1D-BBE4-45A7-80A4-C8D8F8FF48CD@hailmail.net>
+
+Thanks!
+
+Dane
+
+
+On Apr 8, 2009, at 4:10 PM, Beau Gunderson wrote:
+
+> One more thing--nose won't select tests from .py files that are
+> executable by default, so to test you'll have to chmod a-x them or run
+> 'nosetests --exe -v'.
+>
+> Made the ticket you asked for:
+>
+> http://trac.mapnik.org/ticket/300
+>
+> :)
+>
+>
+> - Beau
+>
+> On Wed, Apr 8, 2009 at 3:55 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Beau,
+>>
+>> Great stuff. I agree that we need to do whatever we can to make  
+>> writing
+>> tests easier and more effective.
+>>
+>> 'nose' may be a good framework.
+>>
+>> Would you mind starting a ticket on improving testing and outline  
+>> things you
+>> think would be good to implement?
+>>
+>> In the meantime I'll take a look at checking out nose.
+>>
+>> Cheers,
+>> Dane
+>>
+>> On Apr 8, 2009, at 2:56 PM, Beau Gunderson wrote:
+>>
+>>> Attached is a patch to convert the current tests to use the 'nose'
+>>> testing framework which emulates unittest and is fun to use.
+>>>
+>>> I did this conversion so that testing will be easier (just one  
+>>> easy to
+>>> remember command from the main mapnik directory) and can be easily
+>>> integrated into the buildbot and the SConsruct file.
+>>>
+>>> I hope it also makes it easier for people to contribute tests since
+>>> the format is very easy to understand.
+>>>
+>>> # svn diff | diffstat
+>>> test_load_map.py |  108
+>>> ++++++++++++++++---------------------------------------
+>>> test_save_map.py |   86 +++++++++++++------------------------------
+>>> utilities.py     |    4 ++
+>>> 3 files changed, 63 insertions(+), 135 deletions(-)
+>>>
+>>> (The code ends up quite a bit smaller!)
+>>>
+>>> Try:
+>>>
+>>> # easy_install nose
+>>> # cd tests/python
+>>> # nosetests -v
+>>>
+>>> If we change the directory name from 'python' to 'python_tests' then
+>>> nosetests can be run from the top-level mapnik directory (it  
+>>> discovers
+>>> tests based on the module, file, class, and function names).
+>>>
+>>> Also attached is the current output (there are 4 failing tests; the
+>>> ones that deal with db and datasource). They are broken in the
+>>> previous implementation too.
+>>>
+>>> You can read about nose here:
+>>>
+>>> http://somethingaboutorange.com/mrl/projects/nose/
+>>>
+>>>
+>>> - Beau
+>>>
+>>> < 
+>>> test_output 
+>>> .txt 
+>>> > 
+>>> < 
+>>> 040809_new_tests 
+>>> .diff>_______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+
+
+
+From beau at beaugunderson.com  Thu Apr  9 01:24:00 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 16:24:00 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<03DC501C-58B4-4947-87E9-6FBE221B4454@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+	<18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+Message-ID: <d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+
+On Wed, Apr 8, 2009 at 3:28 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+>
+> Sure does need to be >= boost 1.35, thanks Jon. Fixed now in r1084.
+
+Verified this works on the Ubuntu and FreeBSD boxes I have access to.
+
+- Beau
+
+
+From beau at beaugunderson.com  Thu Apr  9 08:09:26 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Wed, 8 Apr 2009 23:09:26 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+	<18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+	<d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+Message-ID: <d6cb3ab10904082309r4b1d1339l8897c9edc59da795@mail.gmail.com>
+
+Here's the current buildbot URL:
+
+http://miranda.nwcr.net:8010/
+
+It seems to be working; if anyone wants to setup a Linux slave I can
+provide assistance. :)
+
+I'm not sure if it's a FreeBSD issue or not but on some build steps it
+waits an inordinate amount of time before continuing (2-5 minutes). I
+tried with and without using a PTY and the result was the same. Will
+try and figure that one out so it's a little more responsive.
+
+
+- Beau
+
+
+From blake at hailmail.net  Mon Apr 13 00:43:53 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 12 Apr 2009 15:43:53 -0700
+Subject: [Mapnik-devel] Patch to convert tests to use nose
+In-Reply-To: <3ED3DB1D-BBE4-45A7-80A4-C8D8F8FF48CD@hailmail.net>
+References: <d6cb3ab10904081456i12092f69u7eefc2589766a725@mail.gmail.com>
+	<6283E44F-5B65-4C3D-A951-89D2B527EDAA@hailmail.net>
+	<d6cb3ab10904081610p11afbf31mb4093d6cc66263cd@mail.gmail.com>
+	<3ED3DB1D-BBE4-45A7-80A4-C8D8F8FF48CD@hailmail.net>
+Message-ID: <F963D260-48DB-4E8E-A9C6-4F59AF142322@hailmail.net>
+
+Beau,
+
+Great, I've tested nose and it looks like a great tool.
+
+I've committed your patch and updated http://trac.mapnik.org/ticket/300
+
+Dane
+
+On Apr 8, 2009, at 4:17 PM, Dane Springmeyer wrote:
+
+> Thanks!
+>
+> Dane
+>
+>
+> On Apr 8, 2009, at 4:10 PM, Beau Gunderson wrote:
+>
+>> One more thing--nose won't select tests from .py files that are
+>> executable by default, so to test you'll have to chmod a-x them or  
+>> run
+>> 'nosetests --exe -v'.
+>>
+>> Made the ticket you asked for:
+>>
+>> http://trac.mapnik.org/ticket/300
+>>
+>> :)
+>>
+>>
+>> - Beau
+>>
+>> On Wed, Apr 8, 2009 at 3:55 PM, Dane Springmeyer
+>> <blake at hailmail.net> wrote:
+>>> Beau,
+>>>
+>>> Great stuff. I agree that we need to do whatever we can to make
+>>> writing
+>>> tests easier and more effective.
+>>>
+>>> 'nose' may be a good framework.
+>>>
+>>> Would you mind starting a ticket on improving testing and outline
+>>> things you
+>>> think would be good to implement?
+>>>
+>>> In the meantime I'll take a look at checking out nose.
+>>>
+>>> Cheers,
+>>> Dane
+>>>
+>>> On Apr 8, 2009, at 2:56 PM, Beau Gunderson wrote:
+>>>
+>>>> Attached is a patch to convert the current tests to use the 'nose'
+>>>> testing framework which emulates unittest and is fun to use.
+>>>>
+>>>> I did this conversion so that testing will be easier (just one
+>>>> easy to
+>>>> remember command from the main mapnik directory) and can be easily
+>>>> integrated into the buildbot and the SConsruct file.
+>>>>
+>>>> I hope it also makes it easier for people to contribute tests since
+>>>> the format is very easy to understand.
+>>>>
+>>>> # svn diff | diffstat
+>>>> test_load_map.py |  108
+>>>> ++++++++++++++++---------------------------------------
+>>>> test_save_map.py |   86 +++++++++++++------------------------------
+>>>> utilities.py     |    4 ++
+>>>> 3 files changed, 63 insertions(+), 135 deletions(-)
+>>>>
+>>>> (The code ends up quite a bit smaller!)
+>>>>
+>>>> Try:
+>>>>
+>>>> # easy_install nose
+>>>> # cd tests/python
+>>>> # nosetests -v
+>>>>
+>>>> If we change the directory name from 'python' to 'python_tests'  
+>>>> then
+>>>> nosetests can be run from the top-level mapnik directory (it
+>>>> discovers
+>>>> tests based on the module, file, class, and function names).
+>>>>
+>>>> Also attached is the current output (there are 4 failing tests; the
+>>>> ones that deal with db and datasource). They are broken in the
+>>>> previous implementation too.
+>>>>
+>>>> You can read about nose here:
+>>>>
+>>>> http://somethingaboutorange.com/mrl/projects/nose/
+>>>>
+>>>>
+>>>> - Beau
+>>>>
+>>>> <
+>>>> test_output
+>>>> .txt
+>>>>>
+>>>> <
+>>>> 040809_new_tests
+>>>> .diff>_______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Mon Apr 13 00:45:56 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 12 Apr 2009 15:45:56 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904082309r4b1d1339l8897c9edc59da795@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<d6cb3ab10904071534g7ff069dfxab6f0a844b98fc68@mail.gmail.com>
+	<d6cb3ab10904071630x55da794at7eb0241f0d09fe9b@mail.gmail.com>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+	<18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+	<d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+	<d6cb3ab10904082309r4b1d1339l8897c9edc59da795@mail.gmail.com>
+Message-ID: <B5AFECC5-77FA-4B23-B1EC-E65FD6DCB430@hailmail.net>
+
+On Apr 8, 2009, at 11:09 PM, Beau Gunderson wrote:
+
+> Here's the current buildbot URL:
+>
+> http://miranda.nwcr.net:8010/
+>
+Sweet, I can see it working away after each commit.
+
+Nice job.
+
+> It seems to be working; if anyone wants to setup a Linux slave I can
+> provide assistance. :)
+>
+
+Ya, I'd be interested in the steps involved.
+
+> I'm not sure if it's a FreeBSD issue or not but on some build steps it
+> waits an inordinate amount of time before continuing (2-5 minutes).
+
+Boost python takes a lot of time and memory to compile and I've had  
+things stall due to memory limits being hit. Maybe this could be an  
+issue?
+
+> I
+> tried with and without using a PTY and the result was the same. Will
+> try and figure that one out so it's a little more responsive.
+>
+What is PTY?
+
+>
+> - Beau
+
+
+
+From oshaniuk at cloudmade.com  Mon Apr 13 11:32:30 2009
+From: oshaniuk at cloudmade.com (Oleg Shaniuk)
+Date: Mon, 13 Apr 2009 12:32:30 +0300
+Subject: [Mapnik-devel] Drawing inverted polygons
+Message-ID: <b658f7060904130232l2ea429cdkd443229173f26d1f@mail.gmail.com>
+
+Hello to all
+
+I didn't get in with new mapnik's drawing possibilities - is it possible
+draw polygons in inverted manner - keep inner space of polygon transparent,
+draw borders  and fill outer space? Does new RasterSymbolizer can do it? Is
+it possible at all?
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090413/5178c1b2/attachment.html>
+
+From beau at beaugunderson.com  Mon Apr 13 18:44:44 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Mon, 13 Apr 2009 09:44:44 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <B5AFECC5-77FA-4B23-B1EC-E65FD6DCB430@hailmail.net>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<26F11FFB-8C67-4C69-8342-AAEF3DB55AD1@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+	<18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+	<d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+	<d6cb3ab10904082309r4b1d1339l8897c9edc59da795@mail.gmail.com>
+	<B5AFECC5-77FA-4B23-B1EC-E65FD6DCB430@hailmail.net>
+Message-ID: <d6cb3ab10904130944i2ec4bd63w6d72b41429ad5254@mail.gmail.com>
+
+On Sun, Apr 12, 2009 at 3:45 PM, Dane Springmeyer <blake at hailmail.net> wrote:
+> On Apr 8, 2009, at 11:09 PM, Beau Gunderson wrote:
+>
+>> Here's the current buildbot URL:
+>>
+>> http://miranda.nwcr.net:8010/
+>>
+> Sweet, I can see it working away after each commit.
+>
+> Nice job.
+>
+
+Thanks! It also runs the nosetest suite now that the test patch has
+been applied. :)
+
+>> It seems to be working; if anyone wants to setup a Linux slave I can
+>> provide assistance. :)
+>>
+>
+> Ya, I'd be interested in the steps involved.
+>
+
+# easy_install twisted
+# easy_install buildbot
+# easy_install nose
+
+Then it should just be a matter of creating a slave with:
+
+# adduser mapnikslave
+# buildbot create-slave /home/mapnikslave/Buildbot
+miranda.nwcr.net:9989 mapnik-linux <password>
+
+(Where mapnikslave can be any user you pick, email me a password you'd
+like for your build slave)
+
+>> I'm not sure if it's a FreeBSD issue or not but on some build steps it
+>> waits an inordinate amount of time before continuing (2-5 minutes).
+>
+> Boost python takes a lot of time and memory to compile and I've had things
+> stall due to memory limits being hit. Maybe this could be an issue?
+>
+
+I don't think so, it will wait 519 seconds past 'python
+scons/scons.py' even if all the targets are already compiled from the
+last run, for example:
+
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `.' is up to date.
+scons: done building targets.
+program finished with exit code 0
+elapsedTime=519.281941
+
+Something just occurred to me: I wonder if it's waiting for the next
+keepalive packet to be sent (which occurs every 600 seconds) ... I
+will try lowering the keepalive interval on my slave and see if that
+affects the 'wait past being done' time.
+
+>> I
+>> tried with and without using a PTY and the result was the same. Will
+>> try and figure that one out so it's a little more responsive.
+>>
+> What is PTY?
+>
+
+Pseudo-terminal:
+
+"--usepty
+
+    This is a boolean flag that tells the buildslave whether to launch
+child processes in a PTY (the default) or with regular pipes. The
+advantage of using a PTY is that ?grandchild? processes are more
+likely to be cleaned up if the build is interrupted or times out
+(since it enables the use of a ?process group? in which all child
+processes will be placed). The disadvantages: some forms of Unix have
+problems with PTYs, some of your unit tests may behave differently
+when run under a PTY (generally those which check to see if they are
+being run interactively), and PTYs will merge the stdout and stderr
+streams into a single output stream (which means the red-vs-black
+coloring in the logfiles will be lost). If you encounter problems, you
+can add --usepty=0 to disable the use of PTYs. Note that windows
+buildslaves never use PTYs."
+
+
+From beau at beaugunderson.com  Mon Apr 13 20:20:30 2009
+From: beau at beaugunderson.com (Beau Gunderson)
+Date: Mon, 13 Apr 2009 11:20:30 -0700
+Subject: [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+In-Reply-To: <d6cb3ab10904130944i2ec4bd63w6d72b41429ad5254@mail.gmail.com>
+References: <17A1FB70-E00C-4801-914C-3840F896308A@hailmail.net>
+	<d6cb3ab10904081052t5a02ca84o261762e6d743175f@mail.gmail.com>
+	<BCA2914F-03DD-4221-AC96-B2EAFB0752F2@hailmail.net>
+	<d6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2@mail.gmail.com>
+	<1239224032.16904.16.camel@localhost.localdomain>
+	<18FBE666-2A14-4D35-A70F-676D445E66BD@hailmail.net>
+	<d6cb3ab10904081624w52520b22w341b34bca842b909@mail.gmail.com>
+	<d6cb3ab10904082309r4b1d1339l8897c9edc59da795@mail.gmail.com>
+	<B5AFECC5-77FA-4B23-B1EC-E65FD6DCB430@hailmail.net>
+	<d6cb3ab10904130944i2ec4bd63w6d72b41429ad5254@mail.gmail.com>
+Message-ID: <d6cb3ab10904131120l2da86f99l88c8d8bddf0ff112@mail.gmail.com>
+
+>>> I'm not sure if it's a FreeBSD issue or not but on some build steps it
+>>> waits an inordinate amount of time before continuing (2-5 minutes).
+>>
+>> Boost python takes a lot of time and memory to compile and I've had things
+>> stall due to memory limits being hit. Maybe this could be an issue?
+>>
+>
+> I don't think so, it will wait 519 seconds past 'python
+> scons/scons.py' even if all the targets are already compiled from the
+> last run, for example:
+>
+> scons: done reading SConscript files.
+> scons: Building targets ...
+> scons: `.' is up to date.
+> scons: done building targets.
+> program finished with exit code 0
+> elapsedTime=519.281941
+>
+> Something just occurred to me: I wonder if it's waiting for the next
+> keepalive packet to be sent (which occurs every 600 seconds) ... I
+> will try lowering the keepalive interval on my slave and see if that
+> affects the 'wait past being done' time.
+
+I just tested it and the keepalive time was the culprit--setting it to
+60 seconds drastically decreased the time that it waited past
+finishing the task. Tasks that take 1 second still wait 59 seconds
+past finish though that's a lot better than 599 seconds.
+
+
+From vlasovsv at gmail.com  Tue Apr 14 19:45:04 2009
+From: vlasovsv at gmail.com (=?KOI8-R?B?88XSx8XKIPfMwdPP1w==?=)
+Date: Tue, 14 Apr 2009 21:45:04 +0400
+Subject: [Mapnik-devel] Mapnik+Oracle
+Message-ID: <27bb77630904141045h79526bc9v12c239a5bb657890@mail.gmail.com>
+
+Dear developers.
+I want to compile mapinic with Oracle support.
+I perform following actions:
+
+python scons/scons.py configure INPUT_PLUGINS=raster,shape,occi
+BOOST_LIBS=/usr/lib BOOST_LIBS=/usr/include/boost PROJ_LIBS=/usr/lib
+OCCI_LIBS=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/lib
+OCCI_INCLUDES=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/rdbms/public
+
+Then python outputs following text:
+Checking for requested plugins dependencies...
+Checking for C++ library ociei... no
+Checking for C++ header file boost/python/detail/config.hpp... yes
+Checking for pkg-config... yes
+Checking for pycairo... yes
+All Required dependencies found!
+Overwriting and re-saving file 'config.py'...
+Will hold custom path variables from commandline and python config
+file(s)...
+However, these optional dependencies were not found:
+- ociei
+
+System: Ubuntu 8.10 Oracle XE Client.
+
+The question: what libraries does the plugin need and where can I find them
+if they are not included in client distribution?
+-- 
+With big respect, Vlasov Serg
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090414/722d9209/attachment.html>
+
+From kunitoki at gmail.com  Wed Apr 15 11:37:48 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Wed, 15 Apr 2009 11:37:48 +0200
+Subject: [Mapnik-devel] Mapnik+Oracle
+In-Reply-To: <27bb77630904141045h79526bc9v12c239a5bb657890@mail.gmail.com>
+References: <27bb77630904141045h79526bc9v12c239a5bb657890@mail.gmail.com>
+Message-ID: <93db2faf0904150237i2e5d6b07rabfb9178ae8c3e13@mail.gmail.com>
+
+Hi,
+i'm the developer behind the oracle support for mapnik.
+i have developed it by using the oracle-instantclient-basic package (cause
+my mapping servers are separate from my oracle database servers) that you
+can find here
+http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxsoft.html
+
+The version you need to download is 10.2.0.3, cause 11 isn't actually
+tested.
+Be careful you set the correct path in config.py:
+
+OCCI_INCLUDES='/usr/lib/oracle/10.2.0.3/client/include'
+OCCI_LIBS='/usr/lib/oracle/10.2.0.3/client/lib'
+
+or whatever other place you put it.
+
+I have updated the wiki here http://trac.mapnik.org/wiki/OCCI so feel free
+to report if you got any other problem.
+
+Hope this helps.
+
+ps. if i get the time i will test it with the new oracle XE (express), but
+from what i know, it doesn't have full spatial support, so some functions
+could be missing at all.
+
+
+Cheers
+
+Lucio
+
+
+On Tue, Apr 14, 2009 at 7:45 PM, ?????? ?????? <vlasovsv at gmail.com> wrote:
+
+> Dear developers.
+> I want to compile mapinic with Oracle support.
+> I perform following actions:
+>
+> python scons/scons.py configure INPUT_PLUGINS=raster,shape,occi
+> BOOST_LIBS=/usr/lib BOOST_LIBS=/usr/include/boost PROJ_LIBS=/usr/lib
+> OCCI_LIBS=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/lib
+> OCCI_INCLUDES=/usr/lib/oracle/xe/app/oracle/product/10.2.0/client/rdbms/public
+>
+> Then python outputs following text:
+> Checking for requested plugins dependencies...
+> Checking for C++ library ociei... no
+> Checking for C++ header file boost/python/detail/config.hpp... yes
+> Checking for pkg-config... yes
+> Checking for pycairo... yes
+> All Required dependencies found!
+> Overwriting and re-saving file 'config.py'...
+> Will hold custom path variables from commandline and python config
+> file(s)...
+> However, these optional dependencies were not found:
+> - ociei
+>
+> System: Ubuntu 8.10 Oracle XE Client.
+>
+> The question: what libraries does the plugin need and where can I find them
+> if they are not included in client distribution?
+> --
+> With big respect, Vlasov Serg
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090415/96ef13cd/attachment.html>
+
+From blake at hailmail.net  Mon Apr 20 18:00:37 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 20 Apr 2009 09:00:37 -0700
+Subject: [Mapnik-devel] Drawing inverted polygons
+In-Reply-To: <b658f7060904130232l2ea429cdkd443229173f26d1f@mail.gmail.com>
+References: <b658f7060904130232l2ea429cdkd443229173f26d1f@mail.gmail.com>
+Message-ID: <8B419985-5897-40ED-BCA1-7D1DCDC9081E@hailmail.net>
+
+Hey Oleg,
+
+Sorry I missed responding to this earlier, but the answer is no AFAIK.
+
+Aside from assigning a map background color and then 'cutting' out  
+that color with polygon fill, there is no support for filling outer  
+space of a polygon.  What is your use case? Is it possible to  
+dynamically run a postgis query that calculates an inverse polygon  
+shape of this outer space given your setup? You could do this by using  
+the ST_DIFFERENCE function against a bounding rectangle that covers  
+your whole map and the polygon you want to clip out.
+
+Cheers,
+Dane
+
+
+On Apr 13, 2009, at 2:32 AM, Oleg Shaniuk wrote:
+
+> Hello to all
+>
+> I didn't get in with new mapnik's drawing possibilities - is it  
+> possible draw polygons in inverted manner - keep inner space of  
+> polygon transparent, draw borders  and fill outer space? Does new  
+> RasterSymbolizer can do it? Is it possible at all?
+>
+> -- 
+> --
+> RO
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From oshaniuk at cloudmade.com  Tue Apr 21 10:11:26 2009
+From: oshaniuk at cloudmade.com (Oleg Shaniuk)
+Date: Tue, 21 Apr 2009 11:11:26 +0300
+Subject: [Mapnik-devel] Drawing inverted polygons
+In-Reply-To: <8B419985-5897-40ED-BCA1-7D1DCDC9081E@hailmail.net>
+References: <b658f7060904130232l2ea429cdkd443229173f26d1f@mail.gmail.com> 
+	<8B419985-5897-40ED-BCA1-7D1DCDC9081E@hailmail.net>
+Message-ID: <b658f7060904210111la598c22id8e1c3e9661a3a80@mail.gmail.com>
+
+Hi Dane,
+
+Thanks for tip - I'll try it. So, I can use this function to invert
+shapefiles? - Import into DB -> export via ST_DIFFERENCE?
+
+--
+
+RO
+
+On Mon, Apr 20, 2009 at 7:00 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+
+> Hey Oleg,
+>
+> Sorry I missed responding to this earlier, but the answer is no AFAIK.
+>
+> Aside from assigning a map background color and then 'cutting' out that
+> color with polygon fill, there is no support for filling outer space of a
+> polygon.  What is your use case? Is it possible to dynamically run a postgis
+> query that calculates an inverse polygon shape of this outer space given
+> your setup? You could do this by using the ST_DIFFERENCE function against a
+> bounding rectangle that covers your whole map and the polygon you want to
+> clip out.
+>
+> Cheers,
+> Dane
+>
+>
+> On Apr 13, 2009, at 2:32 AM, Oleg Shaniuk wrote:
+>
+>  Hello to all
+>>
+>> I didn't get in with new mapnik's drawing possibilities - is it possible
+>> draw polygons in inverted manner - keep inner space of polygon transparent,
+>> draw borders  and fill outer space? Does new RasterSymbolizer can do it? Is
+>> it possible at all?
+>>
+>> --
+>> --
+>> RO
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+
+
+-- 
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090421/05c960ed/attachment.html>
+
+From blake at hailmail.net  Tue Apr 28 07:45:39 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 27 Apr 2009 22:45:39 -0700
+Subject: [Mapnik-devel] XML relative paths
+Message-ID: <4F1B8EB8-293E-4199-911D-BEF87A1FF84A@hailmail.net>
+
+Dev,
+
+Anyone use relative paths in their XML mapfiles?
+
+I personally would use them more frequently if the relative paths  
+found in the XML were interpreted as relative to the location of the  
+XML file itself, rather than the script location actually calling  
+load_map().
+
+So, I've proposed a fix to make this possible, and to change the  
+default behavior:
+
+http://trac.mapnik.org/ticket/326
+
+I'd like your feedback before applying to trunk in case I'm  
+overlooking anything.
+
+Thanks,
+Dane
+
+
+
+
+
+
+From blake at hailmail.net  Tue Apr 28 18:50:35 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 28 Apr 2009 09:50:35 -0700
+Subject: [Mapnik-devel] XML relative paths
+In-Reply-To: <93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+References: <4F1B8EB8-293E-4199-911D-BEF87A1FF84A@hailmail.net>
+	<93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+Message-ID: <C2EB353D-0BC8-465E-A079-3792703C5534@hailmail.net>
+
+Hi Lucio,
+
+Thanks for the feedback.
+
+So you are +1 as long as it is made the default behavior?
+
+I added the property in the xml ONLY to allow switching back to the  
+behavior we have now.
+
+Does that sound okay?
+
+Dane
+
+
+
+On Apr 28, 2009, at 9:13 AM, kRAkEn/gORe wrote:
+
+> Hi list,
+> i find it perfect, cause most of the time you will end having your xml
+> mapfile besides your shape files, so you can move everything safely
+> (and kill those absolute paths that are killing the apps everytime you
+> move around things).
+>
+> +1 for applying this directly, BUT should be the default behaviour and
+> definately not use a property in the XML for enabling it !
+>
+> cheers,
+>
+> Lucio
+>
+>
+> On Tue, Apr 28, 2009 at 7:45 AM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Dev,
+>>
+>> Anyone use relative paths in their XML mapfiles?
+>>
+>> I personally would use them more frequently if the relative paths
+>> found in the XML were interpreted as relative to the location of the
+>> XML file itself, rather than the script location actually calling
+>> load_map().
+>>
+>> So, I've proposed a fix to make this possible, and to change the
+>> default behavior:
+>>
+>> http://trac.mapnik.org/ticket/326
+>>
+>> I'd like your feedback before applying to trunk in case I'm
+>> overlooking anything.
+>>
+>> Thanks,
+>> Dane
+>>
+>>
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+
+
+
+From mike at stamen.com  Tue Apr 28 18:32:20 2009
+From: mike at stamen.com (Michal Migurski)
+Date: Tue, 28 Apr 2009 09:32:20 -0700
+Subject: [Mapnik-devel] Cascadenik update, ideas for Mapnik Python bindings
+References: <26506390.1240897867161.JavaMail.root@n12>
+Message-ID: <94B235AB-72A7-4F38-9558-9DF157F7D4DF@stamen.com>
+
+I sent the message below to mapnik-users, it should probably have gone  
+here.
+
+-mike.
+
+Begin forwarded message:
+
+> Hello,
+>
+> I've been working on a major update to Cascadenik, on a branch:
+> 	http://code.google.com/p/mapnik-utils/source/browse/branches/cascadenik-xmlbad
+>
+> There shouldn't be any external changes in behavior, but I've been
+> slowly modifying the library from one that transforms one kind of XML
+> into another kind of XML, to a library that operates directly on a
+> mapnik.Map object via the Python bindings. In particular, I was happy
+> to find out that it's possible to serialize a mapnik.Map object to XML
+> directly using save_map(), so that's how the cascadenik-compile.py
+> script now works. All of my tests are being performed against a two-
+> month-old trunk build, which I *think* means they should be compatible
+> with 0.5 installations out in the wild.
+>
+> Most of the actual edits were in compile.py, but the most relevant
+> code is here:
+> 	http://code.google.com/p/mapnik-utils/source/browse/branches/cascadenik-xmlbad/cascadenik/output.py
+>
+> See especially the to_mapnik() methods - they take a cascadenik-
+> specific brew of Layer, Style, Rule and Symbolizer classes and use
+> them to drive mapnik's own bindings. Having had a chance to work with
+> the bindings a bunch, I have some ideas on how they could be improved.
+> The contents of that output.py file are where I think mapnik's
+> bindings should be. A few thoughts:
+>
+> 1. Less C++, more native python. Currently the bindings seems to
+> mostly be direct interfaces to the compiled library, which makes it
+> more difficult to look inside and see what's going on, and enforces a
+> shortlist of accepted method signatures. It would be good for many of
+> the classes here to be pure python:
+> 	http://svn.mapnik.org/tags/release-0.6.0/docs/api_docs/python/mapnik._mapnik-module.html
+>
+> 2. Heavier use of keyword args in constructors. I've put all possible
+> symbolizer parameters for the few that I've made into the
+> constructors, which removes the situation in the wiki GettingStarted
+> page where it's necessary to instantiate an object and then perform
+> further changes to it to get it all working. In particular, it should
+> be possible to populate a mapnik.Map object with style and layer
+> information in an entirely declarative fashion, as shown in this test
+> from cascadenik:
+> 	http://code.google.com/p/mapnik-utils/source/browse/branches/cascadenik-xmlbad/test.py#1519
+>
+> 3. Real lists. The python bindings make heavy use of append() methods
+> that give the impression of regular python list objects under the
+> hood. Generally, appending a layer or style to a mapnik.Map actually
+> makes a deeper change, and subsequent attempts to reorder the list or
+> remove items fail. I think it would be interesting for mapnik.Map to
+> be a fully-editable and introspectable python object, with plain old
+> lists and dictionaries where possible, instead of a mystery Boost
+> thing. The to_mapnik methods I wrote above are a fairly clumsy
+> implementation of late compilation
+>
+> 4. Explicit defaults in serialized XML. I was confused when outputting
+> XML, when LineSymbolizer CssParameters for black colors or one pixel
+> widths were not being output. I understand that this is because black
+> + one pixel is the assumed default in mapnik, but I can imagine a
+> situation where that might change, and it'd be useful for output XML
+> that might span multiple mapnik releases to include these things.
+>
+> Anyway, that's all. The branch is about 90% done, I still need to deal
+> with datasources and all the symbolizers that use images.
+>
+> -mike.
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                  415.558.1610
+
+
+
+
+
+From kunitoki at gmail.com  Tue Apr 28 20:50:21 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Tue, 28 Apr 2009 20:50:21 +0200
+Subject: [Mapnik-devel] XML relative paths
+In-Reply-To: <93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+References: <4F1B8EB8-293E-4199-911D-BEF87A1FF84A@hailmail.net>
+	<93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+Message-ID: <93db2faf0904281150u668f63cdu8043d1c27da97f16@mail.gmail.com>
+
+Hi list,
+i find it perfect, cause most of the time you will end having your xml
+mapfile besides your shape files, so you can move everything safely
+(and kill those absolute paths that are killing the apps everytime you
+move around things).
+
++1 for applying this directly, BUT should be the default behaviour and
+definately not use a property in the XML for enabling it !
+
+cheers,
+
+Lucio
+
+
+From blake at hailmail.net  Tue Apr 28 20:54:53 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 28 Apr 2009 11:54:53 -0700
+Subject: [Mapnik-devel] XML relative paths
+In-Reply-To: <93db2faf0904281150g3c33ced5u5d5b9914e29a96f6@mail.gmail.com>
+References: <4F1B8EB8-293E-4199-911D-BEF87A1FF84A@hailmail.net>
+	<93db2faf0904280913v2a5b48fdsf69d37bd2f702a67@mail.gmail.com>
+	<C2EB353D-0BC8-465E-A079-3792703C5534@hailmail.net>
+	<93db2faf0904281150g3c33ced5u5d5b9914e29a96f6@mail.gmail.com>
+Message-ID: <8B05D772-C7E1-4E20-B6F6-4CB372185A0B@hailmail.net>
+
+Great, sound good.
+
+Seems like +3 so far based on ticket comments.
+
+I'll apply then when I have a moment unless I hear from others.
+
+Dane
+
+
+On Apr 28, 2009, at 11:50 AM, kRAkEn/gORe wrote:
+
+> oops sorry i oversee that, i though it was by default off :)
+> no it is ok, i like the new addition !
+>
+> p.s. when you are online i have some things to ask you
+>
+> cheers !
+>
+>
+> On Tue, Apr 28, 2009 at 6:50 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Hi Lucio,
+>>
+>> Thanks for the feedback.
+>>
+>> So you are +1 as long as it is made the default behavior?
+>>
+>> I added the property in the xml ONLY to allow switching back to the  
+>> behavior
+>> we have now.
+>>
+>> Does that sound okay?
+>>
+>> Dane
+>>
+>>
+>>
+>> On Apr 28, 2009, at 9:13 AM, kRAkEn/gORe wrote:
+>>
+>>> Hi list,
+>>> i find it perfect, cause most of the time you will end having your  
+>>> xml
+>>> mapfile besides your shape files, so you can move everything safely
+>>> (and kill those absolute paths that are killing the apps everytime  
+>>> you
+>>> move around things).
+>>>
+>>> +1 for applying this directly, BUT should be the default behaviour  
+>>> and
+>>> definately not use a property in the XML for enabling it !
+>>>
+>>> cheers,
+>>>
+>>> Lucio
+>>>
+>>>
+>>> On Tue, Apr 28, 2009 at 7:45 AM, Dane Springmeyer <blake at hailmail.net 
+>>> >
+>>> wrote:
+>>>>
+>>>> Dev,
+>>>>
+>>>> Anyone use relative paths in their XML mapfiles?
+>>>>
+>>>> I personally would use them more frequently if the relative paths
+>>>> found in the XML were interpreted as relative to the location of  
+>>>> the
+>>>> XML file itself, rather than the script location actually calling
+>>>> load_map().
+>>>>
+>>>> So, I've proposed a fix to make this possible, and to change the
+>>>> default behavior:
+>>>>
+>>>> http://trac.mapnik.org/ticket/326
+>>>>
+>>>> I'd like your feedback before applying to trunk in case I'm
+>>>> overlooking anything.
+>>>>
+>>>> Thanks,
+>>>> Dane
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>
+>>
+
+
+
+From blake at hailmail.net  Thu Apr 30 21:58:27 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 30 Apr 2009 12:58:27 -0700
+Subject: [Mapnik-devel] Anyone using Featuresets via Python?
+Message-ID: <0807C4C8-2B0F-4430-8F54-6A467635D8D7@hailmail.net>
+
+Based on a quick code search:
+
+http://www.google.com/codesearch?hl=en&lr=&q=mapnik+featureset+next%28%29&sbtn=Search
+
+It does not appear that anyone other that Leslie and I (and the  
+ogcserver code) are using Mapnik Featuresets via Python.
+
+I'd like to consider reworking them into proper python lists as  
+proposed here: https://trac.mapnik.org/ticket/280 but curious how much  
+existing code out there might break.
+
+Seems like not much, but let me know.
+
+Cheers,
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090430/ea1c8429/attachment.html>
+

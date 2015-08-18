@@ -1,0 +1,952 @@
+From blake at hailmail.net  Wed Jul  8 21:36:04 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 8 Jul 2009 12:36:04 -0700
+Subject: [Mapnik-devel] Testing trunk for 0.6.1 release
+Message-ID: <DFFF5BAC-1AB6-434D-BEA0-01D77EA7B91C@hailmail.net>
+
+Mapnik Dev/Users,
+
+This is a call for testing prior to the 0.6.1 release (http://trac.mapnik.org/roadmap 
+), slated for the end of this week.
+
+If you are able to test, please check out from trunk, and let us know  
+promptly if you run into any build problems or notable test failures.
+
+svn co http://svn.mapnik.org/trunk mapnik-testing
+cd mapnik-testing
+python scons/scons.py configure
+python scons/scons.py
+sudo python scons/scons.py install
+
+# Then to test:
+python tests/run_tests.py
+
+There are several known failures that are safe to ignore for now:
+ERROR: python_tests.object_test.test_stroke_pickle
+ERROR: python_tests.object_test.test_textsymbolizer_pickle
+FAIL: python_tests.object_test.test_shapefile_properties
+FAILED (TODO=4, errors=2, failures=1)
+# And rundemo
+cd demo/python
+python rundemo.py
+
+Please report any problems by email or trac tickets against the 0.6.1  
+milestone.
+
+Thanks,
+
+Dane
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/cd96ecc0/attachment.html>
+
+From ldj at andrew.cmu.edu  Wed Jul  8 22:13:11 2009
+From: ldj at andrew.cmu.edu (Lawrence David Jesper)
+Date: Wed, 8 Jul 2009 16:13:11 -0400
+Subject: [Mapnik-devel] Mapnik JNI Undefined symbol
+Message-ID: <0dbb9d987210068be37beca646664469.squirrel@webmail.andrew.cmu.edu>
+
+Hello,
+
+I've been working on setting up mapnik with java through jni so that I can
+render the openstreetmap data. I've compiled mapnik using the scons build
+system successfully, and have run the demo code with no issues.
+
+I then wrote a c++ program (1 main method) that renders a specific part of
+england (I imported only the data for england due to system restraints).
+The program runs and generates the image as expected. I've attached the
+source code below (request_tiles.cpp). I then change the method from a
+main method to a jni method (request_tiles_jni.cpp), wrote the java method
+(MapnikNative.java), and generated the h file (request_tiles_jni.h). I
+compile the java using jdk1.6.0_14 (64 bit) then run the method. It breaks
+with the following error when it tries to register the data sources:
+
+/home/ljesper/jdk1.6.0_14/bin/java: symbol lookup error:
+/home/ljesper/bins/mapnik/lib64/mapnik/input/osm.input: undefined symbol:
+_ZN7icu_4_213UnicodeStringC1ERKS0_
+
+
+after ignoring these non-fatal errors:
+
+/home/ljesper/bins/mapnik/lib64/mapnik/input/raster.input: undefined
+symbol: _ZN5boost6system19get_system_categoryEv
+/home/ljesper/bins/mapnik/lib64/mapnik/input/postgis.input: undefined
+symbol: _ZN5boost21thread_resource_errorD1Ev
+/home/ljesper/bins/mapnik/lib64/mapnik/input/shape.input: undefined
+symbol: _ZN5boost6system19get_system_categoryEv
+
+
+I compile my library with the following command:
+g++ -o libmapnikjni.o -c -fPIC -DHAVE_LIBXML2 -ansi -Wall -pthread
+-ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -DMAPNIK_THREADSAFE
+-O0 -fno-inline -g -DDEBUG -DMAPNIK_DEBUG -DNone -Iagg/include -Iinclude
+-I.  -I/home/ljesper/jdk1.6.0_14/include
+-I/home/ljesper/jdk1.6.0_14/include/linux  -I/usr/include -I/usr/include
+-I/usr/local/include -I/usr/include/freetype2 -I/usr/include/libxml2
+MapnikNative.cpp
+g++ -o libmapnikjni.so libmapnikjni.o -Lagg -Lsrc -L/usr/lib64
+-L/usr/local/lib64 -lboost_thread-gcc34-mt -lmapnik -shared -fPIC
+
+
+I ran ldd on libmapnikjni.so and it found all the dependencies in paths
+included in the LD_LIBRARY_PATH variable and also printed as part of
+java.library.path. The methods it prints as undefined are marked as such
+when I run "nm libmapnikjni.so". The method it breaks on does not appear
+anywhere in libmapnikjni.so; however, it does appear in libicuuc.so, an
+included library.
+
+
+My system is a 64bit CentOS 5. My compiler is g++ 3.4.6. I have also
+followed the same procedure to the same effect on a Debian system with g++
+(Debian 4.3.3-10). I am running mapnik 0.6 on both with icu 42. I attached
+my config.py file just in case that helps.
+
+Any suggestions or hunches would be greatly appreciated.
+
+Thanks,
+ldj
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: request_tiles.cpp
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/37de8061/attachment.ksh>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: request_tiles_jni.h
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/37de8061/attachment.h>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: request_tiles_jni.cpp
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/37de8061/attachment-0001.ksh>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: MapnikNative.java
+Type: /
+Size: 611 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/37de8061/attachment.bin>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: config.py
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090708/37de8061/attachment-0002.ksh>
+
+From ldj at andrew.cmu.edu  Wed Jul  8 23:37:10 2009
+From: ldj at andrew.cmu.edu (Lawrence David Jesper)
+Date: Wed, 8 Jul 2009 17:37:10 -0400
+Subject: [Mapnik-devel] Mapnik JNI Undefined symbol (Edit)
+In-Reply-To: <0dbb9d987210068be37beca646664469.squirrel@webmail.andrew.cmu.edu>
+References: <0dbb9d987210068be37beca646664469.squirrel@webmail.andrew.cmu.edu>
+Message-ID: <7a2232fa7a0876d1e2ae2dd5bb2e0932.squirrel@webmail.andrew.cmu.edu>
+
+sorry there was a filename typo in the last one in the g++ command, it is
+fixed below.
+
+On Wed, July 8, 2009 4:13 pm, Lawrence David Jesper wrote:
+> Hello,
+>
+>
+> I've been working on setting up mapnik with java through jni so that I
+> can render the openstreetmap data. I've compiled mapnik using the scons
+> build system successfully, and have run the demo code with no issues.
+>
+> I then wrote a c++ program (1 main method) that renders a specific part
+> of england (I imported only the data for england due to system
+> restraints). The program runs and generates the image as expected. I've
+> attached the source code below (request_tiles.cpp). I then change the
+> method from a main method to a jni method (request_tiles_jni.cpp), wrote
+> the java method (MapnikNative.java), and generated the h file
+> (request_tiles_jni.h). I
+> compile the java using jdk1.6.0_14 (64 bit) then run the method. It breaks
+>  with the following error when it tries to register the data sources:
+>
+> /home/ljesper/jdk1.6.0_14/bin/java: symbol lookup error:
+> /home/ljesper/bins/mapnik/lib64/mapnik/input/osm.input: undefined symbol:
+> _ZN7icu_4_213UnicodeStringC1ERKS0_
+>
+>
+>
+> after ignoring these non-fatal errors:
+>
+> /home/ljesper/bins/mapnik/lib64/mapnik/input/raster.input: undefined
+> symbol: _ZN5boost6system19get_system_categoryEv
+> /home/ljesper/bins/mapnik/lib64/mapnik/input/postgis.input: undefined
+> symbol: _ZN5boost21thread_resource_errorD1Ev
+> /home/ljesper/bins/mapnik/lib64/mapnik/input/shape.input: undefined
+> symbol: _ZN5boost6system19get_system_categoryEv
+>
+>
+>
+> I compile my library with the following command:
+> g++ -o libmapnikjni.o -c -fPIC -DHAVE_LIBXML2 -ansi -Wall -pthread
+> -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE
+> -DMAPNIK_THREADSAFE
+> -O0 -fno-inline -g -DDEBUG -DMAPNIK_DEBUG -DNone -Iagg/include -Iinclude
+> -I.  -I/home/ljesper/jdk1.6.0_14/include
+> -I/home/ljesper/jdk1.6.0_14/include/linux  -I/usr/include -I/usr/include
+> -I/usr/local/include -I/usr/include/freetype2 -I/usr/include/libxml2
+> request_tiles_jni.cpp
+> g++ -o libmapnikjni.so libmapnikjni.o -Lagg -Lsrc -L/usr/lib64
+> -L/usr/local/lib64 -lboost_thread-gcc34-mt -lmapnik -shared -fPIC
+>
+>
+>
+> I ran ldd on libmapnikjni.so and it found all the dependencies in paths
+> included in the LD_LIBRARY_PATH variable and also printed as part of
+> java.library.path. The methods it prints as undefined are marked as such
+> when I run "nm libmapnikjni.so". The method it breaks on does not appear
+> anywhere in libmapnikjni.so; however, it does appear in libicuuc.so, an
+> included library.
+>
+>
+> My system is a 64bit CentOS 5. My compiler is g++ 3.4.6. I have also
+> followed the same procedure to the same effect on a Debian system with g++
+>  (Debian 4.3.3-10). I am running mapnik 0.6 on both with icu 42. I
+> attached my config.py file just in case that helps.
+>
+> Any suggestions or hunches would be greatly appreciated.
+>
+>
+> Thanks,
+> ldj _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+
+
+From blake at hailmail.net  Fri Jul 10 01:21:57 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 9 Jul 2009 16:21:57 -0700
+Subject: [Mapnik-devel] Beta testing for Mapnik Mac OS X binary installer
+Message-ID: <A7E43299-F131-4BC0-BEFE-6C3AC025E494@hailmail.net>
+
+Mapnik-Users,
+
+I'd like to recruit a small set of mapnik users willing to test and  
+report back feedback on a binary installer I'm building for Mapnik.
+
+This build has no dependencies and is a basic click-through installer  
+based on the latest SVN revision.
+
+It will not disturb an existing installation of Mapnik and can be  
+easily disabled at any time.
+
+If you run on a Mac and are willing to test please contact me off list  
+with these details:
+
+1) Name/Email
+2) How you are currently using Mapnik or plan to utilize Mapnik
+3) Details on:
+  - OS X Version
+  - Python Version
+  - List of apps you use with Mapnik
+
+Thanks,
+
+Dane
+
+
+
+From blake at hailmail.net  Wed Jul 15 08:14:47 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 14 Jul 2009 23:14:47 -0700
+Subject: [Mapnik-devel] Announcing Mapnik 0.6.1
+Message-ID: <D5EF31B5-C932-418A-B475-E33921C3CAC9@hailmail.net>
+
+The Mapnik team is pleased to announce Mapnik 0.6.1.
+
+This release comes just 4 months following the 0.6.0 release, closes  
+over 66 tickets, and adds some great usability features along with  
+many small fixes.
+
+See the announcement from Artem at http://mapnik.org/news/2009/jul/14/release_0_6_1/
+
+And the changelog for all the details: http://trac.mapnik.org/wiki/Release0.6.1
+
+Thanks and congrats to all involved!
+
+Dane
+
+
+
+
+From lists at brachttal.net  Thu Jul 16 01:16:06 2009
+From: lists at brachttal.net (Andreas Volz)
+Date: Thu, 16 Jul 2009 01:16:06 +0200
+Subject: [Mapnik-devel] Mapnik split
+In-Reply-To: <e260aad40906101627v4909e801j580fc52e38778bc1@mail.gmail.com>
+References: <20090610011212.1b763b90@frodo.mittelerde>
+	<D014BDD5-582B-472B-92DA-85AFA467D918@hailmail.net>
+	<e260aad40906101627v4909e801j580fc52e38778bc1@mail.gmail.com>
+Message-ID: <20090716011606.5f8faa36@frodo.mittelerde>
+
+Am Thu, 11 Jun 2009 11:27:31 +1200 schrieb Craig de Stigter:
+
+Now I've created a small wrapper for the basic Mapnik functions with a
+PIMPL design. This prevents my application from including all the
+mapnik and boost header files which saves a lot of compile time.
+
+If someone think this may be useful than I could provide a copy and/or
+commit it later to the mapnik SVN in another directory.
+
+regards
+Andreas
+
+> It would probably be better to refactor the existing codebase to
+> remove as much as possible from the header files.
+> At present many of the header files include large portions of code
+> and have a lot of includes, which is probably the major reason
+> compiling takes a long time.
+> 
+> On Wed, Jun 10, 2009 at 7:22 PM, Dane Springmeyer
+> <blake at hailmail.net>wrote:
+> 
+> > Andreas,
+> >
+> > Honestly, I don't understand what you are proposing. The codebase is
+> > already broken out much as you propose and with SCons, at least, it
+> > quite easy to just build or rebuild a portion.
+> >
+> > I don't think many people compile the Mapnik codebase very
+> > frequently, and I don't find it any slower now than in the past.
+> >
+> > Dane
+> >
+> > On Jun 9, 2009, at 4:12 PM, Andreas Volz wrote:
+> >
+> > > Hello,
+> > >
+> > > I'm currently compiling Mapnik again after some autotools updates
+> > > - since 20 minutes. Currently Mapnik has grown to a beast and the
+> > > boost dependency does the rest.
+> > >
+> > > To shorten the compile time and also the complexness of the build
+> > > system I would propose this split: (one for an own package)
+> > >
+> > > - bindings (python)
+> > > - agg
+> > > - scons
+> > > - sources (maybe split to internal/external API)
+> > > - plugins (I would propose one package for all)
+> > > - tinyxml
+> > >
+> > > Think about utils/demo/test?
+> > >
+> > > This is only a raw idea. But in general, What do you think this
+> > > idea?
+> > >
+> > > regards
+> > > Andreas
+> > >
+> > > _______________________________________________
+> > > Mapnik-devel mailing list
+> > > Mapnik-devel at lists.berlios.de
+> > > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >
+> 
+> 
+> 
+> -- 
+> Koordinates Ltd
+> PO Box 1604, Shortland St, Auckland, New Zealand
+> Phone +64-9-966 0433 Fax +64-9-969 0045
+> Web http://www.koordinates.com
+
+
+From hansm at wikivoyage.org  Fri Jul 17 12:31:42 2009
+From: hansm at wikivoyage.org (Hans Musil)
+Date: Fri, 17 Jul 2009 12:31:42 +0200
+Subject: [Mapnik-devel] Complex PostGIS queries - patch
+Message-ID: <4A60530E.2000902@wikivoyage.org>
+
+Hi, I'm one of the technical admins of Wikivoyage, a free open content 
+wiki based travel guide. We have plans to make extensive use of Mapnik 
+together - but not only - with OSM data. The table layout of the PostGIS 
+backend will be completely different from what OSM's osm2pgsql generates.
+
+Oh, yes - and I don't like mailing lists. I only will keep subscribed 
+for some days in order to follow the discussion. You always can drop me 
+a message on my Wikivoyage user talk page 
+http://www.wikivoyage.org/de/Benutzer:Hansm
+
+As I have seen from the source code, Mapnik makes a *very* simplistic 
+guess about the PostgreSQL table and schema that hold the actual 
+geometry column. If queries given as parameter "table" (actually a bad 
+name) get a little bit more complex, Mapnik fails terribly. However, 
+it's not worth to improve this guess since queries may be really 
+complex. Instead, I wanted to propose two additional optional paramters 
+for postgis_datasource: "table_name" and "schema_name". Both are used 
+for retrieving the SRID and the geometry field (if not given as 
+parameter). The SRID itself is needed for estimating the extend of the 
+table's geometries.
+
+Here is an example for parameter "table", that is too complex for Mapnik 
+(it guesses osm_relation_mb to be the geometry table):
+
+<Parameter name="table">(SELECT way FROM osm_way WHERE osm_id = ANY 
+(SELECT rm_way FROM osm_relation_mb WHERE rm_relation=62149)) as 
+border</Parameter>
+
+I have added two patches, one for plugins/input/postgis/postgis.cpp and 
+one for the corresponding header file. Both refere to the up to date svn 
+version.
+
+Cheers,
+
+Hans
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: postgis.cpp.patch
+Type: text/x-diff
+Size: 3122 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: postgis.hpp.patch
+Type: text/x-diff
+Size: 602 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090717/313d4f92/attachment-0001.patch>
+
+From jochen at remote.org  Sun Jul 19 20:47:06 2009
+From: jochen at remote.org (Jochen Topf)
+Date: Sun, 19 Jul 2009 20:47:06 +0200
+Subject: [Mapnik-devel] Patch for improved text rendering
+Message-ID: <20090719184706.GA29689@eldorado.topf.org>
+
+Attached is a patch for some text rendering improvements. The TextSymbolizer
+gets the following new parameters:
+
+* text_convert="none|toupper|tolower"
+  Convert all text to upper/lower case before rendering. "none" doesn't do
+  anything with the text and is the default. Works for labels along lines
+  or at points.
+
+* line_spacing="<number>"
+  Add this many pixels space between two lines in text labels that have
+  been broken into several lines. Default is 0. Doesn't do anything for
+  labels along lines.
+
+* character_spacing="<number>"
+  Add this many pixels space between two characters in a text. Default is 0.
+  Currently only works for text labels on point geometries. This should
+  also be implemented for labels along lines, but I'll leave that for
+  another day.
+
+* wrap_character="<character>"
+  Instead of breaking text into lines on spaces, use this character. This
+  is useful, when you want to make sure that labels are broken at the right
+  spot. Note that you'll probably want to make wrap_width small so that
+  your lines are actually broken, otherwise you'll see the wrap_character
+  in the output. Default is ' ' (space). Doesn't do anything for labels
+  along lines.
+
+I have added those parameters to the load_map and save_map functions and
+implemented the functionality. I have *not* added this to the python
+bindings, because I don't know how they work.
+
+Jochen
+-- 
+Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/  +49-721-388298
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-text.diff
+Type: text/x-diff
+Size: 14638 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090719/4d73abc1/attachment.diff>
+
+From artem at mapnik.org  Mon Jul 20 17:31:10 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 20 Jul 2009 16:31:10 +0100
+Subject: [Mapnik-devel] Patch for improved text rendering
+In-Reply-To: <20090719184706.GA29689@eldorado.topf.org>
+References: <20090719184706.GA29689@eldorado.topf.org>
+Message-ID: <7e70f38d0907200831o5ed14bfai588f5f03fd71df35@mail.gmail.com>
+
+Hi Jochen,
+Excellent stuff, I applied your patch in r1254. Thanks!
+Artem
+
+2009/7/19 Jochen Topf <jochen at remote.org>
+
+> Attached is a patch for some text rendering improvements. The
+> TextSymbolizer
+> gets the following new parameters:
+>
+> * text_convert="none|toupper|tolower"
+>  Convert all text to upper/lower case before rendering. "none" doesn't do
+>  anything with the text and is the default. Works for labels along lines
+>  or at points.
+>
+> * line_spacing="<number>"
+>  Add this many pixels space between two lines in text labels that have
+>  been broken into several lines. Default is 0. Doesn't do anything for
+>  labels along lines.
+>
+> * character_spacing="<number>"
+>  Add this many pixels space between two characters in a text. Default is 0.
+>  Currently only works for text labels on point geometries. This should
+>  also be implemented for labels along lines, but I'll leave that for
+>  another day.
+>
+> * wrap_character="<character>"
+>  Instead of breaking text into lines on spaces, use this character. This
+>  is useful, when you want to make sure that labels are broken at the right
+>  spot. Note that you'll probably want to make wrap_width small so that
+>  your lines are actually broken, otherwise you'll see the wrap_character
+>  in the output. Default is ' ' (space). Doesn't do anything for labels
+>  along lines.
+>
+> I have added those parameters to the load_map and save_map functions and
+> implemented the functionality. I have *not* added this to the python
+> bindings, because I don't know how they work.
+>
+> Jochen
+> --
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/ +49-721-388298
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090720/684998f0/attachment.html>
+
+From blake at hailmail.net  Tue Jul 21 23:52:12 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 21 Jul 2009 14:52:12 -0700
+Subject: [Mapnik-devel] Complex PostGIS queries - patch
+In-Reply-To: <4A60530E.2000902@wikivoyage.org>
+References: <4A60530E.2000902@wikivoyage.org>
+Message-ID: <ADF603BE-BD1C-463C-8C7C-322E60C6A0B0@hailmail.net>
+
+Hey Hans,
+
+Thanks so much for taking a close look at this and providing a patch.  
+There are many other devs and users more familiar with the PostGIS  
+implementation than I, but I will say that there is a lot of current  
+activity and thoughts about improving the flexibility of the driver.
+
+I'd encourage you to take a look at the other tickets:
+
+http://trac.mapnik.org/query?status=assigned&status=new&status=reopened&component=PostGIS+Input+Driver&order=priority&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component
+
+And particularly this thread: http://www.nabble.com/Odd-behavior-with-PostGIS-tc23983405.html
+
+And either attach your patch to the most appropriate ticket or create  
+a new one.
+
+Thanks,
+
+Dane
+
+
+On Jul 17, 2009, at 3:31 AM, Hans Musil wrote:
+
+> Hi, I'm one of the technical admins of Wikivoyage, a free open  
+> content wiki based travel guide. We have plans to make extensive use  
+> of Mapnik together - but not only - with OSM data. The table layout  
+> of the PostGIS backend will be completely different from what OSM's  
+> osm2pgsql generates.
+>
+> Oh, yes - and I don't like mailing lists. I only will keep  
+> subscribed for some days in order to follow the discussion. You  
+> always can drop me a message on my Wikivoyage user talk page http://www.wikivoyage.org/de/Benutzer:Hansm
+>
+> As I have seen from the source code, Mapnik makes a *very*  
+> simplistic guess about the PostgreSQL table and schema that hold the  
+> actual geometry column. If queries given as parameter  
+> "table" (actually a bad name) get a little bit more complex, Mapnik  
+> fails terribly. However, it's not worth to improve this guess since  
+> queries may be really complex. Instead, I wanted to propose two  
+> additional optional paramters for postgis_datasource: "table_name"  
+> and "schema_name". Both are used for retrieving the SRID and the  
+> geometry field (if not given as parameter). The SRID itself is  
+> needed for estimating the extend of the table's geometries.
+>
+> Here is an example for parameter "table", that is too complex for  
+> Mapnik (it guesses osm_relation_mb to be the geometry table):
+>
+> <Parameter name="table">(SELECT way FROM osm_way WHERE osm_id = ANY  
+> (SELECT rm_way FROM osm_relation_mb WHERE rm_relation=62149)) as  
+> border</Parameter>
+>
+> I have added two patches, one for plugins/input/postgis/postgis.cpp  
+> and one for the corresponding header file. Both refere to the up to  
+> date svn version.
+>
+> Cheers,
+>
+> Hans
+>
+> --- mapnik-0.6.1/plugins/input/postgis/postgis.cpp	2009-07-14  
+> 11:08:55.000000000 +0200
+> +++ mapnik-0.6.1-patched/plugins/input/postgis/postgis.cpp	 
+> 2009-07-17 11:39:44.000000000 +0200
+> @@ -82,6 +82,9 @@
+>
+>    multiple_geometries_ =  
+> *params_.get<mapnik::boolean>("multiple_geometries",false);
+>
+> +   schema_name_ = *params.get<std::string>("schema_name","");
+> +   table_name_  = *params.get<std::string>("table_name","");
+> +
+>    boost::optional<std::string> ext  =  
+> params_.get<std::string>("extent");
+>    if (ext)
+>    {
+> @@ -130,25 +133,32 @@
+>
+>          desc_.set_encoding(conn->client_encoding());
+>
+> -         std::string table_name=table_from_sql(table_);
+> -         std::string schema_name="";
+> -         std::string::size_type idx=table_name.find_last_of('.');
+> +         if (table_name_.length()==0)
+> +         {
+> +           table_name_=table_from_sql(table_);
+> +           std::string::size_type idx=table_name_.find_last_of('.');
+>          if (idx!=std::string::npos)
+>          {
+> -            schema_name=table_name.substr(0,idx);
+> -            table_name=table_name.substr(idx+1);
+> +              if (schema_name_.length()==0)
+> +              {
+> +                schema_name_=table_name_.substr(0,idx);
+> +              };
+> +              table_name_ =table_name_.substr(idx+1);
+>          }
+>          else
+>          {
+> -            table_name=table_name.substr(0);
+> +              table_name_=table_name_.substr(0);
+>          }
+> +         };
+> +
+> +         geometryColumn_=geometry_field_;
+>
+>          std::ostringstream s;
+>          s << "select f_geometry_column,srid,type from ";
+> -         s << GEOMETRY_COLUMNS <<" where f_table_name='" <<  
+> table_name<<"'";
+> +         s << GEOMETRY_COLUMNS <<" where f_table_name='" <<  
+> table_name_<<"'";
+>
+> -         if (schema_name.length() > 0)
+> -            s <<" and f_table_schema='"<< schema_name <<"'";
+> +         if (schema_name_.length() > 0)
+> +            s <<" and f_table_schema='"<< schema_name_ <<"'";
+>
+>          if (geometry_field_.length() > 0)
+>             s << " and f_geometry_column = '" << geometry_field_ <<  
+> "'";
+> @@ -361,21 +371,20 @@
+>       {
+>           
+> PoolGuard 
+> < 
+> shared_ptr<Connection>,shared_ptr<Pool<Connection,ConnectionCreator>  
+> > > guard(conn,pool);
+>          std::ostringstream s;
+> -         std::string table_name = table_from_sql(table_);
+>          boost::optional<std::string> estimate_extent =  
+> params_.get<std::string>("estimate_extent");
+>
+>          if (estimate_extent && *estimate_extent == "true")
+>          {
+>             s << "select xmin(ext),ymin(ext),xmax(ext),ymax(ext)"
+>               << " from (select estimated_extent('"
+> -              << table_name <<"','"
+> +              << table_name_ <<"','"
+>               << geometryColumn_ << "') as ext) as tmp";
+>          }
+>          else
+>          {
+>             s << "select xmin(ext),ymin(ext),xmax(ext),ymax(ext)"
+>               << " from (select extent(" <<geometryColumn_<< ") as  
+> ext from "
+> -              << table_name << ") as tmp";
+> +              << table_name_ << ") as tmp";
+>          }
+>
+>          shared_ptr<ResultSet> rs=conn->executeQuery(s.str());
+> --- mapnik-0.6.1/plugins/input/postgis/postgis.hpp	2009-07-14  
+> 11:08:55.000000000 +0200
+> +++ mapnik-0.6.1-patched/plugins/input/postgis/postgis.hpp	 
+> 2009-07-17 11:40:42.000000000 +0200
+> @@ -1,3 +1,4 @@
+> +
+> / 
+> *****************************************************************************
+>  *
+>  * This file is part of Mapnik (c++ mapping toolkit)
+> @@ -60,6 +61,8 @@
+>       const std::string geometry_field_;
+>       const int cursor_fetch_size_;
+>       const int row_limit_;
+> +      std::string schema_name_;
+> +      std::string table_name_;
+>       std::string geometryColumn_;
+>       int type_;
+>       int srid_;
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Wed Jul 22 20:55:54 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 22 Jul 2009 11:55:54 -0700
+Subject: [Mapnik-devel] Raster Symbolizer and GDAL work
+In-Reply-To: <4A64566E.6060000@toscat.net>
+References: <BLU145-W1F690E11BF163B8A9CD4DA31E0@phx.gbl>
+	<E01EF74B-E7BF-4291-89D0-6D2EF733EE1F@hailmail.net>
+	<4A64566E.6060000@toscat.net>
+Message-ID: <F5ACA035-E6F9-498D-B049-15AF53A6EC98@hailmail.net>
+
+I've been reviewing and corresponding with Albert Valverde about his  
+excellent patches to the Gdal driver (getting overviews working) and  
+RasterSymbolizer (adding support for colorizing, working with  
+individual bands, and nodata values, among other advancements).
+
+I'd like to propose Alberto commit access to start a branch for his  
+work. It looks feasible to begin pulling some of his changes into  
+trunk soon (particularly the support for GDAL overviews which is  
+working nicely, built upon Lucio's nice start), while review of best  
+practices and approaches for colorization would be great from all of  
+you.
+
+Artem can you be in touch with Alberto about commit access?
+
+Cheers,
+
+Dane
+
+
+On Jul 20, 2009, at 4:35 AM, Alberto Valverde wrote:
+
+> Dane Springmeyer wrote:
+>> Hi Chris,
+>>
+>> I recommend installing a recent copy of GDAL and trying out the
+>> 'gdaldem' tool:
+>>
+>> http://www.gdal.org/gdaldem.html
+>>
+>> The idea would be to assign a color table to your data before
+>> rendering with Mapnik. Built in support is surely desirable but not
+>> implemented.
+> Just a quick FYI. I'm using a patched version of mapnik (trunk) with
+> heavily modified gdal datasource and rastersymbolizer which support
+> coloring raster data (among other improvements to handle >1Gb gtiff
+> files with embedded overviews).
+>
+> I was planning to submit these patches upstream some day when I clean
+> them up (it is the first c++ code I've ever written!) but this would  
+> be
+> in a couple of weeks since I'm swamped with other work at the moment.
+>
+> However, since it seems there's enough interest for this functionality
+> perhaps I could push them to a separate branch (for the vc goodness)  
+> as
+> they are right now to get more eyeballs on them and, hopefully, get  
+> some
+> help with the mentioned cleanup. Send me an email off-list if you'd  
+> like
+> to see the diffs, or perhaps I should post them to a ticket? (with a  
+> big
+> "unfinished & experimental" warning sign)
+>
+> Cheers,
+> Alberto
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From artem at mapnik-consulting.com  Wed Jul 22 22:35:59 2009
+From: artem at mapnik-consulting.com (Artem Pavlenko)
+Date: Wed, 22 Jul 2009 21:35:59 +0100
+Subject: [Mapnik-devel] Raster Symbolizer and GDAL work
+In-Reply-To: <F5ACA035-E6F9-498D-B049-15AF53A6EC98@hailmail.net>
+References: <BLU145-W1F690E11BF163B8A9CD4DA31E0@phx.gbl>
+	<E01EF74B-E7BF-4291-89D0-6D2EF733EE1F@hailmail.net>
+	<4A64566E.6060000@toscat.net>
+	<F5ACA035-E6F9-498D-B049-15AF53A6EC98@hailmail.net>
+Message-ID: <7e70f38d0907221335k1a8ef632ha3d8e7b3610c505a@mail.gmail.com>
+
+Great! Alberto, could you ,please, send me your username and ssh-rsa
+(or ssh-dss) public key (off list!).
+
+Regards,
+Artem
+
+2009/7/22 Dane Springmeyer <blake at hailmail.net>:
+> I've been reviewing and corresponding with Albert Valverde about his
+> excellent patches to the Gdal driver (getting overviews working) and
+> RasterSymbolizer (adding support for colorizing, working with individual
+> bands, and nodata values, among other advancements).
+>
+> I'd like to propose Alberto commit access to start a branch for his work. It
+> looks feasible to begin pulling some of his changes into trunk soon
+> (particularly the support for GDAL overviews which is working nicely, built
+> upon Lucio's nice start), while review of best practices and approaches for
+> colorization would be great from all of you.
+>
+> Artem can you be in touch with Alberto about commit access?
+>
+> Cheers,
+>
+> Dane
+>
+>
+> On Jul 20, 2009, at 4:35 AM, Alberto Valverde wrote:
+>
+>> Dane Springmeyer wrote:
+>>>
+>>> Hi Chris,
+>>>
+>>> I recommend installing a recent copy of GDAL and trying out the
+>>> 'gdaldem' tool:
+>>>
+>>> http://www.gdal.org/gdaldem.html
+>>>
+>>> The idea would be to assign a color table to your data before
+>>> rendering with Mapnik. Built in support is surely desirable but not
+>>> implemented.
+>>
+>> Just a quick FYI. I'm using a patched version of mapnik (trunk) with
+>> heavily modified gdal datasource and rastersymbolizer which support
+>> coloring raster data (among other improvements to handle >1Gb gtiff
+>> files with embedded overviews).
+>>
+>> I was planning to submit these patches upstream some day when I clean
+>> them up (it is the first c++ code I've ever written!) but this would be
+>> in a couple of weeks since I'm swamped with other work at the moment.
+>>
+>> However, since it seems there's enough interest for this functionality
+>> perhaps I could push them to a separate branch (for the vc goodness) as
+>> they are right now to get more eyeballs on them and, hopefully, get some
+>> help with the mentioned cleanup. Send me an email off-list if you'd like
+>> to see the diffs, or perhaps I should post them to a ticket? (with a big
+>> "unfinished & experimental" warning sign)
+>>
+>> Cheers,
+>> Alberto
+>>
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+>
+
+
+From alberto at toscat.net  Sat Jul 25 22:10:20 2009
+From: alberto at toscat.net (Alberto Valverde)
+Date: Sat, 25 Jul 2009 22:10:20 +0200
+Subject: [Mapnik-devel] Raster Symbolizer and GDAL work
+In-Reply-To: <F5ACA035-E6F9-498D-B049-15AF53A6EC98@hailmail.net>
+References: <BLU145-W1F690E11BF163B8A9CD4DA31E0@phx.gbl>
+	<E01EF74B-E7BF-4291-89D0-6D2EF733EE1F@hailmail.net>
+	<4A64566E.6060000@toscat.net>
+	<F5ACA035-E6F9-498D-B049-15AF53A6EC98@hailmail.net>
+Message-ID: <4A6B66AC.3030206@toscat.net>
+
+Dane Springmeyer wrote:
+> I've been reviewing and corresponding with Albert Valverde about his 
+> excellent patches to the Gdal driver (getting overviews working) and 
+> RasterSymbolizer (adding support for colorizing, working with 
+> individual bands, and nodata values, among other advancements).
+>
+> I'd like to propose Alberto commit access to start a branch for his 
+> work. It looks feasible to begin pulling some of his changes into 
+> trunk soon (particularly the support for GDAL overviews which is 
+> working nicely, built upon Lucio's nice start), while review of best 
+> practices and approaches for colorization would be great from all of you. 
+Hi all,
+
+Thanks for the commit bit! I was having a hard time keeping my sanity 
+with all these patches lying around ;)
+
+Well, I've just created a "gdalcolors" branch and applied the patch. It 
+still lacks some cleanup, docs and tests which I hope to finish soon. I 
+must admit I'm not too happy with the patch as it is right now as some 
+parts are really "hacky, partly due to my C++ inexperience and partly 
+because it seems (from my c++ newbie POV)  that mapnik was never 
+designed to display raw raster data.
+
+Anyway, this patch shows it's possible and I'm pretty sure that a little 
+bit of refactoring could make this functionality fit-in more cleanly. I 
+hope I can get some help guiding me on how to best introduce some 
+changes in mapnik to better support raster data.
+
+Some of these, from the top of my head:
+
+* To make best use of any overviews the featureset needs to know the 
+geographic extent and the image size as it was requested to the Map. 
+Currently it derives this information by peeking into the query object 
+(the patch makes it available to the featureset) to look at the 
+resolution but this is sub-optimal because the resolution is calculated 
+out of the intersection of the requested extent and the layer's extent. 
+Would it be possible to make the original extent and image size 
+available to the featureset somehow? Perhaps the query object could 
+carry this information too?
+
+* The raw data from the GdalBand is passed from the featureset down to 
+the symbolizer casted as a float into the ImageData32's int buffer and 
+then casted back. This is ugly but it works, at least with 32 bit data. 
+I yet have no use-case of it but perhaps some folks will need to display 
+Float64 data but it's not possible ATM (without incurring in yet more 
+horrible hacks). Any ideas on how to extend the ImageData (?) to be able 
+to carry other datatypes?
+
+Finally a little bit of background about the itch I'm trying to scratch 
+with these patches: I'm in the process of migrating the rendering engine 
+of a GIS webapp we're working on which currently uses mapscript to 
+mapnik due to the beautiful maps it makes, a (much) nicer python API and 
+its ability to load the styles from an XML file which will allow the 
+people in charge of administering the app to style the maps themselves 
+and stop bothering me all the time ;)
+
+This app is used mostly to display meteorological and other data we 
+derive from the meteo. one to aid in the wild forest fire-fighting in 
+Spain (we're unfortunately having a terrible summer so far with 14 
+active fires in this very moment :( )
+Since 99% of this data is raster based this functionality is essential 
+for us to be able to use mapnik as the main rendering engine.
+
+Cheers,
+Alberto
+
+P.S I've created another "arrowsymbolizer" branch with an 
+ArrowSymbolizer we use to render arrows to visualize wind 
+speed/direction and fireline intensity/direction. Perhaps this can be 
+useful to others working in a similar domain as us, or just to have fun 
+;). Though I have briefly mentioned this to Dane I didn't get any 
+explicit permission to upload it so if there's any problem (perhaps it's 
+too specialized for mapnik's audience?) don't hesitate to tell me an 
+I'll remove it immediately
+
+

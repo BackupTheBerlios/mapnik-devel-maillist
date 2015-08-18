@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [OSM-dev] reliefs madness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20reliefs%20madness&In-Reply-To=%3C38398F36-BF0B-4184-9EBD-CBFB5044658E%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000387.html">
+   <LINK REL="Next"  HREF="000392.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [OSM-dev] reliefs madness</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20reliefs%20madness&In-Reply-To=%3C38398F36-BF0B-4184-9EBD-CBFB5044658E%40gmail.com%3E"
+       TITLE="[Mapnik-devel] [OSM-dev] reliefs madness">artem.mapnik at googlemail.com
+       </A><BR>
+    <I>Wed Jan  9 11:14:15 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000387.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+        <LI>Next message: <A HREF="000392.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#389">[ date ]</a>
+              <a href="thread.html#389">[ thread ]</a>
+              <a href="subject.html#389">[ subject ]</a>
+              <a href="author.html#389">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 9 Jan 2008, at 09:58, Jochen Topf wrote:
+
+&gt;<i> On Wed, Jan 09, 2008 at 09:26:34AM +0000, Artem Pavlenko wrote:
+</I>&gt;&gt;<i> <A HREF="http://mapnik.org/maps/srtm_relief/">http://mapnik.org/maps/srtm_relief/</A>
+</I>&gt;<i>
+</I>&gt;<i> Wow! That looks great.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking
+</I>&gt;&gt;<i> for the best solution. Ideas welcome!
+</I>&gt;<i>
+</I>&gt;<i> I think areas below sea level should just get the darkest green. In  
+</I>&gt;<i> most
+</I>&gt;<i> cases it is probably not necessary to distinguish the details.
+</I>
+Yes, I'll try that.
+&gt;<i>
+</I>&gt;<i> Void areas might be handled by painting them in a unqiue color and  
+</I>&gt;<i> then
+</I>&gt;<i> finding in the produced image all pixels with that unique color and  
+</I>&gt;<i> just
+</I>&gt;<i> taking the average of all pixels around them (that are not themselves
+</I>&gt;<i> void). Something like that anyway. That might not be the most accurate
+</I>&gt;<i> algorithm, but at least for low zoom levels it should be ok.
+</I>
+I think simple averaging should work well enough for the purpose  -  
+we're only making a 2D maps at the moment :).
+I was looking at GMap 'terrain' layer and it looks really rough in  
+some areas, too:
+
+<A HREF="http://maps.google.com/?">http://maps.google.com/?</A> 
+ie=UTF8&amp;ll=50.666981,-1.57156&amp;spn=0.013029,0.026908&amp;t=p&amp;z=15&amp;om=1
+
+
+Cheers,
+Artem
+&gt;<i>
+</I>&gt;<i> Jochen
+</I>&gt;<i> -- 
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298
+</I>&gt;<i>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/a6a8ce71/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080109/a6a8ce71/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000387.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+	<LI>Next message: <A HREF="000392.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#389">[ date ]</a>
+              <a href="thread.html#389">[ thread ]</a>
+              <a href="subject.html#389">[ subject ]</a>
+              <a href="author.html#389">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS-service of mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3CAB3A6461-977A-433F-9E3E-990347E820A2%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000192.html">
+   <LINK REL="Next"  HREF="000188.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS-service of mapnik</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3CAB3A6461-977A-433F-9E3E-990347E820A2%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] WMS-service of mapnik">artem at mapnik.org
+       </A><BR>
+    <I>Fri Jul 13 15:40:12 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000192.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+        <LI>Next message: <A HREF="000188.html">[Mapnik-devel] Call for better documentation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#193">[ date ]</a>
+              <a href="thread.html#193">[ thread ]</a>
+              <a href="subject.html#193">[ subject ]</a>
+              <a href="author.html#193">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Stephan,
+On 13 Jul 2007, at 12:27, Stephan Holl wrote:
+
+&gt;<i> Hello Artem,
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt;, [20070705 - 21:23:01]
+</I>&gt;<i>
+</I>&gt;&gt;<i> Stephan,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> First thing is to make sure you have working mapnik. Could you
+</I>&gt;&gt;<i> verify you can run python demo:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $  cd $(mapnik_src)/demo/python
+</I>&gt;&gt;<i> $  python ./rundemo.py
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> and you should get two maps on the same directory
+</I>&gt;<i>
+</I>&gt;<i> I have build mapnik from SVN source on my maschine and now the WMS
+</I>&gt;<i> works as expected. Thanks for your help though!
+</I>&gt;<i>
+</I>Great!
+&gt;<i>
+</I>&gt;<i> I have another question regarding the datasets available from here:
+</I>&gt;<i> <A HREF="http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2">http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2</A>
+</I>&gt;<i>
+</I>&gt;<i> The prj-files from the shape said it is in Mercator-projection. I
+</I>&gt;<i> could not find any information about its EPSG-code:
+</I>&gt;<i> Feature Count: 3808
+</I>&gt;<i> Extent: (-20037508.342789, -19929239.113379) - (20037508.342789,
+</I>&gt;<i> 18375854.709643) Layer SRS WKT:
+</I>&gt;<i> PROJCS[&quot;Mercator&quot;,
+</I>&gt;<i>     GEOGCS[&quot;GCS_WGS_1984&quot;,
+</I>&gt;<i>         DATUM[&quot;WGS_1984&quot;,
+</I>&gt;<i>             SPHEROID[&quot;WGS_1984&quot;,6378137,298.257223563]],
+</I>&gt;<i>         PRIMEM[&quot;Greenwich&quot;,0],
+</I>&gt;<i>         UNIT[&quot;Degree&quot;,0.017453292519943295]],
+</I>&gt;<i>     PROJECTION[&quot;Mercator_1SP&quot;],
+</I>&gt;<i>     PARAMETER[&quot;standard_parallel_1&quot;,0],
+</I>&gt;<i>     PARAMETER[&quot;central_meridian&quot;,0],
+</I>&gt;<i>     PARAMETER[&quot;scale_factor&quot;,1],
+</I>&gt;<i>     PARAMETER[&quot;false_easting&quot;,0],
+</I>&gt;<i>     PARAMETER[&quot;false_northing&quot;,0],
+</I>&gt;<i>     UNIT[&quot;Meter&quot;,1]]
+</I>&gt;<i>
+</I>&gt;<i> Could some enlight me please?
+</I>
+Everyone seems to be using 41001 for the Mercator. I'm not sure how  
+'official' this one is . And you might have add extra config string  
+to ensure proj4 knows about Mercator. Try searching proj4 mailing  
+lists , I recall some postings about this issue.
+
+Cheers,
+Artem
+&gt;<i>
+</I>&gt;<i> TIA
+</I>&gt;<i>
+</I>&gt;<i> 	Stephan
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Stephan Holl &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">stephan.holl at intevation.de</A>&gt;, <A HREF="http://intevation.de/">http://intevation.de/</A> 
+</I>&gt;<i> ~stephan
+</I>&gt;<i> Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr&#252;ck - HR B  
+</I>&gt;<i> 18998
+</I>&gt;<i> Gesch&#228;ftsf&#252;hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver  
+</I>&gt;<i> Wagner
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070713/b9b1edf3/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070713/b9b1edf3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000192.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+	<LI>Next message: <A HREF="000188.html">[Mapnik-devel] Call for better documentation
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#193">[ date ]</a>
+              <a href="thread.html#193">[ thread ]</a>
+              <a href="subject.html#193">[ subject ]</a>
+              <a href="author.html#193">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

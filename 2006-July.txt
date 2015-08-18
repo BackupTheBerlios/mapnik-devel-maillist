@@ -1,0 +1,222 @@
+From federico at fsfe.org  Sun Jul 16 15:54:28 2006
+From: federico at fsfe.org (Federico Fissore)
+Date: Sun, 16 Jul 2006 15:54:28 +0200
+Subject: [Mapnik-devel] Gentoo ebuild
+Message-ID: <44BA4514.9090708@fsfe.org>
+
+Hello all
+
+i've created a gentoo ebuild for building and installing mapnik on 
+gentoo boxes
+Please get it from http://bugs.gentoo.org/show_bug.cgi?id=140599
+
+I had to patch che SConstruct files in order to allow users to change 
+optimization level and to make the scons procedure NOT create ANY file 
+outside what in gentoo is called the "sandbox" (the safe place where 
+ebuilds are build before being integrated into the system)
+
+OK and now a question: I dunno if you have used SWIG for the python 
+bindings but I wanted you to use it because that easily leaded to the 
+creation of java bindings, that are what I'm looking for.
+
+I've dedicated two hours to java bindings using swig (in the manual the 
+way I've followed is called "SWIG for the truly lazy") but I wasn't 
+successfull.
+
+Attached you find the tiny swig interface created and here is the 
+command use to wrap it with swig
+cd bindings/java
+swig -v -java -c++ -I../../include -I/usr/include Map.i
+
+This lead to buildable but incomplete Map.java class. In particular the 
+following error occurs
+../../include/map.hpp:92: Error: Syntax error in input(1).
+
+Hope this could help someone, and that someone could help me ;)
+
+Bye
+
+-- 
+: Federico Fissore
+:   Blog : http://www.fridrik.it/blog/
+: Jabber : federico at jabber.fsfe.org
+---------+-----------------------------------------------------
+    []   : "Whatever you do will be insignificant,
+  [][][] |        but it is very important that you do it."
+    ||   :                                              Gandhi
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: Map.i
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060716/1420f692/attachment.ksh>
+
+From jfdoyon at gmail.com  Sun Jul 23 02:09:24 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Sat, 22 Jul 2006 20:09:24 -0400
+Subject: [Mapnik-devel] Gentoo ebuild
+In-Reply-To: <44BA4514.9090708@fsfe.org>
+References: <44BA4514.9090708@fsfe.org>
+Message-ID: <44C2BE34.7040308@gmail.com>
+
+Federico,
+
+Excellent!  Always good to have easy ways to install mapnik :)
+
+Unfortunately, it seems your patches only apply to Gentoo.  I see you've 
+switched fro using PYTHON_PREFIX to PREFIX ... which is bizarre, the 
+python system is fairly strict in it's file system layout.  Why doesn't 
+PYTHON_PREFIX work?
+
+Also, what kind of problems do you get with -O3?
+
+As for SWIG ... I don't think anyone has played with it yet ... very 
+interesting idea however.  For Python/C++, Boost.Python is prefered.  If 
+there's demand for other languages, then great!  Ideally someday it 
+would be nice to incoporate the SWIG stuff into the standard 
+distribution IMO.
+
+The way you're doing it may be over simplistic however ... I'm not 
+surprised it doesn't work!  That might also generate as rather 
+unintuitive API for the Java programmer.
+
+Unfortunately, I fail to see what the problem is on line 92 of map.hpp 
+... it's pretty straightforward.  The previous line is a virtual 
+declaration, maybe SWIG doesn't support that?
+
+Overall, I'm not sure how good C++ support is in SWIG (I've played with 
+it for C with success mind you ... but C++?).
+
+Basically I look at SWIG as a lazy approach ... a little too generic, 
+especially in the OO world.  Have you considered writing a JNI 
+interface?  This would allow a much more java-esque integration I'm 
+betting ... better in the long run.  But then I don't know squat about 
+Java :)
+
+J.F.
+
+Federico Fissore wrote:
+> Hello all
+>
+> i've created a gentoo ebuild for building and installing mapnik on 
+> gentoo boxes
+> Please get it from http://bugs.gentoo.org/show_bug.cgi?id=140599
+>
+> I had to patch che SConstruct files in order to allow users to change 
+> optimization level and to make the scons procedure NOT create ANY file 
+> outside what in gentoo is called the "sandbox" (the safe place where 
+> ebuilds are build before being integrated into the system)
+>
+> OK and now a question: I dunno if you have used SWIG for the python 
+> bindings but I wanted you to use it because that easily leaded to the 
+> creation of java bindings, that are what I'm looking for.
+>
+> I've dedicated two hours to java bindings using swig (in the manual 
+> the way I've followed is called "SWIG for the truly lazy") but I 
+> wasn't successfull.
+>
+> Attached you find the tiny swig interface created and here is the 
+> command use to wrap it with swig
+> cd bindings/java
+> swig -v -java -c++ -I../../include -I/usr/include Map.i
+>
+> This lead to buildable but incomplete Map.java class. In particular 
+> the following error occurs
+> ../../include/map.hpp:92: Error: Syntax error in input(1).
+>
+> Hope this could help someone, and that someone could help me ;)
+>
+> Bye
+>
+> ------------------------------------------------------------------------
+>
+> %module Map
+> %{
+> /* Includes the header in the wrapper code */
+> #include <map.hpp>
+> %}
+>
+> /* Parse the header file to generate wrappers */
+> %include <map.hpp>
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> http://bat.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+
+From federico at fsfe.org  Mon Jul 24 01:02:51 2006
+From: federico at fsfe.org (Federico Fissore)
+Date: Mon, 24 Jul 2006 01:02:51 +0200
+Subject: [Mapnik-devel] Gentoo ebuild
+In-Reply-To: <44C2BE34.7040308@gmail.com>
+References: <44BA4514.9090708@fsfe.org> <44C2BE34.7040308@gmail.com>
+Message-ID: <44C4001B.9080106@fsfe.org>
+
+Jean-Fran?ois Doyon wrote:
+> Federico,
+> 
+> Excellent!  Always good to have easy ways to install mapnik :)
+> 
+> Unfortunately, it seems your patches only apply to Gentoo.  I see you've 
+> switched fro using PYTHON_PREFIX to PREFIX ... which is bizarre, the 
+> python system is fairly strict in it's file system layout.  Why doesn't 
+> PYTHON_PREFIX work?
+
+Indeed it is a gentoo need. For security reasons, afaik gentoo ebuilds 
+are made of two main steps. The first one is where your ebuild does the 
+job (unpacking, patching, compiling...): in this step you create the 
+exact folder tree into a safe sandbox (that is a temp folder), just as 
+you were installing on root folder.
+The second one is made by the emerge utility that takes your "installed" 
+folder tree, reads it, creates a file list and copies it into the root 
+folder.
+You as the ebuild creator cannot allow your makefiles to write files 
+outside the sandbox or emerge will complain interrupting the build process.
+
+> 
+> Also, what kind of problems do you get with -O3?
+
+Absolutely no problem, but in Gentoo things like optimization levels and 
+gcc flags are user settings. Anyway this is just a pre-pre-pre-alpha 
+ebuild: it compiles what is needed but still misses something (the 
+examples, for example, should have a dedicated "use" flag)
+
+> 
+> The way you're doing it may be over simplistic however ... I'm not 
+> surprised it doesn't work!  That might also generate as rather 
+> unintuitive API for the Java programmer.
+> 
+
+Sure of that! I don't know swig but some of its features. I was giving 
+it a try and failed :p
+
+> 
+> Basically I look at SWIG as a lazy approach ... a little too generic, 
+> especially in the OO world.  Have you considered writing a JNI 
+> interface?  This would allow a much more java-esque integration I'm 
+> betting ... better in the long run.  But then I don't know squat about 
+> Java :)
+
+The main reason I was considering SWIG is for its need of an interface 
+file from which it can create bindings for python, java and so on. It 
+seems a way to do the things once for all. But I agree it can't be so 
+easy and clean. I will take a look at the JNI thing as soon as possible.
+
+Bye
+
+Federico
+
+-- 
+: Federico Fissore
+:   Blog : http://www.fridrik.it/blog/
+: Jabber : federico at jabber.fsfe.org
+---------+-----------------------------------------------------
+     []   : "Whatever you do will be insignificant,
+   [][][] |        but it is very important that you do it."
+     ||   :                                              Gandhi
+
+

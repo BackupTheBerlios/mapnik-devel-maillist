@@ -1,0 +1,145 @@
+From artem at mapnik.org  Fri Apr 27 11:36:59 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 27 Apr 2007 10:36:59 +0100
+Subject: [Mapnik-devel] mapnik win32 binaries
+Message-ID: <ECC1FF39-ECCE-489E-9CE4-868BC8BBC7B6@mapnik.org>
+
+Hello lists,
+
+Yesterday, I built and packaged win32 binaries for Mapnik:
+http://media.mapnik.org/mapnik_win32-bin_20070426.zip
+
+All libraries including dependencies are built with VC++ Express on  
+Vista.
+
+There is no installer (yet) so you have to setup %PATH% etc yourself.  
+In 'bin' directory (e.g c:\\mapnik\\bin ) there is a small demo  
+application 'rundemo.exe' which produces two map images from demo  
+data. You can run it like this:
+
+rundemo.exe c:\mapnik\lib\mapnik\input
+
+Everyone (with Windows box) is encouraged to give it a try and report  
+any problems, gotchas ... If everything is OK then win32 binaries  
+will be available as a part of Mapnik release, starting from 0.4.1.
+
+Cheers,
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070427/a01ed6f0/attachment.html>
+
+From Nick.Whitelegg at solent.ac.uk  Mon Apr 30 20:06:03 2007
+From: Nick.Whitelegg at solent.ac.uk (Nick Whitelegg)
+Date: Mon, 30 Apr 2007 19:06:03 +0100
+Subject: [Mapnik-devel] Fw: Clearing label cache in mapnik
+Message-ID: <OF62944249.0595830D-ON802572CD.00636811-802572CD.00636DC6@solent-university.ac.uk>
+
+>Hi Nick,
+
+>On 23 Mar 2007, at 10:15, Nick Whitelegg wrote:
+
+>>Hello Artem,
+
+>>Was thinking of trying to do a quick fix of this myself. Where in the 
+code 
+>>should I be looking?
+
+Hello Artem,
+
+I think I'm finally getting round to doing this.
+
+Could you give me some pointers as to which variables represent label 
+cache, it's a little hard to see from the source.
+
+Looking at the code of agg_renderer.cpp it looks like:
+
+template <typename T>   void agg_renderer<T>::process(text_symbolizer 
+const& sym,                               Feature const& feature,         
+                        proj_transform const& prj_trans) 
+
+
+handles drawing features on text, though it's unclear what stops text 
+being drawn if label cache fills up. Is it the find_placements () method?
+Is there anything I can do in this method to force the label on the 
+feature to always be drawn?
+
+Thanks,
+Nick
+
+
+From artem at mapnik.org  Mon Apr 30 20:56:20 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 30 Apr 2007 19:56:20 +0100
+Subject: [Mapnik-devel] Fw: Clearing label cache in mapnik
+In-Reply-To: <OF62944249.0595830D-ON802572CD.00636811-802572CD.00636DC6@solent-university.ac.uk>
+References: <OF62944249.0595830D-ON802572CD.00636811-802572CD.00636DC6@solent-university.ac.uk>
+Message-ID: <4B7739EE-077A-45B4-9DC1-A6C69A70444C@mapnik.org>
+
+Hi Nick,
+
+On 30 Apr 2007, at 19:06, Nick Whitelegg wrote:
+
+>> Hi Nick,
+>
+>> On 23 Mar 2007, at 10:15, Nick Whitelegg wrote:
+>
+>>> Hello Artem,
+>
+>>> Was thinking of trying to do a quick fix of this myself. Where in  
+>>> the
+> code
+>>> should I be looking?
+>
+> Hello Artem,
+>
+> I think I'm finally getting round to doing this.
+>
+> Could you give me some pointers as to which variables represent label
+> cache, it's a little hard to see from the source.
+>
+> Looking at the code of agg_renderer.cpp it looks like:
+>
+> template <typename T>   void agg_renderer<T>::process(text_symbolizer
+> const& sym,                               Feature const& feature,
+>                         proj_transform const& prj_trans)
+>
+>
+> handles drawing features on text, though it's unclear what stops text
+> being drawn if label cache fills up. Is it the find_placements ()  
+> method?
+> Is there anything I can do in this method to force the label on the
+> feature to always be drawn?
+>
+
+agg_renderer -> placement_finder -> label_collision_detector3 ->  
+quad_tree
+We need a 'clear' method in quad_tree, label_collision_detectorxxx,   
+placement_finder  and an extra property in Layer object.
+I''ll have a go implementing missing bits and I'll let you know.
+
+Cheers,
+Artem
+
+> Thanks,
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070430/07ed7c62/attachment.html>
+

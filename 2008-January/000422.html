@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Text placement code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3C478BD371.1030804%40smartrak.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000441.html">
+   <LINK REL="Next"  HREF="000424.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Text placement code</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Text%20placement%20code&In-Reply-To=%3C478BD371.1030804%40smartrak.co.nz%3E"
+       TITLE="[Mapnik-devel] Text placement code">dave at smartrak.co.nz
+       </A><BR>
+    <I>Mon Jan 14 22:26:09 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000441.html">[Mapnik-devel] Text placement update
+</A></li>
+        <LI>Next message: <A HREF="000424.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#422">[ date ]</a>
+              <a href="thread.html#422">[ thread ]</a>
+              <a href="subject.html#422">[ subject ]</a>
+              <a href="author.html#422">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Artem Pavlenko wrote:
+&gt;<i>
+</I>&gt;<i> There are performance issues with using find_placement when 
+</I>&gt;<i> label_spacing &gt; 0. You can replicate the problem by having 'long' road 
+</I>&gt;<i> geometry but only rendering a small part of it (zoomed in). In this 
+</I>&gt;<i> case the original 'find_placement' would calculate lots ( placement 
+</I>&gt;<i> outside of extent ) causing degradation in performance.  I written 
+</I>&gt;<i> separate find_placement_with_spacing to address this.
+</I>Ah yes, very true!
+&gt;<i> I found it is quite difficult to combine different placement 
+</I>&gt;<i> strategies without creating a big 'blob' method :). I think having 
+</I>&gt;<i> separate smaller blocks are easier to understand/maintain. I spent 
+</I>&gt;<i> sometime re-factoring text rendering stuff, but  I'm sure we can 
+</I>&gt;<i> improve further.
+</I>Definitely, I was only going to refactor them together if it would make 
+sense, sounds like it won't.
+&gt;<i> Would be nice to implement certain aspects like 'sharp' angles 
+</I>&gt;<i> handling...
+</I>Details on this?
+
+Andy Allan wrote:
+ &gt; I'd like to draw your attention to
+ &gt; <A HREF="http://trac.mapnik.org/ticket/38">http://trac.mapnik.org/ticket/38</A>
+
+I'll keep it in mind, I have an idea or two here I will try.
+Currently it appears we displace on the character level (each character 
+gets displaced from the line based on the angle of the line that it is 
+placed on). It may be possible to place all the characters normally then 
+displace them as a word based on the average angle.
+
+One of the reasons I want to investigate the text placement code is that 
+the current find_placement_with_spacing code doesn't handle nicely when 
+the spacing is longer than the line length. I would expect in this case 
+that a single label would be placed in the middle of the street, but 
+currently no labels are placed.
+
+Dave.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000441.html">[Mapnik-devel] Text placement update
+</A></li>
+	<LI>Next message: <A HREF="000424.html">[Mapnik-devel] Text placement code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#422">[ date ]</a>
+              <a href="thread.html#422">[ thread ]</a>
+              <a href="subject.html#422">[ subject ]</a>
+              <a href="author.html#422">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

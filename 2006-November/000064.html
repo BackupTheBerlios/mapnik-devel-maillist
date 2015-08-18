@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Infinite loop while rendering OSM map with	mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Infinite%20loop%20while%20rendering%20OSM%20map%20with%09mapnik&In-Reply-To=%3C1164752541.1719.39.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000060.html">
+   <LINK REL="Next"  HREF="000062.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Infinite loop while rendering OSM map with	mapnik</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Infinite%20loop%20while%20rendering%20OSM%20map%20with%09mapnik&In-Reply-To=%3C1164752541.1719.39.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Infinite loop while rendering OSM map with	mapnik">jburgess at uklinux.net
+       </A><BR>
+    <I>Tue Nov 28 23:22:21 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000060.html">[Mapnik-devel] Infinite loop while rendering OSM map with mapnik
+</A></li>
+        <LI>Next message: <A HREF="000062.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#64">[ date ]</a>
+              <a href="thread.html#64">[ thread ]</a>
+              <a href="subject.html#64">[ subject ]</a>
+              <a href="author.html#64">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, 2006-11-28 at 21:49 +0000, Artem Pavlenko wrote:
+&gt;<i> Cool! thanks for your report. I had a similar problem but with 
+</I>&gt;<i> agg_renderer_outline_aa.h
+</I>&gt;<i> 
+</I>&gt;<i> There are the same loops and my solution was to simply:
+</I>&gt;<i> .....
+</I>&gt;<i> while(abs(sx - lp.x1) + abs(sy - lp.y1) &gt; 2 * lp2.len
+</I>&gt;<i> ...
+</I>&gt;<i> 
+</I>&gt;<i> Could you try the above with those tiles and let me know if this works.
+</I>&gt;<i> Perhaps,we should submit bug to agg.
+</I>&gt;<i> 
+</I>&gt;<i> Artem
+</I>&gt;<i> 
+</I>
+I assume this is what you meant:
+
+-     while(abs(ex - lp.x2) + abs(ey - lp.y2) &gt; lp2.len)
++     while(abs(ex - lp.x2) + abs(ey - lp.y2) &gt; 2 * lp2.len)
+
+
+I tried this and it seems to work fine. I did wonder whether this should
+perhaps be &quot;lp2.len+1&quot; instead, but I have not tried to properly
+understand what the algorithm is trying to achieve.
+
+	Jon
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000060.html">[Mapnik-devel] Infinite loop while rendering OSM map with mapnik
+</A></li>
+	<LI>Next message: <A HREF="000062.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#64">[ date ]</a>
+              <a href="thread.html#64">[ thread ]</a>
+              <a href="subject.html#64">[ subject ]</a>
+              <a href="author.html#64">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

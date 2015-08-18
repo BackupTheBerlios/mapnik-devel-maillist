@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] New release?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20release%3F&In-Reply-To=%3C760879AD-7296-4F7B-AB78-8F5A8464EC06%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000357.html">
+   <LINK REL="Next"  HREF="000364.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] New release?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20release%3F&In-Reply-To=%3C760879AD-7296-4F7B-AB78-8F5A8464EC06%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] New release?">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jan  2 17:35:13 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000357.html">[Mapnik-devel] New release?
+</A></li>
+        <LI>Next message: <A HREF="000364.html">[Mapnik-devel] New release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#354">[ date ]</a>
+              <a href="thread.html#354">[ thread ]</a>
+              <a href="subject.html#354">[ subject ]</a>
+              <a href="author.html#354">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 2 Jan 2008, at 15:59, Martijn van Oosterhout wrote:
+
+&gt;<i> On Dec 29, 2007 11:18 AM, Keith Sharp &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kms at passback.co.uk</A>&gt; wrote:
+</I>&gt;&gt;<i> I think the major thing that needs to be done before a release is
+</I>&gt;&gt;<i> versioned sonames.  This came up as a blocker during the review of my
+</I>&gt;&gt;<i> Mapnik package for inclusion in Fedora:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>         <A HREF="https://bugzilla.redhat.com/show_bug.cgi?id=234581">https://bugzilla.redhat.com/show_bug.cgi?id=234581</A>
+</I>&gt;<i>
+</I>&gt;<i> Is there someone working on this? I have a small amount of experience,
+</I>&gt;<i> if people are interested...
+</I>&gt;<i>
+</I>
+Martijn, sure, your help would be great!
+&gt;<i> All I think they are asking for is that the library get a version
+</I>&gt;<i> number, like libmapnik-0.5.0.so, right?
+</I>
+Yep, something like:
+
+libmapnik.so.0.5.0
+
+When ABI change we'll need to increment major version number i.e
+
+libmapnik.so.1.6.0 and so on.
+
+Scons scripts needs modifying to create correct symbolic links during  
+install, could you have a look into this?
+
+Artem
+&gt;<i>
+</I>&gt;<i> Have a nice day,
+</I>&gt;<i> -- 
+</I>&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000357.html">[Mapnik-devel] New release?
+</A></li>
+	<LI>Next message: <A HREF="000364.html">[Mapnik-devel] New release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#354">[ date ]</a>
+              <a href="thread.html#354">[ thread ]</a>
+              <a href="subject.html#354">[ subject ]</a>
+              <a href="author.html#354">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

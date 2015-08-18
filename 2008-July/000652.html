@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compile error on r714 ubuntu hardy
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compile%20error%20on%20r714%20ubuntu%20hardy&In-Reply-To=%3C633d34560807250913yef1be66k40999c23cc6f874a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000671.html">
+   <LINK REL="Next"  HREF="000653.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compile error on r714 ubuntu hardy</H1>
+    <B>Matt Bartolome</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compile%20error%20on%20r714%20ubuntu%20hardy&In-Reply-To=%3C633d34560807250913yef1be66k40999c23cc6f874a%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compile error on r714 ubuntu hardy">mattxbart at gmail.com
+       </A><BR>
+    <I>Fri Jul 25 18:13:07 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000671.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+        <LI>Next message: <A HREF="000653.html">[Mapnik-devel] compile error on r714 ubuntu hardy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#652">[ date ]</a>
+              <a href="thread.html#652">[ thread ]</a>
+              <a href="subject.html#652">[ subject ]</a>
+              <a href="author.html#652">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, I'm getting the following error. I also used the -c option to
+clear the cache, same result.
+
+$ python scons/scons.py BOOST_INCLUDES=/usr/local/include/boost-1_35
+BOOST_LIBS=/usr/local/lib
+scons: Reading SConscript files ...
+Building on Linux ...
+pkg-config --exists cairomm-1.0
+Checking for C library m... (cached) yes
+Checking for C library ltdl... (cached) yes
+Checking for C library png... (cached) yes
+Checking for C library tiff... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C library jpeg... (cached) yes
+Checking for C library proj... (cached) yes
+Checking for C library pq... (cached) yes
+Checking for C++ library icuuc... (cached) yes
+Checking for C++ library icudata... (cached) yes
+Checking for C++ library gdal... (cached) yes
+Checking for C++ library boost_system-mt... (cached) yes
+Checking for C++ library boost_filesystem-mt... (cached) yes
+Checking for C++ library boost_regex-mt... (cached) yes
+Checking for C++ library boost_iostreams-mt... (cached) yes
+Checking for C++ library boost_program_options-mt... (cached) yes
+Checking for C++ library boost_thread-mt... (cached) yes
+Bindings Python version... 2.5
+Python 2.5 prefix... /usr
+pkg-config --exists pycairo
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -o utils/shapeindex/shapeindex utils/shapeindex/shapeindex.o
+src/envelope.o plugins/input/shape/shapefile.o -Lagg -Lsrc
+-L/usr/local/lib -L/usr/lib -lboost_program_options-mt
+-lboost_iostreams-mt
+utils/shapeindex/shapeindex.o: In function `main':
+shapeindex.cpp:(.text+0x143): undefined reference to
+`boost::program_options::options_description::m_default_line_length'
+collect2: ld returned 1 exit status
+scons: *** [utils/shapeindex/shapeindex] Error 1
+scons: building terminated because of errors.
+
+Any suggestions? I want to see the solution to
+<A HREF="http://trac.mapnik.org/ticket/98">http://trac.mapnik.org/ticket/98</A> in action.
+
+Thanks,
+Matt
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000671.html">[Mapnik-devel] Questions about implementing fallback fonts
+</A></li>
+	<LI>Next message: <A HREF="000653.html">[Mapnik-devel] compile error on r714 ubuntu hardy
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#652">[ date ]</a>
+              <a href="thread.html#652">[ thread ]</a>
+              <a href="subject.html#652">[ subject ]</a>
+              <a href="author.html#652">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

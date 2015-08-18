@@ -1,0 +1,3824 @@
+From rakib114 at gmail.com  Mon Apr  4 10:30:04 2011
+From: rakib114 at gmail.com (rakib rakib)
+Date: Mon, 4 Apr 2011 14:30:04 +0600
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio 2005
+Message-ID: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+
+Hi,
+
+I am new to mapnik. I successfully installed mapnik but I want it to visual
+studio 2005. So I tried to run the C++ demo on Visual studio project. What I
+did is as follows:
+
+*Installation:  *
+
+I installed mapnik 0.7.1 with python 2.6 on Vista as per
+http://trac.mapnik.org/wiki/WindowsInstallation.
+
+I made a directory D:\mapnik installation for visual studio 2005 and copy
+mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik installation
+for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+D:\mapnik installation for visual studio
+2005\mapnik-0.7.1\python\2.6\site-packages
+
+
+*Third party library:*
+
+* *
+
+1.        freetype-2.4.4
+
+2.        icu
+
+3.        libtool-1.5.26
+
+4.        boost_1_46_1
+
+
+
+*Procedure:*
+
+* *
+
+1.        I created a new Win32 Console Application named MapnikApp in the
+above directory.
+
+2.        I tried to run reundemo.cpp in mapnik-0.7.1. I copied the content
+of this file to our MapnikApp.cpp
+
+3.        I included the following to
+Project->Properties->C/C++->General->Additional Include Directories.
+
+        D:\mapnik installation for visual studio 2005\mapnik-0.7.1\include
+
+        D:\mapnik installation for visual studio 2005\boost_1_46_1
+
+        D:\mapnik installation for visual studio 2005\icu\include
+
+        D:\mapnik installation for visual studio 2005\libtool-1.5.26\include
+
+        D:\mapnik installation for visual studio 2005\freetype-2.4.4\include
+
+4.        I added the associate lib directory to
+Project->Properties->Linker->General->Additional Library Directories
+
+5.        I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+
+6.        After running the project (debug, win32) I got the following
+
+
+
+                                   Unhandled exception at 0x1002cbe5
+(mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading location
+
+
+                                                      0xcccccccc.
+
+
+
+               In Release Win32 I got the following.
+
+               std::exception: vector<T> too long when it tried to execute
+m.insert_style.
+
+
+
+               For simplicity I tried to run the following
+
+
+
+        Map m(800,600);
+
+        m.set_background(color_factory::from_string("white"));
+
+        m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+
+                                     1706357.31328276,-25098.593149577));
+
+
+
+        Image32 buf(m.getWidth(),m.getHeight());
+
+        agg_renderer<Image32> ren(m,buf);
+
+        ren.apply();
+
+
+
+ I got the following error.
+
+A buffer overrun has occurred in MapnikApp.exe which has corrupted the
+program's internal state. Press Break to debug the program or Continue to
+terminate the program.
+
+I need help how to solve it.
+
+With best regards,
+Rakib
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110404/27a9fe3d/attachment.html>
+
+From ralf_klammer at gmx.de  Mon Apr  4 12:06:03 2011
+From: ralf_klammer at gmx.de (Ralf Klammer)
+Date: Mon, 04 Apr 2011 12:06:03 +0200
+Subject: [Mapnik-devel] Mapnik-Stylefile vs. SLD Version 1.0.0
+Message-ID: <4D99980B.8010406@gmx.de>
+
+Hi,
+
+could anybody tell me why the Mapnik-Stylefile was not completely 
+implemented as OGC-SLD and was just oriented on it.
+I'm explaining it in the basics of my diploma thesis, but can't find any 
+source with a good reasoning for it.
+
+Actually it has just similarities to the first Version 1.0.0 of SLD 
+because, they splited it to SLD and SE in the current version.
+
+So my own thesis is that SLD didn't fit exactly to the Software, mainly 
+the "Layer"-Element. But was that the reason? Because the Code could 
+have been adapted to the SLD-Specifications, or not?
+
+Thanks for your answers in advance!!!
+
+Cheers
+Ralf
+
+
+From roel.vanhout at gmail.com  Mon Apr  4 12:14:57 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 4 Apr 2011 12:14:57 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+Message-ID: <BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+
+I don't recommend trying to get it all to work with pre-build
+binaries. Most binaries you will find online of third-party libraries
+do not document with which flags they are build, or with which
+compiler etc; and if they use different flags, it won't work anyway.
+Although theoretically anything is possible, in practice you're not
+going to be able to get it to work (things like SECURE_CRT, which
+manifest to use, etc).
+
+I documented how to build from source for all libraries on
+http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the faint
+of heart, especially some PITA libraries like icu and libtool. Also
+check my tickets in trac for some patches to make things build with
+MSVC. I only recommend spending time on it if you're already
+experienced with MSVC and troubleshooting building/linking issues with
+it.
+
+cheers,
+
+roel
+
+
+
+On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com> wrote:
+> Hi,
+>
+> I am new to mapnik. I successfully installed mapnik but I want it to visual
+> studio 2005. So I tried to run the C++ demo on Visual studio project. What I
+> did is as follows:
+>
+> Installation:
+>
+> I installed mapnik 0.7.1 with python 2.6 on Vista as per
+> http://trac.mapnik.org/wiki/WindowsInstallation.
+>
+> I made a directory D:\mapnik installation for visual studio 2005 and copy
+> mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik installation
+> for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+> D:\mapnik installation for visual studio
+> 2005\mapnik-0.7.1\python\2.6\site-packages
+>
+>
+>
+> Third party library:
+>
+>
+>
+> 1.??????? freetype-2.4.4
+>
+> 2.??????? icu
+>
+> 3.??????? libtool-1.5.26
+>
+> 4.??????? boost_1_46_1
+>
+>
+>
+> Procedure:
+>
+>
+>
+> 1.??????? I created a new Win32 Console Application named MapnikApp in the
+> above directory.
+>
+> 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied the content
+> of this file to our MapnikApp.cpp
+>
+> 3.??????? I included the following to
+> Project->Properties->C/C++->General->Additional Include Directories.
+>
+> ??????? D:\mapnik installation for visual studio 2005\mapnik-0.7.1\include
+>
+> ??????? D:\mapnik installation for visual studio 2005\boost_1_46_1
+>
+> ??????? D:\mapnik installation for visual studio 2005\icu\include
+>
+> ??????? D:\mapnik installation for visual studio 2005\libtool-1.5.26\include
+>
+> ??????? D:\mapnik installation for visual studio 2005\freetype-2.4.4\include
+>
+> 4.??????? I added the associate lib directory to
+> Project->Properties->Linker->General->Additional Library Directories
+>
+> 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+>
+> 6.??????? After running the project (debug, win32) I got the following
+>
+>
+>
+> ?? ????????????????? ??????????????Unhandled exception at 0x1002cbe5
+> (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading location
+>
+> ???????????????? ?????????????????????? ??????????????0xcccccccc.
+>
+>
+>
+> ?????????????? In Release Win32 I got the following.
+>
+> ?????????????? std::exception: vector<T> too long when it tried to execute
+> m.insert_style.
+>
+>
+>
+> ?????????????? For simplicity I tried to run the following
+>
+>
+>
+> ??????? Map m(800,600);
+>
+> ??????? m.set_background(color_factory::from_string("white"));
+>
+> ??????? m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>
+> ???????????????????????????????????? 1706357.31328276,-25098.593149577));
+>
+>
+>
+> ??????? Image32 buf(m.getWidth(),m.getHeight());
+>
+> ??????? agg_renderer<Image32> ren(m,buf);
+>
+> ??????? ren.apply();
+>
+>
+>
+> ?I got the following error.
+>
+> A buffer overrun has occurred in MapnikApp.exe which has corrupted the
+> program's internal state. Press Break to debug the program or Continue to
+> terminate the program.
+>
+> I need help how to solve it.
+>
+> With best regards,
+> Rakib
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From rustam.kamberov at gmail.com  Mon Apr  4 12:53:39 2011
+From: rustam.kamberov at gmail.com (Rustam Kamberov)
+Date: Mon, 4 Apr 2011 12:53:39 +0200
+Subject: [Mapnik-devel] Mapnik 0.7.1 and Python 2.6.6 on Windows 7 64 bit
+Message-ID: <BANLkTinL92ugYU2SyCTzCu7OqRzwEcrMdQ@mail.gmail.com>
+
+Dear All,
+
+I want to use Mapnik lilbrary within Python 2.6.6. I am using Windows 7 64 bits.
+
+When installing Mapnik 0.7.2 I followed the steps described on
+trac.mapnik.org page.
+
+I added "C:\mapnik-0.7.1\lib" to PATH variable, added
+"C:\mapnik-0.7.1\python\2.5\site-packages" to the PYTHONPATH variable.
+But I get error:
+
+ImportError: DLL load failed: The specified procedure could not be found.
+
+I would extremely appreciate any advices and help.
+
+Thanks in advance,
+Rustam
+
+
+From roel.vanhout at gmail.com  Tue Apr  5 14:55:48 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Tue, 5 Apr 2011 14:55:48 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+Message-ID: <BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+
+The latest boost version doesn't work because it uses filesystem v3.
+In this version, there are no cast operators from filesystem::path to
+std::string. Either define a preprocessor token to use v2 (don't know
+which one, it's in the documentation); or use an earlier version (I
+think 1.44 is the latest that used v2 by default).
+
+
+cheers,
+
+roel
+
+
+On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com> wrote:
+> Thank you for your kind help.
+>
+> I download mapnik source from your link. I added all the libraries and
+> create solution. I took boost-1.46.1.
+> I tried to follow the link and made a visual studio 2005 project. Where I
+> built it I found several error like these:
+>
+> 1>d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+> error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1 from
+> 'boost::filesystem3::path' to 'const std::string &'
+> 1>??????? Reason: cannot convert from 'boost::filesystem3::path' to 'const
+> std::string'
+> 1>??????? No user-defined-conversion operator available that can perform
+> this conversion, or the operator cannot be called
+> 1>d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> error C2039: 'string' : is not a member of
+> 'boost::filesystem3::directory_entry'
+> 1>??????? d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> : see declaration of 'boost::filesystem3::directory_entry'
+> 1>d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> error C2228: left of '.c_str' must have class/struct/union
+> 1>d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> error C2039: 'string' : is not a member of
+> 'boost::filesystem3::directory_entry'
+> 1>??????? d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> : see declaration of 'boost::filesystem3::directory_entry'
+> 1>d:\mapnik by
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> error C2228: left of '.c_str' must have class/struct/union
+>
+>
+> On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+>>
+>> I don't recommend trying to get it all to work with pre-build
+>> binaries. Most binaries you will find online of third-party libraries
+>> do not document with which flags they are build, or with which
+>> compiler etc; and if they use different flags, it won't work anyway.
+>> Although theoretically anything is possible, in practice you're not
+>> going to be able to get it to work (things like SECURE_CRT, which
+>> manifest to use, etc).
+>>
+>> I documented how to build from source for all libraries on
+>> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the faint
+>> of heart, especially some PITA libraries like icu and libtool. Also
+>> check my tickets in trac for some patches to make things build with
+>> MSVC. I only recommend spending time on it if you're already
+>> experienced with MSVC and troubleshooting building/linking issues with
+>> it.
+>>
+>> cheers,
+>>
+>> roel
+>>
+>>
+>>
+>> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com> wrote:
+>> > Hi,
+>> >
+>> > I am new to mapnik. I successfully installed mapnik but I want it to
+>> > visual
+>> > studio 2005. So I tried to run the C++ demo on Visual studio project.
+>> > What I
+>> > did is as follows:
+>> >
+>> > Installation:
+>> >
+>> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+>> > http://trac.mapnik.org/wiki/WindowsInstallation.
+>> >
+>> > I made a directory D:\mapnik installation for visual studio 2005 and
+>> > copy
+>> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+>> > installation
+>> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+>> > D:\mapnik installation for visual studio
+>> > 2005\mapnik-0.7.1\python\2.6\site-packages
+>> >
+>> >
+>> >
+>> > Third party library:
+>> >
+>> >
+>> >
+>> > 1.??????? freetype-2.4.4
+>> >
+>> > 2.??????? icu
+>> >
+>> > 3.??????? libtool-1.5.26
+>> >
+>> > 4.??????? boost_1_46_1
+>> >
+>> >
+>> >
+>> > Procedure:
+>> >
+>> >
+>> >
+>> > 1.??????? I created a new Win32 Console Application named MapnikApp in
+>> > the
+>> > above directory.
+>> >
+>> > 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied the
+>> > content
+>> > of this file to our MapnikApp.cpp
+>> >
+>> > 3.??????? I included the following to
+>> > Project->Properties->C/C++->General->Additional Include Directories.
+>> >
+>> > ??????? D:\mapnik installation for visual studio
+>> > 2005\mapnik-0.7.1\include
+>> >
+>> > ??????? D:\mapnik installation for visual studio 2005\boost_1_46_1
+>> >
+>> > ??????? D:\mapnik installation for visual studio 2005\icu\include
+>> >
+>> > ??????? D:\mapnik installation for visual studio
+>> > 2005\libtool-1.5.26\include
+>> >
+>> > ??????? D:\mapnik installation for visual studio
+>> > 2005\freetype-2.4.4\include
+>> >
+>> > 4.??????? I added the associate lib directory to
+>> > Project->Properties->Linker->General->Additional Library Directories
+>> >
+>> > 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+>> >
+>> > 6.??????? After running the project (debug, win32) I got the following
+>> >
+>> >
+>> >
+>> > ?? ????????????????? ??????????????Unhandled exception at 0x1002cbe5
+>> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading
+>> > location
+>> >
+>> > ???????????????? ?????????????????????? ??????????????0xcccccccc.
+>> >
+>> >
+>> >
+>> > ?????????????? In Release Win32 I got the following.
+>> >
+>> > ?????????????? std::exception: vector<T> too long when it tried to
+>> > execute
+>> > m.insert_style.
+>> >
+>> >
+>> >
+>> > ?????????????? For simplicity I tried to run the following
+>> >
+>> >
+>> >
+>> > ??????? Map m(800,600);
+>> >
+>> > ??????? m.set_background(color_factory::from_string("white"));
+>> >
+>> > ??????? m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>> >
+>> >
+>> > 1706357.31328276,-25098.593149577));
+>> >
+>> >
+>> >
+>> > ??????? Image32 buf(m.getWidth(),m.getHeight());
+>> >
+>> > ??????? agg_renderer<Image32> ren(m,buf);
+>> >
+>> > ??????? ren.apply();
+>> >
+>> >
+>> >
+>> > ?I got the following error.
+>> >
+>> > A buffer overrun has occurred in MapnikApp.exe which has corrupted the
+>> > program's internal state. Press Break to debug the program or Continue
+>> > to
+>> > terminate the program.
+>> >
+>> > I need help how to solve it.
+>> >
+>> > With best regards,
+>> > Rakib
+>> >
+>> > _______________________________________________
+>> > Mapnik-devel mailing list
+>> > Mapnik-devel at lists.berlios.de
+>> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >
+>> >
+>
+>
+
+
+From roel.vanhout at gmail.com  Wed Apr  6 11:25:50 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Wed, 6 Apr 2011 11:25:50 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+Message-ID: <BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+
+You probably haven't selected the right runtime for all projects.
+Check that the runtime (it's in the project properties under 'C++' I
+think, I don't know by heart) is set to 'multi threaded DLL' or
+whatever it is you want to use. When multiple projects use different
+settings, you get linker errors like this.
+
+(please use 'reply all' so that the list has a copy for future
+reference of other users)
+
+cheers,
+
+roel
+
+
+On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+> Thank for for your early reply.
+>
+> Now I use boost 1.44. I think I am closing. Now I get following error.
+>
+> 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'libcmtd.lib'
+> conflicts with use of other libs; use /NODEFAULTLIB:library
+> 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+> conflicts with use of other libs; use /NODEFAULTLIB:library
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::filesystem2::file_status __cdecl
+> boost::filesystem2::detail::status_api(class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> > const &,class
+> boost::system::error_code &)"
+> (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23@ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVerror_code at system@3@@Z)
+> referenced in function "bool __cdecl boost::filesystem2::exists<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >(class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> const &)"
+> (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@01@@Z)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_category const & __cdecl
+> boost::system::system_category(void)"
+> (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced in
+> function "public: __thiscall boost::system::error_code::error_code(void)"
+> (??0error_code at system@boost@@QAE at XZ)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_code __cdecl
+> boost::filesystem2::detail::dir_itr_increment(void * &,class
+> std::basic_string<char,struct std::char_traits<char>,class
+> std::allocator<char> > &,class boost::filesystem2::file_status &,class
+> boost::filesystem2::file_status &)"
+> (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVfile_status at 23@2 at Z)
+> referenced in function "private: void __thiscall
+> boost::filesystem2::basic_directory_iterator<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >::increment(void)"
+> (?increment@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAEXXZ)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_code __cdecl
+> boost::filesystem2::detail::dir_itr_first(void * &,class
+> std::basic_string<char,struct std::char_traits<char>,class
+> std::allocator<char> > const &,class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> > &,class
+> boost::filesystem2::file_status &,class boost::filesystem2::file_status &)"
+> (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAV67 at AAVfile_status@23 at 3@Z)
+> referenced in function "private: class boost::system::error_code __thiscall
+> boost::filesystem2::basic_directory_iterator<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >::m_init(class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> const &)"
+> (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_code __cdecl
+> boost::filesystem2::detail::not_found_error(void)"
+> (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at XZ)
+> referenced in function "private: class boost::system::error_code __thiscall
+> boost::filesystem2::basic_directory_iterator<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >::m_init(class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> const &)"
+> (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_code __cdecl
+> boost::filesystem2::detail::dir_itr_close(void * &)"
+> (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAX@Z)
+> referenced in function "public: __thiscall
+> boost::filesystem2::detail::dir_itr_imp<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >::~dir_itr_imp<class
+> boost::filesystem2::basic_path<class std::basic_string<char,struct
+> std::char_traits<char>,class std::allocator<char> >,struct
+> boost::filesystem2::path_traits> >(void)"
+> (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@detail at filesystem2@boost@@QAE at XZ)
+> 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> symbol "class boost::system::error_category const & __cdecl
+> boost::system::generic_category(void)"
+> (?generic_category at system@boost@@YAABVerror_category at 12@XZ) referenced in
+> function "void __cdecl boost::system::`dynamic initializer for
+> 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+>
+> On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+>>
+>> The latest boost version doesn't work because it uses filesystem v3.
+>> In this version, there are no cast operators from filesystem::path to
+>> std::string. Either define a preprocessor token to use v2 (don't know
+>> which one, it's in the documentation); or use an earlier version (I
+>> think 1.44 is the latest that used v2 by default).
+>>
+>>
+>> cheers,
+>>
+>> roel
+>>
+>>
+>> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com> wrote:
+>> > Thank you for your kind help.
+>> >
+>> > I download mapnik source from your link. I added all the libraries and
+>> > create solution. I took boost-1.46.1.
+>> > I tried to follow the link and made a visual studio 2005 project. Where
+>> > I
+>> > built it I found several error like these:
+>> >
+>> > 1>d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+>> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1 from
+>> > 'boost::filesystem3::path' to 'const std::string &'
+>> > 1>??????? Reason: cannot convert from 'boost::filesystem3::path' to
+>> > 'const
+>> > std::string'
+>> > 1>??????? No user-defined-conversion operator available that can perform
+>> > this conversion, or the operator cannot be called
+>> > 1>d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> > error C2039: 'string' : is not a member of
+>> > 'boost::filesystem3::directory_entry'
+>> > 1>??????? d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> > : see declaration of 'boost::filesystem3::directory_entry'
+>> > 1>d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> > error C2228: left of '.c_str' must have class/struct/union
+>> > 1>d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> > error C2039: 'string' : is not a member of
+>> > 'boost::filesystem3::directory_entry'
+>> > 1>??????? d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> > : see declaration of 'boost::filesystem3::directory_entry'
+>> > 1>d:\mapnik by
+>> >
+>> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> > error C2228: left of '.c_str' must have class/struct/union
+>> >
+>> >
+>> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> > wrote:
+>> >>
+>> >> I don't recommend trying to get it all to work with pre-build
+>> >> binaries. Most binaries you will find online of third-party libraries
+>> >> do not document with which flags they are build, or with which
+>> >> compiler etc; and if they use different flags, it won't work anyway.
+>> >> Although theoretically anything is possible, in practice you're not
+>> >> going to be able to get it to work (things like SECURE_CRT, which
+>> >> manifest to use, etc).
+>> >>
+>> >> I documented how to build from source for all libraries on
+>> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the faint
+>> >> of heart, especially some PITA libraries like icu and libtool. Also
+>> >> check my tickets in trac for some patches to make things build with
+>> >> MSVC. I only recommend spending time on it if you're already
+>> >> experienced with MSVC and troubleshooting building/linking issues with
+>> >> it.
+>> >>
+>> >> cheers,
+>> >>
+>> >> roel
+>> >>
+>> >>
+>> >>
+>> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+>> >> wrote:
+>> >> > Hi,
+>> >> >
+>> >> > I am new to mapnik. I successfully installed mapnik but I want it to
+>> >> > visual
+>> >> > studio 2005. So I tried to run the C++ demo on Visual studio project.
+>> >> > What I
+>> >> > did is as follows:
+>> >> >
+>> >> > Installation:
+>> >> >
+>> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+>> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+>> >> >
+>> >> > I made a directory D:\mapnik installation for visual studio 2005 and
+>> >> > copy
+>> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+>> >> > installation
+>> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+>> >> > D:\mapnik installation for visual studio
+>> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+>> >> >
+>> >> >
+>> >> >
+>> >> > Third party library:
+>> >> >
+>> >> >
+>> >> >
+>> >> > 1.??????? freetype-2.4.4
+>> >> >
+>> >> > 2.??????? icu
+>> >> >
+>> >> > 3.??????? libtool-1.5.26
+>> >> >
+>> >> > 4.??????? boost_1_46_1
+>> >> >
+>> >> >
+>> >> >
+>> >> > Procedure:
+>> >> >
+>> >> >
+>> >> >
+>> >> > 1.??????? I created a new Win32 Console Application named MapnikApp
+>> >> > in
+>> >> > the
+>> >> > above directory.
+>> >> >
+>> >> > 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied the
+>> >> > content
+>> >> > of this file to our MapnikApp.cpp
+>> >> >
+>> >> > 3.??????? I included the following to
+>> >> > Project->Properties->C/C++->General->Additional Include Directories.
+>> >> >
+>> >> > ??????? D:\mapnik installation for visual studio
+>> >> > 2005\mapnik-0.7.1\include
+>> >> >
+>> >> > ??????? D:\mapnik installation for visual studio 2005\boost_1_46_1
+>> >> >
+>> >> > ??????? D:\mapnik installation for visual studio 2005\icu\include
+>> >> >
+>> >> > ??????? D:\mapnik installation for visual studio
+>> >> > 2005\libtool-1.5.26\include
+>> >> >
+>> >> > ??????? D:\mapnik installation for visual studio
+>> >> > 2005\freetype-2.4.4\include
+>> >> >
+>> >> > 4.??????? I added the associate lib directory to
+>> >> > Project->Properties->Linker->General->Additional Library Directories
+>> >> >
+>> >> > 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to project.
+>> >> >
+>> >> > 6.??????? After running the project (debug, win32) I got the
+>> >> > following
+>> >> >
+>> >> >
+>> >> >
+>> >> > ?? ????????????????? ??????????????Unhandled exception at 0x1002cbe5
+>> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading
+>> >> > location
+>> >> >
+>> >> > ???????????????? ?????????????????????? ??????????????0xcccccccc.
+>> >> >
+>> >> >
+>> >> >
+>> >> > ?????????????? In Release Win32 I got the following.
+>> >> >
+>> >> > ?????????????? std::exception: vector<T> too long when it tried to
+>> >> > execute
+>> >> > m.insert_style.
+>> >> >
+>> >> >
+>> >> >
+>> >> > ?????????????? For simplicity I tried to run the following
+>> >> >
+>> >> >
+>> >> >
+>> >> > ??????? Map m(800,600);
+>> >> >
+>> >> > ??????? m.set_background(color_factory::from_string("white"));
+>> >> >
+>> >> >
+>> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>> >> >
+>> >> >
+>> >> > 1706357.31328276,-25098.593149577));
+>> >> >
+>> >> >
+>> >> >
+>> >> > ??????? Image32 buf(m.getWidth(),m.getHeight());
+>> >> >
+>> >> > ??????? agg_renderer<Image32> ren(m,buf);
+>> >> >
+>> >> > ??????? ren.apply();
+>> >> >
+>> >> >
+>> >> >
+>> >> > ?I got the following error.
+>> >> >
+>> >> > A buffer overrun has occurred in MapnikApp.exe which has corrupted
+>> >> > the
+>> >> > program's internal state. Press Break to debug the program or
+>> >> > Continue
+>> >> > to
+>> >> > terminate the program.
+>> >> >
+>> >> > I need help how to solve it.
+>> >> >
+>> >> > With best regards,
+>> >> > Rakib
+>> >> >
+>> >> > _______________________________________________
+>> >> > Mapnik-devel mailing list
+>> >> > Mapnik-devel at lists.berlios.de
+>> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >> >
+>> >> >
+>> >
+>> >
+>
+>
+
+
+From roel.vanhout at gmail.com  Wed Apr  6 15:27:52 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Wed, 6 Apr 2011 15:27:52 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+	<BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+	<BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+Message-ID: <BANLkTimXwqcXJVgL7zJUUVNXhnAEPeyUtg@mail.gmail.com>
+
+Yes, I remember I had a similar issue at first, unfortunately I can't
+remember what I did to solve it...
+
+I think the problem was that rundemo.cpp uses characters outside of
+the 7-bit ascii range for a selector, and that when I removed the
+layer with that in it, that it worked. I don't remember if I got to
+the root cause and fixed it. The easiest way to debug is to add trace
+statements to your rundemo.cpp and see where it crashes.
+
+Otherwise, start with commenting out all layers and only re-enable
+them one by one, until you know which one is causing the issue.
+Something is going OK obviously, otherwise you wouldn't have any
+output.
+
+Or run your application under the debugger, of course - it'll break
+right into where the issue is (it's a simple null pointer dereference
+it seems, with some luck it's on a pointer in your rundemo.cpp itself,
+that should show you what is going wrong very quickly).
+
+When I get home tonight and think about it, I'll look up the
+rundemo.cpp that I used in the end and post it.
+
+
+cheers,
+
+roel
+
+
+On Wed, Apr 6, 2011 at 3:19 PM, rakib rakib <rakib114 at gmail.com> wrote:
+> Thanks for your reply.
+>
+> Now I successfully build mapnik. I copy plugin_shape.dll? to
+> mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+> rundemo.cpp with following
+>
+> When running I got when it creates the png files and after it got crashed
+> with following. In png files I get only the label but no map..
+> Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+> 0xC0000005: Access violation reading location 0x2bf14c25.
+>
+>
+> On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+>>
+>> You probably haven't selected the right runtime for all projects.
+>> Check that the runtime (it's in the project properties under 'C++' I
+>> think, I don't know by heart) is set to 'multi threaded DLL' or
+>> whatever it is you want to use. When multiple projects use different
+>> settings, you get linker errors like this.
+>>
+>> (please use 'reply all' so that the list has a copy for future
+>> reference of other users)
+>>
+>> cheers,
+>>
+>> roel
+>>
+>>
+>> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+>> > Thank for for your early reply.
+>> >
+>> > Now I use boost 1.44. I think I am closing. Now I get following error.
+>> >
+>> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'libcmtd.lib'
+>> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+>> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::filesystem2::file_status __cdecl
+>> > boost::filesystem2::detail::status_api(class
+>> > std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> > const &,class
+>> > boost::system::error_code &)"
+>> >
+>> > (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23@ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVerror_code at system@3@@Z)
+>> > referenced in function "bool __cdecl boost::filesystem2::exists<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@01@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_category const & __cdecl
+>> > boost::system::system_category(void)"
+>> > (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced in
+>> > function "public: __thiscall
+>> > boost::system::error_code::error_code(void)"
+>> > (??0error_code at system@boost@@QAE at XZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_increment(void * &,class
+>> > std::basic_string<char,struct std::char_traits<char>,class
+>> > std::allocator<char> > &,class boost::filesystem2::file_status &,class
+>> > boost::filesystem2::file_status &)"
+>> >
+>> > (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVfile_status at 23@2 at Z)
+>> > referenced in function "private: void __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::increment(void)"
+>> >
+>> > (?increment@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAEXXZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_first(void * &,class
+>> > std::basic_string<char,struct std::char_traits<char>,class
+>> > std::allocator<char> > const &,class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> > &,class
+>> > boost::filesystem2::file_status &,class boost::filesystem2::file_status
+>> > &)"
+>> >
+>> > (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAV67 at AAVfile_status@23 at 3@Z)
+>> > referenced in function "private: class boost::system::error_code
+>> > __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::m_init(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::not_found_error(void)"
+>> > (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at XZ)
+>> > referenced in function "private: class boost::system::error_code
+>> > __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::m_init(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_close(void * &)"
+>> >
+>> > (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAX@Z)
+>> > referenced in function "public: __thiscall
+>> > boost::filesystem2::detail::dir_itr_imp<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::~dir_itr_imp<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >(void)"
+>> >
+>> > (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@detail at filesystem2@boost@@QAE at XZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_category const & __cdecl
+>> > boost::system::generic_category(void)"
+>> > (?generic_category at system@boost@@YAABVerror_category at 12@XZ) referenced
+>> > in
+>> > function "void __cdecl boost::system::`dynamic initializer for
+>> > 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+>> >
+>> > On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> > wrote:
+>> >>
+>> >> The latest boost version doesn't work because it uses filesystem v3.
+>> >> In this version, there are no cast operators from filesystem::path to
+>> >> std::string. Either define a preprocessor token to use v2 (don't know
+>> >> which one, it's in the documentation); or use an earlier version (I
+>> >> think 1.44 is the latest that used v2 by default).
+>> >>
+>> >>
+>> >> cheers,
+>> >>
+>> >> roel
+>> >>
+>> >>
+>> >> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com> wrote:
+>> >> > Thank you for your kind help.
+>> >> >
+>> >> > I download mapnik source from your link. I added all the libraries
+>> >> > and
+>> >> > create solution. I took boost-1.46.1.
+>> >> > I tried to follow the link and made a visual studio 2005 project.
+>> >> > Where
+>> >> > I
+>> >> > built it I found several error like these:
+>> >> >
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+>> >> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1
+>> >> > from
+>> >> > 'boost::filesystem3::path' to 'const std::string &'
+>> >> > 1>??????? Reason: cannot convert from 'boost::filesystem3::path' to
+>> >> > 'const
+>> >> > std::string'
+>> >> > 1>??????? No user-defined-conversion operator available that can
+>> >> > perform
+>> >> > this conversion, or the operator cannot be called
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> > error C2039: 'string' : is not a member of
+>> >> > 'boost::filesystem3::directory_entry'
+>> >> > 1>??????? d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> > error C2039: 'string' : is not a member of
+>> >> > 'boost::filesystem3::directory_entry'
+>> >> > 1>??????? d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> >
+>> >> >
+>> >> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> >> > wrote:
+>> >> >>
+>> >> >> I don't recommend trying to get it all to work with pre-build
+>> >> >> binaries. Most binaries you will find online of third-party
+>> >> >> libraries
+>> >> >> do not document with which flags they are build, or with which
+>> >> >> compiler etc; and if they use different flags, it won't work anyway.
+>> >> >> Although theoretically anything is possible, in practice you're not
+>> >> >> going to be able to get it to work (things like SECURE_CRT, which
+>> >> >> manifest to use, etc).
+>> >> >>
+>> >> >> I documented how to build from source for all libraries on
+>> >> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the
+>> >> >> faint
+>> >> >> of heart, especially some PITA libraries like icu and libtool. Also
+>> >> >> check my tickets in trac for some patches to make things build with
+>> >> >> MSVC. I only recommend spending time on it if you're already
+>> >> >> experienced with MSVC and troubleshooting building/linking issues
+>> >> >> with
+>> >> >> it.
+>> >> >>
+>> >> >> cheers,
+>> >> >>
+>> >> >> roel
+>> >> >>
+>> >> >>
+>> >> >>
+>> >> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+>> >> >> wrote:
+>> >> >> > Hi,
+>> >> >> >
+>> >> >> > I am new to mapnik. I successfully installed mapnik but I want it
+>> >> >> > to
+>> >> >> > visual
+>> >> >> > studio 2005. So I tried to run the C++ demo on Visual studio
+>> >> >> > project.
+>> >> >> > What I
+>> >> >> > did is as follows:
+>> >> >> >
+>> >> >> > Installation:
+>> >> >> >
+>> >> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+>> >> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+>> >> >> >
+>> >> >> > I made a directory D:\mapnik installation for visual studio 2005
+>> >> >> > and
+>> >> >> > copy
+>> >> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+>> >> >> > installation
+>> >> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set
+>> >> >> > to
+>> >> >> > D:\mapnik installation for visual studio
+>> >> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > Third party library:
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > 1.??????? freetype-2.4.4
+>> >> >> >
+>> >> >> > 2.??????? icu
+>> >> >> >
+>> >> >> > 3.??????? libtool-1.5.26
+>> >> >> >
+>> >> >> > 4.??????? boost_1_46_1
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > Procedure:
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > 1.??????? I created a new Win32 Console Application named
+>> >> >> > MapnikApp
+>> >> >> > in
+>> >> >> > the
+>> >> >> > above directory.
+>> >> >> >
+>> >> >> > 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied
+>> >> >> > the
+>> >> >> > content
+>> >> >> > of this file to our MapnikApp.cpp
+>> >> >> >
+>> >> >> > 3.??????? I included the following to
+>> >> >> > Project->Properties->C/C++->General->Additional Include
+>> >> >> > Directories.
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\mapnik-0.7.1\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio 2005\boost_1_46_1
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio 2005\icu\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\libtool-1.5.26\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\freetype-2.4.4\include
+>> >> >> >
+>> >> >> > 4.??????? I added the associate lib directory to
+>> >> >> > Project->Properties->Linker->General->Additional Library
+>> >> >> > Directories
+>> >> >> >
+>> >> >> > 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to
+>> >> >> > project.
+>> >> >> >
+>> >> >> > 6.??????? After running the project (debug, win32) I got the
+>> >> >> > following
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?? ????????????????? ??????????????Unhandled exception at
+>> >> >> > 0x1002cbe5
+>> >> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation
+>> >> >> > reading
+>> >> >> > location
+>> >> >> >
+>> >> >> > ???????????????? ?????????????????????? ??????????????0xcccccccc.
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?????????????? In Release Win32 I got the following.
+>> >> >> >
+>> >> >> > ?????????????? std::exception: vector<T> too long when it tried to
+>> >> >> > execute
+>> >> >> > m.insert_style.
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?????????????? For simplicity I tried to run the following
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ??????? Map m(800,600);
+>> >> >> >
+>> >> >> > ??????? m.set_background(color_factory::from_string("white"));
+>> >> >> >
+>> >> >> >
+>> >> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>> >> >> >
+>> >> >> >
+>> >> >> > 1706357.31328276,-25098.593149577));
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ??????? Image32 buf(m.getWidth(),m.getHeight());
+>> >> >> >
+>> >> >> > ??????? agg_renderer<Image32> ren(m,buf);
+>> >> >> >
+>> >> >> > ??????? ren.apply();
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?I got the following error.
+>> >> >> >
+>> >> >> > A buffer overrun has occurred in MapnikApp.exe which has corrupted
+>> >> >> > the
+>> >> >> > program's internal state. Press Break to debug the program or
+>> >> >> > Continue
+>> >> >> > to
+>> >> >> > terminate the program.
+>> >> >> >
+>> >> >> > I need help how to solve it.
+>> >> >> >
+>> >> >> > With best regards,
+>> >> >> > Rakib
+>> >> >> >
+>> >> >> > _______________________________________________
+>> >> >> > Mapnik-devel mailing list
+>> >> >> > Mapnik-devel at lists.berlios.de
+>> >> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >> >> >
+>> >> >> >
+>> >> >
+>> >> >
+>> >
+>> >
+>
+>
+
+
+From dane at dbsgeo.com  Wed Apr  6 19:47:31 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 6 Apr 2011 13:47:31 -0400
+Subject: [Mapnik-devel] Shapefile memory and file handle optimizations
+Message-ID: <4A60D6BE-2F6E-42B8-B78C-ED5775A38CE7@dbsgeo.com>
+
+Hi,
+
+One of the early positive outcomes of the FOSS4G 2010 WMS shootout last year was a major speed improvement to the shapefile driver. I found that Mapnik's first results were faster than all other servers for PostGIS but much slower for shapefiles under high load (tests were made using up to 64 concurrent requests).
+
+So, Artem looked through the shapefile driver and noticed that for each request we re-opened and closed the boost::iostream memory mapped files of the shapefile (.shp, .dbf, index). By creating the shape_io object at datasource initialization and re-using for each request rendering speeds increased dramatically [1].
+
+But, this created a new problem: running out of file handles. For every shapefile datasource 3 handles are created for the .shp,.dbf, and .index. And because a mapnik.Map object is not designed to be shared between threads (nor are datasource objects) multi-threaded servers (like mod_tile and paleoserver) need to make N copies of the map per N threads. So, this can quickly max out the systems ulimit -n if you are using a map with more than 5-10 shapefiles.
+
+Here is the ticket for this issue: http://trac.mapnik.org/ticket/725
+
+So, the task was to find a way to limit the usage of open file handles to use less memory while keeping the same high performance. Artem and I have been discussing this issue over the last several months, and today Artem committed an excellent fix [2] to leverage boost::interprocess [3] for a shared cache of "mapped regions", allowing only one shapefile file handle to be used. I've confirmed that performance is on par with the previous methods while memory usage is way down (when creating many rendering threads).
+
+Fantastic work Artem!
+
+Dane
+
+[1] http://trac.mapnik.org/changeset/2188
+[2] http://trac.mapnik.org/changeset/2750
+[3] http://www.boost.org/doc/libs/1_46_0/doc/html/interprocess.html
+
+From roel.vanhout at gmail.com  Wed Apr  6 20:17:06 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Wed, 6 Apr 2011 20:17:06 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+	<BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+	<BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+Message-ID: <BANLkTikLHCyv6FvcWJo-kDpSmdb04Ba5Sw@mail.gmail.com>
+
+Ok well turns out I didn't keep the intermediate versions of my rundemo.cpp.
+
+I did see the lines that at one point I had a problem with; comment out this:
+
+        rule_type provpoly_rule_qc;
+        provpoly_rule_qc.set_filter(create_filter("[NOM_FR] = 'Qu\xe9""bec'"));
+        provpoly_rule_qc.append(polygon_symbolizer(color(217, 235, 203)));
+        provpoly_style.add_rule(provpoly_rule_qc);
+
+part and check if you still have the same problem. Otherwise, run it
+in the debugger like I mentioned (if you already have a debug build
+set up, it's the easiest way to go all together...)
+
+
+cheers,
+
+roel
+
+
+
+On Wed, Apr 6, 2011 at 3:19 PM, rakib rakib <rakib114 at gmail.com> wrote:
+> Thanks for your reply.
+>
+> Now I successfully build mapnik. I copy plugin_shape.dll? to
+> mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+> rundemo.cpp with following
+>
+> When running I got when it creates the png files and after it got crashed
+> with following. In png files I get only the label but no map..
+> Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+> 0xC0000005: Access violation reading location 0x2bf14c25.
+>
+>
+> On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+>>
+>> You probably haven't selected the right runtime for all projects.
+>> Check that the runtime (it's in the project properties under 'C++' I
+>> think, I don't know by heart) is set to 'multi threaded DLL' or
+>> whatever it is you want to use. When multiple projects use different
+>> settings, you get linker errors like this.
+>>
+>> (please use 'reply all' so that the list has a copy for future
+>> reference of other users)
+>>
+>> cheers,
+>>
+>> roel
+>>
+>>
+>> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+>> > Thank for for your early reply.
+>> >
+>> > Now I use boost 1.44. I think I am closing. Now I get following error.
+>> >
+>> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'libcmtd.lib'
+>> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+>> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::filesystem2::file_status __cdecl
+>> > boost::filesystem2::detail::status_api(class
+>> > std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> > const &,class
+>> > boost::system::error_code &)"
+>> >
+>> > (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23@ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVerror_code at system@3@@Z)
+>> > referenced in function "bool __cdecl boost::filesystem2::exists<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@01@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_category const & __cdecl
+>> > boost::system::system_category(void)"
+>> > (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced in
+>> > function "public: __thiscall
+>> > boost::system::error_code::error_code(void)"
+>> > (??0error_code at system@boost@@QAE at XZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_increment(void * &,class
+>> > std::basic_string<char,struct std::char_traits<char>,class
+>> > std::allocator<char> > &,class boost::filesystem2::file_status &,class
+>> > boost::filesystem2::file_status &)"
+>> >
+>> > (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVfile_status at 23@2 at Z)
+>> > referenced in function "private: void __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::increment(void)"
+>> >
+>> > (?increment@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAEXXZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_first(void * &,class
+>> > std::basic_string<char,struct std::char_traits<char>,class
+>> > std::allocator<char> > const &,class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> > &,class
+>> > boost::filesystem2::file_status &,class boost::filesystem2::file_status
+>> > &)"
+>> >
+>> > (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAV67 at AAVfile_status@23 at 3@Z)
+>> > referenced in function "private: class boost::system::error_code
+>> > __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::m_init(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::not_found_error(void)"
+>> > (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at XZ)
+>> > referenced in function "private: class boost::system::error_code
+>> > __thiscall
+>> > boost::filesystem2::basic_directory_iterator<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::m_init(class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> const &)"
+>> >
+>> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_code __cdecl
+>> > boost::filesystem2::detail::dir_itr_close(void * &)"
+>> >
+>> > (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAX@Z)
+>> > referenced in function "public: __thiscall
+>> > boost::filesystem2::detail::dir_itr_imp<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >::~dir_itr_imp<class
+>> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> > std::char_traits<char>,class std::allocator<char> >,struct
+>> > boost::filesystem2::path_traits> >(void)"
+>> >
+>> > (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@detail at filesystem2@boost@@QAE at XZ)
+>> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+>> > symbol "class boost::system::error_category const & __cdecl
+>> > boost::system::generic_category(void)"
+>> > (?generic_category at system@boost@@YAABVerror_category at 12@XZ) referenced
+>> > in
+>> > function "void __cdecl boost::system::`dynamic initializer for
+>> > 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+>> >
+>> > On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> > wrote:
+>> >>
+>> >> The latest boost version doesn't work because it uses filesystem v3.
+>> >> In this version, there are no cast operators from filesystem::path to
+>> >> std::string. Either define a preprocessor token to use v2 (don't know
+>> >> which one, it's in the documentation); or use an earlier version (I
+>> >> think 1.44 is the latest that used v2 by default).
+>> >>
+>> >>
+>> >> cheers,
+>> >>
+>> >> roel
+>> >>
+>> >>
+>> >> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com> wrote:
+>> >> > Thank you for your kind help.
+>> >> >
+>> >> > I download mapnik source from your link. I added all the libraries
+>> >> > and
+>> >> > create solution. I took boost-1.46.1.
+>> >> > I tried to follow the link and made a visual studio 2005 project.
+>> >> > Where
+>> >> > I
+>> >> > built it I found several error like these:
+>> >> >
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+>> >> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1
+>> >> > from
+>> >> > 'boost::filesystem3::path' to 'const std::string &'
+>> >> > 1>??????? Reason: cannot convert from 'boost::filesystem3::path' to
+>> >> > 'const
+>> >> > std::string'
+>> >> > 1>??????? No user-defined-conversion operator available that can
+>> >> > perform
+>> >> > this conversion, or the operator cannot be called
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> > error C2039: 'string' : is not a member of
+>> >> > 'boost::filesystem3::directory_entry'
+>> >> > 1>??????? d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> > error C2039: 'string' : is not a member of
+>> >> > 'boost::filesystem3::directory_entry'
+>> >> > 1>??????? d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> > 1>d:\mapnik by
+>> >> >
+>> >> >
+>> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> >
+>> >> >
+>> >> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> >> > wrote:
+>> >> >>
+>> >> >> I don't recommend trying to get it all to work with pre-build
+>> >> >> binaries. Most binaries you will find online of third-party
+>> >> >> libraries
+>> >> >> do not document with which flags they are build, or with which
+>> >> >> compiler etc; and if they use different flags, it won't work anyway.
+>> >> >> Although theoretically anything is possible, in practice you're not
+>> >> >> going to be able to get it to work (things like SECURE_CRT, which
+>> >> >> manifest to use, etc).
+>> >> >>
+>> >> >> I documented how to build from source for all libraries on
+>> >> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the
+>> >> >> faint
+>> >> >> of heart, especially some PITA libraries like icu and libtool. Also
+>> >> >> check my tickets in trac for some patches to make things build with
+>> >> >> MSVC. I only recommend spending time on it if you're already
+>> >> >> experienced with MSVC and troubleshooting building/linking issues
+>> >> >> with
+>> >> >> it.
+>> >> >>
+>> >> >> cheers,
+>> >> >>
+>> >> >> roel
+>> >> >>
+>> >> >>
+>> >> >>
+>> >> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+>> >> >> wrote:
+>> >> >> > Hi,
+>> >> >> >
+>> >> >> > I am new to mapnik. I successfully installed mapnik but I want it
+>> >> >> > to
+>> >> >> > visual
+>> >> >> > studio 2005. So I tried to run the C++ demo on Visual studio
+>> >> >> > project.
+>> >> >> > What I
+>> >> >> > did is as follows:
+>> >> >> >
+>> >> >> > Installation:
+>> >> >> >
+>> >> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+>> >> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+>> >> >> >
+>> >> >> > I made a directory D:\mapnik installation for visual studio 2005
+>> >> >> > and
+>> >> >> > copy
+>> >> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+>> >> >> > installation
+>> >> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set
+>> >> >> > to
+>> >> >> > D:\mapnik installation for visual studio
+>> >> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > Third party library:
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > 1.??????? freetype-2.4.4
+>> >> >> >
+>> >> >> > 2.??????? icu
+>> >> >> >
+>> >> >> > 3.??????? libtool-1.5.26
+>> >> >> >
+>> >> >> > 4.??????? boost_1_46_1
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > Procedure:
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > 1.??????? I created a new Win32 Console Application named
+>> >> >> > MapnikApp
+>> >> >> > in
+>> >> >> > the
+>> >> >> > above directory.
+>> >> >> >
+>> >> >> > 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied
+>> >> >> > the
+>> >> >> > content
+>> >> >> > of this file to our MapnikApp.cpp
+>> >> >> >
+>> >> >> > 3.??????? I included the following to
+>> >> >> > Project->Properties->C/C++->General->Additional Include
+>> >> >> > Directories.
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\mapnik-0.7.1\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio 2005\boost_1_46_1
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio 2005\icu\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\libtool-1.5.26\include
+>> >> >> >
+>> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> > 2005\freetype-2.4.4\include
+>> >> >> >
+>> >> >> > 4.??????? I added the associate lib directory to
+>> >> >> > Project->Properties->Linker->General->Additional Library
+>> >> >> > Directories
+>> >> >> >
+>> >> >> > 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to
+>> >> >> > project.
+>> >> >> >
+>> >> >> > 6.??????? After running the project (debug, win32) I got the
+>> >> >> > following
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?? ????????????????? ??????????????Unhandled exception at
+>> >> >> > 0x1002cbe5
+>> >> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation
+>> >> >> > reading
+>> >> >> > location
+>> >> >> >
+>> >> >> > ???????????????? ?????????????????????? ??????????????0xcccccccc.
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?????????????? In Release Win32 I got the following.
+>> >> >> >
+>> >> >> > ?????????????? std::exception: vector<T> too long when it tried to
+>> >> >> > execute
+>> >> >> > m.insert_style.
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?????????????? For simplicity I tried to run the following
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ??????? Map m(800,600);
+>> >> >> >
+>> >> >> > ??????? m.set_background(color_factory::from_string("white"));
+>> >> >> >
+>> >> >> >
+>> >> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>> >> >> >
+>> >> >> >
+>> >> >> > 1706357.31328276,-25098.593149577));
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ??????? Image32 buf(m.getWidth(),m.getHeight());
+>> >> >> >
+>> >> >> > ??????? agg_renderer<Image32> ren(m,buf);
+>> >> >> >
+>> >> >> > ??????? ren.apply();
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > ?I got the following error.
+>> >> >> >
+>> >> >> > A buffer overrun has occurred in MapnikApp.exe which has corrupted
+>> >> >> > the
+>> >> >> > program's internal state. Press Break to debug the program or
+>> >> >> > Continue
+>> >> >> > to
+>> >> >> > terminate the program.
+>> >> >> >
+>> >> >> > I need help how to solve it.
+>> >> >> >
+>> >> >> > With best regards,
+>> >> >> > Rakib
+>> >> >> >
+>> >> >> > _______________________________________________
+>> >> >> > Mapnik-devel mailing list
+>> >> >> > Mapnik-devel at lists.berlios.de
+>> >> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >> >> >
+>> >> >> >
+>> >> >
+>> >> >
+>> >
+>> >
+>
+>
+
+
+From roel.vanhout at gmail.com  Thu Apr  7 13:27:08 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Thu, 7 Apr 2011 13:27:08 +0200
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikga+fnuXcDXq=Oe-EWrKcrog78yQ@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+	<BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+	<BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+	<BANLkTikLHCyv6FvcWJo-kDpSmdb04Ba5Sw@mail.gmail.com>
+	<BANLkTikga+fnuXcDXq=Oe-EWrKcrog78yQ@mail.gmail.com>
+Message-ID: <BANLkTik8=odyDb_TPpk=eTaWrx+5xHc1Rw@mail.gmail.com>
+
+That's weird, you did leave in all the rest, right? Commenting out
+just those 4 lines caused all output to disappear?
+
+Have you tried running it under the debugger?
+
+
+cheers,
+
+roel
+
+
+
+On Thu, Apr 7, 2011 at 1:25 PM, Rakib Solaimani <rakib114 at gmail.com> wrote:
+> As per you suggestion I commented the lines and ran rundemo.cpp. I got no
+> crash but also found no map my image files were simply blank.
+>
+> -Rakib
+>
+> On Thu, Apr 7, 2011 at 12:17 AM, Roel Vanhout <roel.vanhout at gmail.com>
+> wrote:
+>>
+>> Ok well turns out I didn't keep the intermediate versions of my
+>> rundemo.cpp.
+>>
+>> I did see the lines that at one point I had a problem with; comment out
+>> this:
+>>
+>> ? ? ? ?rule_type provpoly_rule_qc;
+>> ? ? ? ?provpoly_rule_qc.set_filter(create_filter("[NOM_FR] =
+>> 'Qu\xe9""bec'"));
+>> ? ? ? ?provpoly_rule_qc.append(polygon_symbolizer(color(217, 235, 203)));
+>> ? ? ? ?provpoly_style.add_rule(provpoly_rule_qc);
+>>
+>> part and check if you still have the same problem. Otherwise, run it
+>> in the debugger like I mentioned (if you already have a debug build
+>> set up, it's the easiest way to go all together...)
+>>
+>>
+>> cheers,
+>>
+>> roel
+>>
+>>
+>>
+>> On Wed, Apr 6, 2011 at 3:19 PM, rakib rakib <rakib114 at gmail.com> wrote:
+>> > Thanks for your reply.
+>> >
+>> > Now I successfully build mapnik. I copy plugin_shape.dll? to
+>> > mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+>> > rundemo.cpp with following
+>> >
+>> > When running I got when it creates the png files and after it got
+>> > crashed
+>> > with following. In png files I get only the label but no map..
+>> > Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+>> > 0xC0000005: Access violation reading location 0x2bf14c25.
+>> >
+>> >
+>> > On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> > wrote:
+>> >>
+>> >> You probably haven't selected the right runtime for all projects.
+>> >> Check that the runtime (it's in the project properties under 'C++' I
+>> >> think, I don't know by heart) is set to 'multi threaded DLL' or
+>> >> whatever it is you want to use. When multiple projects use different
+>> >> settings, you get linker errors like this.
+>> >>
+>> >> (please use 'reply all' so that the list has a copy for future
+>> >> reference of other users)
+>> >>
+>> >> cheers,
+>> >>
+>> >> roel
+>> >>
+>> >>
+>> >> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+>> >> > Thank for for your early reply.
+>> >> >
+>> >> > Now I use boost 1.44. I think I am closing. Now I get following
+>> >> > error.
+>> >> >
+>> >> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib
+>> >> > 'libcmtd.lib'
+>> >> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> >> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib
+>> >> > 'msvcrt.lib'
+>> >> > conflicts with use of other libs; use /NODEFAULTLIB:library
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::filesystem2::file_status __cdecl
+>> >> > boost::filesystem2::detail::status_api(class
+>> >> > std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> > const &,class
+>> >> > boost::system::error_code &)"
+>> >> >
+>> >> >
+>> >> > (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23@ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVerror_code at system@3@@Z)
+>> >> > referenced in function "bool __cdecl boost::filesystem2::exists<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >(class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> const &)"
+>> >> >
+>> >> >
+>> >> > (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@01@@Z)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_category const & __cdecl
+>> >> > boost::system::system_category(void)"
+>> >> > (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced
+>> >> > in
+>> >> > function "public: __thiscall
+>> >> > boost::system::error_code::error_code(void)"
+>> >> > (??0error_code at system@boost@@QAE at XZ)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_code __cdecl
+>> >> > boost::filesystem2::detail::dir_itr_increment(void * &,class
+>> >> > std::basic_string<char,struct std::char_traits<char>,class
+>> >> > std::allocator<char> > &,class boost::filesystem2::file_status
+>> >> > &,class
+>> >> > boost::filesystem2::file_status &)"
+>> >> >
+>> >> >
+>> >> > (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAVfile_status at 23@2 at Z)
+>> >> > referenced in function "private: void __thiscall
+>> >> > boost::filesystem2::basic_directory_iterator<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >::increment(void)"
+>> >> >
+>> >> >
+>> >> > (?increment@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAEXXZ)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_code __cdecl
+>> >> > boost::filesystem2::detail::dir_itr_first(void * &,class
+>> >> > std::basic_string<char,struct std::char_traits<char>,class
+>> >> > std::allocator<char> > const &,class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> > &,class
+>> >> > boost::filesystem2::file_status &,class
+>> >> > boost::filesystem2::file_status
+>> >> > &)"
+>> >> >
+>> >> >
+>> >> > (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@AAV67 at AAVfile_status@23 at 3@Z)
+>> >> > referenced in function "private: class boost::system::error_code
+>> >> > __thiscall
+>> >> > boost::filesystem2::basic_directory_iterator<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >::m_init(class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> const &)"
+>> >> >
+>> >> >
+>> >> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_code __cdecl
+>> >> > boost::filesystem2::detail::not_found_error(void)"
+>> >> >
+>> >> > (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at XZ)
+>> >> > referenced in function "private: class boost::system::error_code
+>> >> > __thiscall
+>> >> > boost::filesystem2::basic_directory_iterator<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >::m_init(class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> const &)"
+>> >> >
+>> >> >
+>> >> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system@3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_code __cdecl
+>> >> > boost::filesystem2::detail::dir_itr_close(void * &)"
+>> >> >
+>> >> >
+>> >> > (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAX@Z)
+>> >> > referenced in function "public: __thiscall
+>> >> > boost::filesystem2::detail::dir_itr_imp<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >::~dir_itr_imp<class
+>> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+>> >> > std::char_traits<char>,class std::allocator<char> >,struct
+>> >> > boost::filesystem2::path_traits> >(void)"
+>> >> >
+>> >> >
+>> >> > (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@detail at filesystem2@boost@@QAE at XZ)
+>> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+>> >> > external
+>> >> > symbol "class boost::system::error_category const & __cdecl
+>> >> > boost::system::generic_category(void)"
+>> >> > (?generic_category at system@boost@@YAABVerror_category at 12@XZ)
+>> >> > referenced
+>> >> > in
+>> >> > function "void __cdecl boost::system::`dynamic initializer for
+>> >> > 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+>> >> >
+>> >> > On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com>
+>> >> > wrote:
+>> >> >>
+>> >> >> The latest boost version doesn't work because it uses filesystem v3.
+>> >> >> In this version, there are no cast operators from filesystem::path
+>> >> >> to
+>> >> >> std::string. Either define a preprocessor token to use v2 (don't
+>> >> >> know
+>> >> >> which one, it's in the documentation); or use an earlier version (I
+>> >> >> think 1.44 is the latest that used v2 by default).
+>> >> >>
+>> >> >>
+>> >> >> cheers,
+>> >> >>
+>> >> >> roel
+>> >> >>
+>> >> >>
+>> >> >> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com>
+>> >> >> wrote:
+>> >> >> > Thank you for your kind help.
+>> >> >> >
+>> >> >> > I download mapnik source from your link. I added all the libraries
+>> >> >> > and
+>> >> >> > create solution. I took boost-1.46.1.
+>> >> >> > I tried to follow the link and made a visual studio 2005 project.
+>> >> >> > Where
+>> >> >> > I
+>> >> >> > built it I found several error like these:
+>> >> >> >
+>> >> >> > 1>d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+>> >> >> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter
+>> >> >> > 1
+>> >> >> > from
+>> >> >> > 'boost::filesystem3::path' to 'const std::string &'
+>> >> >> > 1>??????? Reason: cannot convert from 'boost::filesystem3::path'
+>> >> >> > to
+>> >> >> > 'const
+>> >> >> > std::string'
+>> >> >> > 1>??????? No user-defined-conversion operator available that can
+>> >> >> > perform
+>> >> >> > this conversion, or the operator cannot be called
+>> >> >> > 1>d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> >> > error C2039: 'string' : is not a member of
+>> >> >> > 'boost::filesystem3::directory_entry'
+>> >> >> > 1>??????? d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> >> > 1>d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+>> >> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> >> > 1>d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> >> > error C2039: 'string' : is not a member of
+>> >> >> > 'boost::filesystem3::directory_entry'
+>> >> >> > 1>??????? d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+>> >> >> > : see declaration of 'boost::filesystem3::directory_entry'
+>> >> >> > 1>d:\mapnik by
+>> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >> > roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+>> >> >> > error C2228: left of '.c_str' must have class/struct/union
+>> >> >> >
+>> >> >> >
+>> >> >> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout
+>> >> >> > <roel.vanhout at gmail.com>
+>> >> >> > wrote:
+>> >> >> >>
+>> >> >> >> I don't recommend trying to get it all to work with pre-build
+>> >> >> >> binaries. Most binaries you will find online of third-party
+>> >> >> >> libraries
+>> >> >> >> do not document with which flags they are build, or with which
+>> >> >> >> compiler etc; and if they use different flags, it won't work
+>> >> >> >> anyway.
+>> >> >> >> Although theoretically anything is possible, in practice you're
+>> >> >> >> not
+>> >> >> >> going to be able to get it to work (things like SECURE_CRT, which
+>> >> >> >> manifest to use, etc).
+>> >> >> >>
+>> >> >> >> I documented how to build from source for all libraries on
+>> >> >> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the
+>> >> >> >> faint
+>> >> >> >> of heart, especially some PITA libraries like icu and libtool.
+>> >> >> >> Also
+>> >> >> >> check my tickets in trac for some patches to make things build
+>> >> >> >> with
+>> >> >> >> MSVC. I only recommend spending time on it if you're already
+>> >> >> >> experienced with MSVC and troubleshooting building/linking issues
+>> >> >> >> with
+>> >> >> >> it.
+>> >> >> >>
+>> >> >> >> cheers,
+>> >> >> >>
+>> >> >> >> roel
+>> >> >> >>
+>> >> >> >>
+>> >> >> >>
+>> >> >> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+>> >> >> >> wrote:
+>> >> >> >> > Hi,
+>> >> >> >> >
+>> >> >> >> > I am new to mapnik. I successfully installed mapnik but I want
+>> >> >> >> > it
+>> >> >> >> > to
+>> >> >> >> > visual
+>> >> >> >> > studio 2005. So I tried to run the C++ demo on Visual studio
+>> >> >> >> > project.
+>> >> >> >> > What I
+>> >> >> >> > did is as follows:
+>> >> >> >> >
+>> >> >> >> > Installation:
+>> >> >> >> >
+>> >> >> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+>> >> >> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+>> >> >> >> >
+>> >> >> >> > I made a directory D:\mapnik installation for visual studio
+>> >> >> >> > 2005
+>> >> >> >> > and
+>> >> >> >> > copy
+>> >> >> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+>> >> >> >> > installation
+>> >> >> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is
+>> >> >> >> > set
+>> >> >> >> > to
+>> >> >> >> > D:\mapnik installation for visual studio
+>> >> >> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > Third party library:
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > 1.??????? freetype-2.4.4
+>> >> >> >> >
+>> >> >> >> > 2.??????? icu
+>> >> >> >> >
+>> >> >> >> > 3.??????? libtool-1.5.26
+>> >> >> >> >
+>> >> >> >> > 4.??????? boost_1_46_1
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > Procedure:
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > 1.??????? I created a new Win32 Console Application named
+>> >> >> >> > MapnikApp
+>> >> >> >> > in
+>> >> >> >> > the
+>> >> >> >> > above directory.
+>> >> >> >> >
+>> >> >> >> > 2.??????? I tried to run reundemo.cpp in mapnik-0.7.1. I copied
+>> >> >> >> > the
+>> >> >> >> > content
+>> >> >> >> > of this file to our MapnikApp.cpp
+>> >> >> >> >
+>> >> >> >> > 3.??????? I included the following to
+>> >> >> >> > Project->Properties->C/C++->General->Additional Include
+>> >> >> >> > Directories.
+>> >> >> >> >
+>> >> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> >> > 2005\mapnik-0.7.1\include
+>> >> >> >> >
+>> >> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> >> > 2005\boost_1_46_1
+>> >> >> >> >
+>> >> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> >> > 2005\icu\include
+>> >> >> >> >
+>> >> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> >> > 2005\libtool-1.5.26\include
+>> >> >> >> >
+>> >> >> >> > ??????? D:\mapnik installation for visual studio
+>> >> >> >> > 2005\freetype-2.4.4\include
+>> >> >> >> >
+>> >> >> >> > 4.??????? I added the associate lib directory to
+>> >> >> >> > Project->Properties->Linker->General->Additional Library
+>> >> >> >> > Directories
+>> >> >> >> >
+>> >> >> >> > 5.??????? I added all *.lib and *.dll of mapnik-0.7.1\lib to
+>> >> >> >> > project.
+>> >> >> >> >
+>> >> >> >> > 6.??????? After running the project (debug, win32) I got the
+>> >> >> >> > following
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ?? ????????????????? ??????????????Unhandled exception at
+>> >> >> >> > 0x1002cbe5
+>> >> >> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation
+>> >> >> >> > reading
+>> >> >> >> > location
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ??????????????0xcccccccc.
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ?????????????? In Release Win32 I got the following.
+>> >> >> >> >
+>> >> >> >> > ?????????????? std::exception: vector<T> too long when it tried
+>> >> >> >> > to
+>> >> >> >> > execute
+>> >> >> >> > m.insert_style.
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ?????????????? For simplicity I tried to run the following
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ??????? Map m(800,600);
+>> >> >> >> >
+>> >> >> >> > ??????? m.set_background(color_factory::from_string("white"));
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > 1706357.31328276,-25098.593149577));
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ??????? Image32 buf(m.getWidth(),m.getHeight());
+>> >> >> >> >
+>> >> >> >> > ??????? agg_renderer<Image32> ren(m,buf);
+>> >> >> >> >
+>> >> >> >> > ??????? ren.apply();
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >> > ?I got the following error.
+>> >> >> >> >
+>> >> >> >> > A buffer overrun has occurred in MapnikApp.exe which has
+>> >> >> >> > corrupted
+>> >> >> >> > the
+>> >> >> >> > program's internal state. Press Break to debug the program or
+>> >> >> >> > Continue
+>> >> >> >> > to
+>> >> >> >> > terminate the program.
+>> >> >> >> >
+>> >> >> >> > I need help how to solve it.
+>> >> >> >> >
+>> >> >> >> > With best regards,
+>> >> >> >> > Rakib
+>> >> >> >> >
+>> >> >> >> > _______________________________________________
+>> >> >> >> > Mapnik-devel mailing list
+>> >> >> >> > Mapnik-devel at lists.berlios.de
+>> >> >> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >> >> >> >
+>> >> >> >> >
+>> >> >> >
+>> >> >> >
+>> >> >
+>> >> >
+>> >
+>> >
+>
+>
+
+
+From dane at dbsgeo.com  Thu Apr  7 18:48:28 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 7 Apr 2011 12:48:28 -0400
+Subject: [Mapnik-devel] Announcing new mapnik rendering backend
+Message-ID: <BCF9A4AC-7F08-48AA-B09B-70E12592F3D6@dbsgeo.com>
+
+I've started work on a new rendering backend to Mapnik. It is coming along well so I'd like to let others know more about it.
+
+It is called the "grid_renderer". However, it is not a renderer in the conventional sense - instead of rendering antialiased shapes to an image of rgba pixels, the grid_renderer is designed to render aliased shapes to a bitmap of feature id's.
+
+I've created a wiki entry for it where the basic technical details are available [1]. Feel free to respond here with any questions.
+
+The goal of the grid_renderer is to output a feature hit grid for browsers. The hit grid should allow for ultra fast lookups of select feature-info without requiring any http requests or serverside logic (after being generated). It should also be very small, compressible, and work seamlessly with metatiling (mapnik's image_view interface).
+
+The grid_renderer is designed to work in a web client alongside PNG/JPEG output from AGG. Artem and I have been working together to leverage bits of AGG to actually do the rendering.  The renderer should complement the similar goals of MetaWriters [2] by using quite different functionality. The main difference with MetaWriter's is that the grid_renderer does not output actual geometries. Instead it rasterizes geometries into a bitmap - so no matter how many or how large your geometries  the output size of a "grid" should be trivially small. This makes the grid_renderer optimal for usage with complex polygons or many points, while the MetaWriter json output is optimal for cases where full geojson is required and can be handled by the browser. For those not yet familiar with MetaWriter's, this is the awesome product of the GSOC 2011 project by Hermann Kraus, which I had the pleasure to mentor. Again, I feel that MetaWriters are complementary and I will continue to support their development.
+
+For those familiar with MetaWriters, you may remember a key design goal of the project was to support variable output formats. As I continue to develop the grid_renderer I may try to design it in such a way that is can be used both as a standalone renderer but also as a MetaWriter output format. However my priority right now is to get things working as a standalone renderer.
+
+The last trick here is that custom client javascript code is needed to understand and display this feature grid. Development Seed has sponsored this grid_renderer development in Mapnik and Tom MacWright has lead the development of that client code (which works with both OpenLayers, Polymaps, Google Maps, and Modest Maps). The client code is part of the innovative wax.js library [3] (which does a whole lot more than just interactivity using grids).
+
+For the curious here is some sample code (https://github.com/springmeyer/gridsforkids/) and a sample demo (http://springmeyer.github.com/gridsforkids/).
+
+Dane
+
+[1] [1] http://trac.mapnik.org/wiki/MapnikRenderers#grid_renderer
+[2] http://trac.mapnik.org/wiki/MetaWriter
+[3] https://github.com/mapbox/wax/blob/master/control/lib/gridutil.js
+
+From waldemar.quevedo at gmail.com  Thu Apr  7 19:06:32 2011
+From: waldemar.quevedo at gmail.com (Waldemar Quevedo)
+Date: Fri, 8 Apr 2011 02:06:32 +0900
+Subject: [Mapnik-devel] Announcing new mapnik rendering backend
+In-Reply-To: <BCF9A4AC-7F08-48AA-B09B-70E12592F3D6@dbsgeo.com>
+References: <BCF9A4AC-7F08-48AA-B09B-70E12592F3D6@dbsgeo.com>
+Message-ID: <03CE7214-275B-43CF-8827-46B4C57A1200@gmail.com>
+
+ 
+
+Sent from my iPhone
+
+On 2011/04/08, at 1:48, Dane Springmeyer <dane at dbsgeo.com> wrote:
+
+> I've started work on a new rendering backend to Mapnik. It is coming along well so I'd like to let others know more about it.
+> 
+> It is called the "grid_renderer". However, it is not a renderer in the conventional sense - instead of rendering antialiased shapes to an image of rgba pixels, the grid_renderer is designed to render aliased shapes to a bitmap of feature id's.
+> 
+> I've created a wiki entry for it where the basic technical details are available [1]. Feel free to respond here with any questions.
+> 
+> The goal of the grid_renderer is to output a feature hit grid for browsers. The hit grid should allow for ultra fast lookups of select feature-info without requiring any http requests or serverside logic (after being generated). It should also be very small, compressible, and work seamlessly with metatiling (mapnik's image_view interface).
+> 
+> The grid_renderer is designed to work in a web client alongside PNG/JPEG output from AGG. Artem and I have been working together to leverage bits of AGG to actually do the rendering.  The renderer should complement the similar goals of MetaWriters [2] by using quite different functionality. The main difference with MetaWriter's is that the grid_renderer does not output actual geometries. Instead it rasterizes geometries into a bitmap - so no matter how many or how large your geometries  the output size of a "grid" should be trivially small. This makes the grid_renderer optimal for usage with complex polygons or many points, while the MetaWriter json output is optimal for cases where full geojson is required and can be handled by the browser. For those not yet familiar with MetaWriter's, this is the awesome product of the GSOC 2011 project by Hermann Kraus, which I had the pleasure to mentor. Again, I feel that MetaWriters are complementary and I will continue to support their
+>  development.
+> 
+> For those familiar with MetaWriters, you may remember a key design goal of the project was to support variable output formats. As I continue to develop the grid_renderer I may try to design it in such a way that is can be used both as a standalone renderer but also as a MetaWriter output format. However my priority right now is to get things working as a standalone renderer.
+> 
+> The last trick here is that custom client javascript code is needed to understand and display this feature grid. Development Seed has sponsored this grid_renderer development in Mapnik and Tom MacWright has lead the development of that client code (which works with both OpenLayers, Polymaps, Google Maps, and Modest Maps). The client code is part of the innovative wax.js library [3] (which does a whole lot more than just interactivity using grids).
+> 
+> For the curious here is some sample code (https://github.com/springmeyer/gridsforkids/) and a sample demo (http://springmeyer.github.com/gridsforkids/).
+> 
+> Dane
+> 
+> [1] [1] http://trac.mapnik.org/wiki/MapnikRenderers#grid_renderer
+> [2] http://trac.mapnik.org/wiki/MetaWriter
+> [3] https://github.com/mapbox/wax/blob/master/control/lib/gridutil.js
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From rakib114 at gmail.com  Wed Apr  6 15:19:04 2011
+From: rakib114 at gmail.com (rakib rakib)
+Date: Wed, 6 Apr 2011 19:19:04 +0600
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+	<BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+Message-ID: <BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+
+Thanks for your reply.
+
+Now I successfully build mapnik. I copy plugin_shape.dll  to
+mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+rundemo.cpp with following
+
+When running I got when it creates the png files and after it got crashed
+with following. In png files I get only the label but no map..
+Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+0xC0000005: Access violation reading location 0x2bf14c25.
+
+
+On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout <roel.vanhout at gmail.com> wrote:
+
+> You probably haven't selected the right runtime for all projects.
+> Check that the runtime (it's in the project properties under 'C++' I
+> think, I don't know by heart) is set to 'multi threaded DLL' or
+> whatever it is you want to use. When multiple projects use different
+> settings, you get linker errors like this.
+>
+> (please use 'reply all' so that the list has a copy for future
+> reference of other users)
+>
+> cheers,
+>
+> roel
+>
+>
+> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+> > Thank for for your early reply.
+> >
+> > Now I use boost 1.44. I think I am closing. Now I get following error.
+> >
+> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'libcmtd.lib'
+> > conflicts with use of other libs; use /NODEFAULTLIB:library
+> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+> > conflicts with use of other libs; use /NODEFAULTLIB:library
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::filesystem2::file_status __cdecl
+> > boost::filesystem2::detail::status_api(class
+> std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> > const &,class
+> > boost::system::error_code &)"
+> > (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23
+> @ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAVerror_code at system@3@@Z)
+> > referenced in function "bool __cdecl boost::filesystem2::exists<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >(class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> const &)"
+> > (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@
+> @V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost
+> @@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@01@@Z)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_category const & __cdecl
+> > boost::system::system_category(void)"
+> > (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced in
+> > function "public: __thiscall boost::system::error_code::error_code(void)"
+> > (??0error_code at system@boost@@QAE at XZ)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_code __cdecl
+> > boost::filesystem2::detail::dir_itr_increment(void * &,class
+> > std::basic_string<char,struct std::char_traits<char>,class
+> > std::allocator<char> > &,class boost::filesystem2::file_status &,class
+> > boost::filesystem2::file_status &)"
+> > (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAVfile_status at 23@2 at Z)
+> > referenced in function "private: void __thiscall
+> > boost::filesystem2::basic_directory_iterator<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >::increment(void)"
+> > (?increment@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAEXXZ)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_code __cdecl
+> > boost::filesystem2::detail::dir_itr_first(void * &,class
+> > std::basic_string<char,struct std::char_traits<char>,class
+> > std::allocator<char> > const &,class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> > &,class
+> > boost::filesystem2::file_status &,class boost::filesystem2::file_status
+> &)"
+> > (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAV67 at AAVfile_status@23 at 3@Z)
+> > referenced in function "private: class boost::system::error_code
+> __thiscall
+> > boost::filesystem2::basic_directory_iterator<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >::m_init(class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> const &)"
+> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system
+> @3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D
+> @2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_code __cdecl
+> > boost::filesystem2::detail::not_found_error(void)"
+> > (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at XZ)
+> > referenced in function "private: class boost::system::error_code
+> __thiscall
+> > boost::filesystem2::basic_directory_iterator<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >::m_init(class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> const &)"
+> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system
+> @3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D
+> @2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_code __cdecl
+> > boost::filesystem2::detail::dir_itr_close(void * &)"
+> > (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system@3 at AAPAX
+> @Z)
+> > referenced in function "public: __thiscall
+> > boost::filesystem2::detail::dir_itr_imp<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >::~dir_itr_imp<class
+> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> > std::char_traits<char>,class std::allocator<char> >,struct
+> > boost::filesystem2::path_traits> >(void)"
+> > (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@
+> @V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost
+> @@@detail at filesystem2@boost@@QAE at XZ)
+> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved external
+> > symbol "class boost::system::error_category const & __cdecl
+> > boost::system::generic_category(void)"
+> > (?generic_category at system@boost@@YAABVerror_category at 12@XZ) referenced
+> in
+> > function "void __cdecl boost::system::`dynamic initializer for
+> > 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+> >
+> > On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com>
+> wrote:
+> >>
+> >> The latest boost version doesn't work because it uses filesystem v3.
+> >> In this version, there are no cast operators from filesystem::path to
+> >> std::string. Either define a preprocessor token to use v2 (don't know
+> >> which one, it's in the documentation); or use an earlier version (I
+> >> think 1.44 is the latest that used v2 by default).
+> >>
+> >>
+> >> cheers,
+> >>
+> >> roel
+> >>
+> >>
+> >> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com> wrote:
+> >> > Thank you for your kind help.
+> >> >
+> >> > I download mapnik source from your link. I added all the libraries and
+> >> > create solution. I took boost-1.46.1.
+> >> > I tried to follow the link and made a visual studio 2005 project.
+> Where
+> >> > I
+> >> > built it I found several error like these:
+> >> >
+> >> > 1>d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+> >> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1
+> from
+> >> > 'boost::filesystem3::path' to 'const std::string &'
+> >> > 1>        Reason: cannot convert from 'boost::filesystem3::path' to
+> >> > 'const
+> >> > std::string'
+> >> > 1>        No user-defined-conversion operator available that can
+> perform
+> >> > this conversion, or the operator cannot be called
+> >> > 1>d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> >> > error C2039: 'string' : is not a member of
+> >> > 'boost::filesystem3::directory_entry'
+> >> > 1>        d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> >> > : see declaration of 'boost::filesystem3::directory_entry'
+> >> > 1>d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> >> > error C2228: left of '.c_str' must have class/struct/union
+> >> > 1>d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> >> > error C2039: 'string' : is not a member of
+> >> > 'boost::filesystem3::directory_entry'
+> >> > 1>        d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> >> > : see declaration of 'boost::filesystem3::directory_entry'
+> >> > 1>d:\mapnik by
+> >> >
+> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> >> > error C2228: left of '.c_str' must have class/struct/union
+> >> >
+> >> >
+> >> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <roel.vanhout at gmail.com>
+> >> > wrote:
+> >> >>
+> >> >> I don't recommend trying to get it all to work with pre-build
+> >> >> binaries. Most binaries you will find online of third-party libraries
+> >> >> do not document with which flags they are build, or with which
+> >> >> compiler etc; and if they use different flags, it won't work anyway.
+> >> >> Although theoretically anything is possible, in practice you're not
+> >> >> going to be able to get it to work (things like SECURE_CRT, which
+> >> >> manifest to use, etc).
+> >> >>
+> >> >> I documented how to build from source for all libraries on
+> >> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the
+> faint
+> >> >> of heart, especially some PITA libraries like icu and libtool. Also
+> >> >> check my tickets in trac for some patches to make things build with
+> >> >> MSVC. I only recommend spending time on it if you're already
+> >> >> experienced with MSVC and troubleshooting building/linking issues
+> with
+> >> >> it.
+> >> >>
+> >> >> cheers,
+> >> >>
+> >> >> roel
+> >> >>
+> >> >>
+> >> >>
+> >> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+> >> >> wrote:
+> >> >> > Hi,
+> >> >> >
+> >> >> > I am new to mapnik. I successfully installed mapnik but I want it
+> to
+> >> >> > visual
+> >> >> > studio 2005. So I tried to run the C++ demo on Visual studio
+> project.
+> >> >> > What I
+> >> >> > did is as follows:
+> >> >> >
+> >> >> > Installation:
+> >> >> >
+> >> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+> >> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+> >> >> >
+> >> >> > I made a directory D:\mapnik installation for visual studio 2005
+> and
+> >> >> > copy
+> >> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+> >> >> > installation
+> >> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set to
+> >> >> > D:\mapnik installation for visual studio
+> >> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> > Third party library:
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> > 1.        freetype-2.4.4
+> >> >> >
+> >> >> > 2.        icu
+> >> >> >
+> >> >> > 3.        libtool-1.5.26
+> >> >> >
+> >> >> > 4.        boost_1_46_1
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> > Procedure:
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> > 1.        I created a new Win32 Console Application named MapnikApp
+> >> >> > in
+> >> >> > the
+> >> >> > above directory.
+> >> >> >
+> >> >> > 2.        I tried to run reundemo.cpp in mapnik-0.7.1. I copied the
+> >> >> > content
+> >> >> > of this file to our MapnikApp.cpp
+> >> >> >
+> >> >> > 3.        I included the following to
+> >> >> > Project->Properties->C/C++->General->Additional Include
+> Directories.
+> >> >> >
+> >> >> >         D:\mapnik installation for visual studio
+> >> >> > 2005\mapnik-0.7.1\include
+> >> >> >
+> >> >> >         D:\mapnik installation for visual studio 2005\boost_1_46_1
+> >> >> >
+> >> >> >         D:\mapnik installation for visual studio 2005\icu\include
+> >> >> >
+> >> >> >         D:\mapnik installation for visual studio
+> >> >> > 2005\libtool-1.5.26\include
+> >> >> >
+> >> >> >         D:\mapnik installation for visual studio
+> >> >> > 2005\freetype-2.4.4\include
+> >> >> >
+> >> >> > 4.        I added the associate lib directory to
+> >> >> > Project->Properties->Linker->General->Additional Library
+> Directories
+> >> >> >
+> >> >> > 5.        I added all *.lib and *.dll of mapnik-0.7.1\lib to
+> project.
+> >> >> >
+> >> >> > 6.        After running the project (debug, win32) I got the
+> >> >> > following
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >                                    Unhandled exception at
+> 0x1002cbe5
+> >> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation reading
+> >> >> > location
+> >> >> >
+> >> >> >                                                       0xcccccccc.
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >                In Release Win32 I got the following.
+> >> >> >
+> >> >> >                std::exception: vector<T> too long when it tried to
+> >> >> > execute
+> >> >> > m.insert_style.
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >                For simplicity I tried to run the following
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >         Map m(800,600);
+> >> >> >
+> >> >> >         m.set_background(color_factory::from_string("white"));
+> >> >> >
+> >> >> >
+> >> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+> >> >> >
+> >> >> >
+> >> >> > 1706357.31328276,-25098.593149577));
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >         Image32 buf(m.getWidth(),m.getHeight());
+> >> >> >
+> >> >> >         agg_renderer<Image32> ren(m,buf);
+> >> >> >
+> >> >> >         ren.apply();
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >> >  I got the following error.
+> >> >> >
+> >> >> > A buffer overrun has occurred in MapnikApp.exe which has corrupted
+> >> >> > the
+> >> >> > program's internal state. Press Break to debug the program or
+> >> >> > Continue
+> >> >> > to
+> >> >> > terminate the program.
+> >> >> >
+> >> >> > I need help how to solve it.
+> >> >> >
+> >> >> > With best regards,
+> >> >> > Rakib
+> >> >> >
+> >> >> > _______________________________________________
+> >> >> > Mapnik-devel mailing list
+> >> >> > Mapnik-devel at lists.berlios.de
+> >> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >> >> >
+> >> >> >
+> >> >
+> >> >
+> >
+> >
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110406/b91a63c5/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: demo.png
+Type: image/png
+Size: 127363 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110406/b91a63c5/attachment.png>
+
+From rakib114 at gmail.com  Thu Apr  7 13:25:28 2011
+From: rakib114 at gmail.com (Rakib Solaimani)
+Date: Thu, 7 Apr 2011 17:25:28 +0600
+Subject: [Mapnik-devel] Cann't run mapnik rundemo.cpp on visual studio
+	2005
+In-Reply-To: <BANLkTikLHCyv6FvcWJo-kDpSmdb04Ba5Sw@mail.gmail.com>
+References: <BANLkTikT4S1deZEsQLK3QOP5Giy=R7KR5Q@mail.gmail.com>
+	<BANLkTi=LQrcGo_fb1UdsfgfU7Wbfg6ypCQ@mail.gmail.com>
+	<BANLkTikUsdcafmOfNYXDO=w+SCNB0QD1WQ@mail.gmail.com>
+	<BANLkTin1Ak-LaAh91pTi+Uc8s6PKD2Ehpg@mail.gmail.com>
+	<BANLkTimMF-o-=C9xT=GRapdhRvWXOyHD7w@mail.gmail.com>
+	<BANLkTi=bNeV9Eo561gkMW=uJD+_x3PJHkA@mail.gmail.com>
+	<BANLkTikxpjg0X3jq+h=6JY_nEfEEH=Ps9Q@mail.gmail.com>
+	<BANLkTikLHCyv6FvcWJo-kDpSmdb04Ba5Sw@mail.gmail.com>
+Message-ID: <BANLkTikga+fnuXcDXq=Oe-EWrKcrog78yQ@mail.gmail.com>
+
+As per you suggestion I commented the lines and ran rundemo.cpp. I got no
+crash but also found no map my image files were simply blank.
+
+-Rakib
+
+On Thu, Apr 7, 2011 at 12:17 AM, Roel Vanhout <roel.vanhout at gmail.com>wrote:
+
+> Ok well turns out I didn't keep the intermediate versions of my
+> rundemo.cpp.
+>
+> I did see the lines that at one point I had a problem with; comment out
+> this:
+>
+>        rule_type provpoly_rule_qc;
+>        provpoly_rule_qc.set_filter(create_filter("[NOM_FR] =
+> 'Qu\xe9""bec'"));
+>        provpoly_rule_qc.append(polygon_symbolizer(color(217, 235, 203)));
+>        provpoly_style.add_rule(provpoly_rule_qc);
+>
+> part and check if you still have the same problem. Otherwise, run it
+> in the debugger like I mentioned (if you already have a debug build
+> set up, it's the easiest way to go all together...)
+>
+>
+> cheers,
+>
+> roel
+>
+>
+>
+> On Wed, Apr 6, 2011 at 3:19 PM, rakib rakib <rakib114 at gmail.com> wrote:
+> > Thanks for your reply.
+> >
+> > Now I successfully build mapnik. I copy plugin_shape.dll  to
+> > mapnik-0.7.1\plugings folder and rename to shape.input. I hard coded in
+> > rundemo.cpp with following
+> >
+> > When running I got when it creates the png files and after it got crashed
+> > with following. In png files I get only the label but no map..
+> > Unhandled exception at 0x770c6579 (ntdll.dll) in mapnik_test.exe:
+> > 0xC0000005: Access violation reading location 0x2bf14c25.
+> >
+> >
+> > On Wed, Apr 6, 2011 at 3:25 PM, Roel Vanhout <roel.vanhout at gmail.com>
+> wrote:
+> >>
+> >> You probably haven't selected the right runtime for all projects.
+> >> Check that the runtime (it's in the project properties under 'C++' I
+> >> think, I don't know by heart) is set to 'multi threaded DLL' or
+> >> whatever it is you want to use. When multiple projects use different
+> >> settings, you get linker errors like this.
+> >>
+> >> (please use 'reply all' so that the list has a copy for future
+> >> reference of other users)
+> >>
+> >> cheers,
+> >>
+> >> roel
+> >>
+> >>
+> >> On Wed, Apr 6, 2011 at 8:08 AM, rakib rakib <rakib114 at gmail.com> wrote:
+> >> > Thank for for your early reply.
+> >> >
+> >> > Now I use boost 1.44. I think I am closing. Now I get following error.
+> >> >
+> >> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib
+> 'libcmtd.lib'
+> >> > conflicts with use of other libs; use /NODEFAULTLIB:library
+> >> > 2>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib'
+> >> > conflicts with use of other libs; use /NODEFAULTLIB:library
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::filesystem2::file_status __cdecl
+> >> > boost::filesystem2::detail::status_api(class
+> >> > std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> > const &,class
+> >> > boost::system::error_code &)"
+> >> >
+> >> > (?status_api at detail@filesystem2 at boost@@YA?AVfile_status at 23
+> @ABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAVerror_code at system@3@@Z)
+> >> > referenced in function "bool __cdecl boost::filesystem2::exists<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >(class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> const &)"
+> >> >
+> >> > (??$exists at V?$basic_path at V?$basic_string at DU?$char_traits at D@std@
+> @V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@@@filesystem2 at boost
+> @@@filesystem2 at boost@@YA_NABV?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@01@@Z)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_category const & __cdecl
+> >> > boost::system::system_category(void)"
+> >> > (?system_category at system@boost@@YAABVerror_category at 12@XZ) referenced
+> in
+> >> > function "public: __thiscall
+> >> > boost::system::error_code::error_code(void)"
+> >> > (??0error_code at system@boost@@QAE at XZ)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_code __cdecl
+> >> > boost::filesystem2::detail::dir_itr_increment(void * &,class
+> >> > std::basic_string<char,struct std::char_traits<char>,class
+> >> > std::allocator<char> > &,class boost::filesystem2::file_status &,class
+> >> > boost::filesystem2::file_status &)"
+> >> >
+> >> > (?dir_itr_increment at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at AAPAXAAV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAVfile_status at 23@2 at Z)
+> >> > referenced in function "private: void __thiscall
+> >> > boost::filesystem2::basic_directory_iterator<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >::increment(void)"
+> >> >
+> >> > (?increment@?$basic_directory_iterator at V?$basic_path at V
+> ?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @Upath_traits at filesystem2@boost@@@filesystem2 at boost@@@filesystem2 at boost
+> @@AAEXXZ)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_code __cdecl
+> >> > boost::filesystem2::detail::dir_itr_first(void * &,class
+> >> > std::basic_string<char,struct std::char_traits<char>,class
+> >> > std::allocator<char> > const &,class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> > &,class
+> >> > boost::filesystem2::file_status &,class
+> boost::filesystem2::file_status
+> >> > &)"
+> >> >
+> >> > (?dir_itr_first at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at AAPAXABV?$basic_string at DU?$char_traits at D@std@@V?$allocator at D@2@@std@
+> @AAV67 at AAVfile_status@23 at 3@Z)
+> >> > referenced in function "private: class boost::system::error_code
+> >> > __thiscall
+> >> > boost::filesystem2::basic_directory_iterator<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >::m_init(class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> const &)"
+> >> >
+> >> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system
+> @3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D
+> @2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_code __cdecl
+> >> > boost::filesystem2::detail::not_found_error(void)"
+> >> > (?not_found_error at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at XZ)
+> >> > referenced in function "private: class boost::system::error_code
+> >> > __thiscall
+> >> > boost::filesystem2::basic_directory_iterator<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >::m_init(class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> const &)"
+> >> >
+> >> > (?m_init@?$basic_directory_iterator at V?$basic_path at V?$basic_string at DU
+> ?$char_traits at D@std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2
+> @boost@@@filesystem2 at boost@@@filesystem2 at boost@@AAE?AVerror_code at system
+> @3 at ABV?$basic_path at V?$basic_string at DU?$char_traits at D@std@@V?$allocator at D
+> @2@@std@@Upath_traits at filesystem2@boost@@@23@@Z)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_code __cdecl
+> >> > boost::filesystem2::detail::dir_itr_close(void * &)"
+> >> >
+> >> > (?dir_itr_close at detail@filesystem2 at boost@@YA?AVerror_code at system
+> @3 at AAPAX@Z)
+> >> > referenced in function "public: __thiscall
+> >> > boost::filesystem2::detail::dir_itr_imp<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >::~dir_itr_imp<class
+> >> > boost::filesystem2::basic_path<class std::basic_string<char,struct
+> >> > std::char_traits<char>,class std::allocator<char> >,struct
+> >> > boost::filesystem2::path_traits> >(void)"
+> >> >
+> >> > (??1?$dir_itr_imp at V?$basic_path at V?$basic_string at DU?$char_traits at D
+> @std@@V?$allocator at D@2@@std@@Upath_traits at filesystem2@boost@
+> @@filesystem2 at boost@@@detail at filesystem2@boost@@QAE at XZ)
+> >> > 2>mapnik.lib(datasource_cache.obj) : error LNK2019: unresolved
+> external
+> >> > symbol "class boost::system::error_category const & __cdecl
+> >> > boost::system::generic_category(void)"
+> >> > (?generic_category at system@boost@@YAABVerror_category at 12@XZ)
+> referenced
+> >> > in
+> >> > function "void __cdecl boost::system::`dynamic initializer for
+> >> > 'posix_category''(void)" (??__Eposix_category at system@boost@@YAXXZ)
+> >> >
+> >> > On Tue, Apr 5, 2011 at 6:55 PM, Roel Vanhout <roel.vanhout at gmail.com>
+> >> > wrote:
+> >> >>
+> >> >> The latest boost version doesn't work because it uses filesystem v3.
+> >> >> In this version, there are no cast operators from filesystem::path to
+> >> >> std::string. Either define a preprocessor token to use v2 (don't know
+> >> >> which one, it's in the documentation); or use an earlier version (I
+> >> >> think 1.44 is the latest that used v2 by default).
+> >> >>
+> >> >>
+> >> >> cheers,
+> >> >>
+> >> >> roel
+> >> >>
+> >> >>
+> >> >> On Tue, Apr 5, 2011 at 2:05 PM, rakib rakib <rakib114 at gmail.com>
+> wrote:
+> >> >> > Thank you for your kind help.
+> >> >> >
+> >> >> > I download mapnik source from your link. I added all the libraries
+> >> >> > and
+> >> >> > create solution. I took boost-1.46.1.
+> >> >> > I tried to follow the link and made a visual studio 2005 project.
+> >> >> > Where
+> >> >> > I
+> >> >> > built it I found several error like these:
+> >> >> >
+> >> >> > 1>d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(162) :
+> >> >> > error C2664: 'mapnik::is_input_plugin' : cannot convert parameter 1
+> >> >> > from
+> >> >> > 'boost::filesystem3::path' to 'const std::string &'
+> >> >> > 1>        Reason: cannot convert from 'boost::filesystem3::path' to
+> >> >> > 'const
+> >> >> > std::string'
+> >> >> > 1>        No user-defined-conversion operator available that can
+> >> >> > perform
+> >> >> > this conversion, or the operator cannot be called
+> >> >> > 1>d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> >> >> > error C2039: 'string' : is not a member of
+> >> >> > 'boost::filesystem3::directory_entry'
+> >> >> > 1>        d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> >> >> > : see declaration of 'boost::filesystem3::directory_entry'
+> >> >> > 1>d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(170) :
+> >> >> > error C2228: left of '.c_str' must have class/struct/union
+> >> >> > 1>d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> >> >> > error C2039: 'string' : is not a member of
+> >> >> > 'boost::filesystem3::directory_entry'
+> >> >> > 1>        d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\boost_1_46_1\boost\filesystem\v3\operations.hpp(472)
+> >> >> > : see declaration of 'boost::filesystem3::directory_entry'
+> >> >> > 1>d:\mapnik by
+> >> >> >
+> >> >> >
+> >> >> >
+> roelv\roel-v-php_mapnik-768b302\mapnik-0.7.1\src\datasource_cache.cpp(193) :
+> >> >> > error C2228: left of '.c_str' must have class/struct/union
+> >> >> >
+> >> >> >
+> >> >> > On Mon, Apr 4, 2011 at 4:14 PM, Roel Vanhout <
+> roel.vanhout at gmail.com>
+> >> >> > wrote:
+> >> >> >>
+> >> >> >> I don't recommend trying to get it all to work with pre-build
+> >> >> >> binaries. Most binaries you will find online of third-party
+> >> >> >> libraries
+> >> >> >> do not document with which flags they are build, or with which
+> >> >> >> compiler etc; and if they use different flags, it won't work
+> anyway.
+> >> >> >> Although theoretically anything is possible, in practice you're
+> not
+> >> >> >> going to be able to get it to work (things like SECURE_CRT, which
+> >> >> >> manifest to use, etc).
+> >> >> >>
+> >> >> >> I documented how to build from source for all libraries on
+> >> >> >> http://trac.mapnik.org/wiki/BuildingOnWindows . It's not for the
+> >> >> >> faint
+> >> >> >> of heart, especially some PITA libraries like icu and libtool.
+> Also
+> >> >> >> check my tickets in trac for some patches to make things build
+> with
+> >> >> >> MSVC. I only recommend spending time on it if you're already
+> >> >> >> experienced with MSVC and troubleshooting building/linking issues
+> >> >> >> with
+> >> >> >> it.
+> >> >> >>
+> >> >> >> cheers,
+> >> >> >>
+> >> >> >> roel
+> >> >> >>
+> >> >> >>
+> >> >> >>
+> >> >> >> On Mon, Apr 4, 2011 at 10:30 AM, rakib rakib <rakib114 at gmail.com>
+> >> >> >> wrote:
+> >> >> >> > Hi,
+> >> >> >> >
+> >> >> >> > I am new to mapnik. I successfully installed mapnik but I want
+> it
+> >> >> >> > to
+> >> >> >> > visual
+> >> >> >> > studio 2005. So I tried to run the C++ demo on Visual studio
+> >> >> >> > project.
+> >> >> >> > What I
+> >> >> >> > did is as follows:
+> >> >> >> >
+> >> >> >> > Installation:
+> >> >> >> >
+> >> >> >> > I installed mapnik 0.7.1 with python 2.6 on Vista as per
+> >> >> >> > http://trac.mapnik.org/wiki/WindowsInstallation.
+> >> >> >> >
+> >> >> >> > I made a directory D:\mapnik installation for visual studio 2005
+> >> >> >> > and
+> >> >> >> > copy
+> >> >> >> > mapnik 0.7.1 here. I had an entry in PATH variable: D:\mapnik
+> >> >> >> > installation
+> >> >> >> > for visual studio 2005\mapnik-0.7.1\lib and my PYTHONPATH is set
+> >> >> >> > to
+> >> >> >> > D:\mapnik installation for visual studio
+> >> >> >> > 2005\mapnik-0.7.1\python\2.6\site-packages
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > Third party library:
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > 1.        freetype-2.4.4
+> >> >> >> >
+> >> >> >> > 2.        icu
+> >> >> >> >
+> >> >> >> > 3.        libtool-1.5.26
+> >> >> >> >
+> >> >> >> > 4.        boost_1_46_1
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > Procedure:
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > 1.        I created a new Win32 Console Application named
+> >> >> >> > MapnikApp
+> >> >> >> > in
+> >> >> >> > the
+> >> >> >> > above directory.
+> >> >> >> >
+> >> >> >> > 2.        I tried to run reundemo.cpp in mapnik-0.7.1. I copied
+> >> >> >> > the
+> >> >> >> > content
+> >> >> >> > of this file to our MapnikApp.cpp
+> >> >> >> >
+> >> >> >> > 3.        I included the following to
+> >> >> >> > Project->Properties->C/C++->General->Additional Include
+> >> >> >> > Directories.
+> >> >> >> >
+> >> >> >> >         D:\mapnik installation for visual studio
+> >> >> >> > 2005\mapnik-0.7.1\include
+> >> >> >> >
+> >> >> >> >         D:\mapnik installation for visual studio
+> 2005\boost_1_46_1
+> >> >> >> >
+> >> >> >> >         D:\mapnik installation for visual studio
+> 2005\icu\include
+> >> >> >> >
+> >> >> >> >         D:\mapnik installation for visual studio
+> >> >> >> > 2005\libtool-1.5.26\include
+> >> >> >> >
+> >> >> >> >         D:\mapnik installation for visual studio
+> >> >> >> > 2005\freetype-2.4.4\include
+> >> >> >> >
+> >> >> >> > 4.        I added the associate lib directory to
+> >> >> >> > Project->Properties->Linker->General->Additional Library
+> >> >> >> > Directories
+> >> >> >> >
+> >> >> >> > 5.        I added all *.lib and *.dll of mapnik-0.7.1\lib to
+> >> >> >> > project.
+> >> >> >> >
+> >> >> >> > 6.        After running the project (debug, win32) I got the
+> >> >> >> > following
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >                                    Unhandled exception at
+> >> >> >> > 0x1002cbe5
+> >> >> >> > (mapnik.dll) in MapnikApp.exe: 0xC0000005: Access violation
+> >> >> >> > reading
+> >> >> >> > location
+> >> >> >> >
+> >> >> >> >
+>               0xcccccccc.
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >                In Release Win32 I got the following.
+> >> >> >> >
+> >> >> >> >                std::exception: vector<T> too long when it tried
+> to
+> >> >> >> > execute
+> >> >> >> > m.insert_style.
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >                For simplicity I tried to run the following
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >         Map m(800,600);
+> >> >> >> >
+> >> >> >> >         m.set_background(color_factory::from_string("white"));
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > m.zoomToBox(Envelope<double>(1405120.04127408,-247003.813399447,
+> >> >> >> >
+> >> >> >> >
+> >> >> >> > 1706357.31328276,-25098.593149577));
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >         Image32 buf(m.getWidth(),m.getHeight());
+> >> >> >> >
+> >> >> >> >         agg_renderer<Image32> ren(m,buf);
+> >> >> >> >
+> >> >> >> >         ren.apply();
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >
+> >> >> >> >  I got the following error.
+> >> >> >> >
+> >> >> >> > A buffer overrun has occurred in MapnikApp.exe which has
+> corrupted
+> >> >> >> > the
+> >> >> >> > program's internal state. Press Break to debug the program or
+> >> >> >> > Continue
+> >> >> >> > to
+> >> >> >> > terminate the program.
+> >> >> >> >
+> >> >> >> > I need help how to solve it.
+> >> >> >> >
+> >> >> >> > With best regards,
+> >> >> >> > Rakib
+> >> >> >> >
+> >> >> >> > _______________________________________________
+> >> >> >> > Mapnik-devel mailing list
+> >> >> >> > Mapnik-devel at lists.berlios.de
+> >> >> >> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >> >> >> >
+> >> >> >> >
+> >> >> >
+> >> >> >
+> >> >
+> >> >
+> >
+> >
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110407/0144f6cc/attachment.html>
+
+From dane at dbsgeo.com  Wed Apr 13 20:01:35 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 13 Apr 2011 11:01:35 -0700
+Subject: [Mapnik-devel] Mapnik crashes with segfault in
+	osm_way::get_bounds
+In-Reply-To: <AANLkTi=3OEOZd32gdF6ccJWhnWdXyMfs6Jnf7=TsmVKq@mail.gmail.com>
+References: <AANLkTik1zs+MKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc@mail.gmail.com>
+	<4AC5BB01-6565-4F53-B6EC-750DC4C51121@dbsgeo.com>
+	<AANLkTi=3OEOZd32gdF6ccJWhnWdXyMfs6Jnf7=TsmVKq@mail.gmail.com>
+Message-ID: <F96DC69E-8BA8-42A2-872E-19F73B2B39FC@dbsgeo.com>
+
+Vladislav,
+
+I'm not surprised that the plugin might not be thread safe. But, it also depends on how you are using it. How are you rendering with multiple threads? Mod_tile?
+
+Dane
+
+
+On Mar 31, 2011, at 11:13 AM, Vladislav Shikhov wrote:
+
+> Dane, in short, OSM plugin is not thread-safe. It works fine in
+> single-threaded environment, but crashes with segfaults if called from
+> parallel threads, compiled with THREADING=multi or THREADING=single
+> doesn't matter.
+> 
+> On Tue, Mar 29, 2011 at 9:24 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>> Vlad, yes I think I've noticed this crash in the past. Just be aware that the OSM plugin does not get a lot of use compared to the osm2pgsql/PostGIS plugin approach. So you may be better off with using PostGIS. Anyway please file a trac ticket about this issue if you want to see it fixed.
+>> 
+>> Dane
+>> 
+>> --- \o/ ---
+>> Sent from my phone
+>> 
+>> On Mar 26, 2011, at 4:51 AM, Vladislav Shikhov <vladshikhov at gmail.com> wrote:
+>> 
+>>> Hi Mapnik devs!
+>>> 
+>>> I've been trying mapnik for render tiles from osm source and got some
+>>> crashes with segfaults.
+>>> 
+>>> After adding additional debug output I found what
+>>> osm_way::get_bounds() called for osm_node item from
+>>> osm_featureset.cpp:75
+>>> 
+>>> I'm going to continue debug, but if you have any idea you are welcome.
+>>> 
+>>> --
+>>> Vladislav Shikhov
+>>> vladshikhov at gmail.com
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+> 
+> 
+> 
+> -- 
+> Vladislav Shikhov
+> vladshikhov at gmail.com
+
+
+
+From dane at dbsgeo.com  Sat Apr 16 01:48:42 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 15 Apr 2011 16:48:42 -0700
+Subject: [Mapnik-devel] clipping extents
+Message-ID: <A813AC2E-ECC9-4CC2-8A78-129BC67C4AC1@dbsgeo.com>
+
+Mapnik-devel,
+
+Short version of this email: start setting the new 'maximum-extent' property on the mapnik.Map object once you upgrade your code to use Mapnik2.
+
+Long version:
+
+A slew of tickets have collected over the past year(s) documenting the struggle of using Mapnik with custom projections or with data in a very different projection than the map.
+
+Basically all the issues boil down to the challenge of how to predictably transform bounding boxes between projections when the map or layer extents may not be valid for a given target projection.
+
+Until now we have controlled out of bounds conditions by back projecting a given layers extents then clipping by the map's extent, which works fine as long the layer's bbox can be handled in the map srs. This is not the case when the map srs may be a local projection but the data is global. So the reverse is a better approach: simply forward project the map extent into the layer srs. But this is likely to fall down when the map extent is invalidly large, e.g at low zoom levels with local data or just when a large buffer_size is used that inflates the map extent beyond valid bounds.
+
+So, after reviewing all the issues inventoried at http://trac.mapnik.org/wiki/BoundsClipping I've concluding that:
+
+ 1) changing behavior to forward the map to the layer srs is more predictable, and faster.
+ 2) and its failure condition has a simple solution/workaround which is having the user provide a valid "maximum-extent" (which is optional by default).
+
+More details at [1]. See also another ticket which offers an alternative solution to setting a maximum-extent [2].
+
+So, the above two changes are now in mapnik trunk and working nicely. My sense is we now have a more robust solution for at least three common scenarios:
+
+1) Users trying make maps in local projections using OSM data (or any other global data) will actually get a map now, rather than a blank tile!
+
+2) Applications that target spherical mercator like Mod_tile, TileStash, Tirex, Tilelive.js, and likely many more in the OSM world can now enforce '-20037508.34, -20037508.34, 20037508.34, 20037508.34' by setting it as a property of the mapnik.Map object. This will ensure fast and predictable bounds are always used when mapnik datasources are queried during rendering.
+
+3) Users using Natural Earth data (or other data with lots of errors where coordinates are above 90 or below -90) will now be able to use the maximum-extent to avoid many/most of the side effects of earlier mapnik versions - which was where very bogus extents were being returned by proj4 (without any error) and naively passed along in the query to a datasource. The result: many features were lost. My solution for this has always been to clip these datasets beforehand [3], and this still I think is the proper approach, but setting the maximum-extent on the mapnik.Map should offer a seabelt to avoid the worse before actually going back to clip the data.
+
+4) Minor, but nice: Users of OSM that only import local extracts can now easily control the max extent of the map (returned by map.zoom_all()) (instead of having to modify the hardcoded layer extents for every postgis layer).
+
+5) Likely other benefits :) And no drawbacks that I am aware of - but let me know.
+
+Dane
+
+[1] http://trac.mapnik.org/wiki/BoundsClipping
+[2]  http://trac.mapnik.org/ticket/751
+[3] http://trac.mapnik.org/wiki/Troubleshooting
+
+
+
+From david.eastcott at shaw.ca  Sat Apr 16 21:06:03 2011
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sat, 16 Apr 2011 13:06:03 -0600
+Subject: [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+Message-ID: <4DA9E89B.10808@shaw.ca>
+
+I normally build all the mapnik components as an RPM package and this morning I pulled the latest trunk (2786) and was attempting to rebuild mapnik and the viewer when I got a linker error about 'missing references'.
+
+I am not sure where to start looking to resolve this so I thought I would ask if anyone else has seen this? Or could offer some suggestions?  I do not have a clean machine, yet, to do a normal build and install.
+
+The following fragment are the errors I am getting:
+
+
+g++ -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,-O1 -o viewer release/main.o release/mainwindow.o release/mapwidget.o release/layerwidget.o release/layerlistmodel.o release/layerdelegate.o release/styles_model.o release/about_dialog.o release/info_dialog.o release/layer_info_dialog.o release/moc_mainwindow.o release/moc_mapwidget.o release/moc_layerwidget.o release/moc_layerlistmodel.o release/moc_layerdelegate.o release/moc_styles_model.o release/moc_about_dialog.o release/moc_info_dialog.o release/moc_layer_info_dialog.o release/qrc_mapnik_viewer.o    -L/usr/lib64 -L../../src/ -L/usr/X11/lib -lmapnik2 -lfreetype -lboost_system -licuuc -lboost_filesystem -lboost_regex -lQtGui -L/usr/lib64 -L/usr/lib -lQtCore -lpthread
+release/mapwidget.o: In function `mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)':
+
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x134): undefined reference to `mapnik::Map::maximum_extent() const'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x14f): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x174): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x18c): undefined reference to `mapnik::proj_transform::backward(mapnik::box2d<double>&) const'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x37d): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x38d): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x8b7): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+
+collect2: ld returned 1 exit status
+make[1]: *** [viewer] Error 1
+make[1]: Leaving directory `/home/david/ProjectsDev/ProjectsRPMS/rpm/BUILD/mapnik-2.0.0/demo/viewer'
+make: *** [release] Error 2
+error: Bad exit status from /home/david/ProjectsDev/ProjectsRPMS/rpm/tmp/rpm-tmp.0wZIWd (%build)
+
+Regards Dave
+
+
+From dane at dbsgeo.com  Sun Apr 17 06:36:15 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 16 Apr 2011 21:36:15 -0700
+Subject: [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+In-Reply-To: <4DA9E89B.10808@shaw.ca>
+References: <4DA9E89B.10808@shaw.ca>
+Message-ID: <DC51281E-1E6A-449B-86CE-220CF79E97F3@dbsgeo.com>
+
+Hi David,
+
+The linking errors below all look to be occurring because of missing references to function signatures I added just in the past few days.
+
+I cannot replicate the problem building the viewer locally. Is it possible you have two libmapnik2.so installed or that your viewer object files are stale?
+
+If after fully cleaning and recompiling you still hit the errors let me know.
+
+Dane
+
+
+On Apr 16, 2011, at 12:06 PM, David Eastcott wrote:
+
+> I normally build all the mapnik components as an RPM package and this morning I pulled the latest trunk (2786) and was attempting to rebuild mapnik and the viewer when I got a linker error about 'missing references'.
+> 
+> I am not sure where to start looking to resolve this so I thought I would ask if anyone else has seen this? Or could offer some suggestions?  I do not have a clean machine, yet, to do a normal build and install.
+> 
+> The following fragment are the errors I am getting:
+> 
+> 
+> g++ -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,-O1 -o viewer release/main.o release/mainwindow.o release/mapwidget.o release/layerwidget.o release/layerlistmodel.o release/layerdelegate.o release/styles_model.o release/about_dialog.o release/info_dialog.o release/layer_info_dialog.o release/moc_mainwindow.o release/moc_mapwidget.o release/moc_layerwidget.o release/moc_layerlistmodel.o release/moc_layerdelegate.o release/moc_styles_model.o release/moc_about_dialog.o release/moc_info_dialog.o release/moc_layer_info_dialog.o release/qrc_mapnik_viewer.o    -L/usr/lib64 -L../../src/ -L/usr/X11/lib -lmapnik2 -lfreetype -lboost_system -licuuc -lboost_filesystem -lboost_regex -lQtGui -L/usr/lib64 -L/usr/lib -lQtCore -lpthread
+> release/mapwidget.o: In function `mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)':
+> 
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x134): undefined reference to `mapnik::Map::maximum_extent() const'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x14f): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x174): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x18c): undefined reference to `mapnik::proj_transform::backward(mapnik::box2d<double>&) const'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x37d): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x38d): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32> >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x8b7): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double> const&)'
+> 
+> collect2: ld returned 1 exit status
+> make[1]: *** [viewer] Error 1
+> make[1]: Leaving directory `/home/david/ProjectsDev/ProjectsRPMS/rpm/BUILD/mapnik-2.0.0/demo/viewer'
+> make: *** [release] Error 2
+> error: Bad exit status from /home/david/ProjectsDev/ProjectsRPMS/rpm/tmp/rpm-tmp.0wZIWd (%build)
+> 
+> Regards Dave
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From david.eastcott at shaw.ca  Sun Apr 17 15:42:23 2011
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sun, 17 Apr 2011 07:42:23 -0600
+Subject: [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+In-Reply-To: <DC51281E-1E6A-449B-86CE-220CF79E97F3@dbsgeo.com>
+References: <4DA9E89B.10808@shaw.ca>
+	<DC51281E-1E6A-449B-86CE-220CF79E97F3@dbsgeo.com>
+Message-ID: <4DAAEE3F.2070309@shaw.ca>
+
+Hi Dane,
+
+Thanks for the hint.
+
+It turns out that the generated makefile library linking/search order placed the 'system library path' ahead of the path where the new mapnik lib was being placed.
+
+I solved it with a minor change to the viewer.pro file as follows:
+
+FROM:
+
+	QMAKE_CXXFLAGS +=' -DDARWIN -Wno-missing-field-initializers -ansi'
+	unix:LIBS =  -L/usr/local/lib -L/usr/X11/lib -lmapnik2 -lfreetype
+	unix:LIBS += -lboost_system -licuuc -lboost_filesystem -lboost_regex
+
+TO:
+
+	LIBPATH += /usr/local/lib
+	LIBPATH += /usr/X11/lib
+
+	QMAKE_CXXFLAGS +=' -DDARWIN -Wno-missing-field-initializers -ansi'
+	unix:LIBS =  -lmapnik2 -lfreetype
+	unix:LIBS += -lboost_system -licuuc -lboost_filesystem -lboost_regex
+
+This change would make it a lot easier when creating RPM packages.  If you can see you way to making the change in the trunk, I'd appreciate it.
+
+BTW, like all the changes that are in the trunk.  I've started re-working the xml doc to reflect them.
+
+Best regards,
+Dave
+
+
+On 16/04/11 10:36 PM, Dane Springmeyer wrote:
+> Hi David,
+>
+> The linking errors below all look to be occurring because of missing references to function signatures I added just in the past few days.
+>
+> I cannot replicate the problem building the viewer locally. Is it possible you have two libmapnik2.so installed or that your viewer object files are stale?
+>
+> If after fully cleaning and recompiling you still hit the errors let me know.
+>
+> Dane
+>
+>
+> On Apr 16, 2011, at 12:06 PM, David Eastcott wrote:
+>
+>> I normally build all the mapnik components as an RPM package and this morning I pulled the latest trunk (2786) and was attempting to rebuild mapnik and the viewer when I got a linker error about 'missing references'.
+>>
+>> I am not sure where to start looking to resolve this so I thought I would ask if anyone else has seen this? Or could offer some suggestions?  I do not have a clean machine, yet, to do a normal build and install.
+>>
+>> The following fragment are the errors I am getting:
+>>
+>>
+>> g++ -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,-O1 -o viewer release/main.o release/mainwindow.o release/mapwidget.o release/layerwidget.o release/layerlistmodel.o release/layerdelegate.o release/styles_model.o release/about_dialog.o release/info_dialog.o release/layer_info_dialog.o release/moc_mainwindow.o release/moc_mapwidget.o release/moc_layerwidget.o release/moc_layerlistmodel.o release/moc_layerdelegate.o release/moc_styles_model.o release/moc_about_dialog.o release/moc_info_dialog.o release/moc_layer_info_dialog.o release/qrc_mapnik_viewer.o    -L/usr/lib64 -L../../src/ -L/usr/X11/lib -lmapnik2 -lfreetype -lboost_system -licuuc -lboost_filesystem -lboost_regex -lQtGui -L/usr/lib64 -L/usr/lib -lQtCore -lpthread
+>> release/mapwidget.o: In function `mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)':
+>>
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x134): undefined reference to `mapnik::Map::maximum_extent() const'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x14f): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x174): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x18c): undefined reference to `mapnik::proj_transform::backward(mapnik::box2d<double>&) const'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x37d): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x38d): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x8b7): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>>
+>> collect2: ld returned 1 exit status
+>> make[1]: *** [viewer] Error 1
+>> make[1]: Leaving directory `/home/david/ProjectsDev/ProjectsRPMS/rpm/BUILD/mapnik-2.0.0/demo/viewer'
+>> make: *** [release] Error 2
+>> error: Bad exit status from /home/david/ProjectsDev/ProjectsRPMS/rpm/tmp/rpm-tmp.0wZIWd (%build)
+>>
+>> Regards Dave
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+
+From dane at dbsgeo.com  Thu Apr 21 18:59:07 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 21 Apr 2011 09:59:07 -0700
+Subject: [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+In-Reply-To: <4DAAEE3F.2070309@shaw.ca>
+References: <4DA9E89B.10808@shaw.ca>
+	<DC51281E-1E6A-449B-86CE-220CF79E97F3@dbsgeo.com>
+	<4DAAEE3F.2070309@shaw.ca>
+Message-ID: <0C285B60-0888-41E9-87AB-2A14FB5BCBB9@dbsgeo.com>
+
+
+On Apr 17, 2011, at 6:42 AM, David Eastcott <david.eastcott at shaw.ca> wrote:
+
+> Hi Dane,
+> 
+> Thanks for the hint.
+
+You are welcome. 
+
+> 
+> It turns out that the generated makefile library linking/search order placed the 'system library path' ahead of the path where the new mapnik lib was being placed.
+
+Ah, makes sense. 
+> 
+> I solved it with a minor change to the viewer.pro file as follows:
+> 
+> FROM:
+> 
+>    QMAKE_CXXFLAGS +=' -DDARWIN -Wno-missing-field-initializers -ansi'
+>    unix:LIBS =  -L/usr/local/lib -L/usr/X11/lib -lmapnik2 -lfreetype
+>    unix:LIBS += -lboost_system -licuuc -lboost_filesystem -lboost_regex
+> 
+> TO:
+> 
+>    LIBPATH += /usr/local/lib
+>    LIBPATH += /usr/X11/lib
+> 
+>    QMAKE_CXXFLAGS +=' -DDARWIN -Wno-missing-field-initializers -ansi'
+>    unix:LIBS =  -lmapnik2 -lfreetype
+>    unix:LIBS += -lboost_system -licuuc -lboost_filesystem -lboost_regex
+> 
+> This change would make it a lot easier when creating RPM packages.  If you can see you way to making the change in the trunk, I'd appreciate it.
+
+Ya I think we should either move to using the output of mapnik-config to build avaunt an installed version of Mapnik or try to autogenerate that qmake pro file during configure time using scons. 
+
+> 
+> BTW, like all the changes that are in the trunk.
+
+Ooh. Really good to hear! 
+
+>  I've started re-working the xml doc to reflect them.
+
+That is fantastic. Check out reference.json on github. It is a start at a easily parseable and readable list of symbolizers. Perhaps useful as a master list. 
+> 
+> Best regards,
+> Dave
+> 
+> 
+> On 16/04/11 10:36 PM, Dane Springmeyer wrote:
+>> Hi David,
+>> 
+>> The linking errors below all look to be occurring because of missing references to function signatures I added just in the past few days.
+>> 
+>> I cannot replicate the problem building the viewer locally. Is it possible you have two libmapnik2.so installed or that your viewer object files are stale?
+>> 
+>> If after fully cleaning and recompiling you still hit the errors let me know.
+>> 
+>> Dane
+>> 
+>> 
+>> On Apr 16, 2011, at 12:06 PM, David Eastcott wrote:
+>> 
+>>> I normally build all the mapnik components as an RPM package and this morning I pulled the latest trunk (2786) and was attempting to rebuild mapnik and the viewer when I got a linker error about 'missing references'.
+>>> 
+>>> I am not sure where to start looking to resolve this so I thought I would ask if anyone else has seen this? Or could offer some suggestions?  I do not have a clean machine, yet, to do a normal build and install.
+>>> 
+>>> The following fragment are the errors I am getting:
+>>> 
+>>> 
+>>> g++ -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,-O1 -o viewer release/main.o release/mainwindow.o release/mapwidget.o release/layerwidget.o release/layerlistmodel.o release/layerdelegate.o release/styles_model.o release/about_dialog.o release/info_dialog.o release/layer_info_dialog.o release/moc_mainwindow.o release/moc_mapwidget.o release/moc_layerwidget.o release/moc_layerlistmodel.o release/moc_layerdelegate.o release/moc_styles_model.o release/moc_about_dialog.o release/moc_info_dialog.o release/moc_layer_info_dialog.o release/qrc_mapnik_viewer.o    -L/usr/lib64 -L../../src/ -L/usr/X11/lib -lmapnik2 -lfreetype -lboost_system -licuuc -lboost_filesystem -lboost_regex -lQtGui -L/usr/lib64 -L/usr/lib -lQtCore -lpthread
+>>> release/mapwidget.o: In function `mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)':
+>>> 
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x134): undefined reference to `mapnik::Map::maximum_extent() const'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x14f): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x174): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x18c): undefined reference to `mapnik::proj_transform::backward(mapnik::box2d<double>&) const'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x37d): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x38d): undefined reference to `mapnik::proj_transform::forward(mapnik::box2d<double>&) const'
+>>> mapwidget.cpp:(.text._ZN6mapnik23feature_style_processorINS_12agg_rendererINS_8image_32EEEE14apply_to_layerERKNS_5layerERS3_RKNS_10projectionEd[mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::image_32>  >::apply_to_layer(mapnik::layer const&, mapnik::agg_renderer<mapnik::image_32>&, mapnik::projection const&, double)]+0x8b7): undefined reference to `mapnik::box2d<double>::clip(mapnik::box2d<double>  const&)'
+>>> 
+>>> collect2: ld returned 1 exit status
+>>> make[1]: *** [viewer] Error 1
+>>> make[1]: Leaving directory `/home/david/ProjectsDev/ProjectsRPMS/rpm/BUILD/mapnik-2.0.0/demo/viewer'
+>>> make: *** [release] Error 2
+>>> error: Bad exit status from /home/david/ProjectsDev/ProjectsRPMS/rpm/tmp/rpm-tmp.0wZIWd (%build)
+>>> 
+>>> Regards Dave
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+>> 
+> 
+
+
+From richard at weait.com  Sat Apr 23 03:44:01 2011
+From: richard at weait.com (Richard Weait)
+Date: Fri, 22 Apr 2011 21:44:01 -0400
+Subject: [Mapnik-devel] Four color theorem in mapnik?
+Message-ID: <BANLkTimS-eJUMkB6y08hx=T6atY1O5WEZA@mail.gmail.com>
+
+A recent question on the OSM newbies list asked "Why don't we use for
+colors for the different states, like this?
+http://en.wikipedia.org/wiki/File:Map_of_USA_with_state_names.svg
+
+So?  How about it?  Is there a way to have Mapnik just Do the Right
+Four Color Thing?
+
+Or is there some good reason why OSM and the other online mapping
+services aren't doing it?  Is it "hard'?
+
+
+From roel.vanhout at gmail.com  Sat Apr 23 11:37:53 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Sat, 23 Apr 2011 11:37:53 +0200
+Subject: [Mapnik-devel] Four color theorem in mapnik?
+In-Reply-To: <BANLkTimS-eJUMkB6y08hx=T6atY1O5WEZA@mail.gmail.com>
+References: <BANLkTimS-eJUMkB6y08hx=T6atY1O5WEZA@mail.gmail.com>
+Message-ID: <BANLkTi==zq5vSOyUCFbUtoXXjoKY=SKFEg@mail.gmail.com>
+
+I suspect the reason is stated in the second paragraph of the
+Wikipedia entry on the four color theorem: "Despite the motivation
+from coloring political maps of countries, the theorem is not of
+particular interest to mapmakers."
+
+Furthermore, there aren't many facilities (yet, hopefully there will
+be more in the future ; although I'm not sure if it should be part of
+'mapnik core' which IMO is or should be just the rendering engine) in
+mapnik to automate the 'cartography' part of making maps. More
+philosophically, the mapping/spatial data industry as a whole (in my
+experience) has only just grown out of the phase where hand-drawing
+maps are replaced by GIS systems; GIS are largely "map-specific
+drawing tools", rather than "automated map making devices". We will
+move in that direction eventually, of course; I like to compare this
+evolution to "hand-drawing building plans" -> "AutoCAD" -> "BIM/Revit"
+(for those unfamiliar with building design, AutoCAD lets you draw
+lines and everything you need to 'emulate' a hand-drawn plan; it's
+just computerization of the pen and paper. BIM (Building Information
+Modeling) makes a complete 3D computer model of a building (not just
+the geometry, like Sketchup does; but including the piping, materials
+used, energy properties, environment etc), and the building plans are
+just one product that can be derived from such a model.
+
+That said, it's not particularly hard to write an implementation for
+coloring maps like you ask for practical purposes; meaning, most maps
+can be brute-forced if one wants to color it with just 4 colors. Maybe
+the analysis to check if the map needs 4 or can suffice with 3 colors
+would be a bit harder; although I guess the 'graph based proof' of the
+four color theorem could be adapted for it. It's just that this
+problem is largely theoretical, of interest only to mathematicians and
+CS people, and not to cartographers. My experience confirms the
+Wikipedia article - most cartographers I speak to have never heard of
+the theorem and fail to see any practical use for it. Remember,
+cartography is not just programming rules; it's part science, part
+art.
+
+cheers,
+
+roel
+
+
+On Sat, Apr 23, 2011 at 3:44 AM, Richard Weait <richard at weait.com> wrote:
+> A recent question on the OSM newbies list asked "Why don't we use for
+> colors for the different states, like this?
+> http://en.wikipedia.org/wiki/File:Map_of_USA_with_state_names.svg
+>
+> So? ?How about it? ?Is there a way to have Mapnik just Do the Right
+> Four Color Thing?
+>
+> Or is there some good reason why OSM and the other online mapping
+> services aren't doing it? ?Is it "hard'?
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From ldp at xs4all.nl  Sat Apr 23 12:22:59 2011
+From: ldp at xs4all.nl (Lennard)
+Date: Sat, 23 Apr 2011 12:22:59 +0200
+Subject: [Mapnik-devel] Four color theorem in mapnik?
+In-Reply-To: <BANLkTi==zq5vSOyUCFbUtoXXjoKY=SKFEg@mail.gmail.com>
+References: <BANLkTimS-eJUMkB6y08hx=T6atY1O5WEZA@mail.gmail.com>
+	<BANLkTi==zq5vSOyUCFbUtoXXjoKY=SKFEg@mail.gmail.com>
+Message-ID: <4DB2A883.5090705@xs4all.nl>
+
+On 23-4-2011 11:37, Roel Vanhout wrote:
+
+> CS people, and not to cartographers. My experience confirms the
+> Wikipedia article - most cartographers I speak to have never heard of
+> the theorem and fail to see any practical use for it. Remember,
+> cartography is not just programming rules; it's part science, part
+> art.
+
+I've known about the theorem since I was an early teen, although back 
+then that was about the extent of it: knowing it exists, what it does, 
+and what it means to certain maps.
+
+You're right about the second part too: I don't see any practical use of 
+adopting this for the main OSM maps.
+
+I also wouldn't implement this in mapnik. It's not particularly suited 
+to it, as in the most used scenario, mapnik hasn't even got full 
+knowledge of the entire dataset, but just the bbox it has to render. If 
+I would have to make a political map in this style, I would preprocess 
+the areas and have a helper table with an area<->colour mapping.
+
+
+-- 
+Lennard
+
+
+From david.eastcott at shaw.ca  Tue Apr 26 03:55:21 2011
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Mon, 25 Apr 2011 19:55:21 -0600
+Subject: [Mapnik-devel] Viewer - mapnik2 - maximum-extents
+In-Reply-To: <0C285B60-0888-41E9-87AB-2A14FB5BCBB9@dbsgeo.com>
+References: <4DA9E89B.10808@shaw.ca>
+	<DC51281E-1E6A-449B-86CE-220CF79E97F3@dbsgeo.com>
+	<4DAAEE3F.2070309@shaw.ca>
+	<0C285B60-0888-41E9-87AB-2A14FB5BCBB9@dbsgeo.com>
+Message-ID: <4DB62609.3040406@shaw.ca>
+
+On 21/04/11 10:59 AM, Dane Springmeyer wrote:
+...
+
+>> This change would make it a lot easier when creating RPM packages.  If you can see you way to making the change in the trunk, I'd appreciate it.
+>
+> Ya I think we should either move to using the output of mapnik-config to build avaunt an installed version of Mapnik or try to autogenerate that qmake pro file during configure time using scons.
+>
+
+Having the viewer built in the same manner as the other utilities would simplify things considerably.
+
+...
+
+>
+> That is fantastic. Check out reference.json on github. It is a start at a easily parseable and readable list of symbolizers. Perhaps useful as a master list.
+>>
+
+I've added it to my list of references, thanks.
+
+Dave
+
+

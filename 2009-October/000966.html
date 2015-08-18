@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Some patches for Shield and Text Symbolizers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20patches%20for%20Shield%20and%20Text%20Symbolizers&In-Reply-To=%3C4ADB11FE.5090505%40shaw.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000965.html">
+   <LINK REL="Next"  HREF="000967.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Some patches for Shield and Text Symbolizers</H1>
+    <B>David Eastcott</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20patches%20for%20Shield%20and%20Text%20Symbolizers&In-Reply-To=%3C4ADB11FE.5090505%40shaw.ca%3E"
+       TITLE="[Mapnik-devel] Some patches for Shield and Text Symbolizers">david.eastcott at shaw.ca
+       </A><BR>
+    <I>Sun Oct 18 15:02:54 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000965.html">[Mapnik-devel] Contributing to Postgres/PostGIS testing framework
+</A></li>
+        <LI>Next message: <A HREF="000967.html">[Mapnik-devel] Some patches for Shield and Text Symbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#966">[ date ]</a>
+              <a href="thread.html#966">[ thread ]</a>
+              <a href="subject.html#966">[ subject ]</a>
+              <a href="author.html#966">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I have attached some changes that I thought would enhance mapnik.  I've 
+generated the diff set against trunk version 1331 and are attached.  I 
+did not attempt to modify the other interface or subsystems (python or 
+cario) to support the new/changed parameters.  If you have any 
+questions, please do not hesitate to contact me.
+
+Best regards,
+Dave
+
+Change log:
+
+1.  Modified Text Symbolizer
+
+    a) corrected line fragment centering (for 2nd and subsequent lines, 
+when line breaks occur).
+
+    b) adjusted vertical alignment calculation so that:
+        i)      middle -&gt; has the center of the text line(s) at the 
+point origin
+        ii)     bottom -&gt; has the text line(s) below the point origin
+        iii)    top -&gt; has the text line(s) above the point origin
+
+    c) added new text_symbolizer attribute: 'wrap_before', value range: 
+true/false, default == false
+
+       allows line breaks at first wrap_char before wrap_width as an 
+alternative to the original
+       which was to create the line break at the first wrap_char after 
+wrap_width
+
+    d) added new text_symbolizer attribute: 'horizontal_alignment', 
+value range: left/middle/right, default == middle
+        i)      left -&gt; has all text line(s) to left of the point origin
+        ii)     middle -&gt; has all text line(s) centered on the the point 
+origin
+        iii)    right -&gt; has all text line(s) to the right of the point 
+origin
+
+        NOTE:   dx, dy position adjustments are applied after alignments 
+and before Justify.
+
+    e) added new text_symbolizer attribute: 'justify_alignment', value 
+range: left/middle/right, default == middle
+        i)      left -&gt; after alignments, has all text line(s) are left 
+justified (left to right reading)
+        ii)     middle -&gt; after alignments, has all text line(s) center 
+justified
+        iii)    right -&gt; after alignments, has all text line(s) right 
+justified (right to left reading)
+
+    f) added new text_symbolizer attribute:  'opacity', value range: 0.0 
+thru 1.0; 1.0 == fully opaque
+
+    g) modified positioning to compensate for both line_spacing and 
+character_spacing, to ensure proper
+       centering of the text envelope.  Also ensure that centering 
+occurs correctly even if no wrapping
+       occurs.  Line spacing is uniform and consistent and compensates 
+for errors between text_size and
+       the actual size (ci.height is inconsistent, depending on case and 
+character); fixes issue with
+       multi-line text where some lines have a slight gap and others are 
+compressed together.
+
+
+2.  Modified shield_symbolizer
+
+    a) added the attributes:
+        i)      allow_overlap
+        ii)     vertical_alignment
+        iii)    horizontal_alignment
+        iv)     justify_alignment
+        v)      wrap_width
+        vi)     wrap_character
+        vii)    wrap_before
+        viii)   text_convert
+        ix)     line_spacing
+        x)      character_spacing
+        xi)     opacity
+
+    b)  added new shield_symbolizer attribute: 'unlock_image', value 
+range: true/false, default == false
+        i)  false == image and text placement behaviour same as before
+        ii) true == image placement independant of text, image is always 
+centered at geometry point, text placed per attributes,
+                    dx/dy only affect text.
+
+        Allows user to create point markers with text, but both the text 
+and image rendering collision detection are done
+        as a pair (they come and go together - solves problem if using 
+point_symbolizer and text_symbolizers where one or the
+        other are omitted due to overlaps, but not both)
+
+    c)  extended choices for the attribute 'placement' to include 
+vertex; effect is limited to the shield_symbolizer
+
+        Allows an attempted placement at every vertex available, gives 
+additional shield placement volume when using line geometry
+
+    d)  ensured that the text placement was not updating the detector 
+unless a shield image was actually placed.
+
+    e)  added new shield_symbolizer attribute: 'no_text', value range: 
+true/false, default = false
+
+        When set true, the text for the feature is ignored ('space' 
+subsituted) so that pure graphic symbols can be used
+        and no text is rendered over top of them.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-1331.tar.gz
+Type: application/x-gzip
+Size: 29520 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091018/33731586/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091018/33731586/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000965.html">[Mapnik-devel] Contributing to Postgres/PostGIS testing framework
+</A></li>
+	<LI>Next message: <A HREF="000967.html">[Mapnik-devel] Some patches for Shield and Text Symbolizers
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#966">[ date ]</a>
+              <a href="thread.html#966">[ thread ]</a>
+              <a href="subject.html#966">[ subject ]</a>
+              <a href="author.html#966">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

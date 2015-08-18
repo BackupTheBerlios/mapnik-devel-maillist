@@ -1,0 +1,1799 @@
+From dbsgeo at gmail.com  Thu Apr  1 09:02:57 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Thu, 1 Apr 2010 00:02:57 -0700
+Subject: [Mapnik-devel] Problem with local projections and worldwide
+	data extent
+In-Reply-To: <4BB3AF91.6090302@remote.org>
+References: <4BB3AF91.6090302@remote.org>
+Message-ID: <6D22740A-C559-437C-8A6C-FC4691070512@gmail.com>
+
+
+
+--- \o/ ---
+Sent from my phone
+
+On Mar 31, 2010, at 1:24 PM, Frederik Ramm <frederik at remote.org> wrote:
+
+> Hi,
+>
+>   I'm having trouble rendering something in several exotic  
+> projections, for example epsg:31468 which is commonly used in  
+> Germany and only defined for a rather small area.
+>
+> I have a database in epsg:4326 covering all of the world, and in my  
+> style sheet I am defining
+>
+> <Parameter name="extent">-180,-85,180,85</Parameter>
+>
+> for all data sources. Running images in any projection that is valid  
+> for this whole extent works fine (debugging from nik2img, with  
+> Mapnik 0.7.1):
+>
+> Step: 10 // --> SRID: +init=epsg:4326
+> Step: 11 // --> Map extent: Envelope 
+> (11.0097035573,49.01,12.9602964427,50.76)
+> Step: 12 // --> Map long/lat bbox: Envelope 
+> (11.0097035573,49.01,12.9602964427,50.76)
+> Step: 13 // --> Map center: Coord(11.985,49.885)
+> Step: 14 // --> Map long/lat center: Coord(11.985,49.885)
+> Step: 15 // --> Map scale denominator: 2749987.42078
+> Step: 16 // --> Extent of all layers: Envelope 
+> (-180.0,-85.0666032764,180.0,85.0)
+> Step: 17 // --> Long/lat extent of all layers: Envelope 
+> (-180.0,-85.0666032764,180.0,85.0)
+> Step: 18 // --> Long/lat center of all layers: Coord 
+> (0.0,-0.0333016381899)
+> Step: 19 // --> Layers intersecting map: [world, coast-poly,
+>
+> etc.
+>
+> However, if I do the same with epsg:31468 (I am using the -b  
+> parameter to nik2img and specifying an area for which that  
+> projection is definitely defined) I get
+>
+> Step: 10 // --> SRID: +init=epsg:31468
+> Step: 11 // --> Map extent: Envelope 
+> (4389656.16103,5430541.90021,4606589.44871,5625166.44553)
+> Step: 12 // --> Map long/lat bbox: Envelope 
+> (10.490481472,49.0023092212,13.5089566571,50.7522196667)
+> Step: 13 // --> Map center: Coord(4498122.80487,5527854.17287)
+> Step: 14 // --> Map long/lat center: Coord 
+> (11.9997190646,49.8772644439)
+> Step: 15 // --> Map scale denominator: 2747382.06271
+> Step: 16 // --> Extent of all layers: Envelope 
+> (-3.14156014609,-1.48460172944,3.1144412121,1.48342809868)
+> Step: 17 // --> Long/lat extent of all layers: Envelope 
+> (-25.4095106175,0.00372451805217,-25.4094660839,0.00374592328912)
+> Step: 18 // --> Long/lat center of all layers: Coord 
+> (-25.4094883507,0.00373522067065)
+> Step: 19 // --> No layers intersecting map!
+>
+
+Hmm something seems odd with those longitudes. Or at least you would  
+think nik2img would report layer intersections.
+
+> Is it possible that I am running into that same bug which also  
+> causes epsg:900913 to not work if the extent is set to +/- 90  
+> degrees latitude?
+
+Yes. Seems likely that there are proj_transform errrors ocurring  
+because the layer extents are outside the valid range to transform in  
+this custom proj.
+
+> IIRC the reason was that Mapnik first projects the extent of all  
+> layers into the destination projection to find out whether there is  
+> any intersection, and in this case that operation will certainly  
+> yield garbage.
+>
+Right.
+> Will I be able to fix it by simply changing the code to project the  
+> map extent into the data source extent and *then* find out if there  
+> is an intersection?
+
+Yes that seems like it should work nicer in this case.
+
+> Or have you been down that road already and encountered a different  
+> problem?
+>
+Yes. For most cases the layer extent is a more reliable clipping  
+extent to use as the map extent (when zoomed out on an application)  
+can easiely extent past the range of reprojectable coords.
+
+I think we need both however- ability to clip by layer extent but also  
+manually provide a map max extent or layer max extent. What do you  
+think?
+
+To understand various approaches and drawbacks a while back  I  
+created: http://trac.mapnik.org/wiki/BoundsClipping
+
+> Bye
+> Frederik
+>
+> -- 
+> Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23 
+> '33"
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From blake at hailmail.net  Thu Apr  1 21:14:42 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 1 Apr 2010 12:14:42 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <i2hc5097ac41003311339ne8126881hdf9611ecc32d04a4@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<ee5da36b1003290507s4324f13fm1ae5c27ca1917577@mail.gmail.com>
+	<FD0430CF-F0D2-4E18-A907-B9960EC75D92@gmail.com>
+	<j2n7e70f38d1003291203q6442e466nf5396fce7dc4498b@mail.gmail.com>
+	<x2zee5da36b1003310246u8522e37fx6644f55fae54c1fd@mail.gmail.com>
+	<y2t7e70f38d1003310504p932f8a66l84d8fb94a445fae6@mail.gmail.com>
+	<i2hc5097ac41003311339ne8126881hdf9611ecc32d04a4@mail.gmail.com>
+Message-ID: <F79E3471-8551-470F-A3A7-241951F0CC2A@hailmail.net>
+
+
+
+--- \o/ ---
+Sent from my phone
+
+On Mar 31, 2010, at 1:39 PM, Robert Coup  
+<robert.coup at onetrackmind.co.nz> wrote:
+
+> 2010/4/1 Artem Pavlenko <artem at mapnik.org>:
+>>> I haven't read about how an SVG image can be embedded in a PDF  
+>>> file. My
+>>> question is, would this require the implementation of a separate PDF
+>>> renderer for SVG, just as Robert Coup says about a Cairo-based one?
+>>>
+>>
+>> OK, SVG->PDF needs some r&d, it should be easy, though.
+>>
+>> re:Cairo - it hasn't fine control required to implement features  
+>> we're
+>> discussing, Robert could verify this please?
+>>
+>
+> It does stuff well, but it does lack flexibility.
+
+Yes. It seems the Cairo API would be excellent for using for "map  
+adornments" (legend,scalebar,etc) but not yet flexible enough if  
+target is rather post-processable output or (layered) geopdf output.
+> Last time I looked
+> it didn't do things like layers, re-using symbols, etc - it was
+> reasonably "dumb".
+
+Yes I can confirm this but it depends on the backend. Some issues may  
+limitations in the flexibility of the Cairo API and some in the  
+backend for a given surface. I've never asked the Cairo devs about  
+layering support but at least for font embedding the svg surface  
+surface code inside Cairo just needs some work that the PDF surface  
+already supports.
+
+> Would need some more investigation. Might be an
+> option to work on Cairo to improve it if all it needs is some better
+> hooks for client apps to do things at various points during the
+> process...
+>
+> Converting SVG to PDF is reasonably straightforward, as they're both
+> vector formats. I think there are also a number of tools to add PDF
+> docs together (at a sub-page level).
+>
+> Rob :)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From ccaarlooss at gmail.com  Thu Apr  1 22:43:23 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Thu, 1 Apr 2010 14:43:23 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+Message-ID: <k2xee5da36b1004011343t66f34e71x5586079e2582441c@mail.gmail.com>
+
+Good afternoon, how are you?
+
+I was talking yesterday with Mr. Springmeyer about the scope of this project
+to determine the main goals and tasks. From the ideas discussed in this
+thread, I identify three major groups: Improvements in resolution, the
+implementation of a renderer based on SVG, and the addition of 'adornments'
+or informative elements (grids, scale bars, etc.)
+
+Each group has its own level of difficulty. However, I see more complexity
+in the implementation of the SVG renderer. I think it represents a major
+design task that deserves attention from a more experienced developer. As
+I'm new to the project, I think I would do better if I worked in the other
+two groups of ideas, which seem to have very clear and defined boundaries.
+This would help me become more familiar with the design and structure of
+Mapnik and would allow me to contribute in a better way in the future.
+
+However, I think you'll have a better perspective of the problem, so I'd
+love to hear your opinions.
+
+Thanks
+
+Carlos Enrique L?pez Garc?s
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100401/60cd53bb/attachment.html>
+
+From frederik at remote.org  Thu Apr  1 23:27:42 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Thu, 01 Apr 2010 23:27:42 +0200
+Subject: [Mapnik-devel] Problem with local projections and worldwide
+ data extent
+In-Reply-To: <6D22740A-C559-437C-8A6C-FC4691070512@gmail.com>
+References: <4BB3AF91.6090302@remote.org>
+	<6D22740A-C559-437C-8A6C-FC4691070512@gmail.com>
+Message-ID: <4BB50FCE.1050600@remote.org>
+
+Hi,
+
+Dane Springmeyer wrote:
+>> Will I be able to fix it by simply changing the code to project the 
+>> map extent into the data source extent and *then* find out if there is 
+>> an intersection?
+> 
+> Yes that seems like it should work nicer in this case.
+> 
+>> Or have you been down that road already and encountered a different 
+>> problem?
+>>
+> Yes. For most cases the layer extent is a more reliable clipping extent 
+> to use as the map extent (when zoomed out on an application) can easiely 
+> extent past the range of reprojectable coords.
+
+I have now modified the feature_style_processor.hpp (against 0.7.1) to 
+first try the current method (backward project layer extent into map 
+projection), but if that doesn't work, then forward project the map 
+extent into the layer projection, to determine the bounding box 
+intersection. Works like a charm for my particular itch, and as far as I 
+can see doesn't break anything either.
+
+Possible drawback is a little less than optimal performance for those 
+cases that didn't work at all before - because the backward projection 
+is always tried first even if the system could theoretically (somehow) 
+find out that it doesn't make sense trying it.
+
+Apologies for not sticking my patch to the correct ticket in trac, but 
+none of the open ones on the BoundsClipping page actually seemed to 
+match (but I could swear there was a ticket about this, a while ago). 
+Also, I saw that my patch will not easily apply to 0.8 because a new 
+custom max_extent mechanism has been added; someone will have to adapt 
+my patch to 0.8 as I am currently unable to compile 0.8 and would rather 
+not submit untested stuff.
+
+Patch (for current 0.7.1 SVN) attached.
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23'33"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: feature_style_processor.patch
+Type: text/x-patch
+Size: 4448 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100401/d50ad500/attachment.bin>
+
+From dbsgeo at gmail.com  Fri Apr  2 06:33:58 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Thu, 1 Apr 2010 21:33:58 -0700
+Subject: [Mapnik-devel] Problem with local projections and worldwide
+	data extent
+In-Reply-To: <4BB50FCE.1050600@remote.org>
+References: <4BB3AF91.6090302@remote.org>
+	<6D22740A-C559-437C-8A6C-FC4691070512@gmail.com>
+	<4BB50FCE.1050600@remote.org>
+Message-ID: <B8EEE122-62DA-4372-BE8D-851B8AFF2D1D@gmail.com>
+
+Great stuff Frederik! I look forward to talking a look at this patch.  
+Afaik we've done nothing new yet around max extent in trunk so should  
+apply easy.
+
+Let me know if I can help at all re: compile pain with 0.8. In the  
+meantime patches against 0.7.x are absolutely fine and I can help with  
+porting to trunk.
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Apr 1, 2010, at 2:27 PM, Frederik Ramm <frederik at remote.org> wrote:
+
+> Hi,
+>
+> Dane Springmeyer wrote:
+>>> Will I be able to fix it by simply changing the code to project  
+>>> the map extent into the data source extent and *then* find out if  
+>>> there is an intersection?
+>> Yes that seems like it should work nicer in this case.
+>>> Or have you been down that road already and encountered a  
+>>> different problem?
+>>>
+>> Yes. For most cases the layer extent is a more reliable clipping  
+>> extent to use as the map extent (when zoomed out on an application)  
+>> can easiely extent past the range of reprojectable coords.
+>
+> I have now modified the feature_style_processor.hpp (against 0.7.1)  
+> to first try the current method (backward project layer extent into  
+> map projection), but if that doesn't work, then forward project the  
+> map extent into the layer projection, to determine the bounding box  
+> intersection. Works like a charm for my particular itch, and as far  
+> as I can see doesn't break anything either.
+>
+> Possible drawback is a little less than optimal performance for  
+> those cases that didn't work at all before - because the backward  
+> projection is always tried first even if the system could  
+> theoretically (somehow) find out that it doesn't make sense trying it.
+>
+> Apologies for not sticking my patch to the correct ticket in trac,  
+> but none of the open ones on the BoundsClipping page actually seemed  
+> to match (but I could swear there was a ticket about this, a while  
+> ago). Also, I saw that my patch will not easily apply to 0.8 because  
+> a new custom max_extent mechanism has been added; someone will have  
+> to adapt my patch to 0.8 as I am currently unable to compile 0.8 and  
+> would rather not submit untested stuff.
+>
+> Patch (for current 0.7.1 SVN) attached.
+>
+> Bye
+> Frederik
+>
+> -- 
+> Frederik Ramm  ##  eMail frederik at remote.org  ##  N49?00'09" E008?23 
+> '33"
+> --- feature_style_processor.hpp	2010-03-10 21:40:34.000000000 +0100 + 
+> ++ feature_style_processor.hpp.fixed	2010-04-01 23:12:11.000000000  
+> +0200 @@ -126,30 +126,75 @@ proj_transform prj_trans(proj0,proj1);  
+> Envelope layer_ext = lay.envelope(); + + // have to determine  
+> whether there is an intersection between the map + // and the layer  
+> extent. since both may have different projections,  
+> +               // one must be reprojected to match the other. this  
+> is not something + // that always works, e.g. if layer extent = full  
+> earth and map uses + // a projection only defined for a small area,  
+> then projecting the layer + // to map's projection will not work. it  
+> can also happen the other way + // round. thus we try both. + + //  
+> first try to back project layer's extent into main map projection  
+> double lx0 = layer_ext.minx(); double ly0 = layer_ext.miny(); double  
+> lz0 = 0.0; double lx1 = layer_ext.maxx(); double ly1 = layer_ext.maxy 
+> (); double lz1 = 0.0; - // back project layers extent into main map  
+> projection - prj_trans.backward(lx0,ly0,lz0); - prj_trans.backward 
+> (lx1,ly1,lz1); - - // if no intersection then nothing to do for  
+> layer - if ( lx0 > ext.maxx() || lx1 < ext.minx() || ly0 > ext.maxy 
+> () || ly1 < ext.miny() ) + if (prj_trans.backward(lx0,ly0,lz0) &&  
+> prj_trans.backward(lx1,ly1,lz1)) { - return; - } + // if no  
+> intersection then nothing to do for layer + if ( lx0 > ext.maxx() ||  
+> lx1 < ext.minx() || ly0 > ext.maxy() || ly1 < ext.miny() ) +  
+> { +#ifdef MAPNIK_DEBUG + std::clog << "no intersection with layer "  
+> << lay.name() << " (backward projected)" << std::endl; +#endif +  
+> return; + } - // clip query bbox - lx0 = std::max(ext.minx(),lx0); -  
+> ly0 = std::max(ext.miny(),ly0); - lx1 = std::min(ext.maxx(),lx1); -  
+> ly1 = std::min(ext.maxy(),ly1); + // clip query bbox + lx0 = std::max 
+> (ext.minx(),lx0); + ly0 = std::max(ext.miny(),ly0); + lx1 = std::min 
+> (ext.maxx(),lx1); + ly1 = std::min(ext.maxy(),ly1); -  
+> prj_trans.forward(lx0,ly0,lz0); - prj_trans.forward(lx1,ly1,lz1); +  
+> prj_trans.forward(lx0,ly0,lz0); + prj_trans.forward(lx1,ly1,lz1);  
+> + } + // else, if backward projecting layer's extent to map's  
+> projection didn't work, + // forward project map's extent to layer's  
+> projection + else + { + lx0 = ext.minx(); + ly0 = ext.miny(); + lz0  
+> = 0.0; + lx1 = ext.maxx(); + ly1 = ext.maxy(); + lz1 = 0.0; + if (! 
+> (prj_trans.forward(lx0, ly0, lz0) && prj_trans.forward(lx1, ly1,  
+> lz1))) + { + // this is bad; we can neither project the layer to map  
+> nor map to layer. +#ifdef MAPNIK_DEBUG + std::clog << "cannot render  
+> layer " << lay.name() << ": neither forward nor backward projection  
+> works" << std::endl; +#endif + return; + } + if ( lx0 >  
+> layer_ext.maxx() || lx1 < layer_ext.minx() || ly0 > layer_ext.maxy()  
+> || ly1 < layer_ext.miny() ) + { +#ifdef MAPNIK_DEBUG + std::clog <<  
+> "no intersection with layer " << lay.name() << " (forward  
+> projected)" << std::endl; +#endif + return; + } + + // clip query  
+> bbox + lx0 = std::max(layer_ext.minx(),lx0); + ly0 = std::max 
+> (layer_ext.miny(),ly0); + lx1 = std::min(layer_ext.maxx(),lx1); +  
+> ly1 = std::min(layer_ext.maxy(),ly1); + } + Envelope bbox 
+> (lx0,ly0,lx1,ly1); double resolution = m_.getWidth()/ 
+> m_.getCurrentExtent().width();
+
+
+From dbsgeo at gmail.com  Fri Apr  2 06:43:42 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Thu, 1 Apr 2010 21:43:42 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2xee5da36b1004011343t66f34e71x5586079e2582441c@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<k2xee5da36b1004011343t66f34e71x5586079e2582441c@mail.gmail.com>
+Message-ID: <95271324-447F-40DF-8950-142DF8B6FB38@gmail.com>
+
+I encourage everyone following this thread to respond to carlos's  
+summary ideas. The applications are due soon and the more feedback he  
+has the more likely the project with be accepted and in a form that is  
+both exciting and feasible for the summer.
+
+On Saturday is whercamp and I hope to have a session with Mike  
+Migurski and Tom Carden to discuss mentorship and progress so far. At  
+this point I feel very impressed with carlos's awesome research and  
+the fantastic community brainstorming.
+
+Thanks!
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Apr 1, 2010, at 1:43 PM, Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.c 
+om> wrote:
+
+>
+> Good afternoon, how are you?
+>
+> I was talking yesterday with Mr. Springmeyer about the scope of this  
+> project to determine the main goals and tasks. From the ideas  
+> discussed in this thread, I identify three major groups:  
+> Improvements in resolution, the implementation of a renderer based  
+> on SVG, and the addition of 'adornments' or informative elements  
+> (grids, scale bars, etc.)
+>
+> Each group has its own level of difficulty. However, I see more  
+> complexity in the implementation of the SVG renderer. I think it  
+> represents a major design task that deserves attention from a more  
+> experienced developer. As I'm new to the project, I think I would do  
+> better if I worked in the other two groups of ideas, which seem to  
+> have very clear and defined boundaries. This would help me become  
+> more familiar with the design and structure of Mapnik and would  
+> allow me to contribute in a better way in the future.
+>
+> However, I think you'll have a better perspective of the problem, so  
+> I'd love to hear your opinions.
+>
+> Thanks
+>
+> Carlos Enrique L?pez Garc?s
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From ccaarlooss at gmail.com  Fri Apr  2 22:04:58 2010
+From: ccaarlooss at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Fri, 2 Apr 2010 14:04:58 -0600
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <95271324-447F-40DF-8950-142DF8B6FB38@gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<k2xee5da36b1004011343t66f34e71x5586079e2582441c@mail.gmail.com>
+	<95271324-447F-40DF-8950-142DF8B6FB38@gmail.com>
+Message-ID: <t2hee5da36b1004021304re9ec9c2cx606e949ef85cd5f1@mail.gmail.com>
+
+Good afternoon,
+
+I have been working on my proposal, but some doubts arose:
+
+1. As I understand, Ben Moores' pdf renderer implements all the functions
+for processing each kind of symbolizer, following the model of agg_renderer
+and cairo_renderer. agg_renderer and cairo_renderer are currently designed
+to produce output as raster images for displaying in the screen. The
+difference between these and pdf_renderer is the target output. So this
+makes me think that all the adornment elements, such as the grids and the
+scales, might be part of a last processing before rendering (as they might
+me placed in the upper layers). However, I know that these elements must be
+implemented in each renderer, since a different API is used. So if I
+understand correctly, the adornments are not elements that are only needed
+in printed maps, but also in the maps displayed on the screen. Am I correct
+so far?
+
+2. Robert Coup mentions that the idea is to add these elements to the
+cairo_renderer. So both the adornments and the variable-resolution/units
+ideas are for improving the cairo_renderer. Is this correct? I think I
+should find a way to define these ideas more abstractly in the code, so the
+cairo, agg and svg renderers benefit from this addition, not only the
+cairo-based one. Maybe define a set of classes that could be shared between
+renderers, leaving the specifics of how to display them to the renderers.
+
+3. I still think that the svg_renderer would be worth implementing this
+summer, though I would like to know your opinion on which ideas have a
+higher priority.
+
+Thank you, I hope I can send a draft of my proposal tonight.
+
+Carlos Enrique L?pez Garc?s
+
+2010/4/1 Dane Springmeyer <dbsgeo at gmail.com>
+
+> I encourage everyone following this thread to respond to carlos's summary
+> ideas. The applications are due soon and the more feedback he has the more
+> likely the project with be accepted and in a form that is both exciting and
+> feasible for the summer.
+>
+> On Saturday is whercamp and I hope to have a session with Mike Migurski and
+> Tom Carden to discuss mentorship and progress so far. At this point I feel
+> very impressed with carlos's awesome research and the fantastic community
+> brainstorming.
+>
+> Thanks!
+>
+> Dane
+>
+>
+> --- \o/ ---
+> Sent from my phone
+>
+> On Apr 1, 2010, at 1:43 PM, Carlos Enrique L?pez Garc?s <
+> ccaarlooss at gmail.com> wrote:
+>
+>
+>> Good afternoon, how are you?
+>>
+>> I was talking yesterday with Mr. Springmeyer about the scope of this
+>> project to determine the main goals and tasks. From the ideas discussed in
+>> this thread, I identify three major groups: Improvements in resolution, the
+>> implementation of a renderer based on SVG, and the addition of 'adornments'
+>> or informative elements (grids, scale bars, etc.)
+>>
+>> Each group has its own level of difficulty. However, I see more complexity
+>> in the implementation of the SVG renderer. I think it represents a major
+>> design task that deserves attention from a more experienced developer. As
+>> I'm new to the project, I think I would do better if I worked in the other
+>> two groups of ideas, which seem to have very clear and defined boundaries.
+>> This would help me become more familiar with the design and structure of
+>> Mapnik and would allow me to contribute in a better way in the future.
+>>
+>> However, I think you'll have a better perspective of the problem, so I'd
+>> love to hear your opinions.
+>>
+>> Thanks
+>>
+>> Carlos Enrique L?pez Garc?s
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100402/bf1d9110/attachment.html>
+
+From dbsgeo at gmail.com  Fri Apr  2 23:36:23 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Fri, 2 Apr 2010 14:36:23 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <t2hee5da36b1004021304re9ec9c2cx606e949ef85cd5f1@mail.gmail.com>
+References: <ee5da36b1003202229o22132997y78b7a3f02e959cbb@mail.gmail.com>
+	<k2xee5da36b1004011343t66f34e71x5586079e2582441c@mail.gmail.com>
+	<95271324-447F-40DF-8950-142DF8B6FB38@gmail.com>
+	<t2hee5da36b1004021304re9ec9c2cx606e949ef85cd5f1@mail.gmail.com>
+Message-ID: <A500767B-C95C-4DB0-A36F-F64BE8B58B4E@gmail.com>
+
+
+On Apr 2, 2010, at 1:04 PM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good afternoon,
+>
+> I have been working on my proposal, but some doubts arose:
+>
+> 1. As I understand, Ben Moores' pdf renderer implements all the  
+> functions for processing each kind of symbolizer, following the  
+> model of agg_renderer and cairo_renderer.
+
+Oh, interesting, I was not aware of this, so thanks for reporting how  
+it works...
+
+This then sounds like it is a parallel type of implementation, a  
+`pdf_renderer` that in addition contains the logic for adornments,  
+since wxpdfdoc supports drawing extra things (like Cairo API) plus  
+maintaining logical layering in PDF (which we presume Cairo does not  
+expose).
+
+> agg_renderer and cairo_renderer are currently designed to produce  
+> output as raster images for displaying in the screen.
+
+Well, not exactly. They each render to their respective surfaces, agg  
+being a raster_ptr (artem will know more about this), and cairo being  
+a generic context/surface that is specifically intended to then  
+support being pushed into either PNG (raster), or vector formats  
+(pdf,svg,postscript, and others potentially if compiled in). So while  
+AGG usage and library is limited to raster images Cairo is designed  
+around more abstract interface to have different output. Hence this is  
+why in these discussions sometimes we tend to lean toward  
+cairo_renderer (or lean away due to limitations).
+
+> The difference between these and pdf_renderer is the target output.
+
+certainly a difference, yes. I know see Ben Moore's branch as most  
+similar to artem's idea of a very tailored new svg_renderer, just  
+different format and goals based on strengths of the format.
+
+> So this makes me think that all the adornment elements, such as the  
+> grids and the scales, might be part of a last processing before  
+> rendering (as they might me placed in the upper layers).
+
+Yes, certainly. But I can see value to at least two different ways to  
+allowing easy addition of adornments:
+
+1) drawn on a "map canvas" that goes on top of rendered map (from any  
+backend)
+  *** to support single image, easily printable Map***
+
+and
+
+2) ability to fetch an adornment as a separate object from the mapnik  
+api (python or C++) to be displayed in an application, say a web site  
+of in Mapnik Viewer.
+*** to support programmatic addition of adornments ***
+
+The latter is a bit off-topic i realize but ideally the design could  
+accommodate both.
+
+
+> However, I know that these elements must be implemented in each  
+> renderer, since a different API is used. So if I understand  
+> correctly, the adornments are not elements that are only needed in  
+> printed maps, but also in the maps displayed on the screen. Am I  
+> correct so far?
+>
+
+Well put, and addresses my idea as per above.
+
+> 2. Robert Coup mentions that the idea is to add these elements to  
+> the cairo_renderer. So both the adornments and the variable- 
+> resolution/units ideas are for improving the cairo_renderer. Is this  
+> correct?
+
+Yes, both these things should be generic to all renderers. It's just  
+that because target was PDF, and Cairo can produce PDF that cairo- 
+renderer was discussed first.
+
+> I think I should find a way to define these ideas more abstractly in  
+> the code, so the cairo, agg and svg renderers benefit from this  
+> addition, not only the cairo-based one.
+
+Exactly.
+
+> Maybe define a set of classes that could be shared between  
+> renderers, leaving the specifics of how to display them to the  
+> renderers.
+>
+
+!!!!!
+
+> 3. I still think that the svg_renderer would be worth implementing  
+> this summer, though I would like to know your opinion on which ideas  
+> have a higher priority.
+>
+
+I will defer to artem on this. I think it is a great idea, but a bit  
+beyond my skill level and familiarity with svg. Either way it seems  
+like a phase II thing after variable-resolution/units/pixels issues  
+are solved.
+
+
+
+> Thank you, I hope I can send a draft of my proposal tonight.
+>
+
+Wonderful!
+
+
+> Carlos Enrique L?pez Garc?s
+>
+> 2010/4/1 Dane Springmeyer <dbsgeo at gmail.com>
+> I encourage everyone following this thread to respond to carlos's  
+> summary ideas. The applications are due soon and the more feedback  
+> he has the more likely the project with be accepted and in a form  
+> that is both exciting and feasible for the summer.
+>
+> On Saturday is whercamp and I hope to have a session with Mike  
+> Migurski and Tom Carden to discuss mentorship and progress so far.  
+> At this point I feel very impressed with carlos's awesome research  
+> and the fantastic community brainstorming.
+>
+> Thanks!
+>
+> Dane
+>
+>
+> --- \o/ ---
+> Sent from my phone
+>
+> On Apr 1, 2010, at 1:43 PM, Carlos Enrique L?pez Garc?s <ccaarlooss at gmail.com 
+> > wrote:
+>
+>
+> Good afternoon, how are you?
+>
+> I was talking yesterday with Mr. Springmeyer about the scope of this  
+> project to determine the main goals and tasks. From the ideas  
+> discussed in this thread, I identify three major groups:  
+> Improvements in resolution, the implementation of a renderer based  
+> on SVG, and the addition of 'adornments' or informative elements  
+> (grids, scale bars, etc.)
+>
+> Each group has its own level of difficulty. However, I see more  
+> complexity in the implementation of the SVG renderer. I think it  
+> represents a major design task that deserves attention from a more  
+> experienced developer. As I'm new to the project, I think I would do  
+> better if I worked in the other two groups of ideas, which seem to  
+> have very clear and defined boundaries. This would help me become  
+> more familiar with the design and structure of Mapnik and would  
+> allow me to contribute in a better way in the future.
+>
+> However, I think you'll have a better perspective of the problem, so  
+> I'd love to hear your opinions.
+>
+> Thanks
+>
+> Carlos Enrique L?pez Garc?s
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100402/76053ab6/attachment.html>
+
+From blake at hailmail.net  Sat Apr  3 00:01:11 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 2 Apr 2010 15:01:11 -0700
+Subject: [Mapnik-devel] [Mapnik-users] Layer In Pixel Coordinates?
+In-Reply-To: <516500.52482.qm@web33606.mail.mud.yahoo.com>
+References: <559336.90916.qm@web33607.mail.mud.yahoo.com>
+	<55EC3EC3-FDC1-45C3-BED7-CFB60B22AEB8@hailmail.net>
+	<516500.52482.qm@web33606.mail.mud.yahoo.com>
+Message-ID: <CD745858-0F57-45B3-87EF-60EBB6F6D437@hailmail.net>
+
+
+On Apr 2, 2010, at 12:11 PM, Eric France wrote:
+
+> Dane,
+>
+> Thanks for the pointers, I'll dig into them.
+>
+
+you are welcome.
+
+> I think the annotation you are pondering would be an excellent  
+> addition to Mapnik, for myself and anyone else who has moved beyond  
+> the "feeding-tiles-to-OpenLayers" feature of their mapping  
+> application, and needs complete printable map images for reporting  
+> and document production.
+
+yep. the pressure is mounting. For a few years now I and others have  
+solved these issues through programmatic tools, which is powerful and  
+rewarding. But at the end of the day, friendly ways to do it will be  
+welcome I think by all. Just a tricky thing to design right. Thanks  
+goodness the Mapnik community is so wicked smart :)
+
+
+- dane
+
+
+
+
+>
+> Eric
+>
+>
+> From: Dane Springmeyer <blake at hailmail.net>
+> To: Eric France <de_labarre at yahoo.com>
+> Cc: Mapnik Users <mapnik-users at lists.berlios.de>
+> Sent: Fri, April 2, 2010 2:36:20 PM
+> Subject: Re: [Mapnik-users] Layer In Pixel Coordinates?
+>
+> Eric,
+>
+> I've been pondering some kind of 'Annotation' or otherwise screen  
+> pixel coordinated based datasource plugin or feature, so its good to  
+> hear this would be useful as I think it would meet your need in a  
+> generic, simple way perhaps.
+>
+> But, likely a better approach for most cases and the only easy way  
+> now is to draw directly on the map surface in screen coordinates  
+> after rendering the geographic features on it. Mapnik does not  
+> currently support any way for users to do this after rendering a png/ 
+> jpeg with the agg_renderer, but it is quite easy with the  
+> cairo_renderer (which supports png,pdf, svg). You basically render  
+> your map to a cairo context, then draw further on that context with  
+> pycairo (of course learning pycairo from scratch is not terribly  
+> easy but its a fairly good api).
+>
+> for inspiration see:
+>
+> http://oliverobrien.co.uk/2010/03/map-adornments-with-cairo/
+>
+> and also a simple example here that shows drawing a neatline and  
+> title:
+>
+> http://mapnik-utils.googlecode.com/svn/sandbox/testing/cairo_contexts/render_to_context.py
+>
+> Please post back your progress to the mailing list or the trac wiki!
+>
+> Dane
+>
+>
+> On Apr 2, 2010, at 9:16 AM, Eric France wrote:
+>
+>> I want to create a map legend box that will be rendered in a layer  
+>> above all the other map layers, using the same shapes mechanism  
+>> that I'm using for the geographical information.  However, I want  
+>> to render the legend box in the same location in the bounding box,  
+>> no matter what lat/lon coordinates are being rendered.
+>>
+>> It seems that the simplest way would be to have a layer whose  
+>> coordinate system is in absolute viewport pixels rather than  
+>> whatever projection the GIS shapes are rendered in (I'm using  
+>> "+proj=latlong +datum=WGS84" for everything else).  Can I change  
+>> the proj and datum values to image pixel x,y for a single layer,  
+>> and if so, what are the proj and datum keys?
+>>
+>> Or is there another way to do this?
+>>
+>> Eric
+>>
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100402/f899f349/attachment.html>
+
+From dbsgeo at gmail.com  Sat Apr  3 02:05:04 2010
+From: dbsgeo at gmail.com (Dane Springmeyer)
+Date: Fri, 2 Apr 2010 17:05:04 -0700
+Subject: [Mapnik-devel] Ocean feature coloring
+In-Reply-To: <88AF9FF1-B497-405D-A8FA-1F2E536A9C4B@gmail.com>
+References: <l2nab1f86bc1003311207z3c8edaa2scb708ddc46ea1cae@mail.gmail.com>
+	<921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C@gmail.com>
+	<88AF9FF1-B497-405D-A8FA-1F2E536A9C4B@gmail.com>
+Message-ID: <D3DB091F-9A39-45A8-BA10-EEF584E72A31@gmail.com>
+
+Good. Remember to cc list so others benefit.
+
+-Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Apr 2, 2010, at 3:19 PM, Adam Estrada <estrada.adam at gmail.com> wrote:
+
+> That worked!!!
+>
+> Thanks Dane
+>
+> A
+>
+> On Mar 31, 2010, at 3:14 PM, Dane Springmeyer wrote:
+>
+>> Because WMS servers expect the client to decide/specify the  
+>> background color.
+>>
+>> The two Query parameters that determine this are:
+>>
+>> transparent={true|false}
+>>
+>> and
+>>
+>> bgcolor=OGC HEX
+>>
+>> So if you want a certain color, specify it and make sure to pass  
+>> transparent=FALSE
+>>
+>> Dane
+>>
+>>
+>>
+>> On Mar 31, 2010, at 12:07 PM, Adam Estrada wrote:
+>>
+>>> All,
+>>>
+>>> I am rendering the OSM data as a WMS using ogcserver. All of my  
+>>> oceans are rendering as light gray or white tiles rather than the  
+>>> default blue. Does anyone know why that may be happening? I am  
+>>> using all the default configurations from generate_xml.py and  
+>>> ogcserver.
+>>>
+>>> Thanks in advance,
+>>> Adam
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+
+
+From estrada.adam at gmail.com  Sat Apr  3 22:08:06 2010
+From: estrada.adam at gmail.com (Adam Estrada)
+Date: Sat, 3 Apr 2010 16:08:06 -0400
+Subject: [Mapnik-devel] Refining the OSM database
+Message-ID: <k2rab1f86bc1004031308xd78e8c27lc8c1229a517d8eb4@mail.gmail.com>
+
+All,
+
+I successfully imported planet.osm and my postgres db backup file is approx.
+20 gigs. I need that file to be about a quarter of the size. Is there
+anything written down about how to go about slashing features in the
+database and still get a base map that looks decent?
+
+I have been looking for example sites where folks have done this sort of
+thing and have ended up with nothing which makes be believe that it's more
+trouble than it's worth. I really don't want to start deleting if it's gonna
+ruin my map so any advice on what I can remove would be great!
+
+Thanks,
+Adam
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100403/43a33a97/attachment.html>
+
+From estrada.adam at gmail.com  Sat Apr  3 22:09:00 2010
+From: estrada.adam at gmail.com (Adam Estrada)
+Date: Sat, 3 Apr 2010 16:09:00 -0400
+Subject: [Mapnik-devel] Ocean feature coloring
+In-Reply-To: <921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C@gmail.com>
+References: <l2nab1f86bc1003311207z3c8edaa2scb708ddc46ea1cae@mail.gmail.com>
+	<921D8D24-9BA0-4B0E-B2AA-5B6E71B54B4C@gmail.com>
+Message-ID: <o2oab1f86bc1004031309qb437cb4j38eb9f56715e5a9e@mail.gmail.com>
+
+That worked...
+
+Thanks Dane!
+
+Adam
+
+On Wed, Mar 31, 2010 at 3:14 PM, Dane Springmeyer <dbsgeo at gmail.com> wrote:
+
+> Because WMS servers expect the client to decide/specify the background
+> color.
+>
+> The two Query parameters that determine this are:
+>
+> transparent={true|false}
+>
+> and
+>
+> bgcolor=OGC HEX
+>
+> So if you want a certain color, specify it and make sure to pass
+> transparent=FALSE
+>
+> Dane
+>
+>
+>
+>
+> On Mar 31, 2010, at 12:07 PM, Adam Estrada wrote:
+>
+>  All,
+>>
+>> I am rendering the OSM data as a WMS using ogcserver. All of my oceans are
+>> rendering as light gray or white tiles rather than the default blue. Does
+>> anyone know why that may be happening? I am using all the default
+>> configurations from generate_xml.py and ogcserver.
+>>
+>> Thanks in advance,
+>> Adam
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100403/e16fcfc9/attachment.html>
+
+From marko at omnisdata.com  Sat Apr  3 23:21:16 2010
+From: marko at omnisdata.com (=?UTF-8?B?TWFya28gxaBhbnRpxIc=?=)
+Date: Sat, 03 Apr 2010 23:21:16 +0200
+Subject: [Mapnik-devel] OGR driver - GIS_AREA and GIS_LENGTH
+Message-ID: <4BB7B14C.6050308@omnisdata.com>
+
+All,
+
+is it possible to to use special OGR columns GIS_AREA and GIS_LENGTH 
+inside filter node?
+
+Tnx.
+
+Regards,
+
+-- 
+Marko ?anti?
+
+Omnisdata d.o.o. - geoinformatics technologies and services
+
+www.giscloud.com
+www.karte.hr
+www.omnisdata.com
+www.flashNavigator.net
+
+marko at omnisdata.com
+Avenija Dubrava 37
+10 000 Zagreb, Croatia
+00 385 (0)1 2981 990
+00 385 (0)98 569 604
+
+
+
+From carlos.lopez.garces at gmail.com  Tue Apr  6 12:46:50 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Tue, 6 Apr 2010 05:46:50 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+Message-ID: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+
+Good morning everybody. I have updated my proposal and everyone can read it
+at: http://betterprintsupport.blogspot.com/. Comments and suggestions are
+more than welcome.
+
+Thanks everybody for the suggestions, feedback and support you've given me.
+
+Carlos Enrique L?pez Garc?s
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100406/6733fb07/attachment.html>
+
+From albergimenez at gmail.com  Wed Apr  7 04:04:54 2010
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E=2E?=)
+Date: Tue, 6 Apr 2010 22:04:54 -0400
+Subject: [Mapnik-devel] GSoC/Contribute
+Message-ID: <m2x2e06a0161004061904v3afe879csfc6331237cc57fde@mail.gmail.com>
+
+Hello list,
+
+I want to introduce myself. I'm Alberto Gimenez from Paraguay and I'd like
+to contribute to Mapnik, either participating in GSoC or not. I've been
+using and experimenting with Mapnik for a long time (since the 0.4.0
+version). I wrote a simple OGR plugin when it wasn't available but I
+couldn't add it to the repository at that time.Anyway, I study computer
+engineering at the Universidad Nacional de Asuncion. I have good programming
+skills on Python, Java, C/C++ and others scripting languages.
+
+I've been reading the GSoC Ideas and are really interesting. The layer
+compositing seems to be a feasible feature to implement with AGG. I'll be
+reading on this in more detail.
+
+I hope I can be of some help.
+
+Best Regards.
+
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100406/6605f808/attachment.html>
+
+From estrada.adam at gmail.com  Wed Apr  7 15:42:55 2010
+From: estrada.adam at gmail.com (Adam Estrada)
+Date: Wed, 7 Apr 2010 09:42:55 -0400
+Subject: [Mapnik-devel] Refining the OSM database
+In-Reply-To: <k2rab1f86bc1004031308xd78e8c27lc8c1229a517d8eb4@mail.gmail.com>
+References: <k2rab1f86bc1004031308xd78e8c27lc8c1229a517d8eb4@mail.gmail.com>
+Message-ID: <q2mab1f86bc1004070642m5752db01q99df1d467959cdf3@mail.gmail.com>
+
+I came across this page on the Geoserver blog. The key was the link to the
+OSM wiki page that helps to identify all the Map Features. I don't know how
+I missed it to begin with but it really helped!
+
+http://blog.geoserver.org/2009/01/30/geoserver-and-openstreetmap/
+
+Adam
+
+
+
+On Sat, Apr 3, 2010 at 4:08 PM, Adam Estrada <estrada.adam at gmail.com> wrote:
+
+> All,
+>
+> I successfully imported planet.osm and my postgres db backup file is
+> approx. 20 gigs. I need that file to be about a quarter of the size. Is
+> there anything written down about how to go about slashing features in the
+> database and still get a base map that looks decent?
+>
+> I have been looking for example sites where folks have done this sort of
+> thing and have ended up with nothing which makes be believe that it's more
+> trouble than it's worth. I really don't want to start deleting if it's gonna
+> ruin my map so any advice on what I can remove would be great!
+>
+> Thanks,
+> Adam
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100407/df02ebde/attachment.html>
+
+From blake at hailmail.net  Thu Apr  8 00:40:05 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 7 Apr 2010 15:40:05 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+Message-ID: <EB10AC06-5C04-4D6E-AD9B-492A844485BE@hailmail.net>
+
+Hi Carlos,
+
+Great to see your proposal coming together!
+
+Here are my comments (I've also pasted them as a comment in the blog)  
+at:
+
+http://betterprintsupport.blogspot.com/2010/04/draft-proposal.html
+
+* First Paragraph: the problem is not just when printing maps to PDF.  
+Certainly many people target PDF output when going to print but all  
+formats require advances to support high resolution output/scaling.  
+But, I understand why you stated it this way, because the example of  
+townguide pushing PNG output into a PDF certainly highlights easy  
+problems that needs fixing. The more advanced way to provide PDF  
+output is to render all map features as vectors into the PDF (or SVG).  
+Even thought the PDF format can support embedded rasters, usually when  
+high resolution output is desired the PDF will look better and be of  
+smaller size when all vectors are used.
+
+* I like the way you've divided up the application into "control over  
+scaling" and "post-processing"! Very nice.
+
+* "Better post-processable output" section says: "photo editing  
+applications". Really people are using vector editing or vector  
+drawing applications like inkscape and illustrator, not photo  
+applications (which work on rasters). I'm sure you understand this,  
+its likely just a typo...
+
+* You say "so the challenge is to investigate, design and implement an  
+algorithm for scaling raster". Actually I think it is easy to scale  
+rasters, and in fact the algorithms to do so (always uses to scale  
+down) are already available inside mapnik (http://svn.mapnik.org/trunk/include/mapnik/graphics.hpp_ 
+). The trick is that certain objects need to be scaled BEFORE being  
+painted onto raster surfaces. In some cases this is easy, e.g. if  
+higher resolution output is requested (to be rendered by AGG) then  
+larger fonts and line widths can be fetched before rendering, etc...  
+I've not given it much thought, but potentially the "scaling" factor  
+will need to be different depending on whether the output is raster  
+(via AGG) or vector (via Cairo). Not something that needs to be solved  
+now of course, but a fun challenge to test this summer :) Symbols are  
+different of course, because currently mapnik only supports raster  
+symbols which, if scaled up, look bad. But you cover this later on, so  
+let's not worry about this to much now...
+
+* The next several paragraphs in that sections are great!
+
+* Re: "Implementation of an algorithm for scaling raster symbols if  
+needed (this point needs to be investigated further to determine its  
+applicability in the project" - this is good enough for the  
+application. We can talk more about this. In particular Tom Carden has  
+some ideas that might help that he is researching. And Artem has  
+recommended using AGG SVG parser to read symbols in a format that can  
+then be easily scaled.
+
+* in relation to writing a new svg_renderer: I talked with Artem more  
+about this today and I want to confirm that I think this is a very  
+good idea that it should be feasible to have a part of the project,  
+with Artem's guidance, so he will be the primary contact in advising  
+this. However, you say "cairo_renderer already produces SVG output,  
+but does so in a rather slow way [7]. " I think a native svg authoring  
+renderer certainly could be written to be faster than cairo, but the  
+main idea is that we need something more flexible that Cairo can  
+provide, to be able to customize our output for more of the varied   
+usecases of SVG/Post-processing. We can talk more about these later.
+
+* I really admire and support your ideas about how your skills can  
+contribute to Mapnik and GIS software as a whole. Bringing Math and  
+Graphics skills to GIS problems is exactly the basic of this project,  
+so great stuff.
+
+* I also think the collaboration with Waldemar is fantastic - thanks  
+for making this possible.
+
+
+
+On Apr 6, 2010, at 3:46 AM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good morning everybody. I have updated my proposal and everyone can  
+> read it at: http://betterprintsupport.blogspot.com/. Comments and  
+> suggestions are more than welcome.
+>
+> Thanks everybody for the suggestions, feedback and support you've  
+> given me.
+>
+> Carlos Enrique L?pez Garc?s
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100407/b45bfb47/attachment.html>
+
+From waldemar.quevedo at gmail.com  Thu Apr  8 01:32:55 2010
+From: waldemar.quevedo at gmail.com (waldemar quevedo)
+Date: Wed, 7 Apr 2010 18:32:55 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <EB10AC06-5C04-4D6E-AD9B-492A844485BE@hailmail.net>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<EB10AC06-5C04-4D6E-AD9B-492A844485BE@hailmail.net>
+Message-ID: <m2q8e1a591004071632sc448745k7eeea1dd889d7add@mail.gmail.com>
+
+Hello everyone! I have followed Carlos' example and created a blog with my
+proposal, please feel free to comment in it.
+
+http://easyprintablemaps.blogspot.com/
+
+Thanks!
+
+
+2010/4/7 Dane Springmeyer <blake at hailmail.net>
+
+> Hi Carlos,
+>
+> Great to see your proposal coming together!
+>
+> Here are my comments (I've also pasted them as a comment in the blog) at:
+>
+> http://betterprintsupport.blogspot.com/2010/04/draft-proposal.html
+>
+> * First Paragraph: the problem is not just when printing maps to PDF.
+> Certainly many people target PDF output when going to print but all formats
+> require advances to support high resolution output/scaling. But, I
+> understand why you stated it this way, because the example of townguide
+> pushing PNG output into a PDF certainly highlights easy problems that needs
+> fixing. The more advanced way to provide PDF output is to render all map
+> features as vectors into the PDF (or SVG). Even thought the PDF format can
+> support embedded rasters, usually when high resolution output is desired the
+> PDF will look better and be of smaller size when all vectors are used.
+>
+> * I like the way you've divided up the application into "control over
+> scaling" and "post-processing"! Very nice.
+>
+> * "Better post-processable output" section says: "photo editing
+> applications". Really people are using vector editing or vector drawing
+> applications like inkscape and illustrator, not photo applications (which
+> work on rasters). I'm sure you understand this, its likely just a typo...
+>
+> * You say "so the challenge is to investigate, design and implement an
+> algorithm for scaling raster". Actually I think it is easy to scale rasters,
+> and in fact the algorithms to do so (always uses to scale down) are already
+> available inside mapnik (
+> http://svn.mapnik.org/trunk/include/mapnik/graphics.hpp_). The trick is
+> that certain objects need to be scaled BEFORE being painted onto raster
+> surfaces. In some cases this is easy, e.g. if higher resolution output is
+> requested (to be rendered by AGG) then larger fonts and line widths can be
+> fetched before rendering, etc... I've not given it much thought, but
+> potentially the "scaling" factor will need to be different depending on
+> whether the output is raster (via AGG) or vector (via Cairo). Not something
+> that needs to be solved now of course, but a fun challenge to test this
+> summer :) Symbols are different of course, because currently mapnik only
+> supports raster symbols which, if scaled up, look bad. But you cover this
+> later on, so let's not worry about this to much now...
+>
+> * The next several paragraphs in that sections are great!
+>
+> * Re: "Implementation of an algorithm for scaling raster symbols if needed
+> (this point needs to be investigated further to determine its applicability
+> in the project" - this is good enough for the application. We can talk more
+> about this. In particular Tom Carden has some ideas that might help that he
+> is researching. And Artem has recommended using AGG SVG parser to read
+> symbols in a format that can then be easily scaled.
+>
+> * in relation to writing a new svg_renderer: I talked with Artem more about
+> this today and I want to confirm that I think this is a very good idea that
+> it should be feasible to have a part of the project, with Artem's guidance,
+> so he will be the primary contact in advising this. However, you say "cairo_renderer
+> already produces SVG output, but does so in a rather slow way [7]. " I think
+> a native svg authoring renderer certainly could be written to be faster than
+> cairo, but the main idea is that we need something more flexible that Cairo
+> can provide, to be able to customize our output for more of the varied
+>  usecases of SVG/Post-processing. We can talk more about these later.
+>
+> * I really admire and support your ideas about how your skills can
+> contribute to Mapnik and GIS software as a whole. Bringing Math and Graphics
+> skills to GIS problems is exactly the basic of this project, so great stuff.
+>
+> * I also think the collaboration with Waldemar is fantastic - thanks for
+> making this possible.
+>
+>
+>
+> On Apr 6, 2010, at 3:46 AM, Carlos Enrique L?pez Garc?s wrote:
+>
+> Good morning everybody. I have updated my proposal and everyone can read it
+> at: http://betterprintsupport.blogspot.com/. Comments and suggestions are
+> more than welcome.
+>
+> Thanks everybody for the suggestions, feedback and support you've given me.
+>
+> Carlos Enrique L?pez Garc?s
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100407/1bcf9096/attachment.html>
+
+From carlos.lopez.garces at gmail.com  Sun Apr 25 09:42:22 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Sun, 25 Apr 2010 02:42:22 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+Message-ID: <k2j838b08081004250042z82972c7br61b51c1c9dc6c9c6@mail.gmail.com>
+
+Hi, it seems that the GeoMajas project already have the variable resolution
+feature for printing. It might be useful to look at their code...
+
+2010/4/6 Carlos Enrique L?pez Garc?s <carlos.lopez.garces at gmail.com>
+
+> Good morning everybody. I have updated my proposal and everyone can read it
+> at: http://betterprintsupport.blogspot.com/. Comments and suggestions are
+> more than welcome.
+>
+> Thanks everybody for the suggestions, feedback and support you've given me.
+>
+> Carlos Enrique L?pez Garc?s
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100425/8d767802/attachment.html>
+
+From artem at mapnik.org  Mon Apr 26 10:25:18 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 26 Apr 2010 09:25:18 +0100
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2j838b08081004250042z82972c7br61b51c1c9dc6c9c6@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<k2j838b08081004250042z82972c7br61b51c1c9dc6c9c6@mail.gmail.com>
+Message-ID: <g2r7e70f38d1004260125mcb8dab50o565656fbb57b3ba2@mail.gmail.com>
+
+Hi Carlos,
+
+Hi, it seems that the GeoMajas project already have the variable resolution
+> feature for printing. It might be useful to look at their code...
+>
+
+Yes, good idea! I think we should also check inkscape and other vector
+drawing apps for inspiration.
+
+Regards,
+Artem
+
+_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100426/818a88a0/attachment.html>
+
+From blake at hailmail.net  Mon Apr 26 15:29:16 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 26 Apr 2010 06:29:16 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <g2r7e70f38d1004260125mcb8dab50o565656fbb57b3ba2@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<k2j838b08081004250042z82972c7br61b51c1c9dc6c9c6@mail.gmail.com>
+	<g2r7e70f38d1004260125mcb8dab50o565656fbb57b3ba2@mail.gmail.com>
+Message-ID: <1FEAF784-02FB-4D98-AC60-8255D7907B2C@hailmail.net>
+
+
+On Apr 26, 2010, at 1:25 AM, Artem Pavlenko wrote:
+
+> Hi Carlos,
+>
+> Hi, it seems that the GeoMajas project already have the variable  
+> resolution feature for printing. It might be useful to look at their  
+> code...
+>
+> Yes, good idea! I think we should also check inkscape and other  
+> vector drawing apps for inspiration.
+
+I also noticed this mailing on the boost list recently:
+
+http://groups.google.com/group/boost-list/browse_thread/thread/40f509d859b664ad/f48998f985a26ea9?lnk=raot&pli=1
+
+small version: http://bit.ly/b0rbmO
+
+Basically, a past GSOC project for boost made some progress on SVG  
+support for plotting. Different usecase, but perhaps some of the code  
+to author SVG might be useful for inspiration for an svg_renderer. As  
+well, the Boost.Geometry project also already supports simple geometry- 
+ >SVG output functions.
+
+Dane
+
+
+From carlos.lopez.garces at gmail.com  Mon Apr 26 21:16:03 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Mon, 26 Apr 2010 14:16:03 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+Message-ID: <x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+
+Thank you for accepting my proposal!!! I'll do my best to make this project
+successful. I'm sure it'll be an exciting summer!
+
+2010/4/6 Carlos Enrique L?pez Garc?s <carlos.lopez.garces at gmail.com>
+
+> Good morning everybody. I have updated my proposal and everyone can read it
+> at: http://betterprintsupport.blogspot.com/. Comments and suggestions are
+> more than welcome.
+>
+> Thanks everybody for the suggestions, feedback and support you've given me.
+>
+> Carlos Enrique L?pez Garc?s
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100426/ed905271/attachment.html>
+
+From blake at hailmail.net  Tue Apr 27 01:21:40 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 26 Apr 2010 19:21:40 -0400
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+Message-ID: <E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+
+Congratulations! :)
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Apr 26, 2010, at 3:16 PM, Carlos Enrique L?pez Garc?s <carlos.lopez.garces at gmail.c 
+om> wrote:
+
+> Thank you for accepting my proposal!!! I'll do my best to make this  
+> project successful. I'm sure it'll be an exciting summer!
+>
+> 2010/4/6 Carlos Enrique L?pez Garc?s <carlos.lopez.garces at gmail.com>
+> Good morning everybody. I have updated my proposal and everyone can  
+> read it at: http://betterprintsupport.blogspot.com/. Comments and  
+> suggestions are more than welcome.
+>
+> Thanks everybody for the suggestions, feedback and support you've  
+> given me.
+>
+> Carlos Enrique L?pez Garc?s
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100426/da654ef1/attachment.html>
+
+From blake at hailmail.net  Tue Apr 27 22:55:00 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 27 Apr 2010 13:55:00 -0700
+Subject: [Mapnik-devel] Congrats! Two students accepted to GSOC 2010 with
+	Mapnik
+Message-ID: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+
+I'm very pleased to announce that Mapnik was allowed two slots with  
+GSOC this year, and we've accepted two great proposals for student  
+projects!
+
+Please welcome Hermann and Carlos (and Waldemar with the OSM project)!
+
+Support for outputting hit-areas
+Hermann Kraus
+http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760848
+
+Better Print Support
+Carlos Enrique Lopez Garces
+http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760822
+
+And the companion project, with the OSM project:
+Waldemar Quevedo
+Easy Printable Maps: Open Paper Maps
+http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/osm/t127230767978
+
+Dane
+
+
+From artem at mapnik.org  Tue Apr 27 23:11:52 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 27 Apr 2010 22:11:52 +0100
+Subject: [Mapnik-devel] Congrats! Two students accepted to GSOC 2010
+	with Mapnik
+In-Reply-To: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+References: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+Message-ID: <s2l7e70f38d1004271411obd514a08yaf95dedc90cb0fcf@mail.gmail.com>
+
+Fantastic news! Congratulations!
+Artem
+
+On 27 April 2010 21:55, Dane Springmeyer <blake at hailmail.net> wrote:
+
+> I'm very pleased to announce that Mapnik was allowed two slots with GSOC
+> this year, and we've accepted two great proposals for student projects!
+>
+> Please welcome Hermann and Carlos (and Waldemar with the OSM project)!
+>
+> Support for outputting hit-areas
+> Hermann Kraus
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760848
+>
+> Better Print Support
+> Carlos Enrique Lopez Garces
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760822
+>
+> And the companion project, with the OSM project:
+> Waldemar Quevedo
+> Easy Printable Maps: Open Paper Maps
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/osm/t127230767978
+>
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/4868cbbf/attachment.html>
+
+From lucadeluge at gmail.com  Tue Apr 27 23:15:05 2010
+From: lucadeluge at gmail.com (Luca Delucchi)
+Date: Tue, 27 Apr 2010 23:15:05 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Congrats! Two students accepted
+	to GSOC 2010 with Mapnik
+In-Reply-To: <s2l7e70f38d1004271411obd514a08yaf95dedc90cb0fcf@mail.gmail.com>
+References: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+	<s2l7e70f38d1004271411obd514a08yaf95dedc90cb0fcf@mail.gmail.com>
+Message-ID: <x2qb7d609c01004271415s9a358b5co2a049a6fddf265e5@mail.gmail.com>
+
+2010/4/27 Artem Pavlenko <artem at mapnik.org>:
+> Fantastic news! Congratulations!
+
++1
+
+> Artem
+>
+
+cheers
+Luca
+
+
+From carlos.lopez.garces at gmail.com  Wed Apr 28 00:02:36 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Tue, 27 Apr 2010 17:02:36 -0500
+Subject: [Mapnik-devel] Congrats! Two students accepted to GSOC 2010
+	with Mapnik
+In-Reply-To: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+References: <4030A4FF-07B3-443E-9FD8-D687E98B5B29@hailmail.net>
+Message-ID: <s2j838b08081004271502o56f41555wefcc6ab8b1845daa@mail.gmail.com>
+
+Thank you very much and congratulations to Waldemar and Hermann!
+
+On Tue, Apr 27, 2010 at 3:55 PM, Dane Springmeyer <blake at hailmail.net>wrote:
+
+> I'm very pleased to announce that Mapnik was allowed two slots with GSOC
+> this year, and we've accepted two great proposals for student projects!
+>
+> Please welcome Hermann and Carlos (and Waldemar with the OSM project)!
+>
+> Support for outputting hit-areas
+> Hermann Kraus
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760848
+>
+> Better Print Support
+> Carlos Enrique Lopez Garces
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/mapnik/t127230760822
+>
+> And the companion project, with the OSM project:
+> Waldemar Quevedo
+> Easy Printable Maps: Open Paper Maps
+>
+> http://socghop.appspot.com/gsoc/student_project/show/google/gsoc2010/osm/t127230767978
+>
+> Dane
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/a8a3ea37/attachment.html>
+
+From carlos.lopez.garces at gmail.com  Wed Apr 28 06:28:59 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Tue, 27 Apr 2010 23:28:59 -0500
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+	<E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+Message-ID: <w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+
+Good evening and thanks again for you continuous help.
+
+I was wondering if you could tell me something about the development process
+that the community follows. Maybe there is a philosophy that people here
+like most.
+
+Some of the topics that might help me more are:
+
+
+   - Documentation: I was reading this page in the wiki
+   http://trac.mapnik.org/wiki/DeveloperTodo, and noticed that the community
+   is interested in using DOXYGEN for documenting the code.
+
+
+   - Unit testing: Is there a C++ framework that the community prefer? I've
+   used CxxTest, it is a framework similar to JUnit and doesn't require much
+   effort to install and use. However, it would be fun to learn some other.
+
+
+   - Source Control: Here I wanted to ask how will the 'Better Print
+   Support' project be managed. As a branch perhaps? Furthermore, will it be
+   managed in the same repository as the Mapnik project?
+
+
+   - Integration and releases: How often do you expect a development cycle
+   to last? I've been advised that a good idea might be to develop small pieces
+   of functionality, integrate them with the rest of the code and present them
+   to the community and mentor to receive feedback and then make the necessary
+   changes.
+
+
+   - Design: I am working on a UML diagram in which I'm trying to depict a
+   general map of the code I've been reading (the renderers mainly). However, I
+   wanted to ask you if I can be given a copy of design documents or diagrams
+   you have produced for Mapnik over these years. The reason I'm doing this is
+   to find the appropriate locations where the components or objects I will
+   develop should be placed or interact in.
+
+
+   - Communication: Will there be a preferred communication channel for
+   discussing ideas (IRC, mailing list, direct e-mail, voice/video chat)?
+   Furthermore, I think it is mandatory to send reports to track the progress
+   of the project. Is there a special format you expect? periodicity (weekly,
+   daily)?
+
+
+I don't ask about the code style, because I've been getting familiar with
+it. There are also some coding standards I found here:
+http://trac.mapnik.org/wiki/DeveloperTopics. However, if there is any
+resource you think I should read, please let me know.
+
+Thanks,
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/c738ec23/attachment.html>
+
+From blake at hailmail.net  Wed Apr 28 07:20:12 2010
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 27 Apr 2010 22:20:12 -0700
+Subject: [Mapnik-devel] Better Print Support GSoC's project
+In-Reply-To: <w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+References: <k2n838b08081004060346oe3c719f9q100973a1a2536db1@mail.gmail.com>
+	<x2s838b08081004261216kf4acf364v2fc917ba21fc8722@mail.gmail.com>
+	<E4ECACA2-0B35-4517-9A9E-2E27C3586E16@hailmail.net>
+	<w2o838b08081004272128y2f2c1eaaleceb41c586b5ae80@mail.gmail.com>
+Message-ID: <62B99B59-3946-4A96-BDA9-AC2766444F3D@hailmail.net>
+
+
+On Apr 27, 2010, at 9:28 PM, Carlos Enrique L?pez Garc?s wrote:
+
+> Good evening and thanks again for you continuous help.
+>
+
+You're welcome, thanks for the great framing questions below.
+
+> I was wondering if you could tell me something about the development  
+> process that the community follows. Maybe there is a philosophy that  
+> people here like most.
+>
+
+Well put!
+
+> Some of the topics that might help me more are:
+>
+> Documentation: I was reading this page in the wiki http://trac.mapnik.org/wiki/DeveloperTodo 
+> , and noticed that the community is interested in using DOXYGEN for  
+> documenting the code.
+Personally my development focus so far has been on python api docs,  
+but we certainly need C++ docs. DOXYGEN is well known. Others may have  
+ideas?
+> Unit testing: Is there a C++ framework that the community prefer?  
+> I've used CxxTest, it is a framework similar to JUnit and doesn't  
+> require much effort to install and use. However, it would be fun to  
+> learn some other.
+
+Artem and I have discussed this. I think his idea was using Boost.Test  
+or other methods of writing C++ using boost.
+> Source Control: Here I wanted to ask how will the 'Better Print  
+> Support' project be managed. As a branch perhaps? Furthermore, will  
+> it be managed in the same repository as the Mapnik project?
+Artem as your lead mentor will decide on this. I am aware he is  
+currently using git to manage his commits to mapnik-svn, so if you are  
+interested in git, he could perhaps advise you on this approach.
+> Integration and releases: How often do you expect a development  
+> cycle to last? I've been advised that a good idea might be to  
+> develop small pieces of functionality, integrate them with the rest  
+> of the code and present them to the community and mentor to receive  
+> feedback and then make the necessary changes.
+
+I think for the first pieces (getting scaling working where feasible),  
+this approach sounds great.
+> Design: I am working on a UML diagram in which I'm trying to depict  
+> a general map of the code I've been reading (the renderers mainly).  
+> However, I wanted to ask you if I can be given a copy of design  
+> documents or diagrams you have produced for Mapnik over these years.  
+> The reason I'm doing this is to find the appropriate locations where  
+> the components or objects I will develop should be placed or  
+> interact in.
+
+Good question. I've personally not developed any diagrams (despite  
+being a visual thinker!), but would love to hear how others have  
+approached this. Your question could be a good starting point for  
+discussion.
+
+> Communication: Will there be a preferred communication channel for  
+> discussing ideas (IRC, mailing list, direct e-mail, voice/video  
+> chat)? Furthermore, I think it is mandatory to send reports to track  
+> the progress of the project. Is there a special format you expect?  
+> periodicity (weekly, daily)?
+
+Weekly reports are desired. I think a combination of the blog you have  
+started plus the mapnik-devel mailing list should work well for now.  
+We will let you know about format details/need for voice/video chat in  
+the coming weeks.
+
+>
+> I don't ask about the code style, because I've been getting familiar  
+> with it. There are also some coding standards I found here: http://trac.mapnik.org/wiki/DeveloperTopics 
+> . However, if there is any resource you think I should read, please  
+> let me know.
+
+That reminds me, we really need to fix the tabs/spaces issue in trunk  
+asap :).
+
+>
+> Thanks,
+>
+> Carlos L?pez
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100427/f4cd2e55/attachment.html>
+

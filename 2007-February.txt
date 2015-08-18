@@ -1,0 +1,1124 @@
+From reid at umn.edu  Thu Feb  1 21:38:50 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Thu, 01 Feb 2007 14:38:50 -0600
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <200701292116.00505.pavlenko@users.berlios.de>
+References: <45BE422A.2050406@umn.edu>
+	<200701292116.00505.pavlenko@users.berlios.de>
+Message-ID: <45C24FDA.8090506@umn.edu>
+
+Hi Artem,
+
+Artem Pavlenko wrote:
+> 
+> On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+>>
+>> 1. mapnik is underdocumented. While I was able to muddle through, some
+>> user-oriented documentation would be very helpful.
+> 
+> Agreed. Lets improve this. Would you like to help to populate wiki? 
+
+Unfortunately I don't think I am able to offer the time to write 
+documentation. I would, however, be happy to offer my Python script as 
+an example.
+
+>> 3. render_to_tile() prints to standard output. I'd like to be able to
+>> supress this.
+>>
+> Please, enter bug into trac.
+
+#9, I believe. I also entered a few others.
+
+>> 4. Installing to a nonstandard path without root access was quite a
+>> pain; I wanted to install everything under /foo/bar, but the closest I
+>> could get was some stuff under /foo/bar/usr and some stuff under
+>> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+>> symlinks to make things reasonable. 
+> 
+> Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing something 
+> here, could you provide more info?
+
+Sure. I put it into trac #10.
+
+> 
+> I'm quite happy to start discussion about better building system for mapnik.
+> I have some experience with the following :
+> 1. autotools
+> 2. scons
+> 3. cmake
+> 4. Boost.Build.v2 
+> 
+> but it is not clear to me which one is the best fit. Mapnik was using autotool 
+> at the very begining but I got fed up with writing m4 macros very quickly. 
+
+I don't know a whole lot about programming to any of those build 
+systems. I did use autotools some years ago and found it pretty 
+straightforward, so I'm surprised that autotools required writing 
+significant numbers of M4 macros, but I never used it for Python or C++ 
+projects.
+
+Given that, speaking as an end-user, these are the things that I found 
+difficult about scons:
+
+1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+
+2. Difficult to install into non-standard locations.
+
+3. It seems to redo all the library checks before each operation, even 
+an invalidly-specified one; e.g. try "python scons/scons.py build" -- 
+for me it chugs away detecting libraries for 7 seconds before telling me 
+that "build" is an invalid operation.
+
+Python modules seem to be moving increasingly to "distutils" 
+<http://www.python.org/doc/2.4.4/lib/module-distutils.html>, which I 
+have not used except as an installer. I don't know how suitable this 
+would be for people who just want to use the C++ interface.
+
+Take care,
+
+Reid
+
+
+From pavlenko at users.berlios.de  Mon Feb  5 13:13:41 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Mon, 5 Feb 2007 12:13:41 +0000
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <45C24FDA.8090506@umn.edu>
+References: <45BE422A.2050406@umn.edu>
+	<200701292116.00505.pavlenko@users.berlios.de>
+	<45C24FDA.8090506@umn.edu>
+Message-ID: <200702051213.41925.pavlenko@users.berlios.de>
+
+Hi Reid,
+Thanks for your feedback!
+On Thursday 01 February 2007 20:38, Reid Priedhorsky wrote:
+> Hi Artem,
+>
+> Artem Pavlenko wrote:
+> > On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+> >> 1. mapnik is underdocumented. While I was able to muddle through, some
+> >> user-oriented documentation would be very helpful.
+> >
+> > Agreed. Lets improve this. Would you like to help to populate wiki?
+>
+> Unfortunately I don't think I am able to offer the time to write
+> documentation. I would, however, be happy to offer my Python script as
+> an example.
+Yes, please! 
+
+> >> 3. render_to_tile() prints to standard output. I'd like to be able to
+> >> supress this.
+> >
+> > Please, enter bug into trac.
+>
+> #9, I believe. I also entered a few others.
+Great! 
+> >> 4. Installing to a nonstandard path without root access was quite a
+> >> pain; I wanted to install everything under /foo/bar, but the closest I
+> >> could get was some stuff under /foo/bar/usr and some stuff under
+> >> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+> >> symlinks to make things reasonable.
+> >
+> > Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing
+> > something here, could you provide more info?
+>
+> Sure. I put it into trac #10.
+
+> > I'm quite happy to start discussion about better building system for
+> > mapnik. I have some experience with the following :
+> > 1. autotools
+> > 2. scons
+> > 3. cmake
+> > 4. Boost.Build.v2
+> >
+> > but it is not clear to me which one is the best fit. Mapnik was using
+> > autotool at the very begining but I got fed up with writing m4 macros
+> > very quickly.
+>
+> I don't know a whole lot about programming to any of those build
+> systems. I did use autotools some years ago and found it pretty
+> straightforward, so I'm surprised that autotools required writing
+> significant numbers of M4 macros, but I never used it for Python or C++
+> projects.
+>
+> Given that, speaking as an end-user, these are the things that I found
+> difficult about scons:
+>
+> 1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+>
+> 2. Difficult to install into non-standard locations.
+>
+> 3. It seems to redo all the library checks before each operation, even
+> an invalidly-specified one; e.g. try "python scons/scons.py build" --
+> for me it chugs away detecting libraries for 7 seconds before telling me
+> that "build" is an invalid operation.
+>
+I think your comments are valid and they highlight the fact that current build 
+system is not always working as expected. 
+
+> Python modules seem to be moving increasingly to "distutils"
+> <http://www.python.org/doc/2.4.4/lib/module-distutils.html>, which I
+> have not used except as an installer. I don't know how suitable this
+> would be for people who just want to use the C++ interface.
+
+Yes, exactly. Distutils are not much help for building c++ libraries. 
+I'm playing with Boost.Build.v2 at the moment  and I'm hoping to have 
+alternative/experimental build system very soon.
+
+If you're using debian based distro you could try: 
+
+deb http://www.larted.org.uk/~dom/debian/mapnik unstable/
+deb-src http://www.larted.org.uk/~dom/debian/mapnik unstable/
+
+Cheers,
+Artem
+
+> Take care,
+>
+> Reid
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From reid at umn.edu  Mon Feb  5 20:42:33 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Mon, 05 Feb 2007 13:42:33 -0600
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <200702051213.41925.pavlenko@users.berlios.de>
+References: <45BE422A.2050406@umn.edu>
+	<200701292116.00505.pavlenko@users.berlios.de>
+	<45C24FDA.8090506@umn.edu>
+	<200702051213.41925.pavlenko@users.berlios.de>
+Message-ID: <45C788A9.2000602@umn.edu>
+
+Artem Pavlenko wrote:
+>
+> On Thursday 01 February 2007 20:38, Reid Priedhorsky wrote:
+>>
+>> Unfortunately I don't think I am able to offer the time to write
+>> documentation. I would, however, be happy to offer my Python script as
+>> an example.
+ >
+> Yes, please! 
+
+OK. I'll have to check with my advisor on the details, but I don't 
+expect any problems.
+
+What is the best way? Should I just email it to this list?
+
+Also, both my code and mapnik are changing rapidly (e.g. my script only 
+works up to r432 ATM). What's a good way to handle this volatility?
+
+Take care,
+
+Reid
+
+p.s. No need to CC me -- I read the list. :)
+
+
+From jfdoyon at gmail.com  Thu Feb  8 01:21:43 2007
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Wed, 07 Feb 2007 19:21:43 -0500
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <200702051213.41925.pavlenko@users.berlios.de>
+References: <45BE422A.2050406@umn.edu>	<200701292116.00505.pavlenko@users.berlios.de>	<45C24FDA.8090506@umn.edu>
+	<200702051213.41925.pavlenko@users.berlios.de>
+Message-ID: <45CA6D17.4000403@gmail.com>
+
+I have to admit that, even though I wrote a good chunk of it, I'm not 
+all that super happy with the SCons build system ...
+
+Although I agree writing M4 macros might not be fun, the whole 
+./configure, make, make install routine is SO prevalent, and easy to use 
+once you're familiar with it ... I'd be tempted to investigate it.
+
+As for the documentation ... agreed.  It's tough though, as the API is 
+still evolving.  I would prefer a Doxygen/Epydocs approach myself, at 
+least as a good starting point.  I had generated an Epydocs reference 
+sometime ago, and it's still in the source tree, though it's totally out 
+of date now.
+
+J.F.
+
+Artem Pavlenko wrote:
+> Hi Reid,
+> Thanks for your feedback!
+> On Thursday 01 February 2007 20:38, Reid Priedhorsky wrote:
+>   
+>> Hi Artem,
+>>
+>> Artem Pavlenko wrote:
+>>     
+>>> On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+>>>       
+>>>> 1. mapnik is underdocumented. While I was able to muddle through, some
+>>>> user-oriented documentation would be very helpful.
+>>>>         
+>>> Agreed. Lets improve this. Would you like to help to populate wiki?
+>>>       
+>> Unfortunately I don't think I am able to offer the time to write
+>> documentation. I would, however, be happy to offer my Python script as
+>> an example.
+>>     
+> Yes, please! 
+>
+>   
+>>>> 3. render_to_tile() prints to standard output. I'd like to be able to
+>>>> supress this.
+>>>>         
+>>> Please, enter bug into trac.
+>>>       
+>> #9, I believe. I also entered a few others.
+>>     
+> Great! 
+>   
+>>>> 4. Installing to a nonstandard path without root access was quite a
+>>>> pain; I wanted to install everything under /foo/bar, but the closest I
+>>>> could get was some stuff under /foo/bar/usr and some stuff under
+>>>> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+>>>> symlinks to make things reasonable.
+>>>>         
+>>> Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing
+>>> something here, could you provide more info?
+>>>       
+>> Sure. I put it into trac #10.
+>>     
+>
+>   
+>>> I'm quite happy to start discussion about better building system for
+>>> mapnik. I have some experience with the following :
+>>> 1. autotools
+>>> 2. scons
+>>> 3. cmake
+>>> 4. Boost.Build.v2
+>>>
+>>> but it is not clear to me which one is the best fit. Mapnik was using
+>>> autotool at the very begining but I got fed up with writing m4 macros
+>>> very quickly.
+>>>       
+>> I don't know a whole lot about programming to any of those build
+>> systems. I did use autotools some years ago and found it pretty
+>> straightforward, so I'm surprised that autotools required writing
+>> significant numbers of M4 macros, but I never used it for Python or C++
+>> projects.
+>>
+>> Given that, speaking as an end-user, these are the things that I found
+>> difficult about scons:
+>>
+>> 1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+>>
+>> 2. Difficult to install into non-standard locations.
+>>
+>> 3. It seems to redo all the library checks before each operation, even
+>> an invalidly-specified one; e.g. try "python scons/scons.py build" --
+>> for me it chugs away detecting libraries for 7 seconds before telling me
+>> that "build" is an invalid operation.
+>>
+>>     
+> I think your comments are valid and they highlight the fact that current build 
+> system is not always working as expected. 
+>
+>   
+>> Python modules seem to be moving increasingly to "distutils"
+>> <http://www.python.org/doc/2.4.4/lib/module-distutils.html>, which I
+>> have not used except as an installer. I don't know how suitable this
+>> would be for people who just want to use the C++ interface.
+>>     
+>
+> Yes, exactly. Distutils are not much help for building c++ libraries. 
+> I'm playing with Boost.Build.v2 at the moment  and I'm hoping to have 
+> alternative/experimental build system very soon.
+>
+> If you're using debian based distro you could try: 
+>
+> deb http://www.larted.org.uk/~dom/debian/mapnik unstable/
+> deb-src http://www.larted.org.uk/~dom/debian/mapnik unstable/
+>
+> Cheers,
+> Artem
+>
+>   
+>> Take care,
+>>
+>> Reid
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>     
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>   
+
+
+
+From toby.collett at onetrackmind.co.nz  Mon Feb 12 06:50:09 2007
+From: toby.collett at onetrackmind.co.nz (Toby Collett)
+Date: Mon, 12 Feb 2007 18:50:09 +1300
+Subject: [Mapnik-devel] Mapnik feedback
+In-Reply-To: <45CA6D17.4000403@gmail.com>
+References: <45BE422A.2050406@umn.edu>	<200701292116.00505.pavlenko@users.berlios.de>	<45C24FDA.8090506@umn.edu>	<200702051213.41925.pavlenko@users.berlios.de>
+	<45CA6D17.4000403@gmail.com>
+Message-ID: <45D00011.50400@onetrackmind.co.nz>
+
+Ive worked with the autotools in several projects and never had to write 
+an m4 macro as such, unless you are doing quite specialised things or 
+have a multi faceted build for your project the built in macros to test 
+for libraries and headers, particularly when combined with pkg-config 
+make auto tools 'fairly' painless.
+
+Having said that its is a mish mash collection of tools with a long 
+history (mostly not in a good way) and using a fresh development 
+definitely has its bonuses...
+
+just my 2 cents,
+
+Toby
+
+Jean-Fran?ois Doyon wrote:
+> I have to admit that, even though I wrote a good chunk of it, I'm not 
+> all that super happy with the SCons build system ...
+>
+> Although I agree writing M4 macros might not be fun, the whole 
+> ./configure, make, make install routine is SO prevalent, and easy to use 
+> once you're familiar with it ... I'd be tempted to investigate it.
+>
+> As for the documentation ... agreed.  It's tough though, as the API is 
+> still evolving.  I would prefer a Doxygen/Epydocs approach myself, at 
+> least as a good starting point.  I had generated an Epydocs reference 
+> sometime ago, and it's still in the source tree, though it's totally out 
+> of date now.
+>
+> J.F.
+>
+> Artem Pavlenko wrote:
+>   
+>> Hi Reid,
+>> Thanks for your feedback!
+>> On Thursday 01 February 2007 20:38, Reid Priedhorsky wrote:
+>>   
+>>     
+>>> Hi Artem,
+>>>
+>>> Artem Pavlenko wrote:
+>>>     
+>>>       
+>>>> On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+>>>>       
+>>>>         
+>>>>> 1. mapnik is underdocumented. While I was able to muddle through, some
+>>>>> user-oriented documentation would be very helpful.
+>>>>>         
+>>>>>           
+>>>> Agreed. Lets improve this. Would you like to help to populate wiki?
+>>>>       
+>>>>         
+>>> Unfortunately I don't think I am able to offer the time to write
+>>> documentation. I would, however, be happy to offer my Python script as
+>>> an example.
+>>>     
+>>>       
+>> Yes, please! 
+>>
+>>   
+>>     
+>>>>> 3. render_to_tile() prints to standard output. I'd like to be able to
+>>>>> supress this.
+>>>>>         
+>>>>>           
+>>>> Please, enter bug into trac.
+>>>>       
+>>>>         
+>>> #9, I believe. I also entered a few others.
+>>>     
+>>>       
+>> Great! 
+>>   
+>>     
+>>>>> 4. Installing to a nonstandard path without root access was quite a
+>>>>> pain; I wanted to install everything under /foo/bar, but the closest I
+>>>>> could get was some stuff under /foo/bar/usr and some stuff under
+>>>>> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+>>>>> symlinks to make things reasonable.
+>>>>>         
+>>>>>           
+>>>> Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing
+>>>> something here, could you provide more info?
+>>>>       
+>>>>         
+>>> Sure. I put it into trac #10.
+>>>     
+>>>       
+>>   
+>>     
+>>>> I'm quite happy to start discussion about better building system for
+>>>> mapnik. I have some experience with the following :
+>>>> 1. autotools
+>>>> 2. scons
+>>>> 3. cmake
+>>>> 4. Boost.Build.v2
+>>>>
+>>>> but it is not clear to me which one is the best fit. Mapnik was using
+>>>> autotool at the very begining but I got fed up with writing m4 macros
+>>>> very quickly.
+>>>>       
+>>>>         
+>>> I don't know a whole lot about programming to any of those build
+>>> systems. I did use autotools some years ago and found it pretty
+>>> straightforward, so I'm surprised that autotools required writing
+>>> significant numbers of M4 macros, but I never used it for Python or C++
+>>> projects.
+>>>
+>>> Given that, speaking as an end-user, these are the things that I found
+>>> difficult about scons:
+>>>
+>>> 1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+>>>
+>>> 2. Difficult to install into non-standard locations.
+>>>
+>>> 3. It seems to redo all the library checks before each operation, even
+>>> an invalidly-specified one; e.g. try "python scons/scons.py build" --
+>>> for me it chugs away detecting libraries for 7 seconds before telling me
+>>> that "build" is an invalid operation.
+>>>
+>>>     
+>>>       
+>> I think your comments are valid and they highlight the fact that current build 
+>> system is not always working as expected. 
+>>
+>>   
+>>     
+>>> Python modules seem to be moving increasingly to "distutils"
+>>> <http://www.python.org/doc/2.4.4/lib/module-distutils.html>, which I
+>>> have not used except as an installer. I don't know how suitable this
+>>> would be for people who just want to use the C++ interface.
+>>>     
+>>>       
+>> Yes, exactly. Distutils are not much help for building c++ libraries. 
+>> I'm playing with Boost.Build.v2 at the moment  and I'm hoping to have 
+>> alternative/experimental build system very soon.
+>>
+>> If you're using debian based distro you could try: 
+>>
+>> deb http://www.larted.org.uk/~dom/debian/mapnik unstable/
+>> deb-src http://www.larted.org.uk/~dom/debian/mapnik unstable/
+>>
+>> Cheers,
+>> Artem
+>>
+>>   
+>>     
+>>> Take care,
+>>>
+>>> Reid
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>     
+>>>       
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>   
+>>     
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>   
+
+
+From web at tom-carden.co.uk  Sat Feb 24 22:04:42 2007
+From: web at tom-carden.co.uk (Tom Carden)
+Date: Sat, 24 Feb 2007 13:04:42 -0800
+Subject: [Mapnik-devel] compiling on Mac OS?
+Message-ID: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+
+Hello list,
+
+Just wondering if anyone has had more success than me in installing
+mapnik (trunk from svn) on Mac OS X?  We're up and running on Ubuntu,
+so it's not urgent, but here's how far I got:
+
+I used darwin/macports to grab the dependencies, so far so good.
+
+A few paths needed setting for Scons:
+python scons/scons.py FREETYPE_CONFIG=/opt/local/bin/freetype-config
+PROJ_INCLUDES=/opt/local/include PROJ_LIBS=/opt/local/lib
+PREF=/opt/local
+
+-pthread needed removing from the compiler flags in SConstruct lines
+168 and 170.
+
+An extra 'const' needed adding to unicode.hpp line 173...
+            const char * in  = const_cast<char*>(input.data());
+
+After that, most things seemed to build until I got lost in libtool
+hell with errors about -rpath and more.  Here's the step that breaks,
+fwiw:
+
+----
+
+g++ -Wl,-rpath-link,. -Wl,-soname,libmapnik.so -dynamiclib -o
+src/libmapnik.dylib src/agg_renderer.os src/datasource_cache.os
+src/envelope.os src/filter_factory.os src/font_engine_freetype.os
+src/graphics.os src/image_reader.os src/image_util.os src/layer.os
+src/line_pattern_symbolizer.os src/load_map.os src/map.os
+src/memory.os src/params.os src/placement_finder.os src/plugin.os
+src/png_reader.os src/point_symbolizer.os
+src/polygon_pattern_symbolizer.os src/save_map.os
+src/shield_symbolizer.os src/text_symbolizer.os src/tiff_reader.os
+src/wkb.os src/projection.os src/proj_transform.os src/distance.os
+src/scale_denominator.os src/memory_datasource.os tinyxml/tinystr.os
+tinyxml/tinyxml.os tinyxml/tinyxmlerror.os tinyxml/tinyxmlparser.os
+-Lagg -Lsrc -L/usr/lib -L/opt/local/lib -L/opt/local/lib -lagg
+-lfreetype -lz -lm -lltdl -lpng -ltiff -lz -ljpeg -lproj
+-lboost_thread -lboost_filesystem -lboost_regex
+/usr/bin/libtool: unknown option character `r' in: -rpath-link
+Usage: /usr/bin/libtool -static [-] file [...] [-filelist
+listfile[,dirname]] [-arch_only arch] [-sacLT]
+Usage: /usr/bin/libtool -dynamic [-] file [...] [-filelist
+listfile[,dirname]] [-arch_only arch] [-o output] [-install_name name]
+[-compatibility_version #] [-current_version #] [-seg1addr 0x#]
+[-segs_read_only_addr 0x#] [-segs_read_write_addr 0x#]
+[-seg_addr_table <filename>] [-seg_addr_table_filename
+<file_system_path>] [-all_load] [-noall_load]
+scons: *** [src/libmapnik.dylib] Error 1
+scons: building terminated because of errors.
+
+----
+
+Any suggestions for what to try next would be appreciated,
+
+Best,
+
+Tom.
+
+
+From pavlenko at users.berlios.de  Sun Feb 25 12:51:39 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Sun, 25 Feb 2007 11:51:39 +0000
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+Message-ID: <200702251200.00116.pavlenko@users.berlios.de>
+
+Hi Tom,
+
+> Just wondering if anyone has had more success than me in installing
+> mapnik (trunk from svn) on Mac OS X?  We're up and running on Ubuntu,
+> so it's not urgent, but here's how far I got:
+>
+> I used darwin/macports to grab the dependencies, so far so good.
+>
+> A few paths needed setting for Scons:
+> python scons/scons.py FREETYPE_CONFIG=/opt/local/bin/freetype-config
+> PROJ_INCLUDES=/opt/local/include PROJ_LIBS=/opt/local/lib
+> PREF=/opt/local
+>
+> -pthread needed removing from the compiler flags in SConstruct lines
+> 168 and 170.
+>
+> An extra 'const' needed adding to unicode.hpp line 173...
+>             const char * in  = const_cast<char*>(input.data());
+>
+> After that, most things seemed to build until I got lost in libtool
+> hell with errors about -rpath and more.  Here's the step that breaks,
+> fwiw:
+>
+> ----
+>
+> g++ -Wl,-rpath-link,. -Wl,-soname,libmapnik.so -dynamiclib -o
+> src/libmapnik.dylib src/agg_renderer.os src/datasource_cache.os
+> src/envelope.os src/filter_factory.os src/font_engine_freetype.os
+> src/graphics.os src/image_reader.os src/image_util.os src/layer.os
+> src/line_pattern_symbolizer.os src/load_map.os src/map.os
+> src/memory.os src/params.os src/placement_finder.os src/plugin.os
+> src/png_reader.os src/point_symbolizer.os
+> src/polygon_pattern_symbolizer.os src/save_map.os
+> src/shield_symbolizer.os src/text_symbolizer.os src/tiff_reader.os
+> src/wkb.os src/projection.os src/proj_transform.os src/distance.os
+> src/scale_denominator.os src/memory_datasource.os tinyxml/tinystr.os
+> tinyxml/tinyxml.os tinyxml/tinyxmlerror.os tinyxml/tinyxmlparser.os
+> -Lagg -Lsrc -L/usr/lib -L/opt/local/lib -L/opt/local/lib -lagg
+> -lfreetype -lz -lm -lltdl -lpng -ltiff -lz -ljpeg -lproj
+> -lboost_thread -lboost_filesystem -lboost_regex
+> /usr/bin/libtool: unknown option character `r' in: -rpath-link
+> Usage: /usr/bin/libtool -static [-] file [...] [-filelist
+> listfile[,dirname]] [-arch_only arch] [-sacLT]
+> Usage: /usr/bin/libtool -dynamic [-] file [...] [-filelist
+> listfile[,dirname]] [-arch_only arch] [-o output] [-install_name name]
+> [-compatibility_version #] [-current_version #] [-seg1addr 0x#]
+> [-segs_read_only_addr 0x#] [-segs_read_write_addr 0x#]
+> [-seg_addr_table <filename>] [-seg_addr_table_filename
+> <file_system_path>] [-all_load] [-noall_load]
+> scons: *** [src/libmapnik.dylib] Error 1
+> scons: building terminated because of errors.
+>
+> ----
+>
+> Any suggestions for what to try next would be appreciated,
+>
+
+Looks like libtool doesn't understand -rpath-link option.  What version of 
+gcc, libtool are you using? Can you build any shared libraries with scons on 
+Mac? 
+
+It would be great to build Mapnik on Mac OSX and I'm eager to help. 
+
+Cheers,
+Artem
+  
+> Best,
+>
+> Tom.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From tom at tom-carden.co.uk  Sun Feb 25 19:58:10 2007
+From: tom at tom-carden.co.uk (Tom Carden)
+Date: Sun, 25 Feb 2007 10:58:10 -0800
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <200702251200.00116.pavlenko@users.berlios.de>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702251200.00116.pavlenko@users.berlios.de>
+Message-ID: <16e8cf860702251058p563ca61ex238cb3e27f337b81@mail.gmail.com>
+
+On 25/02/07, Artem Pavlenko <pavlenko at users.berlios.de> wrote:
+> Hi Tom,
+>
+> Looks like libtool doesn't understand -rpath-link option.  What version of
+> gcc, libtool are you using? Can you build any shared libraries with scons on
+> Mac?
+>
+
+tom% gcc --version
+i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)
+
+Digging a bit deeper, it seems that Apple has its own libtool, so GNU
+libtool is called glibtool.  I haven't been able to determine which of
+these gets called when invoking g++ to link things.  Temporarily
+renaming glibtool to libtool didn't work.
+
+tom% glibtool --version
+ltmain.sh (GNU libtool) 1.5.22 (1.1220.2.365 2005/12/18 22:14:06)
+
+I've not tried building any other libraries with scons yet - do you
+know of a simple one to try?
+
+Best,
+
+Tom.
+
+
+From pavlenko at users.berlios.de  Sun Feb 25 22:32:26 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Sun, 25 Feb 2007 21:32:26 +0000
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <16e8cf860702251058p563ca61ex238cb3e27f337b81@mail.gmail.com>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702251200.00116.pavlenko@users.berlios.de>
+	<16e8cf860702251058p563ca61ex238cb3e27f337b81@mail.gmail.com>
+Message-ID: <200702252132.27161.pavlenko@users.berlios.de>
+
+On Sunday 25 February 2007 18:58, Tom Carden wrote:
+> On 25/02/07, Artem Pavlenko <pavlenko at users.berlios.de> wrote:
+> > Hi Tom,
+> >
+> > Looks like libtool doesn't understand -rpath-link option.  What version
+> > of gcc, libtool are you using? Can you build any shared libraries with
+> > scons on Mac?
+>
+> tom% gcc --version
+> i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)
+>
+Looking good.
+
+> Digging a bit deeper, it seems that Apple has its own libtool, so GNU
+> libtool is called glibtool.
+Aha, these would explain -rpath-link .. 
+> I haven't been able to determine which of 
+> these gets called when invoking g++ to link things.  Temporarily
+> renaming glibtool to libtool didn't work.
+hmm....
+
+> tom% glibtool --version
+> ltmain.sh (GNU libtool) 1.5.22 (1.1220.2.365 2005/12/18 22:14:06)
+>
+> I've not tried building any other libraries with scons yet - do you
+> know of a simple one to try?
+
+I was thinking about something very simple. Just to see if scons can build 
+shared library at all on Mac:
+
+test.hpp :
+
+#ifndef TEST_HPP
+#define TEST_HPP
+void fun ();
+#endif
+
+test.cpp:
+
+#include <iostream>
+#include "test.hpp"
+
+void fun()
+{
+	std::cout << "fun called\n";
+}
+
+SConscript:
+
+SharedLibrary ('test',['test.cpp'])
+
+
+Other things we can try Boost.Build.v2 ( I use sometimes).  I suspect bjam 
+might have a better support for mac. 
+
+Maybe I should get MacBook and try it myself. Hmm... I'm thinking about it.
+
+Cheers,
+Artem
+
+> Best,
+>
+> Tom.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From tom at tom-carden.co.uk  Sun Feb 25 23:58:57 2007
+From: tom at tom-carden.co.uk (Tom Carden)
+Date: Sun, 25 Feb 2007 14:58:57 -0800
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <200702252132.27161.pavlenko@users.berlios.de>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702251200.00116.pavlenko@users.berlios.de>
+	<16e8cf860702251058p563ca61ex238cb3e27f337b81@mail.gmail.com>
+	<200702252132.27161.pavlenko@users.berlios.de>
+Message-ID: <16e8cf860702251458r5fb36460u98576a193c7fd0ba@mail.gmail.com>
+
+On 25/02/07, Artem Pavlenko <pavlenko at users.berlios.de> wrote:
+>
+> I was thinking about something very simple. Just to see if scons can build
+> shared library at all on Mac:
+>
+> test.hpp :
+>
+> #ifndef TEST_HPP
+> #define TEST_HPP
+> void fun ();
+> #endif
+>
+> test.cpp:
+>
+> #include <iostream>
+> #include "test.hpp"
+>
+> void fun()
+> {
+>         std::cout << "fun called\n";
+> }
+>
+> SConscript:
+>
+
+SConstruct?
+
+> SharedLibrary ('test',['test.cpp'])
+>
+
+With scons copied from mapnik folder...
+
+tom% python scons/scons.py                            scons: Reading
+SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -dynamiclib -o libtest.dylib test.os
+scons: done building targets.
+tom% ls
+SConstruct      libtest.dylib   scons           test.cpp
+test.hpp        test.os
+
+> Other things we can try Boost.Build.v2 ( I use sometimes).  I suspect bjam
+> might have a better support for mac.
+>
+
+tom% port search boost-build
+boost-build                    devel/boost-build 2.0-m10      Build
+system for large project software construction
+
+It's there if you want me to try it.  I don't know anything about bjam though.
+
+HTH,
+
+Tom.
+
+
+From jburgess777 at googlemail.com  Tue Feb 27 21:35:26 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 27 Feb 2007 20:35:26 +0000
+Subject: [Mapnik-devel] typo in rundemo.cpp
+Message-ID: <1172608527.4545.46.camel@localhost.localdomain>
+
+The font file name in rundemo.cpp has an obvious typo which the attached
+patch fixes.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ttf-typo.patch
+Type: text/x-patch
+Size: 591 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070227/4ffb4209/attachment.bin>
+
+From pavlenko at users.berlios.de  Tue Feb 27 21:45:06 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Tue, 27 Feb 2007 20:45:06 +0000
+Subject: [Mapnik-devel] typo in rundemo.cpp
+In-Reply-To: <1172608527.4545.46.camel@localhost.localdomain>
+References: <1172608527.4545.46.camel@localhost.localdomain>
+Message-ID: <200702272045.06702.pavlenko@users.berlios.de>
+
+Opps. Thanks!
+Artem
+
+On Tuesday 27 February 2007 20:35, Jon Burgess wrote:
+> The font file name in rundemo.cpp has an obvious typo which the attached
+> patch fixes.
+>
+> 	Jon
+
+
+From pavlenko at users.berlios.de  Tue Feb 27 21:55:46 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Tue, 27 Feb 2007 20:55:46 +0000
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <16e8cf860702251458r5fb36460u98576a193c7fd0ba@mail.gmail.com>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702252132.27161.pavlenko@users.berlios.de>
+	<16e8cf860702251458r5fb36460u98576a193c7fd0ba@mail.gmail.com>
+Message-ID: <200702272055.46996.pavlenko@users.berlios.de>
+
+Tom,
+
+> With scons copied from mapnik folder...
+>
+> tom% python scons/scons.py                            scons: Reading
+> SConscript files ...
+> scons: done reading SConscript files.
+> scons: Building targets ...
+> g++ -dynamiclib -o libtest.dylib test.os
+> scons: done building targets.
+> tom% ls
+> SConstruct      libtest.dylib   scons           test.cpp
+> test.hpp        test.os
+>
+Looks ok, assuming .dylib is what's expected.
+
+> > Other things we can try Boost.Build.v2 ( I use sometimes).  I suspect
+> > bjam might have a better support for mac.
+>
+> tom% port search boost-build
+> boost-build                    devel/boost-build 2.0-m10      Build
+> system for large project software construction
+>
+> It's there if you want me to try it.  I don't know anything about bjam
+> though.
+
+Well, you'll need Jamfile's which I have somewhere but they'll certainly 
+require tweaking... I'm gettiing hold of mac in a couple days let me have a 
+go:).
+
+
+Cheers,
+Artem
+
+>
+> HTH,
+>
+> Tom.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From amitti at 10east.com  Tue Feb 27 23:01:41 2007
+From: amitti at 10east.com (Aaron Mitti)
+Date: Tue, 27 Feb 2007 17:01:41 -0500 (EST)
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <200702272055.46996.pavlenko@users.berlios.de>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702252132.27161.pavlenko@users.berlios.de>
+	<16e8cf860702251458r5fb36460u98576a193c7fd0ba@mail.gmail.com>
+	<200702272055.46996.pavlenko@users.berlios.de>
+Message-ID: <Pine.LNX.4.64.0702271602420.1095@amitti1.10east.com>
+
+Artem,
+
+On Tue, 27 Feb 2007, Artem Pavlenko wrote:
+> Well, you'll need Jamfile's which I have somewhere but they'll certainly
+> require tweaking... I'm gettiing hold of mac in a couple days let me have a
+> go:).
+
+I've had very poor experiences building Debian packages from things meant 
+for Jam. Jam is available on Debian, but I doesn't play with Debian 
+package tools or utilize Debian packaged dependencies. I'm guessing RPM 
+based distros would have the same issue.
+
+We're using a Make wrapper to Scons currently to build Debian / Ubuntu 
+packages, and we could presumably do the same thing with Jam, however I'd 
+be much happy with something that could play friendly with package tools.
+
+To the best of my knowledge, the only Debian friendly build tool is 
+Autoconf/Automake.
+
+http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html
+http://www.debian.org/doc/manuals/maint-guide/index.en.html
+http://sources.redhat.com/automake/automake.html
+http://www.apple.com/macosx/features/xcode/
+
+Additionally, I know for a fact Automake and Autoconf are included in 
+Apple Xcode Developer tools. Both I and Vince have Mac's at home, though I 
+don't think either of us have tried to build Mapnik on OS X yet. Creating 
+a project for make based applications on Xcode is really easy too, you can 
+just run ./configure and toss the files into a project and most of the 
+time Xcode can compile from there.
+
+-Aaron
+
+--
+Aaron Mitti
+Senior Open Systems Engineer
+10 East Corp.
+
+
+From bambang at gmail.com  Wed Feb 28 10:17:49 2007
+From: bambang at gmail.com (bambang)
+Date: Wed, 28 Feb 2007 16:17:49 +0700
+Subject: [Mapnik-devel] compiling mapnik in macos X
+Message-ID: <61d499b70702280117qef82ebeha919c689039a6b5a@mail.gmail.com>
+
+Dear All,
+
+I finally managed to compile mapnik on my macbook running Macos X ver 10.4.8,
+attached is the patch file.
+
+The patch modifies library related parameters in several SConscript files.
+The compiler (gcc version 4.0.1 (Apple Computer, Inc. build 5250)) is still
+complaining about -pthread error, but It compiles successfully.
+
+To apply this patch just cd to the mapnik source directory and do:
+
+patch -p1 <patch-file>
+
+Please adjust the SConstruct file first and make sure the path to the
+various include and libraries are match with your system.
+
+Cheers.
+
+-bambang-
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: macos.patch
+Type: application/octet-stream
+Size: 5882 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070228/a0c63405/attachment.obj>
+
+From reid at umn.edu  Wed Feb 28 20:07:12 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Wed, 28 Feb 2007 13:07:12 -0600
+Subject: [Mapnik-devel] Google Summer of Code
+Message-ID: <45E5D2E0.2050803@umn.edu>
+
+Hi folks,
+
+Have you guys considered applying to be mentoring organization in the 
+Google Summer of Code?
+
+   http://code.google.com/soc/
+
+Could be pretty cool!
+
+Reid
+
+
+From pavlenko at users.berlios.de  Wed Feb 28 20:56:34 2007
+From: pavlenko at users.berlios.de (Artem Pavlenko)
+Date: Wed, 28 Feb 2007 19:56:34 +0000
+Subject: [Mapnik-devel] compiling on Mac OS?
+In-Reply-To: <Pine.LNX.4.64.0702271602420.1095@amitti1.10east.com>
+References: <16e8cf860702241304q2c4c43abi19fb0acfa07ec2db@mail.gmail.com>
+	<200702272055.46996.pavlenko@users.berlios.de>
+	<Pine.LNX.4.64.0702271602420.1095@amitti1.10east.com>
+Message-ID: <200702281956.35446.pavlenko@users.berlios.de>
+
+Hi Aaron,
+
+> I've had very poor experiences building Debian packages from things meant
+> for Jam. Jam is available on Debian, but I doesn't play with Debian
+> package tools or utilize Debian packaged dependencies. I'm guessing RPM
+> based distros would have the same issue.
+Do you mean jam or bjam? I'm thinking about Boost.Build.v2. And it's looking 
+pretty good to me.   
+>
+> We're using a Make wrapper to Scons currently to build Debian / Ubuntu
+> packages, and we could presumably do the same thing with Jam, however I'd
+> be much happy with something that could play friendly with package tools.
+I understand. Lets keep options open and choose the best one.
+BTW, Dominic Hargreaves have packaged mapnik for Debian and it has been 
+accepted:
+http://packages.debian.org/cgi-bin/search_packages.pl?keywords=mapnik&searchon=names&subword=1&version=all&release=all
+We should coordinate efforts in this area.
+
+> To the best of my knowledge, the only Debian friendly build tool is
+> Autoconf/Automake.
+>
+I think Dominic is using oroginal scons build, I'll need to check. 
+> http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html
+> http://www.debian.org/doc/manuals/maint-guide/index.en.html
+> http://sources.redhat.com/automake/automake.html
+> http://www.apple.com/macosx/features/xcode/
+> Additionally, I know for a fact Automake and Autoconf are included in
+> Apple Xcode Developer tools. Both I and Vince have Mac's at home, though I
+> don't think either of us have tried to build Mapnik on OS X yet.
+> > Creating  
+> a project for make based applications on Xcode is really easy too, you can
+> just run ./configure and toss the files into a project and most of the
+> time Xcode can compile from there.
+Sounds good. I'm a mac newbie, I'll need a few days to find my way around. 
+
+Cheers,
+Artem
+
+
+> -Aaron
+>
+> --
+> Aaron Mitti
+> Senior Open Systems Engineer
+> 10 East Corp.
+
+

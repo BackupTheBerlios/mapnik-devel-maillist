@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Any advice on debugging placement_finder?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C3DC172FB-B68B-4D91-948B-F34FCA3CC1B6%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000574.html">
+   <LINK REL="Next"  HREF="000576.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Any advice on debugging placement_finder?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C3DC172FB-B68B-4D91-948B-F34FCA3CC1B6%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Any advice on debugging placement_finder?">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 27 17:20:09 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000574.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+        <LI>Next message: <A HREF="000576.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#575">[ date ]</a>
+              <a href="thread.html#575">[ thread ]</a>
+              <a href="subject.html#575">[ subject ]</a>
+              <a href="author.html#575">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;<i>
+</I>&gt;<i> Odd, I get...
+</I>&gt;<i>
+</I>&gt;<i> gis=&gt; select isvalid(way),ST_NumInteriorRings(way),osm_id
+</I>&gt;<i> gis-&gt; from planet_osm_polygon where name like 'Noord%';
+</I>&gt;<i>  isvalid | st_numinteriorrings | osm_id
+</I>&gt;<i> ---------+---------------------+--------
+</I>&gt;<i>  t       |                   3 |   1432
+</I>&gt;<i> (1 row)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+Odd indeed. I tried again but I always get only outer ring  (using  
+svn trunk osm2pgsql) .
+&gt;<i> The geometry is...
+</I>
+
+
+Ok, loaded your geometry and I get 3 inner loops, but I can not  
+replicate your problem. Polygon 1432 is fine. But there is
+
+  &lt;relation id=&quot;2030&quot; visible=&quot;true&quot; timestamp=&quot;2007-09-28T20:20:54 
++01:00&quot; user=&quot;Skywave&quot;&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;8033577&quot; role=&quot;&quot;/&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;8169051&quot; role=&quot;&quot;/&gt;
+     &lt;tag k=&quot;type&quot; v=&quot;multipolygon&quot;/&gt;
+   &lt;/relation&gt;
+
+which corresponds to invalid polygon in db:
+
+NOTICE:  Hole lies outside shell at or near point 458280 6.76844e+06
+
+
+So, which polygon is actually causing trouble ?
+
+Artem
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000574.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+	<LI>Next message: <A HREF="000576.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#575">[ date ]</a>
+              <a href="thread.html#575">[ thread ]</a>
+              <a href="subject.html#575">[ subject ]</a>
+              <a href="author.html#575">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

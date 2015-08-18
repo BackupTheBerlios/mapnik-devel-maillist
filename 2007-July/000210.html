@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Comments from Mapnik Fedora RPM review
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3C1185353074.11681.13.camel%40animal.passback.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000208.html">
+   <LINK REL="Next"  HREF="000212.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Comments from Mapnik Fedora RPM review</H1>
+    <B>Keith Sharp</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3C1185353074.11681.13.camel%40animal.passback.co.uk%3E"
+       TITLE="[Mapnik-devel] Comments from Mapnik Fedora RPM review">kms at passback.co.uk
+       </A><BR>
+    <I>Wed Jul 25 10:44:33 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000208.html">[Mapnik-devel] Is std::vector best for Layers in Map?
+</A></li>
+        <LI>Next message: <A HREF="000212.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#210">[ date ]</a>
+              <a href="thread.html#210">[ thread ]</a>
+              <a href="subject.html#210">[ subject ]</a>
+              <a href="author.html#210">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+I've been in the process of submitting a Mapnik RPM to Fedora for a few
+months now and I have had some feedback on my RPM.  A number of the
+comments were more related to Mapnik itself:
+
+1) Some of the files in the demo application have Windows-style line
+endings:
+
+	demo/data/boundaries_l.shp.xml
+	demo/data/boundaries.shp.xml
+	demo/data/qcdrainage.shp.xml
+	demo/data/ontdrainage.shp.xml
+	demo/data/popplaces.shp.xml
+	demo/data/COPYRIGHT.txt
+	demo/data/roads.shp.xml
+
+Can these be converted to Unix-style?
+
+2) Mapnik compiles with -O3, Fedora forbids this because of the extra
+complexity this adds to debugging.  Can this be changed/removed?
+
+3) Mapnik does not have a soversion which will cause problems in the
+future when the ABI changes and dynamically linked applications will
+start to fail.  Can  soversion support be added?
+
+4) Fedora already contains the Dejavu fonts so there is no need to
+bundle them with Mapnik.  I can probably cut these out during the RPM
+build process but it would be easier if they were removed upstream.  Is
+there any reason that they need to be bundled in the core package?
+
+The Fedora bug review is:
+
+	<A HREF="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581">https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581</A>
+
+Thanks,
+
+Keith.
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000208.html">[Mapnik-devel] Is std::vector best for Layers in Map?
+</A></li>
+	<LI>Next message: <A HREF="000212.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#210">[ date ]</a>
+              <a href="thread.html#210">[ thread ]</a>
+              <a href="subject.html#210">[ subject ]</a>
+              <a href="author.html#210">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Multiple placements for TextSymbolizer
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3Cop.vlc5s7lli35s77%40sl500.localnetwork%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001284.html">
+   <LINK REL="Next"  HREF="001288.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Multiple placements for TextSymbolizer</H1>
+    <B>Hermann Kraus</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Multiple%20placements%20for%20TextSymbolizer&In-Reply-To=%3Cop.vlc5s7lli35s77%40sl500.localnetwork%3E"
+       TITLE="[Mapnik-devel] Multiple placements for TextSymbolizer">herm at scribus.info
+       </A><BR>
+    <I>Sat Oct 30 02:47:22 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001284.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+        <LI>Next message: <A HREF="001288.html">[Mapnik-devel] [Mapnik-users] Mapnik in FOSS4G benchmark
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1285">[ date ]</a>
+              <a href="thread.html#1285">[ thread ]</a>
+              <a href="subject.html#1285">[ subject ]</a>
+              <a href="author.html#1285">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, 27 Oct 2010 22:45:21 +0200, Lennard &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ldp at xs4all.nl</A>&gt; wrote:
+&gt;<i> c) I've mentioned a few times before (on IRC, as recently as the code  
+</I>&gt;<i> sprint) that I would like to see symbolizers return information about  
+</I>&gt;<i> whether they could be placed, and that there could be an 'else'  
+</I>&gt;<i> construction to call other symbolizers upon that. This would also enable  
+</I>&gt;<i> your AlternatePlacement proposal.
+</I>
+I've thought about this, too. However I think it is not the best solution.  
+While it is flexible there are the following problems:
+- configuration files become large and complicated
+- it doesn't provide significant improvement over adding placement  
+functionality to symbolizers
+- it requires a lot of code changes
+- it doesn't help with PointSymbolizer, etc. There you would have to  
+define hundreds of rules just to allow moving a point some pixels in each  
+direction.
+
+It could be added, but it needs a lot of work which I think is better  
+invested in making the most common use cases easy.
+
+&gt;<i> It's not only the TextSymbolizer that could do with alternate  
+</I>&gt;<i> placements. Point/ShieldSymbolizer could likewise benefit, as would the  
+</I>&gt;<i> new MarkerSymbolizer.
+</I>
+Next problem: How should this work with MarkersSymbolizer? Does it return  
+&quot;true&quot; when all markers were drawn, when 50% were drawn, or when at least  
+one was drawn. It's not that easy to get the symbolizer return value you  
+would like.
+
+Hermann
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001284.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+	<LI>Next message: <A HREF="001288.html">[Mapnik-devel] [Mapnik-users] Mapnik in FOSS4G benchmark
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1285">[ date ]</a>
+              <a href="thread.html#1285">[ thread ]</a>
+              <a href="subject.html#1285">[ subject ]</a>
+              <a href="author.html#1285">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

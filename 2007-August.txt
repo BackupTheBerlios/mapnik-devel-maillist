@@ -1,0 +1,593 @@
+From jburgess777 at googlemail.com  Sun Aug 12 17:01:23 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 12 Aug 2007 16:01:23 +0100
+Subject: [Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when
+	appropriate
+Message-ID: <1186930883.16188.62.camel@localhost.localdomain>
+
+According to the Fedora RPM packaging guidelines the 64 bit Python
+bindings and _mapnik.so file need to get installed under the lib64
+python tree. The attached patch modifies the SConscript to implement
+this. 
+
+	Jon
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-python-lib64.patch
+Type: text/x-patch
+Size: 596 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070812/72574f85/attachment.bin>
+
+From lists at brachttal.net  Sun Aug 12 23:34:03 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 12 Aug 2007 23:34:03 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <69672BB1-C01B-42AD-9843-6AF460B8EB43@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+	<C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+	<20070731095006.43369d72@frodo.mittelerde>
+	<69672BB1-C01B-42AD-9843-6AF460B8EB43@mapnik.org>
+Message-ID: <20070812233403.05c38b9f@frodo.mittelerde>
+
+Am Thu, 9 Aug 2007 14:29:46 +0100 schrieb Artem Pavlenko:
+
+> Hi Andreas,
+
+Hello Artem,
+ 
+> I finally had a chance to look into your doxy patch. There are
+> couple mistypes e.g. comparison operator should be assignment op. but
+> this is a good start!
+
+I corrected this and commited it.
+
+> I cleaned up trac.mapnik.org from spam and installed extra
+> admin/user plug-ins. You have svn write access (have you tried?)
+> and we can start working through docs.
+
+My SVN account seems to work.
+
+> What do you think about boost approach to documenting libraries? For  
+> example http://www.boost.org/doc/html/variant.html ?
+> It seems to me a good way to introduce a new library is through
+> small working examples (in C++ and Python), discussing concepts,  
+> motivations and linking to full class/methods reference.
+
+Looks nice. A higher level documentation is really needed to understand
+Mapnik. I think many great things could be done with Mapnik but nobody
+understand what great things Mapnik could do and how. At first a brief
+3 or 4 lines doxygen description at the top of each header file or
+class could help. Then we should explain users which class is important
+as external API and which aren't so important for most users. 
+
+> I'm hoping to have more time working on Mapnik (starting from now)  
+> and it would be great to if you can get involved to help us!
+> 
+> What do you think?
+
+I'll help wherever possible. My own motivation is to better understand
+Mapnik. So documenting Mapnik will help me with my own application.
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Mon Aug 13 11:38:26 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 13 Aug 2007 10:38:26 +0100
+Subject: [Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when
+	appropriate
+In-Reply-To: <1186930883.16188.62.camel@localhost.localdomain>
+References: <1186930883.16188.62.camel@localhost.localdomain>
+Message-ID: <C53B6B0E-A750-4EBE-BF50-14B4F82653DD@mapnik.org>
+
+
+On 12 Aug 2007, at 16:01, Jon Burgess wrote:
+
+> According to the Fedora RPM packaging guidelines the 64 bit Python
+> bindings and _mapnik.so file need to get installed under the lib64
+> python tree. The attached patch modifies the SConscript to implement
+> this.
+>
+> 	Jon
+>
+
+Applied in r508, thanks.
+A.
+>
+>
+> <mapnik-python-lib64.patch>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070813/aec01fee/attachment.html>
+
+From artem at mapnik.org  Mon Aug 13 11:47:15 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 13 Aug 2007 10:47:15 +0100
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <20070812233403.05c38b9f@frodo.mittelerde>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+	<C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+	<20070731095006.43369d72@frodo.mittelerde>
+	<69672BB1-C01B-42AD-9843-6AF460B8EB43@mapnik.org>
+	<20070812233403.05c38b9f@frodo.mittelerde>
+Message-ID: <F4319535-8304-4F3D-A316-029E1C2A0932@mapnik.org>
+
+Hi Andreas,
+
+On 12 Aug 2007, at 22:34, Andreas Volz wrote:
+
+> Am Thu, 9 Aug 2007 14:29:46 +0100 schrieb Artem Pavlenko:
+>
+>> Hi Andreas,
+>
+> Hello Artem,
+>
+>> I finally had a chance to look into your doxy patch. There are
+>> couple mistypes e.g. comparison operator should be assignment op. but
+>> this is a good start!
+>
+> I corrected this and commited it.
+>
+
+Great. Please, make sure you 'svn up'  before committing :) You've  
+overwritten some recent changes ( fixed in r507)
+
+>> I cleaned up trac.mapnik.org from spam and installed extra
+>> admin/user plug-ins. You have svn write access (have you tried?)
+>> and we can start working through docs.
+>
+> My SVN account seems to work.
+>
+>> What do you think about boost approach to documenting libraries? For
+>> example http://www.boost.org/doc/html/variant.html ?
+>> It seems to me a good way to introduce a new library is through
+>> small working examples (in C++ and Python), discussing concepts,
+>> motivations and linking to full class/methods reference.
+>
+> Looks nice. A higher level documentation is really needed to  
+> understand
+> Mapnik. I think many great things could be done with Mapnik but nobody
+> understand what great things Mapnik could do and how. At first a brief
+> 3 or 4 lines doxygen description at the top of each header file or
+> class could help. Then we should explain users which class is  
+> important
+> as external API and which aren't so important for most users.
+Agreed.
+>
+>> I'm hoping to have more time working on Mapnik (starting from now)
+>> and it would be great to if you can get involved to help us!
+>>
+>> What do you think?
+>
+> I'll help wherever possible. My own motivation is to better understand
+> Mapnik. So documenting Mapnik will help me with my own application.
+
+Cheers.
+Artem
+
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070813/d8ec30fc/attachment.html>
+
+From lists at brachttal.net  Mon Aug 13 12:49:51 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 13 Aug 2007 12:49:51 +0200
+Subject: [Mapnik-devel] Call for better documentation
+In-Reply-To: <F4319535-8304-4F3D-A316-029E1C2A0932@mapnik.org>
+References: <20070706231227.646df0b6@frodo.mittelerde>
+	<8765BE3C-D47D-44C6-95F8-EB92AD38AAC5@mapnik.org>
+	<20070716234513.70fd869b@frodo.mittelerde>
+	<1D8644DA-AF42-4D7B-BA23-F7AC4D7B26DD@mapnik.org>
+	<20070720003707.4c8c519f@frodo.mittelerde>
+	<8566E729-F4CB-40F2-9CE0-87C9ABB78480@mapnik.org>
+	<20070724202217.2f5f29fa@frodo.mittelerde>
+	<20070728093203.46b6aa0d@frodo.mittelerde>
+	<C97EF06E-A9DA-4E4A-9E6F-A4F96CA77326@mapnik.org>
+	<20070731095006.43369d72@frodo.mittelerde>
+	<69672BB1-C01B-42AD-9843-6AF460B8EB43@mapnik.org>
+	<20070812233403.05c38b9f@frodo.mittelerde>
+	<F4319535-8304-4F3D-A316-029E1C2A0932@mapnik.org>
+Message-ID: <20070813124951.7934939d@frodo.mittelerde>
+
+Am Mon, 13 Aug 2007 10:47:15 +0100 schrieb Artem Pavlenko:
+
+> Hi Andreas,
+> 
+> On 12 Aug 2007, at 22:34, Andreas Volz wrote:
+> 
+> > Am Thu, 9 Aug 2007 14:29:46 +0100 schrieb Artem Pavlenko:
+> >
+> >> Hi Andreas,
+> >
+> > Hello Artem,
+> >
+> >> I finally had a chance to look into your doxy patch. There are
+> >> couple mistypes e.g. comparison operator should be assignment op.
+> >> but this is a good start!
+> >
+> > I corrected this and commited it.
+> >
+> 
+> Great. Please, make sure you 'svn up'  before committing :) You've  
+> overwritten some recent changes ( fixed in r507)
+
+Oh sorry! I noticed some conflicts after 'svn update' and thought I
+merged them correct. Seems I made a mistake :-(
+
+regards
+Andreas
+
+
+From rothmarc at gmx.de  Mon Aug 13 21:56:01 2007
+From: rothmarc at gmx.de (Markus Roth)
+Date: Mon, 13 Aug 2007 21:56:01 +0200
+Subject: [Mapnik-devel] Devel with mapnik
+Message-ID: <1187034961.4271.15.camel@linux.site>
+
+I work at a offline project with mapnik.
+The maps works and I could see boundaries and roads.
+Is it possible to compare screenobjects(lat,lon - points) with Layers?
+e.g.: Compare a Object, that lies on a road xy?
+If i draw the roads as kind as a SVG, i could compare it with a line
+function, but i didn't get any datas about the roads point?
+
+Is there any possibility?
+
+
+
+From artem at mapnik.org  Tue Aug 14 10:23:39 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 14 Aug 2007 09:23:39 +0100
+Subject: [Mapnik-devel] Devel with mapnik
+In-Reply-To: <1187034961.4271.15.camel@linux.site>
+References: <1187034961.4271.15.camel@linux.site>
+Message-ID: <6A7B582E-56D9-48D8-99F0-DDF033288721@mapnik.org>
+
+Hi Markus,
+
+> I work at a offline project with mapnik.
+> The maps works and I could see boundaries and roads.
+> Is it possible to compare screenobjects(lat,lon - points) with Layers?
+> e.g.: Compare a Object, that lies on a road xy?
+
+> If i draw the roads as kind as a SVG, i could compare it with a line
+> function, but i didn't get any datas about the roads point?
+>
+
+I'm not sure I understand what you mean by 'compare'. If you want to  
+query feature(s) at point and access attributes (data) this is  
+already implemented.
+
+> Is there any possibility?
+>
+
+Could you provide more details what you're trying to achieve and I'll  
+try to help.
+
+Cheers,
+Artem
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070814/c181d345/attachment.html>
+
+From david at artcom.de  Mon Aug 27 03:10:03 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 27 Aug 2007 03:10:03 +0200
+Subject: [Mapnik-devel] patch: python bindings on Mac OS X
+Message-ID: <33C4715A-A108-4FA2-9126-F4C257BEC0B9@artcom.de>
+
+hi,
+i just compiled mapnik on Mac OS X and fixed some minor issues:
+
+plugins/input/postgis/SConscript:
+- added boost_thread-mt to darwin builds
+
+demo/c++/rundemo.cpp:
+- setBackground() is now set_background()
+
+bindings/python/SConscript:
+- added boost_thread-mt to darwin builds
+- changed builder to LoadableModule which builds a so called "bundle"
+    on darwin and a shared library on all other systems.
+
+SConstruct:
+- freetype-config is now searched in the path.
+
+with the attached patch applied the python bindings work like charme.
+
+the patch is against revision 511. Could someone please verify
+that it doesn't break the linux build?
+
+cheers,
+    david
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-r511.patch
+Type: application/octet-stream
+Size: 2992 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070827/8f3fe51a/attachment.obj>
+
+From david at artcom.de  Mon Aug 27 14:30:40 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 27 Aug 2007 14:30:40 +0200
+Subject: [Mapnik-devel] patch: python bindings on Mac OS X
+Message-ID: <7DDE1009-E140-4D79-AE61-484546FD526E@artcom.de>
+
+On 27.08.2007, at 03:10, David Siegel wrote:
+
+> hi,
+> i just compiled mapnik on Mac OS X and fixed some minor issues:
+>
+> plugins/input/postgis/SConscript:
+> - added boost_thread-mt to darwin builds
+>
+> demo/c++/rundemo.cpp:
+> - setBackground() is now set_background()
+>
+> bindings/python/SConscript:
+> - added boost_thread-mt to darwin builds
+> - changed builder to LoadableModule which builds a so called "bundle"
+>    on darwin and a shared library on all other systems.
+>
+> SConstruct:
+> - freetype-config is now searched in the path.
+>
+> with the attached patch applied the python bindings work like charme.
+>
+> the patch is against revision 511. Could someone please verify
+> that it doesn't break the linux build?
+>
+>
+
+Some additional info about the LoadableModule builder:
+
+Documentation seems to be sparse. I found it mentioned in a release  
+note or something. It is also mentioned briefly in the man page:
+
+http://www.scons.org/doc/0.97/HTML/scons-man.html
+
+The configuration parameters are documented here:
+
+http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html
+
+search for LDMODULE*
+
+I just noticed that the default value of LDMODULEPREFIX (which is  
+'lib' on linux) will break the python module. It should be set to ''  
+for all platforms. I could supply another patch but maybe someone  
+else could fill this bit in before commit?
+
+cheers,
+    d.
+
+
+
+From artem at mapnik.org  Tue Aug 28 14:02:19 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 28 Aug 2007 13:02:19 +0100
+Subject: [Mapnik-devel] patch: python bindings on Mac OS X
+In-Reply-To: <7DDE1009-E140-4D79-AE61-484546FD526E@artcom.de>
+References: <7DDE1009-E140-4D79-AE61-484546FD526E@artcom.de>
+Message-ID: <71A90991-9B54-4365-9161-6A1662872399@mapnik.org>
+
+
+On 27 Aug 2007, at 13:30, David Siegel wrote:
+
+> On 27.08.2007, at 03:10, David Siegel wrote:
+>
+>> hi,
+>> i just compiled mapnik on Mac OS X and fixed some minor issues:
+>>
+>> plugins/input/postgis/SConscript:
+>> - added boost_thread-mt to darwin builds
+>>
+>> demo/c++/rundemo.cpp:
+>> - setBackground() is now set_background()
+>>
+>> bindings/python/SConscript:
+>> - added boost_thread-mt to darwin builds
+>> - changed builder to LoadableModule which builds a so called "bundle"
+>>    on darwin and a shared library on all other systems.
+>>
+>> SConstruct:
+>> - freetype-config is now searched in the path.
+>>
+>> with the attached patch applied the python bindings work like charme.
+>>
+>> the patch is against revision 511. Could someone please verify
+>> that it doesn't break the linux build?
+>>
+>>
+>
+> Some additional info about the LoadableModule builder:
+>
+> Documentation seems to be sparse. I found it mentioned in a release
+> note or something. It is also mentioned briefly in the man page:
+>
+> http://www.scons.org/doc/0.97/HTML/scons-man.html
+>
+> The configuration parameters are documented here:
+>
+> http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html
+>
+> search for LDMODULE*
+>
+> I just noticed that the default value of LDMODULEPREFIX (which is
+> 'lib' on linux) will break the python module. It should be set to ''
+> for all platforms. I could supply another patch but maybe someone
+> else could fill this bit in before commit?
+>
+> cheers,
+>     d.
+
+Applied in r512. Thanks very much!
+What os x are you building on ?
+
+Cheers
+Artem
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070828/dcd83a58/attachment.html>
+
+From david at artcom.de  Tue Aug 28 14:50:49 2007
+From: david at artcom.de (David Siegel)
+Date: Tue, 28 Aug 2007 14:50:49 +0200
+Subject: [Mapnik-devel] patch: python bindings on Mac OS X
+In-Reply-To: <71A90991-9B54-4365-9161-6A1662872399@mapnik.org>
+References: <7DDE1009-E140-4D79-AE61-484546FD526E@artcom.de>
+	<71A90991-9B54-4365-9161-6A1662872399@mapnik.org>
+Message-ID: <D120C491-44CE-4C58-AAE0-BD7B9D66367D@artcom.de>
+
+
+On 28.08.2007, at 14:02, Artem Pavlenko wrote:
+
+>
+> On 27 Aug 2007, at 13:30, David Siegel wrote:
+>
+>> On 27.08.2007, at 03:10, David Siegel wrote:
+>>
+>>> hi,
+>>> i just compiled mapnik on Mac OS X and fixed some minor issues:
+>>>
+>>> plugins/input/postgis/SConscript:
+>>> - added boost_thread-mt to darwin builds
+>>>
+>>> demo/c++/rundemo.cpp:
+>>> - setBackground() is now set_background()
+>>>
+>>> bindings/python/SConscript:
+>>> - added boost_thread-mt to darwin builds
+>>> - changed builder to LoadableModule which builds a so called  
+>>> "bundle"
+>>>    on darwin and a shared library on all other systems.
+>>>
+>>> SConstruct:
+>>> - freetype-config is now searched in the path.
+>>>
+>>> with the attached patch applied the python bindings work like  
+>>> charme.
+>>>
+>>> the patch is against revision 511. Could someone please verify
+>>> that it doesn't break the linux build?
+>>>
+>>>
+>>
+>> Some additional info about the LoadableModule builder:
+>>
+>> Documentation seems to be sparse. I found it mentioned in a release
+>> note or something. It is also mentioned briefly in the man page:
+>>
+>> http://www.scons.org/doc/0.97/HTML/scons-man.html
+>>
+>> The configuration parameters are documented here:
+>>
+>> http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html
+>>
+>> search for LDMODULE*
+>>
+>> I just noticed that the default value of LDMODULEPREFIX (which is
+>> 'lib' on linux) will break the python module. It should be set to ''
+>> for all platforms. I could supply another patch but maybe someone
+>> else could fill this bit in before commit?
+>>
+>> cheers,
+>>     d.
+>
+> Applied in r512. Thanks very much!
+> What os x are you building on ?
+
+ah, sorry. forgot...
+I tested it on a MacBook Pro with an Intel Core Duo running Mac OS  
+10.4.10 (Tiger). Compiler is gcc 4.0.1. I currently use the prebuild  
+Python 2.4 package available here:
+
+http://pythonmac.org/packages/
+
+boost version is 1_34_1. I think the versions of the other  
+dependencies are not that important.
+
+I imported the current planet.osm using osm2pgsql and then rendered  
+the region
+
+     # Berlin Potsdam
+     bbox = (12.97, 52.40, 13.73, 52.65)
+     render_tiles(bbox, mapfile, tile_dir, 7, 16 , "Berlin Potsdam")
+
+using OSMs generate_tiles script.
+
+I will do some more tests on a PPC mac and maybe some tests with a  
+port/fink/self-compiled python too. Maybe one of those loads shared  
+libs instead of bundles but I doubt it.
+
+cheers,
+    d.
+
+
+
+
+

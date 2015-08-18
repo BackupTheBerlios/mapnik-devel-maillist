@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Four color theorem in mapnik?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Four%20color%20theorem%20in%20mapnik%3F&In-Reply-To=%3CBANLkTi%3D%3Dzq5vSOyUCFbUtoXXjoKY%3DSKFEg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001381.html">
+   <LINK REL="Next"  HREF="001383.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Four color theorem in mapnik?</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Four%20color%20theorem%20in%20mapnik%3F&In-Reply-To=%3CBANLkTi%3D%3Dzq5vSOyUCFbUtoXXjoKY%3DSKFEg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Four color theorem in mapnik?">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Sat Apr 23 11:37:53 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001381.html">[Mapnik-devel] Four color theorem in mapnik?
+</A></li>
+        <LI>Next message: <A HREF="001383.html">[Mapnik-devel] Four color theorem in mapnik?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1382">[ date ]</a>
+              <a href="thread.html#1382">[ thread ]</a>
+              <a href="subject.html#1382">[ subject ]</a>
+              <a href="author.html#1382">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I suspect the reason is stated in the second paragraph of the
+Wikipedia entry on the four color theorem: &quot;Despite the motivation
+from coloring political maps of countries, the theorem is not of
+particular interest to mapmakers.&quot;
+
+Furthermore, there aren't many facilities (yet, hopefully there will
+be more in the future ; although I'm not sure if it should be part of
+'mapnik core' which IMO is or should be just the rendering engine) in
+mapnik to automate the 'cartography' part of making maps. More
+philosophically, the mapping/spatial data industry as a whole (in my
+experience) has only just grown out of the phase where hand-drawing
+maps are replaced by GIS systems; GIS are largely &quot;map-specific
+drawing tools&quot;, rather than &quot;automated map making devices&quot;. We will
+move in that direction eventually, of course; I like to compare this
+evolution to &quot;hand-drawing building plans&quot; -&gt; &quot;AutoCAD&quot; -&gt; &quot;BIM/Revit&quot;
+(for those unfamiliar with building design, AutoCAD lets you draw
+lines and everything you need to 'emulate' a hand-drawn plan; it's
+just computerization of the pen and paper. BIM (Building Information
+Modeling) makes a complete 3D computer model of a building (not just
+the geometry, like Sketchup does; but including the piping, materials
+used, energy properties, environment etc), and the building plans are
+just one product that can be derived from such a model.
+
+That said, it's not particularly hard to write an implementation for
+coloring maps like you ask for practical purposes; meaning, most maps
+can be brute-forced if one wants to color it with just 4 colors. Maybe
+the analysis to check if the map needs 4 or can suffice with 3 colors
+would be a bit harder; although I guess the 'graph based proof' of the
+four color theorem could be adapted for it. It's just that this
+problem is largely theoretical, of interest only to mathematicians and
+CS people, and not to cartographers. My experience confirms the
+Wikipedia article - most cartographers I speak to have never heard of
+the theorem and fail to see any practical use for it. Remember,
+cartography is not just programming rules; it's part science, part
+art.
+
+cheers,
+
+roel
+
+
+On Sat, Apr 23, 2011 at 3:44 AM, Richard Weait &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">richard at weait.com</A>&gt; wrote:
+&gt;<i> A recent question on the OSM newbies list asked &quot;Why don't we use for
+</I>&gt;<i> colors for the different states, like this?
+</I>&gt;<i> <A HREF="http://en.wikipedia.org/wiki/File:Map_of_USA_with_state_names.svg">http://en.wikipedia.org/wiki/File:Map_of_USA_with_state_names.svg</A>
+</I>&gt;<i>
+</I>&gt;<i> So? &#160;How about it? &#160;Is there a way to have Mapnik just Do the Right
+</I>&gt;<i> Four Color Thing?
+</I>&gt;<i>
+</I>&gt;<i> Or is there some good reason why OSM and the other online mapping
+</I>&gt;<i> services aren't doing it? &#160;Is it &quot;hard'?
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001381.html">[Mapnik-devel] Four color theorem in mapnik?
+</A></li>
+	<LI>Next message: <A HREF="001383.html">[Mapnik-devel] Four color theorem in mapnik?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1382">[ date ]</a>
+              <a href="thread.html#1382">[ thread ]</a>
+              <a href="subject.html#1382">[ subject ]</a>
+              <a href="author.html#1382">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

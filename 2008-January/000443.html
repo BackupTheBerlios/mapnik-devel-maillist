@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Character placement Improvement!
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Character%20placement%20Improvement%21&In-Reply-To=%3C5638AC1E-3384-4B9F-B086-F18C17E831D8%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000442.html">
+   <LINK REL="Next"  HREF="000405.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Character placement Improvement!</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Character%20placement%20Improvement%21&In-Reply-To=%3C5638AC1E-3384-4B9F-B086-F18C17E831D8%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Character placement Improvement!">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jan 23 16:19:43 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000442.html">[Mapnik-devel] Character placement Improvement!
+</A></li>
+        <LI>Next message: <A HREF="000405.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#443">[ date ]</a>
+              <a href="thread.html#443">[ thread ]</a>
+              <a href="subject.html#443">[ subject ]</a>
+              <a href="author.html#443">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+&gt;<i> I've written some new character placement code that works better with
+</I>&gt;<i> corners (committed in r605).
+</I>&gt;<i>
+</I>&gt;<i> Basically it calculates the start and end position of the character,
+</I>&gt;<i> then calculates the angle between those points.
+</I>&gt;<i> This means sharp line angle changes no longer make the characters &quot;pop
+</I>&gt;<i> out&quot; of the word.
+</I>&gt;<i>
+</I>&gt;<i> max_char_angle_delta can give slightly different results as now
+</I>&gt;<i> character angles are not strict to the angle of the road segments.
+</I>&gt;<i>
+</I>&gt;<i> Example Images:
+</I>&gt;<i>
+</I>&gt;<i> New: <A HREF="http://img505.imageshack.us/my.php?image=charplacementnewyi3.png">http://img505.imageshack.us/my.php?image=charplacementnewyi3.png</A>
+</I>&gt;<i> Old: <A HREF="http://img135.imageshack.us/my.php?image=charplacementoldaa5.png">http://img135.imageshack.us/my.php?image=charplacementoldaa5.png</A>
+</I>&gt;<i>
+</I>&gt;<i> New: <A HREF="http://img135.imageshack.us/my.php?image=displacementnewkd5.png">http://img135.imageshack.us/my.php?image=displacementnewkd5.png</A>
+</I>&gt;<i> Old: <A HREF="http://img404.imageshack.us/my.php?image=displacementoldvf2.png">http://img404.imageshack.us/my.php?image=displacementoldvf2.png</A>
+</I>&gt;<i>
+</I>&gt;<i> New: <A HREF="http://img404.imageshack.us/my.php?image=textspacingnewza6.png">http://img404.imageshack.us/my.php?image=textspacingnewza6.png</A>
+</I>&gt;<i> Old: <A HREF="http://img293.imageshack.us/my.php?image=textspacingoldwx9.png">http://img293.imageshack.us/my.php?image=textspacingoldwx9.png</A>
+</I>&gt;<i>
+</I>
+Looks very good!
+&gt;<i> Give it a try and give me some feedback :-)
+</I>
+I will.
+
+&gt;<i>
+</I>&gt;<i> Dave.
+</I>&gt;<i>
+</I>
+Cheers
+Artem
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000442.html">[Mapnik-devel] Character placement Improvement!
+</A></li>
+	<LI>Next message: <A HREF="000405.html">[Mapnik-devel] Suggestion &amp; patch for debug output
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#443">[ date ]</a>
+              <a href="thread.html#443">[ thread ]</a>
+              <a href="subject.html#443">[ subject ]</a>
+              <a href="author.html#443">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

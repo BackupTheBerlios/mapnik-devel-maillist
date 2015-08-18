@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Drawing inverted polygons
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Drawing%20inverted%20polygons&In-Reply-To=%3C8B419985-5897-40ED-BCA1-7D1DCDC9081E%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000866.html">
+   <LINK REL="Next"  HREF="000872.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Drawing inverted polygons</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Drawing%20inverted%20polygons&In-Reply-To=%3C8B419985-5897-40ED-BCA1-7D1DCDC9081E%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Drawing inverted polygons">blake at hailmail.net
+       </A><BR>
+    <I>Mon Apr 20 18:00:37 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000866.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+        <LI>Next message: <A HREF="000872.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#871">[ date ]</a>
+              <a href="thread.html#871">[ thread ]</a>
+              <a href="subject.html#871">[ subject ]</a>
+              <a href="author.html#871">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey Oleg,
+
+Sorry I missed responding to this earlier, but the answer is no AFAIK.
+
+Aside from assigning a map background color and then 'cutting' out  
+that color with polygon fill, there is no support for filling outer  
+space of a polygon.  What is your use case? Is it possible to  
+dynamically run a postgis query that calculates an inverse polygon  
+shape of this outer space given your setup? You could do this by using  
+the ST_DIFFERENCE function against a bounding rectangle that covers  
+your whole map and the polygon you want to clip out.
+
+Cheers,
+Dane
+
+
+On Apr 13, 2009, at 2:32 AM, Oleg Shaniuk wrote:
+
+&gt;<i> Hello to all
+</I>&gt;<i>
+</I>&gt;<i> I didn't get in with new mapnik's drawing possibilities - is it  
+</I>&gt;<i> possible draw polygons in inverted manner - keep inner space of  
+</I>&gt;<i> polygon transparent, draw borders  and fill outer space? Does new  
+</I>&gt;<i> RasterSymbolizer can do it? Is it possible at all?
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> --
+</I>&gt;<i> RO
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000866.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+	<LI>Next message: <A HREF="000872.html">[Mapnik-devel] Drawing inverted polygons
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#871">[ date ]</a>
+              <a href="thread.html#871">[ thread ]</a>
+              <a href="subject.html#871">[ subject ]</a>
+              <a href="author.html#871">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

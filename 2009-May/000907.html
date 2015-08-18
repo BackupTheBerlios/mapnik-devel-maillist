@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] SRTM data support in mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SRTM%20data%20support%20in%20mapnik&In-Reply-To=%3Cb658f7060905210146o69df1fbdv4201c6441f543749%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000906.html">
+   <LINK REL="Next"  HREF="000908.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] SRTM data support in mapnik</H1>
+    <B>Oleg Shaniuk</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20SRTM%20data%20support%20in%20mapnik&In-Reply-To=%3Cb658f7060905210146o69df1fbdv4201c6441f543749%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] SRTM data support in mapnik">oshaniuk at cloudmade.com
+       </A><BR>
+    <I>Thu May 21 10:46:32 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000906.html">[Mapnik-devel] SRTM data support in mapnik
+</A></li>
+        <LI>Next message: <A HREF="000908.html">[Mapnik-devel] SRTM data support in mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#907">[ date ]</a>
+              <a href="thread.html#907">[ thread ]</a>
+              <a href="subject.html#907">[ subject ]</a>
+              <a href="author.html#907">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> Hi All,
+
+I'm going to share the SRTM plugin for Mapnik which allows to use NASA's
+srtm data as source and colourize it via style xml, which, though, requires
+adding some symbolizers to mapnik source.
+
+The plugin still needs a lot of work - it has pretty bad performance,
+especially for big bboxes, but we thought it would be useful to release it
+anyway. Hopefully it will be of use for the hill shading features planned
+for release 0.7
+
+So, we presenting it &quot;as is&quot;
+
+The code originally written by Matt Amos (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">matt at cloudmade.com</A>). I've made few
+fixes to it.
+
+Please feel free to ask questions about the code structure or algorithms.
+
+Diff is will be attached to next message, and valid for mapnik trunk
+revision 1150
+
+
+*New Files:
+
+SRTM plugin
+*
+
+plugins/input/srtm/SConscript
+
+plugins/input/srtm/srtm_datasource.hpp
+
+plugins/input/srtm/srtm_datasource.cpp
+
+plugins/input/srtm/srtm_featureset.hpp
+
+plugins/input/srtm/srtm_featureset.cpp
+
+*
+*
+
+*
+include/mapnik*
+
+include/mapnik/colour_map.hpp
+
+include/mapnik/height_field_symbolizer.hpp
+
+*
+src*
+
+src/colour_map.cpp
+
+src/height_field_symbolizer.cpp
+
+
+
+*Mapnik changes:*
+
+*include/mapnik/polygon_symbolizer.hpp*
+
+- added *polygon_value_symbloizer* class
+
+Symbolizer for polygons with a colour mapped to one of their properties.
+
+*include/mapnik/value.hpp*
+
+ - added static_visitor for double
+
+*include/mapnik/cairo_renderer.hpp
+src/cairo_renderer.cpp
+*
+ - added *empty* methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/agg_renderer.hpp
+src/agg_renderer.cpp*
+
+- added methods for drawing *polygon_value_symbloizer
+*and*height_field_symbolizer
+*
+
+*include/mapnik/rule.hpp*
+
+ - rules for *polygon_value_symbloizer *and* height_field_symbolizer*
+
+*src/load_map.cpp*
+
+ - added methods to parse values for new symbolizers
+
+*src/save_map.cpp*
+
+- added *empty* methods to parse values for new symbolizers
+
+*src/SConscript*
+- added targets: height_field_symbolizer.cpp and colour_map.cpp
+
+*SConstruct*
+- added srtm building by default
+- added libzzip dependency ( for srtm plugin )
+
+--
+RO
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090521/e12f6fe3/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090521/e12f6fe3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000906.html">[Mapnik-devel] SRTM data support in mapnik
+</A></li>
+	<LI>Next message: <A HREF="000908.html">[Mapnik-devel] SRTM data support in mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#907">[ date ]</a>
+              <a href="thread.html#907">[ thread ]</a>
+              <a href="subject.html#907">[ subject ]</a>
+              <a href="author.html#907">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

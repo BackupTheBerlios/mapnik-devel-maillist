@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Some questions on raster_symbolizer, cairo and trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20questions%20on%20raster_symbolizer%2C%20cairo%20and%20trunk&In-Reply-To=%3C4C174ABD.3000306%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001181.html">
+   <LINK REL="Next"  HREF="001183.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Some questions on raster_symbolizer, cairo and trunk</H1>
+    <B>Stefan Klug</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20questions%20on%20raster_symbolizer%2C%20cairo%20and%20trunk&In-Reply-To=%3C4C174ABD.3000306%40gmx.de%3E"
+       TITLE="[Mapnik-devel] Some questions on raster_symbolizer, cairo and trunk">Klug.Stefan at gmx.de
+       </A><BR>
+    <I>Tue Jun 15 11:41:17 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001181.html">[Mapnik-devel] mapnik c++
+</A></li>
+        <LI>Next message: <A HREF="001183.html">[Mapnik-devel] Some questions on raster_symbolizer,	cairo and 	trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1182">[ date ]</a>
+              <a href="thread.html#1182">[ thread ]</a>
+              <a href="subject.html#1182">[ subject ]</a>
+              <a href="author.html#1182">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I'm following the project for some time now, and am currently 
+investigating if it makes sense to port our inhouse map rendering 
+infrastructure to mapnik.
+The current output of our own software can be seen on 
+<A HREF="http://karte.wanderwalter.de/np-sfw/">http://karte.wanderwalter.de/np-sfw/</A>
+
+For our use case there are some things missing on the current 
+raster_symbolizer and I'm evaluating the best way to go.
+Currently I'm a bit undecided between implementing my own input plugin 
+(where I could reuse lots of code) or extending the raster_symbolizer 
+(where it might be easier to give code back to the community). Would be 
+great if someone with deeper mapnik knowledge could give me some hints.
+
+- The wiki notes that mapnik 0.8 will contain some big refactorings 
+which will most likely lead to relatively unstable code. Are these 
+already done and can I expect trunk to be &quot;not extremely unstable&quot; e.g. 
+not breaking everything each day ;-) or should I stick to 0.7?
+
+- How well supported is the cairo renderer now and in the future? I've 
+seen that the raster modes are not supported right now. Is the cairo 
+renderer planned as feature-complete as the agg one or should I stick to 
+the agg renderer? (I personally would like to prefer the cairo renderer)
+
+- Are there already plans or proposals out there on improving the raster 
+symbolizer (like rendering modes, filters etc.) ?
+
+
+Thanks a lot and keep up the great work
+
+Stefan Klug
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001181.html">[Mapnik-devel] mapnik c++
+</A></li>
+	<LI>Next message: <A HREF="001183.html">[Mapnik-devel] Some questions on raster_symbolizer,	cairo and 	trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1182">[ date ]</a>
+              <a href="thread.html#1182">[ thread ]</a>
+              <a href="subject.html#1182">[ subject ]</a>
+              <a href="author.html#1182">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

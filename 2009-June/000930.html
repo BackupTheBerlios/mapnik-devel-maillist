@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] osm2pgsql error
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20osm2pgsql%20error&In-Reply-To=%3C4A47E0FB.6090601%40remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000929.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] osm2pgsql error</H1>
+    <B>Frederik Ramm</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20osm2pgsql%20error&In-Reply-To=%3C4A47E0FB.6090601%40remote.org%3E"
+       TITLE="[Mapnik-devel] osm2pgsql error">frederik at remote.org
+       </A><BR>
+    <I>Sun Jun 28 23:30:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000929.html">[Mapnik-devel] osm2pgsql error
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#930">[ date ]</a>
+              <a href="thread.html#930">[ thread ]</a>
+              <a href="subject.html#930">[ subject ]</a>
+              <a href="author.html#930">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Harry Gomez wrote:
+&gt;<i> Guys I&#180;m sorry if this is the wrong forum
+</I>
+Well it is not exactly the right forum as osm2pgsql is not a mapnik tool 
+but more of an osm tool, but hey, 90% of people here probably use it.
+
+&gt;<i> Here goes,
+</I>&gt;<i> I am running osm2pgsql and I get the following:
+</I>&gt;<i> (by the way the .osm file I am using is uncompressed)
+</I>&gt;<i> 
+</I>&gt;<i> osm2pgsql SVN version 0.66-16099M
+</I>&gt;<i> 
+</I>&gt;<i> Using projection SRS 4326 (LatLong)
+</I>&gt;<i> Setting up table: planet_osm_point
+</I>&gt;<i> Setting up table: planet_osm_line
+</I>&gt;<i> Setting up table: planet_osm_polygon
+</I>&gt;<i> Setting up table: planet_osm_roads
+</I>&gt;<i> Mid: Ram, scale=10000000
+</I>&gt;<i> 
+</I>&gt;<i> Reading in file: map.osm
+</I>&gt;<i> error while opening file map.osm
+</I>
+It sounds as if you ran something like &quot;osm2pgsql map.osm&quot; where map.osm 
+was not in your current working directory? You have to specify the name 
+of the .osm file to import on the command line, and you either have to 
+give a full path spec, or it has to reside in the current directory.
+
+Bye
+Frederik
+
+-- 
+Frederik Ramm  ##  eMail <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">frederik at remote.org</A>  ##  N49&#176;00'09&quot; E008&#176;23'33&quot;
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000929.html">[Mapnik-devel] osm2pgsql error
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#930">[ date ]</a>
+              <a href="thread.html#930">[ thread ]</a>
+              <a href="subject.html#930">[ subject ]</a>
+              <a href="author.html#930">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

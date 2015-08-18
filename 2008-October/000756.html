@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081021225425.6633fd5e%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000755.html">
+   <LINK REL="Next"  HREF="000757.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081021225425.6633fd5e%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">lists at brachttal.net
+       </A><BR>
+    <I>Tue Oct 21 22:54:25 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000755.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000757.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#756">[ date ]</a>
+              <a href="thread.html#756">[ thread ]</a>
+              <a href="subject.html#756">[ subject ]</a>
+              <a href="author.html#756">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Tue, 21 Oct 2008 00:04:10 +0100 schrieb Jon Burgess:
+
+&gt;<i> &gt; You mean thats's possible in the XML file only?
+</I>&gt;<i> &gt; ...
+</I>&gt;<i> &gt; So how would I do it with the road layer?
+</I>&gt;<i> 
+</I>&gt;<i> Well, one way to do it _might_ be to turn it into muliple layers, one
+</I>&gt;<i> with highway=motorway, another with highway=primary, another with
+</I>&gt;<i> highway=secondary etc.
+</I>
+Now I played some more around with roads in the XML file. What I still
+not understand is the difference between layer &quot;minor-roads&quot; and
+&quot;roads&quot;. One gets its data from &quot;planet_osm_line&quot; the other from
+&quot;planet_osm_roads&quot;. Could you explain that?
+
+&gt;<i> The downside of this is that if also effects the sequence that things
+</I>&gt;<i> are rendered. For example, if you got things wrong, you might find
+</I>&gt;<i> your primary road which is meant to go on a bridge over the motorway
+</I>&gt;<i> now gets drawn underneath the motorway line.
+</I>
+Ok, I like to do it right. So for what should I pay attention.
+
+&gt;<i> This is exactly the problem that the 'order by z_order' tries to
+</I>&gt;<i> address. The z_order field is calculated by osm2pgsql based on the
+</I>&gt;<i> layer, tunnel, bridge tags (highway type has influence too).
+</I>&gt;<i> 
+</I>&gt;<i> &gt; &gt; partitioning the data into more tables in the DB (done to an
+</I>&gt;<i> &gt; &gt; extent with the planet_osm_roads table). 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; I imported the data with a OSM tool. This would need to modify the
+</I>&gt;<i> &gt; tool
+</I>&gt;<i> 
+</I>&gt;<i> Yes it would
+</I>&gt;<i> 
+</I>&gt;<i> &gt; &gt; Another feature which I've seen take excessive amounts of time is
+</I>&gt;<i> &gt; &gt; the 'order by z_order' on some of the SQL select lines. This
+</I>&gt;<i> &gt; &gt; really takes a significant amount of CPU when fetching many
+</I>&gt;<i> &gt; &gt; thousand entries from the DB. Reducing the amount of data being
+</I>&gt;<i> &gt; &gt; fetched would obviously help here too.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Seems to work good. I improved the map rendering time from 4:5 to
+</I>&gt;<i> &gt; 3.4 seconds (complete germany). Not yet perfect, but a start.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; What is the drawback of not using z_order. I assume it was used for
+</I>&gt;<i> &gt; some reason.
+</I>&gt;<i> 
+</I>&gt;<i> As mentioned above, this is used to help ensure the correct rendering
+</I>&gt;<i> order for tunnels, layers, bridges etc. This is important for higher
+</I>&gt;<i> zooms where these features are visible but you could argue that this
+</I>&gt;<i> becomes less important at lower zooms.
+</I>
+Yes, at least I could try it.
+
+&gt;<i> I've hinted already that these sorts of optimisations do effect how
+</I>&gt;<i> the output gets rendered so you will probably need to do experiments
+</I>&gt;<i> to get a good feel for how the rule/style/layers interact when you
+</I>&gt;<i> make changes.
+</I>&gt;<i> 
+</I>&gt;<i> As you mention, making more substantial change may require further
+</I>&gt;<i> enhancements to osm2pgsql, the database tables or the Mapnik code.
+</I>&gt;<i> 
+</I>&gt;<i> Another optimisation which I think Artem played around with before was
+</I>&gt;<i> simplifying the geometries in the tables. We do not need to preserve
+</I>&gt;<i> the every single node along every road when rendering country-scale
+</I>&gt;<i> maps. Again this would require more processing during the data import.
+</I>
+I'm interested to try any idea where I get input from this list. If
+someone has also interests in improving mapnik performance I think we
+should combine our work.
+
+&gt;<i> On the main tile server the time taken to render the high zoom tiles
+</I>&gt;<i> (especially zoom 17 &amp; 18) is far higher than the low zoom tiles.
+</I>&gt;<i> Optimising the rendering time for the 1024 tiles at zoom 5 tiles
+</I>&gt;<i> makes very little difference compared to the time spent
+</I>&gt;<i> rendering the 44 million tiles that are rendered at zoom 17*.
+</I>&gt;<i> Obviously you've got different priorities because you want the
+</I>&gt;<i> rendering to be fast at all zooms.
+</I>
+Yes, as I use it to render maps while viewing. I also thought about
+using pre-rendered tiles for country level zoom.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000755.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000757.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#756">[ date ]</a>
+              <a href="thread.html#756">[ thread ]</a>
+              <a href="subject.html#756">[ subject ]</a>
+              <a href="author.html#756">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

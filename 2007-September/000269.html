@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070917212739.1dc56ac8%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000260.html">
+   <LINK REL="Next"  HREF="000270.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070917212739.1dc56ac8%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">lists at brachttal.net
+       </A><BR>
+    <I>Mon Sep 17 21:27:39 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000260.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+        <LI>Next message: <A HREF="000270.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Sat, 15 Sep 2007 09:41:56 +0100 schrieb Artem Pavlenko:
+
+&gt;<i> &gt; There is the warning while bootstrapping the source:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; plugins/input/postgis/Makefile.am:2: `postgis.input' is not a
+</I>&gt;<i> &gt; standard libtool module name
+</I>&gt;<i> &gt; plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; If I ignore this warning, there're some linker problems.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Are you passing -module to the linker ?
+</I>
+Yes.
+
+&gt;<i> &gt; The only solution I see is to rename it without .so after building
+</I>&gt;<i> &gt; it. But why not using .so? What does scons build in win32 for the
+</I>&gt;<i> &gt; plugins?
+</I>&gt;<i> 
+</I>&gt;<i> I actually use Boost.Build.v2 to build Mapnik in win32.
+</I>&gt;<i> &gt; A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+</I>&gt;<i> &gt; someone will try to change plugins between win32 and Linux.
+</I>&gt;<i> 
+</I>&gt;<i> No, we use *.input on all plarforms!!! This is the whole point.
+</I>&gt;<i> While libmapnik is a shared library and should follow each platform
+</I>&gt;<i> naming conventions:
+</I>&gt;<i> Linux,BSD  - *.so
+</I>&gt;<i> Mac OS X   - *.dylib
+</I>&gt;<i> Win32         - *.dll
+</I>&gt;<i> 
+</I>&gt;<i> plug-ins are *not*. They are not intended to be used outside of  
+</I>&gt;<i> Mapnik,  they are loaded dynamically by custom loader based on
+</I>&gt;<i> libltdl ( see Libtool docs for reasoning).
+</I>
+Ok, I'll respect that naming scheme. I'm sure there's a way to let
+libtool name the plugin that way. But I'm away for one week. I'll try a
+solution next week.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000260.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+	<LI>Next message: <A HREF="000270.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#269">[ date ]</a>
+              <a href="thread.html#269">[ thread ]</a>
+              <a href="subject.html#269">[ subject ]</a>
+              <a href="author.html#269">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

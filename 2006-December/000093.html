@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] PATCH for BIDI labels support
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20PATCH%20for%20BIDI%20labels%20support&In-Reply-To=%3C45802EA1.2070601%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000084.html">
+   <LINK REL="Next"  HREF="000085.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] PATCH for BIDI labels support</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20PATCH%20for%20BIDI%20labels%20support&In-Reply-To=%3C45802EA1.2070601%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] PATCH for BIDI labels support">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Wed Dec 13 17:47:29 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000084.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+        <LI>Next message: <A HREF="000085.html">[Mapnik-devel] tiff rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Ehud,
+Your patch sounds great! I'll try to integrate it over this weekend.
+Thanks for your contribution!
+Artem.
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> The attached patch adds support for right to left languages by using
+</I>&gt;<i> the fribidi library.
+</I>&gt;<i>
+</I>&gt;<i> I'm not familiar with scons, so I'm not sure I handled the
+</I>&gt;<i> modifications correctly.
+</I>&gt;<i>
+</I>&gt;<i> To enable BIDI support specify BIDI=1 as an option to scons.
+</I>&gt;<i> If the BIDI option is omitted, the bidi support will not be compiled.
+</I>&gt;<i>
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> Index: include/mapnik/unicode.hpp
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- include/mapnik/unicode.hpp	(revision 411)
+</I>&gt;<i> +++ include/mapnik/unicode.hpp	(working copy)
+</I>&gt;<i> @@ -26,8 +26,53 @@
+</I>&gt;<i>  
+</I>&gt;<i>  #include &lt;string&gt;
+</I>&gt;<i>  
+</I>&gt;<i> +#ifdef USE_FRIBIDI
+</I>&gt;<i> +#include &lt;fribidi/fribidi.h&gt;
+</I>&gt;<i> +#endif
+</I>&gt;<i> +
+</I>&gt;<i>  namespace mapnik {
+</I>&gt;<i>      
+</I>&gt;<i> +/*
+</I>&gt;<i> +** Use FRIBIDI to encode the string.
+</I>&gt;<i> +** The return value must be freed by the caller.
+</I>&gt;<i> +*/
+</I>&gt;<i> +
+</I>&gt;<i> +#ifdef USE_FRIBIDI
+</I>&gt;<i> +    inline wchar_t* bidi_string(const wchar_t *logical)
+</I>&gt;<i> +    {
+</I>&gt;<i> +        FriBidiCharType base = FRIBIDI_TYPE_ON;
+</I>&gt;<i> +        size_t len;
+</I>&gt;<i> +
+</I>&gt;<i> +        len = wcslen(logical);
+</I>&gt;<i> +
+</I>&gt;<i> +        FriBidiChar *visual;
+</I>&gt;<i> +
+</I>&gt;<i> +        FriBidiStrIndex *ltov, *vtol;
+</I>&gt;<i> +        FriBidiLevel *levels;
+</I>&gt;<i> +        FriBidiStrIndex new_len;
+</I>&gt;<i> +        fribidi_boolean log2vis;
+</I>&gt;<i> +
+</I>&gt;<i> +        visual = (FriBidiChar *) malloc (sizeof (FriBidiChar) * (len + 1));
+</I>&gt;<i> +        ltov = NULL;
+</I>&gt;<i> +        vtol = NULL;
+</I>&gt;<i> +        levels = NULL;
+</I>&gt;<i> +
+</I>&gt;<i> +        /* Create a bidi string. */
+</I>&gt;<i> +        log2vis = fribidi_log2vis ((FriBidiChar *)logical, len, &amp;base,
+</I>&gt;<i> +                /* output */
+</I>&gt;<i> +                visual, ltov, vtol, levels);
+</I>&gt;<i> +
+</I>&gt;<i> +        if (!log2vis) {
+</I>&gt;<i> +            return NULL;
+</I>&gt;<i> +        }
+</I>&gt;<i> +
+</I>&gt;<i> +        new_len = len;
+</I>&gt;<i> +
+</I>&gt;<i> +        return (wchar_t *)visual;
+</I>&gt;<i> +    }
+</I>&gt;<i> +#endif
+</I>&gt;<i> +
+</I>&gt;<i> +
+</I>&gt;<i>      inline std::wstring to_unicode(std::string const&amp; text)
+</I>&gt;<i>      {
+</I>&gt;<i>          std::wstring out;
+</I>&gt;<i> @@ -75,6 +120,12 @@
+</I>&gt;<i>              }
+</I>&gt;<i>              out.push_back(wchar_t(code));
+</I>&gt;<i>          }
+</I>&gt;<i> +#ifdef USE_FRIBIDI
+</I>&gt;<i> +        wchar_t *bidi_text = bidi_string(out.c_str());
+</I>&gt;<i> +        out = bidi_text;
+</I>&gt;<i> +        free(bidi_text);
+</I>&gt;<i> +#endif
+</I>&gt;<i> +        
+</I>&gt;<i>          return out;
+</I>&gt;<i>      }
+</I>&gt;<i>  }
+</I>&gt;<i> Index: SConstruct
+</I>&gt;<i> ===================================================================
+</I>&gt;<i> --- SConstruct	(revision 411)
+</I>&gt;<i> +++ SConstruct	(working copy)
+</I>&gt;<i> @@ -46,6 +46,7 @@
+</I>&gt;<i>  opts.Add(ListOption('INPUT_PLUGINS','Input drivers to include','all',['postgis','shape','raster']))
+</I>&gt;<i>  opts.Add(ListOption('BINDINGS','Language bindings to build','all',['python']))
+</I>&gt;<i>  opts.Add('DEBUG', 'Compile a debug version of mapnik', '')
+</I>&gt;<i> +opts.Add('BIDI', 'BIDI support', '')
+</I>&gt;<i>  
+</I>&gt;<i>  env = Environment(ENV=os.environ, options=opts)
+</I>&gt;<i>  env['LIBDIR_SCHEMA'] = LIBDIR_SCHEMA
+</I>&gt;<i> @@ -149,6 +150,10 @@
+</I>&gt;<i>  else:
+</I>&gt;<i>      env.Append(CXXFLAGS = '-ansi -Wall -ftemplate-depth-100 -O3 -finline-functions -Wno-inline -pthread -DNDEBUG -DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL')
+</I>&gt;<i>  
+</I>&gt;<i> +if env['BIDI']:
+</I>&gt;<i> +    env.Append(CXXFLAGS = '-DUSE_FRIBIDI')
+</I>&gt;<i> +    env['LIBS'].append('fribidi')
+</I>&gt;<i> +
+</I>&gt;<i>  # Build agg first, doesn't need anything special
+</I>&gt;<i>  
+</I>&gt;<i>  SConscript('agg/SConscript')
+</I>&gt;<i>   
+</I>&gt;<i> ------------------------------------------------------------------------
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000084.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+	<LI>Next message: <A HREF="000085.html">[Mapnik-devel] tiff rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

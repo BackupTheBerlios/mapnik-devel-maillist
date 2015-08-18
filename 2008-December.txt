@@ -1,0 +1,54 @@
+From bbarney at support101.com  Thu Dec 11 17:29:54 2008
+From: bbarney at support101.com (Bruce Barney)
+Date: Thu, 11 Dec 2008 10:29:54 -0600
+Subject: [Mapnik-devel] Any chance for a new win32 build???
+Message-ID: <20081211102954.on8ztki064gkckck@www.support101.com>
+
+
+
+   Artem (et al.),
+
+   Some time ago you worked with my partner, Joe Kemp, to do some  
+"one-off" win32 builds to fix some problems we had on our current  
+project.
+
+   Things have been going great but some new issues have come up  
+(mainly involving labeling using NAVStreets data at "zoomed-out" view  
+levels).? One in particular that I know there is a post-5.1 fix for is  
+the ShieldSymbolizer hanging when usings points.
+
+   Any chance a "5.2" win32 build would be possible?? If not, is  
+another "one-off" possible?
+
+   Thanks so much...love Mapnik!,
+
+   Bruce Barney
+Support101
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081211/928ceba6/attachment.html>
+
+From openstreetmap at brian.quinion.co.uk  Fri Dec 26 02:43:20 2008
+From: openstreetmap at brian.quinion.co.uk (Brian Quinion)
+Date: Fri, 26 Dec 2008 01:43:20 +0000
+Subject: [Mapnik-devel] [PATCH] composition methods for point symbols
+Message-ID: <da9d28170812251743k74c617f4s5330d72f7589041d@mail.gmail.com>
+
+The attached patch allows symbols images to be merged using a variety
+of methods (hue, sat, lum, colourize, and combinations) it adds the
+following stylesheet option:
+
+composition_method="colorize"
+
+defaults to "copy".
+
+If anyone can think of a better name for this functionality let me
+know - I couldn't think of a good one!
+
+Also adds generic hsl2rgb and rgs2hsl used for the above functionality.
+
+Cheers,
+--
+ Brian
+
+

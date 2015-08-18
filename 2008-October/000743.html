@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081008002008.6d8449f6%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000757.html">
+   <LINK REL="Next"  HREF="000744.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081008002008.6d8449f6%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">lists at brachttal.net
+       </A><BR>
+    <I>Wed Oct  8 00:20:08 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000757.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000744.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#743">[ date ]</a>
+              <a href="thread.html#743">[ thread ]</a>
+              <a href="subject.html#743">[ subject ]</a>
+              <a href="author.html#743">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Tue, 7 Oct 2008 14:49:59 -0700 schrieb Matt Bartolome:
+
+&gt;<i> Hi Andreas,
+</I>&gt;<i> I would recommend tilecache. It's fairly easy to run tilecache as a
+</I>&gt;<i> standalone wsgi (tilecache supports this out of the box) and then
+</I>&gt;<i> point your fastcgi enabled server at it (I'm using nginx). This will
+</I>&gt;<i> take care of some of the caching issues as well as give you options on
+</I>&gt;<i> rendering size etc...
+</I>
+Is this architecture really fast enough for not web based applications.
+The rest of my framework uses C++. I'm a little fear of python in this
+context. What is your experience with performance?
+
+&gt;<i> You can do a lot of tinkering with the configuration by writing
+</I>&gt;<i> middleware and dynamically loading configuration files from the
+</I>&gt;<i> request for example. This gives you a great deal of control of what to
+</I>&gt;<i> render at specific resolutions and bounding boxes. Tilecache also
+</I>&gt;<i> comes with a handy tilecache_seed.py script that lets you precache
+</I>&gt;<i> your tiles.
+</I>&gt;<i>
+</I>&gt;<i> My major bottleneck is at the postgis/postgres end of things when
+</I>&gt;<i> drawing large datasets with labels too. I have about 1.5 gigs ram with
+</I>&gt;<i> 2.6 ghz xeon running redhat within vmware and I definitely hit the
+</I>&gt;<i> wall with regards to rendering speed. I don't know if there is anyway
+</I>&gt;<i> around that besides seeding the entire cache. Tuning postgres
+</I>&gt;<i> definitely helps but there is a limit that will require more hardware
+</I>&gt;<i> and configuration tweeks.
+</I>
+So would you say there's a faster database backend? What's about MySQL?
+Or the OSM binary API? Are there any PostgreSQL test applications to
+find my bottlenecks? I don't know how to tune PostgreSQL.
+
+Does it help to remove data in the database that I don't use?
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000757.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000744.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#743">[ date ]</a>
+              <a href="thread.html#743">[ thread ]</a>
+              <a href="subject.html#743">[ subject ]</a>
+              <a href="author.html#743">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

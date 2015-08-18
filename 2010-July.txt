@@ -1,0 +1,1790 @@
+From carlos.lopez.garces at gmail.com  Thu Jul  8 23:31:56 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Thu, 8 Jul 2010 16:31:56 -0500
+Subject: [Mapnik-devel] Better Print Support project - Scaling of bitmaps
+Message-ID: <AANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh@mail.gmail.com>
+
+Good morning/evening everybody,
+
+The mapnik_resolution branch (
+http://svn.mapnik.org/branches/mapnik_resolution/) currently supports the
+scaling of line widths, dashes and fonts through a scale factor that lets
+the user adjust the size of these elements. As you may know, the problem
+that is addressed with the scale factor is that when a map is rendered at
+higher resolution (a bigger image), the size of lines and fonts remains at a
+smaller scale. For example, if you have a stylesheet with widths and sizes
+that will look good in a 600x400 pixels image, it will no longer look good
+in an image of twice that size (1200x800), because the lines will be thinner
+and the labels and icons will be smaller. To correct this problem, one can
+pass a scale factor of 2.0, that will double the size of lines and fonts.
+
+The interface exposed to the user is currently the same as in trunk, which
+is passing the scale factor to the render method in python.
+
+Now, I'm beginning work with scaling symbols or bitmap icons. Trunk already
+does so for svg icons and the mapnik_resolution branch too (as it is merged
+with the former). And this is the reason why I write you, to ask for ideas
+on how this should be done. I've found two alternatives so far:
+
+
+   - Make use of the CImg library (http://cimg.sourceforge.net/) which is a
+   very lightweight code that doesn't require linking as it is all contained in
+   one single header file, but that has some dependencies on system libraries.
+   - Make use of the mechanism that agg provides. This might be a good
+   option since it is already a core component of mapnik. I don't have much
+   experience with the library, but the code sample in
+   http://www.antigrain.com/demo/image_transforms.cpp.html shows that it is
+   possible.
+
+Any ideas are welcome.
+
+Thanks
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100708/2358323c/attachment.html>
+
+From gnonthgol at gmail.com  Mon Jul  5 11:01:23 2010
+From: gnonthgol at gmail.com (Gnonthgol)
+Date: Mon, 5 Jul 2010 11:01:23 +0200
+Subject: [Mapnik-devel] Bounds clipping bug on local projection
+Message-ID: <B3353A60-778D-4010-80E8-386507EBAC2F@gmail.com>
+
+I am trying to create a map with projection "+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996" but have problems with global shape files.
+The problem is almost identical with http://trac.mapnik.org/ticket/549 but proj_transform returns 0 witch does not trigger the patch.
+
+The problem lies in that in my projection Alaska and New Zeland is north of the north pole. Simular to the transverse mercator at http://en.wikipedia.org/wiki/File:MercTranSph.png but where proj_transform returns an error on utm and therefore trigers the said patch my projection does not and therefore the global layer gets clipped to nothing.
+
+I sugest that instead of transforming backward then clip the query bbox then transforming the bbox forward, why don't we just transform the bbox forward then clip it?
+
+Steps to reproduce:
+1. Compile mercator with the patch at #549 (optional)
+2. Download the shoreline_300 shape file from OSM
+3. Render a map with bounds (5, 57, 30, 72) and projection "+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996"
+
+Result:
+stdlog: "no intersection with layer world (backward projected)" (in debug mode)
+image: empty
+
+Gnonthgol
+
+From shaktigehlaut at gmail.com  Thu Jul  8 13:11:57 2010
+From: shaktigehlaut at gmail.com (shakti gehlaut)
+Date: Thu, 8 Jul 2010 07:11:57 -0400
+Subject: [Mapnik-devel] Rendering with Mapnik and python
+Message-ID: <AANLkTimUnj5vo7_cG1aAMAsHxrpKwN5-dMjk6jEXwXqe@mail.gmail.com>
+
+Dear Sir / Madam
+
+I am student of M.Sc Photogrammetry and Geo-informatics, at University of
+applied Sciences Stuttgart.
+Currently I am working on Project, where I have to create PostGIS data using
+OpenstreetMap data.
+ I am found some  online sources using which i am able to create the
+database and than converted data using osm2pgsql tool,
+  to Geodatabase and how to install Mapnik and python 2.5
+
+I also used online help from
+http://trac.mapnik.org/wiki/WindowsInstallation how to install Mapnik on
+windows.
+
+Since 2 weeks I am not able to find way to render with Mapnik and python
+combination. I am not getting any solution for this problem.
+I will be grateful to  you if you please help me for the next step with
+mapnik.
+
+*To solve this problem i tried the tutorial of Mapnik on*
+http://trac.mapnik.org/wiki/MapnikTutorials
+but when tried to locate the path of .osm file to render with mapnik but it
+shows the following error.
+it is same path where i downloaded and file. it  is available there, than i
+tried the with  world.shape file which i downloaded from Mapnik tutorial to
+test and again showing the same error  with the location of file.
+
+[image: error.jpg]
+
+could you please help me with it, how to write the location of file in
+windows vista or why it is showing this error.
+ currently i am using Mapnik-0.7.1
+
+
+
+hope to hear from you soon.
+
+Thanks and Regards
+
+Shakti Gehlaut
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100708/0812f854/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: error.jpg
+Type: image/jpeg
+Size: 50548 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100708/0812f854/attachment.jpg>
+
+From tom at tom-carden.co.uk  Thu Jul  8 23:52:45 2010
+From: tom at tom-carden.co.uk (Tom Carden)
+Date: Thu, 08 Jul 2010 14:52:45 -0700
+Subject: [Mapnik-devel] Better Print Support project - Scaling of bitmaps
+In-Reply-To: <AANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh@mail.gmail.com>
+References: <AANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh@mail.gmail.com>
+Message-ID: <4C3648AD.4030007@tom-carden.co.uk>
+
+Hi Carlos,
+
+I'm not sure what the best library approach is but I imagine it would be 
+better to have the chosen library (AGG, Cairo, etc) handle image scaling 
+internally rather than separately resizing the images. I defer to Artem 
+and others for what the "correct" approach is for mapnik though.
+
+For the scaling itself I can imagine it would be useful to specify a few 
+different options:
+ * don't scale images at all (because they would look bad scaled up)
+ * provide a way to choose the "best" image for a given scale
+ * scale up images using nearest neighbor (for pixel graphics)
+ * scale up images using the best quality algorithm available
+
+There are already CSS properties for the last two options in SVG, 
+image-rendering: optimizeQuality and image-rendering: optimizeSpeed. 
+Firefox will support an additional hint to force nearest neighbor 
+scaling: https://developer.mozilla.org/en/css/image-rendering
+
+Choosing the "best" size is obviously hardest because it's subjective. 
+When putting together the print proposal we also talked about precedents 
+like multi-size images (e.g. icon formats), mipmaps and scale-9 or 
+9-slice scaling:
+
+ * A multi-size image format could be as simple as making icons at 
+different sizes, e.g. 16x16, 32x32, etc. and having a heuristic for 
+choosing the "best" one for a given scale factor. Icon sets for the web 
+commonly provide many different sizes. Mac OS icons also work this way: 
+http://tutorialdog.com/how-to-create-icons-for-mac-os-x/
+
+ * A mipmap image uses a single texture file to store multiple 
+resolutions: http://en.wikipedia.org/wiki/Mipmap - again, the problem is 
+choosing the "best" resolution to use given the author's intent in the 
+unscaled stylesheet and a scaling factor.
+
+ * 9 slice or scale 9 is most useful for things like highway shields 
+where you have variable sized content that you want to wrap with a 
+border or a shadow. You define a rectangle inside an image such that the 
+corners do not scale, the top/bottom borders scale horizontally only and 
+the left/right borders scale vertically only. 
+http://www.mordy.com/pics/symbol_guides.jpg and 
+http://rwillustrator.blogspot.com/2007/04/understanding-9-slice-scaling.html 
+explain more. I have also seen a variation that defines two rectangles: 
+http://www.bytearray.org/?p=1206
+
+Hope these references are useful! We're looking forward to trying the 
+new functionality soon.
+
+Best,
+
+Tom.
+
+
+Carlos Enrique L?pez Garc?s wrote:
+> Good morning/evening everybody,
+>
+> The mapnik_resolution branch 
+> (http://svn.mapnik.org/branches/mapnik_resolution/) currently supports 
+> the scaling of line widths, dashes and fonts through a scale factor 
+> that lets the user adjust the size of these elements. As you may know, 
+> the problem that is addressed with the scale factor is that when a map 
+> is rendered at higher resolution (a bigger image), the size of lines 
+> and fonts remains at a smaller scale. For example, if you have a 
+> stylesheet with widths and sizes that will look good in a 600x400 
+> pixels image, it will no longer look good in an image of twice that 
+> size (1200x800), because the lines will be thinner and the labels and 
+> icons will be smaller. To correct this problem, one can pass a scale 
+> factor of 2.0, that will double the size of lines and fonts.
+>
+> The interface exposed to the user is currently the same as in trunk, 
+> which is passing the scale factor to the render method in python.
+>
+> Now, I'm beginning work with scaling symbols or bitmap icons. Trunk 
+> already does so for svg icons and the mapnik_resolution branch too (as 
+> it is merged with the former). And this is the reason why I write you, 
+> to ask for ideas on how this should be done. I've found two 
+> alternatives so far:
+>
+>     * Make use of the CImg library (http://cimg.sourceforge.net/)
+>       which is a very lightweight code that doesn't require linking as
+>       it is all contained in one single header file, but that has some
+>       dependencies on system libraries.
+>     * Make use of the mechanism that agg provides. This might be a
+>       good option since it is already a core component of mapnik. I
+>       don't have much experience with the library, but the code sample
+>       in http://www.antigrain.com/demo/image_transforms.cpp.html shows
+>       that it is possible.
+>
+> Any ideas are welcome.
+>
+> Thanks
+>
+> Carlos L?pez
+
+
+
+From carlos.lopez.garces at gmail.com  Fri Jul  9 11:14:59 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Fri, 9 Jul 2010 04:14:59 -0500
+Subject: [Mapnik-devel] Better Print Support project - Scaling of bitmaps
+In-Reply-To: <4C3648AD.4030007@tom-carden.co.uk>
+References: <AANLkTilnKNQ8sP2erM4_DG8hJ0ARWziqUZ9k6rxQdwmh@mail.gmail.com>
+	<4C3648AD.4030007@tom-carden.co.uk>
+Message-ID: <AANLkTiltNJdgy3OcKmzTACIE4j3Ei8-RlI1dQ24w-oY_@mail.gmail.com>
+
+Thank you very much Tom for your response. I'll take some time to
+investigate these algorithms and options before replying again.
+
+Carlos L?pez
+
+2010/7/8 Tom Carden <tom at tom-carden.co.uk>
+
+> Hi Carlos,
+>
+> I'm not sure what the best library approach is but I imagine it would be
+> better to have the chosen library (AGG, Cairo, etc) handle image scaling
+> internally rather than separately resizing the images. I defer to Artem and
+> others for what the "correct" approach is for mapnik though.
+>
+> For the scaling itself I can imagine it would be useful to specify a few
+> different options:
+> * don't scale images at all (because they would look bad scaled up)
+> * provide a way to choose the "best" image for a given scale
+> * scale up images using nearest neighbor (for pixel graphics)
+> * scale up images using the best quality algorithm available
+>
+> There are already CSS properties for the last two options in SVG,
+> image-rendering: optimizeQuality and image-rendering: optimizeSpeed. Firefox
+> will support an additional hint to force nearest neighbor scaling:
+> https://developer.mozilla.org/en/css/image-rendering
+>
+> Choosing the "best" size is obviously hardest because it's subjective. When
+> putting together the print proposal we also talked about precedents like
+> multi-size images (e.g. icon formats), mipmaps and scale-9 or 9-slice
+> scaling:
+>
+> * A multi-size image format could be as simple as making icons at different
+> sizes, e.g. 16x16, 32x32, etc. and having a heuristic for choosing the
+> "best" one for a given scale factor. Icon sets for the web commonly provide
+> many different sizes. Mac OS icons also work this way:
+> http://tutorialdog.com/how-to-create-icons-for-mac-os-x/
+>
+> * A mipmap image uses a single texture file to store multiple resolutions:
+> http://en.wikipedia.org/wiki/Mipmap - again, the problem is choosing the
+> "best" resolution to use given the author's intent in the unscaled
+> stylesheet and a scaling factor.
+>
+> * 9 slice or scale 9 is most useful for things like highway shields where
+> you have variable sized content that you want to wrap with a border or a
+> shadow. You define a rectangle inside an image such that the corners do not
+> scale, the top/bottom borders scale horizontally only and the left/right
+> borders scale vertically only. http://www.mordy.com/pics/symbol_guides.jpgand
+> http://rwillustrator.blogspot.com/2007/04/understanding-9-slice-scaling.htmlexplain more. I have also seen a variation that defines two rectangles:
+> http://www.bytearray.org/?p=1206
+>
+> Hope these references are useful! We're looking forward to trying the new
+> functionality soon.
+>
+> Best,
+>
+> Tom.
+>
+>
+>
+> Carlos Enrique L?pez Garc?s wrote:
+>
+>> Good morning/evening everybody,
+>>
+>> The mapnik_resolution branch (
+>> http://svn.mapnik.org/branches/mapnik_resolution/) currently supports the
+>> scaling of line widths, dashes and fonts through a scale factor that lets
+>> the user adjust the size of these elements. As you may know, the problem
+>> that is addressed with the scale factor is that when a map is rendered at
+>> higher resolution (a bigger image), the size of lines and fonts remains at a
+>> smaller scale. For example, if you have a stylesheet with widths and sizes
+>> that will look good in a 600x400 pixels image, it will no longer look good
+>> in an image of twice that size (1200x800), because the lines will be thinner
+>> and the labels and icons will be smaller. To correct this problem, one can
+>> pass a scale factor of 2.0, that will double the size of lines and fonts.
+>>
+>> The interface exposed to the user is currently the same as in trunk, which
+>> is passing the scale factor to the render method in python.
+>>
+>> Now, I'm beginning work with scaling symbols or bitmap icons. Trunk
+>> already does so for svg icons and the mapnik_resolution branch too (as it is
+>> merged with the former). And this is the reason why I write you, to ask for
+>> ideas on how this should be done. I've found two alternatives so far:
+>>
+>>    * Make use of the CImg library (http://cimg.sourceforge.net/)
+>>      which is a very lightweight code that doesn't require linking as
+>>      it is all contained in one single header file, but that has some
+>>      dependencies on system libraries.
+>>    * Make use of the mechanism that agg provides. This might be a
+>>      good option since it is already a core component of mapnik. I
+>>      don't have much experience with the library, but the code sample
+>>      in http://www.antigrain.com/demo/image_transforms.cpp.html shows
+>>      that it is possible.
+>>
+>> Any ideas are welcome.
+>>
+>> Thanks
+>>
+>> Carlos L?pez
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100709/e79081c7/attachment.html>
+
+From dane at dbsgeo.com  Sat Jul 10 01:45:42 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 10 Jul 2010 01:45:42 +0200
+Subject: [Mapnik-devel] Bounds clipping bug on local projection
+In-Reply-To: <B3353A60-778D-4010-80E8-386507EBAC2F@gmail.com>
+References: <B3353A60-778D-4010-80E8-386507EBAC2F@gmail.com>
+Message-ID: <D320F5BE-170B-4A75-A049-52F544D4180D@dbsgeo.com>
+
+Gnonthgol, thanks for the report, and for raising yet another subtle issue with proj4. Could you create a ticket (referencing this email or pasting inline) and link from http://trac.mapnik.org/wiki/BoundsClipping? Basically we need a test suite that captures as many of those issues as possible as a basis to move forward on patches.
+
+dane
+
+
+On Jul 5, 2010, at 11:01 AM, Gnonthgol wrote:
+
+> I am trying to create a map with projection "+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996" but have problems with global shape files.
+> The problem is almost identical with http://trac.mapnik.org/ticket/549 but proj_transform returns 0 witch does not trigger the patch.
+> 
+> The problem lies in that in my projection Alaska and New Zeland is north of the north pole. Simular to the transverse mercator at http://en.wikipedia.org/wiki/File:MercTranSph.png but where proj_transform returns an error on utm and therefore trigers the said patch my projection does not and therefore the global layer gets clipped to nothing.
+> 
+> I sugest that instead of transforming backward then clip the query bbox then transforming the bbox forward, why don't we just transform the bbox forward then clip it?
+> 
+> Steps to reproduce:
+> 1. Compile mercator with the patch at #549 (optional)
+> 2. Download the shoreline_300 shape file from OSM
+> 3. Render a map with bounds (5, 57, 30, 72) and projection "+proj=omerc +lat_0=64 +lonc=12.3 +alpha=30 +k_0=0.9996"
+> 
+> Result:
+> stdlog: "no intersection with layer world (backward projected)" (in debug mode)
+> image: empty
+> 
+> Gnonthgol
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Sat Jul 10 01:52:39 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 10 Jul 2010 01:52:39 +0200
+Subject: [Mapnik-devel] Building mapnik on Windows 7
+In-Reply-To: <4CAB7869D8D7BB48B0D30A8779722ABF5C63FCCC@SKA-WN-E25CEX.ptvag.ptv.de>
+References: <4CAB7869D8D7BB48B0D30A8779722ABF5C63FCCC@SKA-WN-E25CEX.ptvag.ptv.de>
+Message-ID: <75D4AD7F-095B-4CDC-A504-C146931E8D7C@dbsgeo.com>
+
+sorry for the late reply...
+
+On Jun 16, 2010, at 2:56 PM, Dietfrid Mali wrote:
+
+> Hi,
+>  
+> I am currently trying to build mapnik on Windows 7 using a modified Visual Studio 2008 solution
+
+ah intrepid of you! It would be great if you could document your progress on the mapnik wiki :)
+
+> I have found in an experimental mapnik+pdf package. I am using that solution with the standard mapnik software package.
+
+right, okay.
+
+> I have installed the required dependencies (tiff, png, jpeg, zlib, proj, icu, boost, ?).
+>  
+> The reasons for my trying to build mapnik on Windows are the following:
+>  
+> -          I want to be able to stay up to date
+> -          I want to be able to create 64 bit builds
+> -          I want to add cairo and cairo-gl support for Windows to mapnik
+
+excellent.
+
+>  
+> The compiler complains as follows:
+>  
+> mapnik\include\mapnik\ptree_helpers.hpp(348) : error C2039: 'mapnik::get_own' : is not a member of 'boost::property_tree::basic_ptree<Key,Data>'
+>  
+> This is a result of my replacing the boost headers that have come with mapnik with the standard boost library.
+
+Yes, certaintly that would result. And fixing all those changed function names would be a pain.
+
+> I did this because otherwise the compiler would complain about some missing boost header files.
+
+Well, this should fix that: http://trac.mapnik.org/changeset/1315
+
+>  
+> How can I resolve this? As there is a Win32 binary of mapnik: Are there any Visual Studio (2005 / 2008) solutions and projects available and if so, can I have these?
+
+No, not that I am aware of..
+
+>  
+> Dietfrid Mali
+>  
+>  
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/95163575/attachment.html>
+
+From dane at dbsgeo.com  Sat Jul 10 01:54:06 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 10 Jul 2010 01:54:06 +0200
+Subject: [Mapnik-devel] libosmscout
+In-Reply-To: <20100618200321.19efd548@frodo>
+References: <20100618200321.19efd548@frodo>
+Message-ID: <78828404-B9C8-45D5-BB34-DB737D3D4E13@dbsgeo.com>
+
+Sounds like an interesting library. I think the question of a shared renderer is more a question for the libosmscout developers? 
+
+On Jun 18, 2010, at 8:03 PM, Andreas Volz wrote:
+
+> Hello together,
+> 
+> I like to give you a pointer to a library called libosmscout[1]. I used
+> Mapnik for some time and where happy with it. But I had no
+> out-of-the-box solution to calculate routes on live rendered maps.
+> 
+> Since some time I ported one branch of my application to libosmscout,
+> because routing is working really nice.
+> 
+> I'm not complete decided about future usage or maybe writing a facade
+> to support both libraries.
+> 
+> Do you know libosmscout? Do you think shared work on the renderer part
+> would be possible with the libosmscout project to save some developer
+> resources?
+> 
+> regards
+> 	Andreas
+> 
+> [1] http://libosmscout.sourceforge.net/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Sat Jul 10 01:56:18 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 10 Jul 2010 01:56:18 +0200
+Subject: [Mapnik-devel] Rendering with Mapnik and python
+In-Reply-To: <AANLkTimUnj5vo7_cG1aAMAsHxrpKwN5-dMjk6jEXwXqe@mail.gmail.com>
+References: <AANLkTimUnj5vo7_cG1aAMAsHxrpKwN5-dMjk6jEXwXqe@mail.gmail.com>
+Message-ID: <E0339163-A98D-4A2F-8A4F-3D1E0960ABC6@dbsgeo.com>
+
+instead of:
+
+mapnik.osm(....
+
+try:
+
+mapnik.Osm(....
+
+
+On Jul 8, 2010, at 1:11 PM, shakti gehlaut wrote:
+
+> Dear Sir / Madam
+> 
+> I am student of M.Sc Photogrammetry and Geo-informatics, at University of applied Sciences Stuttgart. 
+> Currently I am working on Project, where I have to create PostGIS data using OpenstreetMap data.
+>  I am found some  online sources using which i am able to create the database and than converted data using osm2pgsql tool,
+>   to Geodatabase and how to install Mapnik and python 2.5
+> 
+> I also used online help from     http://trac.mapnik.org/wiki/WindowsInstallation how to install Mapnik on windows.
+> 
+> Since 2 weeks I am not able to find way to render with Mapnik and python combination. I am not getting any solution for this problem.
+> I will be grateful to  you if you please help me for the next step with mapnik. 
+> 
+> To solve this problem i tried the tutorial of Mapnik onhttp://trac.mapnik.org/wiki/MapnikTutorials
+> but when tried to locate the path of .osm file to render with mapnik but it shows the following error.
+> it is same path where i downloaded and file. it  is available there, than i tried the with  world.shape file which i downloaded from Mapnik tutorial to test and again showing the same error  with the location of file.
+> 
+> <error.jpg>
+> 
+> could you please help me with it, how to write the location of file in windows vista or why it is showing this error.
+>  currently i am using Mapnik-0.7.1 
+> 
+> 
+> 
+> hope to hear from you soon.
+> 
+> Thanks and Regards
+> 
+> Shakti Gehlaut 
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/1b16ee5e/attachment.html>
+
+From carlos.lopez.garces at gmail.com  Sat Jul 10 11:07:19 2010
+From: carlos.lopez.garces at gmail.com (=?ISO-8859-1?Q?Carlos_Enrique_L=F3pez_Garc=E9s?=)
+Date: Sat, 10 Jul 2010 04:07:19 -0500
+Subject: [Mapnik-devel] Better Print Support project - Looking for someone
+	to test a script.
+Message-ID: <AANLkTimJlPafwjPPGm00IHPI5WM2XLM52rg1IdzgsWuh@mail.gmail.com>
+
+Hello everybody,
+
+I just wanted to share a script that supports part of the work of this
+project.
+
+render_with_resolution.py is an experimental script with two purposes:
+
+? To define a possible interface to the resolution functionality of the
+mapnik_resolution branch.
+? To find the proper operations to obtain a scale factor that adjusts the
+size of lines and fonts given a resolution parameter.
+
+The idea behind this script is to produce an image that will fit a certain
+physical space. This physical space might be the size of the paper or PDF
+document (or a region of it) on which the image of the map is to be printed.
+Furthermore, a given PPI (pixels per inch) value is required to obtain a
+certain quality on the image. In reality, the script accepts one PPI value
+for the horizontal dimension and one for the vertical dimension.
+
+Given the PPI values and the desired physical space (measured in inches or
+millimeters), the script computes the size of the digital image in pixels
+(its resolution) using the following formula:
+
+    width of digital image = horizontal PPI x physical width of target space
+    height of digital image = vertical PPI x physical height of target space
+
+For example, if I want to print an image on a space of 13x8 inches at 300
+PPI, I would obtain a digital image of 3900x2400 pixels.
+
+Now, if I requested an image of this size, I would obtain a very large map
+with very tiny labels and thin lines. This is the problem we are trying to
+solve with the introduction of the scale factor. This scale factor will make
+sure that the width of lines and size of fonts grow/shrinks proportionally
+to the size of the image.
+
+The script calculates the scale factor as the quotient of the required PPI
+and a base PPI value. This base PPI value is calculated from another couple
+of values that have to be supplied by the user: The pixel width and height
+of the rendering device. The formula is as follows:
+
+    base horizontal PPI = 1/pixel width
+    base vertical PPI = 1/pixel height
+
+So if the supplied pixel size was 0.28x0.28mm (the OGC standard pixel size),
+we would have a base PPI value of approximately 90.1, both horizontally and
+vertically (convert the size of pixels in millimeters to inches first).
+
+As I said before, this base PPI value serves as a base from which to
+calculate the scale factor. The scale factor would be calculated this way:
+
+    horizontal scale factor = horizontal PPI / base horizontal PPI
+    vertical scale factor = vertical PPI / vertical horizontal PPI
+
+Right now, it doesn't make sense to have a scale factor for both dimensions.
+So, using the previous values, the scale factor would be 300/90.1 = 3.329.
+
+However, this scale factor is not large enough to make the lines and fonts
+look good in the 3900x2400 pixels image. To account for this, a larger pixel
+size would need to be supplied (to make the base PPI value smaller and hence
+the quotient of the required PPI and the former larger).
+
+I'm not completely sure if this is the correct way of calculating the scale
+factor, since the base resolution is quite dependent on the value of the
+supplied pixel size, which might be hard to get it right. Here's where I ask
+for your opinions and comments.
+
+I would also appreciate if someone could test the script. The steps you have
+to follow are:
+
+    1) Export the mapnik_resolution branch: svn export
+http://svn.mapnik.org/branches/mapnik_resolution
+    2) Compile and install it.
+    3) Go to tests/scale_factor_calculator. This is the directory where the
+script lives. The script is called 'render_with_resolution'. Also, in this
+directory you'll find a copy of nik2img.py and its required dependencies.
+This is because the script calls it after calculating the image size and
+scale factor to actually render the image.
+    4) Generate an osm.xml stylesheet and upgrade it.
+    5) Run the script like this:
+
+python render_with_resolution.py styles/osm.xml images/image.png -b -0.02894
+51.48472 0.0002 51.4976 --width 13.3 --height 8.3 --dimension-units in
+--ppi-x 300 --ppi-y 300 --pixel-width 0.010466 --pixel-height 0.010466
+--pixel-size-units in
+
+Parameters:
+
+    --width: Width of the physical space that the map will cover (in inches
+or millimeters).
+    --height: Height of the physical space that the map will cover (in
+inches or millimeters).
+    --dimension-units: Units in which the previous two values are given (in
+or mm)
+    --ppi-x: Pixels per inch in the horizontal dimension.
+    --ppi-x: Pixels per inch in the vertical dimension.
+    --pixel-width: Width of pixels in inches or millimeters.
+    --pixel-height: Height of pixels in inches or millimeters.
+    --pixel-size-units: Units in which the previous two values are given (in
+or mm).
+
+Thanks in advance
+
+Carlos L?pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/c83c661d/attachment.html>
+
+From artem at mapnik.org  Sat Jul 10 12:02:16 2010
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 10 Jul 2010 11:02:16 +0100
+Subject: [Mapnik-devel] Better Print Support project - Looking for
+	someone to test a script.
+In-Reply-To: <AANLkTimJlPafwjPPGm00IHPI5WM2XLM52rg1IdzgsWuh@mail.gmail.com>
+References: <AANLkTimJlPafwjPPGm00IHPI5WM2XLM52rg1IdzgsWuh@mail.gmail.com>
+Message-ID: <AANLkTinl1BNlXYsb95Fu-P6-x9Bn-wSMvpDIX2Tk4GlU@mail.gmail.com>
+
+Hi Carlos,
+
+I'll test your script tomorrow. Would be great if you can be available on
+#mapnik sometime tomorrow, so we can have a chat regarding gsoc progress.
+
+Regards,
+Artem
+
+2010/7/10 Carlos Enrique L?pez Garc?s <carlos.lopez.garces at gmail.com>
+
+> Hello everybody,
+>
+> I just wanted to share a script that supports part of the work of this
+> project.
+>
+> render_with_resolution.py is an experimental script with two purposes:
+>
+> ? To define a possible interface to the resolution functionality of the
+> mapnik_resolution branch.
+> ? To find the proper operations to obtain a scale factor that adjusts the
+> size of lines and fonts given a resolution parameter.
+>
+> The idea behind this script is to produce an image that will fit a certain
+> physical space. This physical space might be the size of the paper or PDF
+> document (or a region of it) on which the image of the map is to be printed.
+> Furthermore, a given PPI (pixels per inch) value is required to obtain a
+> certain quality on the image. In reality, the script accepts one PPI value
+> for the horizontal dimension and one for the vertical dimension.
+>
+> Given the PPI values and the desired physical space (measured in inches or
+> millimeters), the script computes the size of the digital image in pixels
+> (its resolution) using the following formula:
+>
+>     width of digital image = horizontal PPI x physical width of target
+> space
+>     height of digital image = vertical PPI x physical height of target
+> space
+>
+> For example, if I want to print an image on a space of 13x8 inches at 300
+> PPI, I would obtain a digital image of 3900x2400 pixels.
+>
+> Now, if I requested an image of this size, I would obtain a very large map
+> with very tiny labels and thin lines. This is the problem we are trying to
+> solve with the introduction of the scale factor. This scale factor will make
+> sure that the width of lines and size of fonts grow/shrinks proportionally
+> to the size of the image.
+>
+> The script calculates the scale factor as the quotient of the required PPI
+> and a base PPI value. This base PPI value is calculated from another couple
+> of values that have to be supplied by the user: The pixel width and height
+> of the rendering device. The formula is as follows:
+>
+>     base horizontal PPI = 1/pixel width
+>     base vertical PPI = 1/pixel height
+>
+> So if the supplied pixel size was 0.28x0.28mm (the OGC standard pixel
+> size), we would have a base PPI value of approximately 90.1, both
+> horizontally and vertically (convert the size of pixels in millimeters to
+> inches first).
+>
+> As I said before, this base PPI value serves as a base from which to
+> calculate the scale factor. The scale factor would be calculated this way:
+>
+>     horizontal scale factor = horizontal PPI / base horizontal PPI
+>     vertical scale factor = vertical PPI / vertical horizontal PPI
+>
+> Right now, it doesn't make sense to have a scale factor for both
+> dimensions. So, using the previous values, the scale factor would be
+> 300/90.1 = 3.329.
+>
+> However, this scale factor is not large enough to make the lines and fonts
+> look good in the 3900x2400 pixels image. To account for this, a larger pixel
+> size would need to be supplied (to make the base PPI value smaller and hence
+> the quotient of the required PPI and the former larger).
+>
+> I'm not completely sure if this is the correct way of calculating the scale
+> factor, since the base resolution is quite dependent on the value of the
+> supplied pixel size, which might be hard to get it right. Here's where I ask
+> for your opinions and comments.
+>
+> I would also appreciate if someone could test the script. The steps you
+> have to follow are:
+>
+>     1) Export the mapnik_resolution branch: svn export
+> http://svn.mapnik.org/branches/mapnik_resolution
+>     2) Compile and install it.
+>     3) Go to tests/scale_factor_calculator. This is the directory where the
+> script lives. The script is called 'render_with_resolution'. Also, in this
+> directory you'll find a copy of nik2img.py and its required dependencies.
+> This is because the script calls it after calculating the image size and
+> scale factor to actually render the image.
+>     4) Generate an osm.xml stylesheet and upgrade it.
+>     5) Run the script like this:
+>
+> python render_with_resolution.py styles/osm.xml images/image.png -b
+> -0.02894 51.48472 0.0002 51.4976 --width 13.3 --height 8.3 --dimension-units
+> in --ppi-x 300 --ppi-y 300 --pixel-width 0.010466 --pixel-height 0.010466
+> --pixel-size-units in
+>
+> Parameters:
+>
+>     --width: Width of the physical space that the map will cover (in inches
+> or millimeters).
+>     --height: Height of the physical space that the map will cover (in
+> inches or millimeters).
+>     --dimension-units: Units in which the previous two values are given (in
+> or mm)
+>     --ppi-x: Pixels per inch in the horizontal dimension.
+>     --ppi-x: Pixels per inch in the vertical dimension.
+>     --pixel-width: Width of pixels in inches or millimeters.
+>     --pixel-height: Height of pixels in inches or millimeters.
+>     --pixel-size-units: Units in which the previous two values are given
+> (in or mm).
+>
+> Thanks in advance
+>
+> Carlos L?pez
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100710/895d6b06/attachment.html>
+
+From richard at weait.com  Tue Jul 13 16:34:13 2010
+From: richard at weait.com (Richard Weait)
+Date: Tue, 13 Jul 2010 10:34:13 -0400
+Subject: [Mapnik-devel] Mapnik BoF at SotM
+Message-ID: <AANLkTim6_m-xhELitv0_yJWEL1HIn_feGJyKyu197kZ_@mail.gmail.com>
+
+Dear All,
+
+I took some notes at the Mapnik Birds of a Feather at State of the Map
+2010 in Girona, Spain last Friday.  I hope that other attendees will
+add their notes and recollections in this thread and then we can move
+them to a more-permanent home.
+
+Attendees (Apologies to later arrivals, please add yourselves)
+
+Andy Allan
+Robert Coup
+Aubrey Holland
+Andrii Mishkovskyi
+Dane Springmeyer
+Jochen Topf
+Richard Weait
+
+Discussion Starter: What does Mapnik need?
+- Documentation
+- Tests
+- Packaging / Releases
+- Performance
+- Metrics
+- Debugging
+- Simplify styles
+- Multithreading
+
+
+Documentation
+We talked a lot about documentation.  There was consensus that more
+and better documentation would lead to more and happier newcomers
+joining the mapnik community.  Some points from the discussion
+included:
+
+- Rename the rendering styles on OSM.  ;-)
+- Add a "What is Mapnik" to the web page.
+- Rendering the OSM default style from the complete OSM toolchain
+isn't really for everybody.  Let's find make some simpler tutorials
+for those with modest goals.
+- Failure shouldn't have "import planet.osm for a week" as a
+prerequisite.  Let's provide other ways to install and test mapnik.
+(Same for success)
+- Developer references (eg symbolizer parameters) are good.  Let's
+make illustrated examples that go further and tell folks when to use
+which parameter and how typical parameter combinations interact.
+- For the raster symbolizer, show examples of color theory options so
+"average" users can select dodge vs burn with fewer missteps.
+- More demonstrations with working code.
+- Test for working installation earlier, from .osm files and or pgsql dumps.
+- Consider wider documentation audiences, including new mappers.
+- Find and document the simplest path from interest through
+installation to pixels on the screen.
+- Make docs refer to code versions.  Keep 'em up to date.  Can tests
+flag docs that need revision at a minimum?
+-  Clear out old / dead demos and docs.
+- Aim for demos and tutorials that are "not too trivial" real examples
+with clear path to success.
+
+
+Packaging and Releases
+We talked a bit about Packaging and Releases at various times.
+Consensus was that this was a good idea as we have little of this
+right now.  Having a recent and stable mapnik available in every
+distro for instant sudo $command install mapnik might be a lofty goal
+but we can move towards it.
+
+- At least build deb and rpm packages locally.  Perhaps nightly,
+perhaps per commit.
+- Do more builds for FreeBSD/Mac/Win/
+- Do more to make Debian / redhat releases dead-simple for Debian /
+redhat to include in official repositories.
+- Find and make connections through distro channels.
+- Stay on top of distro release schedules.
+- Do more with releases and show a connection between release numbers
+and svn commit numbers.
+
+
+Testing
+Brief discussion suggested more tests and testing around builds.
+- Test all data sources, PostGIS, .osm, shapefile, etc.
+- Test projections.
+- Test with documentation and tutorials, (fix 'em? mark them as stale
+at version#)
+
+
+Performance and  Metrics
+There is a build option to show the time required for each layer.
+What other metrics can we add to the code to make evaluation our
+installation and style better?
+- Style sheet profiling.
+- What else?
+
+
+Multithreading
+
+
+
+[ please help fill in these notes ]
+
+
+From dane at dbsgeo.com  Sat Jul 17 02:04:40 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 16 Jul 2010 17:04:40 -0700
+Subject: [Mapnik-devel] C++ tests
+Message-ID: <3918BB56-7C2C-40D9-9E29-164EECBCF8F9@dbsgeo.com>
+
+We've discussed writing C++ tests for some time, but so far we've been only utilizing the python nosetests.
+
+I had a distinct need the other day as a way to test the behavior of a recursive font registration function [1].
+
+In short I hope the font registration function (mostly nicked from tirex) can be used both by mod_tile, tirex, the mapnik viewer, and other C++ apps using Mapnik. I needed one for a server I'm starting to write and I noticed each had their own implementation.
+
+Hence, I looked for a simple testing method, found BOOST_TEST, and gave it a spin. You can see the results here:
+
+http://trac.mapnik.org/browser/trunk/tests/cpp_tests/font_registration_test.cpp
+Added in: http://trac.mapnik.org/changeset/2029
+
+I'm hoping that others may critique, and begin to offer up their own tests.
+
+Currently the way I've set that directory up is that any cpp file that ends with '_test.cpp' will be automatically compiled.
+
+And then the program can be run from the command line like:
+
+$ tests/cpp_tests/font_registration_test
+
+Ideally we could find a smart way to build the test environment relative to the test directory instead of the project root, but this worked for now.
+
+- Dane
+
+[1] http://trac.mapnik.org/changeset/2026
+
+From dane at dbsgeo.com  Sat Jul 17 02:19:41 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 16 Jul 2010 17:19:41 -0700
+Subject: [Mapnik-devel] Next Mapnik release: 0.7.2
+Message-ID: <FDDB5892-EEDF-48F8-AD16-9AD97A2D288A@dbsgeo.com>
+
+After talking with other Mapnik users at SOTM, I realized that another bugfix release would be helpful in the 0.7.x series.
+
+I am happy to set up again as the release manager to see this process though.
+
+The factors prompting another release in the 0.7.x series are:
+
+1) A few important PNG256 fixes did not make it into 0.7.1 before it was tagged (my fault, they did get into the 0.7.1-dev branch, but only after it was tagged as the 0.7.1 release).
+
+2) Current trunk (aka Mapnik2) likely will not be ready to release in the next month, but if we get out a release in the 0.7.x series soon (before end of July) it has a high probability of being in the next Ubuntu (Maverick) release and brought into Debian unstable soon.
+
+3) It would be nice to address some of the tickets around http://trac.mapnik.org/wiki/BoundsClipping without having to wait for a release of trunk being ready.
+
+4) A few other minor bugs have been fixed, notably problems in the build scripts and the GDAL driver: http://trac.mapnik.org/ticket/563
+
+So, it present to you the 0.7.2 release page:
+
+http://trac.mapnik.org/milestone/0.7.2
+
+If you have any feedback, thoughts, or concerns please let me know.
+
+Dane
+
+
+
+From richard at weait.com  Sat Jul 17 02:37:17 2010
+From: richard at weait.com (Richard Weait)
+Date: Fri, 16 Jul 2010 20:37:17 -0400
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+Message-ID: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+
+Greetings Mapnik Devs,
+
+On the heels of a great Mapnik Birds of a Feather last week at State
+of the Map, Dane has suggested that we build on that momentum and have
+a meeting that is bigger and even more productive.  Let's put on a
+code sprint.
+
+
+What?
+
+A code sprint, or hack fest, is a period of software development
+focused on a given list of goals. Committers and Cartographers is a
+free and open three-day event for the improvement of the mapnik code
+base.
+
+The goals for Committers and Cartographers will be:
+
+- Cartography Improvements - Discuss and defeat some tricky
+cartography requests.  There may be others but those highlighted by
+Steve Chilton in the SotM talk are a good start.
+http://www.slideshare.net/steve8/what-id-like-to-do-with-mapnik-4756837
+
+- Maintainer Farming - Encourage community members to take a greater
+part in maintaining the Mapnik code, perhaps by taking the lead on a
+smaller portion of the code base.
+
+
+Who?
+
+If you are a current committer to Mapnik or an otherwise super cool
+C++ coder intimately familiar with the project, you should be at
+Committers and Cartographers.
+
+If you are a super cool cartographer who hopes and dreams for a better
+mapnik, you should be at Committers and Cartographers.
+
+What if you are both a super cool cartographer and a whiz bang C++
+developer?  Why aren't you here already?  We hope to get about a dozen
+key Committers and Cartographers to attend this event.
+
+
+When?
+
+Three days in September.  Let's work this out, but let's plan on a
+Saturday, Sunday and Monday as working days.
+
+
+Where?
+
+Well Toronto would be convenient for me, but this isn't about me.  How
+about London, England?   It is well-connected by air to many of our
+anticipated European and North American participants.
+
+
+Please indicate your interest and availability so that we can get a
+head count and a nominal date.
+
+Best regards,
+Richard
+
+
+From dane at dbsgeo.com  Thu Jul 22 01:27:44 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 21 Jul 2010 16:27:44 -0700
+Subject: [Mapnik-devel] Optimizations around Mapnik's projection code
+Message-ID: <66A961D4-8110-4DDA-A3FD-BB8375ACFE8F@dbsgeo.com>
+
+Recently I noticed the large number of:
+
+#ifdef MAPNIK_THREADSAFE
+    mutex::scoped_lock lock(mutex_);
+#endif
+
+wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+
+Proj4 has thread safety issues so this makes sense:
+
+1) Projection initialization in not thread safe (when creating from epsg code)
+2) Usage of prj_errno is not thread safe (error code pointer)
+3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+
+My thoughts were:
+
+#1 As of proj 4.7 locking is done by proj4, so no need to duplicate locking in mapnik as far as I can tell
+
+#2 is not a problem currently for mapnik because we don't attempt to do anything with errors (but we may in the future - http://trac.mapnik.org/wiki/BoundsClipping)
+
+#3 - can't do much about this.
+
+So, I set out to deal with #1 and noticed a few more things:
+
+1) there is a lock that affects proj_transform, even if we exit early because we don't need to reproject (source == dest). What this means is that even when proj4 is not used, since we call proj_transform we're hitting a lock for every coordinate reprojected (http://trac.mapnik.org/browser/trunk/src/proj_transform.cpp?rev=2062#L74). Ouch.
+
+2) There are additional locks around repeated calls to proj._is_latlong, and a bit of refactoring could set this property once and avoid several locks.
+
+So, I set up a test environment that would hit mapnik with hundreds of current threads when rendering a small shapefile dataset (to make sure that database i/o would not get in the way of benchmarking).
+
+With the changes in http://trac.mapnik.org/changeset/2063 I'm seeing 10-15% speed increases.
+
+So, I'm excited to report this performance improvement, and curious to see if anyone had questions or concerns.
+
+My test environment is apache ab. I've heard its not as good as http_perf, so I'm looking into that tool. I've been testing against a lightweight C++ server using boost asio (http://github.com/springmeyer/paleoserver), which I put together partially  to making running tests like this easier. On a RHEL machine with 4 cores I can get around 150-170 requests/sec. when calling ab with 50 concurrent requests and 1000 total requests.
+
+Cheers,
+
+Dane
+
+From tom at compton.nu  Thu Jul 22 01:42:21 2010
+From: tom at compton.nu (Tom Hughes)
+Date: Thu, 22 Jul 2010 00:42:21 +0100
+Subject: [Mapnik-devel] Optimizations around Mapnik's projection code
+In-Reply-To: <66A961D4-8110-4DDA-A3FD-BB8375ACFE8F@dbsgeo.com>
+References: <66A961D4-8110-4DDA-A3FD-BB8375ACFE8F@dbsgeo.com>
+Message-ID: <4C4785DD.3060102@compton.nu>
+
+On 22/07/10 00:27, Dane Springmeyer wrote:
+
+> Recently I noticed the large number of:
+>
+> #ifdef MAPNIK_THREADSAFE
+>      mutex::scoped_lock lock(mutex_);
+> #endif
+>
+> wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+>
+> Proj4 has thread safety issues so this makes sense:
+>
+> 1) Projection initialization in not thread safe (when creating from epsg code)
+> 2) Usage of prj_errno is not thread safe (error code pointer)
+> 3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+
+I believe the locks were put in by me after Jon made mod_tile's renderd 
+multi-threaded and found it was unstable.
+
+All the proj4 doco I could find at the time just said it wasn't 
+threadsafe so I wrapped everything in that mutex to make sure we
+didn't reenter it at all.
+
+If the issues are better understood now and we can improve things then 
+that sounds good to me.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://compton.nu/
+
+
+From dane at dbsgeo.com  Thu Jul 22 23:11:42 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 22 Jul 2010 14:11:42 -0700
+Subject: [Mapnik-devel] Optimizations around Mapnik's projection code
+In-Reply-To: <4C4785DD.3060102@compton.nu>
+References: <66A961D4-8110-4DDA-A3FD-BB8375ACFE8F@dbsgeo.com>
+	<4C4785DD.3060102@compton.nu>
+Message-ID: <DD1E0A15-C71F-4CC8-AD8D-0522A30366B8@dbsgeo.com>
+
+
+On Jul 21, 2010, at 4:42 PM, Tom Hughes wrote:
+
+> On 22/07/10 00:27, Dane Springmeyer wrote:
+> 
+>> Recently I noticed the large number of:
+>> 
+>> #ifdef MAPNIK_THREADSAFE
+>>     mutex::scoped_lock lock(mutex_);
+>> #endif
+>> 
+>> wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+>> 
+>> Proj4 has thread safety issues so this makes sense:
+>> 
+>> 1) Projection initialization in not thread safe (when creating from epsg code)
+>> 2) Usage of prj_errno is not thread safe (error code pointer)
+>> 3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+> 
+> I believe the locks were put in by me after Jon made mod_tile's renderd multi-threaded and found it was unstable.
+> 
+> All the proj4 doco I could find at the time just said it wasn't threadsafe so I wrapped everything in that mutex to make sure we
+> didn't reenter it at all.
+
+Yes, I looks like there has been some good attention recently based on the wiki page at: http://trac.osgeo.org/proj/wiki/ThreadSafety
+
+So, improvements in 4.7 (latest release) and likely also in the next release.
+
+> 
+> If the issues are better understood now and we can improve things then that sounds good to me.
+> 
+
+Great, thanks for the feedback. I will continue to test to see if I can prompt any new crashes.
+
+> Tom
+> 
+> -- 
+> Tom Hughes (tom at compton.nu)
+> http://compton.nu/
+
+
+
+From richard at weait.com  Fri Jul 23 20:15:24 2010
+From: richard at weait.com (Richard Weait)
+Date: Fri, 23 Jul 2010 14:15:24 -0400
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+Message-ID: <AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+
+On Fri, Jul 16, 2010 at 8:37 PM, Richard Weait <richard at weait.com> wrote:
+> Greetings Mapnik Devs,
+>
+> On the heels of a great Mapnik Birds of a Feather last week at State
+> of the Map, Dane has suggested that we build on that momentum and have
+> a meeting that is bigger and even more productive.  Let's put on a
+> code sprint.
+
+Now I've had some wonderful feedback on this, but you wouldn't guess
+that from looking at the list.  Here is what I have so far.
+
+
+Date
+====
+
+September 24 - 26, 2010 is the consensus best date.
+
+
+Venue
+=====
+
+London-ish has been chosen as best location, with some other votes for
+"near home" for some value of home.
+
+
+Attendees
+=========
+
+I won't name names.  I'll leave it to you to confirm on the list if
+you wish to do so.
+
+Those considering attending, you should really do this.  The list of
+those interested really delivers on our quest for both Committers and
+Cartographers.  This is going to be THE meeting of the Mapnik Cool
+Kids.  I'm very excited about the code that is going to come from this
+code sprint.
+
+So, with all of the high-powered, Mapnik Super Heroes that are planing
+to attend, why should you come along?  Won't the cool kids just push
+you into your locker and mock you?  No.  They won't.  The Mapnik
+community doesn't play that game.
+
+You should participate in the code sprint, because you can contribute,
+too.  Your idea might be the one that breaks a logjam on a tough
+rendering problem.  You might find a new passion for packaging, tests
+or documentation that will help others in their adoption of Mapnik.
+You might be the one who catches the typo and saves the day.  Or maybe
+you just don't realize yet, how much you have to contribute to the
+Mapnik community.
+
+So you should come.
+TODO (you!); add yourself to the attendee list.
+
+
+Next Steps
+==========
+
+Confirm date and location - I think we have enough to go ahead with
+this.  I say, "It's on", and I bet when you see the list of attendees
+you'll say, "Wow.  It sure is!"
+TODO (Everybody):  Put the Mapnik Code Sprint: Committers and
+Cartographers on your calendar now.
+
+Confirm venue - I'd like for somebody London-local to suggest the
+perfect venue.  Please help.
+
+A cool meeting place with a great internet connection and proximity to
+food and entertainment is best.  A connected or nearby hotel for our
+travellers, comfy and affordable is important.  And a reasonable
+connection to London airports is preferred.  Frugality is important.
+At this point, we, the attendees, are sharing the expenses.
+TODO (London Expert): Suggest perfect venue
+
+Approach sponsors - I have a a few potential sponsors in mind.  You
+should send me your ideas too.
+
+It would be wonderful if a handful of sponsors would step forward and
+offer to absorb the cost of the venue and some refreshments during the
+code sprint.  It would be super if they would also agree to defray
+some of the travel expenses for those who could use the help.  It
+would be over the moon amazing if they would express interest in a
+series of code sprints with shared sponsorship.  I like the idea of
+another code sprint in early 2011 as well.
+TODO (Richard): contact potential sponsors.
+
+
+Feedback
+========
+
+Yes please.  Replies to this list preferred, or directly to me.
+
+
+Best regards,
+Richard
+
+
+From tom at compton.nu  Sat Jul 24 01:05:26 2010
+From: tom at compton.nu (Tom Hughes)
+Date: Sat, 24 Jul 2010 00:05:26 +0100
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+Message-ID: <4C4A2036.50500@compton.nu>
+
+On 23/07/10 19:15, Richard Weait wrote:
+
+> I won't name names.  I'll leave it to you to confirm on the list if
+> you wish to do so.
+>
+> Those considering attending, you should really do this.  The list of
+> those interested really delivers on our quest for both Committers and
+> Cartographers.  This is going to be THE meeting of the Mapnik Cool
+> Kids.  I'm very excited about the code that is going to come from this
+> code sprint.
+
+With those dates I can probably do some of it - the 24th certainly and 
+maybe the 26th but probably not the 25th.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://compton.nu/
+
+
+From vics001 at gmail.com  Sun Jul 25 18:01:13 2010
+From: vics001 at gmail.com (Victor Shcherb)
+Date: Sun, 25 Jul 2010 19:01:13 +0300
+Subject: [Mapnik-devel] Mapnik on Android
+Message-ID: <AANLkTi=qMLrm+ti5M_ZbUHz4PpQBs1Q9hV6uRfP1_mJQ@mail.gmail.com>
+
+Hello
+I'm developer of open source android project :
+http://code.google.com/p/osmand/. Since 0.3 version we used raster images
+from different sources primarily Mapnik.
+However now our goal is to add render to android application.
+Why it is needed? Our target audience are people without internet access.
+However preloading tiles for 17th for whole country is over 10 Gb, but
+vector data is less then 50 Mb.
+So the difference is obvious.
+
+My question :  does anyone try to setup mapnik for android devices or can
+help me with that. There are certain strict limitations such as operating
+memory no more than 16 Mb for whole application, I think only 6 Mb for
+Mapnik.
+
+Thanks, Victor.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100725/d6c65737/attachment.html>
+
+From digi_c at arcor.de  Sun Jul 25 22:19:55 2010
+From: digi_c at arcor.de (=?ISO-8859-15?Q?Matthias_Mei=DFer?=)
+Date: Sun, 25 Jul 2010 22:19:55 +0200
+Subject: [Mapnik-devel] Mapnik Icon competition this week
+Message-ID: <4C4C9C6B.5030408@arcor.de>
+
+Hi,
+
+my suggestion had been picked up for this 'project of the week'. We try 
+to fill the missing icons for mapnik and the other renderer of course.
+http://wiki.openstreetmap.org/wiki/Project_of_the_week/2010/Jul_25
+
+Would be cool if you would use this icons to show the people that their 
+work is not nonsense :)
+
+kind regards
+Matthias (!i!)
+
+
+From ldp at xs4all.nl  Sun Jul 25 22:59:50 2010
+From: ldp at xs4all.nl (Lennard)
+Date: Sun, 25 Jul 2010 22:59:50 +0200
+Subject: [Mapnik-devel] Mapnik Icon competition this week
+In-Reply-To: <4C4C9C6B.5030408@arcor.de>
+References: <4C4C9C6B.5030408@arcor.de>
+Message-ID: <4C4CA5C6.2010407@xs4all.nl>
+
+On 25-7-2010 22:19, Matthias Mei?er wrote:
+
+> Would be cool if you would use this icons to show the people that their
+> work is not nonsense :)
+
+Well, you see, mapnik doesn't have map symbols as such. The "OSM map 
+that is rendered with the map rendering software called Mapnik" does. 
+Common mistake. It happens because it's called "mapnik" as well, but 
+it's just not entirely the same. :-)
+
+-- 
+Lennard
+
+
+
+From frederik at remote.org  Mon Jul 26 14:43:38 2010
+From: frederik at remote.org (Frederik Ramm)
+Date: Mon, 26 Jul 2010 14:43:38 +0200
+Subject: [Mapnik-devel] OpenStreetMap WMS as an Apache Module
+Message-ID: <4C4D82FA.8040007@remote.org>
+
+Hi,
+
+    just a quick note about the newly released mod_mapnik_wms, a C/C++ 
+module for Apache2 that implements a simple-but-fully-conformant 
+Mapnik-based WMS. It is availabe under GPL from the OSM SVN, and if 
+anyone has anything to say,or ask, or contribute, don't let me stop you ;)
+
+http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+
+The module was written by me mainly for implementing a 
+subscription-based WMS that my company, Geofabrik, operates, but we 
+think that it might benefit a larger audience.
+
+Enjoy,
+Frederik
+
+
+
+From amishkovskiy at cloudmade.com  Tue Jul 27 12:02:55 2010
+From: amishkovskiy at cloudmade.com (Andrii V. Mishkovskyi)
+Date: Tue, 27 Jul 2010 13:02:55 +0300
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com> 
+	<AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+Message-ID: <AANLkTimmprEd=YfADqvk4jrJfycWBTU6Yd=UMqdUMxr2@mail.gmail.com>
+
+On Fri, Jul 23, 2010 at 9:15 PM, Richard Weait <richard at weait.com> wrote:
+> On Fri, Jul 16, 2010 at 8:37 PM, Richard Weait <richard at weait.com> wrote:
+>> Greetings Mapnik Devs,
+>>
+>> On the heels of a great Mapnik Birds of a Feather last week at State
+>> of the Map, Dane has suggested that we build on that momentum and have
+>> a meeting that is bigger and even more productive. ?Let's put on a
+>> code sprint.
+>
+> Now I've had some wonderful feedback on this, but you wouldn't guess
+> that from looking at the list. ?Here is what I have so far.
+>
+>
+> Date
+> ====
+>
+> September 24 - 26, 2010 is the consensus best date.
+>
+>
+> Venue
+> =====
+>
+> London-ish has been chosen as best location, with some other votes for
+> "near home" for some value of home.
+>
+>
+> Attendees
+> =========
+>
+> I won't name names. ?I'll leave it to you to confirm on the list if
+> you wish to do so.
+>
+> Those considering attending, you should really do this. ?The list of
+> those interested really delivers on our quest for both Committers and
+> Cartographers. ?This is going to be THE meeting of the Mapnik Cool
+> Kids. ?I'm very excited about the code that is going to come from this
+> code sprint.
+>
+> So, with all of the high-powered, Mapnik Super Heroes that are planing
+> to attend, why should you come along? ?Won't the cool kids just push
+> you into your locker and mock you? ?No. ?They won't. ?The Mapnik
+> community doesn't play that game.
+>
+> You should participate in the code sprint, because you can contribute,
+> too. ?Your idea might be the one that breaks a logjam on a tough
+> rendering problem. ?You might find a new passion for packaging, tests
+> or documentation that will help others in their adoption of Mapnik.
+> You might be the one who catches the typo and saves the day. ?Or maybe
+> you just don't realize yet, how much you have to contribute to the
+> Mapnik community.
+>
+> So you should come.
+> TODO (you!); add yourself to the attendee list.
+
+Done.
+
+>
+>
+> Next Steps
+> ==========
+>
+> Confirm date and location - I think we have enough to go ahead with
+> this. ?I say, "It's on", and I bet when you see the list of attendees
+> you'll say, "Wow. ?It sure is!"
+> TODO (Everybody): ?Put the Mapnik Code Sprint: Committers and
+> Cartographers on your calendar now.
+
+Done. ;)
+
+>
+> Confirm venue - I'd like for somebody London-local to suggest the
+> perfect venue. ?Please help.
+>
+> A cool meeting place with a great internet connection and proximity to
+> food and entertainment is best. ?A connected or nearby hotel for our
+> travellers, comfy and affordable is important. ?And a reasonable
+> connection to London airports is preferred. ?Frugality is important.
+> At this point, we, the attendees, are sharing the expenses.
+> TODO (London Expert): Suggest perfect venue
+>
+> Approach sponsors - I have a a few potential sponsors in mind. ?You
+> should send me your ideas too.
+>
+> It would be wonderful if a handful of sponsors would step forward and
+> offer to absorb the cost of the venue and some refreshments during the
+> code sprint. ?It would be super if they would also agree to defray
+> some of the travel expenses for those who could use the help. ?It
+> would be over the moon amazing if they would express interest in a
+> series of code sprints with shared sponsorship. ?I like the idea of
+> another code sprint in early 2011 as well.
+> TODO (Richard): contact potential sponsors.
+>
+>
+> Feedback
+> ========
+>
+> Yes please. ?Replies to this list preferred, or directly to me.
+
+I can only hope that my visa application will get approved in time.
+Other than that I'm ready to code for three days nonstop. :)
+
+>
+>
+> Best regards,
+> Richard
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Wbr, Andrii V. Mishkovskyi.
+
+I have the last page code of rocket launch program in NASA written in Lisp:
+)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+
+From robert.coup at koordinates.com  Thu Jul 29 11:28:25 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Thu, 29 Jul 2010 21:28:25 +1200
+Subject: [Mapnik-devel] Update: cascadenik "-xmlbad" branch
+Message-ID: <AANLkTikFrk91+KeC98zY4suLY0MVYmm=+9EFFEnOCr8U@mail.gmail.com>
+
+Hi folks,
+
+A wee while back Mike Migurski started the cascadenik-xmlbad branch,
+enabling cascadenik styles to be applied directly to a mapnik map object (as
+an alternative to producing XML). In the last few weeks I've picked it up,
+ported a years worth of changes from trunk, and fixed a bunch of bugs &
+missing bits. Thanks to Dane for his help too.
+
+If people are/were using the -xmlbad branch, it would be great if you could
+update to the newest revisions and give me some feedback. :) And if you are
+interested in applying cascadenik styles to a mapnik Map in python rather
+than producing XML, give it a go.
+
+SVN browse:
+http://code.google.com/p/mapnik-utils/source/browse/#svn/branches/cascadenik-xmlbad
+SVN checkout:
+http://mapnik-utils.googlecode.com/svn/branches/cascadenik-xmlbad
+
+Cheers,
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100729/c71abdcb/attachment.html>
+
+From dane at dbsgeo.com  Fri Jul 30 08:45:14 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 29 Jul 2010 23:45:14 -0700
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+Message-ID: <30F645E6-2D01-41BF-A1C0-30B750390C38@dbsgeo.com>
+
+Richard! great stuff! comments inline...
+
+On Jul 23, 2010, at 11:15 AM, Richard Weait wrote:
+
+> Next Steps
+> ==========
+> 
+> Confirm date and location - I think we have enough to go ahead with
+> this.  I say, "It's on", and I bet when you see the list of attendees
+> you'll say, "Wow.  It sure is!"
+> TODO (Everybody):  Put the Mapnik Code Sprint: Committers and
+> Cartographers on your calendar now.
+> 
+
+Done. I can likely do either weekend. If September 24 - 26, 2010 is the consensus best date then that be it.
+
+> Confirm venue - I'd like for somebody London-local to suggest the
+> perfect venue.  Please help.
+> 
+
+yes, please help :) (says the other north american)
+
+> A cool meeting place with a great internet connection and proximity to
+> food and entertainment is best.  A connected or nearby hotel for our
+> travellers, comfy and affordable is important.  And a reasonable
+> connection to London airports is preferred.  Frugality is important.
+
+All sounds good.
+
+> At this point, we, the attendees, are sharing the expenses.
+
+Yes, and I'll be likely lean on cash coming off several weeks in Spain for FOSS4G, so frugality sounds good.
+
+> TODO (London Expert): Suggest perfect venue
+> 
+> Approach sponsors - I have a a few potential sponsors in mind.  You
+> should send me your ideas too.
+> 
+> It would be wonderful if a handful of sponsors would step forward and
+> offer to absorb the cost of the venue and some refreshments during the
+> code sprint.  It would be super if they would also agree to defray
+> some of the travel expenses for those who could use the help.  It
+> would be over the moon amazing if they would express interest in a
+> series of code sprints with shared sponsorship.  I like the idea of
+> another code sprint in early 2011 as well.
+> TODO (Richard): contact potential sponsors.
+> 
+
+well put!
+
+> 
+> Feedback
+> ========
+> 
+> Yes please.  Replies to this list preferred, or directly to me.
+
+Thanks for the awesome effort organizing.
+
+*stoked*
+- Dane
+
+From dane at dbsgeo.com  Fri Jul 30 08:47:27 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 29 Jul 2010 23:47:27 -0700
+Subject: [Mapnik-devel] OpenStreetMap WMS as an Apache Module
+In-Reply-To: <4C4D82FA.8040007@remote.org>
+References: <4C4D82FA.8040007@remote.org>
+Message-ID: <E6E65ABE-2E8A-4DAB-91C3-9F8707BFB01D@dbsgeo.com>
+
+Frederik,
+
+Brilliant stuff! I'll be looking to test it (http://wiki.osgeo.org/wiki/Benchmarking_2010) in the coming weeks and will report back. I think I have a plan for how to switch on/off layers on the mapnik::Map object (with non-const layers) based on the request params, just needs a bit more thinking and testing.
+
+Cheers,
+
+Dane
+
+
+On Jul 26, 2010, at 5:43 AM, Frederik Ramm wrote:
+
+> Hi,
+> 
+>   just a quick note about the newly released mod_mapnik_wms, a C/C++ module for Apache2 that implements a simple-but-fully-conformant Mapnik-based WMS. It is availabe under GPL from the OSM SVN, and if anyone has anything to say,or ask, or contribute, don't let me stop you ;)
+> 
+> http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+> 
+> The module was written by me mainly for implementing a subscription-based WMS that my company, Geofabrik, operates, but we think that it might benefit a larger audience.
+> 
+> Enjoy,
+> Frederik
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Fri Jul 30 08:49:21 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 29 Jul 2010 23:49:21 -0700
+Subject: [Mapnik-devel] Update: cascadenik "-xmlbad" branch
+In-Reply-To: <AANLkTikFrk91+KeC98zY4suLY0MVYmm=+9EFFEnOCr8U@mail.gmail.com>
+References: <AANLkTikFrk91+KeC98zY4suLY0MVYmm=+9EFFEnOCr8U@mail.gmail.com>
+Message-ID: <D4E0A24B-37BC-494B-9F11-C76F618170F6@dbsgeo.com>
+
+Robert,
+
+Thanks so much for this contribution!
+
+Dane
+
+
+On Jul 29, 2010, at 2:28 AM, Robert Coup wrote:
+
+> Hi folks,
+> 
+> A wee while back Mike Migurski started the cascadenik-xmlbad branch, enabling cascadenik styles to be applied directly to a mapnik map object (as an alternative to producing XML). In the last few weeks I've picked it up, ported a years worth of changes from trunk, and fixed a bunch of bugs & missing bits. Thanks to Dane for his help too.
+> 
+> If people are/were using the -xmlbad branch, it would be great if you could update to the newest revisions and give me some feedback. :) And if you are interested in applying cascadenik styles to a mapnik Map in python rather than producing XML, give it a go.
+>  
+> SVN browse: http://code.google.com/p/mapnik-utils/source/browse/#svn/branches/cascadenik-xmlbad
+> SVN checkout: http://mapnik-utils.googlecode.com/svn/branches/cascadenik-xmlbad
+> 
+> Cheers,
+> 
+> Rob :)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100729/d9b6e112/attachment.html>
+
+From dane at dbsgeo.com  Fri Jul 30 08:49:57 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 29 Jul 2010 23:49:57 -0700
+Subject: [Mapnik-devel] Mapnik Code Sprint: Committers and Cartographers
+In-Reply-To: <AANLkTimmprEd=YfADqvk4jrJfycWBTU6Yd=UMqdUMxr2@mail.gmail.com>
+References: <AANLkTimyZjobBbjgotNRbNWlXpASj61pdKc8XAQ-2luT@mail.gmail.com>
+	<AANLkTinz78_HyOyK+=hroejN3Zu1quTgvZx6M9=_e3_t@mail.gmail.com>
+	<AANLkTimmprEd=YfADqvk4jrJfycWBTU6Yd=UMqdUMxr2@mail.gmail.com>
+Message-ID: <CC7F7BA0-B545-40E2-8831-56F823BBE0E4@dbsgeo.com>
+
+
+On Jul 27, 2010, at 3:02 AM, Andrii V. Mishkovskyi wrote:
+
+>> Yes please.  Replies to this list preferred, or directly to me.
+> 
+> I can only hope that my visa application will get approved in time.
+> Other than that I'm ready to code for three days nonstop. :)
+
+/me hopes too
+
+
+From dane at dbsgeo.com  Fri Jul 30 09:07:26 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 30 Jul 2010 00:07:26 -0700
+Subject: [Mapnik-devel] Mapnik in FOSS4G benchmark
+Message-ID: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+
+Just a reminder that I've stepped up to put mapnik through the paces in the FOSS4G benchmark, or "WMS Shootout".
+
+http://wiki.osgeo.org/wiki/Benchmarking_2010
+
+This is a friendly competition, and in past years has resulted in many new fixes and code innovations for the MapServer and GeoServer teams that have competed. They also seemed to create a good vibe of collaboration, which I admired.
+
+I figured it would benefit the Mapnik project to go through the same process and learn from the comparison. My work on projection code optimization came from my first week testing (https://lists.berlios.de/pipermail/mapnik-devel/2010-July/001199.html). Basically I knew that the WMS load tests that will be placed on mapnik will be numerous and I wanted to see whether requests/sec increased significantly if the server was run with more potential threads. I found that it didn't, until I removed and fixed up some of the thread safety code around proj4.
+
+Anyway, if you are interested in helping test, supporting on any other level, or have questions, just get in touch.
+
+In the coming weeks the actual benchmarking server will finish being set fully up with the same data and styles to be run against each software teams builds. The WMS spec was chosen as a reasonable way to load a server with random bounding box requests to test raw rendering speed under different styling scenarios. I plan to test both the newly released WMS implementation from Geofabrik (mod_mapnik_wms)[1] and a yet-un-released boost::asio-based server I have been working on (aka. paleoserver). For those that are interested all the styles and scripts I create along the way will be available in the osgeo svn [3].
+
+Cheers,
+
+Dane
+
+
+[1] http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+[2] http://github.com/springmeyer/paleoserver
+[3] http://svn.osgeo.org/osgeo/foss4g/benchmarking
+
+From espen.isaksen at gmail.com  Fri Jul 30 09:54:05 2010
+From: espen.isaksen at gmail.com (Espen Isaksen)
+Date: Fri, 30 Jul 2010 09:54:05 +0200
+Subject: [Mapnik-devel] [Mapnik-users] Mapnik in FOSS4G benchmark
+In-Reply-To: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+References: <5B348853-D343-4753-ADC0-5917DFFB6E31@dbsgeo.com>
+Message-ID: <AANLkTimj9i69xqc1zR_OhGbZo1AfaKy+W+V5w7UPup-C@mail.gmail.com>
+
+Great to see that Mapnik is added to this "competition". Not only
+should it be good for code quality, it should also be good for getting
+Mapnik known for even more people. Keep up the great work!
+
+Espen
+
+
+
+2010/7/30 Dane Springmeyer <dane at dbsgeo.com>:
+> Just a reminder that I've stepped up to put mapnik through the paces in the FOSS4G benchmark, or "WMS Shootout".
+>
+> http://wiki.osgeo.org/wiki/Benchmarking_2010
+>
+> This is a friendly competition, and in past years has resulted in many new fixes and code innovations for the MapServer and GeoServer teams that have competed. They also seemed to create a good vibe of collaboration, which I admired.
+>
+> I figured it would benefit the Mapnik project to go through the same process and learn from the comparison. My work on projection code optimization came from my first week testing (https://lists.berlios.de/pipermail/mapnik-devel/2010-July/001199.html). Basically I knew that the WMS load tests that will be placed on mapnik will be numerous and I wanted to see whether requests/sec increased significantly if the server was run with more potential threads. I found that it didn't, until I removed and fixed up some of the thread safety code around proj4.
+>
+> Anyway, if you are interested in helping test, supporting on any other level, or have questions, just get in touch.
+>
+> In the coming weeks the actual benchmarking server will finish being set fully up with the same data and styles to be run against each software teams builds. The WMS spec was chosen as a reasonable way to load a server with random bounding box requests to test raw rendering speed under different styling scenarios. I plan to test both the newly released WMS implementation from Geofabrik (mod_mapnik_wms)[1] and a yet-un-released boost::asio-based server I have been working on (aka. paleoserver). For those that are interested all the styles and scripts I create along the way will be available in the osgeo svn [3].
+>
+> Cheers,
+>
+> Dane
+>
+>
+> [1] http://wiki.openstreetmap.org/wiki/Mod_mapnik_wms
+> [2] http://github.com/springmeyer/paleoserver
+> [3] http://svn.osgeo.org/osgeo/foss4g/benchmarking
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+

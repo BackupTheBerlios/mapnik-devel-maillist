@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Map tiling patch
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20tiling%20patch&In-Reply-To=%3C1163986842.6104.18.camel%40torpedo.onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000054.html">
+   <LINK REL="Next"  HREF="000056.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Map tiling patch</H1>
+    <B>Toby Collett</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Map%20tiling%20patch&In-Reply-To=%3C1163986842.6104.18.camel%40torpedo.onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] Map tiling patch">toby.collett at onetrackmind.co.nz
+       </A><BR>
+    <I>Mon Nov 20 02:40:42 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000054.html">[Mapnik-devel] more text placement patches
+</A></li>
+        <LI>Next message: <A HREF="000056.html">[Mapnik-devel] Map tiling patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#55">[ date ]</a>
+              <a href="thread.html#55">[ thread ]</a>
+              <a href="subject.html#55">[ subject ]</a>
+              <a href="author.html#55">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+The attached patch allows for a selected pixel region within an extent
+to be rendered. This allows for a large extent (larger than can be
+rendered into a single image in memory) to be rendered out as tiles.
+Since the full extent is used for the placement calculations text
+crossing tile boundaries will be consistent.
+
+This method is a little inefficient when a large number of labels need
+placed, an improved method would be to cache these placements between
+tiles, but the attached is a start.
+
+c++ users should simple call the render method with a start X and Y
+coordinate specified, 
+
+for (int TileX = 0;TileX &lt; 5;++TileX)
+{
+	for(int TileY = 0;TileY &lt; 5; ++TileY)
+	{
+		int TileSize=250;
+		int StartX = TileX*TileSize;
+		int StartY = TileY*TileSize;
+		
+		Image32 buf(TileSize,TileSize);
+		agg_renderer&lt;Image32&gt; ren(m,buf,StartX,StartY);
+		
+		ren.apply();
+		char name[324];
+		sprintf(name,&quot;tile_%d_%d.png&quot;,TileX,TileY);
+		ImageUtils::save_to_file(name,&quot;png&quot;,buf);
+	}
+}
+
+python users should call render_tile_to_file
+
+for y in range(tile_count_y):
+	for x in range(tile_count_x):
+		if not os.path.exists(&quot;tiles/%d/%d/&quot; % (map_scale, y)):
+			os.makedirs(&quot;tiles/%d/%d/&quot; % (map_scale, y))
+		render_tile_to_file(m, x*tile_size, y*tile_size, tile_size, tile_size,
+'tiles/%d/%d/%d.png' % (map_scale,y,x), 'png')
+
+Enjoy,
+Toby
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_tile.diff
+Type: text/x-patch
+Size: 5309 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061120/9fa5b513/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061120/9fa5b513/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000054.html">[Mapnik-devel] more text placement patches
+</A></li>
+	<LI>Next message: <A HREF="000056.html">[Mapnik-devel] Map tiling patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#55">[ date ]</a>
+              <a href="thread.html#55">[ thread ]</a>
+              <a href="subject.html#55">[ subject ]</a>
+              <a href="author.html#55">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

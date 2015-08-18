@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Any advice on debugging placement_finder?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C69235BC5-CF67-4A4B-9BBE-584E1DC87C8A%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000573.html">
+   <LINK REL="Next"  HREF="000574.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Any advice on debugging placement_finder?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Any%20advice%20on%20debugging%20placement_finder%3F&In-Reply-To=%3C69235BC5-CF67-4A4B-9BBE-584E1DC87C8A%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Any advice on debugging placement_finder?">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 27 12:26:41 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000573.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+        <LI>Next message: <A HREF="000574.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#571">[ date ]</a>
+              <a href="thread.html#571">[ thread ]</a>
+              <a href="subject.html#571">[ subject ]</a>
+              <a href="author.html#571">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 27 Mar 2008, at 00:32, Jon Burgess wrote:
+
+&gt;<i> There is one OSM tile which causes the mapnik rendering code to get
+</I>&gt;<i> stuck in an infinite loop. Strictly speaking it is the freetype  
+</I>&gt;<i> library
+</I>&gt;<i> which loops, but it seems to be triggered by a broken text placement.
+</I>&gt;<i>
+</I>&gt;<i> It is using the text_symbolizer on the water layer which is trying to
+</I>&gt;<i> apply a text label using the line_placement on an area with some  
+</I>&gt;<i> holes.
+</I>&gt;<i> I added some debug into font_engine_freetype prepare_glyphs() &amp;  
+</I>&gt;<i> render()
+</I>&gt;<i> and this seems to indicate that it has been given a text_path with  
+</I>&gt;<i> many
+</I>&gt;<i> 'nan' positions.
+</I>&gt;<i>
+</I>
+Looks wrong. I'm trying to identify that polygon in database:
+wget <A HREF="http://www.openstreetmap.org/api/0.5/map?">http://www.openstreetmap.org/api/0.5/map?</A> 
+bbox=4.08416748047,51.8069165352,4.13360595703,51.8374746497
+
+  There is :
+..
+  &lt;relation id=&quot;1432&quot; visible=&quot;true&quot; timestamp=&quot;2008-03-12T15:52:58 
++00:00&quot; user=&quot;robx&quot;&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;6286890&quot; role=&quot;outer&quot;/&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;8164848&quot; role=&quot;inner&quot;/&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;8164849&quot; role=&quot;inner&quot;/&gt;
+     &lt;member type=&quot;way&quot; ref=&quot;8164850&quot; role=&quot;inner&quot;/&gt;
+     &lt;tag k=&quot;type&quot; v=&quot;multipolygon&quot;/&gt;
+   &lt;/relation&gt;
+
+
+I'm using latest osm2pgsql but it seems to ignoring 'inner' roles :
+
+openstreetmap=# select isvalid(way),ST_NumInteriorRings(way),osm_id  
+from planet_osm_polygon where name like 'Noord%';
+  isvalid | st_numinteriorrings | osm_id
+---------+---------------------+--------
+  t       |                   0 |   1432
+
+
+Jon, could you send me actual db dump for that polygon?
+
+
+The prime suspect  is in placement_finder.cpp (378:396) -  it looks  
+wrong to me
+Cheers
+Artem
+
+&gt;<i> start layer processing : water
+</I>&gt;<i> datasource = 0x13f23b0
+</I>&gt;<i> borrow 0x703f60
+</I>&gt;<i> select asbinary(way) as
+</I>&gt;<i> geom,&quot;landuse&quot;,&quot;name&quot;,&quot;natural&quot;,&quot;tunnel&quot;,&quot;waterway&quot; from (select *  
+</I>&gt;<i> from
+</I>&gt;<i> planet_osm_polygon where landuse='reservoir' or landuse='water' or
+</I>&gt;<i> &quot;natural&quot;='lake' or &quot;natural&quot;='water' or &quot;natural&quot;='land' order by
+</I>&gt;<i> z_order) as water where way &amp;&amp; setSRID('BOX3D(454647.4442402283
+</I>&gt;<i> 6765288.499464378,460150.910276761 6770791.965500911)'::box3d,900913)
+</I>&gt;<i> ENCODING = UTF8
+</I>&gt;<i> return 0x703f60
+</I>&gt;<i> [ prepare_glyphs() is called ]
+</I>&gt;<i>    New glyphs: 12
+</I>&gt;<i>    prepare_glyph: N,-1.20924,-3.28447,-0.35277
+</I>&gt;<i>    pushed_glyph: 0 N,-1.20924,-3.28447,-0.35277
+</I>&gt;<i>    prepare_glyph: o,5.25727,-5.66341,-0.384141
+</I>&gt;<i>    pushed_glyph: 1 o,5.25727,-5.66341,-0.384141
+</I>&gt;<i>    prepare_glyph: o,10.82,-7.91199,-0.384141
+</I>&gt;<i>    pushed_glyph: 2 o,10.82,-7.91199,-0.384141
+</I>&gt;<i>    prepare_glyph: r,16.3827,-10.1606,-0.384141
+</I>&gt;<i>    pushed_glyph: 3 r,16.3827,-10.1606,-0.384141
+</I>&gt;<i>    prepare_glyph: d,23.3861,-5.53079,2.53918
+</I>&gt;<i>    pushed_glyph: 4 d,23.3861,-5.53079,2.53918
+</I>&gt;<i>    prepare_glyph:  ,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 5  ,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: P,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 6 P,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: a,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 7 a,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: m,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 8 m,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: p,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 9 p,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: u,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 10 u,nan,nan,nan
+</I>&gt;<i>    prepare_glyph: s,nan,nan,nan
+</I>&gt;<i>    pushed_glyph: 11 s,nan,nan,nan
+</I>&gt;<i> [ now render() is called on the prepared glyphs ]
+</I>&gt;<i>    pulling_glyph: 0
+</I>&gt;<i>    pulling_glyph: 1
+</I>&gt;<i>    pulling_glyph: 2
+</I>&gt;<i>    pulling_glyph: 3
+</I>&gt;<i>    pulling_glyph: 4
+</I>&gt;<i>    pulling_glyph: 5
+</I>&gt;<i>    pulling_glyph: 6
+</I>&gt;<i>    pulling_glyph: 7
+</I>&gt;<i>    pulling_glyph: 8
+</I>&gt;<i>    pulling_glyph: 9
+</I>&gt;<i> [ the render code is stuck in a loop here ]
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> If you want to reproduce this, the .osm file below contains sufficient
+</I>&gt;<i> data to trigger the bug:
+</I>&gt;<i> <A HREF="http://tile.openstreetmap.org/rotterdam-broken.osm">http://tile.openstreetmap.org/rotterdam-broken.osm</A>
+</I>&gt;<i>
+</I>&gt;<i> The area ways have the name &quot;Noord Pampus&quot; and are in a multipolygon
+</I>&gt;<i> relation. The tile which triggers this problem is /16/33517/21696.png
+</I>&gt;<i> (please don't request this tile from the main OSM site, it'll trigger
+</I>&gt;<i> this bug). It only occurs on this zoom level. Note that this is being
+</I>&gt;<i> done with mod_tile meta-tiling so it is actually rendering the 8x8
+</I>&gt;<i> tiles:
+</I>&gt;<i> 	x=33512 - 33519
+</I>&gt;<i> 	y=21696 - 21703
+</I>&gt;<i> 	z=16
+</I>&gt;<i>
+</I>&gt;<i> I'm wondering whether the placement algorithm has tried to place the
+</I>&gt;<i> text over a discontinuity between 2 different rings of the polygon.
+</I>&gt;<i>
+</I>&gt;<i> Any ideas on how best to debug this?
+</I>&gt;<i>
+</I>&gt;<i> 	Jon
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000573.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+	<LI>Next message: <A HREF="000574.html">[Mapnik-devel] Any advice on debugging placement_finder?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#571">[ date ]</a>
+              <a href="thread.html#571">[ thread ]</a>
+              <a href="subject.html#571">[ subject ]</a>
+              <a href="author.html#571">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

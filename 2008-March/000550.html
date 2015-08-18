@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik viewer and OSM rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C2F4D9270-739A-43EF-A3F1-6C8567EE0AC9%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000553.html">
+   <LINK REL="Next"  HREF="000554.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik viewer and OSM rendering</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C2F4D9270-739A-43EF-A3F1-6C8567EE0AC9%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik viewer and OSM rendering">artem at mapnik.org
+       </A><BR>
+    <I>Fri Mar 14 13:27:15 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000553.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+        <LI>Next message: <A HREF="000554.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#550">[ date ]</a>
+              <a href="thread.html#550">[ thread ]</a>
+              <a href="subject.html#550">[ subject ]</a>
+              <a href="author.html#550">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Ben,
+
+
+&gt;<i> Hi, I've been doing some work adding PDF output to mapnik. It's  
+</I>&gt;<i> still a
+</I>&gt;<i> work in progress, around 90% done and was going to be released when
+</I>&gt;<i> finished.
+</I>&gt;<i>
+</I>&gt;<i> - I've used a patched wxPdfDoc for the pdf rendering.
+</I>&gt;<i> - Most symbolizers are implemented.
+</I>&gt;<i> - Tried to make it as a separate library to mapnik, but had to  
+</I>&gt;<i> subclass
+</I>&gt;<i> some of the symbolizers. Mostly this was adding output sizes to  
+</I>&gt;<i> images,
+</I>&gt;<i> since pixels don't correspond to page measurements.
+</I>&gt;<i> - Implemented PDF layers, so you can turn things on and off.
+</I>&gt;<i>
+</I>&gt;<i> I've uploaded a test file using the example data set:
+</I>&gt;<i> <A HREF="http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html">http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html</A>
+</I>&gt;<i>
+</I>
+Great stuff. Are you aware of Tom Hughes cairo_renderer (svn trunk)  
+which can output vector PDF, PS and SVG amongst other things?
+
+
+&gt;<i> Please ignore the funky colours and overlays, that was just for  
+</I>&gt;<i> testing
+</I>&gt;<i> to make sure everything was lining up right.
+</I>&gt;<i>
+</I>&gt;<i> Let me know if you're interested in this in its unfinished state.
+</I>&gt;<i>
+</I>
+It looks like great area to swap notes.  I tested cairo_renderer and  
+results are good. I don't know much about wxPdfDoc and what it uses  
+underneath. In general, having as many  rendering back-ends as  
+possible is great and using wxPdfDoc might be good choice for you  
+particular application, but please have a look at cairo implementation.
+
+If you could publish even unfinished code somewhere I'd like to have  
+a look. Perhaps, 'experimental' branch in SVN ? Let me know if you  
+would like write access.
+
+&gt;<i>
+</I>&gt;<i> Ben
+</I>&gt;<i>
+</I>
+Cheers
+Artem
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Nick Whitelegg wrote:
+</I>&gt;&gt;<i> Hello Artem, (and all)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Got the Mapnik viewer running tonight with the OSM plugin. After  
+</I>&gt;&gt;<i> playing
+</I>&gt;&gt;<i> around with it here are some enhancement ideas (aside from the  
+</I>&gt;&gt;<i> ability to
+</I>&gt;&gt;<i> change styles through the GUI) - if these fit in with your plans  
+</I>&gt;&gt;<i> I'll start
+</I>&gt;&gt;<i> working on them:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - when an OSM layer (or indeed any other data layer) is loaded,  
+</I>&gt;&gt;<i> set the bounds
+</I>&gt;&gt;<i> of the visible map to be the bounds of the data just loaded;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - show current coordinates on-screen;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - show high level OSM data types (e.g. &quot;footpath&quot;, &quot;pub&quot;) and  
+</I>&gt;&gt;<i> allow the user
+</I>&gt;&gt;<i> to change their styles without knowing the details of the tagging  
+</I>&gt;&gt;<i> scheme;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Interactive OSM browser mode, where the viewer will download and  
+</I>&gt;&gt;<i> then cache
+</I>&gt;&gt;<i> live data from OSM by tile.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Export to PDF, etc, for printing.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does this sound good?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Nick
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000553.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+	<LI>Next message: <A HREF="000554.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#550">[ date ]</a>
+              <a href="thread.html#550">[ thread ]</a>
+              <a href="subject.html#550">[ subject ]</a>
+              <a href="author.html#550">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

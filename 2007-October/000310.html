@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Mapnik-users] New MacPort
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20New%20MacPort&In-Reply-To=%3C3B1AABCE-6FF5-40E2-A06B-BCB3A795B0D8%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000317.html">
+   <LINK REL="Next"  HREF="000311.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Mapnik-users] New MacPort</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20New%20MacPort&In-Reply-To=%3C3B1AABCE-6FF5-40E2-A06B-BCB3A795B0D8%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] [Mapnik-users] New MacPort">artem at mapnik.org
+       </A><BR>
+    <I>Thu Oct 18 10:23:16 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000317.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+        <LI>Next message: <A HREF="000311.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#310">[ date ]</a>
+              <a href="thread.html#310">[ thread ]</a>
+              <a href="subject.html#310">[ subject ]</a>
+              <a href="author.html#310">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Paul,
+
+Thanks for your effort! I'm new to MacPorts.
+I followed instructions and here're some feedback :
+
+1. patch-SConstruct is not needed for the latest svn trunk
+2. With only port:boost in depends_libs , build fails because boost- 
+python is missing
+     There's no way to specify a particular variant in depends_lib  ??
+3. If I 'port'  boost +python24 independently I get to the end of the  
+build , but boost_python is wrongly linked against python2.3  
+(installed by default on 10.4.x)
+4. The whole process takes quite a while (building all boost libs,  
+proj4, gdal etc). Maybe splitting boost into individual libraries   
+would be a better approach :
+
+	port:boost-headers
+         port:boost-filesystem
+         port:boost-python
+         port:boost-regex
+         port:boost-thread
+
+
+Cheers,
+Artem
+
+On 9 Oct 2007, at 17:54, Paul Smith wrote:
+
+&gt;<i> Hi Artem,
+</I>&gt;<i>
+</I>&gt;<i> On 10/9/07, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;&gt;<i> Not, yet. Do I need to install some utilities? port? I'll give it  
+</I>&gt;&gt;<i> a try
+</I>&gt;<i>
+</I>&gt;<i> You need MacPorts &lt;<A HREF="http://www.macports.org/">http://www.macports.org/</A>&gt;, then download the port
+</I>&gt;<i> file from the Trac ticket here:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.macports.org/projects/macports/ticket/12784">http://trac.macports.org/projects/macports/ticket/12784</A>
+</I>&gt;<i>
+</I>&gt;<i> Then follow the directions here for installing a local port:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://geeklair.net/new_macports_guide/#development.local-repositories">http://geeklair.net/new_macports_guide/#development.local-repositories</A>
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i> -Paul
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 25 Sep 2007, at 22:20, Paul Smith wrote:
+</I>&gt;&gt;<i> I submitted a new port to MacPorts of Mapnik:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://trac.macports.org/projects/macports/ticket/12784">http://trac.macports.org/projects/macports/ticket/12784</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hopefully this will make it a little easier for OS X users to get  
+</I>&gt;&gt;<i> up and
+</I>&gt;&gt;<i> running with Mapnik.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Feedback welcome. I'm interested in others' success/failure  
+</I>&gt;&gt;<i> because I've had
+</I>&gt;&gt;<i> difficulty building the port. _mapnik.so winds up being linked  
+</I>&gt;&gt;<i> against the
+</I>&gt;&gt;<i> OS X Framework Python (as reported by `otool -L`), instead of the  
+</I>&gt;&gt;<i> Python
+</I>&gt;&gt;<i> binary and libs installed under /opt/local. I'm not sure how the  
+</I>&gt;&gt;<i> port will
+</I>&gt;&gt;<i> react to various Python environments.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I also built the port against an arbitrary snapshot of the SVN  
+</I>&gt;&gt;<i> repo (r526),
+</I>&gt;&gt;<i> because that's what I was working against at the time, and it  
+</I>&gt;&gt;<i> seemed better
+</I>&gt;&gt;<i> than 0.4.0, which I couldn't get to build on my machine.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> -Paul
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Hi Paul,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm still in the US, hence very slow to reply.  MacPorts  sounds   
+</I>&gt;&gt;<i> good.
+</I>&gt;&gt;<i> You're right, latest svn trunk is much better then 0.4:)
+</I>&gt;&gt;<i> I'll check it out when I'm back to Oxford.
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i> Artem
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Paul Smith
+</I>&gt;&gt;<i> <A HREF="http://www.pauladamsmith.com/">http://www.pauladamsmith.com/</A>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-users mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-users at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-users">https://lists.berlios.de/mailman/listinfo/mapnik-users</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Artem Pavlenko
+</I>&gt;&gt;<i> <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Paul Smith
+</I>&gt;&gt;<i> <A HREF="http://www.pauladamsmith.com/">http://www.pauladamsmith.com/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Artem Pavlenko
+</I>&gt;&gt;<i> <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Paul Smith
+</I>&gt;<i> <A HREF="http://www.pauladamsmith.com/">http://www.pauladamsmith.com/</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071018/5e758892/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071018/5e758892/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000317.html">[Mapnik-devel] Python argument types did not match C++ signature
+</A></li>
+	<LI>Next message: <A HREF="000311.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#310">[ date ]</a>
+              <a href="thread.html#310">[ thread ]</a>
+              <a href="subject.html#310">[ subject ]</a>
+              <a href="author.html#310">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

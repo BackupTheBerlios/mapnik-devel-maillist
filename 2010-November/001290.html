@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Colorizer and data types
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CAANLkTi%3D28VhOZ9JdpTQ9s%3DCFwUDx4RYbmMWZrFN8dRiw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001289.html">
+   <LINK REL="Next"  HREF="001291.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Colorizer and data types</H1>
+    <B>Maxime Dupuis</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Colorizer%20and%20data%20types&In-Reply-To=%3CAANLkTi%3D28VhOZ9JdpTQ9s%3DCFwUDx4RYbmMWZrFN8dRiw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Raster Colorizer and data types">maxime.dupuis at ecometrica.org
+       </A><BR>
+    <I>Wed Nov 10 20:27:43 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001289.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+        <LI>Next message: <A HREF="001291.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1290">[ date ]</a>
+              <a href="thread.html#1290">[ thread ]</a>
+              <a href="subject.html#1290">[ subject ]</a>
+              <a href="author.html#1290">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello mapnik developers,
+
+This is my first message on the dev mailing list, so bare with me. :)
+
+I started using mapnik only a month ago and I had to use the new gdal Raster
+Colorizer to colormap a geotif. In my particular case, I had 2 geotifs with
+one gray raster band each, one with GDT_Int16 data and the other with
+GDT_Byte. When I applied a color map to the GDT_Int16 raster band, Only one
+color matched and was being applied. None in the case of the other geotif.
+
+The problem, I think, lies in the way the band data is read and stored in
+memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+attribute's pointer, however, is retrived as a pointer of unsigned chars
+(which makes sense since it asks gdal for GDT_Byte data) while it's really a
+pointer of unsigned ints.
+
+After looking at the code, I noticed that the color values I specify in the
+xml file doesn't correspond to what is read from the geotif. So what I did
+is changed the way the data is read from the xml file (quick and hackish but
+it works). I can provide the diff if you want.
+
+Also, I looked at how qgis did it, because I had no problem colormapping
+with it and I came up to the conclusion that the best way for mapnik to do
+color mapping is to use the ImageData template as, well, a template rather
+than use the typdef image_data_32 everywhere. But I'm not the best person to
+judge that as I'm not involved in mapnik's development.
+
+
+Maxime Dupuis
+Ecometrica
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101110/9bd06701/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101110/9bd06701/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001289.html">[Mapnik-devel] Multiple placements for TextSymbolizer
+</A></li>
+	<LI>Next message: <A HREF="001291.html">[Mapnik-devel] Raster Colorizer and data types
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1290">[ date ]</a>
+              <a href="thread.html#1290">[ thread ]</a>
+              <a href="subject.html#1290">[ subject ]</a>
+              <a href="author.html#1290">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

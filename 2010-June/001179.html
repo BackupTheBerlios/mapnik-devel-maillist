@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support GSoC's project
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3CAANLkTik5lk3oL_T7QyfS3UlypnduEQKSd0zkfFmYI8-x%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001178.html">
+   <LINK REL="Next"  HREF="001180.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support GSoC's project</H1>
+    <B>Carlos Enrique L&#243;pez Garc&#233;s</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20GSoC%27s%20project&In-Reply-To=%3CAANLkTik5lk3oL_T7QyfS3UlypnduEQKSd0zkfFmYI8-x%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Better Print Support GSoC's project">carlos.lopez.garces at gmail.com
+       </A><BR>
+    <I>Sat Jun 12 11:26:07 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001178.html">[Mapnik-devel] Better Print Support Project: Work so far
+</A></li>
+        <LI>Next message: <A HREF="001180.html">[Mapnik-devel] mapnik c++
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1179">[ date ]</a>
+              <a href="thread.html#1179">[ thread ]</a>
+              <a href="subject.html#1179">[ subject ]</a>
+              <a href="author.html#1179">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello everybody, I've been working now with agg_renderer since I found a
+problem with cairo_renderer and building symbolizers I haven't solved yet.
+The scaling of building and text symbolizers (in point placement) was
+relatively straightforward. However to scale polygon symbolizers in the same
+way I did in cairo_renderer I require to make changes in AGG's add_path set
+of functions. Making changes there is a bad idea in my opinion, but I would
+like to know from you if it is a valid approach or has been used before for
+other purposes (I read in its documentation that agg is meant to be
+extended, but I'm sure those extensions are made in some other way).
+
+If you have a chance, please take a look at my implementation:
+<A HREF="http://trac.mapnik.org/changeset/1857.">http://trac.mapnik.org/changeset/1857.</A> It would be very valuable to me to
+know about the point of view of the community. I committed image of the maps
+I've been rendering with each step I take, so looking at them is a good way
+to see how the implementation works without compiling the examples. The name
+of the files are labeled with the name of the renderer that produced them,
+their size and scale factor applied.
+
+Finally, as you may see in image 'cairo_wb1_800x600x1.png' (
+<A HREF="http://trac.mapnik.org/browser/branches/mapnik_resolution/demo/c%2B%2B/sandbox/scale_building_symbolizer/img/cairo_wb1_800x600x1.png?rev=1857">http://trac.mapnik.org/browser/branches/mapnik_resolution/demo/c%2B%2B/sandbox/scale_building_symbolizer/img/cairo_wb1_800x600x1.png?rev=1857</A>),
+some lines are appearing across the image, which do not show up when
+rendered with agg_renderer. The most probable reason is that I introduced
+some bug when making the changes, but I would like to know if anyone has ran
+into this problem.
+
+Artem, I saw you were also experimenting with scale factor in agg_renderer
+and your comment about discussing the way to expose it to the user with Dane
+Springmeyer and me. Until now, I've just concentrated in making scaling look
+good, but I'll look for alternatives tomorrow. My current implementation is
+to have it as a data member in Map object.
+
+Thanks in advance,
+
+Carlos L&#243;pez
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100612/d38ed312/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100612/d38ed312/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001178.html">[Mapnik-devel] Better Print Support Project: Work so far
+</A></li>
+	<LI>Next message: <A HREF="001180.html">[Mapnik-devel] mapnik c++
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1179">[ date ]</a>
+              <a href="thread.html#1179">[ thread ]</a>
+              <a href="subject.html#1179">[ subject ]</a>
+              <a href="author.html#1179">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

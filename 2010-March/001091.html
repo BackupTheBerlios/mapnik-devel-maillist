@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3CE565A82C-99F8-4C87-94D0-085F6376A9A3%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001090.html">
+   <LINK REL="Next"  HREF="001093.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3CE565A82C-99F8-4C87-94D0-085F6376A9A3%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">blake at hailmail.net
+       </A><BR>
+    <I>Thu Mar 11 19:02:14 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001090.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+        <LI>Next message: <A HREF="001093.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1091">[ date ]</a>
+              <a href="thread.html#1091">[ thread ]</a>
+              <a href="subject.html#1091">[ subject ]</a>
+              <a href="author.html#1091">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+</I>&gt;&gt;<i> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+++ :)
+
+&gt;<i> Great to hear.
+</I>&gt;<i>
+</I>&gt;<i> I'm using 0.7.1 for development, because it is easier for me (no need
+</I>&gt;<i> to compile separate boost for mapnik).
+</I>&gt;<i> Except for eventual naming conventions it is quite ready to commit to
+</I>&gt;<i> 0.7.1 and also it doesn't change anything with default values. To use
+</I>&gt;<i> new features one must change format parameters in his application, so
+</I>&gt;<i> nothing should be broken.
+</I>&gt;<i> Dane, what do You think? (CC in case of list lags).
+</I>&gt;<i>
+</I>sounds good, thanks!
+
+&gt;<i> Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+</I>&gt;<i> code doesn't differ much, mostly changes in types names.
+</I>&gt;<i>
+</I>&gt;&gt;<i> I like extra parameters for image writers, not sure what's the best  
+</I>&gt;&gt;<i> approach :
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> png256:t=1:c=128  ( similar to proj4 syntax, compact but cryptic)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> or perhaps longer but more user friendly (separate named parameters,
+</I>&gt;&gt;<i> more typing but clearer meaning):
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> type='png' colors=128  transparency_mode=1
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Not sure myself ???
+</I>&gt;<i>
+</I>&gt;<i> I considered passing parameters with format/type parameter in two  
+</I>&gt;<i> ways:
+</I>&gt;<i> - short: &quot;png256:c=128:t=1&quot; or &quot;jpeg:q=85&quot; (alternative to current  
+</I>&gt;<i> jpeg85)
+</I>&gt;<i> - long: &quot;png256:colors=128:transparency=1&quot; or &quot;jpeg:quality=85&quot;
+</I>&gt;<i>
+</I>&gt;<i> I implemented first one, because I imagined situation of passing
+</I>&gt;<i> format to rendering service in url (wms?) and first one is more
+</I>&gt;<i> compact. But = could be problem in urls, maybe just omit it (ie:
+</I>&gt;<i> &quot;png256:c128:t1:o&quot;, &quot;png256:c96:h&quot;, &quot;png256:colors128:hextree&quot;)?
+</I>&gt;<i>
+</I>&gt;<i> As I think about it now, best of two is two use both :) so short and
+</I>&gt;<i> long names could be accepted. About '=' I'm not sure.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, png256 seems wrong name generally.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> My proposition is png8 for indexed png format. With 16 colors or less
+</I>&gt;<i> it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+</I>&gt;<i> image with max 256 colors.
+</I>&gt;<i>
+</I>
+Yes, that is my thinking, mimetype is image/png8, so seems moving to  
+that naming makes sense (a good change to make in trunk since we have  
+other incompatible changes coming there).
+
+&gt;<i> For compatibility, png256 should be also recognized, i.e. it would be
+</I>&gt;<i> synonym of png8:c=256 and could accept other parameters, except number
+</I>&gt;<i> of colors (or not).
+</I>
+good thinking!
+
+&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Marcin Rudowski
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100311/182d6473/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100311/182d6473/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001090.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+	<LI>Next message: <A HREF="001093.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1091">[ date ]</a>
+              <a href="thread.html#1091">[ thread ]</a>
+              <a href="subject.html#1091">[ subject ]</a>
+              <a href="author.html#1091">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

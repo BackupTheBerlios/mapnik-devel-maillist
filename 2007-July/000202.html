@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Using the osm.xml
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20the%20osm.xml&In-Reply-To=%3C20070719145151.400b0145%40thoe.hq.intevation.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000201.html">
+   <LINK REL="Next"  HREF="000198.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Using the osm.xml</H1>
+    <B>Stephan Holl</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Using%20the%20osm.xml&In-Reply-To=%3C20070719145151.400b0145%40thoe.hq.intevation.de%3E"
+       TITLE="[Mapnik-devel] Using the osm.xml">stephan.holl at intevation.de
+       </A><BR>
+    <I>Thu Jul 19 14:51:51 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000201.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+        <LI>Next message: <A HREF="000198.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello Artem,
+
+Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt;, [20070719 - 12:35:28]
+
+[...]
+
+&gt;<i> 
+</I>&gt;<i> It is not a bug but rather missing feature :) Attached is the patch  
+</I>&gt;<i> which should help : &#65532;
+</I>&gt;<i> Here is my test case:
+</I>&gt;<i> 
+</I>&gt;<i> #!/opt/python/bin/python
+</I>&gt;<i> # -*- coding: utf-8 -*-
+</I>&gt;<i> from mapnik import *
+</I>&gt;<i> 
+</I>&gt;<i> m = Map(800,600)
+</I>&gt;<i> load_map(m,&quot;/Users/artem/projects/viewer/osm.xml&quot;)
+</I>&gt;<i> 
+</I>&gt;<i> for l in m.layers:
+</I>&gt;<i>      for style_name in l.styles:
+</I>&gt;<i>          s = m.find_style(style_name)
+</I>&gt;<i>          for r in s.rules:
+</I>&gt;<i>              for sym in r.symbols:
+</I>&gt;<i>                  print sym
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Let me know, if this solves the problem and I'll integrate in into  
+</I>&gt;<i> main trunk.
+</I>
+It compiled OK and the TypeError is away. But I did not get a map,
+everything is white. I assume I have to handcraft my rules and symboles
+for WMS, because doing so, maps appear.
+Strange.
+
+Thank you for your quick help though!
+
+Best
+	Stephan
+
+-- 
+Stephan Holl &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">stephan.holl at intevation.de</A>&gt;, <A HREF="http://intevation.de/~stephan">http://intevation.de/~stephan</A>
+Tel: +49 (0)541-33 50 8 32 | Intevation GmbH | AG Osnabr&#252;ck - HR B 18998
+Gesch&#228;ftsf&#252;hrer:  Frank Koormann, Bernhard Reiter, Dr. Jan-Oliver Wagner
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000201.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+	<LI>Next message: <A HREF="000198.html">[Mapnik-devel] Using the osm.xml
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

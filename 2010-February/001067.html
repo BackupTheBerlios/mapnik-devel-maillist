@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] mapnik on openbsd
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20on%20openbsd&In-Reply-To=%3C7708627C-2974-45F5-9B72-F2C54562517A%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001065.html">
+   <LINK REL="Next"  HREF="001069.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] mapnik on openbsd</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20on%20openbsd&In-Reply-To=%3C7708627C-2974-45F5-9B72-F2C54562517A%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] mapnik on openbsd">blake at hailmail.net
+       </A><BR>
+    <I>Wed Feb 17 21:42:00 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001065.html">[Mapnik-devel] mapnik on openbsd
+</A></li>
+        <LI>Next message: <A HREF="001069.html">[Mapnik-devel] Mapnik 0.7.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1067">[ date ]</a>
+              <a href="thread.html#1067">[ thread ]</a>
+              <a href="subject.html#1067">[ subject ]</a>
+              <a href="author.html#1067">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On Feb 15, 2010, at 1:47 AM, Erlo Meister wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I am trying to get mapnik 0.6.1 running on OpenBSD 4.6 64-bit.
+</I>
+Great, I've not heard of someone building on OpenBSD (only FreeBSD),  
+but it should be able to work, so hopefully we can get a write up on  
+the wiki once we resolve your problems.
+
+&gt;<i> I have already written a ksh script to create symlinks for all the  
+</I>&gt;<i> base .so files that are required before building.
+</I>
+Can you say more about this? Also, how did you install the dependencies?
+
+&gt;<i> I have attached the config.log from the python scons/scons.py  
+</I>&gt;<i> configure command.
+</I>&gt;<i>
+</I>&gt;<i> Some of the errors seem to need the stdc++ library.
+</I>
+Yes, these are odd errors indicating that the dependencies you've  
+built are experiencing linking problems.
+
+Essentially the build system Mapnik uses runs a test compile of tiny  
+application to see if the dependent libraries can be compiled and  
+linked and this happens before any Mapnik libraries are involved.
+
+I'm sorry I'm not very familiar with BSD systems, but on debian linux  
+this would likely be solved by doing
+
+export LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
+
+or pointing to wherever your libraries are located that the  
+depedencies, like libcairomm are using.
+
+But, regarding cairo,cairo,pycairo, these are optional dependencies  
+for Mapnik and can be disabled during the build by running
+
+$ python scons/scons.py CAIRO=False
+
+which I would recommend doing. You can also re-enable the Cairo  
+support later.
+
+&gt;<i>  How can libcairomm be fixed?
+</I>
+See, above. I would simple disable it. But it appears that other  
+libraries also may have problems within this SCons checking, so using  
+LD_LIBRARY_PATH may help.
+
+&gt;<i> There are also some mutex errors.
+</I>&gt;<i> Could pthread be enabled for OpenBSD in the same way it is enabled  
+</I>&gt;<i> for FreeBSD in SConstuct?
+</I>&gt;<i>
+</I>
+You bet. Just modify the scons lines...
+
+
+     if env['PLATFORM'] == 'FreeBSD':
+         thread_suffix = ''
+         env.Append(LIBS = 'pthread')
+
+
+.... to also support OpenBSD, and let us know what the proper way to  
+detect the platform is.
+
+&gt;<i> Please can you provide me with some pointers on how to get mapnik  
+</I>&gt;<i> working on OpenBSD.
+</I>
+Also, I would recommend building Mapnik 0.7.0 instead of 0.6.1.
+
+&gt;<i>
+</I>&gt;<i> Could a buildbot be set up for openbsd?
+</I>
+Yes, surely. That would be great. We have an active buildbot and we  
+could set your machine up as a slave. Let's do this once you get  
+things built properly.
+
+Dane
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100217/1a72c7b8/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100217/1a72c7b8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001065.html">[Mapnik-devel] mapnik on openbsd
+</A></li>
+	<LI>Next message: <A HREF="001069.html">[Mapnik-devel] Mapnik 0.7.1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1067">[ date ]</a>
+              <a href="thread.html#1067">[ thread ]</a>
+              <a href="subject.html#1067">[ subject ]</a>
+              <a href="author.html#1067">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik performance for applications
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081019232807.4f71eb5b%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000751.html">
+   <LINK REL="Next"  HREF="000753.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik performance for applications</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20performance%20for%20applications&In-Reply-To=%3C20081019232807.4f71eb5b%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik performance for applications">lists at brachttal.net
+       </A><BR>
+    <I>Sun Oct 19 23:28:07 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000751.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+        <LI>Next message: <A HREF="000753.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Sun, 19 Oct 2008 18:45:43 +0200 schrieb Martijn van Oosterhout:
+
+&gt;<i> On Tue, Oct 7, 2008 at 10:21 PM, Andreas Volz &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lists at brachttal.net</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i> &gt; I use mapnik in an application with real time rendering. It works
+</I>&gt;<i> &gt; well, but the performance is really bad in big zoom levels.
+</I>&gt;<i> 
+</I>&gt;<i> The problem lies mostly with the fact that you are still fetching all
+</I>&gt;<i> the data. Even if you don't render all of it, the query still matches
+</I>&gt;<i> everything and mapnik still has to process it.
+</I>&gt;<i> 
+</I>&gt;<i> The way the OSM schema handles this is by making a roads table which
+</I>&gt;<i> contains the data needed for lowzoom. And then not touching the
+</I>&gt;<i> detailed tables at all. This idea hasn't been pushed through enough
+</I>&gt;<i> yet. Really waterways should be split out and probably all
+</I>&gt;<i> highway=residential also and only use that at the absolute highest
+</I>&gt;<i> zoomlevels.
+</I>&gt;<i> 
+</I>&gt;<i> One thing that could be fixed is have mapnik notice you're only
+</I>&gt;<i> rendering a subset of the data and get it to add clauses to the query
+</I>&gt;<i> to filter that out earlier. This would significantly reduce the amount
+</I>&gt;<i> of data mpanik needs to process.
+</I>
+The question is how I would create this filter (in C++ binding)?
+
+Now I profiled deeper into mapnik to find the reason why it takes so
+long to render maps at big zoom levels. Here are my results:
+
+First I thought it may be the rendering in agg. This takes some time,
+but not much compared to the bottleneck.
+
+Then I thought it could be the database access. This takes around 15%
+of the time to get a map image. So there's some space for optimization,
+but still not a big problem.
+
+What I identified as bottleneck is *after* getting the data from
+database in feature_style_processor.hpp in apply_to_layer() around line
+215.
+
+                       while ((feature = fs-&gt;next()))
+                        {		   
+                           s1++;
+                           bool do_else=true;		    
+                           std::vector&lt;rule_type*&gt;::const_iterator itr=if_rules.begin();
+                           std::vector&lt;rule_type*&gt;::const_iterator end=if_rules.end();
+
+                           for (;itr != end;++itr)
+                           {
+                              s2++;
+                              filter_ptr const&amp; filter=(*itr)-&gt;get_filter();    
+                              if (filter-&gt;pass(*feature))
+                              {   
+                                 do_else=false;
+                                 const symbolizers&amp; symbols = (*itr)-&gt;get_symbolizers();
+                                 symbolizers::const_iterator symIter=symbols.begin();
+                                 symbolizers::const_iterator symEnd =symbols.end();
+                                 for (;symIter != symEnd;++symIter)
+                                 {   
+                                    boost::apply_visitor
+                                       (symbol_dispatch(p,*feature,prj_trans),*symIter);
+                                   s3++;
+                                 }
+                              }			    
+                           }
+                           if (do_else)
+                           {
+                              //else filter
+                              std::vector&lt;rule_type*&gt;::const_iterator itr=
+                                 else_rules.begin();
+                              std::vector&lt;rule_type*&gt;::const_iterator end=
+                                 else_rules.end();
+
+                              for (;itr != end;++itr)
+                              {
+                                 const symbolizers&amp; symbols = (*itr)-&gt;get_symbolizers();
+                                 symbolizers::const_iterator symIter= symbols.begin();
+                                 symbolizers::const_iterator symEnd = symbols.end();
+                                        
+                                 for (;symIter!=symEnd;++symIter)
+                                 {
+                                    boost::apply_visitor
+                                       (symbol_dispatch(p,*feature,prj_trans),*symIter);
+                                 }
+                              }
+                           }	  
+                        }
+
+In the case of &quot;start layer processing : roads&quot; I get these values:
+
+#s1: 149694
+#s2: 299388
+#s3: 36129
+
+featureset_ptr fs=ds-&gt;features(q) Time: 1.804412 // get data from database
+
+while ((feature = fs-&gt;next())) Time: 13.608381 // time for complete loop
+
+The time is lower if I don't profile and compile with optimization (around 5 sec).
+But the problem is the same.
+
+Notice how often this loop is processed! I've not yet complete understand what
+happens here. But looping it so often sounds for me like a design problem.
+
+Maybe someone is able to help me to interpret the results and learn how to improve
+the speed.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000751.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+	<LI>Next message: <A HREF="000753.html">[Mapnik-devel] Mapnik performance for applications
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#752">[ date ]</a>
+              <a href="thread.html#752">[ thread ]</a>
+              <a href="subject.html#752">[ subject ]</a>
+              <a href="author.html#752">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Upcoming 0.7.0 release
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Upcoming%200.7.0%20release&In-Reply-To=%3C505F95AA-22CB-4AF9-B6B1-88734055E19E%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001039.html">
+   <LINK REL="Next"  HREF="001041.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Upcoming 0.7.0 release</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Upcoming%200.7.0%20release&In-Reply-To=%3C505F95AA-22CB-4AF9-B6B1-88734055E19E%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Upcoming 0.7.0 release">blake at hailmail.net
+       </A><BR>
+    <I>Wed Jan  6 18:45:40 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001039.html">[Mapnik-devel] Win32 binaries and Cairo
+</A></li>
+        <LI>Next message: <A HREF="001041.html">[Mapnik-devel] Problems with 'apply alternative method of	comparing map and layer bounds to support..'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1040">[ date ]</a>
+              <a href="thread.html#1040">[ thread ]</a>
+              <a href="subject.html#1040">[ subject ]</a>
+              <a href="author.html#1040">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>David,
+
+Sorry it took me so long to get back to you on this.  Great  
+explanation, and as you surmised I think the shifts we were seeing are  
+not a regression in the code but rather cases where the defaults were  
+being applied from load_map and being set to BOTTOM rather than  
+middle. Simple really, sorry i missed that.
+So, the patch you send which I am about to apply to fix the defaults  
+for both Shield and Text symbolizer vertical_alignment to MIDDLE does  
+the trick. I will post a bit more info on the ticket here after I apply:
+
+<A HREF="http://trac.mapnik.org/ticket/468">http://trac.mapnik.org/ticket/468</A>
+
+Thanks!
+
+Dane
+
+
+On Dec 15, 2009, at 9:31 PM, David Eastcott wrote:
+
+&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> 1.   The default values for vertical alignment have not changed  
+</I>&gt;<i> since r1043 and are still bottom.  However, r1341 did change the  
+</I>&gt;<i> behaviour in a couple ways, see 3 below.
+</I>&gt;<i>
+</I>&gt;<i> Attached is a simple diff against trunk.1496 that changes the  
+</I>&gt;<i> default vertical alignment for both text_symbolizer and  
+</I>&gt;<i> shield_symbolizer to 'MIDDLE'.
+</I>&gt;<i>
+</I>&gt;<i>   There were two files involved:        text_symbolizer.cpp: changed  
+</I>&gt;<i> the variable initializer in two places
+</I>&gt;<i>       load_map.cpp: changed the default value, if not specified, for  
+</I>&gt;<i> both the text and shield symbolizer methods.        I was not sure  
+</I>&gt;<i> if the shield should be changed, but thought they should be  
+</I>&gt;<i> consistent.  I'll let you / Artem decide.
+</I>&gt;<i>
+</I>&gt;<i> 2.  Ticket #468
+</I>&gt;<i>
+</I>&gt;<i>   Can I add comments directly to the ticket, or is it best to  
+</I>&gt;<i> correspond by email?
+</I>&gt;<i>
+</I>&gt;<i> 3.  One of the problems that I encountered with vertical text  
+</I>&gt;<i> placement was its asymmetrical behaviour when using bottom, middle  
+</I>&gt;<i> and top; especially when multiple lines were involved.  The changes  
+</I>&gt;<i> made were to make the placement of text symmetrical, regardless of  
+</I>&gt;<i> text size changes and which alignment option was used.
+</I>&gt;<i> Regardless, I'll have to setup a before and after test environment.   
+</I>&gt;<i> It will be the weekend before I can get back to you on this   
+</I>&gt;<i> However,  could you get more information from ?Colin?
+</I>&gt;<i> a) the exact mapnik xml style text used to render the text  
+</I>&gt;<i> 'brandaussiche' and the image to its right that I am assuming is  
+</I>&gt;<i> related to it.
+</I>&gt;<i> b) if possible, the revision of mapnik used for 'before_good' and  
+</I>&gt;<i> 'after_bad'.
+</I>&gt;<i>
+</I>&gt;<i> From looking at the two images, I am not certain what would be  
+</I>&gt;<i> causing such a large shift; based on the code and the style, a  
+</I>&gt;<i> couple pixels might be expected, but not half the text height.
+</I>&gt;<i>
+</I>&gt;<i> Best regards,
+</I>&gt;<i> Dave
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dane Springmeyer wrote:
+</I>&gt;&gt;<i> Hello David,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Regarding the subtle label placement shift...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I've created <A HREF="http://trac.mapnik.org/ticket/468">http://trac.mapnik.org/ticket/468</A> to track the issue.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It appears that after r1341 the default middle or 'baseline'  
+</I>&gt;&gt;<i> placement is lower, as if it is bottom placement.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Note the text 'brandaussiche' between these two images that a  
+</I>&gt;&gt;<i> fellow user just created who also noticed the issue:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://oerks.net/~colin/before_good.png">http://oerks.net/~colin/before_good.png</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://oerks.net/~colin/after_bad.png">http://oerks.net/~colin/after_bad.png</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> He noticed it because it is the same default position as pre <A HREF="http://trac.mapnik.org/changeset/1043">http://trac.mapnik.org/changeset/1043</A> 
+</I>&gt;&gt;<i> .
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm not terribly familiar with the placement algorithms but I can  
+</I>&gt;&gt;<i> confirm that the middle/baseline placement should be the default,  
+</I>&gt;&gt;<i> and perhaps some of the oddity is coming from the fact that r1043,  
+</I>&gt;&gt;<i> while it apparently fixed the behavior, it did not properly set the  
+</I>&gt;&gt;<i> default value here:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/browser/trunk/src/text_symbolizer.cpp?rev=1043#L89">http://trac.mapnik.org/browser/trunk/src/text_symbolizer.cpp?rev=1043#L89</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> to...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> valign_(MIDDLE),
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I just confirmed with Artem by way of chat that this is the desired  
+</I>&gt;&gt;<i> setting, so if you have a chance to look at this soon that would be  
+</I>&gt;&gt;<i> hugely helpful.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001039.html">[Mapnik-devel] Win32 binaries and Cairo
+</A></li>
+	<LI>Next message: <A HREF="001041.html">[Mapnik-devel] Problems with 'apply alternative method of	comparing map and layer bounds to support..'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1040">[ date ]</a>
+              <a href="thread.html#1040">[ thread ]</a>
+              <a href="subject.html#1040">[ subject ]</a>
+              <a href="author.html#1040">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

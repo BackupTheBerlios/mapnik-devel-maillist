@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%20compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3CBLU0-SMTP4465B58C87F7AA29F9DB00CEAE0%40phx.gbl%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001232.html">
+   <LINK REL="Next"  HREF="001225.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow</H1>
+    <B>feverzsj</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20trunk%20rev2101%2C%20compiling%20with%20msvc8%20is%20extremely%20slow&In-Reply-To=%3CBLU0-SMTP4465B58C87F7AA29F9DB00CEAE0%40phx.gbl%3E"
+       TITLE="[Mapnik-devel] trunk rev2101, compiling with msvc8 is extremely slow">feverzsj at hotmail.com
+       </A><BR>
+    <I>Tue Aug  3 18:22:59 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001232.html">[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch
+</A></li>
+        <LI>Next message: <A HREF="001225.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1222">[ date ]</a>
+              <a href="thread.html#1222">[ thread ]</a>
+              <a href="subject.html#1222">[ subject ]</a>
+              <a href="author.html#1222">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>hi list,
+I checked out the latest mapnik2 trunk(rev2101), and imported it into a 
+vs2005 project. But the compilation was extremely slow (over 1 hour). 
+The compiler just kept asking for more memory, and somtimes ended up 
+with out of heap space(depends on system loads).
+Compiling some cpp like &quot;filter_factory.cpp&quot; took more than 5 minutes 
+and over 1G ram. On some low end pc with ram less than 1G, this will 
+simply crash the compiler for out of heap space.
+
+The Boost is the latest 1.43.0.
+My pc: vista, <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">e2180 at 2ghz</A>, 2G ram
+
+Regards, zsj
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001232.html">[Mapnik-devel] Update: cascadenik &quot;-xmlbad&quot; branch
+</A></li>
+	<LI>Next message: <A HREF="001225.html">[Mapnik-devel] trunk rev2101,	compiling with msvc8 is extremely slow
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1222">[ date ]</a>
+              <a href="thread.html#1222">[ thread ]</a>
+              <a href="subject.html#1222">[ subject ]</a>
+              <a href="author.html#1222">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

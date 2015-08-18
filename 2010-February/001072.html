@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] mapnik on openbsd
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20on%20openbsd&In-Reply-To=%3CAB471286-9C0D-42D7-ADDD-11B49E732621%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001071.html">
+   <LINK REL="Next"  HREF="001073.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] mapnik on openbsd</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20on%20openbsd&In-Reply-To=%3CAB471286-9C0D-42D7-ADDD-11B49E732621%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] mapnik on openbsd">blake at hailmail.net
+       </A><BR>
+    <I>Tue Feb 23 17:59:46 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001071.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+        <LI>Next message: <A HREF="001073.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1072">[ date ]</a>
+              <a href="thread.html#1072">[ thread ]</a>
+              <a href="subject.html#1072">[ subject ]</a>
+              <a href="author.html#1072">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Erlo,
+
+It looks like your boost library was built without thread support, as  
+the error you are getting is coming from a config header that says:
+
+#ifndef BOOST_CONFIG_HPP
+#  include &lt;boost/config.hpp&gt;
+#endif
+
+#if defined(BOOST_DISABLE_THREADS)
+
+So, I think you either need to rebuild boost with threading support,  
+or compile Mapnik without threading support.
+
+If you read the last email I send to Brad closely you'll notice that  
+he found a few places in the Mapnik library where we don't properly  
+avoid the use of boost::thread::mutux if threading is disabled. So you  
+may run into a few small compile errors when actually compiling  
+Mapnik, but we can fix these easily.
+
+
+So, what I think you need to do is rerun Scons like:
+
+$ python scons/scons.py THEADING=single
+
+And that should bypass the configure check for boost_threads which  
+appears to be the main problem.
+
+A few comments also below.
+
+Dane
+
+
+
+On Feb 22, 2010, at 5:38 AM, Erlo Meister wrote:
+
+&gt;<i> Hello Dane,
+</I>&gt;<i>
+</I>&gt;<i> Thank you for the reply. I am now using Mapnik 0.7.0.
+</I>&gt;<i> I installed all the needed Mapnik dependency  packages manually from  
+</I>&gt;<i> the OpenBSD packages repository.
+</I>
+Okay, good to know. Part of why I am asking is so that, in the future,  
+it might be easier for me to try to replicate. I've not used OpenBSD  
+before, but if you could spare me the kindness of pasting some of your  
+basic setup commands (like we have for Ubuntu at <A HREF="http://trac.mapnik.org/wiki/UbuntuInstallation">http://trac.mapnik.org/wiki/UbuntuInstallation</A>) 
+, that would be very helpful. I can't promise that I'll get it is  
+soon, but it would be good to have available.
+
+&gt;<i>
+</I>&gt;<i> I have added the following to the SConstruct file:
+</I>&gt;<i>
+</I>&gt;<i>     if env['PLATFORM'] == 'OpenBSD':
+</I>&gt;<i>             thread_suffix = ''
+</I>&gt;<i>             env.Append(LIBS = 'pthread')
+</I>&gt;<i>             env.Append(LINKFLAGS = ['-lstdc++'])
+</I>&gt;<i>
+</I>&gt;<i> By appending &#8211;lstdc++ to the linkflags, I was able to resolve the  
+</I>&gt;<i> errors related to stdc++ even without disabling Cairo. I do not know  
+</I>&gt;<i> whether this is the correct way of solving these errors though.
+</I>
+Okay, sounds good.
+
+&gt;<i>
+</I>&gt;<i> Unfortunately the threading errors from mutex.hpp still remain, even  
+</I>&gt;<i> with &#8211;pthread enabled. It seems that there are some problems with  
+</I>&gt;<i> Boost on OpenBSD, or is it the way in which Mapnik uses Boost?
+</I>&gt;<i>
+</I>
+Well, so far this is just related to two things, boost and the way our  
+SCons scripts check for dependencies. The SCons approach is to compile  
+a tiny C or C++ program and make sure it runs. This both indicates  
+when a dependency is missing and not configured right (or well enough  
+to compile). The problem with this method however is that we have to  
+make sure that the proper compile flags are sent not only to the  
+formal compile of Mapnik (when you get there) but also to these  
+dependency checks.
+
+In this case I think that your boost is not compiled with thread  
+support. And even if it were, it sounds like we need to send the same  
+flags as were used to compile boost, which appears custom on *BSD  
+systems, and from googling around indicates need to be pulled from the  
+env variables:
+
+$PTHREAD_LIBS $PTHREAD_CFLAGS
+
+from: <A HREF="http://wiki.freebsd.org/BoostPortingProject">http://wiki.freebsd.org/BoostPortingProject</A>
+
+Do you have these variables on OpenBSD?
+
+&gt;<i> I can solve the &#8220;Compiler threading support is not turned on&#8221; error  
+</I>&gt;<i> by replacing the &#8220;requires_threads.hpp&#8221; include with  
+</I>&gt;<i> &#8220;posix_features.hpp&#8221; in the  /usr/local/include/boost/thread/detail/ 
+</I>&gt;<i> config.hpp file but the other errors still remain. I do not know  
+</I>&gt;<i> whether the replacement is correct.
+</I>
+I would avoid doing this. Make sure to revert this change and get a  
+correct build of boost going before trying to build Mapnik.
+
+&gt;<i>
+</I>&gt;<i> I have attached the config.log and a verbose output file.
+</I>&gt;<i>
+</I>&gt;<i> Regards
+</I>&gt;<i> Erlo
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100223/eb1a43e3/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100223/eb1a43e3/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001071.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+	<LI>Next message: <A HREF="001073.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1072">[ date ]</a>
+              <a href="thread.html#1072">[ thread ]</a>
+              <a href="subject.html#1072">[ subject ]</a>
+              <a href="author.html#1072">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

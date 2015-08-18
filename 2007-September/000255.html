@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070914214348.5ce7a219%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000254.html">
+   <LINK REL="Next"  HREF="000256.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070914214348.5ce7a219%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">lists at brachttal.net
+       </A><BR>
+    <I>Fri Sep 14 21:43:48 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000254.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+        <LI>Next message: <A HREF="000256.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#255">[ date ]</a>
+              <a href="thread.html#255">[ thread ]</a>
+              <a href="subject.html#255">[ subject ]</a>
+              <a href="author.html#255">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+
+Ok, a first version of the autotools environment is finished. It builds
+and installs fine. Sure a lot could be improved. But people will
+hopefully try to build it and report problems.
+
+Am I allowed to commit the files in SVN?
+
+And what do you think about the *_input vs *_input.so problem?
+
+regards
+Andreas
+
+&gt;<i> Am Mon, 10 Sep 2007 09:51:47 +0100 schrieb Artem Pavlenko:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; &gt; Ok, I finished my port to autotools and it does at least compile.
+</I>&gt;<i> &gt; &gt; I didn't test it yet. But I'll continue and then show you the
+</I>&gt;<i> &gt; &gt; result. Perhaps it's an option to support both or maintain it in
+</I>&gt;<i> &gt; &gt; another branch
+</I>&gt;<i> &gt; &gt; with only autotools project files included and merging both each
+</I>&gt;<i> &gt; &gt; time. I'm not sure...
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Sure, we can have autotools based build system (in main trunk)
+</I>&gt;<i> &gt; along with SCons or anything else.
+</I>&gt;<i> &gt; It just needs to be maintained.
+</I>&gt;<i> 
+</I>&gt;<i> Sure, I'll maintain it. Now I had some time to test it. I got the
+</I>&gt;<i> shape plugin working and rundemo.cpp is working. The only problem is
+</I>&gt;<i> that in mapnik plugins have names &quot;*.input&quot;. But libtool likes *.so
+</I>&gt;<i> names. Do you've problems changing the plugin name schema or should I
+</I>&gt;<i> rename the plugin while the install process.
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt;&gt;&gt; I thought about porting it to autotools...
+</I>&gt;<i> &gt; &gt;&gt; If you're building on Linux/Unix , using Autotools might be a
+</I>&gt;<i> &gt; &gt;&gt; good solution. But about native toolchain on win32?
+</I>&gt;<i> &gt; &gt;&gt; There are also other building systems  :  CMake, Boost.Build.v2
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I like autotools because the Linux integration is very good and
+</I>&gt;<i> &gt; &gt; clean.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I created a win32 library in the past and used autotools without
+</I>&gt;<i> &gt; &gt; problems. Ok, it's not &quot;native&quot;, but what is &quot;native&quot;. :-)
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+</I>&gt;<i> &gt; build win32 binaries.
+</I>&gt;<i> 
+</I>&gt;<i> In theory it could be possible to use other compilers than gcc with
+</I>&gt;<i> autotools. But i'm not sure if the work worth it.
+</I>&gt;<i> 
+</I>&gt;<i> regards
+</I>&gt;<i> Andreas
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000254.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+	<LI>Next message: <A HREF="000256.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#255">[ date ]</a>
+              <a href="thread.html#255">[ thread ]</a>
+              <a href="subject.html#255">[ subject ]</a>
+              <a href="author.html#255">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

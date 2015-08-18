@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python bindings failing, revision 405
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000077.html">
+   <LINK REL="Next"  HREF="000079.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python bindings failing, revision 405</H1>
+    <B>Matthew Perry</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C5383fa5e0612051328l4fe31a3ej8a61d409a9c7d5f7%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Python bindings failing, revision 405">perrygeo at gmail.com
+       </A><BR>
+    <I>Tue Dec  5 22:28:33 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000077.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+        <LI>Next message: <A HREF="000079.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>David,
+
+ Thanks for the quick response. Here's the ldd output ...
+
+$ ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+        libmapnik.so =&gt; /usr/local/lib/libmapnik.so (0x00002aaaaada7000)
+        libboost_python-gcc-mt-1_33_1.so.1.33.1 =&gt;
+/usr/local/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaaaf01000)
+        libstdc++.so.6 =&gt; /usr/lib/libstdc++.so.6 (0x00002aaaab047000)
+        libm.so.6 =&gt; /lib/libm.so.6 (0x00002aaaab244000)
+        libgcc_s.so.1 =&gt; /lib/libgcc_s.so.1 (0x00002aaaab3ca000)
+        libc.so.6 =&gt; /lib/libc.so.6 (0x00002aaaab4d7000)
+        libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0x00002aaaab710000)
+        libz.so.1 =&gt; /usr/local/lib/libz.so.1 (0x00002aaaab88c000)
+        libltdl.so.3 =&gt; /usr/lib/libltdl.so.3 (0x00002aaaab9a2000)
+        libpng12.so.0 =&gt; /usr/lib/libpng12.so.0 (0x00002aaaabaa9000)
+        libtiff.so.4 =&gt; /usr/lib/libtiff.so.4 (0x00002aaaabbce000)
+        libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0x00002aaaabd26000)
+        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =&gt;
+/usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaabe48000)
+        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =&gt;
+/usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaabf55000)
+        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =&gt;
+/usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaac065000)
+        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =&gt;
+/usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+(0x00002aaaac1d5000)
+        libpython2.4.so.1.0 =&gt; /usr/lib/libpython2.4.so.1.0 (0x00002aaaac36b000)
+        librt.so.1 =&gt; /lib/librt.so.1 (0x00002aaaac5aa000)
+        libpthread.so.0 =&gt; /lib/libpthread.so.0 (0x00002aaaac6b2000)
+        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+        libdl.so.2 =&gt; /lib/libdl.so.2 (0x00002aaaac7c8000)
+        libutil.so.1 =&gt; /lib/libutil.so.1 (0x00002aaaac8ca000)
+
+
+On 12/5/06, David Leaver &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dave at smartrak.biz</A>&gt; wrote:
+&gt;<i> What is the ouput of:
+</I>&gt;<i> ldd /usr/lib/python2.4/site-packages/mapnik/_mapnik.so
+</I>&gt;<i>
+</I>&gt;<i> Mine (ubuntu 6.10 x86. mapnik rev 405):
+</I>&gt;<i>         linux-gate.so.1 =&gt;  (0xffffe000)
+</I>&gt;<i>         libmapnik.so =&gt; lss (0xb7cd3000)
+</I>&gt;<i>         libboost_python-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/lib/libboost_python-gcc-mt-1_33_1.so.1.33.1 (0xb7c93000)
+</I>&gt;<i>         libstdc++.so.6 =&gt; /usr/lib/libstdc++.so.6 (0xb7bb3000)
+</I>&gt;<i>         libm.so.6 =&gt; /lib/tls/i686/cmov/libm.so.6 (0xb7b8d000)
+</I>&gt;<i>         libgcc_s.so.1 =&gt; /lib/libgcc_s.so.1 (0xb7b82000)
+</I>&gt;<i>         libc.so.6 =&gt; /lib/tls/i686/cmov/libc.so.6 (0xb7a4e000)
+</I>&gt;<i>         libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0xb79e4000)
+</I>&gt;<i>         libz.so.1 =&gt; /usr/lib/libz.so.1 (0xb79d0000)
+</I>&gt;<i>         libltdl.so.3 =&gt; /usr/lib/libltdl.so.3 (0xb79c9000)
+</I>&gt;<i>         libpng12.so.0 =&gt; /usr/lib/libpng12.so.0 (0xb79a6000)
+</I>&gt;<i>         libtiff.so.4 =&gt; /usr/lib/libtiff.so.4 (0xb7954000)
+</I>&gt;<i>         libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0xb7935000)
+</I>&gt;<i>         libproj.so.0 =&gt; /usr/lib/libproj.so.0 (0xb7905000)
+</I>&gt;<i>         libboost_thread-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 (0xb78f9000)
+</I>&gt;<i>         libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 (0xb78e7000)
+</I>&gt;<i>         libboost_regex-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1 (0xb7845000)
+</I>&gt;<i>         libpython2.4.so.1.0 =&gt; /usr/lib/libpython2.4.so.1.0 (0xb7734000)
+</I>&gt;<i>         librt.so.1 =&gt; /lib/tls/i686/cmov/librt.so.1 (0xb772b000)
+</I>&gt;<i>         libpthread.so.0 =&gt; /lib/tls/i686/cmov/libpthread.so.0 (0xb7718000)
+</I>&gt;<i>         /lib/ld-linux.so.2 (0x80000000)
+</I>&gt;<i>         libdl.so.2 =&gt; /lib/tls/i686/cmov/libdl.so.2 (0xb7713000)
+</I>&gt;<i>         libicui18n.so.34 =&gt; /usr/lib/libicui18n.so.34 (0xb75fd000)
+</I>&gt;<i>         libicuuc.so.34 =&gt; /usr/lib/libicuuc.so.34 (0xb74fb000)
+</I>&gt;<i>         libutil.so.1 =&gt; /lib/tls/i686/cmov/libutil.so.1 (0xb74f7000)
+</I>&gt;<i>         libicudata.so.34 =&gt; /usr/lib/libicudata.so.34 (0xb6c82000)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Matthew Perry wrote:
+</I>&gt;<i> &gt; Hey folks,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;  I'm not able to get python bindings working from revision 405.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt;&gt;&gt; import mapnik
+</I>&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;<i> &gt; Traceback (most recent call last):
+</I>&gt;<i> &gt;   File &quot;&lt;stdin&gt;&quot;, line 1, in ?
+</I>&gt;<i> &gt;   File &quot;/usr/lib/python2.4/site-packages/mapnik/__init__.py&quot;, line 33, in ?
+</I>&gt;<i> &gt;     from _mapnik import *
+</I>&gt;<i> &gt; ImportError: /usr/lib/python2.4/site-packages/mapnik/_mapnik.so:
+</I>&gt;<i> &gt; undefined symbol: _ZN6mapnik15text_symbolizer14set_wrap_widthEj
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm using ubuntu linux with an amd64 kernel. Any ideas where I should
+</I>&gt;<i> &gt; start debugging?
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+-- 
+Matthew T. Perry
+GIS Analyst / Software Engineer
+National Center for Ecological Analysis and Synthesis (NCEAS)
+work: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">perry at nceas.ucsb.edu</A>
+web: <A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000077.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+	<LI>Next message: <A HREF="000079.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

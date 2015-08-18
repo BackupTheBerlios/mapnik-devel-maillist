@@ -1,0 +1,387 @@
+From bogus@does.not.exist.com  Wed Mar 14 15:25:24 2012
+From: bogus@does.not.exist.com ()
+Date: Wed, 14 Mar 2012 14:25:24 -0000
+Subject: No subject
+Message-ID: <mailman.0.1331735128.5574.mapnik-devel@lists.berlios.de>
+
+There's a lot of water around here. Ofcourse, not all this water is at
+mean sea level or higher (quite a bit of it is below), but I'm not
+sure whether SRTM deals with that..
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From bogus@does.not.exist.com  Wed Mar 14 15:25:24 2012
+From: bogus@does.not.exist.com ()
+Date: Wed, 14 Mar 2012 14:25:24 -0000
+Subject: No subject
+Message-ID: <mailman.1.1331735133.5574.mapnik-devel@lists.berlios.de>
+
+1.6.0, so i'm doing a bit of #ifdef around that, to allow the use of
+previous version of gdal too.
+
+Let me know any consideration on the matter...
+
+Cheers
+
+Lucio
+
+
+On Thu, May 14, 2009 at 1:14 AM, Dane Springmeyer <blake at hailmail.net> wrot=
+e:
+> Hey Lucio,
+>
+> On May 13, 2009, at 3:26 PM, kRAkEn/gORe wrote:
+>
+>> hi, i thought it was a good thing to favour GdalOpenShared instead of
+>> GdalOpen when using the same dataset a lot of times in the same
+>> application and used mapnik in a headless server serving multiple maps
+>> with the same rasters all along (and tiling).
+>
+>
+> I think I surely is, but perhaps the problem lies in that not until gdal =
+1.6
+> (i think I read something about that) will the behavior be predicatable..=
+.
+>
+> or that QGIS opens in non-shared mode and the combination is dangerous?
+>
+> I can predictably get crashes like the below when opening as Shared from
+> mapnik, but things work fine with the previous code.
+>
+>> Never had any problems
+>> with that.
+>
+> I bet it is the combo of shared and non-shared access...
+>
+>> I don't have qgis here but it will be not a problem to
+>> install it and test it besides using gdal.input with my changes.
+>
+> Okay, great. Keep in mind that QGIS requires python 2.5 so mapnik will al=
+so
+> need to be (re) compiled against that for you to try within the QGIS pyth=
+on
+> console.
+>
+> Should work fine either way outside of QGIS console.
+>
+>> I'll
+>> do next days to come, and do some more pushing to the plugins, gdal,
+>> ogr, oracle and sqlite as i see them quite behind their shape/raster
+>> counterpart.
+>>
+> Great.
+>
+>> Probably we will need to provide a gdal's datasource parameter to
+>> control the kind of function to favour, shared or not shared ?
+>>
+>
+> This was my thought as well! Have the default not be shared, but be able =
+to
+> turn it on...
+>
+> And here is the crash...
+>
+>
+> - dane
+>
+> Thread 0 Crashed:
+> 0 =C2=A0 gdal.input =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x146eaa4b gdal_featureset::next() +
+> 347
+> 1 =C2=A0 _mapnik.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x12381561
+> mapnik::feature_style_processor<mapnik::agg_renderer<mapnik::Image32>
+>>::apply_to_layer(mapnik::Layer const&,
+> mapnik::agg_renderer<mapnik::Image32>&, mapnik::projection const&, double=
+) +
+> 2145
+> 2 =C2=A0 _mapnik.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x12377e4f render2(mapnik::Map
+> const&, mapnik::Image32&) + 335
+> 3 =C2=A0 _mapnik.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x1237e4df
+> boost::python::objects::caller_py_function_impl<boost::python::detail::ca=
+ller<void
+> (*)(mapnik::Map const&, mapnik::Image32&),
+> boost::python::default_call_policies, boost::mpl::vector3<void, mapnik::M=
+ap
+> const&, mapnik::Image32&> > >::operator()(_object*, _object*) + 191
+> 4 =C2=A0 ...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x12120e74
+> boost::python::objects::function::call(_object*, _object*) const + 468
+> 5 =C2=A0 ...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x121226e5
+> boost::detail::function::void_function_ref_invoker0<boost::python::object=
+s::(anonymous
+> namespace)::bind_return,
+> void>::invoke(boost::detail::function::function_buffer&) + 37
+> 6 =C2=A0 ...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x12129719
+> boost::function0<void>::operator()() const + 41
+> 7 =C2=A0 ...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x12128b0c
+> boost::python::detail::exception_handler::operator()(boost::function0<voi=
+d>
+> const&) const + 204
+> 8 =C2=A0 _mapnik.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x123795b4
+> boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool,
+> boost::python::detail::translate_exception<mapnik::config_error, void
+> (*)(mapnik::config_error const&)>, boost::_bi::list3<boost::arg<1>,
+> boost::arg<2>, boost::_bi::value<void (*)(mapnik::config_error const&)> >=
+ >,
+> bool, boost::python::detail::exception_handler const&,
+> boost::function0<void>
+> const&>::invoke(boost::detail::function::function_buffer&,
+> boost::python::detail::exception_handler const&, boost::function0<void>
+> const&) + 36
+> 9 =C2=A0 ...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x12128bdf
+> boost::python::handle_exception_impl(boost::function0<void>) + 63
+> 10 =C2=A0...python-xgcc40-mt-1_39.dylib =C2=A0 =C2=A0 =C2=A00x1211eb62 fu=
+nction_call + 98
+> 11 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11278505 PyObject_Call + 50
+> 12 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e6832 PyEval_EvalFrameEx +
+> 17904
+> 13 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e8173 PyEval_EvalCodeEx + 1638
+> 14 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11292488 PyFunction_SetClosure +
+> 2667
+> 15 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11278505 PyObject_Call + 50
+> 16 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11280e3a PyMethod_New + 2457
+> 17 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11278505 PyObject_Call + 50
+> 18 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e182d
+> PyEval_CallObjectWithKeywords + 211
+> 19 =C2=A0sip.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x1118051f sip_api_invoke_s=
+lot + 410
+> 20 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1138d4ef
+> PyQtProxy::invokeSlot(_sipSlotConnection const&, void**) + 117
+> 21 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1139adaa
+> PyQtProxy::unislot(void**) + 134
+> 22 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1139d62e
+> PyQtProxy::qt_metacall(QMetaObject::Call, int, void**) + 242
+> 23 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x00320420
+> QMetaObject::activate(QObject*, int, int, void**) + 528
+> 24 =C2=A0libqgis_gui.1.0.dylib =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 0x0069448e
+> QgsMapCanvas::renderComplete(QPainter*) + 62
+> 25 =C2=A0libqgis_gui.1.0.dylib =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 0x0067e593 QgsMapCanvas::refresh() +
+> 163
+> 26 =C2=A0gui.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x11f4b48e meth_QgsMapCanva=
+s_refresh
+> + 110
+> 27 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e651e PyEval_EvalFrameEx +
+> 17116
+> 28 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e6700 PyEval_EvalFrameEx +
+> 17598
+> 29 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e8173 PyEval_EvalCodeEx + 1638
+> 30 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11292488 PyFunction_SetClosure +
+> 2667
+> 31 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11278505 PyObject_Call + 50
+> 32 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11280e3a PyMethod_New + 2457
+> 33 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x11278505 PyObject_Call + 50
+> 34 =C2=A0org.python.python =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 0x112e182d
+> PyEval_CallObjectWithKeywords + 211
+> 35 =C2=A0sip.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x1118051f sip_api_invoke_s=
+lot + 410
+> 36 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1138d4ef
+> PyQtProxy::invokeSlot(_sipSlotConnection const&, void**) + 117
+> 37 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1139adaa
+> PyQtProxy::unislot(void**) + 134
+> 38 =C2=A0QtCore.so =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x1139d62e
+> PyQtProxy::qt_metacall(QMetaObject::Call, int, void**) + 242
+> 39 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x00320420
+> QMetaObject::activate(QObject*, int, int, void**) + 528
+> 40 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x009c5bb6 QAction::activa=
+ted(int) +
+> 70
+> 41 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x009c77a8
+> QAction::activate(QAction::ActionEvent) + 184
+> 42 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00e17bb6
+> QToolButton::nextCheckState() + 38
+> 43 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00d476ba
+> QAbstractButtonPrivate::click() + 74
+> 44 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00d47940
+> QAbstractButton::mouseReleaseEvent(QMouseEvent*) + 128
+> 45 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00e17afc
+> QToolButton::mouseReleaseEvent(QMouseEvent*) + 28
+> 46 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00a14978 QWidget::event(=
+QEvent*) +
+> 3736
+> 47 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00d48103
+> QAbstractButton::event(QEvent*) + 83
+> 48 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00e17938
+> QToolButton::event(QEvent*) + 24
+> 49 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x009ccc1f
+> QApplicationPrivate::notify_helper(QObject*, QEvent*) + 191
+> 50 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x009ced4d
+> QApplication::notify(QObject*, QEvent*) + 1309
+> 51 =C2=A0libqgis_core.1.0.dylib =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A00x0137aa4c
+> QgsApplication::notify(QObject*, QEvent*) + 46
+> 52 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x0030ed01
+> QCoreApplication::notifyInternal(QObject*, QEvent*) + 145
+> 53 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00a2571b
+> QApplicationPrivate::globalEventProcessor(OpaqueEventHandlerCallRef*,
+> OpaqueEventRef*, void*) + 5771
+> 54 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923e2143
+> DispatchEventToHandlers(EventTargetRec*, OpaqueEventRef*, HandlerCallRec*=
+) +
+> 1181
+> 55 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923e157d
+> SendEventToEventTargetInternal(OpaqueEventRef*, OpaqueEventTargetRef*,
+> HandlerCallRec*) + 405
+> 56 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923fded2 SendEventToEventTarget +
+> 52
+> 57 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x924100a8
+> ToolboxEventDispatcherHandler(OpaqueEventHandlerCallRef*, OpaqueEventRef*=
+,
+> void*) + 1208
+> 58 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923e24fc
+> DispatchEventToHandlers(EventTargetRec*, OpaqueEventRef*, HandlerCallRec*=
+) +
+> 2134
+> 59 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923e157d
+> SendEventToEventTargetInternal(OpaqueEventRef*, OpaqueEventTargetRef*,
+> HandlerCallRec*) + 405
+> 60 =C2=A0com.apple.HIToolbox =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 0x923fded2 SendEventToEventTarget +
+> 52
+> 61 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00a20521
+> qt_mac_send_event(QFlags<QEventLoop::ProcessEventsFlag>, OpaqueEventRef*,
+> OpaqueWindowPtr*) + 97
+> 62 =C2=A0QtGui =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00a2eb62
+> QEventDispatcherMac::processEvents(QFlags<QEventLoop::ProcessEventsFlag>)=
+ +
+> 658
+> 63 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x0030e2c1
+> QEventLoop::processEvents(QFlags<QEventLoop::ProcessEventsFlag>) + 65
+> 64 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x0030e38d
+> QEventLoop::exec(QFlags<QEventLoop::ProcessEventsFlag>) + 157
+> 65 =C2=A0QtCore =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x00312331 QCoreApplication=
+::exec()
+> + 161
+> 66 =C2=A0org.qgis.qgis =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 0x0000a09b main + 8177
+> 67 =C2=A0org.qgis.qgis =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00007936 start + 54
+>
+>
+>
+>
+>> Lucio
+>>
+>>
+>> On Wed, May 13, 2009 at 6:16 PM, Dane Springmeyer <blake at hailmail.net>
+>> wrote:
+>>>
+>>> Okay, so I just reverted my svn build to r1130 and am experiencing no
+>>> crashing now:
+>>>
+>>> http://trac.mapnik.org/changeset/1131
+>>> http://trac.mapnik.org/changeset/1132
+>>>
+>>> By the look of them, seems like these changes would have helped in
+>>> this situation, but something must not quite be working.
+>>>
+>>> Kunitoki, do you have QGIS? I'll see if I can replication on linux.
+>>>
+>>> - Dane
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>
+>
+
+
+From dane at dbsgeo.com  Sat Mar 10 04:28:04 2012
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 9 Mar 2012 19:28:04 -0800
+Subject: [Mapnik-devel] GSOC 2012
+In-Reply-To: <22787FD2-3482-4B3D-89D9-465E9EA5493F@dbsgeo.com>
+References: <22787FD2-3482-4B3D-89D9-465E9EA5493F@dbsgeo.com>
+Message-ID: <AB3E4270-A07E-44E5-B283-E1E67E5E4B58@dbsgeo.com>
+
+If you are getting this email, please know that this mailing list (mapnik-users at lists.berlios.de)
+has been retired.
+
+The main Mapnik list (for both users and developers) is now on google groups at http://mapnik.org/contact/.
+
+But, just in case some of you are not yet signed up at http://mapnik.org/contact/ please see this announcement:
+
+-----
+
+Google Summer of Code is a great program that connects open source projects with students looking to code over the summer.
+
+We've participated in 2010 and 2011, and are excited to be applying again in 2012.
+
+We will know by next Friday, the 16th, if Mapnik is officially accepted as a mentoring organization.
+
+In the meantime the task is to generate some solid project ideas for potential students.
+
+Students can, and are expected, to bring their own passions and ideas, but we should also gather our own.
+
+Please add your to: https://github.com/mapnik/mapnik/wiki/Gsoc2012-ideas
+
+And see the main wiki page for this year at:
+
+https://github.com/mapnik/mapnik/wiki/Gsoc2012
+
+Cheers,
+
+Dane
+
+
+

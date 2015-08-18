@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] New release?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20release%3F&In-Reply-To=%3C20071229113010.GA32327%40metacarta.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000348.html">
+   <LINK REL="Next"  HREF="000351.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] New release?</H1>
+    <B>Christopher Schmidt</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20New%20release%3F&In-Reply-To=%3C20071229113010.GA32327%40metacarta.com%3E"
+       TITLE="[Mapnik-devel] New release?">crschmidt at metacarta.com
+       </A><BR>
+    <I>Sat Dec 29 12:30:10 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000348.html">[Mapnik-devel] New release?
+</A></li>
+        <LI>Next message: <A HREF="000351.html">[Mapnik-devel] New release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#350">[ date ]</a>
+              <a href="thread.html#350">[ thread ]</a>
+              <a href="subject.html#350">[ subject ]</a>
+              <a href="author.html#350">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sat, Dec 29, 2007 at 10:18:32AM +0000, Keith Sharp wrote:
+&gt;<i> 
+</I>&gt;<i> On Sat, 2007-12-29 at 00:55 -0500, Christopher Schmidt wrote:
+</I>&gt;<i> &gt; Looks like we're approaching 10 months since the last release -- any
+</I>&gt;<i> &gt; plans to kick out a new release? Having to track SVN for rendering OSM
+</I>&gt;<i> &gt; tiles is somewhat annoying -- if I could track releases, It'd be much
+</I>&gt;<i> &gt; cooler.
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; If the answer is &quot;would love to, but have no time&quot;, is there anything I
+</I>&gt;<i> &gt; can do to help?
+</I>&gt;<i> 
+</I>&gt;<i> I think the major thing that needs to be done before a release is
+</I>&gt;<i> versioned sonames.  This came up as a blocker during the review of my
+</I>&gt;<i> Mapnik package for inclusion in Fedora:
+</I>&gt;<i> 
+</I>&gt;<i> 	<A HREF="https://bugzilla.redhat.com/show_bug.cgi?id=234581">https://bugzilla.redhat.com/show_bug.cgi?id=234581</A>
+</I>&gt;<i> 
+</I>&gt;<i> The fix is also needed for the Debian packaging (see Comment 27 in the
+</I>&gt;<i> above page).  I have to confess that I've not had much time to push this
+</I>&gt;<i> in the last few months.
+</I>
+Okay. It looks like you've left this up to Artem, according to my
+reading of that bug: is that right?  
+
+&gt;<i> As a general point it would be good to remove all of the private copies
+</I>&gt;<i> of libraries, fonts, etc, and use the system ones instead.  
+</I>
+I believe that the Debian packaging materials already do this
+downstream, so I wouldn't call this one a release blocker. I think it
+probably makes some sense to include them by default for users who
+aren't installing onto a system with these libraries, fonts, etc. In
+other words, from a packager standpoint, that's clearly true, but from a
+non-packaged user standpoint, it may not be.
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000348.html">[Mapnik-devel] New release?
+</A></li>
+	<LI>Next message: <A HREF="000351.html">[Mapnik-devel] New release?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#350">[ date ]</a>
+              <a href="thread.html#350">[ thread ]</a>
+              <a href="subject.html#350">[ subject ]</a>
+              <a href="author.html#350">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] assert in dbffile.cpp
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20assert%20in%20dbffile.cpp&In-Reply-To=%3C1164751788.1719.34.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000064.html">
+   <LINK REL="Next"  HREF="000063.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] assert in dbffile.cpp</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20assert%20in%20dbffile.cpp&In-Reply-To=%3C1164751788.1719.34.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] assert in dbffile.cpp">jburgess at uklinux.net
+       </A><BR>
+    <I>Tue Nov 28 23:09:48 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000064.html">[Mapnik-devel] Infinite loop while rendering OSM map with	mapnik
+</A></li>
+        <LI>Next message: <A HREF="000063.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#62">[ date ]</a>
+              <a href="thread.html#62">[ thread ]</a>
+              <a href="subject.html#62">[ subject ]</a>
+              <a href="author.html#62">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>While running a DEBUG=1 build of mapnik I hit the following assert:
+
+void dbf_file::read_header()
+{
+    char c=file_.get();
+    if (c=='\3' || c=='\131')
+    {
+        skip(3);
+        num_records_=read_int();
+***     assert(num_records_&gt;0);  
+
+
+The file in question is the OSM vmap0/water.dbf which has
+num_records_=0. I guess this is valid and this check should be
+&quot;num_records_&gt;=0&quot;. 
+
+For reference, here is the hex dump of the file.
+
+
+$ od -A x -t x1 mapnik/vmap0/water.dbf
+000000 03 5f 07 1a 00 00 00 00 21 00 01 00 00 00 00 00
+000010 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000020 0d
+
+
+	Jon
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000064.html">[Mapnik-devel] Infinite loop while rendering OSM map with	mapnik
+</A></li>
+	<LI>Next message: <A HREF="000063.html">[Mapnik-devel] assert in dbffile.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#62">[ date ]</a>
+              <a href="thread.html#62">[ thread ]</a>
+              <a href="subject.html#62">[ subject ]</a>
+              <a href="author.html#62">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

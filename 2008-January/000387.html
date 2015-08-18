@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [OSM-dev] reliefs madness
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20reliefs%20madness&In-Reply-To=%3C20080109095823.GB2606%40eldorado.remote.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000388.html">
+   <LINK REL="Next"  HREF="000389.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [OSM-dev] reliefs madness</H1>
+    <B>Jochen Topf</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BOSM-dev%5D%20reliefs%20madness&In-Reply-To=%3C20080109095823.GB2606%40eldorado.remote.org%3E"
+       TITLE="[Mapnik-devel] [OSM-dev] reliefs madness">jochen at remote.org
+       </A><BR>
+    <I>Wed Jan  9 10:58:23 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000388.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+        <LI>Next message: <A HREF="000389.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#387">[ date ]</a>
+              <a href="thread.html#387">[ thread ]</a>
+              <a href="subject.html#387">[ subject ]</a>
+              <a href="author.html#387">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, Jan 09, 2008 at 09:26:34AM +0000, Artem Pavlenko wrote:
+&gt;<i> <A HREF="http://mapnik.org/maps/srtm_relief/">http://mapnik.org/maps/srtm_relief/</A>
+</I>
+Wow! That looks great.
+
+&gt;<i> I'm aware of voids and 'below sea level' areas (TODO) and I'm looking  
+</I>&gt;<i> for the best solution. Ideas welcome!
+</I>
+I think areas below sea level should just get the darkest green. In most
+cases it is probably not necessary to distinguish the details.
+
+Void areas might be handled by painting them in a unqiue color and then
+finding in the produced image all pixels with that unique color and just
+taking the average of all pixels around them (that are not themselves
+void). Something like that anyway. That might not be the most accurate
+algorithm, but at least for low zoom levels it should be ok.
+
+Jochen
+-- 
+Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>  +49-721-388298
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000388.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+	<LI>Next message: <A HREF="000389.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#387">[ date ]</a>
+              <a href="thread.html#387">[ thread ]</a>
+              <a href="subject.html#387">[ subject ]</a>
+              <a href="author.html#387">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

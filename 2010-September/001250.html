@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20win32%20solution%20files%20for%20kosmosnimki.ru&In-Reply-To=%3CAANLkTi%3DfZF6ukx9MuC0Ds5xMQsphMZJd9cdcRzp8avEa%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001251.html">
+   <LINK REL="Next"  HREF="001253.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20mapnik%20win32%20solution%20files%20for%20kosmosnimki.ru&In-Reply-To=%3CAANLkTi%3DfZF6ukx9MuC0Ds5xMQsphMZJd9cdcRzp8avEa%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru">artem at mapnik-consulting.com
+       </A><BR>
+    <I>Mon Sep 13 13:20:49 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001251.html">[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+</A></li>
+        <LI>Next message: <A HREF="001253.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1250">[ date ]</a>
+              <a href="thread.html#1250">[ thread ]</a>
+              <a href="subject.html#1250">[ subject ]</a>
+              <a href="author.html#1250">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Michael,
+
+I don't use vc++ project file to build mapnik on windows, I use Boost.Build.v2.
+Let me know if you'd like me to send you Jamfiles (might take couple
+days as I'm very busy with work at the moment).
+
+Regards,
+Artem
+
+2010/9/13 &#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;&#1086;&#1088;&#1086;&#1090;&#1085;&#1080;&#1082;&#1086;&#1074; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mvorotnikov at mail.ru</A>&gt;:
+&gt;<i> Artem,
+</I>&gt;<i>
+</I>&gt;<i> Could you, please help us with windows compilation of mapnik sources?
+</I>&gt;<i>
+</I>&gt;<i> We really need those solution and project files for VS2005 or VS2008 to have the ability to add some changes we need to use mapnik in the whole strength.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Vorotnikov Michael,
+</I>&gt;<i> kosmosnimki.ru developer.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Sat, 11 Sep 2010 11:39:55 +0200 &#1087;&#1080;&#1089;&#1100;&#1084;&#1086; &#1086;&#1090; Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt;:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Sorry, I personally have no experience with compiling Mapnik on windows.
+</I>&gt;&gt;<i> It is Artem that does the windows compilation (Artem Pavlenko
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik-consulting.com</A>&gt;).
+</I>&gt;&gt;<i> Michael, could you do your development on linux in VirtualBox? Otherwise I
+</I>&gt;&gt;<i> recommend checking in with Artem about the potential to collaborate to get
+</I>&gt;&gt;<i> some project files created. Short of that the only ones I know about are here:
+</I>&gt;&gt;<i> <A HREF="http://www.falconview.org/trac/FalconView/browser/Sandbox/MAPNIK%20README.txt">http://www.falconview.org/trac/FalconView/browser/Sandbox/MAPNIK%20README.txt</A>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i> On Sep 1, 2010, at 10:07 PM, &#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;&#1086;&#1088;&#1086;&#1090;&#1085;&#1080;&#1082;&#1086;&#1074; wrote:
+</I>&gt;&gt;<i> &gt; Dane,
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Sorry about being too late again, but I`m again having too much trouble
+</I>&gt;&gt;<i> with Mapnik being compiled under Microsoft VS2005 or VS2008 (doesn`t matter).
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; I`m sure that our work can be done much more easier if I get VS project
+</I>&gt;&gt;<i> file if you have.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Since you provide win32 binaries, I assume you have those project files
+</I>&gt;&gt;<i> (it does not really matter which studio 2005, 2008, 2010 for me)
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Can you please, send it to me with maybe some small explanations if any
+</I>&gt;&gt;<i> needed.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Thanks,
+</I>&gt;&gt;<i> &gt; Michael Vorotnikov.
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; Wed, 25 Aug 2010 08:50:24 -0700 &#1087;&#1080;&#1089;&#1100;&#1084;&#1086; &#1086;&#1090; Dane Springmeyer
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt;:
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt;&gt; Michael,
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Okay, good to hear. Let me know if you run into problems and I can
+</I>&gt;&gt;<i> try to help. Trunk has seen a lot of work recently, and also some fixes for
+</I>&gt;&gt;<i> whitespaces/indents
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; I find really old patches often easier to hand port to trunk, but
+</I>&gt;&gt;<i> sometimes creating an svn diff that does not detect whitespace changes helps.
+</I>&gt;&gt;<i> Something like:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; # go into directory of older mapnik with changes made
+</I>&gt;&gt;<i> &gt;&gt; # and create a patch ignoring whitepace
+</I>&gt;&gt;<i> &gt;&gt; svn diff -x -w &gt; my_patch.diff
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; Dane
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt; On Aug 25, 2010, at 7:52 AM, &#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;&#1086;&#1088;&#1086;&#1090;&#1085;&#1080;&#1082;&#1086;&#1074; wrote:
+</I>&gt;&gt;<i> &gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Dane,
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Sorry for not responging so long.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; I`ll try to merge our changes into latest trunk revision and
+</I>&gt;&gt;<i> attach generated patch to the ticket by the end of this week.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; Michael.
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt; Hey Guys,
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt; I did not get a response on my last email to you - any
+</I>&gt;&gt;<i> thoughts?
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt; Dane
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt; On Jul 23, 2010, at 10:29 AM, Dane Springmeyer wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Hello Michael,
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; On Jul 20, 2010, at 9:46 AM, &#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;&#1086;&#1088;&#1086;&#1090;&#1085;&#1080;&#1082;&#1086;&#1074; wrote:
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Dane,
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; We wish to add our patch to mapnik sources, so that
+</I>&gt;&gt;<i> it could be used in next versions of mapnik.
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Michael, this is very good.
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Currently we have two development branches: 0.7 series
+</I>&gt;&gt;<i> and trunk (aka Mapnik2).
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; I would presume that your patch is either against the 0.6
+</I>&gt;&gt;<i> or 0.7 series? Is this true?
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Ideally we will have you develop the patch against trunk
+</I>&gt;&gt;<i> (Mapnik2).
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; But, please be aware that Mapnik2 has made some
+</I>&gt;&gt;<i> implemented some stylesheet changes, so to test you will need to use a script
+</I>&gt;&gt;<i> to upgrade your xml stylesheets to Mapnik2. More info can be found here:
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/wiki/Mapnik2">http://trac.mapnik.org/wiki/Mapnik2</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; We had a patch almost year ago, so it is not as fresh
+</I>&gt;&gt;<i> as needed. Which revision version it should differ?
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; We should work to apply it to Mapnik2 (trunk).
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Is it convenient for you to have a look at our patch
+</I>&gt;&gt;<i> if we send it by the end of this week?
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Well, you can send it to me. But ideally you would go to
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org">http://trac.mapnik.org</A> and attach it to a new ticket that describes the
+</I>&gt;&gt;<i> functionality.
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; For example, your previous patch can be found here:
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/ticket/463">http://trac.mapnik.org/ticket/463</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; If you current patch still relates to this specific
+</I>&gt;&gt;<i> feature then you should re-attach the new patch at
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/ticket/463.">http://trac.mapnik.org/ticket/463.</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; IDEALLY, for each new feature we would have separate
+</I>&gt;&gt;<i> patches and separate tickets, so please give that consideration.
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Thanks,
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Thank you for getting in touch and your support of the
+</I>&gt;&gt;<i> Mapnik project!
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;&gt; Michael Vorotnikov, developer of
+</I>&gt;&gt;<i> <A HREF="http://kosmosnimki.ru/">http://kosmosnimki.ru/</A>
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt; Dane
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt;
+</I>&gt;&gt;<i> &gt;&gt;&gt; &#1052;&#1086;&#1081; &#1052;&#1080;&#1088;@Mail.Ru &#1074; &#1090;&#1074;&#1086;&#1077;&#1084; &#1084;&#1086;&#1073;&#1080;&#1083;&#1100;&#1085;&#1086;&#1084;!
+</I>&gt;&gt;<i> &gt;&gt;&gt; &#1055;&#1088;&#1086;&#1089;&#1090;&#1086; &#1079;&#1072;&#1081;&#1076;&#1080; &#1089; &#1090;&#1077;&#1083;&#1077;&#1092;&#1086;&#1085;&#1072; &#1085;&#1072; m.mail.ru
+</I>&gt;&gt;<i> &gt;
+</I>&gt;&gt;<i> &gt; &#1052;&#1086;&#1081; &#1052;&#1080;&#1088;@Mail.Ru &#1074; &#1090;&#1074;&#1086;&#1077;&#1084; &#1084;&#1086;&#1073;&#1080;&#1083;&#1100;&#1085;&#1086;&#1084;!
+</I>&gt;&gt;<i> &gt; &#1055;&#1088;&#1086;&#1089;&#1090;&#1086; &#1079;&#1072;&#1081;&#1076;&#1080; &#1089; &#1090;&#1077;&#1083;&#1077;&#1092;&#1086;&#1085;&#1072; &#1085;&#1072; m.mail.ru
+</I>&gt;<i>
+</I>&gt;<i> &#1052;&#1086;&#1081; &#1052;&#1080;&#1088;@Mail.Ru &#1074; &#1090;&#1074;&#1086;&#1077;&#1084; &#1084;&#1086;&#1073;&#1080;&#1083;&#1100;&#1085;&#1086;&#1084;!
+</I>&gt;<i> &#1055;&#1088;&#1086;&#1089;&#1090;&#1086; &#1079;&#1072;&#1081;&#1076;&#1080; &#1089; &#1090;&#1077;&#1083;&#1077;&#1092;&#1086;&#1085;&#1072; &#1085;&#1072; m.mail.ru
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001251.html">[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+</A></li>
+	<LI>Next message: <A HREF="001253.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1250">[ date ]</a>
+              <a href="thread.html#1250">[ thread ]</a>
+              <a href="subject.html#1250">[ subject ]</a>
+              <a href="author.html#1250">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

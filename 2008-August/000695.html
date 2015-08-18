@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Building with Boost 1.33
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2A58F.3000402%40loskot.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000694.html">
+   <LINK REL="Next"  HREF="000696.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Building with Boost 1.33</H1>
+    <B>Mateusz Loskot</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Building%20with%20Boost%201.33&In-Reply-To=%3C48B2A58F.3000402%40loskot.net%3E"
+       TITLE="[Mapnik-devel] Building with Boost 1.33">mateusz at loskot.net
+       </A><BR>
+    <I>Mon Aug 25 14:29:03 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000694.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+        <LI>Next message: <A HREF="000696.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#695">[ date ]</a>
+              <a href="thread.html#695">[ thread ]</a>
+              <a href="subject.html#695">[ subject ]</a>
+              <a href="author.html#695">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Justin Bronn wrote:
+&gt;<i> Mateusz,
+</I>&gt;&gt;<i> Let me please to say Hello! for the first time here.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm trying to build and debug Mapnik under Linux (Ubuntu 7.04) with
+</I>&gt;&gt;<i> Boost 1.33 (all Boost packages installed). Unfortunately scons
+</I>&gt;&gt;<i> not find Boost components.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Does it mean Boost 1.33 is not supported?
+</I>&gt;<i> 
+</I>&gt;<i> Welcome --  there are problems in the way Mapnik's scons script 
+</I>&gt;<i> constructs the boost library name.  I've already created a patch that 
+</I>&gt;<i> addresses theses issues in ticket #90.  After applying my patch I was 
+</I>&gt;<i> successfully able to build and run the python demo on 7.04 using boost 
+</I>&gt;<i> installed from apt and mapnik from svn (r729):
+</I>&gt;<i> 
+</I>&gt;<i> $ patch -p0 &lt; boost_append_osx_patch_v2.diff
+</I>&gt;<i> $ python scons/scons.py BOOST_TOOLKIT=gcc BOOST_VERSION=1_33_1
+</I>
+Hi Justin,
+
+I've tried your patch but it doesn't work for me:
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ svn info | grep Rev
+Revision: 729
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ patch -p0 &lt;
+boost_append_osx_patch_v2.diff
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ svn st
+M      plugins/input/shape/SConscript
+M      plugins/input/postgis/SConscript
+M      bindings/python/SConscript
+M      utils/shapeindex/SConscript
+M      SConstruct
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$ python scons/scons.py
+DEBUG=y GDAL_INCLUDES=/usr/include GDAL_LIBS=/usr/lib XMLPARSER=libxml2
+BOOST_TOOLKIT=gcc BOOST_VERSION=1_33_1
+
+scons: Reading SConscript files ...
+Building on Linux ...
+pkg-config --exists cairomm-1.0
+Checking for C library m... yes
+Checking for C library ltdl... yes
+Checking for C library png... yes
+Checking for C library tiff... yes
+Checking for C library z... yes
+Checking for C library jpeg... yes
+Checking for C library proj... yes
+Checking for C library pq... no
+Checking for C++ library icuuc... yes
+Checking for C++ library icudata... yes
+Checking for C++ library gdal... no
+Checking for C++ library boost_system-gcc-mt-1_33_1... no
+Checking for C++ library boost_filesystem-gcc-mt-1_33_1... no
+Could not find header or shared library for boost filesystem, exiting!
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mloskot at vm-ubuntu704</A>:~/dev/mapnik/_svn/trunk$
+
+
+It looks like boost_system is not even available in Ubuntu 7.04
+packages of Boost 1.33.1
+
+<A HREF="http://packages.ubuntu.com/search?keywords=libboost&amp;suite=feisty">http://packages.ubuntu.com/search?keywords=libboost&amp;suite=feisty</A>
+
+It tells me that building Mapnik on Ubuntu 7.04 is not supported,
+unless users make their own build of Boost (simple task).
+
+&gt;<i> The patch and ticket are at:
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/90">http://trac.mapnik.org/ticket/90</A>
+</I>
+I wanted to submit my notes as ticket comment, but have no idea how to
+register and authorize. Is it possible to get Mapnik Trac account?
+
+Best regards
+-- 
+Mateusz Loskot, <A HREF="http://mateusz.loskot.net">http://mateusz.loskot.net</A>
+Charter Member of OSGeo, <A HREF="http://osgeo.org">http://osgeo.org</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000694.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+	<LI>Next message: <A HREF="000696.html">[Mapnik-devel] Building with Boost 1.33
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#695">[ date ]</a>
+              <a href="thread.html#695">[ thread ]</a>
+              <a href="subject.html#695">[ subject ]</a>
+              <a href="author.html#695">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

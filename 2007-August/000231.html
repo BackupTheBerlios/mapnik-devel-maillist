@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] patch: python bindings on Mac OS X
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3CD120C491-44CE-4C58-AAE0-BD7B9D66367D%40artcom.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000230.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] patch: python bindings on Mac OS X</H1>
+    <B>David Siegel</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20patch%3A%20python%20bindings%20on%20Mac%20OS%20X&In-Reply-To=%3CD120C491-44CE-4C58-AAE0-BD7B9D66367D%40artcom.de%3E"
+       TITLE="[Mapnik-devel] patch: python bindings on Mac OS X">david at artcom.de
+       </A><BR>
+    <I>Tue Aug 28 14:50:49 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000230.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#231">[ date ]</a>
+              <a href="thread.html#231">[ thread ]</a>
+              <a href="subject.html#231">[ subject ]</a>
+              <a href="author.html#231">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 28.08.2007, at 14:02, Artem Pavlenko wrote:
+
+&gt;<i>
+</I>&gt;<i> On 27 Aug 2007, at 13:30, David Siegel wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On 27.08.2007, at 03:10, David Siegel wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> hi,
+</I>&gt;&gt;&gt;<i> i just compiled mapnik on Mac OS X and fixed some minor issues:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> plugins/input/postgis/SConscript:
+</I>&gt;&gt;&gt;<i> - added boost_thread-mt to darwin builds
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> demo/c++/rundemo.cpp:
+</I>&gt;&gt;&gt;<i> - setBackground() is now set_background()
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> bindings/python/SConscript:
+</I>&gt;&gt;&gt;<i> - added boost_thread-mt to darwin builds
+</I>&gt;&gt;&gt;<i> - changed builder to LoadableModule which builds a so called  
+</I>&gt;&gt;&gt;<i> &quot;bundle&quot;
+</I>&gt;&gt;&gt;<i>    on darwin and a shared library on all other systems.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> SConstruct:
+</I>&gt;&gt;&gt;<i> - freetype-config is now searched in the path.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> with the attached patch applied the python bindings work like  
+</I>&gt;&gt;&gt;<i> charme.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> the patch is against revision 511. Could someone please verify
+</I>&gt;&gt;&gt;<i> that it doesn't break the linux build?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Some additional info about the LoadableModule builder:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Documentation seems to be sparse. I found it mentioned in a release
+</I>&gt;&gt;<i> note or something. It is also mentioned briefly in the man page:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://www.scons.org/doc/0.97/HTML/scons-man.html">http://www.scons.org/doc/0.97/HTML/scons-man.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The configuration parameters are documented here:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html">http://www.scons.org/doc/0.96.90/HTML/scons-user/a3061.html</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> search for LDMODULE*
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I just noticed that the default value of LDMODULEPREFIX (which is
+</I>&gt;&gt;<i> 'lib' on linux) will break the python module. It should be set to ''
+</I>&gt;&gt;<i> for all platforms. I could supply another patch but maybe someone
+</I>&gt;&gt;<i> else could fill this bit in before commit?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i>     d.
+</I>&gt;<i>
+</I>&gt;<i> Applied in r512. Thanks very much!
+</I>&gt;<i> What os x are you building on ?
+</I>
+ah, sorry. forgot...
+I tested it on a MacBook Pro with an Intel Core Duo running Mac OS  
+10.4.10 (Tiger). Compiler is gcc 4.0.1. I currently use the prebuild  
+Python 2.4 package available here:
+
+<A HREF="http://pythonmac.org/packages/">http://pythonmac.org/packages/</A>
+
+boost version is 1_34_1. I think the versions of the other  
+dependencies are not that important.
+
+I imported the current planet.osm using osm2pgsql and then rendered  
+the region
+
+     # Berlin Potsdam
+     bbox = (12.97, 52.40, 13.73, 52.65)
+     render_tiles(bbox, mapfile, tile_dir, 7, 16 , &quot;Berlin Potsdam&quot;)
+
+using OSMs generate_tiles script.
+
+I will do some more tests on a PPC mac and maybe some tests with a  
+port/fink/self-compiled python too. Maybe one of those loads shared  
+libs instead of bundles but I doubt it.
+
+cheers,
+    d.
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000230.html">[Mapnik-devel] patch: python bindings on Mac OS X
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#231">[ date ]</a>
+              <a href="thread.html#231">[ thread ]</a>
+              <a href="subject.html#231">[ subject ]</a>
+              <a href="author.html#231">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

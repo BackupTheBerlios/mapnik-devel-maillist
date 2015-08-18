@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Questions about implementing fallback fonts
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805310222u397d2134w54e0a9ca5a4e4746%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000632.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Questions about implementing fallback fonts</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Questions%20about%20implementing%20fallback%20fonts&In-Reply-To=%3Cd6cb3ab10805310222u397d2134w54e0a9ca5a4e4746%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Questions about implementing fallback fonts">beau at beaugunderson.com
+       </A><BR>
+    <I>Sat May 31 11:22:10 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000632.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#636">[ date ]</a>
+              <a href="thread.html#636">[ thread ]</a>
+              <a href="subject.html#636">[ subject ]</a>
+              <a href="author.html#636">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Oops, sending to the list too.
+
+D'oh! Wish I could have had that insight myself! Probably a better idea than
+&gt;<i> what I came up with. :)
+</I>&gt;<i>
+</I>&gt;<i> My latest is here, it works and you can intermix fonts and get the correct
+</I>&gt;<i> spacing now:
+</I>&gt;<i>
+</I>&gt;<i>    <A HREF="http://www.beaugunderson.com/fallback.05.31.2008.diff">http://www.beaugunderson.com/fallback.05.31.2008.diff</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Beau
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Sat, May 31, 2008 at 3:13 AM, Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt;
+</I>&gt;<i> wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> On Sat, May 31, 2008 at 8:45 AM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;
+</I>&gt;&gt;<i> wrote:
+</I>&gt;&gt;<i> &gt; I think the fix for this is to make get_string_info aware of the faces
+</I>&gt;&gt;<i> used
+</I>&gt;&gt;<i> &gt; (i.e. have it do fallback as well) and then change the struct returned
+</I>&gt;&gt;<i> to
+</I>&gt;&gt;<i> &gt; include an array of spacing data for the different faces and update the
+</I>&gt;&gt;<i> &gt; consumers of that info struct to be able to loop through it for each
+</I>&gt;&gt;<i> &gt; character and space accordingly.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Perhaps the idea is to make your font list with fallback look like a
+</I>&gt;&gt;<i> font and export the same interface. That way the fallback is
+</I>&gt;&gt;<i> abstracted into a single file, rather than everywhere where fonts are
+</I>&gt;&gt;<i> used...
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Have a nice day,
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/3f2b367d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080531/3f2b367d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000632.html">[Mapnik-devel] using the PostGIS connections I already have open
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#636">[ date ]</a>
+              <a href="thread.html#636">[ thread ]</a>
+              <a href="subject.html#636">[ subject ]</a>
+              <a href="author.html#636">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

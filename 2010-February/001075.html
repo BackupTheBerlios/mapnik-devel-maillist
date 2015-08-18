@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.7.1
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.7.1&In-Reply-To=%3CC483B500-FE76-4D8C-9C00-B999E0862A67%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001074.html">
+   <LINK REL="Next"  HREF="001071.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.7.1</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.7.1&In-Reply-To=%3CC483B500-FE76-4D8C-9C00-B999E0862A67%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.7.1">blake at hailmail.net
+       </A><BR>
+    <I>Fri Feb 26 18:53:46 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001074.html">[Mapnik-devel] Mapnik 0.7.1
+</A></li>
+        <LI>Next message: <A HREF="001071.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1075">[ date ]</a>
+              <a href="thread.html#1075">[ thread ]</a>
+              <a href="subject.html#1075">[ subject ]</a>
+              <a href="author.html#1075">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Manel,
+
+Thanks for the report!
+
+Dane
+
+On Feb 24, 2010, at 4:05 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A> 
+ &gt; wrote:
+
+&gt;<i> Checked it out. Builds ok on my ubuntu 9.10 server and is serving  
+</I>&gt;<i> some postgis layers with no problems.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> -----Mensaje original-----
+</I>&gt;&gt;<i> De: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel-bounces at lists.berlios.de</A>
+</I>&gt;&gt;<i> [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel-bounces at lists.berlios.de</A>] En nombre de
+</I>&gt;&gt;<i> Dane Springmeyer
+</I>&gt;&gt;<i> Enviado el: viernes, 19 de febrero de 2010 22:28
+</I>&gt;&gt;<i> Para: mapnik-devel
+</I>&gt;&gt;<i> Asunto: Re: [Mapnik-devel] Mapnik 0.7.1
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I forgot to say that the code for 0.7.1 will be in a branch until
+</I>&gt;&gt;<i> tagged.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://svn.mapnik.org/branches/0.7.1-dev/">http://svn.mapnik.org/branches/0.7.1-dev/</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Testing encouraged.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Feb 19, 2010, at 1:22 PM, Dane Springmeyer wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Dev,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I'd like to propose a Mapnik 0.7.1 release to fix a variety of small
+</I>&gt;&gt;&gt;<i> bugs in 0.7.0.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Originally we discussed moving directly to 0.8.0 but
+</I>&gt;&gt;<i> several things I
+</I>&gt;&gt;&gt;<i> feel require a point release in the 0.7.x series:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * over 5 important bugs that are easily fixed that relate
+</I>&gt;&gt;<i> to features
+</I>&gt;&gt;&gt;<i> recently added or changed between the 0.6 and 0.7 series.
+</I>&gt;&gt;&gt;<i> * the fact that 0.8.0 (current trunk) is still unstable and
+</I>&gt;&gt;<i> not quite
+</I>&gt;&gt;&gt;<i> ready for production use
+</I>&gt;&gt;&gt;<i> * A quick release now may have a chance for inclusion in upcoming
+</I>&gt;&gt;&gt;<i> ubuntu and debian releases.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So, I've created a new milestone:
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/milestone/0.7.1">http://trac.mapnik.org/milestone/0.7.1</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Please check out the closed tickets and raise any other issues you
+</I>&gt;&gt;&gt;<i> think should be fixed in a point release.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Dane
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001074.html">[Mapnik-devel] Mapnik 0.7.1
+</A></li>
+	<LI>Next message: <A HREF="001071.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1075">[ date ]</a>
+              <a href="thread.html#1075">[ thread ]</a>
+              <a href="subject.html#1075">[ subject ]</a>
+              <a href="author.html#1075">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

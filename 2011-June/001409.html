@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS with Mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20with%20Mapnik&In-Reply-To=%3C64FEFB3BDAC1414F80EBF758194587DA20014CFA5C%40mbx.ajgirona.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001407.html">
+   <LINK REL="Next"  HREF="001415.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS with Mapnik</H1>
+    <B>manel.clos at ajgirona.cat</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS%20with%20Mapnik&In-Reply-To=%3C64FEFB3BDAC1414F80EBF758194587DA20014CFA5C%40mbx.ajgirona.org%3E"
+       TITLE="[Mapnik-devel] WMS with Mapnik">manel.clos at ajgirona.cat
+       </A><BR>
+    <I>Mon Jun  6 09:10:01 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001407.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+        <LI>Next message: <A HREF="001415.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1409">[ date ]</a>
+              <a href="thread.html#1409">[ thread ]</a>
+              <a href="subject.html#1409">[ subject ]</a>
+              <a href="author.html#1409">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dane,
+
+No tests for these. It is simply loading configuration and applying to XML tree. There are already tests for testing that the GetCapabilities response is successful. I tested the response with various clients, which is the big part of the changes, and some of them can now &quot;zoom to layer extent&quot;, others work as expected, allowing to request top layer, and showing top layer name/title/abstract. Compatibility list[1] keeps growing ;)
+
+About reprojection, I don't think OGCServer handles this. It is using Projection class only to do Envelope coordinates reprojection. So I think reprojection, if done, happens in the Mapnik library without OGCServer ever noticing.
+
+A general mecanism for performance debugging would be great. Say debug_render=1 in ogcserver.conf will call Mapnik.debug_render(True), and some &quot;requests&quot; later we can Mapnik.get_debug_info(), which should provide:
+- time spent fetching features, sql queries if any
+- time spent reprojecting ;)
+- time spent rendering
+
+These statistics could then be written to a log or presented to the user.
+
+Any ideas about how to start working in that direction would be great! ;)
+
+Manel.
+
+[1] <A HREF="https://github.com/mapnik/OGCServer/wiki/Supported-clients">https://github.com/mapnik/OGCServer/wiki/Supported-clients</A>
+
+
+&gt;<i> -----Mensaje original-----
+</I>&gt;<i> De: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>]
+</I>&gt;<i> Enviado el: lunes, 06 de junio de 2011 0:07
+</I>&gt;<i> Para: Clos Crespo, Manel
+</I>&gt;<i> CC: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+</I>&gt;<i>
+</I>&gt;<i> Manel,
+</I>&gt;<i>
+</I>&gt;<i> This is fantastic work. Nice job. And thanks for sending an
+</I>&gt;<i> update via mapnik-devel.
+</I>&gt;<i>
+</I>&gt;<i> Two questions:
+</I>&gt;<i>
+</I>&gt;<i> * Are there tests for these new features / is it feasible to
+</I>&gt;<i> write them?
+</I>&gt;<i>
+</I>&gt;<i> * Have you looked into how projection matching works in the
+</I>&gt;<i> OGCServer at all? I assume the server does nothing special to
+</I>&gt;<i> handle this (or warn the user), but maybe it should. The
+</I>&gt;<i> issue is that since WMS requires EPSG code based SRS/CRS
+</I>&gt;<i> parameters, but more commonly mapnik XML srs values use the
+</I>&gt;<i> proj4 literal string, that a common performance problem is
+</I>&gt;<i> uneeded reprojection happening when the map srs is
+</I>&gt;<i> &quot;+init=EPSG:4326&quot;  but the layer srs is '+proj=longlat
+</I>&gt;<i> +ellps=WGS84 +datum=WGS84 +no_defs'. In the case of spherical
+</I>&gt;<i> mercator to spherical mercator reprojection (which can get
+</I>&gt;<i> triggered even with a slight difference in the proj4 string),
+</I>&gt;<i> this transformation is *very* expensive when it should, of
+</I>&gt;<i> course, cost nothing and never require proj4 to be used. Any thoughts?
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On May 9, 2011, at 5:00 AM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt;
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt; wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; Hi all,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; In order to solve some OGCServer bugs[1][2], I've added
+</I>&gt;<i> some new configuration into ogcserver.conf:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; [map]
+</I>&gt;<i> &gt; wms_srs = EPSG:23031
+</I>&gt;<i> &gt; wms_name = __all__
+</I>&gt;<i> &gt; wms_title = Top Layer Title
+</I>&gt;<i> &gt; wms_abstract = Top Layer Abstract
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; [layer_countries]
+</I>&gt;<i> &gt; wms_srs = EPSG:23031
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; In this example the layer &quot;countries&quot; is assigned a
+</I>&gt;<i> specific epsg code so you can use a custom projection (one
+</I>&gt;<i> using +nadgrids for example) in the srs attribute. It is
+</I>&gt;<i> really not needed here, because all layers will inherit the
+</I>&gt;<i> map's wms_srs which has the same value.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I think this fits the approach Dane suggested (info in
+</I>&gt;<i> config file instead of modifying Mapnik's XML). The drawback
+</I>&gt;<i> of this method is that it only works for named layers.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'll be doing something like this to support layer groups:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; [map]
+</I>&gt;<i> &gt; wms_groups = streets, buildings
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; [group_streets]
+</I>&gt;<i> &gt; wms_title = Streets
+</I>&gt;<i> &gt; wms_layers = streets_layer1, streets_layer1_labels
+</I>&gt;<i> &gt; wms_name = streets
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; [1] Incorrect SRS in layer:
+</I>&gt;<i> <A HREF="https://github.com/mapnik/OGCServer/issues/11">https://github.com/mapnik/OGCServer/issues/11</A>
+</I>&gt;<i> &gt; [2] Top Layer &quot;__all__&quot; name:
+</I>&gt;<i> <A HREF="https://github.com/mapnik/OGCServer/issues/14">https://github.com/mapnik/OGCServer/issues/14</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;&gt; -----Mensaje original-----
+</I>&gt;<i> &gt;&gt; De: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>]
+</I>&gt;<i> &gt;&gt; Enviado el: s&#225;bado, 22 de enero de 2011 0:02
+</I>&gt;<i> &gt;&gt; Para: Clos Crespo, Manel
+</I>&gt;<i> &gt;&gt; CC: &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt;&gt; Asunto: Re: [Mapnik-devel] WMS with Mapnik
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; Hi manel. Yes, great, a ticket to discuss sounds good. I'm not
+</I>&gt;<i> &gt;&gt; convinced all these features can/should be added to the
+</I>&gt;<i> existing map
+</I>&gt;<i> &gt;&gt; XML format. What about an XML or json document that ogcserver could
+</I>&gt;<i> &gt;&gt; load that points to one or more maps and describes how to
+</I>&gt;<i> group maps
+</I>&gt;<i> &gt;&gt; or the layers within them?
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; --- \o/ ---
+</I>&gt;<i> &gt;&gt; Sent from my phone
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt; On Jan 15, 2011, at 3:58 PM, &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">manel.clos at ajgirona.cat</A>&gt; wrote:
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Hi all,
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Here are some ideas about improving Mapnik XML to better
+</I>&gt;<i> &gt;&gt; support WMS
+</I>&gt;<i> &gt;&gt;&gt; functionality.
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Support Layers within Layers (Layer Group)
+</I>&gt;<i> &gt;&gt;&gt; - Properties are inherited
+</I>&gt;<i> &gt;&gt;&gt; - You can draw / request a Layer Group that has a name
+</I>&gt;<i> &gt;&gt;&gt; - title: used in GetCapabilities to better describe layers in the
+</I>&gt;<i> &gt;&gt;&gt; group
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; Toplevel Map element in mapfile should have some more
+</I>&gt;<i> &gt;&gt; Layer's proper
+</I>&gt;<i> &gt;&gt;&gt; ties.
+</I>&gt;<i> &gt;&gt;&gt; - name: request top level layer (Map) to draw / request all layers
+</I>&gt;<i> &gt;&gt;&gt; (get rid of the __all__ trick in OGCServer in the long term, but
+</I>&gt;<i> &gt;&gt;&gt; support it for compatibility)
+</I>&gt;<i> &gt;&gt;&gt; - title: use it in GetCapabilities
+</I>&gt;<i> &gt;&gt;&gt;
+</I>&gt;<i> &gt;&gt;&gt; If this is ok I'll create a ticket and hopefully have it ready for
+</I>&gt;<i> &gt;&gt;&gt; Mapnik 2.0.
+</I>&gt;<i> &gt;&gt;&gt; _______________________________________________
+</I>&gt;<i> &gt;&gt;&gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt;&gt;&gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;&gt;
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001407.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+	<LI>Next message: <A HREF="001415.html">[Mapnik-devel] WMS with Mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1409">[ date ]</a>
+              <a href="thread.html#1409">[ thread ]</a>
+              <a href="subject.html#1409">[ subject ]</a>
+              <a href="author.html#1409">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

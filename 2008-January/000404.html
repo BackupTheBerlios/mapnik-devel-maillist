@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Blending error (With Patch)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3C478572DE.7060204%40smartrak.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000398.html">
+   <LINK REL="Next"  HREF="000410.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Blending error (With Patch)</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3C478572DE.7060204%40smartrak.co.nz%3E"
+       TITLE="[Mapnik-devel] Blending error (With Patch)">dave at smartrak.co.nz
+       </A><BR>
+    <I>Thu Jan 10 02:20:30 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000398.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+        <LI>Next message: <A HREF="000410.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#404">[ date ]</a>
+              <a href="thread.html#404">[ thread ]</a>
+              <a href="subject.html#404">[ subject ]</a>
+              <a href="author.html#404">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>One thing I've noticed is that if your map is rendered onto a fully 
+transparent background (alpha=0), it will still be blended to the color 
+components that are set in that layer.
+In comparison to any image editing software, this behavior is incorrect.
+Investigating AGG usage, it looks like the wrong blending is being used 
+(pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+
+The attached image portrays this behavior.
+Column 1: background(0,0,0,0), first row is bad
+Column 2: background(255,255,255,0), second row is bad
+Column 3: with patch applied, all are good, any background with alpha=0 
+gives the same output.
+
+Dave.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: blend_error.patch
+Type: text/x-diff
+Size: 3446 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.patch">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.patch</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: blend_error.png
+Type: image/png
+Size: 16860 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.png">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080110/fedb1222/attachment.png</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000398.html">[Mapnik-devel] [OSM-dev] reliefs madness
+</A></li>
+	<LI>Next message: <A HREF="000410.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#404">[ date ]</a>
+              <a href="thread.html#404">[ thread ]</a>
+              <a href="subject.html#404">[ subject ]</a>
+              <a href="author.html#404">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

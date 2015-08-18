@@ -1,0 +1,1234 @@
+From lists at brachttal.net  Tue Oct  7 22:21:14 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 7 Oct 2008 22:21:14 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+Message-ID: <20081007222114.14e3aa9e@frodo.mittelerde>
+
+Hello,
+
+I use mapnik in an application with real time rendering. It works well,
+but the performance is really bad in big zoom levels.
+
+If the zoom level is around 1-5 km it's fast enough. But if e.g. a
+complete city or country is rendered, then it's really slow. I created
+a map XML that renders only a few information at those zoom levels. In
+country zoom level I render only the capital cities and some freeways.
+But it's still very slow.
+
+So I assume the big problem isn't the drawing. The performance
+bottleneck seems to be before that.
+
+What is faster? Using libxml2 or not? Using cairo or not?
+
+Currently I use PostGIS (OSM) as data source (Germany only). Is there a
+faster data source?
+
+What else could I do to improve map rendering performance?
+
+Until now I didn't profile mapnik. Has one of you yet profiles mapnik
+and identified the bottleneck?
+
+Maybe it's needed to improve some algorithm in mapnik itself. For sure
+this would need first to find the bottleneck.
+
+I also had another idea the improve moving on the card in applications.
+I thought about rendering a bigger map that my screen. Then I could
+move around on the screen without rendering new maps by mapnik. But
+this has a bad influence on getting a full new map (e.g. while zooming).
+
+The basic idea behind this is to invest more into caching. Why would I
+render the same data again and again? Is there a caching concept in
+mapnik? Would you see such a concept in mapnik or on top of it?
+
+Another idea: Is it possible to strip more useless data from the
+database to get it smaller?
+
+My test system is a 2Ghz system with 2 GB RAM. But I would like to get
+it running smooth with 1GHz.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Wed Oct  8 00:20:08 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 8 Oct 2008 00:20:08 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <633d34560810071449r30189bfep5e3de128ce2f14f2@mail.gmail.com>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<633d34560810071449r30189bfep5e3de128ce2f14f2@mail.gmail.com>
+Message-ID: <20081008002008.6d8449f6@frodo.mittelerde>
+
+Am Tue, 7 Oct 2008 14:49:59 -0700 schrieb Matt Bartolome:
+
+> Hi Andreas,
+> I would recommend tilecache. It's fairly easy to run tilecache as a
+> standalone wsgi (tilecache supports this out of the box) and then
+> point your fastcgi enabled server at it (I'm using nginx). This will
+> take care of some of the caching issues as well as give you options on
+> rendering size etc...
+
+Is this architecture really fast enough for not web based applications.
+The rest of my framework uses C++. I'm a little fear of python in this
+context. What is your experience with performance?
+
+> You can do a lot of tinkering with the configuration by writing
+> middleware and dynamically loading configuration files from the
+> request for example. This gives you a great deal of control of what to
+> render at specific resolutions and bounding boxes. Tilecache also
+> comes with a handy tilecache_seed.py script that lets you precache
+> your tiles.
+>
+> My major bottleneck is at the postgis/postgres end of things when
+> drawing large datasets with labels too. I have about 1.5 gigs ram with
+> 2.6 ghz xeon running redhat within vmware and I definitely hit the
+> wall with regards to rendering speed. I don't know if there is anyway
+> around that besides seeding the entire cache. Tuning postgres
+> definitely helps but there is a limit that will require more hardware
+> and configuration tweeks.
+
+So would you say there's a faster database backend? What's about MySQL?
+Or the OSM binary API? Are there any PostgreSQL test applications to
+find my bottlenecks? I don't know how to tune PostgreSQL.
+
+Does it help to remove data in the database that I don't use?
+
+regards
+Andreas
+
+
+From albergimenez at gmail.com  Wed Oct  8 01:25:11 2008
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E.?=)
+Date: Tue, 7 Oct 2008 19:25:11 -0400
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <20081008002008.6d8449f6@frodo.mittelerde>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<633d34560810071449r30189bfep5e3de128ce2f14f2@mail.gmail.com>
+	<20081008002008.6d8449f6@frodo.mittelerde>
+Message-ID: <2e06a0160810071625j3d245e27s8c8440fa589de52f@mail.gmail.com>
+
+Hi, Andreas
+
+If you're using the OSM Postgresql schema don't expect to much performance
+gains, the schema is not well suited for large datasets.
+Maybe if you start to separate concepts in the schema should help, for
+example a separate table for waterway lines, road lines, etc. so the
+database engine doesn't has to filter dummy queries in lineal order. The
+GIST indexes helps a lot.
+
+
+> So would you say there's a faster database backend? What's about MySQL?
+> Or the OSM binary API? Are there any PostgreSQL test applications to
+> find my bottlenecks? I don't know how to tune PostgreSQL.
+>
+> Does it help to remove data in the database that I don't use?
+>
+>
+I don't know if MySQL would give  a better performance. I think there is a
+page for tunning postgresql in the OSM wiki, but I don't remember where :(.
+
+Regards,
+
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081007/7729fcf8/attachment.html>
+
+From jochen at remote.org  Wed Oct  8 09:17:34 2008
+From: jochen at remote.org (Jochen Topf)
+Date: Wed, 8 Oct 2008 09:17:34 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <2e06a0160810071625j3d245e27s8c8440fa589de52f@mail.gmail.com>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<633d34560810071449r30189bfep5e3de128ce2f14f2@mail.gmail.com>
+	<20081008002008.6d8449f6@frodo.mittelerde>
+	<2e06a0160810071625j3d245e27s8c8440fa589de52f@mail.gmail.com>
+Message-ID: <20081008071734.GD6742@localhost.localdomain>
+
+On Tue, Oct 07, 2008 at 07:25:11PM -0400, Alberto Gim?nez E. wrote:
+> If you're using the OSM Postgresql schema don't expect to much performance
+> gains, the schema is not well suited for large datasets.
+> Maybe if you start to separate concepts in the schema should help, for
+> example a separate table for waterway lines, road lines, etc. so the
+> database engine doesn't has to filter dummy queries in lineal order. The
+> GIST indexes helps a lot.
+
+To debug this you can enable query logging in postgres, that way you'll
+get a log of all requests to the database. Run them manually with and
+without EXPLAIN to get an idea for what is happening.
+
+Jochen
+-- 
+Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/  +49-721-388298
+
+
+
+From jburgess777 at googlemail.com  Wed Oct  8 23:41:21 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 08 Oct 2008 22:41:21 +0100
+Subject: [Mapnik-devel] [PATCH] fix rendering of non-Arabic right-to-left
+	text
+Message-ID: <1223502081.4091.137.camel@localhost.localdomain>
+
+An OSM user recently reported that Hebrew text was not rendering in the
+Mapnik layer. I took a look at the code and found that when Mapnik
+detects RTL text it only gets rendered if it matches the Arabic shaping
+rules. Anything else gets discarded. 
+
+With the attached patch, Hebrew names are now appearing correctly on the
+OSM map, e.g.
+http://www.openstreetmap.org/?lat=32.32298&lon=34.85931&zoom=16&layers=B000FFF
+
+
+	Jon
+
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-hebrew-rtl.patch
+Type: text/x-patch
+Size: 1015 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/06513df1/attachment.bin>
+
+From artem at mapnik.org  Thu Oct  9 14:11:17 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 9 Oct 2008 13:11:17 +0100
+Subject: [Mapnik-devel] [PATCH] fix rendering of non-Arabic
+	right-to-left text
+In-Reply-To: <1223502081.4091.137.camel@localhost.localdomain>
+References: <1223502081.4091.137.camel@localhost.localdomain>
+Message-ID: <633D9C91-C918-449C-A0F8-355908942722@mapnik.org>
+
+Hi Jon,
+
+On 8 Oct 2008, at 22:41, Jon Burgess wrote:
+
+> An OSM user recently reported that Hebrew text was not rendering in  
+> the
+> Mapnik layer. I took a look at the code and found that when Mapnik
+> detects RTL text it only gets rendered if it matches the Arabic  
+> shaping
+> rules. Anything else gets discarded.
+>
+> With the attached patch, Hebrew names are now appearing correctly on  
+> the
+> OSM map, e.g.
+> http://www.openstreetmap.org/?lat=32.32298&lon=34.85931&zoom=16&layers=B000FFF
+>
+>
+
+
+Applied in r748. Thanks!
+
+> 	Jon
+>
+Artem
+>
+>
+>
+>
+> <mapnik-hebrew- 
+> rtl.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From garraud.alexandre at neuf.fr  Tue Oct 14 10:13:56 2008
+From: garraud.alexandre at neuf.fr (Alexandre GARRAUD)
+Date: Tue, 14 Oct 2008 10:13:56 +0200
+Subject: [Mapnik-devel] Load_map
+Message-ID: <48F454C4.50803@neuf.fr>
+
+Hi
+
+I have possibility to develop one amelioration for load_map methode.
+
+For now, this method create a map from a xml file, i propose to create a 
+map from url. This functionality gives a dynamics map.
+
+What do you think of this? Is there something equivalent ?
+
+Alexandre
+
+
+From gilles.bassiere at makina-corpus.com  Tue Oct  7 11:19:25 2008
+From: gilles.bassiere at makina-corpus.com (=?UTF-8?B?R2lsbGVzIEJhc3Npw6hyZQ==?=)
+Date: Tue, 07 Oct 2008 11:19:25 +0200
+Subject: [Mapnik-devel] unable to compile last revision
+Message-ID: <48EB299D.90307@makina-corpus.com>
+
+Hi Mapnik developers,
+
+I've been unable to compile mapnik last revision (r747) on a debian etch 
+box. All dependencies are met but compilation failed on this:
+----------------
+g++ -o src/datasource_cache.os -c -DHAVE_LIBXML2 -ansi -Wall -pthread 
+-ftemplate-depth-100 -DLINUX -O2 -finline-functions -Wno-inline -DNDEBUG 
+-fPIC -Iagg/include -Itinyxml -Iinclude -I. 
+-I/usr/local/include/boost-1_36 -I/usr/include -I/usr/local/include 
+-I/usr/include/freetype2 -I/usr/include/libxml2 src/datasource_cache.cpp
+src/datasource_cache.cpp: In static member function ?static void 
+mapnik::datasource_cache::register_datasources(const std::string&)?:
+src/datasource_cache.cpp:128: error: ?class 
+boost::filesystem::basic_directory_entry<boost::filesystem::basic_path<std::basic_string<char, 
+std::char_traits<char>, std::allocator<char> >, 
+boost::filesystem::path_traits> >? has no member named ?leaf?
+----------------
+
+
+The following patch allow compilation:
+----------------
+Index: src/datasource_cache.cpp
+===================================================================
+--- src/datasource_cache.cpp (revision 747)
++++ src/datasource_cache.cpp (working copy)
+@@ -125,7 +125,7 @@
+{
+for (filesystem::directory_iterator itr(path);itr!=end_itr;++itr )
+{
+- if (!is_directory( *itr ) && is_input_plugin(itr->leaf()))
++ if (!is_directory( *itr ))
+{
+try
+{
+----------------
+If this patch is harmless, could you commit it?
+
+
+Additionnaly, I tried to submit a ticket for this. I used to have an 
+account on mapnik's trac but I can't reset the password, the system reply:
+----------------
+SMTPAuthenticationError: (535, '#5.7.0 Authentication failed')
+There was an internal error in Trac. It is recommended that you inform 
+your local Trac administrator <mailto:noreply at mapnik.org> and give him 
+all the information he needs to reproduce the issue.
+The action that triggered the error was:
+POST: /reset_password
+----------------
+How could I get a new password?
+
+Regards,
+Gilles
+
+-- 
+Gilles Bassiere
+MAKINA CORPUS
+30 rue des Jeuneurs
+FR-75002 PARIS
++33 (0) 1 44 82 00 80
+http://www.makina-corpus.com
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gilles_bassiere.vcf
+Type: text/x-vcard
+Size: 380 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081007/5061bab3/attachment.vcf>
+
+From mon.casier at gmail.com  Wed Oct  8 09:30:42 2008
+From: mon.casier at gmail.com (Oleg)
+Date: Wed, 8 Oct 2008 10:30:42 +0300
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <2e06a0160810071625j3d245e27s8c8440fa589de52f@mail.gmail.com>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<633d34560810071449r30189bfep5e3de128ce2f14f2@mail.gmail.com>
+	<20081008002008.6d8449f6@frodo.mittelerde>
+	<2e06a0160810071625j3d245e27s8c8440fa589de52f@mail.gmail.com>
+Message-ID: <640d8a340810080030h43e58bf2t905caf7c0f13fb9@mail.gmail.com>
+
+Yeah, I agree with Alberto - DB tuning can give a boost, but it's pretty
+complicated task. Also, check if your system has enougth RAM and don't
+hesistate caching. Rendering on such zoom levels means a lot of data to be
+passed into render - provide maximum speed here to get all from mapnik.
+
+2008/10/8 Alberto Gim?nez E. <albergimenez at gmail.com>
+
+> Hi, Andreas
+>
+> If you're using the OSM Postgresql schema don't expect to much performance
+> gains, the schema is not well suited for large datasets.
+> Maybe if you start to separate concepts in the schema should help, for
+> example a separate table for waterway lines, road lines, etc. so the
+> database engine doesn't has to filter dummy queries in lineal order. The
+> GIST indexes helps a lot.
+>
+>
+>> So would you say there's a faster database backend? What's about MySQL?
+>> Or the OSM binary API? Are there any PostgreSQL test applications to
+>> find my bottlenecks? I don't know how to tune PostgreSQL.
+>>
+>> Does it help to remove data in the database that I don't use?
+>>
+>>
+> I don't know if MySQL would give  a better performance. I think there is a
+> page for tunning postgresql in the OSM wiki, but I don't remember where :(.
+>
+> Regards,
+>
+> --
+> Alberto Gim?nez E.
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081008/54d6bd9d/attachment.html>
+
+From kleptog at gmail.com  Sun Oct 19 18:45:43 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sun, 19 Oct 2008 18:45:43 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <20081007222114.14e3aa9e@frodo.mittelerde>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+Message-ID: <2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+
+On Tue, Oct 7, 2008 at 10:21 PM, Andreas Volz <lists at brachttal.net> wrote:
+> I use mapnik in an application with real time rendering. It works well,
+> but the performance is really bad in big zoom levels.
+
+The problem lies mostly with the fact that you are still fetching all
+the data. Even if you don't render all of it, the query still matches
+everything and mapnik still has to process it.
+
+The way the OSM schema handles this is by making a roads table which
+contains the data needed for lowzoom. And then not touching the
+detailed tables at all. This idea hasn't been pushed through enough
+yet. Really waterways should be split out and probably all
+highway=residential also and only use that at the absolute highest
+zoomlevels.
+
+One thing that could be fixed is have mapnik notice you're only
+rendering a subset of the data and get it to add clauses to the query
+to filter that out earlier. This would significantly reduce the amount
+of data mpanik needs to process.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From lists at brachttal.net  Sun Oct 19 23:28:07 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Sun, 19 Oct 2008 23:28:07 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+Message-ID: <20081019232807.4f71eb5b@frodo.mittelerde>
+
+Am Sun, 19 Oct 2008 18:45:43 +0200 schrieb Martijn van Oosterhout:
+
+> On Tue, Oct 7, 2008 at 10:21 PM, Andreas Volz <lists at brachttal.net>
+> wrote:
+> > I use mapnik in an application with real time rendering. It works
+> > well, but the performance is really bad in big zoom levels.
+> 
+> The problem lies mostly with the fact that you are still fetching all
+> the data. Even if you don't render all of it, the query still matches
+> everything and mapnik still has to process it.
+> 
+> The way the OSM schema handles this is by making a roads table which
+> contains the data needed for lowzoom. And then not touching the
+> detailed tables at all. This idea hasn't been pushed through enough
+> yet. Really waterways should be split out and probably all
+> highway=residential also and only use that at the absolute highest
+> zoomlevels.
+> 
+> One thing that could be fixed is have mapnik notice you're only
+> rendering a subset of the data and get it to add clauses to the query
+> to filter that out earlier. This would significantly reduce the amount
+> of data mpanik needs to process.
+
+The question is how I would create this filter (in C++ binding)?
+
+Now I profiled deeper into mapnik to find the reason why it takes so
+long to render maps at big zoom levels. Here are my results:
+
+First I thought it may be the rendering in agg. This takes some time,
+but not much compared to the bottleneck.
+
+Then I thought it could be the database access. This takes around 15%
+of the time to get a map image. So there's some space for optimization,
+but still not a big problem.
+
+What I identified as bottleneck is *after* getting the data from
+database in feature_style_processor.hpp in apply_to_layer() around line
+215.
+
+                       while ((feature = fs->next()))
+                        {		   
+                           s1++;
+                           bool do_else=true;		    
+                           std::vector<rule_type*>::const_iterator itr=if_rules.begin();
+                           std::vector<rule_type*>::const_iterator end=if_rules.end();
+
+                           for (;itr != end;++itr)
+                           {
+                              s2++;
+                              filter_ptr const& filter=(*itr)->get_filter();    
+                              if (filter->pass(*feature))
+                              {   
+                                 do_else=false;
+                                 const symbolizers& symbols = (*itr)->get_symbolizers();
+                                 symbolizers::const_iterator symIter=symbols.begin();
+                                 symbolizers::const_iterator symEnd =symbols.end();
+                                 for (;symIter != symEnd;++symIter)
+                                 {   
+                                    boost::apply_visitor
+                                       (symbol_dispatch(p,*feature,prj_trans),*symIter);
+                                   s3++;
+                                 }
+                              }			    
+                           }
+                           if (do_else)
+                           {
+                              //else filter
+                              std::vector<rule_type*>::const_iterator itr=
+                                 else_rules.begin();
+                              std::vector<rule_type*>::const_iterator end=
+                                 else_rules.end();
+
+                              for (;itr != end;++itr)
+                              {
+                                 const symbolizers& symbols = (*itr)->get_symbolizers();
+                                 symbolizers::const_iterator symIter= symbols.begin();
+                                 symbolizers::const_iterator symEnd = symbols.end();
+                                        
+                                 for (;symIter!=symEnd;++symIter)
+                                 {
+                                    boost::apply_visitor
+                                       (symbol_dispatch(p,*feature,prj_trans),*symIter);
+                                 }
+                              }
+                           }	  
+                        }
+
+In the case of "start layer processing : roads" I get these values:
+
+#s1: 149694
+#s2: 299388
+#s3: 36129
+
+featureset_ptr fs=ds->features(q) Time: 1.804412 // get data from database
+
+while ((feature = fs->next())) Time: 13.608381 // time for complete loop
+
+The time is lower if I don't profile and compile with optimization (around 5 sec).
+But the problem is the same.
+
+Notice how often this loop is processed! I've not yet complete understand what
+happens here. But looping it so often sounds for me like a design problem.
+
+Maybe someone is able to help me to interpret the results and learn how to improve
+the speed.
+
+regards
+Andreas
+
+
+From jburgess777 at googlemail.com  Sun Oct 19 23:57:30 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 19 Oct 2008 22:57:30 +0100
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <20081019232807.4f71eb5b@frodo.mittelerde>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+	<20081019232807.4f71eb5b@frodo.mittelerde>
+Message-ID: <1224453450.21096.60.camel@localhost.localdomain>
+
+On Sun, 2008-10-19 at 23:28 +0200, Andreas Volz wrote:
+> Am Sun, 19 Oct 2008 18:45:43 +0200 schrieb Martijn van Oosterhout:
+> 
+> > On Tue, Oct 7, 2008 at 10:21 PM, Andreas Volz <lists at brachttal.net>
+> > wrote:
+> > > I use mapnik in an application with real time rendering. It works
+> > > well, but the performance is really bad in big zoom levels.
+> > 
+> > The problem lies mostly with the fact that you are still fetching all
+> > the data. Even if you don't render all of it, the query still matches
+> > everything and mapnik still has to process it.
+> > 
+> > The way the OSM schema handles this is by making a roads table which
+> > contains the data needed for lowzoom. And then not touching the
+> > detailed tables at all. This idea hasn't been pushed through enough
+> > yet. Really waterways should be split out and probably all
+> > highway=residential also and only use that at the absolute highest
+> > zoomlevels.
+> > 
+> > One thing that could be fixed is have mapnik notice you're only
+> > rendering a subset of the data and get it to add clauses to the query
+> > to filter that out earlier. This would significantly reduce the amount
+> > of data mpanik needs to process.
+> 
+> The question is how I would create this filter (in C++ binding)?
+> 
+> Now I profiled deeper into mapnik to find the reason why it takes so
+> long to render maps at big zoom levels. Here are my results:
+> 
+> First I thought it may be the rendering in agg. This takes some time,
+> but not much compared to the bottleneck.
+> 
+> Then I thought it could be the database access. This takes around 15%
+> of the time to get a map image. So there's some space for optimization,
+> but still not a big problem.
+> 
+> What I identified as bottleneck is *after* getting the data from
+> database in feature_style_processor.hpp in apply_to_layer() around line
+> 215.
+> 
+>                        while ((feature = fs->next()))
+>                         {		   
+>                            s1++;
+>                            bool do_else=true;		    
+>                            std::vector<rule_type*>::const_iterator itr=if_rules.begin();
+>                            std::vector<rule_type*>::const_iterator end=if_rules.end();
+> 
+>                            for (;itr != end;++itr)
+>                            {
+>                               s2++;
+>                               filter_ptr const& filter=(*itr)->get_filter();    
+>                               if (filter->pass(*feature))
+>                               {   
+>                                  do_else=false;
+>                                  const symbolizers& symbols = (*itr)->get_symbolizers();
+>                                  symbolizers::const_iterator symIter=symbols.begin();
+>                                  symbolizers::const_iterator symEnd =symbols.end();
+>                                  for (;symIter != symEnd;++symIter)
+>                                  {   
+>                                     boost::apply_visitor
+>                                        (symbol_dispatch(p,*feature,prj_trans),*symIter);
+>                                    s3++;
+>                                  }
+>                               }			    
+>                            }
+>                            if (do_else)
+>                            {
+>                               //else filter
+>                               std::vector<rule_type*>::const_iterator itr=
+>                                  else_rules.begin();
+>                               std::vector<rule_type*>::const_iterator end=
+>                                  else_rules.end();
+> 
+>                               for (;itr != end;++itr)
+>                               {
+>                                  const symbolizers& symbols = (*itr)->get_symbolizers();
+>                                  symbolizers::const_iterator symIter= symbols.begin();
+>                                  symbolizers::const_iterator symEnd = symbols.end();
+>                                         
+>                                  for (;symIter!=symEnd;++symIter)
+>                                  {
+>                                     boost::apply_visitor
+>                                        (symbol_dispatch(p,*feature,prj_trans),*symIter);
+>                                  }
+>                               }
+>                            }	  
+>                         }
+> 
+> In the case of "start layer processing : roads" I get these values:
+> 
+> #s1: 149694
+> #s2: 299388
+> #s3: 36129
+> 
+> featureset_ptr fs=ds->features(q) Time: 1.804412 // get data from database
+> 
+> while ((feature = fs->next())) Time: 13.608381 // time for complete loop
+> 
+> The time is lower if I don't profile and compile with optimization (around 5 sec).
+> But the problem is the same.
+> 
+> Notice how often this loop is processed! I've not yet complete understand what
+> happens here. But looping it so often sounds for me like a design problem.
+
+> Maybe someone is able to help me to interpret the results and learn how to improve
+> the speed.
+
+This is all processing the "roads" layer (as per the 'start layer
+processing : roads' message).
+
+The first loop (s1) is iterating over all the roads returned from the DB
+(150k).
+
+The second loop is iterating over all the relevant styles, s2 is double
+s1 which implies you have 2 styles in your roads layer, these are
+probably roads-casing and roads.
+
+s3 is the count of features which pass the 'filter' criteria of the
+style and actually get rendered on to the tile. 
+
+s3 is far lower than s2 (approx 1/8th). This implies that 7/8th of the
+data fetched from the DB is actually redundant to rendering this tile. 
+
+One obvious optimisation would improve this ratio by being more
+selective about what is fetched from the database. This can be done
+either by pushing some of the filter criteria down into the SQL (see the
+'power' layer for one example of where this has been done) or by
+partitioning the data into more tables in the DB (done to an extent with
+the planet_osm_roads table). 
+
+Another feature which I've seen take excessive amounts of time is the
+'order by z_order' on some of the SQL select lines. This really takes a
+significant amount of CPU when fetching many thousand entries from the
+DB. Reducing the amount of data being fetched would obviously help here
+too.
+
+	Jon
+
+
+
+
+From lists at brachttal.net  Tue Oct 21 00:23:30 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 21 Oct 2008 00:23:30 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <1224453450.21096.60.camel@localhost.localdomain>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+	<20081019232807.4f71eb5b@frodo.mittelerde>
+	<1224453450.21096.60.camel@localhost.localdomain>
+Message-ID: <20081021002330.45597262@frodo.mittelerde>
+
+Am Sun, 19 Oct 2008 22:57:30 +0100 schrieb Jon Burgess:
+
+> On Sun, 2008-10-19 at 23:28 +0200, Andreas Volz wrote:
+> > ...
+> > Maybe someone is able to help me to interpret the results and learn
+> > how to improve the speed.
+> 
+> This is all processing the "roads" layer (as per the 'start layer
+> processing : roads' message).
+> 
+> The first loop (s1) is iterating over all the roads returned from the
+> DB (150k).
+> 
+> The second loop is iterating over all the relevant styles, s2 is
+> double s1 which implies you have 2 styles in your roads layer, these
+> are probably roads-casing and roads.
+> 
+> s3 is the count of features which pass the 'filter' criteria of the
+> style and actually get rendered on to the tile. 
+> 
+> s3 is far lower than s2 (approx 1/8th). This implies that 7/8th of the
+> data fetched from the DB is actually redundant to rendering this
+> tile. 
+> 
+> One obvious optimisation would improve this ratio by being more
+> selective about what is fetched from the database. This can be done
+> either by pushing some of the filter criteria down into the SQL (see
+> the 'power' layer for one example of where this has been done) or by
+
+You mean thats's possible in the XML file only?
+
+   <Layer name="power" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+    <StyleName>power</StyleName>
+    <Datasource>
+      <Parameter name="type">postgis</Parameter>
+      <Parameter name="host">/var/run/postgresql/</Parameter>
+      <Parameter name="dbname">gis</Parameter>
+      <Parameter name="estimate_extent">false</Parameter>
+      <Parameter name="table">(select way from planet_osm_line where "power"='line') as power</Parameter>
+      <Parameter name="extent">-20037508,-19929239,20037508,19929239</Parameter>
+    </Datasource>
+  </Layer>
+
+So how would I do it with the road layer?
+
+> partitioning the data into more tables in the DB (done to an extent
+> with the planet_osm_roads table). 
+
+I imported the data with a OSM tool. This would need to modify the tool
+
+> Another feature which I've seen take excessive amounts of time is the
+> 'order by z_order' on some of the SQL select lines. This really takes
+> a significant amount of CPU when fetching many thousand entries from
+> the DB. Reducing the amount of data being fetched would obviously
+> help here too.
+
+Seems to work good. I improved the map rendering time from 4:5 to 3.4 seconds 
+(complete germany). Not yet perfect, but a start.
+
+What is the drawback of not using z_order. I assume it was used for some reason.
+
+regards
+Andreas
+
+
+From jburgess777 at googlemail.com  Tue Oct 21 01:04:10 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 21 Oct 2008 00:04:10 +0100
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <20081021002330.45597262@frodo.mittelerde>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+	<20081019232807.4f71eb5b@frodo.mittelerde>
+	<1224453450.21096.60.camel@localhost.localdomain>
+	<20081021002330.45597262@frodo.mittelerde>
+Message-ID: <1224543850.21096.84.camel@localhost.localdomain>
+
+On Tue, 2008-10-21 at 00:23 +0200, Andreas Volz wrote:
+> Am Sun, 19 Oct 2008 22:57:30 +0100 schrieb Jon Burgess:
+> 
+> > On Sun, 2008-10-19 at 23:28 +0200, Andreas Volz wrote:
+> > > ...
+> > > Maybe someone is able to help me to interpret the results and learn
+> > > how to improve the speed.
+> > 
+> > This is all processing the "roads" layer (as per the 'start layer
+> > processing : roads' message).
+> > 
+> > The first loop (s1) is iterating over all the roads returned from the
+> > DB (150k).
+> > 
+> > The second loop is iterating over all the relevant styles, s2 is
+> > double s1 which implies you have 2 styles in your roads layer, these
+> > are probably roads-casing and roads.
+> > 
+> > s3 is the count of features which pass the 'filter' criteria of the
+> > style and actually get rendered on to the tile. 
+> > 
+> > s3 is far lower than s2 (approx 1/8th). This implies that 7/8th of the
+> > data fetched from the DB is actually redundant to rendering this
+> > tile. 
+> > 
+> > One obvious optimisation would improve this ratio by being more
+> > selective about what is fetched from the database. This can be done
+> > either by pushing some of the filter criteria down into the SQL (see
+> > the 'power' layer for one example of where this has been done) or by
+> 
+> You mean thats's possible in the XML file only?
+> 
+>    <Layer name="power" status="on" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+>     <StyleName>power</StyleName>
+>     <Datasource>
+>       <Parameter name="type">postgis</Parameter>
+>       <Parameter name="host">/var/run/postgresql/</Parameter>
+>       <Parameter name="dbname">gis</Parameter>
+>       <Parameter name="estimate_extent">false</Parameter>
+>       <Parameter name="table">(select way from planet_osm_line where "power"='line') as power</Parameter>
+>       <Parameter name="extent">-20037508,-19929239,20037508,19929239</Parameter>
+>     </Datasource>
+>   </Layer>
+> 
+> So how would I do it with the road layer?
+
+Well, one way to do it _might_ be to turn it into muliple layers, one
+with highway=motorway, another with highway=primary, another with
+highway=secondary etc.
+
+The downside of this is that if also effects the sequence that things
+are rendered. For example, if you got things wrong, you might find your
+primary road which is meant to go on a bridge over the motorway now gets
+drawn underneath the motorway line.
+
+This is exactly the problem that the 'order by z_order' tries to
+address. The z_order field is calculated by osm2pgsql based on the
+layer, tunnel, bridge tags (highway type has influence too).
+
+> > partitioning the data into more tables in the DB (done to an extent
+> > with the planet_osm_roads table). 
+> 
+> I imported the data with a OSM tool. This would need to modify the tool
+
+Yes it would
+
+> > Another feature which I've seen take excessive amounts of time is the
+> > 'order by z_order' on some of the SQL select lines. This really takes
+> > a significant amount of CPU when fetching many thousand entries from
+> > the DB. Reducing the amount of data being fetched would obviously
+> > help here too.
+> 
+> Seems to work good. I improved the map rendering time from 4:5 to 3.4 seconds 
+> (complete germany). Not yet perfect, but a start.
+> 
+> What is the drawback of not using z_order. I assume it was used for some reason.
+
+As mentioned above, this is used to help ensure the correct rendering
+order for tunnels, layers, bridges etc. This is important for higher
+zooms where these features are visible but you could argue that this
+becomes less important at lower zooms.
+
+I've hinted already that these sorts of optimisations do effect how the
+output gets rendered so you will probably need to do experiments to get
+a good feel for how the rule/style/layers interact when you make
+changes.
+
+As you mention, making more substantial change may require further
+enhancements to osm2pgsql, the database tables or the Mapnik code.
+
+Another optimisation which I think Artem played around with before was
+simplifying the geometries in the tables. We do not need to preserve the
+every single node along every road when rendering country-scale maps.
+Again this would require more processing during the data import.
+
+On the main tile server the time taken to render the high zoom tiles
+(especially zoom 17 & 18) is far higher than the low zoom tiles.
+Optimising the rendering time for the 1024 tiles at zoom 5 tiles makes
+very little difference compared to the time spent rendering the 44
+million tiles that are rendered at zoom 17*. Obviously you've got
+different priorities because you want the rendering to be fast at all
+zooms.
+
+	Jon
+
+* This is based on the number of tiles present on the tile server at
+zoom 17 on 2008-06-27. For a spreadsheet with the tile stats see:
+http://tile.openstreetmap.org/direct/tiles-20080627.ods
+
+
+
+
+From lists at brachttal.net  Tue Oct 21 22:54:25 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Tue, 21 Oct 2008 22:54:25 +0200
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <1224543850.21096.84.camel@localhost.localdomain>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+	<20081019232807.4f71eb5b@frodo.mittelerde>
+	<1224453450.21096.60.camel@localhost.localdomain>
+	<20081021002330.45597262@frodo.mittelerde>
+	<1224543850.21096.84.camel@localhost.localdomain>
+Message-ID: <20081021225425.6633fd5e@frodo.mittelerde>
+
+Am Tue, 21 Oct 2008 00:04:10 +0100 schrieb Jon Burgess:
+
+> > You mean thats's possible in the XML file only?
+> > ...
+> > So how would I do it with the road layer?
+> 
+> Well, one way to do it _might_ be to turn it into muliple layers, one
+> with highway=motorway, another with highway=primary, another with
+> highway=secondary etc.
+
+Now I played some more around with roads in the XML file. What I still
+not understand is the difference between layer "minor-roads" and
+"roads". One gets its data from "planet_osm_line" the other from
+"planet_osm_roads". Could you explain that?
+
+> The downside of this is that if also effects the sequence that things
+> are rendered. For example, if you got things wrong, you might find
+> your primary road which is meant to go on a bridge over the motorway
+> now gets drawn underneath the motorway line.
+
+Ok, I like to do it right. So for what should I pay attention.
+
+> This is exactly the problem that the 'order by z_order' tries to
+> address. The z_order field is calculated by osm2pgsql based on the
+> layer, tunnel, bridge tags (highway type has influence too).
+> 
+> > > partitioning the data into more tables in the DB (done to an
+> > > extent with the planet_osm_roads table). 
+> > 
+> > I imported the data with a OSM tool. This would need to modify the
+> > tool
+> 
+> Yes it would
+> 
+> > > Another feature which I've seen take excessive amounts of time is
+> > > the 'order by z_order' on some of the SQL select lines. This
+> > > really takes a significant amount of CPU when fetching many
+> > > thousand entries from the DB. Reducing the amount of data being
+> > > fetched would obviously help here too.
+> > 
+> > Seems to work good. I improved the map rendering time from 4:5 to
+> > 3.4 seconds (complete germany). Not yet perfect, but a start.
+> > 
+> > What is the drawback of not using z_order. I assume it was used for
+> > some reason.
+> 
+> As mentioned above, this is used to help ensure the correct rendering
+> order for tunnels, layers, bridges etc. This is important for higher
+> zooms where these features are visible but you could argue that this
+> becomes less important at lower zooms.
+
+Yes, at least I could try it.
+
+> I've hinted already that these sorts of optimisations do effect how
+> the output gets rendered so you will probably need to do experiments
+> to get a good feel for how the rule/style/layers interact when you
+> make changes.
+> 
+> As you mention, making more substantial change may require further
+> enhancements to osm2pgsql, the database tables or the Mapnik code.
+> 
+> Another optimisation which I think Artem played around with before was
+> simplifying the geometries in the tables. We do not need to preserve
+> the every single node along every road when rendering country-scale
+> maps. Again this would require more processing during the data import.
+
+I'm interested to try any idea where I get input from this list. If
+someone has also interests in improving mapnik performance I think we
+should combine our work.
+
+> On the main tile server the time taken to render the high zoom tiles
+> (especially zoom 17 & 18) is far higher than the low zoom tiles.
+> Optimising the rendering time for the 1024 tiles at zoom 5 tiles
+> makes very little difference compared to the time spent
+> rendering the 44 million tiles that are rendered at zoom 17*.
+> Obviously you've got different priorities because you want the
+> rendering to be fast at all zooms.
+
+Yes, as I use it to render maps while viewing. I also thought about
+using pre-rendered tiles for country level zoom.
+
+regards
+Andreas
+
+
+From jburgess777 at googlemail.com  Tue Oct 21 23:38:24 2008
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 21 Oct 2008 22:38:24 +0100
+Subject: [Mapnik-devel] Mapnik performance for applications
+In-Reply-To: <20081021225425.6633fd5e@frodo.mittelerde>
+References: <20081007222114.14e3aa9e@frodo.mittelerde>
+	<2fc2c5f10810190945n2ae337d9u4d7d75d0f10e15f6@mail.gmail.com>
+	<20081019232807.4f71eb5b@frodo.mittelerde>
+	<1224453450.21096.60.camel@localhost.localdomain>
+	<20081021002330.45597262@frodo.mittelerde>
+	<1224543850.21096.84.camel@localhost.localdomain>
+	<20081021225425.6633fd5e@frodo.mittelerde>
+Message-ID: <1224625104.21096.108.camel@localhost.localdomain>
+
+On Tue, 2008-10-21 at 22:54 +0200, Andreas Volz wrote:
+> Am Tue, 21 Oct 2008 00:04:10 +0100 schrieb Jon Burgess:
+> 
+> > > You mean thats's possible in the XML file only?
+> > > ...
+> > > So how would I do it with the road layer?
+> > 
+> > Well, one way to do it _might_ be to turn it into muliple layers,
+> one
+> > with highway=motorway, another with highway=primary, another with
+> > highway=secondary etc.
+> 
+> Now I played some more around with roads in the XML file. What I still
+> not understand is the difference between layer "minor-roads" and
+> "roads". One gets its data from "planet_osm_line" the other from
+> "planet_osm_roads". Could you explain that?
+
+The main difference is the intended range of zoom levels. 
+
+Data to be shown at low zooms is in "planet_osm_roads". and rendered by
+"roads". This renders up to a highest MaxScaleDenominator 25M [1] or
+zoom 5.
+
+The "planet_osm_roads" data rendered by minor-roads-fill has a highest
+MaxScaleDenominator in minor-roads-fill of 1M [2] or zoom 10.
+
+Arguably this is really a little too high. You would probably speed up
+your rendering significantly if you change this scale to 500k. The way
+that the zooms work, each change in zoom level is a factor of 4 in the
+area and data covered. 
+
+The biggest win occurs when you manage to reduce the highest
+MaxScaleDenominator across all the rules in a style. Mapnik will then
+completely exclude fetching any data for that style at the higher zooms
+(to be more exact, it is probably the range of zooms for all styles of a
+layer, but there is often a close match between the styles and layers). 
+
+In the case of the roads, there are a couple of other rules which
+specify 500k as well. If you wanted to gain much more performance then
+these would all need to be reduced (say to 250k). This obviously changes
+the zoom level that these features start appearing in the rendered
+output. There is a mapping between zoom and scale in the
+zoom-to-scale.txt file.
+
+	Jon
+
+
+1: http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L4211
+2: http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm.xml#L2210
+
+
+
+
+
+From blake at hailmail.net  Tue Oct 28 20:10:38 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 28 Oct 2008 12:10:38 -0700
+Subject: [Mapnik-devel] Mapnik 64bit on Mac 10.5
+Message-ID: <97203978-E2C9-4D90-B17B-9F47382EB5F0@hailmail.net>
+
+Anyone done it?
+
+I've been developing a mapnik wsgi app and have been restricted to my  
+linux box because the system Apache on mac 10.5 runs 64 bit.
+
+It would be great to be able to run mapnik inside a 64bit apache  
+process.
+
+Ideas?
+
+Dane
+
+
+
+
+From blake at hailmail.net  Wed Oct 29 02:41:08 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 28 Oct 2008 18:41:08 -0700
+Subject: [Mapnik-devel] Mapnik 64bit on Mac 10.5
+In-Reply-To: <c95f07a90810281826u9cbee48vd30b34a097077373@mail.gmail.com>
+References: <97203978-E2C9-4D90-B17B-9F47382EB5F0@hailmail.net>
+	<c95f07a90810281705p7eed0130nc431ad32cb31598e@mail.gmail.com>
+	<37A2EB3E-9EA6-4551-AAD7-4A122CFACFFE@hailmail.net>
+	<c95f07a90810281826u9cbee48vd30b34a097077373@mail.gmail.com>
+Message-ID: <6E056DB3-343F-4EA4-A4CB-D692B5AF3C9C@hailmail.net>
+
+I'm attempting to do so in scons with something like:
+
+env.Append(CPPFLAGS="-Os -arch ppc -arch i386 -arch ppc64 -arch x86_64")
+env.Append(LINKFLAGS="-arch ppc -arch i386 -arch ppc64 -arch x86_64")
+
+..but that's far from correct yet.
+
+Dane
+
+
+On Oct 28, 2008, at 6:26 PM, Joseph Gentle wrote:
+
+> Yeah that description is pretty accurate. You need to tell GCC and LD
+> to make a 64 bit version of mapnik. To do that, it'll be some obscure
+> gcc flags:
+>
+> From the link you posted:
+>
+> Modify the generated 'Makefile' in mod_wsgi source code and change the
+> CFLAGS variable to:
+>   CFLAGS = -Wc,"-arch ppc7400" -Wc,"-arch ppc64" -Wc,"-arch i386"
+> -Wc,"-arch x86_64"
+> Also, insert into LFDLAGS similar options but not escaped by '-Wc,'.
+>   LDFLAGS = -arch ppc7400 -arch ppc64 -arch i386 -arch x86_64 ...
+>
+> I've never understood scons. Anyone know how you add cflags and
+> ldflags using scons?
+>
+> -J
+>
+>
+> On Wed, Oct 29, 2008 at 12:08 PM, Dane Springmeyer  
+> <blake at hailmail.net> wrote:
+>> Hi Joseph,
+>>
+>> The issue is that libraries loading into an apache 64 bit proces on  
+>> mac os
+>> have to be compiled with the 'arch x86_64' flag.
+>>
+>> So, currentlyI get:
+>>
+>> springmeyer:~ spring$ file /usr/local/lib/libmapnik.dylib
+>> /usr/local/lib/libmapnik.dylib: Mach-O dynamically linked shared  
+>> library
+>> i386
+>>
+>> but I need to get something more like:
+>>
+>> /usr/local/lib/libmapnik.dylib: Mach-O universal binary with 4  
+>> architectures
+>>
+>> Otherwise in the apache logs I get:
+>>
+>> [Tue Oct 28 18:02:23 2008] [info] [client ::1] mod_wsgi (pid=18266,
+>> process='', application='springmeyer.local|/wsgiwms'): Loading WSGI  
+>> script
+>> '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+>> wms.wsgi'.
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1] mod_wsgi (pid=18266):
+>> Exception occurred processing WSGI script
+>> '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+>> wms.wsgi'.
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1] Traceback (most  
+>> recent call
+>> last):
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+>> "/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+>> wms.wsgi",
+>> line 45, in application
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1]     import mapnik
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+>> "/Library/Python/2.5/site-packages/mapnik/__init__.py", line 31, in  
+>> <module>
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1]     from _mapnik  
+>> import *
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1] ImportError:
+>> dlopen(/Library/Python/2.5/site-packages/mapnik/_mapnik.so, 10): no  
+>> suitable
+>> image found.  Did find:
+>> [Tue Oct 28 18:02:23 2008] [error] [client ::1]
+>> \t/Library/Python/2.5/site-packages/mapnik/_mapnik.so: mach-o, but  
+>> wrong
+>> architecture
+>>
+>>
+>> Mod wsgi has got some nice background on this:
+>> http://code.google.com/p/modwsgi/wiki/InstallationOnMacOSX
+>>
+>> So, i doubt you have to deal with these issues on linux, but have  
+>> you seen
+>> anything like this?
+>>
+>> Dane
+>>
+>>
+>>
+>>
+>> On Oct 28, 2008, at 5:05 PM, Joseph Gentle wrote:
+>>
+>>> I have mapnik working fine on 64bit linux.
+>>>
+>>> What error(s) are you getting?
+>>>
+>>> -J
+>>>
+>>>
+>>> On Wed, Oct 29, 2008 at 6:10 AM, Dane Springmeyer <blake at hailmail.net 
+>>> >
+>>> wrote:
+>>>>
+>>>> Anyone done it?
+>>>>
+>>>> I've been developing a mapnik wsgi app and have been restricted  
+>>>> to my
+>>>> linux box because the system Apache on mac 10.5 runs 64 bit.
+>>>>
+>>>> It would be great to be able to run mapnik inside a 64bit apache
+>>>> process.
+>>>>
+>>>> Ideas?
+>>>>
+>>>> Dane
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>
+>>
+
+
+
+From dodobas at geoinfo.geof.hr  Wed Oct 29 10:27:17 2008
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Wed, 29 Oct 2008 10:27:17 +0100
+Subject: [Mapnik-devel] Postgis, table not in public schema
+Message-ID: <49082C75.7030903@geoinfo.geof.hr>
+
+I've created a patch that fixes issue when geometry table is in schema 
+other than public. Please check it out, and comment 
+http://trac.mapnik.org/ticket/133
+
+

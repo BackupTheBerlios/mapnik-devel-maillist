@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] problem with save_map
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20problem%20with%20save_map&In-Reply-To=%3C45574B70.4090901%40pavlenko.uklinux.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000052.html">
+   <LINK REL="Next"  HREF="000054.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] problem with save_map</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20problem%20with%20save_map&In-Reply-To=%3C45574B70.4090901%40pavlenko.uklinux.net%3E"
+       TITLE="[Mapnik-devel] problem with save_map">artem at pavlenko.uklinux.net
+       </A><BR>
+    <I>Sun Nov 12 17:27:28 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000052.html">[Mapnik-devel] problem with save_map
+</A></li>
+        <LI>Next message: <A HREF="000054.html">[Mapnik-devel] more text placement patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#53">[ date ]</a>
+              <a href="thread.html#53">[ thread ]</a>
+              <a href="subject.html#53">[ subject ]</a>
+              <a href="author.html#53">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Attached is what I used to render Canadian data.
+Artem.
+
+Jean-Fran&#231;ois Doyon wrote:
+&gt;<i> Oh, never mind then :)
+</I>&gt;<i>
+</I>&gt;<i> I wanted to play with this, and maybe add the feature to the demo, 
+</I>&gt;<i> showing how one can save and reload maps ... but I guess once can't.
+</I>&gt;<i>
+</I>&gt;<i> So right now one is expected to simply write the XML document first, and 
+</I>&gt;<i> THEN load it?
+</I>&gt;<i>
+</I>&gt;<i> Can you send an example?
+</I>&gt;<i>
+</I>&gt;<i> J.F.
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko wrote:
+</I>&gt;<i>   
+</I>&gt;&gt;<i> J.F,
+</I>&gt;&gt;<i> I'll look into this. BTW, save_map doesn't really save anything at the 
+</I>&gt;&gt;<i> moment.
+</I>&gt;&gt;<i> Artem.
+</I>&gt;&gt;<i>   
+</I>&gt;&gt;<i>     
+</I>&gt;&gt;&gt;<i> Hello,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Trying to use save_map from python, without any luck.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Noted some mistakes in the bindings:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> +    def(&quot;load_map&quot;,&amp;load_map,&quot;load Map object from XML&quot;);
+</I>&gt;&gt;&gt;<i> +    def(&quot;save_map&quot;,&amp;load_map,&quot;sace Map object to XML&quot;);
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Which I corrected to say:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>      def(&quot;load_map&quot;,&amp;load_map,&quot;Load Map object from XML&quot;);
+</I>&gt;&gt;&gt;<i>      def(&quot;save_map&quot;,&amp;save_map,&quot;Save Map object to XML&quot;);
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> But I get a symbol undefined at runtime:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> [<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">root at pcjflinux</A> python]# python rundemo.py
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The mapnik library and python bindings must have been compiled and 
+</I>&gt;&gt;&gt;<i> installed successfully before running this script.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Traceback (most recent call last):
+</I>&gt;&gt;&gt;<i>    File &quot;rundemo.py&quot;, line 24, in ?
+</I>&gt;&gt;&gt;<i>      from mapnik import *
+</I>&gt;&gt;&gt;<i>    File &quot;/usr/lib/python2.3/site-packages/mapnik/__init__.py&quot;, line 33, in ?
+</I>&gt;&gt;&gt;<i>      from _mapnik import *
+</I>&gt;&gt;&gt;<i> ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+</I>&gt;&gt;&gt;<i> undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Any ideas?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thx
+</I>&gt;&gt;&gt;<i> J.F.
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>   
+</I>&gt;&gt;&gt;<i>     
+</I>&gt;&gt;&gt;<i>       
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>   
+</I>&gt;&gt;<i>     
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   
+</I>-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: canada.xml
+Type: text/xml
+Size: 11709 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061112/ac68225a/attachment.xml">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20061112/ac68225a/attachment.xml</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000052.html">[Mapnik-devel] problem with save_map
+</A></li>
+	<LI>Next message: <A HREF="000054.html">[Mapnik-devel] more text placement patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#53">[ date ]</a>
+              <a href="thread.html#53">[ thread ]</a>
+              <a href="subject.html#53">[ subject ]</a>
+              <a href="author.html#53">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

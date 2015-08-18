@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.7.0%20Release%20Candidate%201&In-Reply-To=%3C3FDCD621-CF32-40D8-B39C-64D5776C6B92%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001047.html">
+   <LINK REL="Next"  HREF="001052.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.7.0 Release Candidate 1</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.7.0%20Release%20Candidate%201&In-Reply-To=%3C3FDCD621-CF32-40D8-B39C-64D5776C6B92%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.7.0 Release Candidate 1">blake at hailmail.net
+       </A><BR>
+    <I>Mon Jan 11 05:34:00 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001047.html">[Mapnik-devel] Problems with 'apply alternative method of comparing map and layer bounds to support..'
+</A></li>
+        <LI>Next message: <A HREF="001052.html">[Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1048">[ date ]</a>
+              <a href="thread.html#1048">[ thread ]</a>
+              <a href="subject.html#1048">[ subject ]</a>
+              <a href="author.html#1048">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dev-
+
+The Mapnik team is pleased to announce the first release candidate for  
+Mapnik 0.7.0. We are nearing the release of Mapnik 0.7.0 [1], with  
+nearly 70 closed tickets [2], and we would appreciate your review.  If  
+you are able to help, please compile, install, and run the unit tests.  
+Report any problems compiling, any test failures, or any runtime  
+issues with your applications to the mailing list or as Trac tickets.
+
+If anyone runs into problems we'll fix them and issue another release  
+candidate tomorrow.
+
+More detailed instructions below.
+
+Thanks!
+
+Dane
+
+[1] <A HREF="http://trac.mapnik.org/milestone/0.7.0">http://trac.mapnik.org/milestone/0.7.0</A>
+[2] <A HREF="http://trac.mapnik.org/query?status=closed&amp;group=resolution&amp;milestone=0.7.0">http://trac.mapnik.org/query?status=closed&amp;group=resolution&amp;milestone=0.7.0</A>
+
+=======================
+
+Download the sources here:
+
+<A HREF="http://dbsgeo.com/downloads/mapnik/sources/0.7.0-rc1/">http://dbsgeo.com/downloads/mapnik/sources/0.7.0-rc1/</A>
+
+Which should produce a tarball called: mapnik_1.7.0-rc1.tar.gz
+
+Unpack the sources:
+
+$ tar xvf mapnik_1.7.0-rc1.tar.gz
+
+Then compile sources and install
+
+$ cd mapnik_0.7.0-rc1/
+$ python scons/scons.py install
+
+Finally, install nose from <A HREF="http://somethingaboutorange.com/mrl/projects/nose/0.11.1/">http://somethingaboutorange.com/mrl/projects/nose/0.11.1/</A> 
+. Then in the mapnik_0.7.0-rc1 folder run the tests:
+
+$ python tests/run_tests.py
+
+At the end of the verbose output you should get:
+
+'OK (TODO=5)'
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001047.html">[Mapnik-devel] Problems with 'apply alternative method of comparing map and layer bounds to support..'
+</A></li>
+	<LI>Next message: <A HREF="001052.html">[Mapnik-devel] Mapnik 0.7.0 Release Candidate 1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1048">[ date ]</a>
+              <a href="thread.html#1048">[ thread ]</a>
+              <a href="subject.html#1048">[ subject ]</a>
+              <a href="author.html#1048">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CC6CA181F-2F4E-403A-A08E-7761B344446B%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001427.html">
+   <LINK REL="Next"  HREF="001430.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Undefined%20symbols%20when%20loading%20plugins%20from%20JNI%0A%09shared%20library%20on%20linux&In-Reply-To=%3CC6CA181F-2F4E-403A-A08E-7761B344446B%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux">dane at dbsgeo.com
+       </A><BR>
+    <I>Tue Jun 28 18:56:56 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001427.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+        <LI>Next message: <A HREF="001430.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1429">[ date ]</a>
+              <a href="thread.html#1429">[ thread ]</a>
+              <a href="subject.html#1429">[ subject ]</a>
+              <a href="author.html#1429">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Stella,
+
+Great to hear from you. Comments below...
+
+On Jun 27, 2011, at 11:52 PM, Stella Laurenzo wrote:
+
+&gt;<i> Hi Mapnik developers,
+</I>&gt;<i> In conjunction with a project I'm working on, I've been building out some JNI bindings for mapnik.  They are here: <A HREF="https://github.com/stellaeof/mapnik-jni">https://github.com/stellaeof/mapnik-jni</A>
+</I>&gt;<i> 
+</I>&gt;<i> At some point, I'd like to discuss merging this into the core mapnik project where I think such things belong, but for now, I've stumbled across a minor mystery.  The bindings work perfectly on OSX and fail miserably on Linux.  I'm so used to shared library weirdness on OSX, that I was a little bit surprised by this since Linux is usually the well behaved citizen in this regard.
+</I>&gt;<i> 
+</I>&gt;<i> After an evening of digging I ran across several related threads.  The most pertinent is here: <A HREF="http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html">http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html</A> but it was never resolved.
+</I>&gt;<i> 
+</I>&gt;<i> The issue specifically is that I have a shared library libmapnik-jni.so that contains the JNI exports and depends on libmapnik2.so.  Everything works fine until attempting to load an input plugin.  Upon calling datasource_cache::register_datasources(...), the following type of message is written to stderr:
+</I>&gt;<i> Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input (dlopen failed - plugin likely has an unsatisfied dependency or incompatible ABI)
+</I>&gt;<i> Then, when calling datasource_cache::create with parameters referencing a postgis plugin, the following is written and the process crashes:
+</I>&gt;<i> /usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error: /usr/local/lib/mapnik2/input/postgis.input: undefined symbol: _ZN6mapnik5box2dIdEC1Ev
+</I>&gt;<i> 
+</I>&gt;<i> Depending on the load order and such different messages and failures can occur but these are the gist of it.
+</I>&gt;<i> 
+</I>&gt;<i> While tracking this down, the first thing I noticed was that if I defined LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process that does all of this, everything works.  This led me to look at the plugins themselves and I noticed that the input plugins do not have a library dependency on libmapnik2.so.  On OSX they do because things can't be left partially linked on that platform, but on Linux mapnik must be assuming that in order for a plugin to load, the libmapnik2.so library must already be loaded globally.  To test this, I ran the script here in the plugin directory: <A HREF="https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh">https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh</A>
+</I>&gt;<i> 
+</I>&gt;<i> This just renames each .input file and links a new one that depends on the original and libmapnik2.so.  With this done, everything works as it should and no warnings are printed when the plugins are loaded.
+</I>&gt;<i> 
+</I>&gt;<i> I believe that the issue is that on the JVM, when a library is loaded (via System.load or its cousin System.loadLibrary), dlopen is being called on the library without the RTLD_GLOBAL flag.  This is probably a good thing as it keeps name collisions to a minimum in JNI libraries.  However, it means that when libmapnik2.so goes to dlopen() its input plugins, it results in undefined symbols because even though the libmapnik2.so library is resident in the process, its symbols have not been exported for all to use.
+</I>&gt;<i> 
+</I>&gt;<i> If I were to file a bug against mapnik, it would be titled &quot;Input plugins fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL flag&quot;.  There are several solutions:
+</I>&gt;<i>    - Include libmapnik2.so as a dependency in mapnik input plugins, similar to how my script fixes things up to be after the fact.  This would mirror OSX behavior and I do not believe it would have any deleterious effects.
+</I>&gt;<i>    - Declare that libmapnik2.so can only be used when explicitly linked to or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work when loaded directly or indirectly by standard JVMs.
+</I>&gt;<i>    - Leave it to someone else (me).  In this case, I suppose I could dlopen the JNI library again with the RTLD_GLOBAL flag prior to loading any plugins.  The man page says this should work.  Of course, I'd have to find the full path to the shared library, which I don't necessarily know, and this introduces more failure paths and is a little bit crazy.
+</I>&gt;<i> 
+</I>&gt;<i> Unless if anyone is aware of some issue that I don't know about, I think the first option is the best.  It would mean that mapnik would always be able to load its input plugins regardless of how itself was loaded.  I'm not at all familiar with the mapnik build process to know where to make this change, however.
+</I>&gt;<i> 
+</I>&gt;<i> - stella
+</I>
+
+RE: JNI bindings in general - wow. As little as a year ago the Mapnik project just had Python bindings. Now we have emerging bindings for PHP [1], NodeJS [2], Ruby [3], and Java. So, its a good time to re-assess and discuss both how development of bindings can be optimal (inside/outside core, release cycle, etc), and any changes we need to make in core to make life good for various bindings.
+
+RE: plugin linking, your analysis is spot on. Of your three solutions, I also agree that we should likely move to #1 - actually linking any required dependencies such that plugins can be loaded without having to monkey with dlopen flags. The reason we have resisted doing this so far is that Python has an easy mechanism to control dlopen flags [4]. But, I noticed the same problem as you hit with NodeJS recently [5]. My workaround on linux is to dlopen libmapnik.so first [6], which of course is an ugly hack. But it works well enough I've forgotten to circle back on this issue, till now.
+
+So, if we go with solution #1, to make Linux linking like OSX, the solution is pretty easy. We just need to find all the linking lines in each plugin build file that are specific to Darwin and make them apply no matter platform (we only currently support linux, freebsd, solaris, and osx with the SCons scripts).
+
+An example of that would be here:
+
+<A HREF="http://trac.mapnik.org/browser/trunk/plugins/input/shape/SConscript#L42">http://trac.mapnik.org/browser/trunk/plugins/input/shape/SConscript#L42</A>
+
+Artem, others hav comments/drawbacks of this on Linux? I know Fedora recently changed their policy to be more like OSX. I can't see any drawbacks of this approach. It just needs a bit of testing I think.
+
+Dane
+
+[1] <A HREF="https://github.com/roel-v/php_mapnik">https://github.com/roel-v/php_mapnik</A>
+[2] <A HREF="https://github.com/mapnik/node-mapnik">https://github.com/mapnik/node-mapnik</A>
+[3] <A HREF="https://github.com/elliotlaster/Pika">https://github.com/elliotlaster/Pika</A> 
+[4] <A HREF="http://trac.mapnik.org/browser/trunk/bindings/python/mapnik/__init__.py#L55">http://trac.mapnik.org/browser/trunk/bindings/python/mapnik/__init__.py#L55</A>
+[5] <A HREF="https://github.com/joyent/node/issues/436">https://github.com/joyent/node/issues/436</A>
+[6] <A HREF="https://github.com/mapnik/node-mapnik/blob/master/lib/mapnik.js#L31-44">https://github.com/mapnik/node-mapnik/blob/master/lib/mapnik.js#L31-44</A>
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110628/152066b6/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110628/152066b6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001427.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI	shared library on linux
+</A></li>
+	<LI>Next message: <A HREF="001430.html">[Mapnik-devel] Undefined symbols when loading plugins from JNI shared library on linux
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1429">[ date ]</a>
+              <a href="thread.html#1429">[ thread ]</a>
+              <a href="subject.html#1429">[ subject ]</a>
+              <a href="author.html#1429">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

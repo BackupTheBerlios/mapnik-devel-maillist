@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20windows&In-Reply-To=%3CAANLkTin6PuFo52xcdqLi8Vb%2Bqm7XnhA8MQ-6URk03FTJ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001306.html">
+   <LINK REL="Next"  HREF="001310.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on windows</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20windows&In-Reply-To=%3CAANLkTin6PuFo52xcdqLi8Vb%2Bqm7XnhA8MQ-6URk03FTJ%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compiling on windows">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Mon Jan 10 00:07:31 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001306.html">[Mapnik-devel] Build scripts for Windows
+</A></li>
+        <LI>Next message: <A HREF="001310.html">[Mapnik-devel] compiling on windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1307">[ date ]</a>
+              <a href="thread.html#1307">[ thread ]</a>
+              <a href="subject.html#1307">[ subject ]</a>
+              <a href="author.html#1307">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+
+(I hope it's ok to mail this to -devel, I only just subscribed so I
+have yet to get a feel for the audience on both lists)
+
+I just compiled my first test program (only a modified rundemo.cpp,
+really) with mapnik build from source on Windows (using vc9). It seems
+to work now but it was a bit of a pain to get working to be honest, so
+I figured I'd email my suggestions/remarks here before I forget them
+and, if you'd like, help to improve some things in mapnik that would
+make it easier for people doing so in the future. I build all required
+libraries from source too, because it's usually very frustrating to
+build with libraries build by someone else, especially when you want
+to debug versions like I do; I realize there is no very easy way to
+deal with this from a mapnik developer point of view. I made my own
+project files for mapnik and the libraries that use a build system
+that isn't directly supported by VS. (i.e., that nmake can't handle).
+These are basically freetype and icu (and libldtl but see below for
+that one).
+
+- First, I need a 'fully' static build (i.e., all libraries linked
+into one executable, including icu, all the image libraries etc). I
+ended up changing config.hpp so that line 28 read
+#if defined(_WINDOWS) &amp;&amp; !defined(MAPNIK_STATIC)
+(i.e., I added the MAPNIK_STATIC flag) because there doesn't seem to
+be a proper way to build mapnik statically on windows. I tried some
+variations on defining the directives that are set there from the
+build settings, but I don't see a good solution that way. I'd like to
+ask to consider to add this to the mapnik source tree, in case anyone
+ever wants to do again what I'm doing.
+
+- Secondly, libldtl (I think that's what it's called, the one that
+wraps dlopen()...) seems to be impossible to build on Windows without
+installing the specific GNU make system. They seem to make no effort
+whatsoever to support non-POSIX systems (specifically, Windows...). I
+ended up patching the source so that this library is not needed at all
+any more. It's just a wrapper around LoadLibrary/GetProcAddress
+anyway, after all. Right now it requires a typedef for the handle type
+and two or three further #ifdef sections; but even those could be
+replaced with a #define, I think, so the amount of changed to the
+mapnik source is very small. I'd like to ask if you'd consider going
+this route directly in the mapnik source, as it would make the life of
+developers using mapnik on Windows (quite a bit) easier. I don't know
+the merit of this library on Linux or Unixy systems (i.e. if it's use
+is worth the effort), it seems like it's just a roundabout way of
+saying dlopen(), but I'm not familiar enough with that situation to
+have an informed opinion. Last I heard there was work being done on a
+library to be included in boost at some point that would tackle this
+problem, so hopefully there'll be a library that works properly on all
+platforms at some point in the future.
+
+- Thirdly, I had to make some changes to the mapnik code to get it to
+compile. They were:
+* rint() doesn't exist on VC. I added one in a private header, whose
+#include I #ifdef WIN32'd. Maybe boost has an implementation of this
+function? I haven't checked, but if so, it may be an idea to use that
+one, to be more platform-independent.
+* I had to introduce some braces around calls to min/max (both in
+std:: and numeric_limits). min and max are unfortunately both macros
+in windows platform headers, for historical reasons, so they clash
+with the use of the stl min/max functions. One way is to #undef the
+macros but this can cause problems in some circumstances. There is
+another, easier and less intrusive workaround, which is to change e.g.
+std::max(1, 2) to (std::max)(1, 2) everywhere it's used. I realize
+this looks a bit strange at first but I'd like to suggest also for
+this one to consider changing this throughout the code - it's only in
+a few places (8 or so max), as I understand it works on all compilers
+(it should I think, but I haven't tried it), and it would allow future
+users on Windows to build without modifications.
+* (not really a change, but...) the order of the boost paths is
+important because you use a local copy of property_tree. Is there a
+reason for this? It may trip up people who don't accidentally notice a
+local boost copy (I did, but like I said, only accidentally). It seems
+to be from a very old copy of boost, too.
+
+- Fourthly (and finally), I building and linking icu is a bit
+involved, mostly because it needs a special data variable that is
+build from various input tools. I ended up using a stub .c file from
+the icu source to get it to compile, but I'm wondering if someone can
+tell me what parts of icu are used by mapnik, so that I can maybe find
+out if I can leave out parts of icu all together. Maybe if I try to
+render a map with chinese characters that it won't work because my
+program is missing this data. I can also check with the icu people if
+there is an easy way to statically link this data, but if it can be
+left out of the mapnik build (if it's not used), that would make it
+easier for everybody I think.
+
+Some last questions then:
+
+- how much of all code paths in mapnik does rundemo.cpp exercise? It
+only uses the shapelib driver, obviously (because that's the only one
+I've build so far and it ran ;) ) but is there more functionality in
+mapnik core that is not used? Is there a more comprehensive (c++) test
+suite somewhere?
+- is there a summary of what is new in mapnik2? Is it
+'production-ready'? Will there be further 7,x releases, will there
+ever be a 1.0, should I forget about the current stable and use
+mapnik2?
+- with the above remarks in mind, how are the win32 binaries on the
+mapnik website build? Some of the above described will flat out make
+it impossible to compile, so are the binaries on the website based on
+a modified version?
+
+Thanks and sorry about the long mail.
+
+
+cheers,
+
+roel
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001306.html">[Mapnik-devel] Build scripts for Windows
+</A></li>
+	<LI>Next message: <A HREF="001310.html">[Mapnik-devel] compiling on windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1307">[ date ]</a>
+              <a href="thread.html#1307">[ thread ]</a>
+              <a href="subject.html#1307">[ subject ]</a>
+              <a href="author.html#1307">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik 0.6.0 released
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3C7e70f38d0904071344sb336c6fo9f5d9fbac85de505%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000845.html">
+   <LINK REL="Next"  HREF="000847.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik 0.6.0 released</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%200.6.0%20released&In-Reply-To=%3C7e70f38d0904071344sb336c6fo9f5d9fbac85de505%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik 0.6.0 released">artem at mapnik.org
+       </A><BR>
+    <I>Tue Apr  7 22:44:02 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000845.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+        <LI>Next message: <A HREF="000847.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#846">[ date ]</a>
+              <a href="thread.html#846">[ thread ]</a>
+              <a href="subject.html#846">[ subject ]</a>
+              <a href="author.html#846">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Dominic,
+
+Thanks for bringing this to light again:)
+
+(more inline)
+
+2009/4/7 Dominic Hargreaves &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dom at earth.li</A>&gt;
+
+&gt;<i> On Sun, Apr 05, 2009 at 08:49:27AM -0700, Dane Springmeyer wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Apr 5, 2009, at 12:48 AM, Andreas Volz wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; &gt; Yes, the configure script needs to be included. Without the users have
+</I>&gt;<i> &gt; &gt; to install all the autoconf, automake, libtool stuff.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; In normal autotools environment you generate the package with &quot;make
+</I>&gt;<i> &gt; &gt; dist&quot; or &quot;make distcheck&quot;. I could simply add a rule to include the
+</I>&gt;<i> &gt; &gt; SConstruct files as extra data. Then packaging would be easier. Or two
+</I>&gt;<i> &gt; &gt; different packages:
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; mapnik_scons-0.6.0.tar.gz
+</I>&gt;<i> &gt; &gt; mapnik_autotools-0.6.0.tar.gz
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; each with its own build environment. Many ways are possible.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Ah, I see - thanks for the explanation. Perhaps Artem or Dominic will
+</I>&gt;<i> &gt; have ideas about the best way to package. Your idea of two different
+</I>&gt;<i> &gt; packages sounds good to me.
+</I>&gt;<i>
+</I>&gt;<i> I think trying to maintain two parallel build environments is a bad
+</I>&gt;<i> idea, and as far as I 'm concerned the build system for mapnik at the
+</I>&gt;<i> moment is scons.
+</I>
+
+Correct!
+
+
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> That would have to be changed by consensus, and then have someone make
+</I>&gt;<i> sure that the autotools stuff builds the same end result, and then
+</I>&gt;<i> remove scons and update documentation. The current half-way house I see
+</I>&gt;<i> as damaging to the project, as it simply introduces confusion.
+</I>&gt;<i>
+</I>
+Agree.
+
+&gt;<i>
+</I>&gt;<i> Note that since Dane's good work recently I don't see much difference
+</I>&gt;<i> between scons and autotools,
+</I>
+
+We even have 'configure' step now :)
+
+
+&gt;<i> although I would like there not to be a
+</I>&gt;<i> bundled scons install (as well as not bundling fonts, libagg,
+</I>&gt;<i> tinyxml...) in the source package.
+</I>&gt;<i>
+</I>
+Having local libagg and tinyxml makes building on other than Linux OS a
+better experience.
+Also, libagg is not maintained at the moment and we might add new
+features/fixes (in fact this is already the case).  Bundling scons is quite
+common practice - I don't see a problem here. For example boost libraries
+come with their own build system packaged in source distribution. Having
+_free_ fonts as part of Mapnik works very well for me too.
+
+re: Autotools -  lets make it plain, I don't see Mapnik moving back to using
+Autotools as the main build system any time soon. If anything it'll move to
+Boost.Build.v2 ;)
+
+For Make/Autotools fans there is :
+mapnik-0.1.tar.gz&lt;<A HREF="http://prdownload.berlios.de/mapnik/mapnik-0.1.tar.gz">http://prdownload.berlios.de/mapnik/mapnik-0.1.tar.gz</A>&gt;
+
+Having said that, I don't mind having extra build options in trunk
+(Autotools, CMake etc)
+
+To summarise :  SCons is the official build system for the current Mapnik
+source distribution. For anything else , if it works for you - great.
+
+
+&gt;<i> Dominic.
+</I>&gt;<i>
+</I>
+Thanks,
+
+Artem
+
+&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Dominic Hargreaves | <A HREF="http://www.larted.org.uk/~dom/">http://www.larted.org.uk/~dom/</A>
+</I>&gt;<i> PGP key 5178E2A5 from the.earth.li (keyserver,web,email)
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/c687ec36/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090407/c687ec36/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000845.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+	<LI>Next message: <A HREF="000847.html">[Mapnik-devel] Mapnik 0.6.0 released
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#846">[ date ]</a>
+              <a href="thread.html#846">[ thread ]</a>
+              <a href="subject.html#846">[ subject ]</a>
+              <a href="author.html#846">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

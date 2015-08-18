@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,	patches attached
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20on%20OSX%2010.5%20-%20difficult%20journey%2C%0A%09patches%20attached&In-Reply-To=%3CFA0CF933-21E0-41F0-B1D4-1810AA714FC6%40gmx.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000609.html">
+   <LINK REL="Next"  HREF="000611.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,	patches attached</H1>
+    <B>Robert Blum</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20on%20OSX%2010.5%20-%20difficult%20journey%2C%0A%09patches%20attached&In-Reply-To=%3CFA0CF933-21E0-41F0-B1D4-1810AA714FC6%40gmx.net%3E"
+       TITLE="[Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,	patches attached">r.blum at gmx.net
+       </A><BR>
+    <I>Mon Apr 21 04:03:38 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000609.html">[Mapnik-devel] curves
+</A></li>
+        <LI>Next message: <A HREF="000611.html">[Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,	patches attached
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#610">[ date ]</a>
+              <a href="thread.html#610">[ thread ]</a>
+              <a href="subject.html#610">[ subject ]</a>
+              <a href="author.html#610">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi guys!
+
+Just spent the better part of an afternoon trying to install mapnik on  
+OSX 10.5, and ran into a couple of issues
+
+* It'd be nice if the installation instructions mentioned that you  
+need the python25 variant of boost. It's obvious in hindsight, but  
+nobody should be forced to compile boost twice unless they committed  
+heinous crimes ;)
+
+* libtiff does not live in the assumed directory. I'm not sure if this  
+is a Leopard only issue, or due to previous use of fink/darwinports.  
+Anyway, patch for new location is attached. I'm not sure how to modify  
+scons to do this conditionally, so I have to leave that to somebody  
+else to sort out.
+
+* src/unicode.cpp has a mistaken assumption about constness for iconv.  
+Patch attached.
+
+* On OSX, site-packages go into a completely different path than the  
+original python libraries. Sigh. That means PYTHON_PREFIX is not  
+enough to find proper locations. Another fix is attached. This *SHOULD  
+NOT* affect other python installations on other systems, but I haven't  
+tested it. (Lack of other systems).
+
+Once all those patches are applied, I can indeed build and install  
+mapnik. 'import * from mapnik' does not fail, either.
+
+However, running the simple test example fails with this message:
+
+Traceback (most recent call last):
+   File &quot;test.py&quot;, line 4, in &lt;module&gt;
+     m = Map(600,300,&quot;+proj=latlong +datum=WGS84&quot;)
+TypeError: __init__() should return None, not 'NoneType'
+
+I'm at a loss there - never worked with boost.python, so I'm not sure  
+what's going on. Any ideas?
+
+  - Robert
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: python_prefix.patch
+Type: application/octet-stream
+Size: 1011 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment.obj</A>&gt;
+-------------- next part --------------
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: libtiff.patch
+Type: application/octet-stream
+Size: 1058 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0001.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0001.obj</A>&gt;
+-------------- next part --------------
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: unicode.patch
+Type: application/octet-stream
+Size: 552 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0002.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080420/faebadfd/attachment-0002.obj</A>&gt;
+-------------- next part --------------
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000609.html">[Mapnik-devel] curves
+</A></li>
+	<LI>Next message: <A HREF="000611.html">[Mapnik-devel] Mapnik on OSX 10.5 - difficult journey,	patches attached
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#610">[ date ]</a>
+              <a href="thread.html#610">[ thread ]</a>
+              <a href="subject.html#610">[ subject ]</a>
+              <a href="author.html#610">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

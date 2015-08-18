@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Metawriter questions?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Metawriter%20questions%3F&In-Reply-To=%3Cop.vzcp6rkdi35s77%40nx7400.uni-regensburg.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001458.html">
+   <LINK REL="Next"  HREF="001460.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Metawriter questions?</H1>
+    <B>Hermann Kraus</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Metawriter%20questions%3F&In-Reply-To=%3Cop.vzcp6rkdi35s77%40nx7400.uni-regensburg.de%3E"
+       TITLE="[Mapnik-devel] Metawriter questions?">herm at scribus.info
+       </A><BR>
+    <I>Fri Jul 29 01:00:17 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001458.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+        <LI>Next message: <A HREF="001460.html">[Mapnik-devel] Having Trouble Registering Fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1459">[ date ]</a>
+              <a href="thread.html#1459">[ thread ]</a>
+              <a href="subject.html#1459">[ subject ]</a>
+              <a href="author.html#1459">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+On Wed, 27 Jul 2011 06:31:22 +0200, David Eastcott  
+&lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">david.eastcott at shaw.ca</A>&gt; wrote:
+&gt;<i> Is there a way that the meta writer could append to an existing file so  
+</I>&gt;<i> that a single file is created for all iterations?
+</I>
+This is not possible so far, but it can be done by changing the  
+metawriter. As you have a workaround for this I'll fix it when I have some  
+time. <A HREF="http://trac.mapnik.org/ticket/803">http://trac.mapnik.org/ticket/803</A>
+
+&gt;<i> 2.  Is there a way to disable/inhibit the metawriters operation without  
+</I>&gt;<i> having to modify/create a second set of xml file(s)?
+</I>&gt;<i>
+</I>&gt;<i> I tried using the clear() method on the returned value from  
+</I>&gt;<i> map.metawriters(), but the metawriter generates and error message:
+</I>&gt;<i> Metawriter JSON: Failed to open file //_hospital_meta.json: Permission  
+</I>&gt;<i> denied
+</I>
+Did that work at all? You only get back an const &amp;, which is intentional  
+as you are not supposed to modify this variable on your own. It just  
+stores information about all metawriters and their names defined in the  
+XML file, but these names are later resolved to pointers for each  
+symbolizer.
+So, no, it's not possible to disable a metawriter atm. I added a function  
+symbolizer_base::add_metawriter() with an pointer argument. You have to  
+pass a NULL pointer to remove a metawriter. And you have to iterate over  
+all symbolizers. (Available in r3054, however I didn't test it, so report  
+problems).
+
+Hermann
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001458.html">[Mapnik-devel] Metawriter questions?
+</A></li>
+	<LI>Next message: <A HREF="001460.html">[Mapnik-devel] Having Trouble Registering Fonts
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1459">[ date ]</a>
+              <a href="thread.html#1459">[ thread ]</a>
+              <a href="subject.html#1459">[ subject ]</a>
+              <a href="author.html#1459">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

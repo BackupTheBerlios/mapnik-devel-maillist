@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] composition methods for point symbols
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3C7e70f38d0901121553j6d2276bas73dd3ed9a3ae7ca%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000780.html">
+   <LINK REL="Next"  HREF="000777.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] composition methods for point symbols</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20composition%20methods%20for%20point%20symbols&In-Reply-To=%3C7e70f38d0901121553j6d2276bas73dd3ed9a3ae7ca%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] [PATCH] composition methods for point symbols">artem at mapnik-consulting.com
+       </A><BR>
+    <I>Tue Jan 13 00:53:09 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000780.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+        <LI>Next message: <A HREF="000777.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#781">[ date ]</a>
+              <a href="thread.html#781">[ thread ]</a>
+              <a href="subject.html#781">[ subject ]</a>
+              <a href="author.html#781">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>2009/1/12 Brian Quinion &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">openstreetmap at brian.quinion.co.uk</A>&gt;
+
+&gt;<i> On Mon, Jan 12, 2009 at 11:14 PM, Artem Pavlenko
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem.mapnik at googlemail.com</A>&gt; wrote:
+</I>&gt;<i> &gt; Hi Brian,
+</I>&gt;<i> &gt; I started experimenting with compositing mode using AGG
+</I>&gt;<i> &gt; : <A HREF="http://trac.mapnik.org/wiki/Compositing">http://trac.mapnik.org/wiki/Compositing</A>
+</I>&gt;<i> &gt; I wonder if you had a chance to compare your implementation etc.
+</I>&gt;<i>
+</I>&gt;<i> Like your test case :-)
+</I>&gt;<i>
+</I>&gt;<i> I got part way through writing a reply and got interrupted never to
+</I>&gt;<i> return... anyway:
+</I>&gt;<i>
+</I>&gt;<i> &gt; Also, AGG library (which is used by mapnik) has compositing
+</I>&gt;<i> implementation
+</I>&gt;<i> &gt; compatible with SVG 1.2 :
+</I>&gt;<i>
+</I>&gt;<i> I've had a look through and I think the that only one that has a
+</I>&gt;<i> direct equivalent is COMPOSITION_METHOD_COPY which is effectively
+</I>&gt;<i> comp_op_src_over.  All the methods I've defined are performed in the
+</I>&gt;<i> hsl colour domain which gives them at least subtlety different results
+</I>&gt;<i> however COMPOSITION_METHOD_COLORIZE3 is nearly comp_op_multiply and
+</I>&gt;<i> COMPOSITION_METHOD_COLORIZE1 is nearly comp_op_darken (Colour burn)
+</I>&gt;<i> and I think for most practical purposes they will produce similar
+</I>&gt;<i> enough results.
+</I>&gt;<i>
+</I>&gt;<i> None of the others seems to have a direct equivalent but half of them
+</I>&gt;<i> where included for completeness.  HUE, SAT &amp; LUM are probably the only
+</I>&gt;<i> real losses.
+</I>&gt;<i>
+</I>&gt;<i> &gt; I just wonder if perhaps using/extending AGG would be a better path for
+</I>&gt;<i> &gt; adding compositing support in Mapnik?
+</I>&gt;<i>
+</I>&gt;<i> I can see the point but I tend to get lost in the agg templates - I
+</I>&gt;<i> started to try to work out what was required which is what delayed my
+</I>&gt;<i> reply!
+</I>&gt;<i>
+</I>
+Yes, AGG is not easy to navigate sometimes.
+
+&gt;<i>
+</I>&gt;<i> However given what you've already done with your samples I'm guessing
+</I>&gt;<i> I'll be able to extend it from there.  If you commit the code so far I
+</I>&gt;<i> can re-write my patch to extend agg instead.  I've no idea if they
+</I>&gt;<i> will want it upsteam - after all there will be no direct equivalent in
+</I>&gt;<i> SVG.
+</I>
+
+It would be great to integrate H, S, L modes (and more!). Eventually, I'd
+like to support compositing modes for all symbolizers.
+
+So far I just using following simple program for testing.
+
+/*****************************************************************************
+ *
+ * This file is part of Mapnik (c++ mapping toolkit)
+ *
+ * Copyright (C) 2009 Artem Pavlenko
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
+ USA
+ *
+ *****************************************************************************/
+//$Id$
+#include &lt;mapnik/graphics.hpp&gt;
+#include &lt;mapnik/image_reader.hpp&gt;
+#include &lt;mapnik/image_data.hpp&gt;
+#include &lt;mapnik/image_util.hpp&gt;
+#include &lt;mapnik/graphics.hpp&gt;
+
+#include &quot;agg_rendering_buffer.h&quot;
+#include &quot;agg_rasterizer_scanline_aa.h&quot;
+#include &quot;agg_scanline_u.h&quot;
+#include &quot;agg_renderer_scanline.h&quot;
+#include &quot;agg_pixfmt_rgba.h&quot;
+
+#include &lt;iostream&gt;
+
+int main (int argc, char** argv)
+{
+   using namespace mapnik;
+
+   typedef agg::rgba8 color;
+   typedef agg::order_bgra order;
+   typedef agg::pixel32_type pixel_type;
+   typedef agg::comp_op_adaptor_rgba&lt;color, order&gt; blender_type;
+   typedef agg::pixfmt_custom_blend_rgba&lt;blender_type,
+agg::rendering_buffer&gt; pixfmt_type;
+   typedef agg::renderer_base&lt;pixfmt_type&gt; renderer_type;
+
+   typedef agg::comp_op_adaptor_rgba&lt;color, order&gt; blender_type;
+
+   std::cout &lt;&lt; &quot; Compositing modes demo ...\n&quot;;
+
+   Image32 overlay(442,295);
+
+get_image_reader(&quot;/Users/artem/Desktop/overlay.png&quot;,&quot;png&quot;)-&gt;read(0,0,overlay.data());
+
+   std::auto_ptr&lt;ImageReader&gt;
+reader(get_image_reader(&quot;/Users/artem/Desktop/map.png&quot;,&quot;png&quot;));
+   if (reader.get())
+   {
+      unsigned width  = reader-&gt;width();
+      unsigned height = reader-&gt;height();
+      Image32 image(width,height);
+      reader-&gt;read(0,0,image.data());
+
+      agg::rendering_buffer source(image.raw_data(),width,height, width *
+4);
+      agg::rendering_buffer
+mask(overlay.raw_data(),overlay.width(),overlay.height(), overlay.width() *
+4);
+      //agg::pixfmt_rgba32_plain pixf(source);
+      agg::pixfmt_custom_blend_rgba&lt;blender_type, agg::rendering_buffer&gt;
+pixf(source);
+      agg::pixfmt_custom_blend_rgba&lt;blender_type, agg::rendering_buffer&gt;
+pixf2(mask);
+      typedef agg::renderer_base&lt;pixfmt_type&gt; renderer_type;
+
+      pixf.comp_op(agg::comp_op_contrast);
+      //pixf.comp_op(agg::comp_op_invert_rgb);
+
+      renderer_type ren(pixf);
+      agg::renderer_base&lt;pixfmt_type&gt; rb(pixf);
+
+      rb.blend_from(pixf2,0,35,100);
+         //image.set_rectangle_alpha2(overlay,35,100,0.5);
+
+
+      save_to_file(image,
+&quot;/Users/artem/Desktop/compositing/contrast.png&quot;,&quot;png&quot;);
+
+   }
+   return EXIT_SUCCESS;
+}
+
+
+
+
+&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i>  Brian
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090112/549beb0d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090112/549beb0d/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000780.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+	<LI>Next message: <A HREF="000777.html">[Mapnik-devel] [PATCH] composition methods for point symbols
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#781">[ date ]</a>
+              <a href="thread.html#781">[ thread ]</a>
+              <a href="subject.html#781">[ subject ]</a>
+              <a href="author.html#781">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

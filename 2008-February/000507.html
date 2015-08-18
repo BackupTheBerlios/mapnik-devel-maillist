@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20agg_renderer%3CT%3E%20%20%20beginner%20question.&In-Reply-To=%3C000001c87814%249f09d580%242100a8c0%40optima.local%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000520.html">
+   <LINK REL="Next"  HREF="000510.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.</H1>
+    <B>Jim Waite</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20agg_renderer%3CT%3E%20%20%20beginner%20question.&In-Reply-To=%3C000001c87814%249f09d580%242100a8c0%40optima.local%3E"
+       TITLE="[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.">freeman at internet.co.nz
+       </A><BR>
+    <I>Tue Feb 26 02:12:14 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000520.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+        <LI>Next message: <A HREF="000510.html">[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+Hi
+As a programmer unfamiliar with templates or the &quot;boost&quot; way of doing
+things, this may well be a stupid question... but here goes:
+
+Why is agg_renderer a template class?
+
+It is declared like so:
+   template &lt;typename T&gt;
+   class MAPNIK_DECL agg_renderer : public
+feature_style_processor&lt;agg_renderer&lt;T&gt; &gt;,   
+                                    private boost::noncopyable
+
+But the template parameter &quot;T&quot; is never used anywhere in the class
+definition (other than to pass it through to feature_style_processor, which
+seems irrelevant).
+
+
+The rundemo.cpp example application uses agg_renderer like so:
+
+        Image32 buf(m.getWidth(),m.getHeight());
+        agg_renderer&lt;Image32&gt; ren(m,buf);
+
+To me, it would seem that the programmer's intention is that agg_renderer
+could render to whatever class we put inside the &lt;&gt;  (Image32 in this case).
+But that's not how the code works (for example, the constructor for
+agg_renderer always takes an Image32.. no matter how you declare your
+particular instantiation of agg_renderer).  You cannot do the following, for
+example&quot;
+
+        SomeOtherSortOfImage buf(m.getWidth(),m.getHeight());   
+        agg_renderer&lt;SomeOtherSortOfImage&gt; ren(m,buf);
+
+
+Thanks for indulging me,
+Jim Waite.
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000520.html">[Mapnik-devel] comping mapnik viewer
+</A></li>
+	<LI>Next message: <A HREF="000510.html">[Mapnik-devel] agg_renderer&lt;T&gt;   beginner question.
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#507">[ date ]</a>
+              <a href="thread.html#507">[ thread ]</a>
+              <a href="subject.html#507">[ subject ]</a>
+              <a href="author.html#507">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

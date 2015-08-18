@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cutting holes
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C4D4F0573.4080009%40ahlzen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001325.html">
+   <LINK REL="Next"  HREF="001331.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cutting holes</H1>
+    <B>Lars Ahlzen</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C4D4F0573.4080009%40ahlzen.com%3E"
+       TITLE="[Mapnik-devel] Cutting holes">lars at ahlzen.com
+       </A><BR>
+    <I>Sun Feb  6 21:32:51 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001325.html">[Mapnik-devel] Removing autotools from Mapnik trunk
+</A></li>
+        <LI>Next message: <A HREF="001331.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1327">[ date ]</a>
+              <a href="thread.html#1327">[ thread ]</a>
+              <a href="subject.html#1327">[ subject ]</a>
+              <a href="author.html#1327">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Mapnik devs!
+
+This is related to something I mentioned here briefly a while back. For 
+some of my projects (such as TopOSM) I use mapnik to render overlays, 
+such as contour lines, with a transparent background. In that case, I 
+don't want solid halos around the labels, but the parts of the line(s) 
+that would otherwise cover the label need to be cut out. Here's an example:
+
+<A HREF="http://openstreetmap.us/~lahlzen/misc/contours.png">http://openstreetmap.us/~lahlzen/misc/contours.png</A>
+
+(note that the background is transparent; not white)
+
+I've been patching mapnik to more easily do this. With this patch, halos 
+and poly fills defined as &quot;transparent&quot; now cut holes in the image 
+(instead of rendering nothing). For example, the labels in the example 
+above use:
+
+&lt;TextSymbolizer name=&quot;height_ft&quot; face_name=&quot;DejaVu Sans Book&quot;
+        size=&quot;10&quot; fill=&quot;#420&quot; placement=&quot;line&quot; halo_fill=&quot;transparent&quot;
+        halo_radius=&quot;5&quot; min_distance=&quot;100&quot; max_char_angle_delta=&quot;35&quot;/&gt;
+
+While the same thing can be accomplished by rendering several layers and 
+combining them with some image processing (or more elegantly with 
+something like TileStache), this should be more efficient and makes my 
+life a lot easier.
+
+The patch is against mapnik 0.7.1 and the Cairo renderer (with which I'm 
+more familiar than AGG). I'm sure it could be implemented for AGG and 
+extended to other symbolizers with relative ease.
+
+Because of the simplicity of the patch (adding only about a dozen 
+lines), and how much it simplifies *my* projects, I thought I should see 
+what your thoughts are and if this is interesting to anyone else.
+
+- Lars
+
+-- 
+Lars Ahlzen
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: cutouts.patch
+Type: text/x-patch
+Size: 1748 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110206/2f7ca8a3/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110206/2f7ca8a3/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001325.html">[Mapnik-devel] Removing autotools from Mapnik trunk
+</A></li>
+	<LI>Next message: <A HREF="001331.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1327">[ date ]</a>
+              <a href="thread.html#1327">[ thread ]</a>
+              <a href="subject.html#1327">[ subject ]</a>
+              <a href="author.html#1327">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

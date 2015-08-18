@@ -1,0 +1,436 @@
+From blake at hailmail.net  Mon Aug 10 12:01:48 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 10 Aug 2009 06:01:48 -0400
+Subject: [Mapnik-devel] Qgis label placement
+Message-ID: <6C0F6209-3308-41BC-A888-F1DE83B58A1C@hailmail.net>
+
+Martin Dobias is doing some great work on labeling inside Qgis for  
+GSOC and mapnik has been a guide:
+
+http://www.qgis.org/wiki/Label_Placement_GSoC_2009
+
+Also a good reminder that we should consider applying for GSOC next  
+year.
+
+Dane
+
+
+
+
+From blake at hailmail.net  Tue Aug 18 15:31:36 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 18 Aug 2009 06:31:36 -0700
+Subject: [Mapnik-devel] Patch for improved text rendering
+In-Reply-To: <7e70f38d0907200831o5ed14bfai588f5f03fd71df35@mail.gmail.com>
+References: <20090719184706.GA29689@eldorado.topf.org>
+	<7e70f38d0907200831o5ed14bfai588f5f03fd71df35@mail.gmail.com>
+Message-ID: <4019A004-E6B9-4022-8492-452664AC7C90@hailmail.net>
+
+And I've updated the python bindings with these new options in r1288.
+
+Thanks Jochen!
+
+dane
+
+
+On Jul 20, 2009, at 8:31 AM, Artem Pavlenko wrote:
+
+> Hi Jochen,
+>
+> Excellent stuff, I applied your patch in r1254. Thanks!
+> Artem
+>
+> 2009/7/19 Jochen Topf <jochen at remote.org>
+> Attached is a patch for some text rendering improvements. The  
+> TextSymbolizer
+> gets the following new parameters:
+>
+> * text_convert="none|toupper|tolower"
+>  Convert all text to upper/lower case before rendering. "none"  
+> doesn't do
+>  anything with the text and is the default. Works for labels along  
+> lines
+>  or at points.
+>
+> * line_spacing="<number>"
+>  Add this many pixels space between two lines in text labels that have
+>  been broken into several lines. Default is 0. Doesn't do anything for
+>  labels along lines.
+>
+> * character_spacing="<number>"
+>  Add this many pixels space between two characters in a text.  
+> Default is 0.
+>  Currently only works for text labels on point geometries. This should
+>  also be implemented for labels along lines, but I'll leave that for
+>  another day.
+>
+> * wrap_character="<character>"
+>  Instead of breaking text into lines on spaces, use this character.  
+> This
+>  is useful, when you want to make sure that labels are broken at the  
+> right
+>  spot. Note that you'll probably want to make wrap_width small so that
+>  your lines are actually broken, otherwise you'll see the  
+> wrap_character
+>  in the output. Default is ' ' (space). Doesn't do anything for labels
+>  along lines.
+>
+> I have added those parameters to the load_map and save_map functions  
+> and
+> implemented the functionality. I have *not* added this to the python
+> bindings, because I don't know how they work.
+>
+> Jochen
+> --
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+> +49-721-388298
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090818/df88b2c8/attachment.html>
+
+From jochen at remote.org  Tue Aug 18 17:09:40 2009
+From: jochen at remote.org (Jochen Topf)
+Date: Tue, 18 Aug 2009 17:09:40 +0200
+Subject: [Mapnik-devel] Patch for improved text rendering
+In-Reply-To: <4019A004-E6B9-4022-8492-452664AC7C90@hailmail.net>
+References: <20090719184706.GA29689@eldorado.topf.org>
+	<7e70f38d0907200831o5ed14bfai588f5f03fd71df35@mail.gmail.com>
+	<4019A004-E6B9-4022-8492-452664AC7C90@hailmail.net>
+Message-ID: <20090818150940.GA4814@localhost.localdomain>
+
+I recently looked at the CSS used in HTML for these kind of things. Maybe it
+would make sense to rename the options along those lines. This wouldn't
+change any functionality, just give them names that are similar to what
+people are used to from other places.
+
+CSS uses:
+text-transform: none|uppercase|lowercase
+letter-spacing (instead of character-spacing)
+
+It uses line-height, but thats somewhat different in meaning than line-spacing.
+
+Jochen
+
+On Tue, Aug 18, 2009 at 06:31:36AM -0700, Dane Springmeyer wrote:
+> Cc: Jochen Topf <jochen at remote.org>
+> From: Dane Springmeyer <blake at hailmail.net>
+> To: mapnik-devel <mapnik-devel at lists.berlios.de>
+> Subject: Re: [Mapnik-devel] Patch for improved text rendering
+> Date: Tue, 18 Aug 2009 06:31:36 -0700
+> 
+> And I've updated the python bindings with these new options in r1288.
+>
+> Thanks Jochen!
+>
+> dane
+>
+>
+> On Jul 20, 2009, at 8:31 AM, Artem Pavlenko wrote:
+>
+>> Hi Jochen,
+>>
+>> Excellent stuff, I applied your patch in r1254. Thanks!
+>> Artem
+>>
+>> 2009/7/19 Jochen Topf <jochen at remote.org>
+>> Attached is a patch for some text rendering improvements. The  
+>> TextSymbolizer
+>> gets the following new parameters:
+>>
+>> * text_convert="none|toupper|tolower"
+>>  Convert all text to upper/lower case before rendering. "none" doesn't 
+>> do
+>>  anything with the text and is the default. Works for labels along  
+>> lines
+>>  or at points.
+>>
+>> * line_spacing="<number>"
+>>  Add this many pixels space between two lines in text labels that have
+>>  been broken into several lines. Default is 0. Doesn't do anything for
+>>  labels along lines.
+>>
+>> * character_spacing="<number>"
+>>  Add this many pixels space between two characters in a text. Default 
+>> is 0.
+>>  Currently only works for text labels on point geometries. This should
+>>  also be implemented for labels along lines, but I'll leave that for
+>>  another day.
+>>
+>> * wrap_character="<character>"
+>>  Instead of breaking text into lines on spaces, use this character.  
+>> This
+>>  is useful, when you want to make sure that labels are broken at the  
+>> right
+>>  spot. Note that you'll probably want to make wrap_width small so that
+>>  your lines are actually broken, otherwise you'll see the  
+>> wrap_character
+>>  in the output. Default is ' ' (space). Doesn't do anything for labels
+>>  along lines.
+>>
+>> I have added those parameters to the load_map and save_map functions  
+>> and
+>> implemented the functionality. I have *not* added this to the python
+>> bindings, because I don't know how they work.
+>>
+>> Jochen
+>> --
+>> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+>> +49-721-388298
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+-- 
+Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/  +49-721-388298
+
+
+
+From blake at hailmail.net  Wed Aug 19 21:35:36 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 19 Aug 2009 12:35:36 -0700
+Subject: [Mapnik-devel] Patch for improved text rendering
+In-Reply-To: <20090818150940.GA4814@localhost.localdomain>
+References: <20090719184706.GA29689@eldorado.topf.org>
+	<7e70f38d0907200831o5ed14bfai588f5f03fd71df35@mail.gmail.com>
+	<4019A004-E6B9-4022-8492-452664AC7C90@hailmail.net>
+	<20090818150940.GA4814@localhost.localdomain>
+Message-ID: <C746479C-EFF8-4EB4-B38B-0D2E68D6E41E@hailmail.net>
+
+Seem's great to pull from CSS for these. Brings up the idea that  
+perhaps we should pull some parameters that relate to text into true  
+CSSParameters like the LineSymbolizer does for 'stroke' params:
+
+http://trac.mapnik.org/wiki/LineSymbolizer#XML
+
+Dane
+
+
+On Aug 18, 2009, at 8:09 AM, Jochen Topf wrote:
+
+> I recently looked at the CSS used in HTML for these kind of things.  
+> Maybe it
+> would make sense to rename the options along those lines. This  
+> wouldn't
+> change any functionality, just give them names that are similar to  
+> what
+> people are used to from other places.
+>
+> CSS uses:
+> text-transform: none|uppercase|lowercase
+> letter-spacing (instead of character-spacing)
+>
+> It uses line-height, but thats somewhat different in meaning than  
+> line-spacing.
+>
+> Jochen
+>
+> On Tue, Aug 18, 2009 at 06:31:36AM -0700, Dane Springmeyer wrote:
+>> Cc: Jochen Topf <jochen at remote.org>
+>> From: Dane Springmeyer <blake at hailmail.net>
+>> To: mapnik-devel <mapnik-devel at lists.berlios.de>
+>> Subject: Re: [Mapnik-devel] Patch for improved text rendering
+>> Date: Tue, 18 Aug 2009 06:31:36 -0700
+>>
+>> And I've updated the python bindings with these new options in r1288.
+>>
+>> Thanks Jochen!
+>>
+>> dane
+>>
+>>
+>> On Jul 20, 2009, at 8:31 AM, Artem Pavlenko wrote:
+>>
+>>> Hi Jochen,
+>>>
+>>> Excellent stuff, I applied your patch in r1254. Thanks!
+>>> Artem
+>>>
+>>> 2009/7/19 Jochen Topf <jochen at remote.org>
+>>> Attached is a patch for some text rendering improvements. The
+>>> TextSymbolizer
+>>> gets the following new parameters:
+>>>
+>>> * text_convert="none|toupper|tolower"
+>>> Convert all text to upper/lower case before rendering. "none"  
+>>> doesn't
+>>> do
+>>> anything with the text and is the default. Works for labels along
+>>> lines
+>>> or at points.
+>>>
+>>> * line_spacing="<number>"
+>>> Add this many pixels space between two lines in text labels that  
+>>> have
+>>> been broken into several lines. Default is 0. Doesn't do anything  
+>>> for
+>>> labels along lines.
+>>>
+>>> * character_spacing="<number>"
+>>> Add this many pixels space between two characters in a text. Default
+>>> is 0.
+>>> Currently only works for text labels on point geometries. This  
+>>> should
+>>> also be implemented for labels along lines, but I'll leave that for
+>>> another day.
+>>>
+>>> * wrap_character="<character>"
+>>> Instead of breaking text into lines on spaces, use this character.
+>>> This
+>>> is useful, when you want to make sure that labels are broken at the
+>>> right
+>>> spot. Note that you'll probably want to make wrap_width small so  
+>>> that
+>>> your lines are actually broken, otherwise you'll see the
+>>> wrap_character
+>>> in the output. Default is ' ' (space). Doesn't do anything for  
+>>> labels
+>>> along lines.
+>>>
+>>> I have added those parameters to the load_map and save_map functions
+>>> and
+>>> implemented the functionality. I have *not* added this to the python
+>>> bindings, because I don't know how they work.
+>>>
+>>> Jochen
+>>> --
+>>> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/
+>>> +49-721-388298
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+> -- 
+> Jochen Topf  jochen at remote.org  http://www.remote.org/jochen/   
+> +49-721-388298
+>
+
+
+
+From blake at hailmail.net  Thu Aug 27 05:31:34 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 26 Aug 2009 20:31:34 -0700
+Subject: [Mapnik-devel] Ticket #363 Postgres error reporting
+Message-ID: <6A199247-48BB-42D2-9D9B-2E20F53FBBAB@hailmail.net>
+
+Heads up: In Mapnik trunk I've committed a change that enables the  
+reporting of errors and subsequent throw of a  
+mapnik::datasource_exception from libpq if queries fail.
+
+The goal is to avoid the headaches and guesswork currently required  
+for debugging PostGIS datasources that returning no features or blank  
+maps because one of any of the multiple queries to either fetch  
+metadata from the geometry_columns or the actual features have failed  
+silently.
+
+In short if you write broken SQL or have other invalid PostGIS  
+parameters your stylesheet parsing will now die violently with an  
+explicit error instead of ignoring you like before.
+
+Feel free to comment or re-open http://trac.mapnik.org/ticket/363 if  
+you see ways to improve this.
+
+Dane
+
+
+
+From andreas at theosys.at  Mon Aug 31 19:01:35 2009
+From: andreas at theosys.at (Andreas Theofilu)
+Date: Mon, 31 Aug 2009 19:01:35 +0200
+Subject: [Mapnik-devel] Strange behavior with filters
+Message-ID: <200908311901.35707.andreas@theosys.at>
+
+Hi,
+
+I currently try to support shape files in my application. To make it for the 
+user as easy as possible, I want to create a default map file, containing all 
+information's to render a beautiful map. Because my application is a KDE 
+program, I want to use the internal paths KDE uses. Therefore I don't use the 
+function "load_map()" to read the map file, but wrote my own parser to read 
+the map files. this allows me, to set the path of a polygon pattern 
+symbolizer, for example, to the place where the picture is really saved.
+
+The parser works now and I can use the shape files. I've played around with 
+various rules in the map file and found out, that every rule containing a 
+"Filter"- condition, doesn't work. So I wrote a small program to just test 
+this, and it works. So there seems no problem with Mapnik itself.
+
+I used the function "save_map()" to see what my applications sets. If I 
+compare the result of "save_map()" with the map file, I can't see any 
+difference. The filter conditions are there as expected. Now I don't 
+understand, why rules with filter conditions in my application are ignored by 
+Mapnik, while they are not in my test application.
+
+I've attached the test application to this mail. There is also the PNG file 
+attached, that is produced by the test application and a small map file I use 
+to test my real application. I use the shape files from 
+http://download.geofabrik.de/osm/europe.
+
+The following link points to the source of my self written interpreter:
+
+   http://www.theosys.at/websvn/filedetails.php?repname=repos+1&path=%2Fsportwatcher%2Ftrunk%2Fsrc%2Frender.cpp
+
+To download the whole application type:
+
+   svn co svn://www.theosys.at/sportwatcher/trunk sportwatcher
+
+I know this question sounds like: "Would you please find the error for me". 
+But after several days of debugging I'm at a point where I can't find any 
+explanation for the behavior of my code.
+-- 
+Andreas Theofilu
+TheoSys - Software Systems and Solutions
+http://www.theosys.at
+Tel.: +43 676 / 786 53 89
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: maptest.cpp
+Type: text/x-c++src
+Size: 6950 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.cpp>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: demo.png
+Type: image/png
+Size: 362997 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shape.xml
+Type: application/xml
+Size: 1117 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.xml>
+

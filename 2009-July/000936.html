@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik split
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20split&In-Reply-To=%3C20090716011606.5f8faa36%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000935.html">
+   <LINK REL="Next"  HREF="000937.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik split</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20split&In-Reply-To=%3C20090716011606.5f8faa36%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik split">lists at brachttal.net
+       </A><BR>
+    <I>Thu Jul 16 01:16:06 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000935.html">[Mapnik-devel] Announcing Mapnik 0.6.1
+</A></li>
+        <LI>Next message: <A HREF="000937.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#936">[ date ]</a>
+              <a href="thread.html#936">[ thread ]</a>
+              <a href="subject.html#936">[ subject ]</a>
+              <a href="author.html#936">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Thu, 11 Jun 2009 11:27:31 +1200 schrieb Craig de Stigter:
+
+Now I've created a small wrapper for the basic Mapnik functions with a
+PIMPL design. This prevents my application from including all the
+mapnik and boost header files which saves a lot of compile time.
+
+If someone think this may be useful than I could provide a copy and/or
+commit it later to the mapnik SVN in another directory.
+
+regards
+Andreas
+
+&gt;<i> It would probably be better to refactor the existing codebase to
+</I>&gt;<i> remove as much as possible from the header files.
+</I>&gt;<i> At present many of the header files include large portions of code
+</I>&gt;<i> and have a lot of includes, which is probably the major reason
+</I>&gt;<i> compiling takes a long time.
+</I>&gt;<i> 
+</I>&gt;<i> On Wed, Jun 10, 2009 at 7:22 PM, Dane Springmeyer
+</I>&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Andreas,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Honestly, I don't understand what you are proposing. The codebase is
+</I>&gt;<i> &gt; already broken out much as you propose and with SCons, at least, it
+</I>&gt;<i> &gt; quite easy to just build or rebuild a portion.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I don't think many people compile the Mapnik codebase very
+</I>&gt;<i> &gt; frequently, and I don't find it any slower now than in the past.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Dane
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; On Jun 9, 2009, at 4:12 PM, Andreas Volz wrote:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; &gt; Hello,
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; I'm currently compiling Mapnik again after some autotools updates
+</I>&gt;<i> &gt; &gt; - since 20 minutes. Currently Mapnik has grown to a beast and the
+</I>&gt;<i> &gt; &gt; boost dependency does the rest.
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; To shorten the compile time and also the complexness of the build
+</I>&gt;<i> &gt; &gt; system I would propose this split: (one for an own package)
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; - bindings (python)
+</I>&gt;<i> &gt; &gt; - agg
+</I>&gt;<i> &gt; &gt; - scons
+</I>&gt;<i> &gt; &gt; - sources (maybe split to internal/external API)
+</I>&gt;<i> &gt; &gt; - plugins (I would propose one package for all)
+</I>&gt;<i> &gt; &gt; - tinyxml
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; Think about utils/demo/test?
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; This is only a raw idea. But in general, What do you think this
+</I>&gt;<i> &gt; &gt; idea?
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; regards
+</I>&gt;<i> &gt; &gt; Andreas
+</I>&gt;<i> &gt; &gt;
+</I>&gt;<i> &gt; &gt; _______________________________________________
+</I>&gt;<i> &gt; &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> &gt;
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Koordinates Ltd
+</I>&gt;<i> PO Box 1604, Shortland St, Auckland, New Zealand
+</I>&gt;<i> Phone +64-9-966 0433 Fax +64-9-969 0045
+</I>&gt;<i> Web <A HREF="http://www.koordinates.com">http://www.koordinates.com</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000935.html">[Mapnik-devel] Announcing Mapnik 0.6.1
+</A></li>
+	<LI>Next message: <A HREF="000937.html">[Mapnik-devel] Complex PostGIS queries - patch
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#936">[ date ]</a>
+              <a href="thread.html#936">[ thread ]</a>
+              <a href="subject.html#936">[ subject ]</a>
+              <a href="author.html#936">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

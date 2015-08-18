@@ -1,0 +1,1251 @@
+From perrygeo at gmail.com  Mon Apr  3 07:06:09 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Sun, 2 Apr 2006 21:06:09 -0800
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+Message-ID: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+
+Hey mapnikers,
+
+  So the nice rainy sunday prompted me to resume my trials with
+mapnik. I was able to build the latest SVN against the ubuntu 6.04
+boost libraries and everything went well. Alot has changed since the
+tutorial on the website and that threw me off for a few minutes until
+I found the excellent demo script! Beautiful cartography. Beautiful
+python.
+
+ I have also been working a bit evaluating python web application
+frameworks and cherrypy impressed me with it's ease of use and very
+"pythonic" approach.
+
+ So putting the two together, I worked up a simple pseudo-WMS server
+as an interface to mapnik. I say pseudo-WMS server because it doesn't
+even come close to complying with the WMS spec. The only thing it can
+do is handle a simple GetMap request:
+ http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+
+But for some very simple WMS clients, this is all you need. I set up a
+nifty little interactive map using wms-map
+(http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+get mapnik installed on a server somewhere.
+
+Cherrypy servers run as standalone servers bound to a specific port
+but can optionally be put behind an apache server... Setting up this
+WMS server as a standalone should be fairly simple. You'll need the
+cherrypy and mapnik python modules to start. There is a createMap()
+function that contains all the usual mapnik code which you can tweak
+for your specific data. Then there is a WMS class that parses the WMS
+requests and passes them off to createMap() which writes an image to
+disk and returns the map image to the client. I didn't have alot of
+time to spend so this only a proof-of-concept.
+
+My initial testing against a Mapserver-based WMS (running on the same
+machine, same dataset) indicates that for single requests, Mapserver
+is only about 15% faster. But for many simultaneous requests (such as
+the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+is 3-400% faster (!!) under a decent load. Put this behind an apache
+server and you could have a fast, solid WMS server with mapnik on the
+backend. Plus mapnik's image quality is by far the most impressive of
+any map rendering engine i've seen! Here's a screenshot comparing the
+WMS clients based on both mapserver and mapnik -
+http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+my favorite places in the world. any guesses??). Just look at that
+beautiful line work.. did I mention I was impressed?
+
+Attached is the code. Please give the prototype WMS server a shot and
+let me know how it goes.  My understanding of both mapnik and cherrypy
+is limited so please jump in and make suggestions.
+
+--
+Matt Perry
+perrygeo at gmail.com
+http://www.perrygeo.net
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: cherry_mapnik.py
+Type: text/x-python
+Size: 3698 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060402/d795d2f6/attachment.py>
+
+From artem at pavlenko.uklinux.net  Tue Apr  4 23:56:43 2006
+From: artem at pavlenko.uklinux.net (Artem Pavlenko)
+Date: Tue, 04 Apr 2006 22:56:43 +0100
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+In-Reply-To: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+References: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+Message-ID: <4432EB9B.10205@pavlenko.uklinux.net>
+
+Matt,
+
+Fantastic. I'd love to try your WMS.
+
+Cheers
+Artem
+> Hey mapnikers,
+>
+>   So the nice rainy sunday prompted me to resume my trials with
+> mapnik. I was able to build the latest SVN against the ubuntu 6.04
+> boost libraries and everything went well. Alot has changed since the
+> tutorial on the website and that threw me off for a few minutes until
+> I found the excellent demo script! Beautiful cartography. Beautiful
+> python.
+>
+>  I have also been working a bit evaluating python web application
+> frameworks and cherrypy impressed me with it's ease of use and very
+> "pythonic" approach.
+>
+>  So putting the two together, I worked up a simple pseudo-WMS server
+> as an interface to mapnik. I say pseudo-WMS server because it doesn't
+> even come close to complying with the WMS spec. The only thing it can
+> do is handle a simple GetMap request:
+>  http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>
+> But for some very simple WMS clients, this is all you need. I set up a
+> nifty little interactive map using wms-map
+> (http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+> get mapnik installed on a server somewhere.
+>
+> Cherrypy servers run as standalone servers bound to a specific port
+> but can optionally be put behind an apache server... Setting up this
+> WMS server as a standalone should be fairly simple. You'll need the
+> cherrypy and mapnik python modules to start. There is a createMap()
+> function that contains all the usual mapnik code which you can tweak
+> for your specific data. Then there is a WMS class that parses the WMS
+> requests and passes them off to createMap() which writes an image to
+> disk and returns the map image to the client. I didn't have alot of
+> time to spend so this only a proof-of-concept.
+>
+> My initial testing against a Mapserver-based WMS (running on the same
+> machine, same dataset) indicates that for single requests, Mapserver
+> is only about 15% faster. But for many simultaneous requests (such as
+> the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+> is 3-400% faster (!!) under a decent load. Put this behind an apache
+> server and you could have a fast, solid WMS server with mapnik on the
+> backend. Plus mapnik's image quality is by far the most impressive of
+> any map rendering engine i've seen! Here's a screenshot comparing the
+> WMS clients based on both mapserver and mapnik -
+> http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+> my favorite places in the world. any guesses??). Just look at that
+> beautiful line work.. did I mention I was impressed?
+>
+> Attached is the code. Please give the prototype WMS server a shot and
+> let me know how it goes.  My understanding of both mapnik and cherrypy
+> is limited so please jump in and make suggestions.
+>
+> --
+> Matt Perry
+> perrygeo at gmail.com
+> http://www.perrygeo.net
+>   
+> ------------------------------------------------------------------------
+>
+> #!/usr/bin/env python
+> """
+>  cherry_mapnik.py 
+>
+>  Description:
+>    Proof of concept WMS server using cherrypy as the web framework and 
+>    mapnik as the map rendering engine
+>  
+>  Author:
+>    Matthew Perry 
+>  
+>  Last Modified:
+>    04/02/06
+>  
+>  License:
+>    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+>
+>  Caveat:
+>    Does not even come close to complying with the WMS spec.
+>    Only very limited GetMap requests supported
+>
+>  Example:
+>    start the server with "python cherry_mapnik.py"
+>    point your browser to http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+> """
+>
+> import cherrypy, random
+> from mapnik import *
+> from cherrypy.lib import cptools
+>
+> def createMap(envelope,mapsize,imagetype,layers):
+>
+>     #=========================#
+>     # System-specific variables
+>
+>     # The polygon shapefile (minus the .shp extension)
+>     shpfile  = '/home/perrygeo/data/states/statesp020'
+>
+>     # The output image directory where mapnik will cache images
+>     # It really helps to have a cron task to clean out this dir!
+>     imagedir = '/home/perrygeo/www/tmp'
+>
+>     #=========================#
+>
+>     # Set up the Mapnik Map
+>     m = Map(mapsize[0],mapsize[1])
+>     m.background = Color('#525367')
+>
+>     # Turn on 'states' layer if requested
+>     if 'states' in layers:
+>         states_lyr = Layer(name='states', type='shape', file=shpfile)
+>         states_style = Style()
+>         states_rule = Rule()
+>         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+>         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+>         states_style.rules.append( states_rule )
+>         m.append_style('states', states_style)
+>         states_lyr.styles.append('states')
+>         m.layers.append(states_lyr)
+>
+>     # Set the BBOX extent
+>     m.zoom_to_box(envelope)
+>
+>     # Get the proper image type and file extensions
+>     if imagetype=='png': ext='png'
+>     if imagetype=='jpeg' or imagetype=='jpg':
+>       ext='jpg'
+>       imagetype='jpeg'
+>
+>     # Generate an image with random filename
+>     rand = random.randint(0,90000000) 
+>     prefix = "mapnik_%s" % rand
+>     path = imagedir + '/'  + prefix + '.' + ext 
+>
+>     render_to_file(m, path, imagetype)
+>     return path 
+>
+> class WMS:
+>     def getCapabilities(self):
+>         xml = '<test>Capabilities not supported yet </test>'
+>         return xml
+>
+>     def wms(self, *args, **kwargs):
+>         # WMS spec calls for case insensitive parameter names
+>         lc = {}
+>         for k,v in kwargs.iteritems():
+>             lc[str(k).lower()] = v
+>
+>         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+>             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>             return self.getCapabilities()
+>         elif lc['request']=='GetMap':
+>             corners = lc['bbox'].split(',') 
+>             envelope = Envelope(float(corners[0]),float(corners[1]), \
+>                             float(corners[2]),float(corners[3]))
+>             imagetype = lc['format'].replace('image/','')
+>             mapsize=(int( lc['width'] ),int( lc['height'] ))
+>             layers = lc['layers'].split(',')
+>
+>             path = createMap(envelope,mapsize,imagetype,layers)
+>             return cptools.serveFile(path)    
+>         else:
+>            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>            return "<test>You gotta request something</test>"
+>
+>     wms.exposed = True
+>
+> if __name__ == '__main__':
+>     cherrypy.root = WMS()
+>     cherrypy.config.update({
+>             'global': {
+>                 'server.socket_port' : 8080,
+>                 'server.thread_pool' : 10, 
+>                 'logDebugInfoFilter.on' : False }})
+>     cherrypy.server.start()
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>   
+
+
+From jfdoyon at gmail.com  Wed Apr  5 02:50:23 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Tue, 04 Apr 2006 20:50:23 -0400
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+In-Reply-To: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+References: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+Message-ID: <BAYC1-PASMTP11B37462735206262E875191CB0@CEZ.ICE>
+
+Cool!
+
+I've been working on a CGI/FastCGI OGC Server for Mapnik the last little 
+while.
+
+I have a working WMS 1.3.0, but not client, so I'm going to implement a 
+1.1.1 very soon now :)
+
+It uses jonpy and ElementTree, and is also a framework to facilitate 
+writing other OGC servers (like WFS or WCS).
+
+We'll see if I can get something committed tonight :)
+
+J.F.
+
+Matthew Perry wrote:
+> Hey mapnikers,
+>
+>   So the nice rainy sunday prompted me to resume my trials with
+> mapnik. I was able to build the latest SVN against the ubuntu 6.04
+> boost libraries and everything went well. Alot has changed since the
+> tutorial on the website and that threw me off for a few minutes until
+> I found the excellent demo script! Beautiful cartography. Beautiful
+> python.
+>
+>  I have also been working a bit evaluating python web application
+> frameworks and cherrypy impressed me with it's ease of use and very
+> "pythonic" approach.
+>
+>  So putting the two together, I worked up a simple pseudo-WMS server
+> as an interface to mapnik. I say pseudo-WMS server because it doesn't
+> even come close to complying with the WMS spec. The only thing it can
+> do is handle a simple GetMap request:
+>  http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>
+> But for some very simple WMS clients, this is all you need. I set up a
+> nifty little interactive map using wms-map
+> (http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+> get mapnik installed on a server somewhere.
+>
+> Cherrypy servers run as standalone servers bound to a specific port
+> but can optionally be put behind an apache server... Setting up this
+> WMS server as a standalone should be fairly simple. You'll need the
+> cherrypy and mapnik python modules to start. There is a createMap()
+> function that contains all the usual mapnik code which you can tweak
+> for your specific data. Then there is a WMS class that parses the WMS
+> requests and passes them off to createMap() which writes an image to
+> disk and returns the map image to the client. I didn't have alot of
+> time to spend so this only a proof-of-concept.
+>
+> My initial testing against a Mapserver-based WMS (running on the same
+> machine, same dataset) indicates that for single requests, Mapserver
+> is only about 15% faster. But for many simultaneous requests (such as
+> the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+> is 3-400% faster (!!) under a decent load. Put this behind an apache
+> server and you could have a fast, solid WMS server with mapnik on the
+> backend. Plus mapnik's image quality is by far the most impressive of
+> any map rendering engine i've seen! Here's a screenshot comparing the
+> WMS clients based on both mapserver and mapnik -
+> http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+> my favorite places in the world. any guesses??). Just look at that
+> beautiful line work.. did I mention I was impressed?
+>
+> Attached is the code. Please give the prototype WMS server a shot and
+> let me know how it goes.  My understanding of both mapnik and cherrypy
+> is limited so please jump in and make suggestions.
+>
+> --
+> Matt Perry
+> perrygeo at gmail.com
+> http://www.perrygeo.net
+>   
+> ------------------------------------------------------------------------
+>
+> #!/usr/bin/env python
+> """
+>  cherry_mapnik.py 
+>
+>  Description:
+>    Proof of concept WMS server using cherrypy as the web framework and 
+>    mapnik as the map rendering engine
+>  
+>  Author:
+>    Matthew Perry 
+>  
+>  Last Modified:
+>    04/02/06
+>  
+>  License:
+>    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+>
+>  Caveat:
+>    Does not even come close to complying with the WMS spec.
+>    Only very limited GetMap requests supported
+>
+>  Example:
+>    start the server with "python cherry_mapnik.py"
+>    point your browser to http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+> """
+>
+> import cherrypy, random
+> from mapnik import *
+> from cherrypy.lib import cptools
+>
+> def createMap(envelope,mapsize,imagetype,layers):
+>
+>     #=========================#
+>     # System-specific variables
+>
+>     # The polygon shapefile (minus the .shp extension)
+>     shpfile  = '/home/perrygeo/data/states/statesp020'
+>
+>     # The output image directory where mapnik will cache images
+>     # It really helps to have a cron task to clean out this dir!
+>     imagedir = '/home/perrygeo/www/tmp'
+>
+>     #=========================#
+>
+>     # Set up the Mapnik Map
+>     m = Map(mapsize[0],mapsize[1])
+>     m.background = Color('#525367')
+>
+>     # Turn on 'states' layer if requested
+>     if 'states' in layers:
+>         states_lyr = Layer(name='states', type='shape', file=shpfile)
+>         states_style = Style()
+>         states_rule = Rule()
+>         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+>         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+>         states_style.rules.append( states_rule )
+>         m.append_style('states', states_style)
+>         states_lyr.styles.append('states')
+>         m.layers.append(states_lyr)
+>
+>     # Set the BBOX extent
+>     m.zoom_to_box(envelope)
+>
+>     # Get the proper image type and file extensions
+>     if imagetype=='png': ext='png'
+>     if imagetype=='jpeg' or imagetype=='jpg':
+>       ext='jpg'
+>       imagetype='jpeg'
+>
+>     # Generate an image with random filename
+>     rand = random.randint(0,90000000) 
+>     prefix = "mapnik_%s" % rand
+>     path = imagedir + '/'  + prefix + '.' + ext 
+>
+>     render_to_file(m, path, imagetype)
+>     return path 
+>
+> class WMS:
+>     def getCapabilities(self):
+>         xml = '<test>Capabilities not supported yet </test>'
+>         return xml
+>
+>     def wms(self, *args, **kwargs):
+>         # WMS spec calls for case insensitive parameter names
+>         lc = {}
+>         for k,v in kwargs.iteritems():
+>             lc[str(k).lower()] = v
+>
+>         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+>             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>             return self.getCapabilities()
+>         elif lc['request']=='GetMap':
+>             corners = lc['bbox'].split(',') 
+>             envelope = Envelope(float(corners[0]),float(corners[1]), \
+>                             float(corners[2]),float(corners[3]))
+>             imagetype = lc['format'].replace('image/','')
+>             mapsize=(int( lc['width'] ),int( lc['height'] ))
+>             layers = lc['layers'].split(',')
+>
+>             path = createMap(envelope,mapsize,imagetype,layers)
+>             return cptools.serveFile(path)    
+>         else:
+>            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>            return "<test>You gotta request something</test>"
+>
+>     wms.exposed = True
+>
+> if __name__ == '__main__':
+>     cherrypy.root = WMS()
+>     cherrypy.config.update({
+>             'global': {
+>                 'server.socket_port' : 8080,
+>                 'server.thread_pool' : 10, 
+>                 'logDebugInfoFilter.on' : False }})
+>     cherrypy.server.start()
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>   
+
+
+
+From perrygeo at gmail.com  Wed Apr  5 09:20:03 2006
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Wed, 5 Apr 2006 00:20:03 -0700
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+In-Reply-To: <BAYC1-PASMTP11B37462735206262E875191CB0@CEZ.ICE>
+References: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>
+	 <BAYC1-PASMTP11B37462735206262E875191CB0@CEZ.ICE>
+Message-ID: <5383fa5e0604050020y58815748g2b5db5950ba3cdc1@mail.gmail.com>
+
+Well sounds like you got alot further that I have! Let us know where
+we can access the code and I'll take it for a spin. Will this
+eventually become part of the mapnik distribution?
+
+matt
+
+On 4/4/06, Jean-Fran?ois Doyon <jfdoyon at gmail.com> wrote:
+> Cool!
+>
+> I've been working on a CGI/FastCGI OGC Server for Mapnik the last little
+> while.
+>
+> I have a working WMS 1.3.0, but not client, so I'm going to implement a
+> 1.1.1 very soon now :)
+>
+> It uses jonpy and ElementTree, and is also a framework to facilitate
+> writing other OGC servers (like WFS or WCS).
+>
+> We'll see if I can get something committed tonight :)
+>
+> J.F.
+>
+> Matthew Perry wrote:
+> > Hey mapnikers,
+> >
+> >   So the nice rainy sunday prompted me to resume my trials with
+> > mapnik. I was able to build the latest SVN against the ubuntu 6.04
+> > boost libraries and everything went well. Alot has changed since the
+> > tutorial on the website and that threw me off for a few minutes until
+> > I found the excellent demo script! Beautiful cartography. Beautiful
+> > python.
+> >
+> >  I have also been working a bit evaluating python web application
+> > frameworks and cherrypy impressed me with it's ease of use and very
+> > "pythonic" approach.
+> >
+> >  So putting the two together, I worked up a simple pseudo-WMS server
+> > as an interface to mapnik. I say pseudo-WMS server because it doesn't
+> > even come close to complying with the WMS spec. The only thing it can
+> > do is handle a simple GetMap request:
+> >  http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+> >
+> > But for some very simple WMS clients, this is all you need. I set up a
+> > nifty little interactive map using wms-map
+> > (http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+> > get mapnik installed on a server somewhere.
+> >
+> > Cherrypy servers run as standalone servers bound to a specific port
+> > but can optionally be put behind an apache server... Setting up this
+> > WMS server as a standalone should be fairly simple. You'll need the
+> > cherrypy and mapnik python modules to start. There is a createMap()
+> > function that contains all the usual mapnik code which you can tweak
+> > for your specific data. Then there is a WMS class that parses the WMS
+> > requests and passes them off to createMap() which writes an image to
+> > disk and returns the map image to the client. I didn't have alot of
+> > time to spend so this only a proof-of-concept.
+> >
+> > My initial testing against a Mapserver-based WMS (running on the same
+> > machine, same dataset) indicates that for single requests, Mapserver
+> > is only about 15% faster. But for many simultaneous requests (such as
+> > the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+> > is 3-400% faster (!!) under a decent load. Put this behind an apache
+> > server and you could have a fast, solid WMS server with mapnik on the
+> > backend. Plus mapnik's image quality is by far the most impressive of
+> > any map rendering engine i've seen! Here's a screenshot comparing the
+> > WMS clients based on both mapserver and mapnik -
+> > http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+> > my favorite places in the world. any guesses??). Just look at that
+> > beautiful line work.. did I mention I was impressed?
+> >
+> > Attached is the code. Please give the prototype WMS server a shot and
+> > let me know how it goes.  My understanding of both mapnik and cherrypy
+> > is limited so please jump in and make suggestions.
+> >
+> > --
+> > Matt Perry
+> > perrygeo at gmail.com
+> > http://www.perrygeo.net
+> >
+> > ------------------------------------------------------------------------
+> >
+> > #!/usr/bin/env python
+> > """
+> >  cherry_mapnik.py
+> >
+> >  Description:
+> >    Proof of concept WMS server using cherrypy as the web framework and
+> >    mapnik as the map rendering engine
+> >
+> >  Author:
+> >    Matthew Perry
+> >
+> >  Last Modified:
+> >    04/02/06
+> >
+> >  License:
+> >    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+> >
+> >  Caveat:
+> >    Does not even come close to complying with the WMS spec.
+> >    Only very limited GetMap requests supported
+> >
+> >  Example:
+> >    start the server with "python cherry_mapnik.py"
+> >    point your browser to http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+> > """
+> >
+> > import cherrypy, random
+> > from mapnik import *
+> > from cherrypy.lib import cptools
+> >
+> > def createMap(envelope,mapsize,imagetype,layers):
+> >
+> >     #=========================#
+> >     # System-specific variables
+> >
+> >     # The polygon shapefile (minus the .shp extension)
+> >     shpfile  = '/home/perrygeo/data/states/statesp020'
+> >
+> >     # The output image directory where mapnik will cache images
+> >     # It really helps to have a cron task to clean out this dir!
+> >     imagedir = '/home/perrygeo/www/tmp'
+> >
+> >     #=========================#
+> >
+> >     # Set up the Mapnik Map
+> >     m = Map(mapsize[0],mapsize[1])
+> >     m.background = Color('#525367')
+> >
+> >     # Turn on 'states' layer if requested
+> >     if 'states' in layers:
+> >         states_lyr = Layer(name='states', type='shape', file=shpfile)
+> >         states_style = Style()
+> >         states_rule = Rule()
+> >         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+> >         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+> >         states_style.rules.append( states_rule )
+> >         m.append_style('states', states_style)
+> >         states_lyr.styles.append('states')
+> >         m.layers.append(states_lyr)
+> >
+> >     # Set the BBOX extent
+> >     m.zoom_to_box(envelope)
+> >
+> >     # Get the proper image type and file extensions
+> >     if imagetype=='png': ext='png'
+> >     if imagetype=='jpeg' or imagetype=='jpg':
+> >       ext='jpg'
+> >       imagetype='jpeg'
+> >
+> >     # Generate an image with random filename
+> >     rand = random.randint(0,90000000)
+> >     prefix = "mapnik_%s" % rand
+> >     path = imagedir + '/'  + prefix + '.' + ext
+> >
+> >     render_to_file(m, path, imagetype)
+> >     return path
+> >
+> > class WMS:
+> >     def getCapabilities(self):
+> >         xml = '<test>Capabilities not supported yet </test>'
+> >         return xml
+> >
+> >     def wms(self, *args, **kwargs):
+> >         # WMS spec calls for case insensitive parameter names
+> >         lc = {}
+> >         for k,v in kwargs.iteritems():
+> >             lc[str(k).lower()] = v
+> >
+> >         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+> >             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+> >             return self.getCapabilities()
+> >         elif lc['request']=='GetMap':
+> >             corners = lc['bbox'].split(',')
+> >             envelope = Envelope(float(corners[0]),float(corners[1]), \
+> >                             float(corners[2]),float(corners[3]))
+> >             imagetype = lc['format'].replace('image/','')
+> >             mapsize=(int( lc['width'] ),int( lc['height'] ))
+> >             layers = lc['layers'].split(',')
+> >
+> >             path = createMap(envelope,mapsize,imagetype,layers)
+> >             return cptools.serveFile(path)
+> >         else:
+> >            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+> >            return "<test>You gotta request something</test>"
+> >
+> >     wms.exposed = True
+> >
+> > if __name__ == '__main__':
+> >     cherrypy.root = WMS()
+> >     cherrypy.config.update({
+> >             'global': {
+> >                 'server.socket_port' : 8080,
+> >                 'server.thread_pool' : 10,
+> >                 'logDebugInfoFilter.on' : False }})
+> >     cherrypy.server.start()
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+>
+>
+
+
+--
+Matt Perry
+perrygeo at gmail.com
+http://www.perrygeo.net
+
+
+From jfdoyon at gmail.com  Thu Apr  6 00:17:53 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Wed, 05 Apr 2006 18:17:53 -0400
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+In-Reply-To: <5383fa5e0604050020y58815748g2b5db5950ba3cdc1@mail.gmail.com>
+References: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>	 <BAYC1-PASMTP11B37462735206262E875191CB0@CEZ.ICE> <5383fa5e0604050020y58815748g2b5db5950ba3cdc1@mail.gmail.com>
+Message-ID: <BAYC1-PASMTP085473BB7A1120B3EE104F91CB0@CEZ.ICE>
+
+I'll announce as soon as I commit something :)
+
+Yes, it will be part of the core mapnik distribution.
+
+I now have a WMS 1.1.1 server, but I'm discovering a lot of clients 
+don't handle XML name spaces correctly, so I'm going to have to move 
+away from ElementTree it seems :(
+
+Sorry for the delays ... but the end is near, I can see the light!
+
+J.F.
+
+Matthew Perry wrote:
+> Well sounds like you got alot further that I have! Let us know where
+> we can access the code and I'll take it for a spin. Will this
+> eventually become part of the mapnik distribution?
+>
+> matt
+>
+> On 4/4/06, Jean-Fran?ois Doyon <jfdoyon at gmail.com> wrote:
+>   
+>> Cool!
+>>
+>> I've been working on a CGI/FastCGI OGC Server for Mapnik the last little
+>> while.
+>>
+>> I have a working WMS 1.3.0, but not client, so I'm going to implement a
+>> 1.1.1 very soon now :)
+>>
+>> It uses jonpy and ElementTree, and is also a framework to facilitate
+>> writing other OGC servers (like WFS or WCS).
+>>
+>> We'll see if I can get something committed tonight :)
+>>
+>> J.F.
+>>
+>> Matthew Perry wrote:
+>>     
+>>> Hey mapnikers,
+>>>
+>>>   So the nice rainy sunday prompted me to resume my trials with
+>>> mapnik. I was able to build the latest SVN against the ubuntu 6.04
+>>> boost libraries and everything went well. Alot has changed since the
+>>> tutorial on the website and that threw me off for a few minutes until
+>>> I found the excellent demo script! Beautiful cartography. Beautiful
+>>> python.
+>>>
+>>>  I have also been working a bit evaluating python web application
+>>> frameworks and cherrypy impressed me with it's ease of use and very
+>>> "pythonic" approach.
+>>>
+>>>  So putting the two together, I worked up a simple pseudo-WMS server
+>>> as an interface to mapnik. I say pseudo-WMS server because it doesn't
+>>> even come close to complying with the WMS spec. The only thing it can
+>>> do is handle a simple GetMap request:
+>>>  http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>>>
+>>> But for some very simple WMS clients, this is all you need. I set up a
+>>> nifty little interactive map using wms-map
+>>> (http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+>>> get mapnik installed on a server somewhere.
+>>>
+>>> Cherrypy servers run as standalone servers bound to a specific port
+>>> but can optionally be put behind an apache server... Setting up this
+>>> WMS server as a standalone should be fairly simple. You'll need the
+>>> cherrypy and mapnik python modules to start. There is a createMap()
+>>> function that contains all the usual mapnik code which you can tweak
+>>> for your specific data. Then there is a WMS class that parses the WMS
+>>> requests and passes them off to createMap() which writes an image to
+>>> disk and returns the map image to the client. I didn't have alot of
+>>> time to spend so this only a proof-of-concept.
+>>>
+>>> My initial testing against a Mapserver-based WMS (running on the same
+>>> machine, same dataset) indicates that for single requests, Mapserver
+>>> is only about 15% faster. But for many simultaneous requests (such as
+>>> the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+>>> is 3-400% faster (!!) under a decent load. Put this behind an apache
+>>> server and you could have a fast, solid WMS server with mapnik on the
+>>> backend. Plus mapnik's image quality is by far the most impressive of
+>>> any map rendering engine i've seen! Here's a screenshot comparing the
+>>> WMS clients based on both mapserver and mapnik -
+>>> http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+>>> my favorite places in the world. any guesses??). Just look at that
+>>> beautiful line work.. did I mention I was impressed?
+>>>
+>>> Attached is the code. Please give the prototype WMS server a shot and
+>>> let me know how it goes.  My understanding of both mapnik and cherrypy
+>>> is limited so please jump in and make suggestions.
+>>>
+>>> --
+>>> Matt Perry
+>>> perrygeo at gmail.com
+>>> http://www.perrygeo.net
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> #!/usr/bin/env python
+>>> """
+>>>  cherry_mapnik.py
+>>>
+>>>  Description:
+>>>    Proof of concept WMS server using cherrypy as the web framework and
+>>>    mapnik as the map rendering engine
+>>>
+>>>  Author:
+>>>    Matthew Perry
+>>>
+>>>  Last Modified:
+>>>    04/02/06
+>>>
+>>>  License:
+>>>    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+>>>
+>>>  Caveat:
+>>>    Does not even come close to complying with the WMS spec.
+>>>    Only very limited GetMap requests supported
+>>>
+>>>  Example:
+>>>    start the server with "python cherry_mapnik.py"
+>>>    point your browser to http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>>> """
+>>>
+>>> import cherrypy, random
+>>> from mapnik import *
+>>> from cherrypy.lib import cptools
+>>>
+>>> def createMap(envelope,mapsize,imagetype,layers):
+>>>
+>>>     #=========================#
+>>>     # System-specific variables
+>>>
+>>>     # The polygon shapefile (minus the .shp extension)
+>>>     shpfile  = '/home/perrygeo/data/states/statesp020'
+>>>
+>>>     # The output image directory where mapnik will cache images
+>>>     # It really helps to have a cron task to clean out this dir!
+>>>     imagedir = '/home/perrygeo/www/tmp'
+>>>
+>>>     #=========================#
+>>>
+>>>     # Set up the Mapnik Map
+>>>     m = Map(mapsize[0],mapsize[1])
+>>>     m.background = Color('#525367')
+>>>
+>>>     # Turn on 'states' layer if requested
+>>>     if 'states' in layers:
+>>>         states_lyr = Layer(name='states', type='shape', file=shpfile)
+>>>         states_style = Style()
+>>>         states_rule = Rule()
+>>>         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+>>>         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+>>>         states_style.rules.append( states_rule )
+>>>         m.append_style('states', states_style)
+>>>         states_lyr.styles.append('states')
+>>>         m.layers.append(states_lyr)
+>>>
+>>>     # Set the BBOX extent
+>>>     m.zoom_to_box(envelope)
+>>>
+>>>     # Get the proper image type and file extensions
+>>>     if imagetype=='png': ext='png'
+>>>     if imagetype=='jpeg' or imagetype=='jpg':
+>>>       ext='jpg'
+>>>       imagetype='jpeg'
+>>>
+>>>     # Generate an image with random filename
+>>>     rand = random.randint(0,90000000)
+>>>     prefix = "mapnik_%s" % rand
+>>>     path = imagedir + '/'  + prefix + '.' + ext
+>>>
+>>>     render_to_file(m, path, imagetype)
+>>>     return path
+>>>
+>>> class WMS:
+>>>     def getCapabilities(self):
+>>>         xml = '<test>Capabilities not supported yet </test>'
+>>>         return xml
+>>>
+>>>     def wms(self, *args, **kwargs):
+>>>         # WMS spec calls for case insensitive parameter names
+>>>         lc = {}
+>>>         for k,v in kwargs.iteritems():
+>>>             lc[str(k).lower()] = v
+>>>
+>>>         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+>>>             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>>>             return self.getCapabilities()
+>>>         elif lc['request']=='GetMap':
+>>>             corners = lc['bbox'].split(',')
+>>>             envelope = Envelope(float(corners[0]),float(corners[1]), \
+>>>                             float(corners[2]),float(corners[3]))
+>>>             imagetype = lc['format'].replace('image/','')
+>>>             mapsize=(int( lc['width'] ),int( lc['height'] ))
+>>>             layers = lc['layers'].split(',')
+>>>
+>>>             path = createMap(envelope,mapsize,imagetype,layers)
+>>>             return cptools.serveFile(path)
+>>>         else:
+>>>            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>>>            return "<test>You gotta request something</test>"
+>>>
+>>>     wms.exposed = True
+>>>
+>>> if __name__ == '__main__':
+>>>     cherrypy.root = WMS()
+>>>     cherrypy.config.update({
+>>>             'global': {
+>>>                 'server.socket_port' : 8080,
+>>>                 'server.thread_pool' : 10,
+>>>                 'logDebugInfoFilter.on' : False }})
+>>>     cherrypy.server.start()
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>       
+>>     
+>
+>
+> --
+> Matt Perry
+> perrygeo at gmail.com
+> http://www.perrygeo.net
+>
+>   
+
+
+
+From jfdoyon at gmail.com  Fri Apr  7 04:45:55 2006
+From: jfdoyon at gmail.com (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Thu, 06 Apr 2006 22:45:55 -0400
+Subject: [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+In-Reply-To: <5383fa5e0604050020y58815748g2b5db5950ba3cdc1@mail.gmail.com>
+References: <5383fa5e0604022206j3318a1efj363eeab2a6850adc@mail.gmail.com>	 <BAYC1-PASMTP11B37462735206262E875191CB0@CEZ.ICE> <5383fa5e0604050020y58815748g2b5db5950ba3cdc1@mail.gmail.com>
+Message-ID: <BAYC1-PASMTP09C2646607BD000F76C0EB91C90@CEZ.ICE>
+
+Hello,
+
+Well, finally some progress, find a teaser screen shot attached :)  It's 
+uDig (http://udig.refractions.net/confluence/display/UDIG/Home) 
+connected to 2 WMS servers, one Mapnik, and one UMN Mapserver.
+
+Simple, but it works!
+
+What to expect with the first release:
+
+- A WMS 1.1.1 only compliant server
+- CGI only
+- PNG/JPEG only
+- XML error handling only
+- No GetFeatureInfo support
+- No GetLegendGraphic support
+- Very limited layer metadata
+
+Next releases will add:
+
+- WMS 1.3.0 support
+- FastCGI
+- INIMAGE error handling
+- GIF support
+
+External dependencies:
+
+- jonpy (http://jonpy.sourceforge.net/)
+- lxml (http://codespeak.net/lxml/)
+- PIL (http://www.pythonware.com/products/pil)
+- PROJ.4 (http://proj.maptools.org/)
+
+If the week-end isn't too busy, I'll push to commit something then.
+
+Cheers,
+J.F.
+
+Matthew Perry wrote:
+> Well sounds like you got alot further that I have! Let us know where
+> we can access the code and I'll take it for a spin. Will this
+> eventually become part of the mapnik distribution?
+>
+> matt
+>
+> On 4/4/06, Jean-Fran?ois Doyon <jfdoyon at gmail.com> wrote:
+>   
+>> Cool!
+>>
+>> I've been working on a CGI/FastCGI OGC Server for Mapnik the last little
+>> while.
+>>
+>> I have a working WMS 1.3.0, but not client, so I'm going to implement a
+>> 1.1.1 very soon now :)
+>>
+>> It uses jonpy and ElementTree, and is also a framework to facilitate
+>> writing other OGC servers (like WFS or WCS).
+>>
+>> We'll see if I can get something committed tonight :)
+>>
+>> J.F.
+>>
+>> Matthew Perry wrote:
+>>     
+>>> Hey mapnikers,
+>>>
+>>>   So the nice rainy sunday prompted me to resume my trials with
+>>> mapnik. I was able to build the latest SVN against the ubuntu 6.04
+>>> boost libraries and everything went well. Alot has changed since the
+>>> tutorial on the website and that threw me off for a few minutes until
+>>> I found the excellent demo script! Beautiful cartography. Beautiful
+>>> python.
+>>>
+>>>  I have also been working a bit evaluating python web application
+>>> frameworks and cherrypy impressed me with it's ease of use and very
+>>> "pythonic" approach.
+>>>
+>>>  So putting the two together, I worked up a simple pseudo-WMS server
+>>> as an interface to mapnik. I say pseudo-WMS server because it doesn't
+>>> even come close to complying with the WMS spec. The only thing it can
+>>> do is handle a simple GetMap request:
+>>>  http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>>>
+>>> But for some very simple WMS clients, this is all you need. I set up a
+>>> nifty little interactive map using wms-map
+>>> (http://wms-map.sourceforge.net/)  which I'll make public as soon as I
+>>> get mapnik installed on a server somewhere.
+>>>
+>>> Cherrypy servers run as standalone servers bound to a specific port
+>>> but can optionally be put behind an apache server... Setting up this
+>>> WMS server as a standalone should be fairly simple. You'll need the
+>>> cherrypy and mapnik python modules to start. There is a createMap()
+>>> function that contains all the usual mapnik code which you can tweak
+>>> for your specific data. Then there is a WMS class that parses the WMS
+>>> requests and passes them off to createMap() which writes an image to
+>>> disk and returns the map image to the client. I didn't have alot of
+>>> time to spend so this only a proof-of-concept.
+>>>
+>>> My initial testing against a Mapserver-based WMS (running on the same
+>>> machine, same dataset) indicates that for single requests, Mapserver
+>>> is only about 15% faster. But for many simultaneous requests (such as
+>>> the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+>>> is 3-400% faster (!!) under a decent load. Put this behind an apache
+>>> server and you could have a fast, solid WMS server with mapnik on the
+>>> backend. Plus mapnik's image quality is by far the most impressive of
+>>> any map rendering engine i've seen! Here's a screenshot comparing the
+>>> WMS clients based on both mapserver and mapnik -
+>>> http://perrygeo.net/img/mapserver_mapnik.png (a screenshot of one of
+>>> my favorite places in the world. any guesses??). Just look at that
+>>> beautiful line work.. did I mention I was impressed?
+>>>
+>>> Attached is the code. Please give the prototype WMS server a shot and
+>>> let me know how it goes.  My understanding of both mapnik and cherrypy
+>>> is limited so please jump in and make suggestions.
+>>>
+>>> --
+>>> Matt Perry
+>>> perrygeo at gmail.com
+>>> http://www.perrygeo.net
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> #!/usr/bin/env python
+>>> """
+>>>  cherry_mapnik.py
+>>>
+>>>  Description:
+>>>    Proof of concept WMS server using cherrypy as the web framework and
+>>>    mapnik as the map rendering engine
+>>>
+>>>  Author:
+>>>    Matthew Perry
+>>>
+>>>  Last Modified:
+>>>    04/02/06
+>>>
+>>>  License:
+>>>    Free to use and modify for any purpose. ABSOLUTELY NO WARRANTY OF ANY KIND.
+>>>
+>>>  Caveat:
+>>>    Does not even come close to complying with the WMS spec.
+>>>    Only very limited GetMap requests supported
+>>>
+>>>  Example:
+>>>    start the server with "python cherry_mapnik.py"
+>>>    point your browser to http://localhost:8080/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=states&FORMAT=image/jpeg&SRS=EPSG:4326&STYLES=&BBOX=-120,15,-70,65&width=400&height=400
+>>> """
+>>>
+>>> import cherrypy, random
+>>> from mapnik import *
+>>> from cherrypy.lib import cptools
+>>>
+>>> def createMap(envelope,mapsize,imagetype,layers):
+>>>
+>>>     #=========================#
+>>>     # System-specific variables
+>>>
+>>>     # The polygon shapefile (minus the .shp extension)
+>>>     shpfile  = '/home/perrygeo/data/states/statesp020'
+>>>
+>>>     # The output image directory where mapnik will cache images
+>>>     # It really helps to have a cron task to clean out this dir!
+>>>     imagedir = '/home/perrygeo/www/tmp'
+>>>
+>>>     #=========================#
+>>>
+>>>     # Set up the Mapnik Map
+>>>     m = Map(mapsize[0],mapsize[1])
+>>>     m.background = Color('#525367')
+>>>
+>>>     # Turn on 'states' layer if requested
+>>>     if 'states' in layers:
+>>>         states_lyr = Layer(name='states', type='shape', file=shpfile)
+>>>         states_style = Style()
+>>>         states_rule = Rule()
+>>>         states_rule.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+>>>         states_rule.symbols.append(LineSymbolizer(Color(48,48,48),1))
+>>>         states_style.rules.append( states_rule )
+>>>         m.append_style('states', states_style)
+>>>         states_lyr.styles.append('states')
+>>>         m.layers.append(states_lyr)
+>>>
+>>>     # Set the BBOX extent
+>>>     m.zoom_to_box(envelope)
+>>>
+>>>     # Get the proper image type and file extensions
+>>>     if imagetype=='png': ext='png'
+>>>     if imagetype=='jpeg' or imagetype=='jpg':
+>>>       ext='jpg'
+>>>       imagetype='jpeg'
+>>>
+>>>     # Generate an image with random filename
+>>>     rand = random.randint(0,90000000)
+>>>     prefix = "mapnik_%s" % rand
+>>>     path = imagedir + '/'  + prefix + '.' + ext
+>>>
+>>>     render_to_file(m, path, imagetype)
+>>>     return path
+>>>
+>>> class WMS:
+>>>     def getCapabilities(self):
+>>>         xml = '<test>Capabilities not supported yet </test>'
+>>>         return xml
+>>>
+>>>     def wms(self, *args, **kwargs):
+>>>         # WMS spec calls for case insensitive parameter names
+>>>         lc = {}
+>>>         for k,v in kwargs.iteritems():
+>>>             lc[str(k).lower()] = v
+>>>
+>>>         if lc['request']=='GetCapabilities' and lc['service']=='WMS':
+>>>             cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>>>             return self.getCapabilities()
+>>>         elif lc['request']=='GetMap':
+>>>             corners = lc['bbox'].split(',')
+>>>             envelope = Envelope(float(corners[0]),float(corners[1]), \
+>>>                             float(corners[2]),float(corners[3]))
+>>>             imagetype = lc['format'].replace('image/','')
+>>>             mapsize=(int( lc['width'] ),int( lc['height'] ))
+>>>             layers = lc['layers'].split(',')
+>>>
+>>>             path = createMap(envelope,mapsize,imagetype,layers)
+>>>             return cptools.serveFile(path)
+>>>         else:
+>>>            cherrypy.response.headerMap['Content-Type']= 'text/xml'
+>>>            return "<test>You gotta request something</test>"
+>>>
+>>>     wms.exposed = True
+>>>
+>>> if __name__ == '__main__':
+>>>     cherrypy.root = WMS()
+>>>     cherrypy.config.update({
+>>>             'global': {
+>>>                 'server.socket_port' : 8080,
+>>>                 'server.thread_pool' : 10,
+>>>                 'logDebugInfoFilter.on' : False }})
+>>>     cherrypy.server.start()
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>       
+>>     
+>
+>
+> --
+> Matt Perry
+> perrygeo at gmail.com
+> http://www.perrygeo.net
+>
+>   
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-udig.PNG
+Type: image/png
+Size: 206888 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060406/2d7357e8/attachment.png>
+
+From jfdoyon at methane.ca  Fri Apr 14 05:54:07 2006
+From: jfdoyon at methane.ca (=?ISO-8859-1?Q?Jean-Fran=E7ois_Doyon?=)
+Date: Thu, 13 Apr 2006 23:54:07 -0400
+Subject: [Mapnik-devel] First WMS implementation now available
+Message-ID: <BAYC1-PASMTP06C766C7E5AC6BC46F118B91C00@CEZ.ICE>
+
+Hello,
+
+I've now committed the last of the work on implementing a WMS server for 
+Mapnik.
+
+Until a release is cut, you will need to checkout a copy out of SVN if 
+you're anxious to try it (Which I'm sure you are, right?).
+
+It supports WMS 1.1.1 and 1.3.0 over CGI and FastCGI.
+
+For details on how to set it up, check docs/ogcserver/readme.txt ...
+
+Enjoy!
+J.F.
+
+
+

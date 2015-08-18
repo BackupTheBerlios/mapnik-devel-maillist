@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compile error on r714 ubuntu hardy
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compile%20error%20on%20r714%20ubuntu%20hardy&In-Reply-To=%3C7132B57E-1FA4-4BD5-875B-984BDF285E2A%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000652.html">
+   <LINK REL="Next"  HREF="000655.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compile error on r714 ubuntu hardy</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compile%20error%20on%20r714%20ubuntu%20hardy&In-Reply-To=%3C7132B57E-1FA4-4BD5-875B-984BDF285E2A%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] compile error on r714 ubuntu hardy">blake at hailmail.net
+       </A><BR>
+    <I>Fri Jul 25 19:45:51 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000652.html">[Mapnik-devel] compile error on r714 ubuntu hardy
+</A></li>
+        <LI>Next message: <A HREF="000655.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#653">[ date ]</a>
+              <a href="thread.html#653">[ thread ]</a>
+              <a href="subject.html#653">[ subject ]</a>
+              <a href="author.html#653">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Matt,
+
+What revision of svn are you building from?
+
+I am able to build on ubuntu 7.10 with boost 1.34 (aptitude installed)  
+using r700, but not after this changeset: <A HREF="http://trac.mapnik.org/changeset/701/trunk/SConstruct">http://trac.mapnik.org/changeset/701/trunk/SConstruct</A>
+
+Also, It looks like that patch you'd like to test is against r 700.
+
+If you still run into problems I'd recommend pulling down a fresh svn  
+co (I'm not convinced the -c flag predictably clears the cache).
+
+Cheers,
+
+Dane
+
+On Jul 25, 2008, at 9:13 AM, Matt Bartolome wrote:
+
+&gt;<i> Hi, I'm getting the following error. I also used the -c option to
+</I>&gt;<i> clear the cache, same result.
+</I>&gt;<i>
+</I>&gt;<i> $ python scons/scons.py BOOST_INCLUDES=/usr/local/include/boost-1_35
+</I>&gt;<i> BOOST_LIBS=/usr/local/lib
+</I>&gt;<i> scons: Reading SConscript files ...
+</I>&gt;<i> Building on Linux ...
+</I>&gt;<i> pkg-config --exists cairomm-1.0
+</I>&gt;<i> Checking for C library m... (cached) yes
+</I>&gt;<i> Checking for C library ltdl... (cached) yes
+</I>&gt;<i> Checking for C library png... (cached) yes
+</I>&gt;<i> Checking for C library tiff... (cached) yes
+</I>&gt;<i> Checking for C library z... (cached) yes
+</I>&gt;<i> Checking for C library jpeg... (cached) yes
+</I>&gt;<i> Checking for C library proj... (cached) yes
+</I>&gt;<i> Checking for C library pq... (cached) yes
+</I>&gt;<i> Checking for C++ library icuuc... (cached) yes
+</I>&gt;<i> Checking for C++ library icudata... (cached) yes
+</I>&gt;<i> Checking for C++ library gdal... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_system-mt... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_filesystem-mt... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_regex-mt... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_iostreams-mt... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_program_options-mt... (cached) yes
+</I>&gt;<i> Checking for C++ library boost_thread-mt... (cached) yes
+</I>&gt;<i> Bindings Python version... 2.5
+</I>&gt;<i> Python 2.5 prefix... /usr
+</I>&gt;<i> pkg-config --exists pycairo
+</I>&gt;<i> scons: done reading SConscript files.
+</I>&gt;<i> scons: Building targets ...
+</I>&gt;<i> g++ -o utils/shapeindex/shapeindex utils/shapeindex/shapeindex.o
+</I>&gt;<i> src/envelope.o plugins/input/shape/shapefile.o -Lagg -Lsrc
+</I>&gt;<i> -L/usr/local/lib -L/usr/lib -lboost_program_options-mt
+</I>&gt;<i> -lboost_iostreams-mt
+</I>&gt;<i> utils/shapeindex/shapeindex.o: In function `main':
+</I>&gt;<i> shapeindex.cpp:(.text+0x143): undefined reference to
+</I>&gt;<i> `boost::program_options::options_description::m_default_line_length'
+</I>&gt;<i> collect2: ld returned 1 exit status
+</I>&gt;<i> scons: *** [utils/shapeindex/shapeindex] Error 1
+</I>&gt;<i> scons: building terminated because of errors.
+</I>&gt;<i>
+</I>&gt;<i> Any suggestions? I want to see the solution to
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/98">http://trac.mapnik.org/ticket/98</A> in action.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Matt
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000652.html">[Mapnik-devel] compile error on r714 ubuntu hardy
+</A></li>
+	<LI>Next message: <A HREF="000655.html">[Mapnik-devel] r707 and boost_system
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#653">[ date ]</a>
+              <a href="thread.html#653">[ thread ]</a>
+              <a href="subject.html#653">[ subject ]</a>
+              <a href="author.html#653">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,673 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3C2F87E566-7FCD-433D-8F42-C4824F01AD46%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001073.html">
+   <LINK REL="Next"  HREF="001076.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20v0.7.0%20PostGis%20Big%20Endian%20problem&In-Reply-To=%3C2F87E566-7FCD-433D-8F42-C4824F01AD46%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem">blake at hailmail.net
+       </A><BR>
+    <I>Fri Feb 26 19:12:05 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001073.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+        <LI>Next message: <A HREF="001076.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1077">[ date ]</a>
+              <a href="thread.html#1077">[ thread ]</a>
+              <a href="subject.html#1077">[ subject ]</a>
+              <a href="author.html#1077">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Brad,
+
+On Feb 25, 2010, at 2:45 PM, Simpson Brad-C-Lockheed wrote:
+
+&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> Good suggestion about building under Linux to see if the same  
+</I>&gt;<i> problems occur.  It turns out I built Mapnik under Linux when I was  
+</I>&gt;<i> first evaluating it.  However, none of the initial work involved Mico.
+</I>
+Okay, good to know.
+
+&gt;<i> In fact, we may not have the source to Mico v2.3.7 in order to build  
+</I>&gt;<i> it under Linux.  [Mico was supplied to us on our HP-UX systems pre- 
+</I>&gt;<i> built.]  Perhaps I can find it on the web.  We are going to have a  
+</I>&gt;<i> meeting Monday, however, to discuss upgrading to a newer  
+</I>&gt;<i> multithreaded version of Mico.  So all of this may be overcome by  
+</I>&gt;<i> events.
+</I>
+Knowing very little about Mico, I hope that these possibilities can  
+help you out.
+
+&gt;<i>
+</I>&gt;<i> Regarding using SCons to build Mapnik under HP-UX, unfortunately I  
+</I>&gt;<i> lost the notes on the modifications to the SCons directories [over  
+</I>&gt;<i> zealous during code cleanup].  I had to make changes to various  
+</I>&gt;<i> files in the scons/scons-local-1.2.0/SCons area.  Even though the  
+</I>&gt;<i> gnu compiler was installed, scons was trying to use the aCC compiler.
+</I>
+Ah, okay, this sounds similar to SCons bug that I've also seen affect  
+Solaris. In the future you could try installing the latest SCons on  
+your system and then instead of running the &quot;local&quot; scons just do:
+
+scons configure &amp;&amp; scons install
+
+&gt;<i> I fixed the compiler choice, but the arguments for compilation and  
+</I>&gt;<i> linking had unrecognized options.
+</I>
+Okay, which may be a problem with some of the flags in our Scons  
+implementation specific to Mapnik.
+
+&gt;<i>   After playing with it for a bit and getting frustrated, I finally  
+</I>&gt;<i> decided to build with the ignore errors options.  I  saved all the  
+</I>&gt;<i> commands into a file, made group edits, and ended up with a working  
+</I>&gt;<i> build script.  I can send a copy of this script if desired.
+</I>
+Sure, it would be a good reference at the least. I won't  have access  
+to an HP-UX machine to test anytime soon, but perhaps others might  
+benefit.
+
+Dane
+
+
+&gt;<i>
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Tuesday, February 23, 2010 9:24 AM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Cc: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Hi Brad,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for the detailed email. I'll try to comment a bit inline.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 22, 2010, at 9:21 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for responding.  I&#8217;ve compiled some information here  
+</I>&gt;<i> regarding our threading problem.  Our application, CdmMap, aborts  
+</I>&gt;<i> when it tries to initialize the Object Request Broker (ORB) in the  
+</I>&gt;<i> call CORBA::ORB_init.  This is the first step towards using CORBA  
+</I>&gt;<i> based interprocess communications.  I obtained a stack trace from  
+</I>&gt;<i> the core dump:
+</I>&gt;<i>
+</I>&gt;<i> $  gdb /cm/cdm/bin/CdmMap core
+</I>&gt;<i> HP gdb 3.1.1 for PA-RISC 1.1 or 2.0 (narrow), HP-UX 11.00.
+</I>&gt;<i> Copyright 1986 - 2001 Free Software Foundation, Inc.
+</I>&gt;<i> Hewlett-Packard Wildebeest 3.1.1 (based on GDB) is covered by the
+</I>&gt;<i> GNU General Public License. Type &quot;show copying&quot; to see the  
+</I>&gt;<i> conditions to
+</I>&gt;<i> change it and/or distribute copies. Type &quot;show warranty&quot; for  
+</I>&gt;<i> warranty/support.
+</I>&gt;<i> ..
+</I>&gt;<i> Core was generated by `CdmMap'.
+</I>&gt;<i> Program terminated with signal 11, Segmentation fault.
+</I>&gt;<i>
+</I>&gt;<i> warning: The shared libraries were not privately mapped; setting a
+</I>&gt;<i> breakpoint in a shared library will not work until you rerun the  
+</I>&gt;<i> program.
+</I>&gt;<i>
+</I>&gt;<i> #0  0xc003de84 in pthread_mutex_lock+0x68 () from /usr/lib/ 
+</I>&gt;<i> libpthread.1
+</I>&gt;<i> (gdb) where
+</I>&gt;<i> #0  0xc003de84 in pthread_mutex_lock+0x68 () from /usr/lib/ 
+</I>&gt;<i> libpthread.1
+</I>&gt;<i> #1  0xc021df00 in __thread_mutex_lock+0x70 () from /usr/lib/libc.2
+</I>&gt;<i> #2  0xc28394c4 in _HPMutexWrapper::lock+0x30 () from /usr/lib/ 
+</I>&gt;<i> libstd_v2.2
+</I>&gt;<i> #3  0xc2804b5c in std::locale::_C_install_facet+0x244 () from /usr/ 
+</I>&gt;<i> lib/libstd_v2.2
+</I>&gt;<i> #4  0xc28047b8 in std::locale::_C_make_facet+0x528 () from /usr/lib/ 
+</I>&gt;<i> libstd_v2.2
+</I>&gt;<i> #5  0xc31ee8bc in  
+</I>&gt;<i> std::basic_filebuf&lt;char,std::char_traits&lt;char&gt;&gt;::underflow  
+</I>&gt;<i> (this=0x7a002320)
+</I>&gt;<i>     at /opt/aCC/include_std/fstream.cc:190
+</I>&gt;<i> #6  0xbb854 in DatabaseRecord::addValue () at /opt/aCC/include_std/ 
+</I>&gt;<i> istream.cc:160
+</I>&gt;<i> #7  0xb9e54 in DatabaseRecord::addValue () at /opt/aCC/include_std/ 
+</I>&gt;<i> istream.cc:278
+</I>&gt;<i> #8  0xc324c3a8 in MICOGetOpt::parse (this=0x7a001e78,  
+</I>&gt;<i> _filename=@0x7a001ea0, ignore=1 '\001') at util.cc:662
+</I>&gt;<i> #9  0xc31ea7dc in CORBA::ORB_init (argc=@0x7a001a6c,  
+</I>&gt;<i> argv=0x7a00187c, _id=0x112fec &quot;mico-local-orb&quot;) at orb.cc:2478
+</I>&gt;<i> #10 0x79848 in PortI::orb_init (argc=@0x7a001a6c, argv=0x7a00187c)  
+</I>&gt;<i> at PortI.C:3563
+</I>&gt;<i> #11 0x45a44 in logok10 () at CDM_MAP.C:2587
+</I>&gt;<i> (gdb)
+</I>&gt;<i>
+</I>&gt;<i> Notice that a segment violation occurred in pthread_mutex_lock.   
+</I>&gt;<i> Since we are using an older single threaded version of mico, I  
+</I>&gt;<i> decided to see if I could remove threading from mapnik to resolve  
+</I>&gt;<i> this problem.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Okay. Honestly I'm no export in threading, so its hard for me to  
+</I>&gt;<i> guess that is going wrong. However, since Mapnik is not explicitly  
+</I>&gt;<i> involved in the above stack trace I wonder if something more general  
+</I>&gt;<i> than Mapnik may be involved.
+</I>&gt;<i>
+</I>&gt;<i> A quick google search on 'segfault pthread_mutex_lock+0x68 () from / 
+</I>&gt;<i> usr/lib/libpthread.1' leads immediately to hits on HP and Sun systems.
+</I>&gt;<i>
+</I>&gt;<i> So, personally the next step I would recommend is to compile and  
+</I>&gt;<i> test your code on Linux. I primarily develop on Mac OS X, so when  
+</I>&gt;<i> something is odd on that platform I usually quickly install the  
+</I>&gt;<i> latest Ubuntu release inside VirtualBox to double check the errors.
+</I>&gt;<i>
+</I>&gt;<i> Due to Mapnik's use of C++ and templates, often the compile flags  
+</I>&gt;<i> have to b perfect otherwise unpredicted behavior can occur. The fact  
+</I>&gt;<i> that you have to re-engineer the build/compile on your platform (as  
+</I>&gt;<i> I see below) makes me wonder whether we can trust that Mapnik is  
+</I>&gt;<i> compiled properly. Running the same code on linux and confirming the  
+</I>&gt;<i> same problem would help narrow things down.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I used the &#8220;nm&#8221; command to check for threading within the mapnik  
+</I>&gt;<i> library:
+</I>&gt;<i>
+</I>&gt;<i> $  nm libmapnik.sl.0.7.0 | grep mutex
+</I>&gt;<i> _GLOBAL__D__ZN6mapnik10projection6mutex_E|   2335160|extern|entry  |
+</I>&gt;<i> _GLOBAL__D__ZN6mapnik10projection6mutex_E|   2335176|extern|code   | 
+</I>&gt;<i> $CODE$
+</I>&gt;<i> _GLOBAL__F__ZN6mapnik10projection6mutex_E_D82EAFE4|1074063812|extern| 
+</I>&gt;<i> data   |$DATA$
+</I>&gt;<i> _GLOBAL__I__ZN6mapnik10projection6mutex_E|   2335208|extern|entry  |
+</I>&gt;<i> _GLOBAL__I__ZN6mapnik10projection6mutex_E|   2335224|extern|code   | 
+</I>&gt;<i> $CODE$
+</I>&gt;<i> _ZGVN6mapnik9singletonINS_16datasource_cacheENS_12CreateStaticEE6mutex_E 
+</I>&gt;<i> |1074095424|undef |common |$BSS$
+</I>&gt;<i> _ZGVN6mapnik9singletonINS_7factoryINS_11ImageReaderESsPFPS2_RKSsENS_21default_factory_errorEEENS_12CreateStaticEE6mutex_E 
+</I>&gt;<i> |1074095672|undef |common |$BSS$
+</I>&gt;<i> _ZGVZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE14mutex_instanceEvE5mutex 
+</I>&gt;<i> |1074095728|undef |common |$BSS$
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockC1ERNS_12static_mutexEb|           
+</I>&gt;<i> |undef |code   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockC1ERNS_12static_mutexEb|    
+</I>&gt;<i> 1495668|uext  |stub   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockD1Ev|          |undef |code   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockD1Ev|   1495708|uext  |stub   |
+</I>&gt;<i> _ZN5boost6detail16once_epoch_mutexE|          |undef |data   |
+</I>&gt;<i> _ZN5boost6detail16once_epoch_mutexE|          |undef |data   |
+</I>&gt;<i> _ZN5boost6detail16once_epoch_mutexE|          |undef |data   |
+</I>&gt;<i> _ZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE10mutex_initEv 
+</I>&gt;<i> |   1107888|extern|entry  |
+</I>&gt;<i> _ZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE10mutex_initEv 
+</I>&gt;<i> |   1107904|extern|code  |$CODE$
+</I>&gt;<i> _ZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE14mutex_instanceEv 
+</I>&gt;<i> |   1105620|extern|entry  |
+</I>&gt;<i> _ZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE14mutex_instanceEv 
+</I>&gt;<i> |   1105656|extern|code   |$CODE$
+</I>&gt;<i> _ZN6mapnik10projection6mutex_E|1074095096|extern|data   |$BSS$
+</I>&gt;<i> _ZN6mapnik15freetype_engine6mutex_E|1074094632|extern|data   |$BSS$
+</I>&gt;<i> _ZN6mapnik9singletonINS_16datasource_cacheENS_12CreateStaticEE6mutex_E 
+</I>&gt;<i> |1074095440|undef |common |$BSS 
+</I>&gt;<i> $ 
+</I>&gt;<i> _ZN6mapnik9singletonINS_7factoryINS_11ImageReaderESsPFPS2_RKSsENS_21default_factory_errorEEENS_12CreateStaticEE6mutex_E 
+</I>&gt;<i> |1074095968|undef |common |$BSS$
+</I>&gt;<i> _ZZN5boost16cpp_regex_traitsIcE14get_mutex_instEvE7s_mutex| 
+</I>&gt;<i> 1073867744|extern|data   |$DATA$
+</I>&gt;<i> _ZZN5boost6spirit4impl19object_with_id_baseINS1_11grammar_tagEmE14mutex_instanceEvE5mutex 
+</I>&gt;<i> |1074095808|undef |common |$BSS$
+</I>&gt;<i> object_mutex        |1074093828|static|data   |$DATA$
+</I>&gt;<i> pthread_mutex_destroy|          |undef |code   |
+</I>&gt;<i> pthread_mutex_destroy|   1050020|uext  |stub   |
+</I>&gt;<i> pthread_mutex_destroy|   1556980|uext  |stub   |
+</I>&gt;<i> pthread_mutex_destroy|   2334876|uext  |stub   |
+</I>&gt;<i> pthread_mutex_init  |          |undef |code   |
+</I>&gt;<i> pthread_mutex_init  |   1050000|uext  |stub   |
+</I>&gt;<i> pthread_mutex_init  |   1396600|uext  |stub   |
+</I>&gt;<i> pthread_mutex_init  |   1731300|uext  |stub   |
+</I>&gt;<i> pthread_mutex_init  |   2334856|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |          |undef |code   |
+</I>&gt;<i> pthread_mutex_lock  |    894744|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1163528|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1467252|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1740200|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   2022108|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   2299616|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|          |undef |code   |
+</I>&gt;<i> pthread_mutex_unlock|    894764|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1163548|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1467272|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1740220|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   2022128|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   2299636|uext  |stub   |
+</I>&gt;<i>
+</I>&gt;<i> There are many references to &#8220;pthread_mutex*&#8221;.  So I decided to  
+</I>&gt;<i> rebuild mapnik.  The first step was to rebuild the boost library  
+</I>&gt;<i> without threading.  I used the following commands:
+</I>&gt;<i>
+</I>&gt;<i> $ ./bootstrap.sh --with-icu=/opt/icu --with-python=/usr/local/bin/ 
+</I>&gt;<i> python \
+</I>&gt;<i>         --prefix=/opt/boost \
+</I>&gt;<i>         --with- 
+</I>&gt;<i> libraries=system,filesystem,regex,iostreams,python,program_options
+</I>&gt;<i>
+</I>&gt;<i> $ ./bjam -d+2 threading=single install | tee bjamInstall.log
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Right, because I don't thing Mapnik uses ptread explicitly, only  
+</I>&gt;<i> through boost thread.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> This is different from the first build in that I removed &#8220;thread&#8221;  
+</I>&gt;<i> from the &#8211;with-libraries list and added &#8220;threading-single&#8221; to the  
+</I>&gt;<i> bjam command.
+</I>&gt;<i>
+</I>&gt;<i> I was unsuccessful in getting scons to build mapnik under HP-UX.  I  
+</I>&gt;<i> decided to forgo becoming a scons expert and attempted to work  
+</I>&gt;<i> around it.  I entered the command &#8220;python scons/scons.py -i install&#8221;  
+</I>&gt;<i> and saved all output to a file (&#8220;-i&#8221; make it proceed in case of  
+</I>&gt;<i> errors).  I converted the file to a build script and was able to  
+</I>&gt;<i> modify all the compile and link commands so they worked.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Can you please post this log? Also the log generated by the SCons  
+</I>&gt;<i> configure stage ('config.log')? If the file is too big you can email  
+</I>&gt;<i> me directly.
+</I>&gt;<i>
+</I>&gt;<i> It would be good to try to get Mapnik compiling with the SCons build.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> To build mapnik without threading, I removed &#8220;-pthread&#8221;, &#8220;- 
+</I>&gt;<i> DBOOST_SPIRIT_THREADSAFE&#8221;, and &#8220;-DMAPNIK_THREADSAFE&#8221; from the  
+</I>&gt;<i> compile commands, and &#8220;/opt/boost/lib/libboost_thread.so&#8221; from the  
+</I>&gt;<i> link command.  I also modified font_engine_freetype.hpp and  
+</I>&gt;<i> placement_finder.cpp to add &#8220;#ifdef MAPNIK_THREADSAFE  . . .   
+</I>&gt;<i> #endif&#8221; statements to bracket out some thread references.  Your  
+</I>&gt;<i> developers may want to make this change as well.
+</I>&gt;<i>
+</I>&gt;<i> Right, so you are removing all references to locks that make Mapnik  
+</I>&gt;<i> threadsafe. I'll take a look at the missing ones, nice catch.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> However, I was not successful in removing all thread references as  
+</I>&gt;<i> the following command illustrates:
+</I>&gt;<i>
+</I>&gt;<i> $ nm libmapnik.sl.0.7.0 | grep mutex
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockC1ERNS_12static_mutexEb|           
+</I>&gt;<i> |undef |code   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockC1ERNS_12static_mutexEb|    
+</I>&gt;<i> 1448940|uext  |stub   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockD1Ev|          |undef |code   |
+</I>&gt;<i> _ZN5boost24scoped_static_mutex_lockD1Ev|   1448980|uext  |stub   |
+</I>&gt;<i> _ZZN5boost16cpp_regex_traitsIcE14get_mutex_instEvE7s_mutex| 
+</I>&gt;<i> 1073862152|extern|data   |$DATA$
+</I>&gt;<i> object_mutex        |1074084740|static|data   |$DATA$
+</I>&gt;<i> pthread_mutex_lock  |          |undef |code   |
+</I>&gt;<i> pthread_mutex_lock  |    861696|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1125660|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1408080|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1675532|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   1942148|uext  |stub   |
+</I>&gt;<i> pthread_mutex_lock  |   2214856|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|          |undef |code   |
+</I>&gt;<i> pthread_mutex_unlock|    861716|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1125680|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1408100|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1675552|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   1942168|uext  |stub   |
+</I>&gt;<i> pthread_mutex_unlock|   2214876|uext  |stub   |
+</I>&gt;<i>
+</I>&gt;<i> I believe I may need to take another look at boost to see where  
+</I>&gt;<i> threading is still referenced.
+</I>&gt;<i>
+</I>&gt;<i> Okay.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> There are some other things of which you should be aware.  In order  
+</I>&gt;<i> to build boost and mapnik, I needed to install the gnu compiler.
+</I>&gt;<i>
+</I>&gt;<i> What problems did you have compiling with the HP compiler?
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Until working with mapnik, we had been using the HP-UX aCC compiler  
+</I>&gt;<i> for all our software.  In the case of mapnik applications, we are  
+</I>&gt;<i> mixing modules from different compilers in our executables.
+</I>&gt;<i>
+</I>&gt;<i> Interesting.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   However, I had no trouble creating a test program which reads  
+</I>&gt;<i> PostGIS map data and displays it in a window on-screen.  Boost,  
+</I>&gt;<i> mapnik, and a mapnik interface module were all compiled with g++,  
+</I>&gt;<i> whereas the main module was compiled with aCC.  Only when adding  
+</I>&gt;<i> mico does the problem occur.
+</I>&gt;<i>
+</I>&gt;<i> I plan to take a look at your suggestion &#8220;python scons/scons.py  
+</I>&gt;<i> THREADING=single install&#8221; later today.
+</I>&gt;<i>
+</I>&gt;<i> That should just skip the uses of mutexes, but as you note there are  
+</I>&gt;<i> a few that are not properly wrapped that you'll need to find.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>   However, I first wanted you to get the above information today.   
+</I>&gt;<i> [I&#8217;m assuming you are on central European time.  I&#8217;m in the U.S.  
+</I>&gt;<i> mountain time zone.]
+</I>&gt;<i>
+</I>&gt;<i> I'm in Seattle, on Pacific Time.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hopefully I&#8217;ve given you everything you asked for.  Again, thanks  
+</I>&gt;<i> for the support.
+</I>&gt;<i>
+</I>&gt;<i> Certainly, excellent report, thank you. I'm sorry that I don't have  
+</I>&gt;<i> any affirmative ideas, but I'd encourage you to isolate the problem  
+</I>&gt;<i> on Linux (using all code compiled with G++) so make sure that it  
+</I>&gt;<i> truly is a threading issue and not bugs/compile problems/code  
+</I>&gt;<i> incompatibility between compilers. It seems like the latter is  
+</I>&gt;<i> likely involved, at least to the extent that different code may, or  
+</I>&gt;<i> may not have been compiled with the same flags, like '-mt'.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Sincerely,
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Sunday, February 21, 2010 11:09 AM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Hi Brad,
+</I>&gt;<i>
+</I>&gt;<i> I've not used mico before, but it would be helpful if you could  
+</I>&gt;<i> provide some simple sample code that triggers the problem.
+</I>&gt;<i>
+</I>&gt;<i> Regarding Mapnik and threading, mapnik supports essentially two  
+</I>&gt;<i> compile-times modes, one threadsafe(&quot;multi&quot;) and one not (&quot;single&quot;).
+</I>&gt;<i>
+</I>&gt;<i> To rebuild without multi-threading support do:
+</I>&gt;<i>
+</I>&gt;<i> python scons/scons.py THREADING=single install
+</I>&gt;<i>
+</I>&gt;<i> This will removing linking to boost_thread and the use of mutexes.  
+</I>&gt;<i> Looking at the build scripts, it appears that (on linux) this does  
+</I>&gt;<i> not remove the linking to lpthread, so you may also need to comment  
+</I>&gt;<i> that out on line 914 of SConstruct (pthread = '-pthread').
+</I>&gt;<i>
+</I>&gt;<i> Could you paste the whole backtrace?
+</I>&gt;<i>
+</I>&gt;<i> Also, would be good to cc' back to mapnik-devel if you are okay with  
+</I>&gt;<i> that.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 19, 2010, at 9:46 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dane,
+</I>&gt;<i>
+</I>&gt;<i> Changing the subject entirely, how do you build Mapnik without  
+</I>&gt;<i> threads?  The reason I&#8217;m asking is the program I&#8217;m building also  
+</I>&gt;<i> uses mico for interprocess communications.  The program aborts  
+</I>&gt;<i> immediately as mico tries to initialize.  The core dump shows a  
+</I>&gt;<i> segment violation in /usr/lib/libpthread.1 with the stack trace back  
+</I>&gt;<i> to CORBA::ORB_init.  So I think it may be best to remove thread  
+</I>&gt;<i> support from Mapnik, since changing the old single threaded version  
+</I>&gt;<i> of mico here is going to affect a lot of other people.  Any  
+</I>&gt;<i> suggestions?
+</I>&gt;<i>
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Friday, February 19, 2010 10:33 AM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Ah, I see.
+</I>&gt;<i>
+</I>&gt;<i> So the 'C++ signature' thing is automatically generated by  
+</I>&gt;<i> boost::python's docstring methods and refers to the python function  
+</I>&gt;<i> only, which is load_map_from_string. Mapnik's python bindings are  
+</I>&gt;<i> written in C++, which is why that appears that way.
+</I>&gt;<i>
+</I>&gt;<i> As such there is nothing to change in the docstring, only the  
+</I>&gt;<i> possibility to change the actual function names to match between the  
+</I>&gt;<i> python bindings and the C++ core library. I think this is something  
+</I>&gt;<i> we could consider doing in the 0.8 as it is going to have other  
+</I>&gt;<i> backwards incompatible changes.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On Feb 19, 2010, at 9:00 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dane,
+</I>&gt;<i>
+</I>&gt;<i> Yes, I was looking at the Python API docs since I couldn&#8217;t find C++  
+</I>&gt;<i> documentation.  However, docs/api_docs/python/mapnik_mapnik- 
+</I>&gt;<i> module.html file lists a &#8220;C++ signature&#8221; for each function.  This is  
+</I>&gt;<i> what I was looking at.  Perhaps this is the best place to make a  
+</I>&gt;<i> change.
+</I>&gt;<i>
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Friday, February 19, 2010 9:32 AM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Hi Brad,
+</I>&gt;<i>
+</I>&gt;<i> Right, I see that our naming is different between python and C++,  
+</I>&gt;<i> which although not ideal, does happen in a variety of cases. Are you  
+</I>&gt;<i> looking at the Python API docs?
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="https://trac.mapnik.org/changeset/806">https://trac.mapnik.org/changeset/806</A>
+</I>&gt;<i>
+</I>&gt;<i> I'm not aware of this function being documented in any C++ api docs.  
+</I>&gt;<i> Where might you suggest fixing the documentation?
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 19, 2010, at 7:25 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Dane,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for working this issue for me.
+</I>&gt;<i>
+</I>&gt;<i> I ran into a problem using load_map_from_string in a C++ program.   
+</I>&gt;<i> Evidently, I needed to use &#8220;load_map_string&#8221; as specified in  
+</I>&gt;<i> load_map.hpp.  Is there a problem with the documentation?  Perhaps a  
+</I>&gt;<i> documentation correction could also be rolled into v0.7.0.
+</I>&gt;<i>
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Friday, February 19, 2010 12:59 AM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Brad,
+</I>&gt;<i>
+</I>&gt;<i> You are welcome, thanks again for the report and the further info.
+</I>&gt;<i>
+</I>&gt;<i> Also, as followup, the fix is now in trunk and I've created further  
+</I>&gt;<i> tickets to flag investigating impacts on other database drivers:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/514">http://trac.mapnik.org/ticket/514</A>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/515">http://trac.mapnik.org/ticket/515</A>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/ticket/516">http://trac.mapnik.org/ticket/516</A>
+</I>&gt;<i>
+</I>&gt;<i> We've yet to set a date for Mapnik 0.7.1 but this fix will be  
+</I>&gt;<i> backported when we branch for that bugfix release, and tested further.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On Feb 18, 2010, at 6:53 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> Thanks for opening a ticket on this problem.  For your information,  
+</I>&gt;<i> we are using Mapnik on an HP computer (RISC architecture) running HP- 
+</I>&gt;<i> UX 11.11.
+</I>&gt;<i>
+</I>&gt;<i> Sincerely,
+</I>&gt;<i> Brad
+</I>&gt;<i>
+</I>&gt;<i> -----Original Message-----
+</I>&gt;<i> From: Dane Springmeyer [mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>]
+</I>&gt;<i> Sent: Wednesday, February 17, 2010 1:57 PM
+</I>&gt;<i> To: Simpson Brad-C-Lockheed
+</I>&gt;<i> Cc: <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> Subject: Re: [Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</I>&gt;<i>
+</I>&gt;<i> Hi Brad,
+</I>&gt;<i>
+</I>&gt;<i> Thanks very much for this report. I think I am the only Mapnik
+</I>&gt;<i> developer that has had access to a big endian machine to test on. I
+</I>&gt;<i> have thus far only focused on adding support for shapefiles and fixing
+</I>&gt;<i> various rendering problems.
+</I>&gt;<i>
+</I>&gt;<i> After seeing your report I set up a postgres testing environment and
+</I>&gt;<i> confirmed this problem and also confirmed that your fix works on my
+</I>&gt;<i> big endian system without causing any regressions on little endian
+</I>&gt;<i> testing setups that i have (ubuntu 9.10 64bit and os x 10.5 32 bit).
+</I>&gt;<i>
+</I>&gt;<i> My sense is that the #ifndef should have been removed when we added an
+</I>&gt;<i> explicit native endianess flag to the AsBinary() function when pulling
+</I>&gt;<i> geometries from Postgis: <A HREF="http://trac.mapnik.org/changeset/1190.">http://trac.mapnik.org/changeset/1190.</A> But
+</I>&gt;<i> I'll need to look a bit closer to be sure.
+</I>&gt;<i>
+</I>&gt;<i> Either way I have created a ticket <A HREF="http://trac.mapnik.org/ticket/515">http://trac.mapnik.org/ticket/515</A>
+</I>&gt;<i> to trac this issue and have put that in the cue to fix asap.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 11, 2010, at 9:56 AM, Simpson Brad-C-Lockheed wrote:
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Mapnik developers,
+</I>&gt;<i>
+</I>&gt;<i> Please be aware that the PostGIS interface does not work on machines
+</I>&gt;<i> with big endian architectures.  I had to modify wkb.cpp in order to
+</I>&gt;<i> get this to work.
+</I>&gt;<i>
+</I>&gt;<i> Here is what I learned by debugging this problem.  The PostGIS
+</I>&gt;<i> plugin obtains the result set from the database server in an XDR
+</I>&gt;<i> format (by design).  Inside wkb.cpp, the wkb_reader routine
+</I>&gt;<i> determines no byte swapping is necessary by setting needSwap_ = 0.
+</I>&gt;<i> This causes routines such as read_integer to call read_int32_ndr
+</I>&gt;<i> (instead of read_int32_xdr), and read_double to call read_double_ndr
+</I>&gt;<i> (instead of read_double_xdr).  I found the read_[int32|double]_[ndr|
+</I>&gt;<i> xdr] routines in global.hpp.  The read_int32_ndr and read_double_ndr
+</I>&gt;<i> performed the expected but unnecessary byte swapping.  Since the
+</I>&gt;<i> database result set was in an XDR format, converting it to NDR made
+</I>&gt;<i> the values incompatible with the big endian cpu.
+</I>&gt;<i>
+</I>&gt;<i> To resolve this problem, I modified the lines:
+</I>&gt;<i> #ifndef MAPNIK_BIG_ENDIAN
+</I>&gt;<i>     needSwap_=byteOrder_?wkbXDR:wkbNDR;
+</I>&gt;<i> #else
+</I>&gt;<i>     needSwap_=byteOrder_?wkbNDR:wkbXDR;
+</I>&gt;<i> #endif
+</I>&gt;<i> within wkb_reader to be:
+</I>&gt;<i> //#ifndef MAPNIK_BIG_ENDIAN
+</I>&gt;<i>     needSwap_=byteOrder_?wkbXDR:wkbNDR;
+</I>&gt;<i> //#else
+</I>&gt;<i> //   needSwap_=byteOrder_?wkbNDR:wkbXDR;
+</I>&gt;<i> //#endif
+</I>&gt;<i> This had the effect of setting needSwap_ to true, calling
+</I>&gt;<i> read_int32_xdr and read_double_xdr (instead of read_int32_ndr and
+</I>&gt;<i> read_double_ndr), but ultimately no byte swapping is performed.
+</I>&gt;<i> Thus I could process PostGIS data in my application.
+</I>&gt;<i>
+</I>&gt;<i> Please reply, comment on my change, and let me know what the long
+</I>&gt;<i> term solution should be.  Also, please test mapnik and supported
+</I>&gt;<i> plugins on big endian machines prior to future software releases.
+</I>&gt;<i>
+</I>&gt;<i> Sincerely,
+</I>&gt;<i> Brad Simpson
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100226/03252576/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20100226/03252576/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001073.html">[Mapnik-devel] Mapnik for Mobile
+</A></li>
+	<LI>Next message: <A HREF="001076.html">[Mapnik-devel] Mapnik v0.7.0 PostGis Big Endian problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1077">[ date ]</a>
+              <a href="thread.html#1077">[ thread ]</a>
+              <a href="subject.html#1077">[ subject ]</a>
+              <a href="author.html#1077">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

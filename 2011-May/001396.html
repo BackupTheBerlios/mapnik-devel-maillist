@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] On Windows support and Visual Studio project files
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20On%20Windows%20support%20and%20Visual%20Studio%20project%20files&In-Reply-To=%3CBANLkTikubgNxhqxb1WBgQdX-Zg_KYCO%2BWw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001401.html">
+   <LINK REL="Next"  HREF="001398.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] On Windows support and Visual Studio project files</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20On%20Windows%20support%20and%20Visual%20Studio%20project%20files&In-Reply-To=%3CBANLkTikubgNxhqxb1WBgQdX-Zg_KYCO%2BWw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] On Windows support and Visual Studio project files">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Thu May 26 15:45:02 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001401.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+        <LI>Next message: <A HREF="001398.html">[Mapnik-devel] GSoC: Windows build system, week 1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1396">[ date ]</a>
+              <a href="thread.html#1396">[ thread ]</a>
+              <a href="subject.html#1396">[ subject ]</a>
+              <a href="author.html#1396">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi all,
+
+I've spend the last weeks on thinking about how to best accommodate developers
+who want to use Mapnik in their own applications using Visual C++. This seems
+like a narrow goal, but solving that problem will also take care of more general
+issues with building Mapnik on Windows, getting automated builds etc.
+
+Initially I started out with the most basic system, which is to choose one
+version of Visual Studio to support, manually building the project- and
+solution files (the components in Visual Studio that make up the build system)
+and upgrading as the maintainer of that part of Mapnik upgrades. This is the
+initial approach I took when building Mapnik for php_mapnik. It's clear that
+this is not a sustainable solution, as it relies heavily on somebody actively
+maintaining these files and is limited since people use a wide range of version
+of Visual Studio in production (project files can be upgraded, so technically
+one could support the lowest version and let users upgrade themselves; in
+practice this doesn't always work because of details I won't bore you with).
+
+The second approach I investigated was to use the Scons support for generating
+Visual Studio project files. Scons has build targets with which one can make
+these files. Since Mapnik already uses Scons, I was quite excited to find out
+about this and I have been experimenting with it. It's easy to use, but I am
+not convinced any more that going this way is the best solution for Mapnik.
+First, only a subset of functionality is supported in Scons-generated VS files.
+Secondly, there are some quirky things in the generated files that are there
+because the VS files are supposed to be used in a Scons-based build
+environment. My goal is only to use Scons to build an independent environment
+(to stay with the customary way of working on Windows - otherwise we might as
+well say that people should use Scons on Windows and be done with it). Thirdly,
+adapting the Visual Studio parts of Scons isn't all that easy because it's all
+quite integrated with how the rest of Scons works (which is normal when you
+look at their goals, but like I mentioned they are not in line with what I
+think the role of Visual Studio project files for Mapnik should be).
+
+And then there is another issue, which is that if we make project files for
+Mapnik dependencies that are only going to be used by Mapnik, the maintenance
+burden is going to be much higher than it would be if we could share the
+responsibility with other users of those libraries on Windows (I'm talking
+zlib, libpng, Cairo, ...) I have made Windows builds of various project over
+the last year or two, and although I now have everything set up on my machine,
+I feel that many people have to reinvent the wheel and many give up halfway
+through.
+
+So, all these things combined lead me to explore another avenue, which is to
+write a tool that will make, based on a simple description of what files should
+be included in a project file or solution and some configuration options,
+Visual Studio project files for a variety of Visual Studio versions. Such a tool
+would be part of the release/build script which would create project files each
+time new source files are added to the project. Ideally, it would integrate with
+the 'native' build tool like Scons so that it could read the list of files from
+the Scons or make or whatever build files; that way nobody would even have to be
+aware that there are Visual Studio project files being generated for
+the project.
+
+Now there is more to building the mentioned libraries on Windows than
+just making
+the Visual Studio project. Some need to be configured by editing a header (like
+for which core compression implementation to use, assembly or C, for
+zlib); others
+rely on headers generated by the autotools, etc. For Windows, this is quite
+straightforward; it's always known which features are available
+(sizeof() various
+types etc). The tool would have to be able to patch a fresh download of the
+library though so that it will compile, instead of having to rely on people
+reading long steps of what to edit where etc. (like my current build
+instructions on the Wiki are).
+
+I have experimented with such a tool and the initial results are quite
+promising; it's not hard to do and the level of abstraction to support common
+open source libraries is manageable. I have written my prototypes in Python,
+I'm not even sure why any more - I guess because I started with Scons but since
+I don't know anything about Python this has been slowing down development a
+bit. It's no big issue, and I think there are benefits to sticking with Python
+- one, maybe it could share code with Scons one day, secondly Mapnik already
+uses a lot of Python, and thirdly I don't really know what it would be written
+in otherwise. I'm not looking forward to writing a simple tool like this in C++
+and other scripting languages would only make the list of dependencies longer.
+
+Ideally, such a tool would be a project separate from Mapnik, and Mapnik would
+just be able to use it. At the moment though I'm using it within the Mapnik
+source tree, it keeps the focus of the effort on Mapnik and I'd need separate
+projects to build on Windows to make it work for them, too.
+
+So, after all of this ;) , I'd like to solicit some feedback on this
+direction. To make it more concrete, for Mapnik this would mean that there would
+be a directory with some tools and config files to build Mapnik and its
+dependencies. Users would download the source from the original project
+websites (this was another requirement I set) to a predefined location, the
+script would prepare the libraries and generate the project files, and users are
+good to go. With the same effort, the release script could make a zip file with
+all the sources pre-prepared; the user wouldn't even have to run any scripts, so
+he wouldn't need Python installed and can use Mapnik as-is, all automated.
+
+For my planning, this would constitute a bit of a change from the original
+plan. I think it's best I get all dependencies working in this way before
+tackling building Mapnik 2. Not a big deal, and would still all be done before
+Mapnik 2, but still.
+
+What do you think? Thanks.
+
+
+regards,
+
+roel
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001401.html">[Mapnik-devel] Cairo backend - Unstable?
+</A></li>
+	<LI>Next message: <A HREF="001398.html">[Mapnik-devel] GSoC: Windows build system, week 1
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1396">[ date ]</a>
+              <a href="thread.html#1396">[ thread ]</a>
+              <a href="subject.html#1396">[ subject ]</a>
+              <a href="author.html#1396">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

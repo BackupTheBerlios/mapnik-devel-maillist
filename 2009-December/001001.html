@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Couple build issues with trunk 1481
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Couple%20build%20issues%20with%20trunk%201481&In-Reply-To=%3C4B251B45.5040801%40shaw.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001000.html">
+   <LINK REL="Next"  HREF="001004.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Couple build issues with trunk 1481</H1>
+    <B>David Eastcott</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Couple%20build%20issues%20with%20trunk%201481&In-Reply-To=%3C4B251B45.5040801%40shaw.ca%3E"
+       TITLE="[Mapnik-devel] Couple build issues with trunk 1481">david.eastcott at shaw.ca
+       </A><BR>
+    <I>Sun Dec 13 17:50:13 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001000.html">[Mapnik-devel] Fwd: Re: [Mapnik-users] mapnik.render causing	segmentation fault
+</A></li>
+        <LI>Next message: <A HREF="001004.html">[Mapnik-devel] Couple build issues with trunk 1481
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1001">[ date ]</a>
+              <a href="thread.html#1001">[ thread ]</a>
+              <a href="subject.html#1001">[ subject ]</a>
+              <a href="author.html#1001">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I came across these yesterday and thought I should let you know
+
+1. Noticed this Warning message when compiling on 64bit os
+
+g++ -o plugins/input/ogr/ogr_datasource.os -c -DHAVE_LIBXML2 
+-DHAVE_CAIRO -DHAVE_PYCAIRO -ansi -Wall -pthread -ftemplate-depth-100 
+-DLINUX -DBOOST_SPIRIT_THREADSAFE -DMAPNIK_THREADSAFE 
+-DSVN_REVISION=1481 -O2 -finline-functions -Wno-inline -DNDEBUG 
+-DSHAPE_MEMORY_MAPPED_FILE -fPIC -DNone -Iagg/include -Iinclude -I. 
+-I/usr/include -I/usr/local/include -I/usr/include/freetype2 
+-I/usr/include/libxml2 -I/usr/include/cairomm-1.0 -I/usr/include/cairo 
+-I/usr/include/libpng12 -I/usr/include/pixman-1 -I/usr/include/gdal 
+-I/usr/include/pycairo plugins/input/ogr/ogr_datasource.cpp
+plugins/input/ogr/ogr_datasource.cpp: In constructor 
+&#8216;ogr_datasource::ogr_datasource(const mapnik::parameters&amp;)&#8217;:
+plugins/input/ogr/ogr_datasource.cpp:123: warning: comparison is always 
+false due to limited range of data type
+
+is:
+// scan for index file
+unsigned breakpoint = dataset_name_.find_last_of (&quot;.&quot;);
+if (breakpoint == std::string::npos) breakpoint = dataset_name_.length();
+index_name_ = dataset_name_.substr(0, breakpoint) + &quot;.index&quot;;
+
+should be:
+// scan for index file
+size_t breakpoint = dataset_name_.find_last_of (&quot;.&quot;);
+if (breakpoint == std::string::npos) breakpoint = dataset_name_.length();
+index_name_ = dataset_name_.substr(0, breakpoint) + &quot;.index&quot;;
+
+
+2. When compiling with DEBUG option, there is a Error message: 
+gettimeofday is not defined in this scope.
+
+The file include/mapnik/wall_clock_timer.hpp appears to be missing an 
+include:
+
+should be:
+#define MAPNIK_WALL_CLOCK_TIMER_INCLUDED
+#include &lt;sys/time.h&gt;
+namespace mapnik {
+
+Best regards,
+Dave
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001000.html">[Mapnik-devel] Fwd: Re: [Mapnik-users] mapnik.render causing	segmentation fault
+</A></li>
+	<LI>Next message: <A HREF="001004.html">[Mapnik-devel] Couple build issues with trunk 1481
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1001">[ date ]</a>
+              <a href="thread.html#1001">[ thread ]</a>
+              <a href="subject.html#1001">[ subject ]</a>
+              <a href="author.html#1001">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

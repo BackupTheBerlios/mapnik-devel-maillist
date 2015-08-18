@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Cutting holes
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C4D520095.4020409%40ahlzen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001331.html">
+   <LINK REL="Next"  HREF="001336.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Cutting holes</H1>
+    <B>Lars Ahlzen</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Cutting%20holes&In-Reply-To=%3C4D520095.4020409%40ahlzen.com%3E"
+       TITLE="[Mapnik-devel] Cutting holes">lars at ahlzen.com
+       </A><BR>
+    <I>Wed Feb  9 03:48:53 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001331.html">[Mapnik-devel] Cutting holes
+</A></li>
+        <LI>Next message: <A HREF="001336.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1333">[ date ]</a>
+              <a href="thread.html#1333">[ thread ]</a>
+              <a href="subject.html#1333">[ subject ]</a>
+              <a href="author.html#1333">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dane Springmeyer wrote:
+&gt;<i> Lars,
+</I>&gt;<i>
+</I>&gt;<i> Great stuff, this certainly looks like something we should try to integrate - either as is or part of a larger effort to enable composing modes. If we add it we'll need to find a more generic solution of course (than matching colors), but very glad the patch works for your needs. 
+</I>&gt;<i>   
+</I>Yeah, it's a bit of a hack. On the other hand, just like when you're 
+defining a transparent map (i.e. &lt;Map bgcolor=&quot;transparent&quot; ...) this 
+only triggers for alpha = 0, which you'd otherwise never use, so at 
+least it doesn't break any existing usage.
+
+Combining it with layers (in the &quot;photoshop&quot; sense) and compositing 
+modes would be fantastic, of course... :)
+&gt;<i> For now can you attach this patch to a ticket and assign to the Mapnik 2.0 milestone? That way we can consider it both before release, and when/if we need to push it to Mapnik 2.1 milestone (as I think a proper agg solution may take some time).
+</I>&gt;<i>   
+</I>Will do.
+
+Thanks,
+- Lars
+
+-- 
+Lars Ahlzen
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001331.html">[Mapnik-devel] Cutting holes
+</A></li>
+	<LI>Next message: <A HREF="001336.html">[Mapnik-devel] Cutting holes
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1333">[ date ]</a>
+              <a href="thread.html#1333">[ thread ]</a>
+              <a href="subject.html#1333">[ subject ]</a>
+              <a href="author.html#1333">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

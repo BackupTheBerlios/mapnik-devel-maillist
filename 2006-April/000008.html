@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Prototype%20WMS%20interface%20to%20Mapnik%20%28cherry_mapnik.py%29&In-Reply-To=%3C5383fa5e0604022206j3318a1efj363eeab2a6850adc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000009.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)</H1>
+    <B>Matthew Perry</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Prototype%20WMS%20interface%20to%20Mapnik%20%28cherry_mapnik.py%29&In-Reply-To=%3C5383fa5e0604022206j3318a1efj363eeab2a6850adc%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)">perrygeo at gmail.com
+       </A><BR>
+    <I>Mon Apr  3 07:06:09 CEST 2006</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000009.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#8">[ date ]</a>
+              <a href="thread.html#8">[ thread ]</a>
+              <a href="subject.html#8">[ subject ]</a>
+              <a href="author.html#8">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hey mapnikers,
+
+  So the nice rainy sunday prompted me to resume my trials with
+mapnik. I was able to build the latest SVN against the ubuntu 6.04
+boost libraries and everything went well. Alot has changed since the
+tutorial on the website and that threw me off for a few minutes until
+I found the excellent demo script! Beautiful cartography. Beautiful
+python.
+
+ I have also been working a bit evaluating python web application
+frameworks and cherrypy impressed me with it's ease of use and very
+&quot;pythonic&quot; approach.
+
+ So putting the two together, I worked up a simple pseudo-WMS server
+as an interface to mapnik. I say pseudo-WMS server because it doesn't
+even come close to complying with the WMS spec. The only thing it can
+do is handle a simple GetMap request:
+ <A HREF="http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400">http://localhost:8080/wms?VERSION=1.1.1&amp;REQUEST=GetMap&amp;LAYERS=states&amp;FORMAT=image/jpeg&amp;SRS=EPSG:4326&amp;STYLES=&amp;BBOX=-120,15,-70,65&amp;width=400&amp;height=400</A>
+
+But for some very simple WMS clients, this is all you need. I set up a
+nifty little interactive map using wms-map
+(<A HREF="http://wms-map.sourceforge.net/">http://wms-map.sourceforge.net/</A>)  which I'll make public as soon as I
+get mapnik installed on a server somewhere.
+
+Cherrypy servers run as standalone servers bound to a specific port
+but can optionally be put behind an apache server... Setting up this
+WMS server as a standalone should be fairly simple. You'll need the
+cherrypy and mapnik python modules to start. There is a createMap()
+function that contains all the usual mapnik code which you can tweak
+for your specific data. Then there is a WMS class that parses the WMS
+requests and passes them off to createMap() which writes an image to
+disk and returns the map image to the client. I didn't have alot of
+time to spend so this only a proof-of-concept.
+
+My initial testing against a Mapserver-based WMS (running on the same
+machine, same dataset) indicates that for single requests, Mapserver
+is only about 15% faster. But for many simultaneous requests (such as
+the tiled WMS clients make; 9 requests on every pan) mapnik/cherrypy
+is 3-400% faster (!!) under a decent load. Put this behind an apache
+server and you could have a fast, solid WMS server with mapnik on the
+backend. Plus mapnik's image quality is by far the most impressive of
+any map rendering engine i've seen! Here's a screenshot comparing the
+WMS clients based on both mapserver and mapnik -
+<A HREF="http://perrygeo.net/img/mapserver_mapnik.png">http://perrygeo.net/img/mapserver_mapnik.png</A> (a screenshot of one of
+my favorite places in the world. any guesses??). Just look at that
+beautiful line work.. did I mention I was impressed?
+
+Attached is the code. Please give the prototype WMS server a shot and
+let me know how it goes.  My understanding of both mapnik and cherrypy
+is limited so please jump in and make suggestions.
+
+--
+Matt Perry
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">perrygeo at gmail.com</A>
+<A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: cherry_mapnik.py
+Type: text/x-python
+Size: 3698 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060402/d795d2f6/attachment.py">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20060402/d795d2f6/attachment.py</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000009.html">[Mapnik-devel] Prototype WMS interface to Mapnik (cherry_mapnik.py)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#8">[ date ]</a>
+              <a href="thread.html#8">[ thread ]</a>
+              <a href="subject.html#8">[ subject ]</a>
+              <a href="author.html#8">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

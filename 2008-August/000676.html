@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik rundemo.cpp crash (OS X 10.5, svn trunk)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rundemo.cpp%20crash%20%28OS%20X%2010.5%2C%20svn%20trunk%29&In-Reply-To=%3C78ec96990808061348la56baacga37706f7ff7afbfc%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000675.html">
+   <LINK REL="Next"  HREF="000678.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik rundemo.cpp crash (OS X 10.5, svn trunk)</H1>
+    <B>Leslie Wu</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20rundemo.cpp%20crash%20%28OS%20X%2010.5%2C%20svn%20trunk%29&In-Reply-To=%3C78ec96990808061348la56baacga37706f7ff7afbfc%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik rundemo.cpp crash (OS X 10.5, svn trunk)">lwu.two at gmail.com
+       </A><BR>
+    <I>Wed Aug  6 22:48:35 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000675.html">[Mapnik-devel] Mapnik rundemo.cpp crash (OS X 10.5, svn trunk)
+</A></li>
+        <LI>Next message: <A HREF="000678.html">[Mapnik-devel] query zoom example code (cali.cpp) and dev experience
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#676">[ date ]</a>
+              <a href="thread.html#676">[ thread ]</a>
+              <a href="subject.html#676">[ subject ]</a>
+              <a href="author.html#676">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>After some twiddling, I finally got rundemo.cpp compiling and running
+successfully on OS X 10.5.4 with boost
+(port) @1.35.0_0+darwin_9+icu+python25.
+Although the Xcode 3.1 build still seems to throw a vector::reserve
+exception, rundemo.cpp on Leopard works if I compile on the command line,
+like so:
+
+g++ -g -I/usr/local/include/mapnik -I/opt/local/include
+-I/opt/local/include/freetype2 -I../../agg/include -L/usr/local/lib
+-L/opt/local/lib -lmapnik  -lboost_thread-mt rundemo.cpp -o rundemo
+
+It also seems that rundemo.cpp is slightly out-of-date wrt the current svn
+trunk directory structure. Attached is a two line patch that enables
+rundemo.cpp to work equivalently to python rundemo.py on the svn trunk (as
+rundemo_r728.diff), by simply changing a few directory names.
+
+~L
+
+
+On Tue, Aug 5, 2008 at 5:47 PM, Leslie Wu &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lwu.two at gmail.com</A>&gt; wrote:
+
+&gt;<i> With the help of <A HREF="http://trac.mapnik.org/wiki/MacInstallation">http://trac.mapnik.org/wiki/MacInstallation</A> and
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://www.codingadventures.com/2008/04/howto-building-mapnik-on-osx-leopard/">http://www.codingadventures.com/2008/04/howto-building-mapnik-on-osx-leopard/</A>
+</I>&gt;<i> I finally got Mapnik from svn trunk (r727) to build on OS X Leopard 10.5.4,
+</I>&gt;<i> and can run python (2.5) rundemo.py successfully.
+</I>&gt;<i> However, I seem to be having odd exceptions thrown when compiling and then
+</I>&gt;<i> running rundemo.cpp under Xcode 3.0.
+</I>&gt;<i>
+</I>&gt;<i> The console output looks like this:
+</I>&gt;<i>    ENCODING = utf8
+</I>&gt;<i>    ### std::exception: vector::reserve destroyed singleton
+</I>&gt;<i> which seems to be thrown when &quot;create_filter(&quot;[NAME_EN] = 'Ontario'&quot;)&quot; is
+</I>&gt;<i> called.
+</I>&gt;<i>
+</I>&gt;<i> I narrowed (whittled) down the exceptional code snippet to the following:
+</I>&gt;<i>
+</I>&gt;<i> try {
+</I>&gt;<i>         color_factory::from_string(&quot;white&quot;);
+</I>&gt;<i>         create_filter(&quot;[NAME_EN] = 'Toronto'&quot;);
+</I>&gt;<i>         // ...
+</I>&gt;<i> }
+</I>&gt;<i>
+</I>&gt;<i> which then triggers an exception somewhere in create_filter(). I've looked
+</I>&gt;<i> through previous threads on mapnik-devel, for example
+</I>&gt;<i> <A HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/000490.htmlbut">http://lists.berlios.de/pipermail/mapnik-devel/2008-February/000490.htmlbut</A> the previous patches and build commands (-DBOOST_SPIRIT_THREADSAFE)
+</I>&gt;<i> don't quite seem to apply.
+</I>&gt;<i>
+</I>&gt;<i> Any ideas? The exception seems to be thrown when main()'s call to
+</I>&gt;<i> create_filter(...) creates a transcoder and then passes it to
+</I>&gt;<i> factory.compile(...), which dies as it constructs a
+</I>&gt;<i> filter_grammar&lt;FeatureT&gt;.
+</I>&gt;<i>
+</I>&gt;<i> I'm compiling and linking against boost
+</I>&gt;<i> (port) @1.35.0_0+darwin_9+icu+python25...
+</I>&gt;<i>
+</I>&gt;<i> ~L
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080806/bf027dcf/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080806/bf027dcf/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: rundemo_r728.diff
+Type: application/octet-stream
+Size: 745 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080806/bf027dcf/attachment.obj">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080806/bf027dcf/attachment.obj</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000675.html">[Mapnik-devel] Mapnik rundemo.cpp crash (OS X 10.5, svn trunk)
+</A></li>
+	<LI>Next message: <A HREF="000678.html">[Mapnik-devel] query zoom example code (cali.cpp) and dev experience
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#676">[ date ]</a>
+              <a href="thread.html#676">[ thread ]</a>
+              <a href="subject.html#676">[ subject ]</a>
+              <a href="author.html#676">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

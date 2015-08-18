@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik and reprojection of shapefiles
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C1189538811.30404.13.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000243.html">
+   <LINK REL="Next"  HREF="000246.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik and reprojection of shapefiles</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20and%20reprojection%20of%20shapefiles&In-Reply-To=%3C1189538811.30404.13.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] Mapnik and reprojection of shapefiles">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Tue Sep 11 21:26:51 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000243.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+        <LI>Next message: <A HREF="000246.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#244">[ date ]</a>
+              <a href="thread.html#244">[ thread ]</a>
+              <a href="subject.html#244">[ subject ]</a>
+              <a href="author.html#244">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Tue, 2007-09-11 at 12:11 +0100, Artem Pavlenko wrote:
+
+
+&gt;<i> 
+</I>&gt;<i> Thanks a lot for reporting this. I modified feature_style_processor to
+</I>&gt;<i> always clip query's bbox to the layer's extent. This seemed to fixes
+</I>&gt;<i> this issue :
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> 1. Before processing layer, backproject layer's extent into main (map)
+</I>&gt;<i> projection.
+</I>&gt;<i> 2. Clip query's bbox by this projected extent.
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Could you try r522 and let me know if this works for you.
+</I>&gt;<i> 
+</I>This seems to fix the world boundaries polygons but now I'm running into
+issues with the shoreline_a. The problem seems to be the minimum
+longitude which is less than -20037508.34
+
+Envelope(-20100000,-7700000,20000000,15000000)
+
+Whenever this layer bounding box gets re-projected it ends up wrong:
+
+ layer1 - &gt; Envelope(-20100000,-7700000,20000000,15000000)
+ layer2 - &gt; Envelope(19975016.68557849,-7735817.004185823,20000000,15042031.30007673)
+
+Maybe all the layer bounds should get clipped with the projection of
+(-180,-90,+180,+90)?
+
+	Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000243.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+	<LI>Next message: <A HREF="000246.html">[Mapnik-devel] Mapnik and reprojection of shapefiles
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#244">[ date ]</a>
+              <a href="thread.html#244">[ thread ]</a>
+              <a href="subject.html#244">[ subject ]</a>
+              <a href="author.html#244">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

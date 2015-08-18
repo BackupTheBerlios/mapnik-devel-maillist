@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problems with 'apply alternative method of	comparing map and layer bounds to support..'
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20with%20%27apply%20alternative%20method%20of%0A%09comparing%20map%20and%20layer%20bounds%20to%20support..%27&In-Reply-To=%3CA9E55C96-371A-4FBA-86C4-A80D376954AC%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001040.html">
+   <LINK REL="Next"  HREF="001042.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problems with 'apply alternative method of	comparing map and layer bounds to support..'</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20with%20%27apply%20alternative%20method%20of%0A%09comparing%20map%20and%20layer%20bounds%20to%20support..%27&In-Reply-To=%3CA9E55C96-371A-4FBA-86C4-A80D376954AC%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Problems with 'apply alternative method of	comparing map and layer bounds to support..'">blake at hailmail.net
+       </A><BR>
+    <I>Fri Jan  8 21:34:21 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001040.html">[Mapnik-devel] Upcoming 0.7.0 release
+</A></li>
+        <LI>Next message: <A HREF="001042.html">[Mapnik-devel] Problems with 'apply alternative method of comparing map and layer bounds to support..'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1041">[ date ]</a>
+              <a href="thread.html#1041">[ thread ]</a>
+              <a href="subject.html#1041">[ subject ]</a>
+              <a href="author.html#1041">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>David,
+
+Thanks for this. I've also been seeing what looks like this behavior  
+recently. I think we need to revert the previous change before the 0.7  
+release, but I've not had time to properly look into it yet. For now I  
+have reopened the ticket:
+
+
+<A HREF="http://trac.mapnik.org/ticket/402">http://trac.mapnik.org/ticket/402</A>
+
+Dane
+
+
+On Dec 16, 2009, at 10:11 PM, David Eastcott wrote:
+
+&gt;<i> Hi Dane,
+</I>&gt;<i>
+</I>&gt;<i> Attached is a file containing an image with the buffer set for  
+</I>&gt;<i> 128px, one for 0px.  I modified the the feature_style_processor.hpp  
+</I>&gt;<i> to produce the following: notice for the 128px set, the buffer  
+</I>&gt;<i> extents are well outside the 'world' and that the mx0 and mx1 values  
+</I>&gt;<i> are not correct even though the return code from prj_trans.forward  
+</I>&gt;<i> says they are valid (which is derived from the return code of  
+</I>&gt;<i> proj4's pj_transform).  Not sure why this would be the case but it  
+</I>&gt;<i> is affecting the algorithm that is being used.
+</I>&gt;<i>
+</I>&gt;<i> buffer 128 pixels
+</I>&gt;<i>
+</I>&gt;<i> Level 0 tile:
+</I>&gt;<i> buffer ext&gt; minx: -4.0075e+07, miny: -4.0075e+07, maxx: 4.0075e+07,  
+</I>&gt;<i> maxy: 4.0075e+07
+</I>&gt;<i> trans valid0: yes, mx0: 0, my0: -4.00322e+07, valid1: yes, mx1: 0,  
+</I>&gt;<i> my1: 4.00322e+07
+</I>&gt;<i> layer  ext&gt; minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+</I>&gt;<i> +07, maxy: 1.83759e+07
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> buffer 0 pixels
+</I>&gt;<i>
+</I>&gt;<i> Level 0 tile:
+</I>&gt;<i> buffer ext&gt; minx: -2.00375e+07, miny: -2.00375e+07, maxx: 2.00375e 
+</I>&gt;<i> +07, maxy: 2.00375e+07
+</I>&gt;<i> trans valid0: yes, mx0: -2.00375e+07, my0: -1.99949e+07, valid1:  
+</I>&gt;<i> yes, mx1: 2.00375e+07, my1: 1.99949e+07
+</I>&gt;<i> layer  ext&gt; minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e 
+</I>&gt;<i> +07, maxy: 1.83759e+07
+</I>&gt;<i>
+</I>&gt;<i> Best regards,
+</I>&gt;<i> Dave
+</I>&gt;<i>
+</I>&gt;<i> Dane Springmeyer wrote:
+</I>&gt;&gt;<i> David,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks for this report.  We may need to revert the previous change  
+</I>&gt;&gt;<i> as it was only to benefit the experimental PointDatasource  
+</I>&gt;&gt;<i> implementation.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Could you give a bit more detail on this?  How do you think bad  
+</I>&gt;&gt;<i> values are being returned while proj is still issuing a good return  
+</I>&gt;&gt;<i> code?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Also, have you seen?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> <A HREF="http://trac.mapnik.org/ticket/308">http://trac.mapnik.org/ticket/308</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> While upgrading to 1481 from 1347, I came across a problem with my
+</I>&gt;&gt;&gt;<i> google tile generator producing renderings with missing features  
+</I>&gt;&gt;&gt;<i> (Canada
+</I>&gt;&gt;&gt;<i> was missing) at the highest levels (0-4).  Essentially I was  
+</I>&gt;&gt;&gt;<i> building a
+</I>&gt;&gt;&gt;<i> level 0 tile, 256x256px, with a 128px buffer with the 'world'  
+</I>&gt;&gt;&gt;<i> map.  The
+</I>&gt;&gt;&gt;<i> change introduced in trunk version 1348 was causing the projection  
+</I>&gt;&gt;&gt;<i> of
+</I>&gt;&gt;&gt;<i> the buffer extents to the layer extents to produce bad values
+</I>&gt;&gt;&gt;<i> (pr_transform was returning a good return code) and as a result,  
+</I>&gt;&gt;&gt;<i> some of
+</I>&gt;&gt;&gt;<i> the polygons were being omitted from the rendering.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The map srs was &quot;+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0  
+</I>&gt;&gt;&gt;<i> +lon_0=0.0
+</I>&gt;&gt;&gt;<i> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> and the layer srs was &quot;+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+</I>&gt;&gt;&gt;<i> +ellps=WGS84 +datum=WGS84 +units=m +no_defs&quot;
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> There are a number of ways this can be solved outside of mapnik,  
+</I>&gt;&gt;&gt;<i> which I
+</I>&gt;&gt;&gt;<i> have done, but I thought I should pass this on in case others have  
+</I>&gt;&gt;&gt;<i> come
+</I>&gt;&gt;&gt;<i> across it.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> This may be an issue for anyone who is using buffered rendering  
+</I>&gt;&gt;&gt;<i> near or
+</I>&gt;&gt;&gt;<i> on the edges of proj4 ability to transform correctly since the  
+</I>&gt;&gt;&gt;<i> values
+</I>&gt;&gt;&gt;<i> used for the buffer extents may be well outside reasonable values.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Best regards,
+</I>&gt;&gt;&gt;<i> Dave
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> &lt;Archive.tar.gz&gt;
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001040.html">[Mapnik-devel] Upcoming 0.7.0 release
+</A></li>
+	<LI>Next message: <A HREF="001042.html">[Mapnik-devel] Problems with 'apply alternative method of comparing map and layer bounds to support..'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1041">[ date ]</a>
+              <a href="thread.html#1041">[ thread ]</a>
+              <a href="subject.html#1041">[ subject ]</a>
+              <a href="author.html#1041">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

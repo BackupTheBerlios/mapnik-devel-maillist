@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Patch for improved text rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20improved%20text%20rendering&In-Reply-To=%3CC746479C-EFF8-4EB4-B38B-0D2E68D6E41E%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000946.html">
+   <LINK REL="Next"  HREF="000948.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Patch for improved text rendering</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Patch%20for%20improved%20text%20rendering&In-Reply-To=%3CC746479C-EFF8-4EB4-B38B-0D2E68D6E41E%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Patch for improved text rendering">blake at hailmail.net
+       </A><BR>
+    <I>Wed Aug 19 21:35:36 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000946.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+        <LI>Next message: <A HREF="000948.html">[Mapnik-devel] Ticket #363 Postgres error reporting
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#947">[ date ]</a>
+              <a href="thread.html#947">[ thread ]</a>
+              <a href="subject.html#947">[ subject ]</a>
+              <a href="author.html#947">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Seem's great to pull from CSS for these. Brings up the idea that  
+perhaps we should pull some parameters that relate to text into true  
+CSSParameters like the LineSymbolizer does for 'stroke' params:
+
+<A HREF="http://trac.mapnik.org/wiki/LineSymbolizer#XML">http://trac.mapnik.org/wiki/LineSymbolizer#XML</A>
+
+Dane
+
+
+On Aug 18, 2009, at 8:09 AM, Jochen Topf wrote:
+
+&gt;<i> I recently looked at the CSS used in HTML for these kind of things.  
+</I>&gt;<i> Maybe it
+</I>&gt;<i> would make sense to rename the options along those lines. This  
+</I>&gt;<i> wouldn't
+</I>&gt;<i> change any functionality, just give them names that are similar to  
+</I>&gt;<i> what
+</I>&gt;<i> people are used to from other places.
+</I>&gt;<i>
+</I>&gt;<i> CSS uses:
+</I>&gt;<i> text-transform: none|uppercase|lowercase
+</I>&gt;<i> letter-spacing (instead of character-spacing)
+</I>&gt;<i>
+</I>&gt;<i> It uses line-height, but thats somewhat different in meaning than  
+</I>&gt;<i> line-spacing.
+</I>&gt;<i>
+</I>&gt;<i> Jochen
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Aug 18, 2009 at 06:31:36AM -0700, Dane Springmeyer wrote:
+</I>&gt;&gt;<i> Cc: Jochen Topf &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>&gt;
+</I>&gt;&gt;<i> From: Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;
+</I>&gt;&gt;<i> To: mapnik-devel &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mapnik-devel at lists.berlios.de</A>&gt;
+</I>&gt;&gt;<i> Subject: Re: [Mapnik-devel] Patch for improved text rendering
+</I>&gt;&gt;<i> Date: Tue, 18 Aug 2009 06:31:36 -0700
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> And I've updated the python bindings with these new options in r1288.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Thanks Jochen!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Jul 20, 2009, at 8:31 AM, Artem Pavlenko wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Jochen,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Excellent stuff, I applied your patch in r1254. Thanks!
+</I>&gt;&gt;&gt;<i> Artem
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 2009/7/19 Jochen Topf &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>&gt;
+</I>&gt;&gt;&gt;<i> Attached is a patch for some text rendering improvements. The
+</I>&gt;&gt;&gt;<i> TextSymbolizer
+</I>&gt;&gt;&gt;<i> gets the following new parameters:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * text_convert=&quot;none|toupper|tolower&quot;
+</I>&gt;&gt;&gt;<i> Convert all text to upper/lower case before rendering. &quot;none&quot;  
+</I>&gt;&gt;&gt;<i> doesn't
+</I>&gt;&gt;&gt;<i> do
+</I>&gt;&gt;&gt;<i> anything with the text and is the default. Works for labels along
+</I>&gt;&gt;&gt;<i> lines
+</I>&gt;&gt;&gt;<i> or at points.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * line_spacing=&quot;&lt;number&gt;&quot;
+</I>&gt;&gt;&gt;<i> Add this many pixels space between two lines in text labels that  
+</I>&gt;&gt;&gt;<i> have
+</I>&gt;&gt;&gt;<i> been broken into several lines. Default is 0. Doesn't do anything  
+</I>&gt;&gt;&gt;<i> for
+</I>&gt;&gt;&gt;<i> labels along lines.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * character_spacing=&quot;&lt;number&gt;&quot;
+</I>&gt;&gt;&gt;<i> Add this many pixels space between two characters in a text. Default
+</I>&gt;&gt;&gt;<i> is 0.
+</I>&gt;&gt;&gt;<i> Currently only works for text labels on point geometries. This  
+</I>&gt;&gt;&gt;<i> should
+</I>&gt;&gt;&gt;<i> also be implemented for labels along lines, but I'll leave that for
+</I>&gt;&gt;&gt;<i> another day.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> * wrap_character=&quot;&lt;character&gt;&quot;
+</I>&gt;&gt;&gt;<i> Instead of breaking text into lines on spaces, use this character.
+</I>&gt;&gt;&gt;<i> This
+</I>&gt;&gt;&gt;<i> is useful, when you want to make sure that labels are broken at the
+</I>&gt;&gt;&gt;<i> right
+</I>&gt;&gt;&gt;<i> spot. Note that you'll probably want to make wrap_width small so  
+</I>&gt;&gt;&gt;<i> that
+</I>&gt;&gt;&gt;<i> your lines are actually broken, otherwise you'll see the
+</I>&gt;&gt;&gt;<i> wrap_character
+</I>&gt;&gt;&gt;<i> in the output. Default is ' ' (space). Doesn't do anything for  
+</I>&gt;&gt;&gt;<i> labels
+</I>&gt;&gt;&gt;<i> along lines.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have added those parameters to the load_map and save_map functions
+</I>&gt;&gt;&gt;<i> and
+</I>&gt;&gt;&gt;<i> implemented the functionality. I have *not* added this to the python
+</I>&gt;&gt;&gt;<i> bindings, because I don't know how they work.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Jochen
+</I>&gt;&gt;&gt;<i> --
+</I>&gt;&gt;&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>
+</I>&gt;&gt;&gt;<i> +49-721-388298
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000946.html">[Mapnik-devel] Patch for improved text rendering
+</A></li>
+	<LI>Next message: <A HREF="000948.html">[Mapnik-devel] Ticket #363 Postgres error reporting
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#947">[ date ]</a>
+              <a href="thread.html#947">[ thread ]</a>
+              <a href="subject.html#947">[ subject ]</a>
+              <a href="author.html#947">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

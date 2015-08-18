@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] A few fixes for trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20A%20few%20fixes%20for%20trunk&In-Reply-To=%3C2BDF8140-5317-43A8-8995-86A3C1A2F177%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000335.html">
+   <LINK REL="Next"  HREF="000337.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] A few fixes for trunk</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20A%20few%20fixes%20for%20trunk&In-Reply-To=%3C2BDF8140-5317-43A8-8995-86A3C1A2F177%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] A few fixes for trunk">artem at mapnik.org
+       </A><BR>
+    <I>Sun Dec 16 13:34:08 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000335.html">[Mapnik-devel] A few fixes for trunk
+</A></li>
+        <LI>Next message: <A HREF="000337.html">[Mapnik-devel] Making the config file more portable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#336">[ date ]</a>
+              <a href="thread.html#336">[ thread ]</a>
+              <a href="subject.html#336">[ subject ]</a>
+              <a href="author.html#336">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Applied in r572. Thanks very much!
+Artem
+
+On 16 Dec 2007, at 11:41, Jochen Topf wrote:
+
+&gt;<i> Hi!
+</I>&gt;<i>
+</I>&gt;<i> 1. The README talks about &quot;scons.py&quot;, but it is just called &quot;scons&quot;.
+</I>&gt;<i>
+</I>&gt;<i> 2. In demo/c++ there is a Makefile, but the readme.txt gives a command
+</I>&gt;<i>    line to compile. Both don't work for me. One error can at least be
+</I>&gt;<i>    fixed by adding -I../../agg/include to the command line.
+</I>&gt;<i>
+</I>&gt;<i> 3. When compiling Mapnik an error is thrown because of a redefined  
+</I>&gt;<i> type.
+</I>&gt;<i>    This was on an Intel 64Bit machine. Fixed by &quot;typedef char byte&quot; to
+</I>&gt;<i>    &quot;typedef uint8_t byte&quot; in include/mapnik/global.hpp. I am not sure
+</I>&gt;<i>    whether thats the right fix, though, I just guessed. :-)
+</I>&gt;<i>
+</I>&gt;<i> 4. include/mapnik/image_data.hpp needs
+</I>&gt;<i>    #include &lt;mapnik/octree.hpp&gt;
+</I>&gt;<i>    to compile
+</I>&gt;<i>
+</I>&gt;<i> Patch for all this is attached.
+</I>&gt;<i>
+</I>&gt;<i> Jochen
+</I>&gt;<i> -- 
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298&lt;mapnik.diff&gt;___________________________________________ 
+</I>&gt;<i> ____
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000335.html">[Mapnik-devel] A few fixes for trunk
+</A></li>
+	<LI>Next message: <A HREF="000337.html">[Mapnik-devel] Making the config file more portable
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#336">[ date ]</a>
+              <a href="thread.html#336">[ thread ]</a>
+              <a href="subject.html#336">[ subject ]</a>
+              <a href="author.html#336">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

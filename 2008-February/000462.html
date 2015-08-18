@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Compile error (problem with libpng)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Compile%20error%20%28problem%20with%20libpng%29&In-Reply-To=%3C0503CC7D-B621-4881-ADF9-A97B769C2F08%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000461.html">
+   <LINK REL="Next"  HREF="000463.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Compile error (problem with libpng)</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Compile%20error%20%28problem%20with%20libpng%29&In-Reply-To=%3C0503CC7D-B621-4881-ADF9-A97B769C2F08%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Compile error (problem with libpng)">blake at hailmail.net
+       </A><BR>
+    <I>Fri Feb  1 21:10:49 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000461.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+        <LI>Next message: <A HREF="000463.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#462">[ date ]</a>
+              <a href="thread.html#462">[ thread ]</a>
+              <a href="subject.html#462">[ subject ]</a>
+              <a href="author.html#462">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>I get the same error when compiling today's svn trunk on a fresh EC2  
+instance of Ubuntu 7.10
+
+Error below:
+
+Cheers,
+Dane
+
+--------------------
+
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">root at domU-12-31-35-00-3D-72</A>:/usr/src/mapnik# python scons/scons  
+PGSQL_INCLUDES=/usr/include/postgresql/ PGSQL_LIBS=/usr/lib/ 
+postgresqlscons: Reading SConscript files ...
+Building on Linux ...
+Checking for C library m... (cached) yes
+Checking for C library ltdl... (cached) yes
+Checking for C library png... (cached) yes
+Checking for C library tiff... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C library jpeg... (cached) yes
+Checking for C library proj... (cached) yes
+Checking for C library iconv... (cached) no
+Checking for C library pq... yes
+Checking for C++ library gdal... yes
+Checking for C++ library boost_thread-mt... yes
+Checking for C++ library boost_filesystem-mt... yes
+Checking for C++ library boost_regex-mt... yes
+Checking for C++ library boost_program_options-mt... yes
+Bindings Python version... 2.5
+Python 2.5 prefix... /usr
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -o bindings/python/mapnik_image_view.os -c - 
+DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML -DTIXML_USE_STL -ansi -Wall - 
+pthread -ftemplate-depth-100 -DLINUX -DBOOST_SPIRIT_THREADSAFE -O2 - 
+finline-functions -Wno-inline -DNDEBUG -fPIC -I/usr/include/python2.5  
+-Iagg/include -Itinyxml -Iinclude -I. -I/usr/include -I/usr/include/ 
+postgresql -I/usr/local/include -I/usr/include/freetype2 bindings/ 
+python/mapnik_image_view.cpp
+/usr/local/include/pngconf.h:326: error: expected constructor,  
+destructor, or type conversion before '.' token
+/usr/local/include/pngconf.h:327: error: '__dont__' does not name a type
+scons: *** [bindings/python/mapnik_image_view.os] Error 1
+scons: building terminated because of errors.
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">root at domU-12-31-35-00-3D-72</A>:/usr/src/mapnik#
+
+
+
+On Feb 1, 2008, at 6:25 AM, Jochen Topf wrote:
+
+&gt;<i> With Mapnik trunk I get a compiler error:
+</I>&gt;<i>
+</I>&gt;<i>     /usr/include/pngconf.h:317: error: expected constructor,  
+</I>&gt;<i> destructor, or
+</I>&gt;<i>     type conversion before '.' token
+</I>&gt;<i>     /usr/include/pngconf.h:318: error: '__dont__' does not name a type
+</I>&gt;<i>
+</I>&gt;<i> Looking in pngconf.h I find the following:
+</I>&gt;<i>
+</I>&gt;<i>     /* If you encounter a compiler error here, see the explanation
+</I>&gt;<i>     * near the end of INSTALL.
+</I>&gt;<i>     */
+</I>&gt;<i>
+</I>&gt;<i> Looking in the libpng INSTALL file I see this:
+</I>&gt;<i>
+</I>&gt;<i>    If you encounter a compiler error message complaining about the
+</I>&gt;<i>    lines
+</I>&gt;<i>          __png.h__ already includes setjmp.h;
+</I>&gt;<i>          __dont__ include it again.;
+</I>&gt;<i>
+</I>&gt;<i>    This means you have compiled another module that includes setjmp.h,
+</I>&gt;<i>    which is hazardous because the two modules might not include  
+</I>&gt;<i> exactly
+</I>&gt;<i>    the same setjmp.h.  If you are sure that you know what you are  
+</I>&gt;<i> doing
+</I>&gt;<i>    and that they are exactly the same, then you can comment out or
+</I>&gt;<i>    delete the two lines.  Better yet, use the cexcept interface
+</I>&gt;<i>    instead, as demonstrated in contrib/visupng of the libpng  
+</I>&gt;<i> distribution.
+</I>&gt;<i>
+</I>&gt;<i> Jochen
+</I>&gt;<i> -- 
+</I>&gt;<i> Jochen Topf  <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">jochen at remote.org</A>  <A HREF="http://www.remote.org/jochen/">http://www.remote.org/jochen/</A>   
+</I>&gt;<i> +49-721-388298
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000461.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+	<LI>Next message: <A HREF="000463.html">[Mapnik-devel] Compile error (problem with libpng)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#462">[ date ]</a>
+              <a href="thread.html#462">[ thread ]</a>
+              <a href="subject.html#462">[ subject ]</a>
+              <a href="author.html#462">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

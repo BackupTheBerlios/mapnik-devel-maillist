@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C391E4F39-4D90-4192-B57C-8A5944B63180%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000239.html">
+   <LINK REL="Next"  HREF="000254.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C391E4F39-4D90-4192-B57C-8A5944B63180%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">artem at mapnik.org
+       </A><BR>
+    <I>Mon Sep 10 10:51:47 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000239.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+        <LI>Next message: <A HREF="000254.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 10 Sep 2007, at 09:29, Andreas Volz wrote:
+
+&gt;<i> Am Mon, 10 Sep 2007 08:53:55 +0100 schrieb Artem Pavlenko:
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On 8 Sep 2007, at 11:51, Andreas Volz wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Am Sat, 08 Sep 2007 11:34:22 +0100 schrieb Jon Burgess:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I've seen similar looking crashes when I've failed to recompile the
+</I>&gt;&gt;&gt;&gt;<i> postgis plugin, so that you end up with a mismatch between the
+</I>&gt;&gt;&gt;&gt;<i> plugin and the main code. Try comparing the timestamps of the files
+</I>&gt;&gt;&gt;&gt;<i> in /usr/local/lib/mapnik/input/ and
+</I>&gt;&gt;&gt;&gt;<i> with /usr/local/lib/libmapnik.so
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> There is evidence in the bactrace that the mapnik.so has debug
+</I>&gt;&gt;&gt;&gt;<i> symbols
+</I>&gt;&gt;&gt;&gt;<i> whereas the postgis.input has none:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> #3 0xb5eb8457 in create ()
+</I>&gt;&gt;&gt;&gt;<i> from /usr/local/lib/mapnik/input/postgis.input #4 0xb7a29a9c in
+</I>&gt;&gt;&gt;&gt;<i> mapnik::datasource_cache::create (params=@0xbfa30970) at
+</I>&gt;&gt;&gt;&gt;<i> src/datasource_cache.cpp:81
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> You're right. The postgis.input is from may and the libmapnik.so
+</I>&gt;&gt;&gt;<i> from yesterday. Seems postgis.input didn't recompile for some time.
+</I>&gt;&gt;&gt;<i> Any ideas why this happens? Should I start scons in this
+</I>&gt;&gt;&gt;<i> subdirectories by hand?
+</I>&gt;&gt;<i> Maybe you didn't specify PGSQL_{INCLUDES,LIBS} ?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> BTW: Why not using GNU autotools? I like and know them much
+</I>&gt;&gt;&gt;<i> more. :-)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Mapnik used to use Autotools ;-)
+</I>&gt;<i>
+</I>&gt;<i> Ok, I finished my port to autotools and it does at least compile. I
+</I>&gt;<i> didn't test it yet. But I'll continue and then show you the result.
+</I>&gt;<i> Perhaps it's an option to support both or maintain it in another  
+</I>&gt;<i> branch
+</I>&gt;<i> with only autotools project files included and merging both each time.
+</I>&gt;<i> I'm not sure...
+</I>
+Sure, we can have autotools based build system (in main trunk) along  
+with SCons or anything else.
+It just needs to be maintained.
+&gt;<i>
+</I>&gt;<i> I'll remove (at least with configure option) the fonts and libagg
+</I>&gt;<i> build and installation. It's hard to get packages into distributions
+</I>&gt;<i> (e.g. Gentoo) with subpackages included. There're packages for libagg
+</I>&gt;<i> and dejavu fonts on Gentoo and Ubuntu.
+</I>&gt;<i>
+</I>Yep.
+
+&gt;&gt;&gt;<i> I thought about porting it to autotools...
+</I>&gt;&gt;<i> If you're building on Linux/Unix , using Autotools might be a good
+</I>&gt;&gt;<i> solution. But about native toolchain on win32?
+</I>&gt;&gt;<i> There are also other building systems  :  CMake, Boost.Build.v2
+</I>&gt;<i>
+</I>&gt;<i> I like autotools because the Linux integration is very good and clean.
+</I>&gt;<i>
+</I>&gt;<i> I created a win32 library in the past and used autotools without
+</I>&gt;<i> problems. Ok, it's not &quot;native&quot;, but what is &quot;native&quot;. :-)
+</I>
+Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+build win32 binaries.
+&gt;<i>
+</I>&gt;<i> Simply installing mingw and msys on win32 did it. See here the
+</I>&gt;<i> mingw installation instruction for another library that I maintain:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://makewiki.aleppax.it/pmwiki/pmwiki.php/Windows/MinGW">http://makewiki.aleppax.it/pmwiki/pmwiki.php/Windows/MinGW</A>
+</I>&gt;<i>
+</I>&gt;<i> Sounds easy not? :-)
+</I>
+I'm know about MinGW and it can be another option.
+Cheers
+
+&gt;<i> regards
+</I>&gt;<i> Andreas
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070910/beeac479/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070910/beeac479/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000239.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+	<LI>Next message: <A HREF="000254.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#240">[ date ]</a>
+              <a href="thread.html#240">[ thread ]</a>
+              <a href="subject.html#240">[ subject ]</a>
+              <a href="author.html#240">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

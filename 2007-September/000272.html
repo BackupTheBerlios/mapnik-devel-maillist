@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problems building r526 on ubuntu
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20building%20r526%20on%20ubuntu&In-Reply-To=%3C5383fa5e0709180022g68daf020we96e17dd85e42961%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000290.html">
+   <LINK REL="Next"  HREF="000276.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problems building r526 on ubuntu</H1>
+    <B>Matthew Perry</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problems%20building%20r526%20on%20ubuntu&In-Reply-To=%3C5383fa5e0709180022g68daf020we96e17dd85e42961%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Problems building r526 on ubuntu">perrygeo at gmail.com
+       </A><BR>
+    <I>Tue Sep 18 09:22:42 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000290.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+        <LI>Next message: <A HREF="000276.html">[Mapnik-devel] Problems building r526 on ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#272">[ date ]</a>
+              <a href="thread.html#272">[ thread ]</a>
+              <a href="subject.html#272">[ subject ]</a>
+              <a href="author.html#272">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi folks,
+
+ Running ubuntu feisty, I've checked out the latest svn trunk and have
+hit a number of snags:
+
+1)
+python scons/scons.py PYTHON=/usr/bin/python
+PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+
+python: can't open file 'scons/scons.py': [Errno 2] No such file or directory
+
+FIX: Either scons/scons needs to be renamed to scons/scons.py or the
+INSTALL needs to be updated
+
+
+2)
+python scons/scons PYTHON=/usr/bin/python
+PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+scons: Reading SConscript files ...
+Building on Linux ...
+...
+Could not find header or shared library for boost thread, exiting!
+
+This one has me stumped. I have the ubuntu packages installed:
+
+sudo dpkg -l | grep libboost-thread
+ii  libboost-thread-dev                        1.33.1-9ubuntu3
+                   portable C++ multi-threading
+ii  libboost-thread1.33.1                      1.33.1-9ubuntu3
+                   portable C++ multi-threading
+
+This command worked a few months ago. Why is scons now having troubles
+finding libboost-thread?? Any ideas?
+
+-- 
+Matthew T. Perry
+<A HREF="http://www.perrygeo.net">http://www.perrygeo.net</A>
+
+&quot;You never change things by fighting the existing reality.
+To change something, build a new model that makes
+the existing model obsolete&quot; - R. Buckminster Fuller
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000290.html">[Mapnik-devel] Compile problem with AGG
+</A></li>
+	<LI>Next message: <A HREF="000276.html">[Mapnik-devel] Problems building r526 on ubuntu
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#272">[ date ]</a>
+              <a href="thread.html#272">[ thread ]</a>
+              <a href="subject.html#272">[ subject ]</a>
+              <a href="author.html#272">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

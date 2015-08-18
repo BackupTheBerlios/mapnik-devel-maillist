@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Osm input plugin
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Osm%20input%20plugin&In-Reply-To=%3C06170888-5303-4A7A-8FFD-4280895AC4F1%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000989.html">
+   <LINK REL="Next"  HREF="000991.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Osm input plugin</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Osm%20input%20plugin&In-Reply-To=%3C06170888-5303-4A7A-8FFD-4280895AC4F1%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Osm input plugin">blake at hailmail.net
+       </A><BR>
+    <I>Tue Dec  1 17:22:59 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000989.html">[Mapnik-devel] Osm input plugin
+</A></li>
+        <LI>Next message: <A HREF="000991.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#990">[ date ]</a>
+              <a href="thread.html#990">[ thread ]</a>
+              <a href="subject.html#990">[ subject ]</a>
+              <a href="author.html#990">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Nov 30, 2009, at 11:17 PM, Vladislav Shikhov wrote:
+
+&gt;<i> Hello all,
+</I>&gt;<i>
+</I>&gt;<i> Is mapnik osm input plugin works well or it's still experimental?
+</I>
+It is certainly experimental, but would be great to have you testing it.
+
+&gt;<i> Is
+</I>&gt;<i> there any limitations for input .osm file?
+</I>
+Not that I know of, other than you will want to try first with small  
+files.
+
+&gt;<i> The problem is that I can't render a .svg from .osm file with python.
+</I>&gt;<i> (got &quot;Not a map file. Node 'Map' not found&quot; error) with mapnik
+</I>&gt;<i> installed from ubuntu 9.10 deb repository (it seems it have osm input
+</I>&gt;<i> plugin.)
+</I>&gt;<i>
+</I>
+Sounds like you are not using Mapnik correctly. That error means that  
+you are trying to read in invalid XML for the map styles.
+
+Perhaps you are confusing the .osm file with the separate, needed, map  
+styles (which are also XML)?
+
+Please paste the script you are trying to run.
+
+Dane
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000989.html">[Mapnik-devel] Osm input plugin
+</A></li>
+	<LI>Next message: <A HREF="000991.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#990">[ date ]</a>
+              <a href="thread.html#990">[ thread ]</a>
+              <a href="subject.html#990">[ subject ]</a>
+              <a href="author.html#990">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with polygon rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20polygon%20rendering&In-Reply-To=%3C84D91BCF-6543-41AB-9A4A-FF2DFA787501%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000314.html">
+   <LINK REL="Next"  HREF="000315.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with polygon rendering</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20polygon%20rendering&In-Reply-To=%3C84D91BCF-6543-41AB-9A4A-FF2DFA787501%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Problem with polygon rendering">artem at mapnik.org
+       </A><BR>
+    <I>Fri Oct 19 11:58:54 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000314.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+        <LI>Next message: <A HREF="000315.html">[Mapnik-devel] Python support with autotools
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Jon,
+
+&gt;<i> It seems that the layer bounding box projection change which was added
+</I>&gt;<i> in r522 breaks the rendering of some polygons, e.g. tile
+</I>&gt;<i> 15/5256/11433.png in the OSM data set.
+</I>&gt;<i>
+</I>&gt;<i> This currently looks fine on the OSM slippy map but this is only  
+</I>&gt;<i> because
+</I>&gt;<i> the renderer is still using the r519 code. Locally I have the current
+</I>&gt;<i> SVN Mapnik and the green park is not rendered. Chris Schmidt also sees
+</I>&gt;<i> this on the labs.metacarta.com map.
+</I>&gt;<i>
+</I>&gt;<i> The attached patch fixes this for me by backing out the rev 522  
+</I>&gt;<i> change.
+</I>&gt;<i>
+</I>&gt;<i> I instrumented the code to compare the broken and good(OK) bbox and
+</I>&gt;<i> resolution calculations for each layer processed when rendering the
+</I>&gt;<i> above tile:
+</I>&gt;<i>
+</I>&gt;<i> ** A good projection, no problems with this layer
+</I>&gt;<i>
+</I>&gt;<i> Broken: Envelope 
+</I>&gt;<i> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+</I>&gt;<i> 9502)
+</I>&gt;<i> BK resolution: 0.209323
+</I>&gt;<i> OK:     Envelope 
+</I>&gt;<i> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+</I>&gt;<i> 9502)
+</I>&gt;<i> OK resolution: 0.209323
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> ** A bad layer. This one is massively different between the old and  
+</I>&gt;<i> new code
+</I>&gt;<i>
+</I>&gt;<i> Broken: Envelope 
+</I>&gt;<i> (-13607625.52344022,6021590.096634368,-9971418.999999998,6024036.08153 
+</I>&gt;<i> 9502)
+</I>&gt;<i> BK res: 0.000140806
+</I>&gt;<i> OK:     Envelope 
+</I>&gt;<i> (-13610071.50834535,6021590.096634368,-13607625.52344022,6024036.08153 
+</I>&gt;<i> 9502)
+</I>&gt;<i> OK res: 0.209323
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+What do you mean by broken bounding box? I don't think there's a  
+problem with current approach (r522) as far as underlying data is  
+within *valid* extent.
+I'd like to replicate the above problem, could you provide more  
+information?
+
+Artem
+
+&gt;<i> Jon
+</I>&gt;<i>
+</I>&gt;<i> &lt;polygon-fix-revert- 
+</I>&gt;<i> r522.patch&gt;_______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/52486c9a/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/52486c9a/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000314.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+	<LI>Next message: <A HREF="000315.html">[Mapnik-devel] Python support with autotools
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#313">[ date ]</a>
+              <a href="thread.html#313">[ thread ]</a>
+              <a href="subject.html#313">[ subject ]</a>
+              <a href="author.html#313">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

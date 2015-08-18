@@ -1,0 +1,402 @@
+From robert.coup at koordinates.com  Mon Nov  1 10:17:37 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Mon, 1 Nov 2010 22:17:37 +1300
+Subject: [Mapnik-devel] Multiple placements for TextSymbolizer
+In-Reply-To: <4CC9B8E4.2040301@xs4all.nl>
+References: <op.vk8p1fpwi35s77@sl500.localnetwork> <4CC88F61.2070702@xs4all.nl>
+	<AANLkTi=JKAYaSOxkDgUCYXogokcQJr=PJ_S33Nbpr4L7@mail.gmail.com>
+	<4CC9B8E4.2040301@xs4all.nl>
+Message-ID: <AANLkTikjf9bjQtzLfFewRnbdTfMa30rgMShD75+1syPW@mail.gmail.com>
+
+Hi Lennard,
+
+On Fri, Oct 29, 2010 at 6:54 AM, Lennard <ldp at xs4all.nl> wrote:
+
+> On 28-10-2010 0:22, Robert Coup wrote:
+>
+>  Does that cover the practical use case?
+>>
+>
+> Not all. As I argued, this should not be limited to TextSymbolizer, and not
+> limited to certain arguments of TextSymbolizer. If a symbolizer, any
+> symbolizer that can be dropped due to collisions, returns whether it could
+> be placed or not, and you could act upon that, it would give you maximum
+> freedom.
+>
+
+What's an actual example? Don't you end up in a recursive maze of
+failed-placements?
+
+
+>
+> Also, in addition to an Else rule, I can also think of use cases for an
+> opposite case, where a subsequent symbolizer will only be attempted when a
+> previous one *has* been placed.
+>
+
+What's an actual example?
+
+If we want *maximum* freedom, surely we need code? Get mapnik's C++ to call
+python functions which can futz with placement/symbolizers/etc as much as
+they need to for every individual feature.
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101101/617a6949/attachment.html>
+
+From maxime.dupuis at ecometrica.org  Wed Nov 10 20:27:43 2010
+From: maxime.dupuis at ecometrica.org (Maxime Dupuis)
+Date: Wed, 10 Nov 2010 14:27:43 -0500
+Subject: [Mapnik-devel] Raster Colorizer and data types
+Message-ID: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+
+Hello mapnik developers,
+
+This is my first message on the dev mailing list, so bare with me. :)
+
+I started using mapnik only a month ago and I had to use the new gdal Raster
+Colorizer to colormap a geotif. In my particular case, I had 2 geotifs with
+one gray raster band each, one with GDT_Int16 data and the other with
+GDT_Byte. When I applied a color map to the GDT_Int16 raster band, Only one
+color matched and was being applied. None in the case of the other geotif.
+
+The problem, I think, lies in the way the band data is read and stored in
+memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+attribute's pointer, however, is retrived as a pointer of unsigned chars
+(which makes sense since it asks gdal for GDT_Byte data) while it's really a
+pointer of unsigned ints.
+
+After looking at the code, I noticed that the color values I specify in the
+xml file doesn't correspond to what is read from the geotif. So what I did
+is changed the way the data is read from the xml file (quick and hackish but
+it works). I can provide the diff if you want.
+
+Also, I looked at how qgis did it, because I had no problem colormapping
+with it and I came up to the conclusion that the best way for mapnik to do
+color mapping is to use the ImageData template as, well, a template rather
+than use the typdef image_data_32 everywhere. But I'm not the best person to
+judge that as I'm not involved in mapnik's development.
+
+
+Maxime Dupuis
+Ecometrica
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101110/9bd06701/attachment.html>
+
+From robert.coup at koordinates.com  Wed Nov 10 23:08:56 2010
+From: robert.coup at koordinates.com (Robert Coup)
+Date: Thu, 11 Nov 2010 11:08:56 +1300
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+Message-ID: <AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+
+Hi Maxime,
+
+On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis <maxime.dupuis at ecometrica.org
+> wrote:
+
+>
+> This is my first message on the dev mailing list, so bare with me. :)
+>
+
+Welcome :)
+
+
+> I started using mapnik only a month ago and I had to use the new gdal
+> Raster Colorizer to colormap a geotif.
+>
+
+I'm glad you figured it out! Dane & Nino & I spent a wee bit of time a
+couple of weeks back looking at how to simplify the RasterColorizer
+declaration so it's more flexible and a whole lot simpler :)
+
+
+> The problem, I think, lies in the way the band data is read and stored in
+> memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+> GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+> attribute's pointer, however, is retrived as a pointer of unsigned chars
+> (which makes sense since it asks gdal for GDT_Byte data) while it's really a
+> pointer of unsigned ints.
+>
+
+
+
+> Also, I looked at how qgis did it, because I had no problem colormapping
+> with it and I came up to the conclusion that the best way for mapnik to do
+> color mapping is to use the ImageData template as, well, a template rather
+> than use the typdef image_data_32 everywhere. But I'm not the best person to
+> judge that as I'm not involved in mapnik's development.
+>
+
+Can you file a ticket and assign it to me (rcoup), preferably attaching an
+example image & xml file? When I refactor the colorizer I'll make sure we're
+doing sane things with non-byte data, and I'll check that your case works
+too.
+
+Thanks,
+
+Rob :)
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101111/92293d9c/attachment.html>
+
+From jeff.scott at rationalsystems.com  Thu Nov 11 16:14:41 2010
+From: jeff.scott at rationalsystems.com (Jeff Scott)
+Date: Thu, 11 Nov 2010 07:14:41 -0800 (PST)
+Subject: [Mapnik-devel] Database datasources
+Message-ID: <643724.32143.qm@web807.biz.mail.mud.yahoo.com>
+
+I see that mapnik currently supports postgres as a datasource.  I was wondering 
+if there's been any work on implementing support for other databases: sql 
+server, oracle and mysql all have spatial libraries now.  We use sql server so 
+that's the most useful to me, but I'd be interested in knowing about the others.
+
+If not I'll probably have to take a look at implementing it at some point.  Does 
+anyone have any pointers or starting points to look into?  
+
+Thanks,
+
+Jeff
+
+
+From dane at dbsgeo.com  Thu Nov 11 17:38:19 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 11 Nov 2010 11:38:19 -0500
+Subject: [Mapnik-devel] Database datasources
+In-Reply-To: <643724.32143.qm@web807.biz.mail.mud.yahoo.com>
+References: <643724.32143.qm@web807.biz.mail.mud.yahoo.com>
+Message-ID: <005807DE-571F-45AE-AF69-676236CEE4C0@dbsgeo.com>
+
+Hi Jeff,
+
+On Nov 11, 2010, at 10:14 AM, Jeff Scott wrote:
+
+> I see that mapnik currently supports postgres as a datasource.
+
+Yes, three examples exist currently for SQL-based plugins, with the "postgres/postgis" one being the most advanced/well tested. The others are Oracle (the 'occi' plugin) and SQLite (which can read from either a spatialite db or normal sqlite).
+
+>  I was wondering 
+> if there's been any work on implementing support for other databases: sql 
+> server, oracle and mysql all have spatial libraries now.
+
+Right we don't yet have a sql server plugin, but it certainly should be doable.
+
+Oracle is in place (http://trac.mapnik.org/wiki/OCCI)
+
+MySQL would be doable as well. The shortcut is to read mysql through OGR using the OGR plugin: 
+
+http://kueda.net/blog/2009/05/04/mysql-as-mapnik-datasource/
+
+>  We use sql server so 
+> that's the most useful to me, but I'd be interested in knowing about the others.
+
+Great, would be a great addition.
+
+One thing we need to do better is refactor some of the functions used in the postgis plugin into utility functions any sql-based plugins can leverage.
+
+I've started on this:
+
+http://trac.mapnik.org/changeset/2337
+
+> 
+> If not I'll probably have to take a look at implementing it at some point.  Does 
+> anyone have any pointers or starting points to look into?  
+
+Take a look at the existing SQL plugin code. Make sure to look either in trunk or the 0.7.2 branch if you start coding because the recent late binding patch changed things a bit (http://trac.mapnik.org/ticket/622).
+
+Also, I recently posted an ultra simple hello world plugin to trunk:
+
+http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/
+
+See the README: 
+
+http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/README
+
+> 
+> Thanks,
+> Jeff
+> 
+
+Thank you. Can I ask that as you learn you keep your notes here?
+
+http://trac.mapnik.org/wiki/DevelopingPlugins
+
+That page has a lot of potential but needs filled in, and I can help if you have specific questions.
+
+Dane
+
+
+
+From maxime.dupuis at ecometrica.ca  Thu Nov 11 22:13:14 2010
+From: maxime.dupuis at ecometrica.ca (Maxime Dupuis)
+Date: Thu, 11 Nov 2010 16:13:14 -0500
+Subject: [Mapnik-devel] Raster Colorizer and data types
+In-Reply-To: <AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+References: <AANLkTi=28VhOZ9JdpTQ9s=CFwUDx4RYbmMWZrFN8dRiw@mail.gmail.com>
+	<AANLkTikH6D6TQ8JLBk+944bHorDcSTC=JK7PWWCHuftZ@mail.gmail.com>
+Message-ID: <AANLkTikRk3xaa+BTeCH5wWNV+BRHLJqovgYUhgdd03bd@mail.gmail.com>
+
+Hi Robert,
+
+I'll file the bug either tonight or tomorrow morning and I'll attach a
+geotiff I had problems with.
+
+Do you have any written plans for the refactor? How you plan to do things
+code wise? Do you have a ETA for that refactor?
+
+Also, how can I help? I'd be more than happy to assist you guys in that
+process.
+
+Thanks!
+-MD
+
+On Wed, Nov 10, 2010 at 5:08 PM, Robert Coup <robert.coup at koordinates.com>wrote:
+
+> Hi Maxime,
+>
+> On Thu, Nov 11, 2010 at 8:27 AM, Maxime Dupuis <
+> maxime.dupuis at ecometrica.org> wrote:
+>
+>>
+>> This is my first message on the dev mailing list, so bare with me. :)
+>>
+>
+> Welcome :)
+>
+>
+>> I started using mapnik only a month ago and I had to use the new gdal
+>> Raster Colorizer to colormap a geotif.
+>>
+>
+> I'm glad you figured it out! Dane & Nino & I spent a wee bit of time a
+> couple of weeks back looking at how to simplify the RasterColorizer
+> declaration so it's more flexible and a whole lot simpler :)
+>
+>
+>> The problem, I think, lies in the way the band data is read and stored in
+>> memory. When mapnik calls gdal's RasterIO() method, it asks for data in
+>> GDT_Byte and stores it in the image_data_32's pData_ attribute. That
+>> attribute's pointer, however, is retrived as a pointer of unsigned chars
+>> (which makes sense since it asks gdal for GDT_Byte data) while it's really a
+>> pointer of unsigned ints.
+>>
+>
+>
+>
+>> Also, I looked at how qgis did it, because I had no problem colormapping
+>> with it and I came up to the conclusion that the best way for mapnik to do
+>> color mapping is to use the ImageData template as, well, a template rather
+>> than use the typdef image_data_32 everywhere. But I'm not the best person to
+>> judge that as I'm not involved in mapnik's development.
+>>
+>
+> Can you file a ticket and assign it to me (rcoup), preferably attaching an
+> example image & xml file? When I refactor the colorizer I'll make sure we're
+> doing sane things with non-byte data, and I'll check that your case works
+> too.
+>
+> Thanks,
+>
+> Rob :)
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101111/f7847dac/attachment.html>
+
+From dane at dbsgeo.com  Mon Nov 22 20:57:23 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 22 Nov 2010 11:57:23 -0800
+Subject: [Mapnik-devel] OGCServer now on github
+Message-ID: <F7553249-4310-4822-B1C1-CA7B5ADCA739@dbsgeo.com>
+
+I've been thinking about how to encourage wider development and maintainership of the OGCServer.
+
+If you are not familiar the OGCServer is a pure python implementation of WMS 1.1.1 and 1.3.0 using the Mapnik python bindings. The OGCServer is the only available WMS server for Mapnik that supports both GetCapabilities, GetMap, and GetFeatureInfo. It was originally authored by J.F. Doyon, but in J.F's absence I have taken the role of maintainer over the last few years.
+
+However, I think the ogcserver would get more love if kept outside the Mapnik source tree, and so with J.F's blessing I have moved the code to github.
+
+This will allow the ogcserver to have its own development cycle and issue tracker, and I encourage anyone interested to get more involved in maintaining or improving the code.
+
+The code in Mapnik trunk has not been removed, but rather deprecated, so it will continue to work until being removed in a future release.
+
+The new code, available for active development, is here:
+
+https://github.com/mapnik/OGCServer
+
+This code contains many fixes from Manel Clos and I, based on some work on the ogcserver that was previously hosted on bitbucket.org [1], but this has now all be merged into this new github location.
+
+Cheers,
+
+Dane
+
+[1] http://bitbucket.org/springmeyer/ogcserver/
+
+
+
+From dane at dbsgeo.com  Wed Nov 24 18:50:45 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 24 Nov 2010 09:50:45 -0800
+Subject: [Mapnik-devel] read-only mirror of mapnik trunk on github
+Message-ID: <16D27D94-01B6-47D7-B255-649FA52162A8@dbsgeo.com>
+
+As a help to other developers who prefer git (and to help them skip the git svn clone step), I have set up a mirror on github of mapnik-trunk.
+
+DO NOT commit to it, its just intended as a read-only mirror to allow for easy forking.
+
+And I personally still prefer patches to trac for distinct fixes (when you are done hacking around at git). Just like Craig has done, working on code at github, then attaching back a svn-compatible diff to a ticket http://trac.mapnik.org/ticket/656.
+
+Note that we established a mirror during the London Code sprint, but I had to remove that one to get things working properly this time, so if you were following the previous mirror (by the same name) you will need to re-establish your remote origin.
+
+The svn rebase && push runs on a cronjob, so commits to svn.mapnik.org should show up after 1 minute at https://github.com/mapnik/mapnik-trunk/.
+
+Enjoy,
+
+Dane
+
+
+
+From dane at dbsgeo.com  Wed Nov 24 21:31:34 2010
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 24 Nov 2010 12:31:34 -0800
+Subject: [Mapnik-devel] Database datasources
+In-Reply-To: <643724.32143.qm@web807.biz.mail.mud.yahoo.com>
+References: <643724.32143.qm@web807.biz.mail.mud.yahoo.com>
+Message-ID: <3ECA1E5F-4214-463B-8C41-11F30F64B4F3@dbsgeo.com>
+
+Jeff, I'm curious did my original response help you get started?
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Nov 11, 2010, at 7:14 AM, Jeff Scott  
+<jeff.scott at rationalsystems.com> wrote:
+
+> I see that mapnik currently supports postgres as a datasource.  I  
+> was wondering
+> if there's been any work on implementing support for other  
+> databases: sql
+> server, oracle and mysql all have spatial libraries now.  We use sql  
+> server so
+> that's the most useful to me, but I'd be interested in knowing about  
+> the others.
+>
+> If not I'll probably have to take a look at implementing it at some  
+> point.  Does
+> anyone have any pointers or starting points to look into?
+>
+> Thanks,
+>
+> Jeff
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+

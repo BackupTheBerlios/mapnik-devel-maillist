@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Postgis tips
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Postgis%20tips&In-Reply-To=%3C4550E8C6.1030805%40onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000043.html">
+   <LINK REL="Next"  HREF="000046.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Postgis tips</H1>
+    <B>Robert Coup</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Postgis%20tips&In-Reply-To=%3C4550E8C6.1030805%40onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] Postgis tips">robert.coup at onetrackmind.co.nz
+       </A><BR>
+    <I>Tue Nov  7 21:12:54 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000043.html">[Mapnik-devel] Postgis tips
+</A></li>
+        <LI>Next message: <A HREF="000046.html">[Mapnik-devel] Less than 1 line thickness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#44">[ date ]</a>
+              <a href="thread.html#44">[ thread ]</a>
+              <a href="subject.html#44">[ subject ]</a>
+              <a href="author.html#44">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Nick Black wrote:
+&gt;<i> are there any tips anyone can give me on using the Python binding to
+</I>&gt;<i> render from Postgis?
+</I>&gt;<i>   
+</I>Some random python code that might help:
+
+l_road_3 = Layer('road_3')
+sql = '(SELECT * FROM roads WHERE hierarchy in (\'Local\', 
+\'Connector\')) as linestrings'
+l_road_3.datasource = Datasource(table=sql, type='postgis', 
+host='localhost', dbname='mydatabase', user='myuser', password='mypassword')
+l_road_3.styles.append(s_road_3)
+mymap.layers.append(l_road_3)
+
+If you want polygons then &quot;as polygons&quot; will help. Also, i didn't get 
+mixed geometries working, so I ended up with two queries &amp; two layers...
+
+'(SELECT * FROM river WHERE GeometryType(&quot;wkb_geometry&quot;) in 
+(\'MULTILINESTRING\', \'LINESTRING\')) as linestrings'
+'(SELECT * FROM river WHERE GeometryType(&quot;wkb_geometry&quot;) in 
+(\'MULTIPOLYGON\', \'POLYGON\')) as polygons'
+
+HTH,
+
+Rob :)
+
+-- 
+One Track Mind Ltd.
+PO Box 1604, Shortland St, Auckland, New Zealand
+Phone +64-9-966 0433 Mobile +64-21-572 632
+Web <A HREF="http://www.onetrackmind.co.nz">http://www.onetrackmind.co.nz</A> 
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000043.html">[Mapnik-devel] Postgis tips
+</A></li>
+	<LI>Next message: <A HREF="000046.html">[Mapnik-devel] Less than 1 line thickness
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#44">[ date ]</a>
+              <a href="thread.html#44">[ thread ]</a>
+              <a href="subject.html#44">[ subject ]</a>
+              <a href="author.html#44">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

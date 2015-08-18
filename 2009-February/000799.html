@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Fwd: [OSGeo-Discuss] Generic Geometry Library (ggl)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Fwd%3A%20%5BOSGeo-Discuss%5D%20Generic%20Geometry%20Library%20%28ggl%29&In-Reply-To=%3C26A22D12-B182-4652-8ACB-F27EFC268EF2%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000798.html">
+   <LINK REL="Next"  HREF="000800.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Fwd: [OSGeo-Discuss] Generic Geometry Library (ggl)</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Fwd%3A%20%5BOSGeo-Discuss%5D%20Generic%20Geometry%20Library%20%28ggl%29&In-Reply-To=%3C26A22D12-B182-4652-8ACB-F27EFC268EF2%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Fwd: [OSGeo-Discuss] Generic Geometry Library (ggl)">blake at hailmail.net
+       </A><BR>
+    <I>Tue Feb 17 15:28:22 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000798.html">[Mapnik-devel] SVN account/password
+</A></li>
+        <LI>Next message: <A HREF="000800.html">[Mapnik-devel] Support for external graphic libs or remove cairo	request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#799">[ date ]</a>
+              <a href="thread.html#799">[ thread ]</a>
+              <a href="subject.html#799">[ subject ]</a>
+              <a href="author.html#799">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Another mapping related project using C++/boost...
+
+Cheers,
+Dane
+
+Begin forwarded message:
+
+&gt;<i> From: Barend Gehrels &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Barend.Gehrels at geodan.nl</A>&gt;
+</I>&gt;<i> Date: February 17, 2009 5:11:33 AM PST
+</I>&gt;<i> To: OSGeo Discussions &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">discuss at lists.osgeo.org</A>&gt;
+</I>&gt;<i> Subject: [OSGeo-Discuss] Generic Geometry Library (ggl)
+</I>&gt;<i> Reply-To: OSGeo Discussions &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">discuss at lists.osgeo.org</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> Dear list,
+</I>&gt;<i>
+</I>&gt;<i> It is a pleasure for us to announce the Generic Geometry Library  
+</I>&gt;<i> (ggl).
+</I>&gt;<i>
+</I>&gt;<i> It is an Open Source library, written in C++. The library is  
+</I>&gt;<i> template based, and generic. With generic we mean that the  
+</I>&gt;<i> algorithms work not only with the provided geometries, but also with  
+</I>&gt;<i> geometries that are defined by the library user, such as legacy  
+</I>&gt;<i> points, custom linestrings, etc.
+</I>&gt;<i>
+</I>&gt;<i> Because of this the library is following OGC conventions loosely,  
+</I>&gt;<i> not strictly. All algorithms are implemented as standalone  
+</I>&gt;<i> functions, instead of methods on geometries. Nevertheless, OGC  
+</I>&gt;<i> conventions, names and meanings are followed as much as possible.  
+</I>&gt;<i> Not all OGC algorithms are already implemented. On the other hand  
+</I>&gt;<i> the library offers other things such as distance calculations over  
+</I>&gt;<i> the globe.
+</I>&gt;<i>
+</I>&gt;<i> So it is a library modelled as the C++ std:: library and as most  
+</I>&gt;<i> Boost libraries are. The library is proposed to Boost (Boost is a  
+</I>&gt;<i> well-known peer reviewed C++ Library Collection). It is following  
+</I>&gt;<i> the Boost Software License, which is a permissive Open Source License.
+</I>&gt;<i>
+</I>&gt;<i> The library is accessible via SVN at Boost: <A HREF="https://svn.boost.org/svn/boost/sandbox/ggl">https://svn.boost.org/svn/boost/sandbox/ggl</A> 
+</I>&gt;<i>  but can also be downloaded from <A HREF="http://geometrylibrary.geodan.nl.">http://geometrylibrary.geodan.nl.</A>  
+</I>&gt;<i> Much documentation and many examples can be found there. Note for  
+</I>&gt;<i> example the Custom Linestring example showing things which cannot so  
+</I>&gt;<i> easily be done with non-template libraries.
+</I>&gt;<i>
+</I>&gt;<i> The library contains projections from PROJ4, converted to C++ . We  
+</I>&gt;<i> first wanted to include PROJ4 as an example, like we did with  
+</I>&gt;<i> ShapeLib and GD. However, we concluded that they fit better being  
+</I>&gt;<i> implemented as C++ templates, so they are automatically converted  
+</I>&gt;<i> (it is reproducable). Like there is a PROJ4 Javascript branch, this  
+</I>&gt;<i> might be considered as a PROJ4 C++ branch. We like your opinion  
+</I>&gt;<i> about this.
+</I>&gt;<i>
+</I>&gt;<i> The library is in &quot;preview 4&quot;, it has been submitted as preview to  
+</I>&gt;<i> Boost three times, last year. Based on many comments the library has  
+</I>&gt;<i> been enhanced. We think it is now in a proper shape to be used, and  
+</I>&gt;<i> that algorithms can now be added without that everything is  
+</I>&gt;<i> restructured again.
+</I>&gt;<i>
+</I>&gt;<i> The performance of the library is compared with other C++ OS GIS  
+</I>&gt;<i> libraries and we measured that the library seems to be much faster  
+</I>&gt;<i> than most of them, caused by the template approach.
+</I>&gt;<i>
+</I>&gt;<i> We welcome any type of comment, opinion or cooperation.
+</I>&gt;<i>
+</I>&gt;<i> Barend Gehrels, Geodan, Amsterdam, the Netherlands
+</I>&gt;<i> Bruno Lalande, Paris
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Discuss mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Discuss at lists.osgeo.org</A>
+</I>&gt;<i> <A HREF="http://lists.osgeo.org/mailman/listinfo/discuss">http://lists.osgeo.org/mailman/listinfo/discuss</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090217/e3465981/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090217/e3465981/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000798.html">[Mapnik-devel] SVN account/password
+</A></li>
+	<LI>Next message: <A HREF="000800.html">[Mapnik-devel] Support for external graphic libs or remove cairo	request
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#799">[ date ]</a>
+              <a href="thread.html#799">[ thread ]</a>
+              <a href="subject.html#799">[ subject ]</a>
+              <a href="author.html#799">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

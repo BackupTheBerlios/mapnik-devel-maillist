@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] WMS-service of mapnik
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3C20070704121318.7463650d%40localhost%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000184.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] WMS-service of mapnik</H1>
+    <B>Stephan Holl</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20WMS-service%20of%20mapnik&In-Reply-To=%3C20070704121318.7463650d%40localhost%3E"
+       TITLE="[Mapnik-devel] WMS-service of mapnik">stephan.holl at intevation.de
+       </A><BR>
+    <I>Wed Jul  4 12:13:18 CEST 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000184.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#183">[ date ]</a>
+              <a href="thread.html#183">[ thread ]</a>
+              <a href="subject.html#183">[ subject ]</a>
+              <a href="author.html#183">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Mapnik-developers, Jean-Francois Doyon,
+
+I would like to use the ogcserver-wms from mapnik to render OSM-data
+also in stock-WMS-desktop-clients.
+
+Therefor I followed the advises closely on[1] but my services dies
+with the following error (in apache-errorlog):
+mod_fcgid: jonpy error: ArgumentError at Wed Jul  4 07:24:46 2007
+mod_fcgid: ArgumentError: Python argument types in
+mod_fcgid:     Layer.__init__(Layer)
+mod_fcgid: did not match C++ signature:
+mod_fcgid:     __init__(_object*, std::string)
+mod_fcgid:     __init__(_object*, std::string, std::string)
+mod_fcgid: /opt/mapnik/wms.py in __init__(self=&lt;wms.WMSFactory instance
+at 0x2b8690870c68&gt;) 
+mod_fcgid:    15 self.register_style('style1', sty) 
+mod_fcgid:    16
+mod_fcgid:    17                 lyr = Layer('world', '+init=epsg:4326')
+mod_fcgid:    18                 lyr.datasource =
+Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+mod_fcgid:    19                 lyr.title = 'test' 
+mod_fcgid:    20                 lyr.abstract = 'abstract' 
+mod_fcgid:    21
+mod_fcgid: lyr undefined, global Shapefile = &lt;function Shapefile at
+0x2b8689b70aa0&gt;, file undefined
+0x2b8689b70aa0&gt;  
+mod_fcgid: /usr/lib/python2.4/site-packages/mapnik/ogcserver/cgiserver.py
+0x2b8689b70aa0&gt;in __init__(self=&lt;__main__.WMSHandler object at  
+0x2b8689b70aa0&gt;0x2b869086ce90&gt;)  
+mod_fcgid:    44         except ImportError:
+mod_fcgid:    45             raise ServerConfigurationError('The
+factory module could not be loaded.') 
+mod_fcgid:    46         if hasattr(mapfactorymodule, 'WMSFactory'): 
+mod_fcgid:    47 self.mapfactory = getattr(mapfactorymodule,
+'WMSFactory')() 
+mod_fcgid:    48         else: 
+mod_fcgid:    49             raise ServerConfigurationError('The
+factory module does not have a WMSFactory class.') 
+mod_fcgid:    50         if conf.has_option('server', 'debug'):
+mod_fcgid: self = &lt;__main__.WMSHandler object at
+0x2b869086ce90&gt;, self.mapfactory undefined, getattr undefined,
+0x2b869086ce90&gt;mapfactorymodule = &lt;module 'wms' from  
+0x2b869086ce90&gt;'/opt/mapnik/wms.pyc'&gt;  
+0x2b869086ce90&gt;  
+mod_fcgid: /usr/lib/python2.4/site-packages/jon/fcgi.py
+0x2b869086ce90&gt;in run(self=&lt;jon.fcgi.Request object at 0x2b8690864a50&gt;)
+0x2b869086ce90&gt;  
+mod_fcgid:   338       self._init()
+mod_fcgid:   339       self.log(2, &quot;Calling handler&quot;)
+mod_fcgid:   340       try:
+mod_fcgid:   341         handler = self._handler_type()
+mod_fcgid:   342       except:
+mod_fcgid:   343         self.traceback()
+mod_fcgid:   344       else:
+mod_fcgid: handler undefined, self = &lt;jon.fcgi.Request object at
+0x2b8690864a50&gt;, self._handler_type = &lt;class '__main__.WMSHandler'&gt; ~  
+
+This is my wms.py-script (with only one layer for now):
+from mapnik.ogcserver.WMS import BaseWMSFactory
+from mapnik import *
+
+class WMSFactory(BaseWMSFactory):
+
+        def __init__(self):
+                BaseWMSFactory.__init__(self)
+                sty = Style()
+
+                rl = Rule()
+                rl.symbols.append(PolygonSymbolizer(Color(248,216,136)))
+                rl.symbols.append(LineSymbolizer(Color(0,0,0),1))
+                sty.rules.append( rl )
+
+                self.register_style('style1', sty)
+
+                lyr = Layer('world', '+init=epsg:4326')
+                lyr.datasource =
+Shapefile(file='/opt/mapnik/data/world_boundaries/world_boundaries_m')
+lyr.title = 'test' lyr.abstract = 'abstract'
+
+                self.register_layer(lyr, 'style1')
+                self.finalize()
+
+I already posted that one on OSM-dev, but Artem told me to repost that
+here.
+Perhaps someone could give me a hint how to solve this. 
+
+As someone on OSM-dev pointed out that an object is needed for a layer
+to initialize instead a string. Is there a documentation of the
+python-bindings?
+
+Thanks for any pointers. I really appreciate it.
+
+Best
+
+	Stephan
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000184.html">[Mapnik-devel] WMS-service of mapnik
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#183">[ date ]</a>
+              <a href="thread.html#183">[ thread ]</a>
+              <a href="subject.html#183">[ subject ]</a>
+              <a href="author.html#183">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

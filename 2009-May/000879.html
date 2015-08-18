@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] XML relative paths
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20XML%20relative%20paths&In-Reply-To=%3C67545363-1F79-4D07-A53E-53E34E844F65%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000880.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] XML relative paths</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20XML%20relative%20paths&In-Reply-To=%3C67545363-1F79-4D07-A53E-53E34E844F65%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] XML relative paths">blake at hailmail.net
+       </A><BR>
+    <I>Fri May  1 18:10:36 CEST 2009</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000880.html">[Mapnik-devel] Rendering curved paths
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#879">[ date ]</a>
+              <a href="thread.html#879">[ thread ]</a>
+              <a href="subject.html#879">[ subject ]</a>
+              <a href="author.html#879">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Okay, committed to trunk...
+
+<A HREF="http://trac.mapnik.org/changeset/1124">http://trac.mapnik.org/changeset/1124</A>
+
+The changeset includes some basic tests, and also modifies some of the  
+existing tests to use 'paths_from_xml=&quot;false&quot;' in order to (show an  
+example of how to) maintain the previous behavior.
+
+In addition I've also added some tests that highlight the usages of  
+the undocumented &lt;Datasource&gt; and &lt;FileSource&gt; XML features:
+
+(I had no idea these existed until mucking around with load_map.cpp)
+
+<A HREF="https://trac.mapnik.org/browser/trunk/tests/data/good_maps/datasource.xml">https://trac.mapnik.org/browser/trunk/tests/data/good_maps/datasource.xml</A>
+<A HREF="https://trac.mapnik.org/browser/trunk/tests/data/good_maps/filesource.xml">https://trac.mapnik.org/browser/trunk/tests/data/good_maps/filesource.xml</A>
+
+These features were added in <A HREF="http://trac.mapnik.org/changeset/574">http://trac.mapnik.org/changeset/574</A>
+
+These features *should* work the same, whereby if relative paths are  
+used, their base path will be interpreted as relative to the XML file.
+
+Cheers,
+
+Dane
+
+
+On Apr 28, 2009, at 11:54 AM, Dane Springmeyer wrote:
+
+&gt;<i> Great, sound good.
+</I>&gt;<i>
+</I>&gt;<i> Seems like +3 so far based on ticket comments.
+</I>&gt;<i>
+</I>&gt;<i> I'll apply then when I have a moment unless I hear from others.
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Apr 28, 2009, at 11:50 AM, kRAkEn/gORe wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> oops sorry i oversee that, i though it was by default off :)
+</I>&gt;&gt;<i> no it is ok, i like the new addition !
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> p.s. when you are online i have some things to ask you
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers !
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Apr 28, 2009 at 6:50 PM, Dane Springmeyer
+</I>&gt;&gt;<i> &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt; wrote:
+</I>&gt;&gt;&gt;<i> Hi Lucio,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Thanks for the feedback.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> So you are +1 as long as it is made the default behavior?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I added the property in the xml ONLY to allow switching back to the
+</I>&gt;&gt;&gt;<i> behavior
+</I>&gt;&gt;&gt;<i> we have now.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Does that sound okay?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Dane
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Apr 28, 2009, at 9:13 AM, kRAkEn/gORe wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hi list,
+</I>&gt;&gt;&gt;&gt;<i> i find it perfect, cause most of the time you will end having your
+</I>&gt;&gt;&gt;&gt;<i> xml
+</I>&gt;&gt;&gt;&gt;<i> mapfile besides your shape files, so you can move everything safely
+</I>&gt;&gt;&gt;&gt;<i> (and kill those absolute paths that are killing the apps everytime
+</I>&gt;&gt;&gt;&gt;<i> you
+</I>&gt;&gt;&gt;&gt;<i> move around things).
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> +1 for applying this directly, BUT should be the default behaviour
+</I>&gt;&gt;&gt;&gt;<i> and
+</I>&gt;&gt;&gt;&gt;<i> definately not use a property in the XML for enabling it !
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> cheers,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Lucio
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Tue, Apr 28, 2009 at 7:45 AM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> wrote:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Dev,
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Anyone use relative paths in their XML mapfiles?
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I personally would use them more frequently if the relative paths
+</I>&gt;&gt;&gt;&gt;&gt;<i> found in the XML were interpreted as relative to the location of
+</I>&gt;&gt;&gt;&gt;&gt;<i> the
+</I>&gt;&gt;&gt;&gt;&gt;<i> XML file itself, rather than the script location actually calling
+</I>&gt;&gt;&gt;&gt;&gt;<i> load_map().
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> So, I've proposed a fix to make this possible, and to change the
+</I>&gt;&gt;&gt;&gt;&gt;<i> default behavior:
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="http://trac.mapnik.org/ticket/326">http://trac.mapnik.org/ticket/326</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> I'd like your feedback before applying to trunk in case I'm
+</I>&gt;&gt;&gt;&gt;&gt;<i> overlooking anything.
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> Thanks,
+</I>&gt;&gt;&gt;&gt;&gt;<i> Dane
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090501/a15095fa/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090501/a15095fa/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000880.html">[Mapnik-devel] Rendering curved paths
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#879">[ date ]</a>
+              <a href="thread.html#879">[ thread ]</a>
+              <a href="subject.html#879">[ subject ]</a>
+              <a href="author.html#879">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

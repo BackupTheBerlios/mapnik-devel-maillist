@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on Mac OS?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3CPine.LNX.4.64.0702271602420.1095%40amitti1.10east.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000128.html">
+   <LINK REL="Next"  HREF="000132.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on Mac OS?</H1>
+    <B>Aaron Mitti</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3CPine.LNX.4.64.0702271602420.1095%40amitti1.10east.com%3E"
+       TITLE="[Mapnik-devel] compiling on Mac OS?">amitti at 10east.com
+       </A><BR>
+    <I>Tue Feb 27 23:01:41 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000128.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+        <LI>Next message: <A HREF="000132.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#129">[ date ]</a>
+              <a href="thread.html#129">[ thread ]</a>
+              <a href="subject.html#129">[ subject ]</a>
+              <a href="author.html#129">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Artem,
+
+On Tue, 27 Feb 2007, Artem Pavlenko wrote:
+&gt;<i> Well, you'll need Jamfile's which I have somewhere but they'll certainly
+</I>&gt;<i> require tweaking... I'm gettiing hold of mac in a couple days let me have a
+</I>&gt;<i> go:).
+</I>
+I've had very poor experiences building Debian packages from things meant 
+for Jam. Jam is available on Debian, but I doesn't play with Debian 
+package tools or utilize Debian packaged dependencies. I'm guessing RPM 
+based distros would have the same issue.
+
+We're using a Make wrapper to Scons currently to build Debian / Ubuntu 
+packages, and we could presumably do the same thing with Jam, however I'd 
+be much happy with something that could play friendly with package tools.
+
+To the best of my knowledge, the only Debian friendly build tool is 
+Autoconf/Automake.
+
+<A HREF="http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html">http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html</A>
+<A HREF="http://www.debian.org/doc/manuals/maint-guide/index.en.html">http://www.debian.org/doc/manuals/maint-guide/index.en.html</A>
+<A HREF="http://sources.redhat.com/automake/automake.html">http://sources.redhat.com/automake/automake.html</A>
+<A HREF="http://www.apple.com/macosx/features/xcode/">http://www.apple.com/macosx/features/xcode/</A>
+
+Additionally, I know for a fact Automake and Autoconf are included in 
+Apple Xcode Developer tools. Both I and Vince have Mac's at home, though I 
+don't think either of us have tried to build Mapnik on OS X yet. Creating 
+a project for make based applications on Xcode is really easy too, you can 
+just run ./configure and toss the files into a project and most of the 
+time Xcode can compile from there.
+
+-Aaron
+
+--
+Aaron Mitti
+Senior Open Systems Engineer
+10 East Corp.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000128.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+	<LI>Next message: <A HREF="000132.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#129">[ date ]</a>
+              <a href="thread.html#129">[ thread ]</a>
+              <a href="subject.html#129">[ subject ]</a>
+              <a href="author.html#129">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,955 @@
+From dane at dbsgeo.com  Wed Feb  2 06:06:38 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 1 Feb 2011 21:06:38 -0800
+Subject: [Mapnik-devel] Consistency in XML property names
+In-Reply-To: <0D077863-356B-4AB8-8A0F-A4CF5FC36F47@dbsgeo.com>
+References: <0D077863-356B-4AB8-8A0F-A4CF5FC36F47@dbsgeo.com>
+Message-ID: <32C252DB-FBD4-4565-BEDB-E19F699D14BA@dbsgeo.com>
+
+Update on the renaming of XML underscores to dashes: patch is ready and available to view at the ticket:
+
+https://trac.mapnik.org/ticket/644
+https://trac.mapnik.org/attachment/ticket/644/move_to_consistent_dashes_in_xml.diff
+
+ETA is thursday-friday for this to land.
+
+Dane
+
+
+On Jan 24, 2011, at 6:50 PM, Dane Springmeyer wrote:
+
+> Mapnik-devel,
+> 
+> I've got two tickets I'm planning on working on before release:
+> 
+> And renaming all properties that use underscores to dashes:
+> https://trac.mapnik.org/ticket/644
+> 
+> Warning when invalid properties are used:
+> https://trac.mapnik.org/ticket/110
+> 
+> The former is a breaking change, but I feel like it is needed and it
+> is the right time (before releasing Mapnik2).
+> 
+> I will update the upgrade_script accordingly after making the change.
+> 
+> Dane
+> 
+> 
+
+
+
+From bbcaponi at pst.com.br  Fri Feb  4 17:20:12 2011
+From: bbcaponi at pst.com.br (Bruno B Caponi)
+Date: Fri, 4 Feb 2011 14:20:12 -0200
+Subject: [Mapnik-devel] ShieldSymbolizer - overlap issue
+Message-ID: <OF671C6B7E.442FF574-ON8325782D.005804D5-8325782D.0059BD80@cps.pst.com.br>
+
+Mapnik developers,
+
+I'm trying to build some maps with ShiledSymbolizer but I had no success with allow_overlap, label_spacing and minimun_distace properties.
+
+After many tests, I found the problem. Some of my lines have "U turns", ie, it returns close than itself, and, in this case, the properties minimun_distace and allow_overlap are not used and one Shield could overlap another.
+
+The solution that I found is to update the detector after each shield was placed. I did this in the end of the method "void placement_finder<DetectorT>::find_point_placement( ... )" (placement_finder.cpp:434), where the char envelopes have been moved to placement envelopes queue.
+
+Are there collateral effects? I search for occurences of this method and I guess that is only called by Shield Symbolizer renderer.
+This is supposed to work this way or is a bug? If it's not a bug, that is a chance to create a new porperty (allow_overlap_itself) in the next release?
+
+Thanks
+
+Bruno Caponi
+
+From dane at dbsgeo.com  Fri Feb  4 22:04:01 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 4 Feb 2011 13:04:01 -0800
+Subject: [Mapnik-devel] Removing autotools from Mapnik trunk
+In-Reply-To: <20110204082904.2695d542@frodo>
+References: <7EC6D504-22BC-412D-9535-A387BE244000@dbsgeo.com>
+	<20110204082904.2695d542@frodo>
+Message-ID: <F89081AA-5421-4409-9A0B-7FBC9B9FD7FE@dbsgeo.com>
+
+mapnik-devel,
+
+Andreas has kindly maintained autotools scripts over the years for compiling Mapnik without SCons.
+
+However, these have been unmaintained in trunk for over a year as Andreas is no longer actively using Mapnik.
+
+I plan to remove these scripts now to avoid confusion, and in theie place add a  ./configure && make wrapper around the SCons scripts.
+
+Dane
+
+
+On Feb 3, 2011, at 11:29 PM, Andreas Volz wrote:
+
+> Am Wed, 2 Feb 2011 08:34:41 -0800 schrieb Dane Springmeyer:
+> 
+>> Hi Andreas,
+>> 
+>> I've not seen much activity from you on the mapnik list or mapnik
+>> svn. I'm concerned about the autotools support in trunk. Neither
+>> Artem or I know how to maintain it (I for one do not know a thing
+>> about the autotools chain). So, it is quite broken. I need to know if
+>> you plan to maintain it. Fine either way, but if you do not have the
+>> time or inclination to maintain it I would like to remove the
+>> autotools files to avoid confusion for users.
+>> 
+>> What do you think?
+> 
+> Hello Dane,
+> 
+> thanks for writting me. I just thought about this several times in the
+> last weeks.
+> 
+> For some reasons I changed my application to support libosmscout for
+> some reasons. For example routing support! The map display isn't as
+> nice as mapnik, but this feature is a must have for me. So unfortainly
+> I don't continue to use mapnik (for now). This may change in future if
+> routing support changes. Don't know if this is a goal of mapnik...
+> 
+> So for now I discontinue the maintainance of autoconf files. Please ask
+> one time on the list if someone else likes to maintain it. If not
+> please remove them from SVN. If one time I come back it would easily be
+> possible to fetch them from the history and repair them. It's ok for me.
+> 
+> regards
+> 	Andreas
+
+
+
+From dane at dbsgeo.com  Sat Feb  5 04:36:10 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 4 Feb 2011 19:36:10 -0800
+Subject: [Mapnik-devel] Consistency in XML property names
+In-Reply-To: <32C252DB-FBD4-4565-BEDB-E19F699D14BA@dbsgeo.com>
+References: <0D077863-356B-4AB8-8A0F-A4CF5FC36F47@dbsgeo.com>
+	<32C252DB-FBD4-4565-BEDB-E19F699D14BA@dbsgeo.com>
+Message-ID: <7889B218-F896-48A7-8DC0-5591AB29C7E2@dbsgeo.com>
+
+Okay, this has landed: https://trac.mapnik.org/ticket/644#comment:6
+
+Also, I've made the 0.7.2 branch forward compatibility with the full dash syntax, which will allow applications like Cascadenik to just use dashes but work with both Mapnik 0.7.2 (when it is released) and Mapnik 2.0. I anticipate we'll release them at the same time.
+
+Lastly, see the new Mapnik 2.0 Changes page: https://trac.mapnik.org/wiki/Mapnik2/Changes linked off https://trac.mapnik.org/wiki/Mapnik2
+
+Dane
+
+
+On Feb 1, 2011, at 9:06 PM, Dane Springmeyer wrote:
+
+> Update on the renaming of XML underscores to dashes: patch is ready and available to view at the ticket:
+> 
+> https://trac.mapnik.org/ticket/644
+> https://trac.mapnik.org/attachment/ticket/644/move_to_consistent_dashes_in_xml.diff
+> 
+> ETA is thursday-friday for this to land.
+> 
+> Dane
+> 
+> 
+> On Jan 24, 2011, at 6:50 PM, Dane Springmeyer wrote:
+> 
+>> Mapnik-devel,
+>> 
+>> I've got two tickets I'm planning on working on before release:
+>> 
+>> And renaming all properties that use underscores to dashes:
+>> https://trac.mapnik.org/ticket/644
+>> 
+>> Warning when invalid properties are used:
+>> https://trac.mapnik.org/ticket/110
+>> 
+>> The former is a breaking change, but I feel like it is needed and it
+>> is the right time (before releasing Mapnik2).
+>> 
+>> I will update the upgrade_script accordingly after making the change.
+>> 
+>> Dane
+>> 
+>> 
+> 
+
+
+
+From lars at ahlzen.com  Sun Feb  6 21:32:51 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Sun, 06 Feb 2011 15:32:51 -0500
+Subject: [Mapnik-devel] Cutting holes
+Message-ID: <4D4F0573.4080009@ahlzen.com>
+
+Hi Mapnik devs!
+
+This is related to something I mentioned here briefly a while back. For 
+some of my projects (such as TopOSM) I use mapnik to render overlays, 
+such as contour lines, with a transparent background. In that case, I 
+don't want solid halos around the labels, but the parts of the line(s) 
+that would otherwise cover the label need to be cut out. Here's an example:
+
+http://openstreetmap.us/~lahlzen/misc/contours.png
+
+(note that the background is transparent; not white)
+
+I've been patching mapnik to more easily do this. With this patch, halos 
+and poly fills defined as "transparent" now cut holes in the image 
+(instead of rendering nothing). For example, the labels in the example 
+above use:
+
+<TextSymbolizer name="height_ft" face_name="DejaVu Sans Book"
+        size="10" fill="#420" placement="line" halo_fill="transparent"
+        halo_radius="5" min_distance="100" max_char_angle_delta="35"/>
+
+While the same thing can be accomplished by rendering several layers and 
+combining them with some image processing (or more elegantly with 
+something like TileStache), this should be more efficient and makes my 
+life a lot easier.
+
+The patch is against mapnik 0.7.1 and the Cairo renderer (with which I'm 
+more familiar than AGG). I'm sure it could be implemented for AGG and 
+extended to other symbolizers with relative ease.
+
+Because of the simplicity of the patch (adding only about a dozen 
+lines), and how much it simplifies *my* projects, I thought I should see 
+what your thoughts are and if this is interesting to anyone else.
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: cutouts.patch
+Type: text/x-patch
+Size: 1748 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110206/2f7ca8a3/attachment.bin>
+
+From ralf_klammer at gmx.de  Tue Feb  8 11:39:10 2011
+From: ralf_klammer at gmx.de (Ralf Klammer)
+Date: Tue, 08 Feb 2011 11:39:10 +0100
+Subject: [Mapnik-devel] Insight to structure
+Message-ID: <20110208103910.55520@gmx.net>
+
+Hi,
+
+I'm relative new to mapnik.
+
+I need to know if there exists something like a flowchart of the whole mapnik structure?
+I want to get deeper into the whole structure but I'm struggling a bit.
+
+I'm especially interested in, which module(s)/class(es) handles the communication with the database!?
+
+I would be grateful for any hint!
+Thanks!
+
+Ralf
+-- 
+Empfehlen Sie GMX DSL Ihren Freunden und Bekannten und wir
+belohnen Sie mit bis zu 50,- Euro! https://freundschaftswerbung.gmx.de
+
+
+From kunitoki at gmail.com  Tue Feb  8 14:17:06 2011
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Tue, 8 Feb 2011 14:17:06 +0100
+Subject: [Mapnik-devel] Insight to structure
+In-Reply-To: <20110208103910.55520@gmx.net>
+References: <20110208103910.55520@gmx.net>
+Message-ID: <AANLkTi=Timjop0ccvjgVQgjr2Pud3rwZ51kqRDZqRhXF@mail.gmail.com>
+
+Mapnik itself does not know anuthing about the data. Take a look at input
+plugins, they provide the data to the mapnik renderer chain.
+
+Lucio
+On Feb 8, 2011 11:39 AM, "Ralf Klammer" <ralf_klammer at gmx.de> wrote:
+> Hi,
+>
+> I'm relative new to mapnik.
+>
+> I need to know if there exists something like a flowchart of the whole
+mapnik structure?
+> I want to get deeper into the whole structure but I'm struggling a bit.
+>
+> I'm especially interested in, which module(s)/class(es) handles the
+communication with the database!?
+>
+> I would be grateful for any hint!
+> Thanks!
+>
+> Ralf
+> --
+> Empfehlen Sie GMX DSL Ihren Freunden und Bekannten und wir
+> belohnen Sie mit bis zu 50,- Euro! https://freundschaftswerbung.gmx.de
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110208/a8d499dd/attachment.html>
+
+From ralf_klammer at gmx.de  Tue Feb  8 17:02:40 2011
+From: ralf_klammer at gmx.de (Ralf Klammer)
+Date: Tue, 08 Feb 2011 17:02:40 +0100
+Subject: [Mapnik-devel] Insight to structure
+In-Reply-To: <AANLkTi=Timjop0ccvjgVQgjr2Pud3rwZ51kqRDZqRhXF@mail.gmail.com>
+References: <20110208103910.55520@gmx.net>
+	<AANLkTi=Timjop0ccvjgVQgjr2Pud3rwZ51kqRDZqRhXF@mail.gmail.com>
+Message-ID: <4D516920.1050002@gmx.de>
+
+That seems to be the part that I was looking for.
+
+My main concern is to find a point in the whole 
+mapnik-rendering-process, where it would be possible to implement some 
+generalization functions.
+So that I tap the data when it "comes" from the database, send it to a 
+WPS-Server & (geometrical ) generalize them and finally go on with the 
+main rendering.
+
+Does anybody have an additional idea, where to add something like that?
+
+Ralf
+
+
+Am 08.02.2011 14:17, schrieb kRAkEn/gORe:
+>
+> Mapnik itself does not know anuthing about the data. Take a look at 
+> input plugins, they provide the data to the mapnik renderer chain.
+>
+> Lucio
+>
+> On Feb 8, 2011 11:39 AM, "Ralf Klammer" <ralf_klammer at gmx.de 
+> <mailto:ralf_klammer at gmx.de>> wrote:
+> > Hi,
+> >
+> > I'm relative new to mapnik.
+> >
+> > I need to know if there exists something like a flowchart of the 
+> whole mapnik structure?
+> > I want to get deeper into the whole structure but I'm struggling a bit.
+> >
+> > I'm especially interested in, which module(s)/class(es) handles the 
+> communication with the database!?
+> >
+> > I would be grateful for any hint!
+> > Thanks!
+> >
+> > Ralf
+> > --
+> > Empfehlen Sie GMX DSL Ihren Freunden und Bekannten und wir
+> > belohnen Sie mit bis zu 50,- Euro! https://freundschaftswerbung.gmx.de
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de <mailto:Mapnik-devel at lists.berlios.de>
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110208/311a2e49/attachment.html>
+
+From dane at dbsgeo.com  Tue Feb  8 19:40:05 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 8 Feb 2011 10:40:05 -0800
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <4D4F0573.4080009@ahlzen.com>
+References: <4D4F0573.4080009@ahlzen.com>
+Message-ID: <0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+
+Lars,
+
+Great stuff, this certainly looks like something we should try to integrate - either as is or part of a larger effort to enable composing modes. If we add it we'll need to find a more generic solution of course (than matching colors), but very glad the patch works for your needs. 
+
+For now can you attach this patch to a ticket and assign to the Mapnik 2.0 milestone? That way we can consider it both before release, and when/if we need to push it to Mapnik 2.1 milestone (as I think a proper agg solution may take some time).
+
+Dane
+
+On Feb 6, 2011, at 12:32 PM, Lars Ahlzen wrote:
+
+> Hi Mapnik devs!
+> 
+> This is related to something I mentioned here briefly a while back. For some of my projects (such as TopOSM) I use mapnik to render overlays, such as contour lines, with a transparent background. In that case, I don't want solid halos around the labels, but the parts of the line(s) that would otherwise cover the label need to be cut out. Here's an example:
+> 
+> http://openstreetmap.us/~lahlzen/misc/contours.png
+> 
+> (note that the background is transparent; not white)
+> 
+> I've been patching mapnik to more easily do this. With this patch, halos and poly fills defined as "transparent" now cut holes in the image (instead of rendering nothing). For example, the labels in the example above use:
+> 
+> <TextSymbolizer name="height_ft" face_name="DejaVu Sans Book"
+>       size="10" fill="#420" placement="line" halo_fill="transparent"
+>       halo_radius="5" min_distance="100" max_char_angle_delta="35"/>
+> 
+> While the same thing can be accomplished by rendering several layers and combining them with some image processing (or more elegantly with something like TileStache), this should be more efficient and makes my life a lot easier.
+> 
+> The patch is against mapnik 0.7.1 and the Cairo renderer (with which I'm more familiar than AGG). I'm sure it could be implemented for AGG and extended to other symbolizers with relative ease.
+> 
+> Because of the simplicity of the patch (adding only about a dozen lines), and how much it simplifies *my* projects, I thought I should see what your thoughts are and if this is interesting to anyone else.
+> 
+> - Lars
+> 
+> -- 
+> Lars Ahlzen
+> lars at ahlzen.com
+> 
+> Index: src/cairo_renderer.cpp
+> ===================================================================
+> --- src/cairo_renderer.cpp	(revision 2557)
+> +++ src/cairo_renderer.cpp	(working copy)
+> @@ -248,6 +248,11 @@
+>             context_->set_line_width(width);
+>          }
+> 
+> +         void set_operator(Cairo::Operator op)
+> +         {
+> +            context_->set_operator(op);
+> +         }
+> +     
+>          void set_dash(dash_array const &dashes)
+>          {
+>             std::valarray<double> d(dashes.size() * 2);
+> @@ -426,9 +431,14 @@
+> 
+>             set_line_width(sym.get_halo_radius());
+>             set_line_join(ROUND_JOIN);
+> -            set_color(sym.get_halo_fill());
+> -            stroke();
+> -
+> +            if (sym.get_halo_fill().rgba() == 0) {
+> +               set_operator(Cairo::OPERATOR_DEST_OUT);
+> +               stroke();
+> +               set_operator(Cairo::OPERATOR_OVER);
+> +            } else {
+> +               set_color(sym.get_halo_fill());
+> +               stroke();
+> +            }
+>             set_color(sym.get_fill());
+> 
+>             path.rewind();
+> @@ -563,8 +573,13 @@
+> 
+>       cairo_context context(context_);
+> 
+> -      context.set_color(sym.get_fill(), sym.get_opacity());
+> -
+> +      if (sym.get_fill().rgba() == 0) {
+> +         context.set_color(0, 0, 0, 1.0);
+> +         context.set_operator(Cairo::OPERATOR_DEST_OUT);
+> +      } else {
+> +         context.set_color(sym.get_fill(), sym.get_opacity());
+> +      }
+> +      
+>       for (unsigned i = 0; i < feature.num_geometries(); ++i)
+>       {
+>          geometry2d const& geom = feature.get_geometry(i);
+> @@ -577,6 +592,7 @@
+>             context.fill();
+>          }
+>       }
+> +      context.set_operator(Cairo::OPERATOR_OVER);
+>    }
+> 
+>    typedef boost::tuple<double,double,double,double> segment_t;
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Tue Feb  8 19:41:59 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 8 Feb 2011 10:41:59 -0800
+Subject: [Mapnik-devel] ShieldSymbolizer - overlap issue
+In-Reply-To: <OF671C6B7E.442FF574-ON8325782D.005804D5-8325782D.0059BD80@cps.pst.com.br>
+References: <OF671C6B7E.442FF574-ON8325782D.005804D5-8325782D.0059BD80@cps.pst.com.br>
+Message-ID: <9527E33F-0270-4683-BD5E-55C4A9EF6EF2@dbsgeo.com>
+
+Bruno,
+
+Sounds like you've done a good job exploring an interesting placement edge case. Ideally you could create a trac ticket with sample data and sample styles as well as your patch. 
+
+Dane
+
+On Feb 4, 2011, at 8:20 AM, Bruno B Caponi wrote:
+
+> Mapnik developers,
+> 
+> I'm trying to build some maps with ShiledSymbolizer but I had no success with allow_overlap, label_spacing and minimun_distace properties.
+> 
+> After many tests, I found the problem. Some of my lines have "U turns", ie, it returns close than itself, and, in this case, the properties minimun_distace and allow_overlap are not used and one Shield could overlap another.
+> 
+> The solution that I found is to update the detector after each shield was placed. I did this in the end of the method "void placement_finder<DetectorT>::find_point_placement( ... )" (placement_finder.cpp:434), where the char envelopes have been moved to placement envelopes queue.
+> 
+> Are there collateral effects? I search for occurences of this method and I guess that is only called by Shield Symbolizer renderer.
+> This is supposed to work this way or is a bug? If it's not a bug, that is a chance to create a new porperty (allow_overlap_itself) in the next release?
+> 
+> Thanks
+> 
+> Bruno Caponi
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From lars at ahlzen.com  Wed Feb  9 03:48:53 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Tue, 08 Feb 2011 21:48:53 -0500
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+References: <4D4F0573.4080009@ahlzen.com>
+	<0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+Message-ID: <4D520095.4020409@ahlzen.com>
+
+Dane Springmeyer wrote:
+> Lars,
+>
+> Great stuff, this certainly looks like something we should try to integrate - either as is or part of a larger effort to enable composing modes. If we add it we'll need to find a more generic solution of course (than matching colors), but very glad the patch works for your needs. 
+>   
+Yeah, it's a bit of a hack. On the other hand, just like when you're 
+defining a transparent map (i.e. <Map bgcolor="transparent" ...) this 
+only triggers for alpha = 0, which you'd otherwise never use, so at 
+least it doesn't break any existing usage.
+
+Combining it with layers (in the "photoshop" sense) and compositing 
+modes would be fantastic, of course... :)
+> For now can you attach this patch to a ticket and assign to the Mapnik 2.0 milestone? That way we can consider it both before release, and when/if we need to push it to Mapnik 2.1 milestone (as I think a proper agg solution may take some time).
+>   
+Will do.
+
+Thanks,
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+
+From dane at dbsgeo.com  Wed Feb  9 05:30:01 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 8 Feb 2011 20:30:01 -0800
+Subject: [Mapnik-devel] Mapnik 2.0 PREVIEW via new OS X installer
+Message-ID: <6431C300-980D-44C8-A2E2-BF12485275F4@dbsgeo.com>
+
+There is a new Mapnik 2 OSX Installer available at:
+
+http://dbsgeo.com/downloads/#mapnik-2.0.0
+
+Mapnik2 has not been released yet so this is PRE-release code from latest SVN trunk for anyone that is interested in playing with Mapnik2 features.
+
+Before release I will be documenting the new features in more detail, but for now the roadmap lists many of them:
+
+https://trac.mapnik.org/milestone/Mapnik%202.0
+
+Also, be aware that Mapnik2 requires upgrading existing stylesheets using a new command line tool installed with mapnik called "upgrade_map_xml.py"
+
+More details at:
+
+https://trac.mapnik.org/wiki/Mapnik2
+
+and
+
+https://trac.mapnik.org/wiki/Mapnik2/Changes
+
+Dane
+
+From dane at dbsgeo.com  Wed Feb  9 07:27:42 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 8 Feb 2011 22:27:42 -0800
+Subject: [Mapnik-devel] Mapnik 2.0 PREVIEW via new OS X installer
+In-Reply-To: <6431C300-980D-44C8-A2E2-BF12485275F4@dbsgeo.com>
+References: <6431C300-980D-44C8-A2E2-BF12485275F4@dbsgeo.com>
+Message-ID: <391A6A3D-3462-40A0-B4D6-F7DF0C89F904@dbsgeo.com>
+
+Also, I have posted a build of the Mapnik Viewer [1] for OS X.
+
+If you install the Qt Framework and the Mapnik2 framework then you can use this simple but powerful viewer for XML stylesheets.
+
+Artem is the author of the viewer, and here is a shot of him viewing a test of scaled SVG rendering on top of OSM data:
+
+http://media.mapnik.org/images/mcs01/svg_burger.jpg
+
+You can find it here: http://dbsgeo.com/downloads/#mapnik-2.0.0-viewer
+
+Dane
+
+[1] http://trac.mapnik.org/wiki/MapnikViewer
+
+On Feb 8, 2011, at 8:30 PM, Dane Springmeyer wrote:
+
+> There is a new Mapnik 2 OSX Installer available at:
+> 
+> http://dbsgeo.com/downloads/#mapnik-2.0.0
+> 
+> Mapnik2 has not been released yet so this is PRE-release code from latest SVN trunk for anyone that is interested in playing with Mapnik2 features.
+> 
+> Before release I will be documenting the new features in more detail, but for now the roadmap lists many of them:
+> 
+> https://trac.mapnik.org/milestone/Mapnik%202.0
+> 
+> Also, be aware that Mapnik2 requires upgrading existing stylesheets using a new command line tool installed with mapnik called "upgrade_map_xml.py"
+> 
+> More details at:
+> 
+> https://trac.mapnik.org/wiki/Mapnik2
+> 
+> and
+> 
+> https://trac.mapnik.org/wiki/Mapnik2/Changes
+> 
+> Dane
+
+
+
+From dieterdreist at gmail.com  Wed Feb  9 10:58:23 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Wed, 9 Feb 2011 10:58:23 +0100
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <4D520095.4020409@ahlzen.com>
+References: <4D4F0573.4080009@ahlzen.com>
+	<0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+	<4D520095.4020409@ahlzen.com>
+Message-ID: <AANLkTin5-NUAaYZMK8mhhyxQy=zM8ky12GkLx4y3R5FP@mail.gmail.com>
+
+2011/2/9 Lars Ahlzen <lars at ahlzen.com>:
+
+> Combining it with layers (in the "photoshop" sense) and compositing modes
+> would be fantastic, of course... :)
+
+
+yes, that would be awesome. Imagine you could apply filters like
+"gaussian blur" on some layers (e.g. for halos, hillshading or other
+shadows).
+
+cheers,
+Martin
+
+
+From dane at dbsgeo.com  Wed Feb  9 11:08:26 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 9 Feb 2011 02:08:26 -0800
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <AANLkTin5-NUAaYZMK8mhhyxQy=zM8ky12GkLx4y3R5FP@mail.gmail.com>
+References: <4D4F0573.4080009@ahlzen.com>
+	<0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+	<4D520095.4020409@ahlzen.com>
+	<AANLkTin5-NUAaYZMK8mhhyxQy=zM8ky12GkLx4y3R5FP@mail.gmail.com>
+Message-ID: <7C1DD273-7254-4C20-AEA2-5C3E82A5AFB1@dbsgeo.com>
+
+
+On Feb 9, 2011, at 1:58 AM, M?rtin Koppenhoefer wrote:
+
+> 2011/2/9 Lars Ahlzen <lars at ahlzen.com>:
+> 
+>> Combining it with layers (in the "photoshop" sense) and compositing modes
+>> would be fantastic, of course... :)
+
+Yep, this is certainly on tap for the future. Both AGG and Cairo have excellent support for compositing modes, we just need to allow each layer to be rendered to its own buffer to enable this. Then we'll need to measure how expensive that is and likely write an adapted feature_style_processor.hpp that would be envoked when compositing is requested so that non-composited layers are still fast and use the normal pipeline.
+
+> 
+> yes, that would be awesome. Imagine you could apply filters like
+> "gaussian blur" on some layers (e.g. for halos, hillshading or other
+> shadows).
+
+Gaussian and other fancy filtering methods landed for rasters in https://trac.mapnik.org/ticket/656 thanks to work by Craig de Stigter.
+
+> 
+> cheers,
+> Martin
+
+
+
+From dieterdreist at gmail.com  Wed Feb  9 11:28:37 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Wed, 9 Feb 2011 11:28:37 +0100
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <7C1DD273-7254-4C20-AEA2-5C3E82A5AFB1@dbsgeo.com>
+References: <4D4F0573.4080009@ahlzen.com>
+	<0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+	<4D520095.4020409@ahlzen.com>
+	<AANLkTin5-NUAaYZMK8mhhyxQy=zM8ky12GkLx4y3R5FP@mail.gmail.com>
+	<7C1DD273-7254-4C20-AEA2-5C3E82A5AFB1@dbsgeo.com>
+Message-ID: <AANLkTik5WiotkDdtHkd=ey5RLw=TusMHcPJa4rJeUyDb@mail.gmail.com>
+
+2011/2/9 Dane Springmeyer <dane at dbsgeo.com>:
+
+>> yes, that would be awesome. Imagine you could apply filters like
+>> "gaussian blur" on some layers (e.g. for halos, hillshading or other
+>> shadows).
+>
+> Gaussian and other fancy filtering methods landed for rasters in https://trac.mapnik.org/ticket/656 thanks to work by Craig de Stigter.
+
+
+Would it be complicated to enable this for line, text and
+polygon-symbolizer as well? (i.e. render them internally to a raster,
+then apply the fancy filter).
+
+cheers,
+Martin
+
+
+From dane at dbsgeo.com  Wed Feb  9 11:34:42 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 9 Feb 2011 02:34:42 -0800
+Subject: [Mapnik-devel] Cutting holes
+In-Reply-To: <AANLkTik5WiotkDdtHkd=ey5RLw=TusMHcPJa4rJeUyDb@mail.gmail.com>
+References: <4D4F0573.4080009@ahlzen.com>
+	<0DADEB25-1963-4595-A2F6-5C9F9312F191@dbsgeo.com>
+	<4D520095.4020409@ahlzen.com>
+	<AANLkTin5-NUAaYZMK8mhhyxQy=zM8ky12GkLx4y3R5FP@mail.gmail.com>
+	<7C1DD273-7254-4C20-AEA2-5C3E82A5AFB1@dbsgeo.com>
+	<AANLkTik5WiotkDdtHkd=ey5RLw=TusMHcPJa4rJeUyDb@mail.gmail.com>
+Message-ID: <E41AD880-15D3-4E59-AF6F-4090B9E1A742@dbsgeo.com>
+
+Yes, complicated, but doable.
+
+On Feb 9, 2011, at 2:28 AM, M?rtin Koppenhoefer wrote:
+
+> 2011/2/9 Dane Springmeyer <dane at dbsgeo.com>:
+> 
+>>> yes, that would be awesome. Imagine you could apply filters like
+>>> "gaussian blur" on some layers (e.g. for halos, hillshading or other
+>>> shadows).
+>> 
+>> Gaussian and other fancy filtering methods landed for rasters in https://trac.mapnik.org/ticket/656 thanks to work by Craig de Stigter.
+> 
+> 
+> Would it be complicated to enable this for line, text and
+> polygon-symbolizer as well? (i.e. render them internally to a raster,
+> then apply the fancy filter).
+> 
+> cheers,
+> Martin
+
+
+
+From roel.vanhout at gmail.com  Fri Feb 11 16:52:56 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Fri, 11 Feb 2011 16:52:56 +0100
+Subject: [Mapnik-devel] Query object
+Message-ID: <AANLkTik=1N-bc05HLjJ4Rr=gP4V42-T4cSOJa5HHn2QU@mail.gmail.com>
+
+I'm documenting my php extension as I'm going along. What is the Query
+object used for? Why does it have a resolution and 'scale denominator'
+and what is that last one? Thanks.
+
+cheers,
+
+roel
+
+
+From dane at dbsgeo.com  Fri Feb 11 19:45:27 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 11 Feb 2011 10:45:27 -0800
+Subject: [Mapnik-devel] Query object
+In-Reply-To: <AANLkTik=1N-bc05HLjJ4Rr=gP4V42-T4cSOJa5HHn2QU@mail.gmail.com>
+References: <AANLkTik=1N-bc05HLjJ4Rr=gP4V42-T4cSOJa5HHn2QU@mail.gmail.com>
+Message-ID: <831F79D9-D2FB-4365-9D83-EBCD1846F4B9@dbsgeo.com>
+
+Datasources are generic plugins, right, and the mapnik renderers (agg_renderer, svg_renderer, and cairo_renderer) use the mapnik::query object to pass down the information needed to fetch features from an arbitrary datasource. For vector datasources all that is needed is the bbox and attribute names, but raster datasources need resolution. In addition we pass down things like scale_denominator so that fancy datasources like postgis can do variable substitution and be able to construct queries that use the scale_denominator value. 
+
+So, mapnik::query has tended to evolve to better support the demands of datasource plugins as they are created and we find more things they need.
+
+For more info on scale see: https://trac.mapnik.org/wiki/ScaleAndPpi
+
+Dane
+
+
+On Feb 11, 2011, at 7:52 AM, Roel Vanhout wrote:
+
+> I'm documenting my php extension as I'm going along. What is the Query
+> object used for? Why does it have a resolution and 'scale denominator'
+> and what is that last one? Thanks.
+> 
+> cheers,
+> 
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Fri Feb 11 19:52:17 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Fri, 11 Feb 2011 19:52:17 +0100
+Subject: [Mapnik-devel] Query object
+In-Reply-To: <831F79D9-D2FB-4365-9D83-EBCD1846F4B9@dbsgeo.com>
+References: <AANLkTik=1N-bc05HLjJ4Rr=gP4V42-T4cSOJa5HHn2QU@mail.gmail.com>
+	<831F79D9-D2FB-4365-9D83-EBCD1846F4B9@dbsgeo.com>
+Message-ID: <AANLkTikxt+UKm+eJnOrOA7YBfTyjinA6DAtjM3d00MEZ@mail.gmail.com>
+
+Oh I see, thanks Dane. I'll check the data source plugin code for
+details. Come to think of it, I used the same for a GIS-like software
+package I wrote some years ago, I didn't recognize the terminology
+though.
+
+cheers,
+
+roel
+
+
+On Fri, Feb 11, 2011 at 7:45 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Datasources are generic plugins, right, and the mapnik renderers (agg_renderer, svg_renderer, and cairo_renderer) use the mapnik::query object to pass down the information needed to fetch features from an arbitrary datasource. For vector datasources all that is needed is the bbox and attribute names, but raster datasources need resolution. In addition we pass down things like scale_denominator so that fancy datasources like postgis can do variable substitution and be able to construct queries that use the scale_denominator value.
+>
+> So, mapnik::query has tended to evolve to better support the demands of datasource plugins as they are created and we find more things they need.
+>
+> For more info on scale see: https://trac.mapnik.org/wiki/ScaleAndPpi
+>
+> Dane
+>
+>
+> On Feb 11, 2011, at 7:52 AM, Roel Vanhout wrote:
+>
+>> I'm documenting my php extension as I'm going along. What is the Query
+>> object used for? Why does it have a resolution and 'scale denominator'
+>> and what is that last one? Thanks.
+>>
+>> cheers,
+>>
+>> roel
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From ralf_klammer at gmx.de  Thu Feb 17 17:05:01 2011
+From: ralf_klammer at gmx.de (Ralf Klammer)
+Date: Thu, 17 Feb 2011 17:05:01 +0100
+Subject: [Mapnik-devel] mapnik.render
+Message-ID: <4D5D472D.9050700@gmx.de>
+
+Hi,
+
+I've got just a short question.
+Can anybody tell which class is called when "mapnik.render(m, im)"  is 
+applied in the main python-script?
+
+Does this call directly the feature_style_processor (.hpp) or the the 
+agg_renderer (.cpp) or is there any detour?
+
+Cheers
+Ralf
+
+
+From amishkovskiy at cloudmade.com  Thu Feb 17 23:27:22 2011
+From: amishkovskiy at cloudmade.com (Andrii V. Mishkovskyi)
+Date: Fri, 18 Feb 2011 00:27:22 +0200
+Subject: [Mapnik-devel] mapnik.render
+In-Reply-To: <4D5D472D.9050700@gmx.de>
+References: <4D5D472D.9050700@gmx.de>
+Message-ID: <AANLkTinJ17Pi_NJC2yNagLogXchj3Dd-QZLeWZUQ9f0w@mail.gmail.com>
+
+On Thu, Feb 17, 2011 at 6:05 PM, Ralf Klammer <ralf_klammer at gmx.de> wrote:
+> Hi,
+>
+> I've got just a short question.
+> Can anybody tell which class is called when "mapnik.render(m, im)" ?is
+> applied in the main python-script?
+>
+> Does this call directly the feature_style_processor (.hpp) or the the
+> agg_renderer (.cpp) or is there any detour?
+
+The latter, as you can see in the source --
+https://github.com/mapnik/mapnik-trunk/blob/master/bindings/python/mapnik_python.cpp#L84
+
+>
+> Cheers
+> Ralf
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Wbr, Andrii V. Mishkovskyi.
+
+I have the last page code of rocket launch program in NASA written in Lisp:
+)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+
+From dane at dbsgeo.com  Sat Feb 19 01:19:35 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 18 Feb 2011 16:19:35 -0800
+Subject: [Mapnik-devel] Looking forward to GSOC 2011
+Message-ID: <2F2175DA-C35C-402F-822E-EF7F84A820E6@dbsgeo.com>
+
+Last year was the Mapnik project's first year participating in Google Summer of Code. 
+
+Artem, Rob, Mike, Tom, and I helped scope and mentor projects by two fantastic students, Carlos and Herm, who are both now core committers.
+
+Rob and I also enjoyed traveling to the Google Summer of Code Mentors summit in October to learn more about the program, meet other organization mentors, and hack on Mapnik code together.
+ 
+I'm excited to see that Google has announced the 2011 program and applications for organizations to participate can be submitted in 10 days (the 28th).
+
+So, for both potential students and mentors, I encourage you to starting thinking about great project ideas!
+
+Dane
+
+
+
+
+From dane at dbsgeo.com  Sat Feb 19 01:30:07 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 18 Feb 2011 16:30:07 -0800
+Subject: [Mapnik-devel] GSOC Volunteer Tasks
+Message-ID: <FC2903FD-E707-4FEB-9163-9BA566173DA8@dbsgeo.com>
+
+GSOC[1] is really fun, but it is also takes a lot of effort to pull off.
+
+I'd love to see us apply again, to have the chance of being a part of it.
+
+To pull this off here are the things we need help with soon:
+
+  * We need a 2011 wiki page structure set up like the 2010 one [2].
+  * We need people to post ideas to those pages for potential projects like [3].
+  * We need to write and submit an application like [4].
+  * We need to spread the word to students that the Mapnik project is planning on applying.
+  * We need help keeping an eye on the timeline [5].
+ 
+GSOC works by having a single "Organization Admin" that usually handles the above tasks. Last year this person was me. 
+
+I would *love* if someone else was interested in being the admin, or fulfilling a least parts of the volunteer job. I would of course be available for any questions that come up. Indeed then I could focus on the key question of how potential projects could fit with current Mapnik 2.0 development status.
+
+Dane
+
+[1] https://lists.berlios.de/pipermail/mapnik-users/2011-February/004027.html
+[2] http://trac.mapnik.org/wiki/GSOC2010
+[3] http://trac.mapnik.org/wiki/GSOC2010/Ideas
+[4] http://trac.mapnik.org/wiki/GSOC2010/Application
+[5] http://www.google-melange.com/document/show/gsoc_program/google/gsoc2011/timeline
+
+
+
+From dane at dbsgeo.com  Sat Feb 19 19:27:50 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sat, 19 Feb 2011 10:27:50 -0800
+Subject: [Mapnik-devel] Git mirroring status
+Message-ID: <DA24BF0F-420D-4C2D-BCD9-5A3DA44B7F36@dbsgeo.com>
+
+Fyi: The github mirror or mapnik trunk is currently not auto-updating. I've hit this error on my syncing server and have not been able to find a solution yet:
+
+$ git svn rebase
+Index mismatch: 3fd365e196a44bd7bbf49d23337be99a5664c003 != 00d84ecdce264f4228230a3216768c9e33ac8b16
+rereading 2341382f6fb9c8a25984a810cf7f4d9fc5220a4c
+	M	include/mapnik/geometry.hpp
+	M	include/mapnik/geometry_iterator.hpp
+	M	include/mapnik/feature_style_processor.hpp
+	M	include/mapnik/svg/svg_output_grammars.hpp
+Checksum mismatch: SConstruct 5624b9f1c1bed508fdaeae4cc98bc7bb73237410
+expected: 60ce1f420e772d596ac833560cab4cf0
+     got: 2df7d0deb0695c12c1e08effd1b2973c
+
+I'll update if I am able to get it working again.
+
+Dane
+

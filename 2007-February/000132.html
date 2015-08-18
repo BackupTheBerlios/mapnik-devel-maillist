@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on Mac OS?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C200702281956.35446.pavlenko%40users.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000129.html">
+   <LINK REL="Next"  HREF="000126.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on Mac OS?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C200702281956.35446.pavlenko%40users.berlios.de%3E"
+       TITLE="[Mapnik-devel] compiling on Mac OS?">pavlenko at users.berlios.de
+       </A><BR>
+    <I>Wed Feb 28 20:56:34 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000129.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+        <LI>Next message: <A HREF="000126.html">[Mapnik-devel] typo in rundemo.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#132">[ date ]</a>
+              <a href="thread.html#132">[ thread ]</a>
+              <a href="subject.html#132">[ subject ]</a>
+              <a href="author.html#132">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Aaron,
+
+&gt;<i> I've had very poor experiences building Debian packages from things meant
+</I>&gt;<i> for Jam. Jam is available on Debian, but I doesn't play with Debian
+</I>&gt;<i> package tools or utilize Debian packaged dependencies. I'm guessing RPM
+</I>&gt;<i> based distros would have the same issue.
+</I>Do you mean jam or bjam? I'm thinking about Boost.Build.v2. And it's looking 
+pretty good to me.   
+&gt;<i>
+</I>&gt;<i> We're using a Make wrapper to Scons currently to build Debian / Ubuntu
+</I>&gt;<i> packages, and we could presumably do the same thing with Jam, however I'd
+</I>&gt;<i> be much happy with something that could play friendly with package tools.
+</I>I understand. Lets keep options open and choose the best one.
+BTW, Dominic Hargreaves have packaged mapnik for Debian and it has been 
+accepted:
+<A HREF="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=mapnik&amp;searchon=names&amp;subword=1&amp;version=all&amp;release=all">http://packages.debian.org/cgi-bin/search_packages.pl?keywords=mapnik&amp;searchon=names&amp;subword=1&amp;version=all&amp;release=all</A>
+We should coordinate efforts in this area.
+
+&gt;<i> To the best of my knowledge, the only Debian friendly build tool is
+</I>&gt;<i> Autoconf/Automake.
+</I>&gt;<i>
+</I>I think Dominic is using oroginal scons build, I'll need to check. 
+&gt;<i> <A HREF="http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html">http://www.onlamp.com/pub/a/onlamp/2005/03/31/packaging.html</A>
+</I>&gt;<i> <A HREF="http://www.debian.org/doc/manuals/maint-guide/index.en.html">http://www.debian.org/doc/manuals/maint-guide/index.en.html</A>
+</I>&gt;<i> <A HREF="http://sources.redhat.com/automake/automake.html">http://sources.redhat.com/automake/automake.html</A>
+</I>&gt;<i> <A HREF="http://www.apple.com/macosx/features/xcode/">http://www.apple.com/macosx/features/xcode/</A>
+</I>&gt;<i> Additionally, I know for a fact Automake and Autoconf are included in
+</I>&gt;<i> Apple Xcode Developer tools. Both I and Vince have Mac's at home, though I
+</I>&gt;<i> don't think either of us have tried to build Mapnik on OS X yet.
+</I>&gt;<i> &gt; Creating  
+</I>&gt;<i> a project for make based applications on Xcode is really easy too, you can
+</I>&gt;<i> just run ./configure and toss the files into a project and most of the
+</I>&gt;<i> time Xcode can compile from there.
+</I>Sounds good. I'm a mac newbie, I'll need a few days to find my way around. 
+
+Cheers,
+Artem
+
+
+&gt;<i> -Aaron
+</I>&gt;<i>
+</I>&gt;<i> --
+</I>&gt;<i> Aaron Mitti
+</I>&gt;<i> Senior Open Systems Engineer
+</I>&gt;<i> 10 East Corp.
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000129.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+	<LI>Next message: <A HREF="000126.html">[Mapnik-devel] typo in rundemo.cpp
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#132">[ date ]</a>
+              <a href="thread.html#132">[ thread ]</a>
+              <a href="subject.html#132">[ subject ]</a>
+              <a href="author.html#132">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

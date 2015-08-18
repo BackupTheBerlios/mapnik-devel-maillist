@@ -1,0 +1,2440 @@
+From gelosi at gmail.com  Mon Sep  1 18:16:28 2008
+From: gelosi at gmail.com (Oleg Shaniuk)
+Date: Mon, 1 Sep 2008 19:16:28 +0300
+Subject: [Mapnik-devel] Mapnik's WMS use
+In-Reply-To: <3D83C7AE-670E-4CCB-9A35-80AD88794879@hailmail.net>
+References: <29735a280808280710l141851eei223a3166bda17364@mail.gmail.com>
+	<9DE5CD87-0215-4919-AE68-67E58FDA1B3E@hailmail.net>
+	<29735a280808280753j74eeff22tc5c36c402c6ff81d@mail.gmail.com>
+	<D2930B2A-A09B-4113-9FBB-ED7D7947410A@hailmail.net>
+	<29735a280808290041h7e39dbcclfe244fdf7530b612@mail.gmail.com>
+	<78ec96990808291330x4ff8ec0bkd87727d7045cce65@mail.gmail.com>
+	<3D83C7AE-670E-4CCB-9A35-80AD88794879@hailmail.net>
+Message-ID: <29735a280809010916s1eadd42dge65635d5b40cd2f3@mail.gmail.com>
+
+Hi All,
+
+I'm looking at projections now: I'm trying to use osm.xml for WMS
+script to display osm-like map via WMS requests,
+This is how I'm doing it:
+1. Add Map object to my WMSFactory:
+2. load_map(m,'osm.xml')
+3. copy all styles and layers from m into wmsfactory, using
+register_style and .register_layer methods.
+
+i'm getting empty png on output, but, I believe, this is all around
+projections, defined in osm.xml:
+"+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0
++y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over"
+I'm replacing it for layer.src="+init=epsg:3395" to register layers
+properly in wmsfactory. This is wrong(but let me check, if python
+script works, etc), but I don't know how to generate right espg
+projection from one I have.
+
+I'd like to describe this on page, Leslie just created - to let other
+users go though projections much easier - but first, I have learn them
+;)
+
+If someone has ideas, or some docs - it would be great.
+
+--
+RO
+
+
+2008/8/30 Dane Springmeyer <blake at hailmail.net>:
+> Hi Leslie,
+> Thanks for adding the page, I think thats a great idea. I've been working
+> with projections for a long time, errr...  at least long enough that I am
+> able to confuse most people I try to help!
+> Oleg, have you made any progess?  Figuring out the projection of your data
+> and then making sure to add the epsg code to you ogcserver.conf is all you
+> should need to do, then you can test the new url query string.
+> An example config with some code to turn on EPSG 3395 can be found here:
+> http://mapnik-utils.googlecode.com/svn/trunk/tutorials/wms/
+> Cheers,
+> Dane
+>
+>
+>
+>
+> On Aug 29, 2008, at 1:30 PM, Leslie Wu wrote:
+>
+> I guess we could add some background GIS / info links to the Mapnik wiki.
+> I've been learning about projections myself recently.
+> Perhaps a proj.4 reference and a guide such as this?
+>   http://www.manifold.net/doc/guide_to_selecting_map_projections.htm
+> I started a brief introduction to GIS page here:
+>   http://trac.mapnik.org/wiki/IntroductionToGIS
+>
+> Please contribute :)
+> ~L
+>
+> On Fri, Aug 29, 2008 at 12:41 AM, Oleg Shaniuk <gelosi at gmail.com> wrote:
+>>
+>> Hi Dane,
+>>
+>> Thanks for tip! It's really about projections. Looks like, time to
+>> learn more about geospatial systems.
+>> Also, as you might guess already, [>>> from mapnik.ogcserver import
+>> common] works well ;)
+>>
+>> Regards,
+>> Oleg
+>>
+>> 2008/8/28 Dane Springmeyer <blake at hailmail.net>:
+>> > Oleg,
+>> >
+>> > If you rebuild mapnik with the debug=y  Scons flag, mapnik should output
+>> > a
+>> > variety of information to your apache logs such at the extent of the
+>> > data
+>> > and the map, and how many features are processed given the bounding box.
+>> >
+>> > I think if you do this what you will see is that no features are being
+>> > processed since they are not falling within the WMS query BBOX you are
+>> > testing.
+>> >
+>> > I think you must have downloaded that world_boundaries_m.shp from OSM?
+>> >  If I
+>> > run ogrinfo on that shapefile I get:
+>> >
+>> > $ ogrinfo world_boundaries_m.shp -so -al
+>> > INFO: Open of `world_boundaries_m.shp'
+>> >      using driver `ESRI Shapefile' successful.
+>> >
+>> > Layer name: world_boundaries_m
+>> > Geometry: Polygon
+>> > Feature Count: 3807
+>> > Extent: (-20037400.000000, -19929239.110000) - (20037400.000000,
+>> > 18375854.709643)
+>> > Layer SRS WKT:
+>> > PROJCS["Mercator",
+>> >    GEOGCS["GCS_WGS_1984",
+>> >        DATUM["WGS_1984",
+>> >            SPHEROID["WGS_1984",6378137,298.257223563]],
+>> >        PRIMEM["Greenwich",0],
+>> >        UNIT["Degree",0.017453292519943295]],
+>> >    PROJECTION["Mercator_1SP"],
+>> >    PARAMETER["latitude_of_origin",0],
+>> >    PARAMETER["central_meridian",0],
+>> >    PARAMETER["scale_factor",1],
+>> >    PARAMETER["false_easting",0],
+>> >    PARAMETER["false_northing",0],
+>> >    UNIT["Meter",1]]
+>> > CAT: Real (16.0)
+>> > FIPS_CNTRY: String (80.0)
+>> > CNTRY_NAME: String (80.0)
+>> >
+>> >
+>> > It seems like for your testing script you will need a shapefile in true
+>> > unprojected WGS 84(EPSG:4326) coordinates, like the one here:
+>> > http://mapnik-utils.googlecode.com/svn/trunk/sample_data/
+>> >
+>> > Otherwise you will need to modify your script
+>> >
+>> > such that this line:
+>> >
+>> >>>>  lyr = Layer('world', '+init=epsg:4326')
+>> >
+>> >
+>> > becomes:
+>> >
+>> > lyr = Layer('world', '+init=epsg:3395')
+>> >
+>> >
+>> > Which will allow the WMS server to reproject your data. So, using the
+>> > same
+>> > query string you should get back a map in EPSG:4326.
+>> >
+>> > If you then want to get map tiles in mercator you'll need to add a line
+>> > to
+>> > your ogcserver.conf like:
+>> >
+>> > allowedepsgcodes=4326,3395, # trailing comma is essential
+>> >
+>> > and then test a WMS query string with a
+>> > bbox=-20037400.000000,-19929239.110000, 20037400.000000,18375854.709643
+>> > and
+>> > EPSG=3395
+>> >
+>> > something more like:
+>> >
+>> >
+>> > http://localhost/fcgi-bin/wms?LAYERS=world&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fpng&SRS=EPSG%3A3395&BBOX=-20037400.000000,-19929239.110000,%2020037400.000000,18375854.709643&WIDTH=256&HEIGHT=256
+>> >
+>> >
+>> > Dane
+>> >
+>> >
+>> > On Aug 28, 2008, at 7:53 AM, Oleg Shaniuk wrote:
+>> >
+>> >> Hi Dane,
+>> >>
+>> >> I've checked log, even tried to run apache in debug mode with maximum
+>> >> verbose level (debug), but there is just nothing in log. When I set
+>> >> incorrect coastline file name, I've got an exception; so, it has
+>> >> access to file (I've checked rights for double-sure)
+>> >> My system is ubuntu 8.04, apache2 ( 2.2.8 ubuntu ). Mapnik works well.
+>> >> The confusing thing is white color - seems, it just render empty map,
+>> >> without any styles at all...
+>> >>
+>> >> which reasons at all can cause such behavior?
+>> >>
+>> >> Regards,
+>> >> Oleg
+>> >>
+>> >> 2008/8/28 Dane Springmeyer <blake at hailmail.net>:
+>> >>>
+>> >>> Hi Oleg,
+>> >>>
+>> >>> Your test configuration, including that URL, looks fine.
+>> >>>
+>> >>> My guess is that your apache user may not have read permissions for
+>> >>> '/var/mapnik/world_boundaries/world_boundaries_m'
+>> >>> Check your apache logs and if this is the case you'll likely see the
+>> >>> mapnik
+>> >>> output of 'got exception...'
+>> >>> Or perhaps the Mapnik WMS code is failing for some other reason, and
+>> >>> the
+>> >>> apache error logs should give you an idea.  If you find anything you
+>> >>> don't
+>> >>> understand, paste a snippet back to the list.
+>> >>>
+>> >>> Also, what system are you running?
+>> >>>
+>> >>> Cheers,
+>> >>>
+>> >>> Dane
+>> >>>
+>> >>> On Aug 28, 2008, at 7:10 AM, Oleg Shaniuk wrote:
+>> >>>
+>> >>>> Hi All,
+>> >>>>
+>> >>>> I'm playing with mapnik's WMS features. And I'm getting empty image
+>> >>>> in
+>> >>>> browser. The interesting thing, if I use the same style and layer,
+>> >>>> but
+>> >>>> with Map object and render image in python script - it works correct.
+>> >>>>
+>> >>>> Fot the request:
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>> http://localhost/fcgi-bin/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=world&FORMAT=image/png&SRS=EPSG:4326&STYLES=&&BBOX=-179,-83,179,83&EXCEPTIONS=application/vnd.ogc.se_inimage&width=600&height=300
+>> >>>>
+>> >>>> I'm getting empty white picture 600x300pix.
+>> >>>>
+>> >>>> using mapnik 5.1.0
+>> >>>>
+>> >>>> My scripts/config:
+>> >>>>
+>> >>>> ######## wms python script for fcgi #########
+>> >>>> #!/usr/bin/python
+>> >>>>
+>> >>>> from mapnik.ogcserver.cgiserver import Handler
+>> >>>> import jon.fcgi as fcgi
+>> >>>>
+>> >>>> import sys
+>> >>>> sys.path.append('/var/mapnik')
+>> >>>>
+>> >>>> class WMSHandler(Handler):
+>> >>>>  configpath = '/var/mapnik/ogcserver.conf'
+>> >>>>
+>> >>>> fcgi.Server({fcgi.FCGI_RESPONDER: WMSHandler}).run()
+>> >>>>
+>> >>>> ######## ogcserver.config ###############
+>> >>>>
+>> >>>> # unchanged, except
+>> >>>>
+>> >>>> module=worldMapFactory
+>> >>>>
+>> >>>> ######## worldMapFactory.py #############
+>> >>>>
+>> >>>> #!/usr/bin/python
+>> >>>>
+>> >>>> from mapnik.ogcserver.WMS import BaseWMSFactory
+>> >>>> from mapnik import *
+>> >>>>
+>> >>>> class WMSFactory(BaseWMSFactory):
+>> >>>> def __init__(self):
+>> >>>>  BaseWMSFactory.__init__(self)
+>> >>>>  sty = Style()
+>> >>>>  rl = Rule()
+>> >>>>  rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+>> >>>>  rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+>> >>>>  sty.rules.append( rl )
+>> >>>>  self.register_style('style1', sty)
+>> >>>>  lyr = Layer('world', '+init=epsg:4326')
+>> >>>>
+>> >>>>  lyr.title = 'World'
+>> >>>>  lyr.abstract = 'World Test'
+>> >>>>  lyr.queryable = True
+>> >>>>  lyr.datasource =
+>> >>>> Shapefile(file='/var/mapnik/world_boundaries/world_boundaries_m')
+>> >>>>  self.register_layer(lyr,'style1')
+>> >>>>  self.finalize()
+>> >>>>
+>> >>>>
+>> >>>> # simple test script (works just fine):
+>> >>>> ######## mapnikTest.py ###########
+>> >>>>
+>> >>>> from mapnik import *
+>> >>>>
+>> >>>> m = Map(600,300)
+>> >>>> m.background = Color('steelblue')
+>> >>>>
+>> >>>> sty = Style()
+>> >>>> rl = Rule()
+>> >>>>
+>> >>>> rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+>> >>>> rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+>> >>>>
+>> >>>> sty.rules.append( rl )
+>> >>>>
+>> >>>> m.append_style('My Style',sty)
+>> >>>>
+>> >>>> lyr = Layer('world', '+init=epsg:4326')
+>> >>>>
+>> >>>> lyr.title = 'World Borders'
+>> >>>> lyr.abstract = 'World Test'
+>> >>>> lyr.queryable = True
+>> >>>> lyr.datasource =
+>> >>>> Shapefile(file='/var/mapnik/world_boundaries/world_boundaries_m')
+>> >>>> lyr.styles.append('My Style')
+>> >>>>
+>> >>>> m.layers.append(lyr)
+>> >>>>
+>> >>>> m.zoom_to_box(lyr.envelope())
+>> >>>> render_to_file(m, 'hello_world_in_pure_python.png')
+>> >>>> _______________________________________________
+>> >>>> Mapnik-devel mailing list
+>> >>>> Mapnik-devel at lists.berlios.de
+>> >>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> >>>
+>> >>>
+>> >
+>> >
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>
+
+
+From lwu.two at gmail.com  Thu Sep  4 04:25:20 2008
+From: lwu.two at gmail.com (Leslie Wu)
+Date: Wed, 3 Sep 2008 19:25:20 -0700
+Subject: [Mapnik-devel] Support for a point_datasource -- adding points
+	dynamically in Python
+Message-ID: <78ec96990809031925x1787ba1eud40a2e240236cf17@mail.gmail.com>
+
+A number of folks on both mapnik-users@ and mapnik-devel@ have wanted to be
+able to add points dynamically, whether in C++ or in Python.
+A short while ago, I posted a patch to fix commented-out functionality in
+mapnik::memory_datasource that was needed to do so in C++ (see
+http://trac.mapnik.org/ticket/111).
+
+Here I am contributing a patch (a superset of the patch attached to ticket
+#111) which also implements the requisite Python bindings needed to utilize
+the proposed "point_datasource" functionality. Artem will probably need to
+sort through the patch and figure out how to adapt it to his larger Mapnik
+design vision, but in the meanwhile, users / developers looking for this
+functionality can use it in the meantime.
+
+The patch file is attached to this message and to
+http://trac.mapnik.org/ticket/113
+
+Sample use of this functionality is demonstrated here on github:
+    http://gist.github.com/8702#LID26
+
+The patch adds basic mapnik::query support, to allow geometry-based
+programmatic filtering, as well as a "PointDatasource" object (line 50).
+Points are added programmatically simply by calling "add_point", and linking
+the point datasource to its corresponding data layer.
+
+In this example, we plot three Mountains in Washington State.
+
+~L
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080903/4ece72d7/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: python_point_datasource.patch
+Type: application/octet-stream
+Size: 9602 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080903/4ece72d7/attachment.obj>
+
+From blake at hailmail.net  Sat Sep  6 02:23:52 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 5 Sep 2008 17:23:52 -0700
+Subject: [Mapnik-devel] Mapnik's WMS use
+In-Reply-To: <29735a280809010916s1eadd42dge65635d5b40cd2f3@mail.gmail.com>
+References: <29735a280808280710l141851eei223a3166bda17364@mail.gmail.com>
+	<9DE5CD87-0215-4919-AE68-67E58FDA1B3E@hailmail.net>
+	<29735a280808280753j74eeff22tc5c36c402c6ff81d@mail.gmail.com>
+	<D2930B2A-A09B-4113-9FBB-ED7D7947410A@hailmail.net>
+	<29735a280808290041h7e39dbcclfe244fdf7530b612@mail.gmail.com>
+	<78ec96990808291330x4ff8ec0bkd87727d7045cce65@mail.gmail.com>
+	<3D83C7AE-670E-4CCB-9A35-80AD88794879@hailmail.net>
+	<29735a280809010916s1eadd42dge65635d5b40cd2f3@mail.gmail.com>
+Message-ID: <34FDFEC5-2AA5-45A8-9156-964C827F0C03@hailmail.net>
+
+Hi Oleg,
+
+On Sep 1, 2008, at 9:16 AM, Oleg Shaniuk wrote:
+
+> Hi All,
+>
+> I'm looking at projections now: I'm trying to use osm.xml for WMS
+> script to display osm-like map via WMS requests,
+> This is how I'm doing it:
+> 1. Add Map object to my WMSFactory:
+> 2. load_map(m,'osm.xml')
+
+Great.
+
+> 3. copy all styles and layers from m into wmsfactory, using
+> register_style and .register_layer methods.
+>
+
+Interesting... yes the way that the ogcserver code works, registering  
+the styles is going to be slightly different than the examples. Paste  
+this code and I'll try to test.
+
+> i'm getting empty png on output,
+
+remind me, have you build mapnik in debug mode and what do your apache  
+logs say? Are any features being processed?
+
+> but, I believe, this is all around
+> projections, defined in osm.xml:
+> "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0
+> +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over"
+
+That looks like google spherical mercator:
+
+http://spatialreference.org/ref/user/google-projection/
+
+>
+> I'm replacing it for layer.src="+init=epsg:3395" to register layers
+> properly in wmsfactory.
+
+which is the standard world mercator, so you need instead:
+layer.src="+init=epsg:900913
+
+then make sure to add 900913 to your allowedepsgcodes in the  
+ogcserver.conf
+
+allowedepsgcodes=4316,900913,
+
+> This is wrong(but let me check, if python
+> script works, etc), but I don't know how to generate right espg
+> projection from one I have.
+>
+
+No sure what you mean...
+
+http://spatialreference.org/ref/user/google-projection/proj4/ ?
+
+> I'd like to describe this on page, Leslie just created - to let other
+> users go though projections much easier - but first, I have learn them
+> ;)
+>
+> If someone has ideas, or some docs - it would be great.
+>
+> --
+> RO
+
+
+Great, let us know if any of these ideas help. Most of all you'll need  
+to check your debug and apache error output I think.
+
+Cheers,
+
+Dane
+
+
+>
+>
+>
+> 2008/8/30 Dane Springmeyer <blake at hailmail.net>:
+>> Hi Leslie,
+>> Thanks for adding the page, I think thats a great idea. I've been  
+>> working
+>> with projections for a long time, errr...  at least long enough  
+>> that I am
+>> able to confuse most people I try to help!
+>> Oleg, have you made any progess?  Figuring out the projection of  
+>> your data
+>> and then making sure to add the epsg code to you ogcserver.conf is  
+>> all you
+>> should need to do, then you can test the new url query string.
+>> An example config with some code to turn on EPSG 3395 can be found  
+>> here:
+>> http://mapnik-utils.googlecode.com/svn/trunk/tutorials/wms/
+>> Cheers,
+>> Dane
+>>
+>>
+>>
+>>
+>> On Aug 29, 2008, at 1:30 PM, Leslie Wu wrote:
+>>
+>> I guess we could add some background GIS / info links to the Mapnik  
+>> wiki.
+>> I've been learning about projections myself recently.
+>> Perhaps a proj.4 reference and a guide such as this?
+>>  http://www.manifold.net/doc/guide_to_selecting_map_projections.htm
+>> I started a brief introduction to GIS page here:
+>>  http://trac.mapnik.org/wiki/IntroductionToGIS
+>>
+>> Please contribute :)
+>> ~L
+>>
+>> On Fri, Aug 29, 2008 at 12:41 AM, Oleg Shaniuk <gelosi at gmail.com>  
+>> wrote:
+>>>
+>>> Hi Dane,
+>>>
+>>> Thanks for tip! It's really about projections. Looks like, time to
+>>> learn more about geospatial systems.
+>>> Also, as you might guess already, [>>> from mapnik.ogcserver import
+>>> common] works well ;)
+>>>
+>>> Regards,
+>>> Oleg
+>>>
+>>> 2008/8/28 Dane Springmeyer <blake at hailmail.net>:
+>>>> Oleg,
+>>>>
+>>>> If you rebuild mapnik with the debug=y  Scons flag, mapnik should  
+>>>> output
+>>>> a
+>>>> variety of information to your apache logs such at the extent of  
+>>>> the
+>>>> data
+>>>> and the map, and how many features are processed given the  
+>>>> bounding box.
+>>>>
+>>>> I think if you do this what you will see is that no features are  
+>>>> being
+>>>> processed since they are not falling within the WMS query BBOX  
+>>>> you are
+>>>> testing.
+>>>>
+>>>> I think you must have downloaded that world_boundaries_m.shp from  
+>>>> OSM?
+>>>> If I
+>>>> run ogrinfo on that shapefile I get:
+>>>>
+>>>> $ ogrinfo world_boundaries_m.shp -so -al
+>>>> INFO: Open of `world_boundaries_m.shp'
+>>>>     using driver `ESRI Shapefile' successful.
+>>>>
+>>>> Layer name: world_boundaries_m
+>>>> Geometry: Polygon
+>>>> Feature Count: 3807
+>>>> Extent: (-20037400.000000, -19929239.110000) - (20037400.000000,
+>>>> 18375854.709643)
+>>>> Layer SRS WKT:
+>>>> PROJCS["Mercator",
+>>>>   GEOGCS["GCS_WGS_1984",
+>>>>       DATUM["WGS_1984",
+>>>>           SPHEROID["WGS_1984",6378137,298.257223563]],
+>>>>       PRIMEM["Greenwich",0],
+>>>>       UNIT["Degree",0.017453292519943295]],
+>>>>   PROJECTION["Mercator_1SP"],
+>>>>   PARAMETER["latitude_of_origin",0],
+>>>>   PARAMETER["central_meridian",0],
+>>>>   PARAMETER["scale_factor",1],
+>>>>   PARAMETER["false_easting",0],
+>>>>   PARAMETER["false_northing",0],
+>>>>   UNIT["Meter",1]]
+>>>> CAT: Real (16.0)
+>>>> FIPS_CNTRY: String (80.0)
+>>>> CNTRY_NAME: String (80.0)
+>>>>
+>>>>
+>>>> It seems like for your testing script you will need a shapefile  
+>>>> in true
+>>>> unprojected WGS 84(EPSG:4326) coordinates, like the one here:
+>>>> http://mapnik-utils.googlecode.com/svn/trunk/sample_data/
+>>>>
+>>>> Otherwise you will need to modify your script
+>>>>
+>>>> such that this line:
+>>>>
+>>>>>>> lyr = Layer('world', '+init=epsg:4326')
+>>>>
+>>>>
+>>>> becomes:
+>>>>
+>>>> lyr = Layer('world', '+init=epsg:3395')
+>>>>
+>>>>
+>>>> Which will allow the WMS server to reproject your data. So, using  
+>>>> the
+>>>> same
+>>>> query string you should get back a map in EPSG:4326.
+>>>>
+>>>> If you then want to get map tiles in mercator you'll need to add  
+>>>> a line
+>>>> to
+>>>> your ogcserver.conf like:
+>>>>
+>>>> allowedepsgcodes=4326,3395, # trailing comma is essential
+>>>>
+>>>> and then test a WMS query string with a
+>>>> bbox=-20037400.000000,-19929239.110000,  
+>>>> 20037400.000000,18375854.709643
+>>>> and
+>>>> EPSG=3395
+>>>>
+>>>> something more like:
+>>>>
+>>>>
+>>>> http://localhost/fcgi-bin/wms?LAYERS=world&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fpng&SRS=EPSG%3A3395&BBOX=-20037400.000000,-19929239.110000,%2020037400.000000,18375854.709643&WIDTH=256&HEIGHT=256
+>>>>
+>>>>
+>>>> Dane
+>>>>
+>>>>
+>>>> On Aug 28, 2008, at 7:53 AM, Oleg Shaniuk wrote:
+>>>>
+>>>>> Hi Dane,
+>>>>>
+>>>>> I've checked log, even tried to run apache in debug mode with  
+>>>>> maximum
+>>>>> verbose level (debug), but there is just nothing in log. When I  
+>>>>> set
+>>>>> incorrect coastline file name, I've got an exception; so, it has
+>>>>> access to file (I've checked rights for double-sure)
+>>>>> My system is ubuntu 8.04, apache2 ( 2.2.8 ubuntu ). Mapnik works  
+>>>>> well.
+>>>>> The confusing thing is white color - seems, it just render empty  
+>>>>> map,
+>>>>> without any styles at all...
+>>>>>
+>>>>> which reasons at all can cause such behavior?
+>>>>>
+>>>>> Regards,
+>>>>> Oleg
+>>>>>
+>>>>> 2008/8/28 Dane Springmeyer <blake at hailmail.net>:
+>>>>>>
+>>>>>> Hi Oleg,
+>>>>>>
+>>>>>> Your test configuration, including that URL, looks fine.
+>>>>>>
+>>>>>> My guess is that your apache user may not have read permissions  
+>>>>>> for
+>>>>>> '/var/mapnik/world_boundaries/world_boundaries_m'
+>>>>>> Check your apache logs and if this is the case you'll likely  
+>>>>>> see the
+>>>>>> mapnik
+>>>>>> output of 'got exception...'
+>>>>>> Or perhaps the Mapnik WMS code is failing for some other  
+>>>>>> reason, and
+>>>>>> the
+>>>>>> apache error logs should give you an idea.  If you find  
+>>>>>> anything you
+>>>>>> don't
+>>>>>> understand, paste a snippet back to the list.
+>>>>>>
+>>>>>> Also, what system are you running?
+>>>>>>
+>>>>>> Cheers,
+>>>>>>
+>>>>>> Dane
+>>>>>>
+>>>>>> On Aug 28, 2008, at 7:10 AM, Oleg Shaniuk wrote:
+>>>>>>
+>>>>>>> Hi All,
+>>>>>>>
+>>>>>>> I'm playing with mapnik's WMS features. And I'm getting empty  
+>>>>>>> image
+>>>>>>> in
+>>>>>>> browser. The interesting thing, if I use the same style and  
+>>>>>>> layer,
+>>>>>>> but
+>>>>>>> with Map object and render image in python script - it works  
+>>>>>>> correct.
+>>>>>>>
+>>>>>>> Fot the request:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> http://localhost/fcgi-bin/wms?VERSION=1.1.1&REQUEST=GetMap&LAYERS=world&FORMAT=image/png&SRS=EPSG:4326&STYLES=&&BBOX=-179,-83,179,83&EXCEPTIONS=application/vnd.ogc.se_inimage&width=600&height=300
+>>>>>>>
+>>>>>>> I'm getting empty white picture 600x300pix.
+>>>>>>>
+>>>>>>> using mapnik 5.1.0
+>>>>>>>
+>>>>>>> My scripts/config:
+>>>>>>>
+>>>>>>> ######## wms python script for fcgi #########
+>>>>>>> #!/usr/bin/python
+>>>>>>>
+>>>>>>> from mapnik.ogcserver.cgiserver import Handler
+>>>>>>> import jon.fcgi as fcgi
+>>>>>>>
+>>>>>>> import sys
+>>>>>>> sys.path.append('/var/mapnik')
+>>>>>>>
+>>>>>>> class WMSHandler(Handler):
+>>>>>>> configpath = '/var/mapnik/ogcserver.conf'
+>>>>>>>
+>>>>>>> fcgi.Server({fcgi.FCGI_RESPONDER: WMSHandler}).run()
+>>>>>>>
+>>>>>>> ######## ogcserver.config ###############
+>>>>>>>
+>>>>>>> # unchanged, except
+>>>>>>>
+>>>>>>> module=worldMapFactory
+>>>>>>>
+>>>>>>> ######## worldMapFactory.py #############
+>>>>>>>
+>>>>>>> #!/usr/bin/python
+>>>>>>>
+>>>>>>> from mapnik.ogcserver.WMS import BaseWMSFactory
+>>>>>>> from mapnik import *
+>>>>>>>
+>>>>>>> class WMSFactory(BaseWMSFactory):
+>>>>>>> def __init__(self):
+>>>>>>> BaseWMSFactory.__init__(self)
+>>>>>>> sty = Style()
+>>>>>>> rl = Rule()
+>>>>>>> rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+>>>>>>> rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+>>>>>>> sty.rules.append( rl )
+>>>>>>> self.register_style('style1', sty)
+>>>>>>> lyr = Layer('world', '+init=epsg:4326')
+>>>>>>>
+>>>>>>> lyr.title = 'World'
+>>>>>>> lyr.abstract = 'World Test'
+>>>>>>> lyr.queryable = True
+>>>>>>> lyr.datasource =
+>>>>>>> Shapefile(file='/var/mapnik/world_boundaries/ 
+>>>>>>> world_boundaries_m')
+>>>>>>> self.register_layer(lyr,'style1')
+>>>>>>> self.finalize()
+>>>>>>>
+>>>>>>>
+>>>>>>> # simple test script (works just fine):
+>>>>>>> ######## mapnikTest.py ###########
+>>>>>>>
+>>>>>>> from mapnik import *
+>>>>>>>
+>>>>>>> m = Map(600,300)
+>>>>>>> m.background = Color('steelblue')
+>>>>>>>
+>>>>>>> sty = Style()
+>>>>>>> rl = Rule()
+>>>>>>>
+>>>>>>> rl.symbols.append(PolygonSymbolizer(Color('#f2eff9')))
+>>>>>>> rl.symbols.append(LineSymbolizer(Color('steelblue'),.1))
+>>>>>>>
+>>>>>>> sty.rules.append( rl )
+>>>>>>>
+>>>>>>> m.append_style('My Style',sty)
+>>>>>>>
+>>>>>>> lyr = Layer('world', '+init=epsg:4326')
+>>>>>>>
+>>>>>>> lyr.title = 'World Borders'
+>>>>>>> lyr.abstract = 'World Test'
+>>>>>>> lyr.queryable = True
+>>>>>>> lyr.datasource =
+>>>>>>> Shapefile(file='/var/mapnik/world_boundaries/ 
+>>>>>>> world_boundaries_m')
+>>>>>>> lyr.styles.append('My Style')
+>>>>>>>
+>>>>>>> m.layers.append(lyr)
+>>>>>>>
+>>>>>>> m.zoom_to_box(lyr.envelope())
+>>>>>>> render_to_file(m, 'hello_world_in_pure_python.png')
+>>>>>>> _______________________________________________
+>>>>>>> Mapnik-devel mailing list
+>>>>>>> Mapnik-devel at lists.berlios.de
+>>>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>>>
+>>>>>>
+>>>>
+>>>>
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>>
+
+
+
+From blake at hailmail.net  Sat Sep  6 02:25:47 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 5 Sep 2008 17:25:47 -0700
+Subject: [Mapnik-devel] Support for a point_datasource -- adding points
+	dynamically in Python
+In-Reply-To: <78ec96990809031925x1787ba1eud40a2e240236cf17@mail.gmail.com>
+References: <78ec96990809031925x1787ba1eud40a2e240236cf17@mail.gmail.com>
+Message-ID: <62098A2D-9FA3-47FE-9978-93CEA9C596A7@hailmail.net>
+
+Leslie,
+
+Wow. This is great. As I noted in the trac comments (http://trac.mapnik.org/ticket/113#comment 
+:2), I was able to apply the patch without a hitch and it works great  
+with your example code.
+
++1 on this being applied
++1 on more patches from lwu :)
+
+Cheers,
+
+Dane
+
+
+On Sep 3, 2008, at 7:25 PM, Leslie Wu wrote:
+
+> A number of folks on both mapnik-users@ and mapnik-devel@ have  
+> wanted to be able to add points dynamically, whether in C++ or in  
+> Python.
+>
+> A short while ago, I posted a patch to fix commented-out  
+> functionality in mapnik::memory_datasource that was needed to do so  
+> in C++ (see http://trac.mapnik.org/ticket/111).
+>
+> Here I am contributing a patch (a superset of the patch attached to  
+> ticket #111) which also implements the requisite Python bindings  
+> needed to utilize the proposed "point_datasource" functionality.  
+> Artem will probably need to sort through the patch and figure out  
+> how to adapt it to his larger Mapnik design vision, but in the  
+> meanwhile, users / developers looking for this functionality can use  
+> it in the meantime.
+>
+> The patch file is attached to this message and to http://trac.mapnik.org/ticket/113
+>
+> Sample use of this functionality is demonstrated here on github:
+>     http://gist.github.com/8702#LID26
+>
+> The patch adds basic mapnik::query support, to allow geometry-based  
+> programmatic filtering, as well as a "PointDatasource" object (line  
+> 50). Points are added programmatically simply by calling  
+> "add_point", and linking the point datasource to its corresponding  
+> data layer.
+>
+> In this example, we plot three Mountains in Washington State.
+>
+> ~L
+> < 
+> python_point_datasource 
+> .patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080905/8492cdd3/attachment.html>
+
+From blake at hailmail.net  Sat Sep  6 02:30:43 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 5 Sep 2008 17:30:43 -0700
+Subject: [Mapnik-devel] Building with Boost 1.33
+In-Reply-To: <48B3F013.2090305@loskot.net>
+References: <48B065B0.3080104@loskot.net>	<48B20C02.2080203@gmail.com>	<48B2A58F.3000402@loskot.net>	<48B2B985.7070002@gmail.com>
+	<48B2D64B.4000902@loskot.net> <48B2F3AE.2050609@gmail.com>
+	<48B3F013.2090305@loskot.net>
+Message-ID: <52EED900-2351-4298-8BD9-E0E2F185FBE5@hailmail.net>
+
+Mateusz,
+
+What a great writeup on that bug, and the process to get Mapnik  
+installed on 7.04.
+
+I've added a few items reflecting your findings to:
+
+http://trac.mapnik.org/wiki/InstallationTroubleshooting
+and:
+http://trac.mapnik.org/wiki/UbuntuInstallation
+
+It is clear we also need to make the build error reporting more useful  
+and robust during the Scons process. I've dipped into the scons code  
+looking at how to do this and will post when I have more time to  
+investigate.
+
+Thanks!
+
+Dane
+
+
+On Aug 26, 2008, at 4:59 AM, Mateusz Loskot wrote:
+
+> Justin Bronn wrote:
+>> Mateusz Loskot wrote:
+>>> Justin,
+>>
+>>> The libboost_system looks strange to me. There is no such
+>>> package for U7.04.
+>>>
+>> That's because boost_system is only a part of Boost 1.35 and above.  
+>> [1]
+>> It's only required to compile Mapnik by certain platforms (Darwin/ 
+>> OSX)
+>> and my patch makes it optional again except for the systems that  
+>> truly
+>> require it.
+>
+> Justin,
+>
+> Understood.
+>
+> BTW, Yesterday Dane suggested to fix symlinks for Boost libs:
+>
+> sudo ln -s /usr/lib/libboost_filesystem.a /usr/lib/ 
+> libboost_filesystem-mt.a
+> sudo ln -s /usr/lib/libboost_filesystem.so
+> /usr/lib/libboost_filesystem-mt.so
+>
+> and as I write below, it is required to fix Boost detection under  
+> Ubuntu
+> 7.04.
+>
+>> Are you running on an x86-64 system?
+>
+> Nope, I use x86-32 of Ubuntu 7.04 under Parallels VM.
+>
+>> That's the only thing I can think
+>> of that changes the default locations, maybe explaining why it's  
+>> working
+>> on my VM and not on your install.  Thus, you may need to be more
+>> explicit in the compile flags to specify the exact Boost locations  
+>> then
+>> (assuming the v2 patch from #90 is applied):
+>>
+>> $ python scons/scons.py \
+>>   BOOST_TOOLKIT=gcc BOOST_VERSION=1_33_1 \
+>>   BOOST_LIBS=/usr/lib BOOST_INCLUDES=/usr/include
+>
+> I have tried all these flags, without success.
+>
+>> If you're still having trouble, then we'll have to go more in depth  
+>> and
+>> examine the way SCons is detecting the library, and try to  
+>> reproduce why
+>> it's compilation command is failing.
+>
+> Yes, and I've digged it (see below).
+>
+>> SCons tests using a C++ stub like so:
+>>
+>> #include "boost/filesystem/operations.hpp"
+>>
+>> int
+>> main() {
+>>
+>> return 0;
+>> }
+>
+> And compiling this test (as fstest.cpp) answered where is the problem,
+> at least partially:
+>
+> $ g++ -Wall -pedantic fstest.cpp
+> /usr/include/pthread.h:285: error: conflicting declaration ?typedef
+> struct pthread_st* pthread_t?
+> /usr/include/bits/pthreadtypes.h:36: error: ?pthread_t? has a previous
+> declaration as ?typedef long unsigned int pthread_t?
+> ...
+>
+> I've found that this error is caused by conflict/broken
+> packages (see [1] and [2]).
+>
+> [1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=410692
+> [2] http://tinyurl.com/libpthread-bugs
+>
+>
+> I uninstalled libpthread* stuff and now scons.py for Mapnik goes a few
+> steps further:
+>
+> $ python scons/scons.py DEBUG=y GDAL_INCLUDES=/usr/include
+> GDAL_LIBS=/usr/lib XMLPARSER=libxml2 BOOST_VERSION=1_33_1  
+> BOOST_TOOLSET=gcc
+>
+> scons: Reading SConscript files ...
+> Building on Linux ...
+> pkg-config --exists cairomm-1.0
+> Checking for C library m... yes
+> Checking for C library ltdl... yes
+> Checking for C library png... yes
+> Checking for C library tiff... yes
+> Checking for C library z... yes
+> Checking for C library jpeg... yes
+> Checking for C library proj... yes
+> Checking for C library pq... no
+> Checking for C++ library icuuc... yes
+> Checking for C++ library icudata... yes
+> Checking for C++ library gdal... no
+> Checking for C++ library boost_system-mt... no
+> Checking for C++ library boost_filesystem-mt... yes
+> Checking for C++ library boost_regex-mt... no
+> Could not find header or shared library for boost regex, exiting!
+> $
+>
+> As I mentioned, I fixed symlinks to filesystem libraries.
+> So, the report above says now that filesystem has been detected,
+> but not regex though I have *all* Boost packages installed on my  
+> U7.04.
+>
+> OK, apparently another symlinks have to be fixed:
+>
+> sudo ln -s /usr/lib/libboost_regex.a /usr/lib/libboost_regex-mt.a
+> sudo ln -s /usr/lib/libboost_regex.so /usr/lib/libboost_regex-mt.so
+>
+> ### NOTE: Only link to .so required ###
+> sudo ln -s /usr/lib/libboost_iostreams.so /usr/lib/ 
+> libboost_iostreams-mt.so
+>
+> sudo ln -s /usr/lib/libboost_program_options.a
+> /usr/lib/libboost_program_options-mt.a
+> sudo ln -s /usr/lib/libboost_program_options.so
+> /usr/lib/libboost_program_options-mt.so
+>
+> sudo ln -s /usr/lib/libboost_thread.a /usr/lib/libboost_thread-mt.a
+> sudo ln -s /usr/lib/libboost_thread.so /usr/lib/libboost_thread-mt.so
+>
+>
+> After these fixes, scons.py outputs this:
+>
+> $ python scons/scons.py DEBUG=y GDAL_INCLUDES=/usr/include
+> GDAL_LIBS=/usr/lib XMLPARSER=libxml2 BOOST_VERSION=1_33_1  
+> BOOST_TOOLSET=gcc
+> scons: Reading SConscript files ...
+> Building on Linux ...
+> pkg-config --exists cairomm-1.0
+> Checking for C library m... yes
+> Checking for C library ltdl... yes
+> Checking for C library png... yes
+> Checking for C library tiff... yes
+> Checking for C library z... yes
+> Checking for C library jpeg... yes
+> Checking for C library proj... yes
+> Checking for C library pq... no
+> Checking for C++ library icuuc... yes
+> Checking for C++ library icudata... yes
+> Checking for C++ library gdal... no
+> Checking for C++ library boost_system-mt... no
+> Checking for C++ library boost_filesystem-mt... yes
+> Checking for C++ library boost_regex-mt... yes
+> Checking for C++ library boost_iostreams-mt... yes
+> Checking for C++ library boost_program_options-mt... yes
+> Checking for C++ library boost_thread-mt... yes
+> Bindings Python version... 2.5
+> Python 2.5 prefix... /usr
+> pkg-config --exists pycairo
+> scons: done reading SConscript files.
+> scons: Building targets ...
+> ...
+> scons: done building targets.
+>
+>
+> One note, it seems that scons.py does not check for libboost_python,  
+> so
+> compilation configured as above stopped with linker error:
+>
+> /usr/bin/ld: cannot find -lboost_python-mt
+>
+> Fixing yet another symlink solves the problem:
+>
+> sudo ln -s /usr/lib/libboost_python.so /usr/lib/libboost_python-mt.so
+>
+>
+> I have no tried to run Mapnik in any way yet, just tested it  
+> configures
+> and builds without errors. Later on, I will test it in run-time and
+> report if my build works or not :-)
+>
+> Thanks all for your help!
+>
+> Best regards,
+> -- 
+> Mateusz Loskot, http://mateusz.loskot.net
+> Charter Member of OSGeo, http://osgeo.org
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From josephg at gmail.com  Mon Sep  8 04:31:19 2008
+From: josephg at gmail.com (Joseph Gentle)
+Date: Mon, 8 Sep 2008 12:31:19 +1000
+Subject: [Mapnik-devel] Mapnik weird build error
+Message-ID: <c95f07a90809071931iee0c7abl6c8a8190b3e8c204@mail.gmail.com>
+
+Hey guys. I'm trying to build mapnik 0.5.1 using scons. It gets a weird
+error (below). Has anyone seen anything like this before, or know what to
+make of it?
+
+I'm compiling on a gentoo box. I'm using python 2.5, boost 1.34 and gcc
+4.1.2. Its a 64 bit system (amd64 build profile).
+
+-J
+
+
+g++ -o bindings/python/_mapnik.so -shared
+bindings/python/mapnik_parameters.os bindings/python/mapnik_coord.os
+bindings/python/mapnik_image.os bindings/python/mapnik_featureset.os
+bindings/python/mapnik_projection.os
+bindings/python/mapnik_line_pattern_symbolizer.os
+bindings/python/mapnik_color.os bindings/python/mapnik_datasource.os
+bindings/python/mapnik_layer.os bindings/python/mapnik_point_symbolizer.os
+bindings/python/mapnik_map.os
+bindings/python/mapnik_polygon_pattern_symbolizer.os
+bindings/python/mapnik_datasource_cache.os
+bindings/python/mapnik_shield_symbolizer.os
+bindings/python/mapnik_raster_symbolizer.os
+bindings/python/mapnik_font_engine.os bindings/python/mapnik_query.os
+bindings/python/mapnik_envelope.os bindings/python/mapnik_python.os
+bindings/python/mapnik_rule.os bindings/python/mapnik_filter.os
+bindings/python/mapnik_style.os bindings/python/mapnik_line_symbolizer.os
+bindings/python/mapnik_image_view.os
+bindings/python/mapnik_polygon_symbolizer.os
+bindings/python/mapnik_stroke.os bindings/python/mapnik_text_symbolizer.os
+bindings/python/mapnik_feature.os -Lagg -Lsrc -L/usr/lib64
+-L/usr/local/lib64 -lmapnik -lpng -ljpeg
+-lboost_python-mt`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+referenced in section
+`.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of
+bindings/python/mapnik_datasource_cache.os`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+referenced in section
+       .... (A bunch more similar messages cut for brevity)
+`.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+of bindings/python/mapnik_datasource_cache.os
+collect2: ld returned 1 exit status
+scons: *** [bindings/python/_mapnik.so] Error 1
+scons: building terminated because of errors.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080908/3bf23e0f/attachment.html>
+
+From josephg at gmail.com  Mon Sep  8 05:28:35 2008
+From: josephg at gmail.com (Joseph Gentle)
+Date: Mon, 8 Sep 2008 13:28:35 +1000
+Subject: [Mapnik-devel] Mapnik weird build error
+In-Reply-To: <c95f07a90809071931iee0c7abl6c8a8190b3e8c204@mail.gmail.com>
+References: <c95f07a90809071931iee0c7abl6c8a8190b3e8c204@mail.gmail.com>
+Message-ID: <c95f07a90809072028s78ef9ee6ge8eafcfa3f2f364b@mail.gmail.com>
+
+I fixed it by doing the full build as root.
+
+I think my user's build environment is slightly different from the root
+user's. When I ran scons install the script detected the mismatch, tried to
+rebuild the effected files and failed because obscure boost magic didn't
+match.
+
+... But its working now - thanks for your help guys :)
+
+-J
+
+
+On Mon, Sep 8, 2008 at 12:31 PM, Joseph Gentle <josephg at gmail.com> wrote:
+
+> Hey guys. I'm trying to build mapnik 0.5.1 using scons. It gets a weird
+> error (below). Has anyone seen anything like this before, or know what to
+> make of it?
+>
+> I'm compiling on a gentoo box. I'm using python 2.5, boost 1.34 and gcc
+> 4.1.2. Its a 64 bit system (amd64 build profile).
+>
+> -J
+>
+>
+> g++ -o bindings/python/_mapnik.so -shared
+> bindings/python/mapnik_parameters.os bindings/python/mapnik_coord.os
+> bindings/python/mapnik_image.os bindings/python/mapnik_featureset.os
+> bindings/python/mapnik_projection.os
+> bindings/python/mapnik_line_pattern_symbolizer.os
+> bindings/python/mapnik_color.os bindings/python/mapnik_datasource.os
+> bindings/python/mapnik_layer.os bindings/python/mapnik_point_symbolizer.os
+> bindings/python/mapnik_map.os
+> bindings/python/mapnik_polygon_pattern_symbolizer.os
+> bindings/python/mapnik_datasource_cache.os
+> bindings/python/mapnik_shield_symbolizer.os
+> bindings/python/mapnik_raster_symbolizer.os
+> bindings/python/mapnik_font_engine.os bindings/python/mapnik_query.os
+> bindings/python/mapnik_envelope.os bindings/python/mapnik_python.os
+> bindings/python/mapnik_rule.os bindings/python/mapnik_filter.os
+> bindings/python/mapnik_style.os bindings/python/mapnik_line_symbolizer.os
+> bindings/python/mapnik_image_view.os
+> bindings/python/mapnik_polygon_symbolizer.os
+> bindings/python/mapnik_stroke.os bindings/python/mapnik_text_symbolizer.os
+> bindings/python/mapnik_feature.os -Lagg -Lsrc -L/usr/lib64
+> -L/usr/local/lib64 -lmapnik -lpng -ljpeg
+> -lboost_python-mt`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> referenced in section
+> `.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+> `.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> of
+> bindings/python/mapnik_datasource_cache.os`.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> referenced in section
+>        .... (A bunch more similar messages cut for brevity)
+> `.gnu.linkonce.r._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> of bindings/python/mapnik_datasource_cache.os: defined in discarded section
+> `.gnu.linkonce.t._ZNSt8_Rb_treeIKSsSt4pairIS0_N5boost7variantIidSsNS2_6detail7variant5void_ES6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_S6_EEESt10_Select1stIS8_ESt4lessIS0_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E'
+> of bindings/python/mapnik_datasource_cache.os
+> collect2: ld returned 1 exit status
+> scons: *** [bindings/python/_mapnik.so] Error 1
+> scons: building terminated because of errors.
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080908/7e73fbe4/attachment.html>
+
+From blake at hailmail.net  Mon Sep  8 20:03:12 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 8 Sep 2008 11:03:12 -0700
+Subject: [Mapnik-devel] http://trac.mapnik.org/register
+Message-ID: <2F7F8DDC-D254-4F76-887F-0344DC1F055A@hailmail.net>
+
+Trac registration has been restored, so new trac users can now  
+register themselves at:
+
+http://trac.mapnik.org/register
+
+Cheers,
+
+Dane
+
+
+From blake at hailmail.net  Tue Sep  9 02:35:58 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 8 Sep 2008 17:35:58 -0700
+Subject: [Mapnik-devel] Trac Syntax highlighting and Table of Contents
+Message-ID: <11356C15-81BD-4646-A994-4485B7D85F63@hailmail.net>
+
+Mapnik Trac Users,
+
+We've now got two new plugins installed at trac.mapnik.org, that you  
+should utilize if you'd like.
+
+1) Pygments Syntax Highlighting.
+This is for code blocks. Add a pygments lexer hint at the top of each  
+code block like:
+
+{{{
+#!python
+import mapnik
+}}}
+
+{{{
+#!xml
+<TextSymbolizer />
+}}}
+
+{{{
+#!sh
+python scons/scons.py
+}}}
+
+2) Table of Contents
+
+For any page you create that you think might benefit from a TOC  
+listing just add:
+
+[[TOC]]
+
+For more options see: http://trac-hacks.org/wiki/TocMacro
+
+
+
+Cheers,
+
+Dane
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080908/5649fc81/attachment.html>
+
+From josephg at gmail.com  Fri Sep 12 06:03:25 2008
+From: josephg at gmail.com (Joseph Gentle)
+Date: Fri, 12 Sep 2008 14:03:25 +1000
+Subject: [Mapnik-devel] My maps have no content!
+Message-ID: <c95f07a90809112103j6933e047v7ca4577744af0cbf@mail.gmail.com>
+
+Hi!
+
+I'm trying to render some openstreetmap tiles using the instructions here:
+http://wiki.openstreetmap.org/index.php/Mapnik
+
+... However, the tiles keep rendering with none of the OSM data. They have
+all the world boundaries just fine; but no streets.
+
+My database seems fine - it has a bunch of data in it and mapnik sure seems
+to be talking to the database.
+
+Does anyone have any ideas? I've tried using different tile data sets (just
+the australia set, or using the planet data set then importing a bounding
+box from it).
+
+Is there any nice way to get more debugging information out of mapnik? If
+the queries were failing I assume it would bitch and moan...
+
+-J
+
+
+-------------- the technical details -----------------
+
+I'm doing it on a gentoo box using postgresql 8.0.15, mapnik 0.5.1 and
+postgis 1.3.1
+
+Mapnik said this when it compiled:
+
+# scons/scons.py
+scons: Reading SConscript files ...
+Building on Linux ...
+Checking for C library m... (cached) yes
+Checking for C library ltdl... (cached) yes
+Checking for C library png... (cached) yes
+Checking for C library tiff... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C library jpeg... (cached) yes
+Checking for C library proj... (cached) yes
+Checking for C library iconv... (cached) no
+Checking for C library pq... (cached) yes
+Checking for C++ library gdal... (cached) no
+Checking for C++ library boost_filesystem-mt... (cached) yes
+Checking for C++ library boost_regex-mt... (cached) yes
+Checking for C++ library boost_iostreams-mt... (cached) yes
+Checking for C++ library boost_program_options-mt... (cached) yes
+Checking for C++ library boost_thread-mt... (cached) yes
+Bindings Python version... 2.5
+
+
+I created the postgresql database with user 'osm' database name 'gis':
+
+$ psql -U osm -d gis
+Welcome to psql 8.0.15, the PostgreSQL interactive terminal.
+
+gis=> \d
+              List of relations
+ Schema |        Name        | Type  | Owner
+--------+--------------------+-------+-------
+ public | geometry_columns   | table | osm
+ public | planet_osm_line    | table | osm
+ public | planet_osm_point   | table | osm
+ public | planet_osm_polygon | table | osm
+ public | planet_osm_roads   | table | osm
+ public | spatial_ref_sys    | table | osm
+(6 rows)
+
+
+Imported the data:
+$ ~/osm2pgsql/osm2pgsql -c -m -d gis -U osm -b 151.0,-33.5,151.25,-33.0
+planet-080813.osm.bz2
+osm2pgsql SVN version 0.55-20080908 $Rev: 10464 $
+
+Using projection SRS 900913 (Spherical Mercator)
+Applying Bounding box: 151.000000,-33.500000 to 151.250000,-33.000000
+Setting up table: planet_osm_point
+Setting up table: planet_osm_line
+Setting up table: planet_osm_polygon
+Setting up table: planet_osm_roads
+Mid: Ram, scale=100
+
+Reading in file: planet-080813.osm.bz2
+Processing: Node(258575k) Way(20937k) Relation(20k)
+Node stats: total(258575105), max(287470135)
+Way stats: total(20937069), max(26250748)
+Relation stats: total(20627), max(27504)
+
+Writing way(1614k)
+
+
+.... Which is in my database:
+
+gis=> SELECT count(*) FROM planet_osm_point;
+ count
+-------
+    37
+(1 row)
+
+gis=> SELECT count(*) FROM planet_osm_line;
+ count
+-------
+    76
+(1 row)
+
+gis=> SELECT count(*) FROM geometry_columns;
+ count
+-------
+     4
+(1 row)
+
+
+setup the set-mapnik-env thing:
+export MAPNIK_DBNAME='gis'
+export MAPNIK_DBUSER='osm'
+
+$ rm -rf ../tiles && ./generate_tiles.py
+render_tiles( (151.0, -33.5, 151.25, -33.0) /mnt/raid/work/maps/osm.xml
+/mnt/raid/work/maps/tiles/ 12 12 aus )
+aus [ 12 - 12 ]:  12 3766 2446 p: (150.99609375, -33.063924198120638)
+(151.083984375, -32.990235559651069)
+aus [ 12 - 12 ]:  12 3766 2447 p: (150.99609375, -33.137551192346145)
+(151.083984375, -33.063924198120638)
+aus [ 12 - 12 ]:  12 3766 2448 p: (150.99609375, -33.21111647241684)
+(151.083984375, -33.137551192346145)
+aus [ 12 - 12 ]:  12 3766 2449 p: (150.99609375, -33.284619968887682)
+(151.083984375, -33.21111647241684)
+...... and the generated tiles have no content!
+
+
+I had debugging on in my postgresql server so I could see the queries.
+
+LOG:  connection received: host=[local] port=
+LOG:  connection authorized: user=osm database=gis
+^-- mapnik connects
+LOG:  statement: select asbinary(way) as geom,"highway","tunnel" from
+(select * from planet_osm_line order by z_order) as roads where way &&
+setSRID('BOX3D(16823484.17745415 -3957603.576493287,16843052.05669516
+-3938035.697252281)'::box3d,900913)
+^-- a bunch of things like this. Its clearly talking to the database
+
+
+... Then I can replay the queries:
+
+gis=> select asbinary(way) as geom,"highway","tunnel" from (select * from
+planet_osm_line order by z_order) as roads where way &&
+setSRID('BOX3D(16823484.17745415 -3957603.576493287,16843052.05669516
+-3938035.697252281)'::box3d,900913)
+....
+(38 rows)
+
+And I clearly get data for at least some of the queries.
+
+
+So whats going wrong ?! I don't get it.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080912/e2d5489a/attachment.html>
+
+From my-soft at inbox.ru  Fri Sep 12 07:08:14 2008
+From: my-soft at inbox.ru (=?koi8-r?Q?=E1=C4=D2=C5=CA?=)
+Date: Fri, 12 Sep 2008 09:08:14 +0400
+Subject: [Mapnik-devel] mapnik with wxpython integration
+Message-ID: <E1Ke0tC-000AQn-00.my-soft-inbox-ru@f76.mail.ru>
+
+Hello all.
+Does anyone experience integration mapnik c wxpython. For example render in wximage or through the buffer?
+
+
+
+From josephg at gmail.com  Fri Sep 12 21:10:09 2008
+From: josephg at gmail.com (Joseph Gentle)
+Date: Sat, 13 Sep 2008 05:10:09 +1000
+Subject: [Mapnik-devel] My maps have no content!
+In-Reply-To: <c95f07a90809112103j6933e047v7ca4577744af0cbf@mail.gmail.com>
+References: <c95f07a90809112103j6933e047v7ca4577744af0cbf@mail.gmail.com>
+Message-ID: <c95f07a90809121210v762953frfcac9891db366593@mail.gmail.com>
+
+I tracked down the problem by following this guide:
+http://wiki.openstreetmap.org/index.php/Deploying_your_own_Slippy_Map_Gentoo
+
+Basically, I needed to be using postgresql 8.3 instead of 8.0. (Either
+that or I needed to do a corresponding upgrade of postgis).
+
+Its strange though - before I upgraded postgresql my database was
+still successfully executing queries and recieving data. I think there
+might be a bug in mapnik.
+
+Regardless, its all working now. Thanks for your help guys.
+
+-J
+
+
+On Fri, Sep 12, 2008 at 2:03 PM, Joseph Gentle <josephg at gmail.com> wrote:
+> Hi!
+>
+> I'm trying to render some openstreetmap tiles using the instructions here:
+> http://wiki.openstreetmap.org/index.php/Mapnik
+>
+> ... However, the tiles keep rendering with none of the OSM data. They have
+> all the world boundaries just fine; but no streets.
+>
+> My database seems fine - it has a bunch of data in it and mapnik sure seems
+> to be talking to the database.
+>
+> Does anyone have any ideas? I've tried using different tile data sets (just
+> the australia set, or using the planet data set then importing a bounding
+> box from it).
+>
+> Is there any nice way to get more debugging information out of mapnik? If
+> the queries were failing I assume it would bitch and moan...
+>
+> -J
+>
+>
+> -------------- the technical details -----------------
+>
+> I'm doing it on a gentoo box using postgresql 8.0.15, mapnik 0.5.1 and
+> postgis 1.3.1
+>
+> Mapnik said this when it compiled:
+>
+> # scons/scons.py
+> scons: Reading SConscript files ...
+> Building on Linux ...
+> Checking for C library m... (cached) yes
+> Checking for C library ltdl... (cached) yes
+> Checking for C library png... (cached) yes
+> Checking for C library tiff... (cached) yes
+> Checking for C library z... (cached) yes
+> Checking for C library jpeg... (cached) yes
+> Checking for C library proj... (cached) yes
+> Checking for C library iconv... (cached) no
+> Checking for C library pq... (cached) yes
+> Checking for C++ library gdal... (cached) no
+> Checking for C++ library boost_filesystem-mt... (cached) yes
+> Checking for C++ library boost_regex-mt... (cached) yes
+> Checking for C++ library boost_iostreams-mt... (cached) yes
+> Checking for C++ library boost_program_options-mt... (cached) yes
+> Checking for C++ library boost_thread-mt... (cached) yes
+> Bindings Python version... 2.5
+>
+>
+> I created the postgresql database with user 'osm' database name 'gis':
+>
+> $ psql -U osm -d gis
+> Welcome to psql 8.0.15, the PostgreSQL interactive terminal.
+>
+> gis=> \d
+>               List of relations
+>  Schema |        Name        | Type  | Owner
+> --------+--------------------+-------+-------
+>  public | geometry_columns   | table | osm
+>  public | planet_osm_line    | table | osm
+>  public | planet_osm_point   | table | osm
+>  public | planet_osm_polygon | table | osm
+>  public | planet_osm_roads   | table | osm
+>  public | spatial_ref_sys    | table | osm
+> (6 rows)
+>
+>
+> Imported the data:
+> $ ~/osm2pgsql/osm2pgsql -c -m -d gis -U osm -b 151.0,-33.5,151.25,-33.0
+> planet-080813.osm.bz2
+> osm2pgsql SVN version 0.55-20080908 $Rev: 10464 $
+>
+> Using projection SRS 900913 (Spherical Mercator)
+> Applying Bounding box: 151.000000,-33.500000 to 151.250000,-33.000000
+> Setting up table: planet_osm_point
+> Setting up table: planet_osm_line
+> Setting up table: planet_osm_polygon
+> Setting up table: planet_osm_roads
+> Mid: Ram, scale=100
+>
+> Reading in file: planet-080813.osm.bz2
+> Processing: Node(258575k) Way(20937k) Relation(20k)
+> Node stats: total(258575105), max(287470135)
+> Way stats: total(20937069), max(26250748)
+> Relation stats: total(20627), max(27504)
+>
+> Writing way(1614k)
+>
+>
+> .... Which is in my database:
+>
+> gis=> SELECT count(*) FROM planet_osm_point;
+>  count
+> -------
+>     37
+> (1 row)
+>
+> gis=> SELECT count(*) FROM planet_osm_line;
+>  count
+> -------
+>     76
+> (1 row)
+>
+> gis=> SELECT count(*) FROM geometry_columns;
+>  count
+> -------
+>      4
+> (1 row)
+>
+>
+> setup the set-mapnik-env thing:
+> export MAPNIK_DBNAME='gis'
+> export MAPNIK_DBUSER='osm'
+>
+> $ rm -rf ../tiles && ./generate_tiles.py
+> render_tiles( (151.0, -33.5, 151.25, -33.0) /mnt/raid/work/maps/osm.xml
+> /mnt/raid/work/maps/tiles/ 12 12 aus )
+> aus [ 12 - 12 ]:  12 3766 2446 p: (150.99609375, -33.063924198120638)
+> (151.083984375, -32.990235559651069)
+> aus [ 12 - 12 ]:  12 3766 2447 p: (150.99609375, -33.137551192346145)
+> (151.083984375, -33.063924198120638)
+> aus [ 12 - 12 ]:  12 3766 2448 p: (150.99609375, -33.21111647241684)
+> (151.083984375, -33.137551192346145)
+> aus [ 12 - 12 ]:  12 3766 2449 p: (150.99609375, -33.284619968887682)
+> (151.083984375, -33.21111647241684)
+> ...... and the generated tiles have no content!
+>
+>
+> I had debugging on in my postgresql server so I could see the queries.
+>
+> LOG:  connection received: host=[local] port=
+> LOG:  connection authorized: user=osm database=gis
+> ^-- mapnik connects
+> LOG:  statement: select asbinary(way) as geom,"highway","tunnel" from
+> (select * from planet_osm_line order by z_order) as roads where way &&
+> setSRID('BOX3D(16823484.17745415 -3957603.576493287,16843052.05669516
+> -3938035.697252281)'::box3d,900913)
+> ^-- a bunch of things like this. Its clearly talking to the database
+>
+>
+> ... Then I can replay the queries:
+>
+> gis=> select asbinary(way) as geom,"highway","tunnel" from (select * from
+> planet_osm_line order by z_order) as roads where way &&
+> setSRID('BOX3D(16823484.17745415 -3957603.576493287,16843052.05669516
+> -3938035.697252281)'::box3d,900913)
+> ....
+> (38 rows)
+>
+> And I clearly get data for at least some of the queries.
+>
+>
+> So whats going wrong ?! I don't get it.
+>
+
+
+From doude63 at freenet.de  Sun Sep 14 23:25:42 2008
+From: doude63 at freenet.de (Mohamed SAAD)
+Date: Sun, 14 Sep 2008 23:25:42 +0200
+Subject: [Mapnik-devel] arabic Rendering in close areas
+Message-ID: <200809142325.42270.doude63@freenet.de>
+
+I have noticed a different rendering with Mapnik when using arabic tag names 
+for linear ways and closed ways
+example see here
+http://www.openstreetmap.org/?lat=33.89622&lon=35.48974&zoom=17
+there is a green area and an Hospital
+both are tagged 
+name:en Sanayeh Parc
+name: ????? ???????
+for the green park
+and
+name:en=American University Hospital
+name=?????? ??????? ?????????
+around them are normal street tagging e.g. rendered correctly in arabic
+now the problem is that for those and many other closed areas like buildings, 
+parcs , industry zones etc.. the rendering of arabic is reversed like this
+if it is tagged ?????? ??????? ????????? = American University Hospital in 
+Potlatch then it is rendered on a multiline in the other direction (from left 
+to right ) and thus it is rendered
+?????????
+???????
+??????
+and the tag : ????? ???????
+is rendered
+???????
+?????
+is it a problem that somebody can fix ?
+Thanks
+
+
+From kleptog at gmail.com  Tue Sep 16 22:50:13 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Tue, 16 Sep 2008 22:50:13 +0200
+Subject: [Mapnik-devel] arabic Rendering in close areas
+In-Reply-To: <200809142325.42270.doude63@freenet.de>
+References: <200809142325.42270.doude63@freenet.de>
+Message-ID: <2fc2c5f10809161350na1044b4x3879bc6b435b78eb@mail.gmail.com>
+
+Interesting problem. ISTM the fix is in the placement finder and
+working out where the breaks need to be. A quick solution would be to
+simply reverse the order of the rows, if I understand correctly.
+However, I don't quite see how to tell when the text is reight-to-left
+instead of left-to-right... What if you have mixed text?
+
+
+2008/9/14 Mohamed SAAD <doude63 at freenet.de>:
+> I have noticed a different rendering with Mapnik when using arabic tag names
+> for linear ways and closed ways
+> example see here
+> http://www.openstreetmap.org/?lat=33.89622&lon=35.48974&zoom=17
+> there is a green area and an Hospital
+> both are tagged
+> name:en Sanayeh Parc
+> name: ????? ???????
+> for the green park
+> and
+> name:en=American University Hospital
+> name=?????? ??????? ?????????
+> around them are normal street tagging e.g. rendered correctly in arabic
+> now the problem is that for those and many other closed areas like buildings,
+> parcs , industry zones etc.. the rendering of arabic is reversed like this
+> if it is tagged ?????? ??????? ????????? = American University Hospital in
+> Potlatch then it is rendered on a multiline in the other direction (from left
+> to right ) and thus it is rendered
+> ?????????
+> ???????
+> ??????
+> and the tag : ????? ???????
+> is rendered
+> ???????
+> ?????
+> is it a problem that somebody can fix ?
+> Thanks
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+From artem at mapnik.org  Wed Sep 17 22:13:47 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 17 Sep 2008 21:13:47 +0100
+Subject: [Mapnik-devel] arabic Rendering in close areas
+In-Reply-To: <2fc2c5f10809161350na1044b4x3879bc6b435b78eb@mail.gmail.com>
+References: <200809142325.42270.doude63@freenet.de>
+	<2fc2c5f10809161350na1044b4x3879bc6b435b78eb@mail.gmail.com>
+Message-ID: <51698CE8-914A-4C36-9B41-68E503A33D1A@mapnik.org>
+
+
+On 16 Sep 2008, at 21:50, Martijn van Oosterhout wrote:
+
+> Interesting problem. ISTM the fix is in the placement finder and
+> working out where the breaks need to be. A quick solution would be to
+> simply reverse the order of the rows, if I understand correctly.
+> However, I don't quite see how to tell when the text is reight-to-left
+> instead of left-to-right... What if you have mixed text?
+
+Yep, mixed text is a bit tricky. I think ICU has some ways to help  
+with layout .. needs checking
+Artem
+>
+>
+>
+> 2008/9/14 Mohamed SAAD <doude63 at freenet.de>:
+>> I have noticed a different rendering with Mapnik when using arabic  
+>> tag names
+>> for linear ways and closed ways
+>> example see here
+>> http://www.openstreetmap.org/?lat=33.89622&lon=35.48974&zoom=17
+>> there is a green area and an Hospital
+>> both are tagged
+>> name:en Sanayeh Parc
+>> name: ????? ???????
+>> for the green park
+>> and
+>> name:en=American University Hospital
+>> name=?????? ??????? ?????????
+>> around them are normal street tagging e.g. rendered correctly in  
+>> arabic
+>> now the problem is that for those and many other closed areas like  
+>> buildings,
+>> parcs , industry zones etc.. the rendering of arabic is reversed  
+>> like this
+>> if it is tagged ?????? ??????? ????????? =  
+>> American University Hospital in
+>> Potlatch then it is rendered on a multiline in the other direction  
+>> (from left
+>> to right ) and thus it is rendered
+>> ?????????
+>> ???????
+>> ??????
+>> and the tag : ????? ???????
+>> is rendered
+>> ???????
+>> ?????
+>> is it a problem that somebody can fix ?
+>> Thanks
+>>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+>
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+
+From edwin at mobidapt.com  Thu Sep 18 11:09:45 2008
+From: edwin at mobidapt.com (Edwin van Ouwerkerk Moria)
+Date: Thu, 18 Sep 2008 11:09:45 +0200
+Subject: [Mapnik-devel] mapnik svn down?
+Message-ID: <48D21AD9.1060706@mobidapt.com>
+
+Hello!
+
+I'm trying to do a checkout of the mapnik sources (I want to try the
+WMS-server code), but if I run 'svn co svn://svn.mapnik.org/trunk
+mapnik' the server replies 'Connection refused'
+
+Is this not the right way to get the trunk-sources? The only other
+downloads I could find were the 0.5.1 sources.
+
+Regards,
+  Edwin
+
+
+
+From artem at mapnik.org  Thu Sep 18 11:38:39 2008
+From: artem at mapnik.org (artem at mapnik.org)
+Date: Thu, 18 Sep 2008 10:38:39 +0100
+Subject: [Mapnik-devel] mapnik svn down?
+In-Reply-To: <48D21AD9.1060706@mobidapt.com>
+References: <48D21AD9.1060706@mobidapt.com>
+Message-ID: <1221730719.48d2219fdbb29@webmail.freedom2surf.net>
+
+Quoting Edwin van Ouwerkerk Moria <edwin at mobidapt.com>:
+
+> Hello!
+>
+> I'm trying to do a checkout of the mapnik sources (I want to try the
+> WMS-server code), but if I run 'svn co svn://svn.mapnik.org/trunk
+> mapnik' the server replies 'Connection refused'
+>
+> Is this not the right way to get the trunk-sources? The only other
+> downloads I could find were the 0.5.1 sources.
+>
+> Regards,
+>   Edwin
+
+Hi Edwin,
+
+Thanks, it is up now.
+
+Artem
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+
+
+
+
+From openstreetmap at brian.quinion.co.uk  Thu Sep 18 20:30:48 2008
+From: openstreetmap at brian.quinion.co.uk (Brian Quinion)
+Date: Thu, 18 Sep 2008 19:30:48 +0100
+Subject: [Mapnik-devel] patch for optional opacity for point_symbolizer
+In-Reply-To: <da9d28170809181128j3efaf0cexc9a61469d3c3dfbb@mail.gmail.com>
+References: <da9d28170809181128j3efaf0cexc9a61469d3c3dfbb@mail.gmail.com>
+Message-ID: <da9d28170809181130q331875bct7fd69272505b59c@mail.gmail.com>
+
+Hi,
+
+The attached adds an optional opacity parameter for the point
+symbolizer.  Defaults to the current 100% opaque.
+
+Cheers,
+--
+ Brian
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: pointsymblizeropacity.patch
+Type: application/octet-stream
+Size: 3850 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080918/0743569f/attachment.obj>
+
+From artem at mapnik.org  Fri Sep 19 10:29:14 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 19 Sep 2008 09:29:14 +0100
+Subject: [Mapnik-devel] patch for optional opacity for point_symbolizer
+In-Reply-To: <da9d28170809181130q331875bct7fd69272505b59c@mail.gmail.com>
+References: <da9d28170809181128j3efaf0cexc9a61469d3c3dfbb@mail.gmail.com>
+	<da9d28170809181130q331875bct7fd69272505b59c@mail.gmail.com>
+Message-ID: <1107479C-7AE8-4273-861E-EAF35DE401FB@mapnik.org>
+
+
+On 18 Sep 2008, at 19:30, Brian Quinion wrote:
+
+> Hi,
+>
+> The attached adds an optional opacity parameter for the point
+> symbolizer.  Defaults to the current 100% opaque.
+>
+> Cheers,
+> --
+> Brian
+
+
+Hi Brian,
+Thanks for the patch - applied in r743
+I'll test it over this weekend.
+Cheers
+Artem
+>
+> <
+> pointsymblizeropacity
+> .patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From albergimenez at gmail.com  Mon Sep 22 18:16:30 2008
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E.?=)
+Date: Mon, 22 Sep 2008 12:16:30 -0400
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+Message-ID: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+
+Hello list,
+
+Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be
+feasible to write a pluggin like this?
+The GDAL/OGR library should provide a very useful abstraction feature for
+reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+
+I'm looking forward to get my hands on this ... and also write an GDAL/OGR
+driver for OSM like format.
+
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080922/176a5a1e/attachment.html>
+
+From jbronn at gmail.com  Mon Sep 22 18:21:45 2008
+From: jbronn at gmail.com (Justin Bronn)
+Date: Mon, 22 Sep 2008 11:21:45 -0500
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+Message-ID: <48D7C619.50107@gmail.com>
+
+> Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be 
+> feasible to write a pluggin like this?
+> The GDAL/OGR library should provide a very useful abstraction feature 
+> for reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+> 
+> I'm looking forward to get my hands on this ... and also write an 
+> GDAL/OGR driver for OSM like format.
+> 
+
+Alberto,
+
+It already exists, and is in trunk (as well as 0.5):
+
+http://trac.mapnik.org/browser/trunk/plugins/input/gdal
+
+Regards,
+-Justin
+
+
+From albergimenez at gmail.com  Mon Sep 22 18:33:14 2008
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E.?=)
+Date: Mon, 22 Sep 2008 12:33:14 -0400
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <48D7C619.50107@gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+	<48D7C619.50107@gmail.com>
+Message-ID: <2e06a0160809220933h76b26244tf34feeadb5895dde@mail.gmail.com>
+
+Justin,
+
+Thanks for the reply!, but maybe I should have referenced the ask with the
+word OGR rather than GDAL/OGR for avoiding confusions. OGR it's the
+abstraction library for vector file formats and GDAL for raster file format,
+so they're diferent.
+
+GDAL only reads tiff, png, jpeg inputs files, but OGR provides conectivity
+with various datasources in vector format, like ESRI Shapefile, PostGIS,
+SQLite, GeoJSON, GPX, GML, etc. (http://www.gdal.org/ogr/ogr_formats.html).
+
+
+2008/9/22 Justin Bronn <jbronn at gmail.com>
+
+> > Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be
+> > feasible to write a pluggin like this?
+> > The GDAL/OGR library should provide a very useful abstraction feature
+> > for reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+> >
+> > I'm looking forward to get my hands on this ... and also write an
+> > GDAL/OGR driver for OSM like format.
+> >
+>
+> Alberto,
+>
+> It already exists, and is in trunk (as well as 0.5):
+>
+> http://trac.mapnik.org/browser/trunk/plugins/input/gdal
+>
+> Regards,
+> -Justin
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+Cheers.
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080922/b0e20b6e/attachment.html>
+
+From jbronn at gmail.com  Mon Sep 22 18:34:31 2008
+From: jbronn at gmail.com (Justin Bronn)
+Date: Mon, 22 Sep 2008 11:34:31 -0500
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+Message-ID: <48D7C917.6060500@gmail.com>
+
+It looks like the GDAL layer is for raster support only.  I was confused 
+because one of the source files is named "gdal_datasource.cpp" -- 
+`DataSource` is an OGR naming convention whereas `Dataset` is used for GDAL.
+
+My apologies for the confusion.
+
+-Justin
+
+
+From Nick.Whitelegg at solent.ac.uk  Mon Sep 22 18:40:38 2008
+From: Nick.Whitelegg at solent.ac.uk (Nick Whitelegg)
+Date: Mon, 22 Sep 2008 17:40:38 +0100
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <48D7C619.50107@gmail.com>
+Message-ID: <OFC57F8B57.AF7775EE-ON802574CC.005B8940-802574CC.005B9C42@solent-university.ac.uk>
+
+There is also an OSM plugin at:
+
+http://trac.mapnik.org/browser/trunk/plugins/input/osm
+
+It's a bit rough round the edges but basically works.
+
+Nick
+
+
+From blake at hailmail.net  Mon Sep 22 19:10:18 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 22 Sep 2008 10:10:18 -0700
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+Message-ID: <F835A0AB-9415-405F-8C60-8535EFA9254A@hailmail.net>
+
+Alberto,
+
+An OGR plugin would be an excellent feature.
+
+I wonder whether it would be equally useful in the short-term (and  
+easier to implement), an extension of mapnik's memory_datasource to  
+support line and polygon geometries (single and multi). Currently,  
+based on lwu's patch (https://lists.berlios.de/pipermail/mapnik-devel/2008-September/000710.html 
+), PointDatasource() can be used to dynamically feed in geometries and  
+attributes. I've used GeoDjango to produce these, since GeoDjango  
+already offers an excellent python interface to all ogr formats, but  
+the native python bindings of gdal/ogr would likely work well too.
+
+What do you think?  Have you rebuilt yet with Lwu's patch?
+
+Dane
+
+
+On Sep 22, 2008, at 9:16 AM, Alberto Gim?nez E. wrote:
+
+> Hello list,
+>
+> Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be  
+> feasible to write a pluggin like this?
+> The GDAL/OGR library should provide a very useful abstraction  
+> feature for reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+>
+> I'm looking forward to get my hands on this ... and also write an  
+> GDAL/OGR driver for OSM like format.
+>
+> -- 
+> Alberto Gim?nez E.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From albergimenez at gmail.com  Mon Sep 22 20:53:21 2008
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E.?=)
+Date: Mon, 22 Sep 2008 14:53:21 -0400
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <F835A0AB-9415-405F-8C60-8535EFA9254A@hailmail.net>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+	<F835A0AB-9415-405F-8C60-8535EFA9254A@hailmail.net>
+Message-ID: <2e06a0160809221153g477bd9e0w8e654f6d4b9e5ebc@mail.gmail.com>
+
+Dane,
+
+2008/9/22 Dane Springmeyer <blake at hailmail.net>
+
+>
+> What do you think?  Have you rebuilt yet with Lwu's patch?
+>
+>
+I've read about that but I didn't test it yet.  I'll be very useful too, but
+it will only work with python code. I'm currently using an xml file for
+render my maps.
+
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080922/78b45b07/attachment.html>
+
+From albergimenez at gmail.com  Mon Sep 22 21:10:20 2008
+From: albergimenez at gmail.com (=?ISO-8859-1?Q?Alberto_Gim=E9nez_E.?=)
+Date: Mon, 22 Sep 2008 15:10:20 -0400
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <OFC57F8B57.AF7775EE-ON802574CC.005B8940-802574CC.005B9C42@solent-university.ac.uk>
+References: <48D7C619.50107@gmail.com>
+	<OFC57F8B57.AF7775EE-ON802574CC.005B8940-802574CC.005B9C42@solent-university.ac.uk>
+Message-ID: <2e06a0160809221210r7c9ff23ese256683d3ee74725@mail.gmail.com>
+
+Nick,
+
+I've noticed that, It seems very useful, but I have some concerns about
+that. XML is for exchange information and is well used for downloading and
+uploading data from and to OSM. But it's not very practical to use de OSM
+XML data format for rendering purposes. You can't use an apropiate indexing
+scheme to get things fast, and also when the larger the file the longest the
+rendering process will be.
+
+Taking into account storing your data in PostgreSQL, and then render your
+maps, I think that it's not very extensible to have 41 attributes fields
+(for each Map Feature [key,value] pair needed for rendering), and when you
+need a new one, you have to add another into your table.
+
+2008/9/22 Nick Whitelegg <Nick.Whitelegg at solent.ac.uk>
+
+> There is also an OSM plugin at:
+>
+> http://trac.mapnik.org/browser/trunk/plugins/input/osm
+>
+> It's a bit rough round the edges but basically works.
+>
+> Nick
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+Regards.
+-- 
+Alberto Gim?nez E.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080922/e4fce339/attachment.html>
+
+From blake at hailmail.net  Mon Sep 22 21:10:37 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Mon, 22 Sep 2008 12:10:37 -0700
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <2e06a0160809221153g477bd9e0w8e654f6d4b9e5ebc@mail.gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+	<F835A0AB-9415-405F-8C60-8535EFA9254A@hailmail.net>
+	<2e06a0160809221153g477bd9e0w8e654f6d4b9e5ebc@mail.gmail.com>
+Message-ID: <F7050080-48F3-46B5-A6F1-56222366BB4C@hailmail.net>
+
+Alberto,
+
+On Sep 22, 2008, at 11:53 AM, Alberto Gim?nez E. wrote:
+
+> Dane,
+>
+> 2008/9/22 Dane Springmeyer <blake at hailmail.net>
+>
+> What do you think?  Have you rebuilt yet with Lwu's patch?
+>
+>
+> I've read about that but I didn't test it yet.
+
+okay.
+
+> I'll be very useful too, but it will only work with python code.
+
+Good point, although you can still keep your styles in the XML. But,  
+yes the datasource LAYER still needs to be created in memory in the  
+python code.
+
+I bet that the memory datasource support could be added to the XML,  
+but it could be trick to know how to implement.
+
+Maybe something like:
+
+   <Layer name="In Memory Layer">
+     <StyleName>in_memory_style</StyleName>
+     <Datasource>
+       <Parameter name="type">MemoryDatasource</Parameter>
+       <Parameter name="gtype">MultiPolygon</Parameter>
+       <Parameter name="source">Name of a python class or function in  
+the namespace of your script that loads the mapfile?</Parameter>
+     </Datasource>
+   </Layer>
+
+> I'm currently using an xml file for render my maps.
+
+Do you use a python script or c++ code to load the map?
+
+>
+>
+> -- 
+> Alberto Gim?nez E.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080922/254192ac/attachment.html>
+
+From artem at mapnik.org  Tue Sep 23 14:34:39 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 23 Sep 2008 13:34:39 +0100
+Subject: [Mapnik-devel] mapnik with OGR abstraction support
+In-Reply-To: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+References: <2e06a0160809220916l5a36a6fdne22cdc4e4cf12289@mail.gmail.com>
+Message-ID: <8FF21FB2-120B-4C2C-BCB2-F014D5CC0325@mapnik.org>
+
+
+On 22 Sep 2008, at 17:16, Alberto Gim?nez E. wrote:
+
+> Hello list,
+>
+> Has anyone thought about a GDAL/OGR pluggin for mapnik? Should it be  
+> feasible to write a pluggin like this?
+> The GDAL/OGR library should provide a very useful abstraction  
+> feature for reading formats like SQLite, MySQL, GeoJSON, GML, etc...
+>
+> I'm looking forward to get my hands on this ... and also write an  
+> GDAL/OGR driver for OSM like format.
+>
+> -- 
+> Alberto Gim?nez E.
+> __
+
+Hi Alberto,
+
+By all means! It would be great to have OGR plug-in. And it should be  
+fairly straight forward to implement. Originally I planned to do just  
+that but I didn't see a clear use case for rendering directly from all  
+those formats . GDAL/OGR are great command line tools and I often use  
+them to convert to shapefiles or postgis.
+But again, good idea!
+Cheers
+Artem
+
+> _____________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Wed Sep 24 03:10:54 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 23 Sep 2008 18:10:54 -0700
+Subject: [Mapnik-devel] Trac ticket priority
+Message-ID: <79D5F888-1BFE-43A8-B4A7-ABCAB7DB0957@hailmail.net>
+
+Mapnik-dev:
+
+I've added basic priority labels to http://trac.mapnik.org, and taken  
+a first stab at categorizing all OPEN tickets.
+
+My hope is to galvanize further discussion and action on these  
+tickets, so please weigh in/modify these ticket priorities as you see  
+fit.
+
+Here is the direct link to all active tickets, now ordered and colored  
+by priority:
+
+http://trac.mapnik.org/report/1
+
+And all closed tickets:
+
+http://trac.mapnik.org/query?status=closed&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component&order=priority&report=10#no1
+
+Dane
+
+
+
+From openstreetmap at brian.quinion.co.uk  Wed Sep 24 14:39:29 2008
+From: openstreetmap at brian.quinion.co.uk (Brian Quinion)
+Date: Wed, 24 Sep 2008 13:39:29 +0100
+Subject: [Mapnik-devel] Trac ticket priority
+In-Reply-To: <79D5F888-1BFE-43A8-B4A7-ABCAB7DB0957@hailmail.net>
+References: <79D5F888-1BFE-43A8-B4A7-ABCAB7DB0957@hailmail.net>
+Message-ID: <da9d28170809240539n64883260ta0938a8d63b49af7@mail.gmail.com>
+
+Hi,
+
+Just had a look through the new prioritised list and I think I'm
+already working on a few of them without realising there where
+existing tickets.  Should I 'accept' them or should I add a note, or
+what's the procedure?
+
+--
+ Brian
+
+On Wed, Sep 24, 2008 at 2:10 AM, Dane Springmeyer <blake at hailmail.net> wrote:
+> Mapnik-dev:
+>
+> I've added basic priority labels to http://trac.mapnik.org, and taken
+> a first stab at categorizing all OPEN tickets.
+>
+> My hope is to galvanize further discussion and action on these
+> tickets, so please weigh in/modify these ticket priorities as you see
+> fit.
+>
+> Here is the direct link to all active tickets, now ordered and colored
+> by priority:
+>
+> http://trac.mapnik.org/report/1
+>
+> And all closed tickets:
+>
+> http://trac.mapnik.org/query?status=closed&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component&order=priority&report=10#no1
+>
+> Dane
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From frederik at remote.org  Thu Sep 25 10:20:05 2008
+From: frederik at remote.org (Frederik Ramm)
+Date: Thu, 25 Sep 2008 10:20:05 +0200
+Subject: [Mapnik-devel] 8-bit transparency?
+Message-ID: <48DB49B5.8080800@remote.org>
+
+Hi,
+
+    I'm trying to elicit from Mapnik an 8-bit PNG image (GIF would also 
+be acceptable) with a transparent background. Setting the <Map> bgcolor 
+to "transparent" works perfectly with plain PNG images, but reducing it 
+to 8 bit destroys transparency.
+
+(PNG does support transparency in palette images, so it is not a 
+limitation of the data format.)
+
+Closer inspection seems to suggest that include/mapnik/png_io.hpp simply 
+  doesn't care for the alpha channel in the reduce_8 method.
+
+Does anybody have a solution for this or a suggestion how I could best 
+implement it?
+
+My application does not need a true alpha channel; I could also work 
+with the GIF-type transparency where one color in the palette is "the 
+transparent color".
+
+The PNG spec seems to require adding a tRNS chunk between PLTE and the 
+first IDAT. This chunk may either provide an alpha value for all colours 
+in the palette, or it may also just consist of one single "0x00" entry 
+that would then apply to the first colour in the palette and mimick the 
+GIF binary transparency.
+
+So a very cheap and simple method could be to inject the map background 
+colour as the very first colour in the palette, then do the normal 
+reduce_8 stuff, and add a tRNS chunk that specifies the first colour to 
+be transparent. Or I could simply (?) add an alpha value for every 
+colour, probably this would require changing the whole octree code to 
+work with RGBA instead of RGB.
+
+Any suggestions welcome!
+
+Thanks
+Frederik
+
+
+From blake at hailmail.net  Thu Sep 25 16:15:24 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 25 Sep 2008 07:15:24 -0700
+Subject: [Mapnik-devel] TextSymbolizer attributes
+In-Reply-To: <OFE5D60D72.CE796AA2-ON032574CF.00411338-032574CF.0041133F@cps.pst.com.br>
+References: <OFE5D60D72.CE796AA2-ON032574CF.00411338-032574CF.0041133F@cps.pst.com.br>
+Message-ID: <F7BB9581-D890-47EE-9819-5F46D012F956@hailmail.net>
+
+Bruno,
+
+Then in your custom tile generation try approximating the TileCache  
+metatile approach of requesting large tiles and then splitting them  
+perhaps?
+
+Dane
+
+
+On Sep 25, 2008, at 4:50 AM, Bruno B Caponi wrote:
+
+> I'm using my owner script, like the section Optimization in http://mike.teczno.com/notes/mapnik.html
+>
+> In OpenLayers, I use TMS layer.
+>
+> tks...
+>
+> BRUNO B. C. CAPONI
+>
+> are you using tilecache, or what is your rendering script?
+>
+> Dane
+>
+>
+> On Jun 6, 2008, at 1:34 PM, Bruno B Caponi wrote:
+>
+>> Hi,
+>>
+>> can anyone explain how TextSymbolizer attributes works? I rendering  
+>> street names, but when I join the tiles, the text of different  
+>> tiles is not aligned.
+>>
+>> Thanks.
+>>
+>> Attributes:
+>> minimum_distance
+>> avoid_edges
+>> force_odd_labels
+>> label_spacing
+>> label_position_tolerance
+>>
+>> BRUNO B. C. CAPONI
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20080925/210c2d50/attachment.html>
+

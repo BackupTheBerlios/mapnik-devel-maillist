@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Missing header files in SVN
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Missing%20header%20files%20in%20SVN&In-Reply-To=%3C20090405091952.5b5cfdd2%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000828.html">
+   <LINK REL="Next"  HREF="000829.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Missing header files in SVN</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Missing%20header%20files%20in%20SVN&In-Reply-To=%3C20090405091952.5b5cfdd2%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Missing header files in SVN">lists at brachttal.net
+       </A><BR>
+    <I>Sun Apr  5 09:19:52 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000828.html">[Mapnik-devel] Missing header files in SVN
+</A></li>
+        <LI>Next message: <A HREF="000829.html">[Mapnik-devel] Birdview in Mapnik?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#835">[ date ]</a>
+              <a href="thread.html#835">[ thread ]</a>
+              <a href="subject.html#835">[ subject ]</a>
+              <a href="author.html#835">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Wed, 1 Apr 2009 07:48:51 -0700 schrieb Dane Springmeyer:
+
+You're right. Now it compiles without problems.
+
+regards
+Andreas
+
+&gt;<i> Andreas,
+</I>&gt;<i> 
+</I>&gt;<i> I don't think anything is missing, rather pgsql2sqlite needs to look  
+</I>&gt;<i> across and get files from the local postgis input plugin.
+</I>&gt;<i> 
+</I>&gt;<i> The shapeindex errors sound the same that perhaps the shapeindex  
+</I>&gt;<i> utilities needs the includes of the shape input plugin.
+</I>&gt;<i> 
+</I>&gt;<i> Cheers,
+</I>&gt;<i> 
+</I>&gt;<i> Dane
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> On Mar 26, 2009, at 4:41 PM, Andreas Volz wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Hello,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I found errors while compiling stuff in utils:
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; In file included from main.cpp:25:
+</I>&gt;<i> &gt; pgsql2sqlite.hpp:29:34: error: connection_manager.hpp: No such
+</I>&gt;<i> &gt; file or directory
+</I>&gt;<i> &gt; pgsql2sqlite.hpp:30:31: error: cursorresultset.hpp: No such file or
+</I>&gt;<i> &gt; directory
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; ...and...
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; shapeindex.cpp:34:25: Fehler: shapefile.hpp: No such file or
+</I>&gt;<i> &gt; directory shapeindex.cpp:35:24: Fehler: shape_io.hpp: No such file
+</I>&gt;<i> &gt; or directory
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Are there files missing in SVN?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; regards
+</I>&gt;<i> &gt; Andreas
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000828.html">[Mapnik-devel] Missing header files in SVN
+</A></li>
+	<LI>Next message: <A HREF="000829.html">[Mapnik-devel] Birdview in Mapnik?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#835">[ date ]</a>
+              <a href="thread.html#835">[ thread ]</a>
+              <a href="subject.html#835">[ subject ]</a>
+              <a href="author.html#835">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

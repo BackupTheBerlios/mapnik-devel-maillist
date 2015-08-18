@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%0A%09osm_way%3A%3Aget_bounds&In-Reply-To=%3C4AC5BB01-6565-4F53-B6EC-750DC4C51121%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001358.html">
+   <LINK REL="Next"  HREF="001360.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crashes%20with%20segfault%20in%0A%09osm_way%3A%3Aget_bounds&In-Reply-To=%3C4AC5BB01-6565-4F53-B6EC-750DC4C51121%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds">dane at dbsgeo.com
+       </A><BR>
+    <I>Tue Mar 29 07:24:57 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001358.html">[Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds
+</A></li>
+        <LI>Next message: <A HREF="001360.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1359">[ date ]</a>
+              <a href="thread.html#1359">[ thread ]</a>
+              <a href="subject.html#1359">[ subject ]</a>
+              <a href="author.html#1359">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Vlad, yes I think I've noticed this crash in the past. Just be aware that the OSM plugin does not get a lot of use compared to the osm2pgsql/PostGIS plugin approach. So you may be better off with using PostGIS. Anyway please file a trac ticket about this issue if you want to see it fixed. 
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Mar 26, 2011, at 4:51 AM, Vladislav Shikhov &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hi Mapnik devs!
+</I>&gt;<i> 
+</I>&gt;<i> I've been trying mapnik for render tiles from osm source and got some
+</I>&gt;<i> crashes with segfaults.
+</I>&gt;<i> 
+</I>&gt;<i> After adding additional debug output I found what
+</I>&gt;<i> osm_way::get_bounds() called for osm_node item from
+</I>&gt;<i> osm_featureset.cpp:75
+</I>&gt;<i> 
+</I>&gt;<i> I'm going to continue debug, but if you have any idea you are welcome.
+</I>&gt;<i> 
+</I>&gt;<i> -- 
+</I>&gt;<i> Vladislav Shikhov
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">vladshikhov at gmail.com</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001358.html">[Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds
+</A></li>
+	<LI>Next message: <A HREF="001360.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1359">[ date ]</a>
+              <a href="thread.html#1359">[ thread ]</a>
+              <a href="subject.html#1359">[ subject ]</a>
+              <a href="author.html#1359">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

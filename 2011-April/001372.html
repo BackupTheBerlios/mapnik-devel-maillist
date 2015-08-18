@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Announcing new mapnik rendering backend
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Announcing%20new%20mapnik%20rendering%20backend&In-Reply-To=%3C03CE7214-275B-43CF-8827-46B4C57A1200%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001371.html">
+   <LINK REL="Next"  HREF="001375.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Announcing new mapnik rendering backend</H1>
+    <B>Waldemar Quevedo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Announcing%20new%20mapnik%20rendering%20backend&In-Reply-To=%3C03CE7214-275B-43CF-8827-46B4C57A1200%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Announcing new mapnik rendering backend">waldemar.quevedo at gmail.com
+       </A><BR>
+    <I>Thu Apr  7 19:06:32 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001371.html">[Mapnik-devel] Announcing new mapnik rendering backend
+</A></li>
+        <LI>Next message: <A HREF="001375.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1372">[ date ]</a>
+              <a href="thread.html#1372">[ thread ]</a>
+              <a href="subject.html#1372">[ subject ]</a>
+              <a href="author.html#1372">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE> 
+
+Sent from my iPhone
+
+On 2011/04/08, at 1:48, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+
+&gt;<i> I've started work on a new rendering backend to Mapnik. It is coming along well so I'd like to let others know more about it.
+</I>&gt;<i> 
+</I>&gt;<i> It is called the &quot;grid_renderer&quot;. However, it is not a renderer in the conventional sense - instead of rendering antialiased shapes to an image of rgba pixels, the grid_renderer is designed to render aliased shapes to a bitmap of feature id's.
+</I>&gt;<i> 
+</I>&gt;<i> I've created a wiki entry for it where the basic technical details are available [1]. Feel free to respond here with any questions.
+</I>&gt;<i> 
+</I>&gt;<i> The goal of the grid_renderer is to output a feature hit grid for browsers. The hit grid should allow for ultra fast lookups of select feature-info without requiring any http requests or serverside logic (after being generated). It should also be very small, compressible, and work seamlessly with metatiling (mapnik's image_view interface).
+</I>&gt;<i> 
+</I>&gt;<i> The grid_renderer is designed to work in a web client alongside PNG/JPEG output from AGG. Artem and I have been working together to leverage bits of AGG to actually do the rendering.  The renderer should complement the similar goals of MetaWriters [2] by using quite different functionality. The main difference with MetaWriter's is that the grid_renderer does not output actual geometries. Instead it rasterizes geometries into a bitmap - so no matter how many or how large your geometries  the output size of a &quot;grid&quot; should be trivially small. This makes the grid_renderer optimal for usage with complex polygons or many points, while the MetaWriter json output is optimal for cases where full geojson is required and can be handled by the browser. For those not yet familiar with MetaWriter's, this is the awesome product of the GSOC 2011 project by Hermann Kraus, which I had the pleasure to mentor. Again, I feel that MetaWriters are complementary and I will continue to support their
+</I>&gt;<i>  development.
+</I>&gt;<i> 
+</I>&gt;<i> For those familiar with MetaWriters, you may remember a key design goal of the project was to support variable output formats. As I continue to develop the grid_renderer I may try to design it in such a way that is can be used both as a standalone renderer but also as a MetaWriter output format. However my priority right now is to get things working as a standalone renderer.
+</I>&gt;<i> 
+</I>&gt;<i> The last trick here is that custom client javascript code is needed to understand and display this feature grid. Development Seed has sponsored this grid_renderer development in Mapnik and Tom MacWright has lead the development of that client code (which works with both OpenLayers, Polymaps, Google Maps, and Modest Maps). The client code is part of the innovative wax.js library [3] (which does a whole lot more than just interactivity using grids).
+</I>&gt;<i> 
+</I>&gt;<i> For the curious here is some sample code (<A HREF="https://github.com/springmeyer/gridsforkids/">https://github.com/springmeyer/gridsforkids/</A>) and a sample demo (<A HREF="http://springmeyer.github.com/gridsforkids/">http://springmeyer.github.com/gridsforkids/</A>).
+</I>&gt;<i> 
+</I>&gt;<i> Dane
+</I>&gt;<i> 
+</I>&gt;<i> [1] [1] <A HREF="http://trac.mapnik.org/wiki/MapnikRenderers#grid_renderer">http://trac.mapnik.org/wiki/MapnikRenderers#grid_renderer</A>
+</I>&gt;<i> [2] <A HREF="http://trac.mapnik.org/wiki/MetaWriter">http://trac.mapnik.org/wiki/MetaWriter</A>
+</I>&gt;<i> [3] <A HREF="https://github.com/mapbox/wax/blob/master/control/lib/gridutil.js">https://github.com/mapbox/wax/blob/master/control/lib/gridutil.js</A>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001371.html">[Mapnik-devel] Announcing new mapnik rendering backend
+</A></li>
+	<LI>Next message: <A HREF="001375.html">[Mapnik-devel] Mapnik crashes with segfault in	osm_way::get_bounds
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1372">[ date ]</a>
+              <a href="thread.html#1372">[ thread ]</a>
+              <a href="subject.html#1372">[ subject ]</a>
+              <a href="author.html#1372">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

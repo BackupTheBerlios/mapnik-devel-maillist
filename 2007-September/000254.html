@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik crash with current SVN source
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070913002702.2ac97e56%40frodo.mittelerde%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000240.html">
+   <LINK REL="Next"  HREF="000255.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik crash with current SVN source</H1>
+    <B>Andreas Volz</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20crash%20with%20current%20SVN%20source&In-Reply-To=%3C20070913002702.2ac97e56%40frodo.mittelerde%3E"
+       TITLE="[Mapnik-devel] Mapnik crash with current SVN source">lists at brachttal.net
+       </A><BR>
+    <I>Thu Sep 13 00:27:02 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000240.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+        <LI>Next message: <A HREF="000255.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#254">[ date ]</a>
+              <a href="thread.html#254">[ thread ]</a>
+              <a href="subject.html#254">[ subject ]</a>
+              <a href="author.html#254">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Am Mon, 10 Sep 2007 09:51:47 +0100 schrieb Artem Pavlenko:
+
+&gt;<i> &gt; Ok, I finished my port to autotools and it does at least compile. I
+</I>&gt;<i> &gt; didn't test it yet. But I'll continue and then show you the result.
+</I>&gt;<i> &gt; Perhaps it's an option to support both or maintain it in another  
+</I>&gt;<i> &gt; branch
+</I>&gt;<i> &gt; with only autotools project files included and merging both each
+</I>&gt;<i> &gt; time. I'm not sure...
+</I>&gt;<i> 
+</I>&gt;<i> Sure, we can have autotools based build system (in main trunk) along  
+</I>&gt;<i> with SCons or anything else.
+</I>&gt;<i> It just needs to be maintained.
+</I>
+Sure, I'll maintain it. Now I had some time to test it. I got the shape
+plugin working and rundemo.cpp is working. The only problem is that in
+mapnik plugins have names &quot;*.input&quot;. But libtool likes *.so names. Do
+you've problems changing the plugin name schema or should I rename the
+plugin while the install process.
+
+&gt;<i> &gt;&gt;&gt; I thought about porting it to autotools...
+</I>&gt;<i> &gt;&gt; If you're building on Linux/Unix , using Autotools might be a good
+</I>&gt;<i> &gt;&gt; solution. But about native toolchain on win32?
+</I>&gt;<i> &gt;&gt; There are also other building systems  :  CMake, Boost.Build.v2
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I like autotools because the Linux integration is very good and
+</I>&gt;<i> &gt; clean.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I created a win32 library in the past and used autotools without
+</I>&gt;<i> &gt; problems. Ok, it's not &quot;native&quot;, but what is &quot;native&quot;. :-)
+</I>&gt;<i> 
+</I>&gt;<i> Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+</I>&gt;<i> build win32 binaries.
+</I>
+In theory it could be possible to use other compilers than gcc with
+autotools. But i'm not sure if the work worth it.
+
+regards
+Andreas
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000240.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+	<LI>Next message: <A HREF="000255.html">[Mapnik-devel] Mapnik crash with current SVN source
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#254">[ date ]</a>
+              <a href="thread.html#254">[ thread ]</a>
+              <a href="subject.html#254">[ subject ]</a>
+              <a href="author.html#254">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

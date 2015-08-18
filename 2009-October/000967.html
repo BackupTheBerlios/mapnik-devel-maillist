@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Some patches for Shield and Text Symbolizers
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20patches%20for%20Shield%20and%20Text%20Symbolizers&In-Reply-To=%3C7e70f38d0910190230m62ec02aauecbc4116f49dfebb%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000966.html">
+   <LINK REL="Next"  HREF="000968.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Some patches for Shield and Text Symbolizers</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Some%20patches%20for%20Shield%20and%20Text%20Symbolizers&In-Reply-To=%3C7e70f38d0910190230m62ec02aauecbc4116f49dfebb%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Some patches for Shield and Text Symbolizers">artem at mapnik.org
+       </A><BR>
+    <I>Mon Oct 19 11:30:33 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000966.html">[Mapnik-devel] Some patches for Shield and Text Symbolizers
+</A></li>
+        <LI>Next message: <A HREF="000968.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#967">[ date ]</a>
+              <a href="thread.html#967">[ thread ]</a>
+              <a href="subject.html#967">[ subject ]</a>
+              <a href="author.html#967">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi David,
+
+Great, thanks very much for contributing to Mapnik! I applied your
+patch against latest trunk ( r1340 ) and everything builds/runs fine.
+I'm yet to try new parameters, though. I might apply your changes to
+the trunk so we can have a play.
+
+Regards,
+Artem
+
+PS. Please, consider subscribing to mapnik mailing lists
+
+
+2009/10/18 David Eastcott &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">david.eastcott at shaw.ca</A>&gt;:
+&gt;<i> I have attached some changes that I thought would enhance mapnik. &#160;I've
+</I>&gt;<i> generated the diff set against trunk version 1331 and are attached. &#160;I did
+</I>&gt;<i> not attempt to modify the other interface or subsystems (python or cario) to
+</I>&gt;<i> support the new/changed parameters. &#160;If you have any questions, please do
+</I>&gt;<i> not hesitate to contact me.
+</I>&gt;<i>
+</I>&gt;<i> Best regards,
+</I>&gt;<i> Dave
+</I>&gt;<i>
+</I>&gt;<i> Change log:
+</I>&gt;<i>
+</I>&gt;<i> 1. &#160;Modified Text Symbolizer
+</I>&gt;<i>
+</I>&gt;<i> &#160; a) corrected line fragment centering (for 2nd and subsequent lines, when
+</I>&gt;<i> line breaks occur).
+</I>&gt;<i>
+</I>&gt;<i> &#160; b) adjusted vertical alignment calculation so that:
+</I>&gt;<i> &#160; &#160; &#160; i) &#160; &#160; &#160;middle -&gt; has the center of the text line(s) at the point
+</I>&gt;<i> origin
+</I>&gt;<i> &#160; &#160; &#160; ii) &#160; &#160; bottom -&gt; has the text line(s) below the point origin
+</I>&gt;<i> &#160; &#160; &#160; iii) &#160; &#160;top -&gt; has the text line(s) above the point origin
+</I>&gt;<i>
+</I>&gt;<i> &#160; c) added new text_symbolizer attribute: 'wrap_before', value range:
+</I>&gt;<i> true/false, default == false
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160;allows line breaks at first wrap_char before wrap_width as an
+</I>&gt;<i> alternative to the original
+</I>&gt;<i> &#160; &#160; &#160;which was to create the line break at the first wrap_char after
+</I>&gt;<i> wrap_width
+</I>&gt;<i>
+</I>&gt;<i> &#160; d) added new text_symbolizer attribute: 'horizontal_alignment', value
+</I>&gt;<i> range: left/middle/right, default == middle
+</I>&gt;<i> &#160; &#160; &#160; i) &#160; &#160; &#160;left -&gt; has all text line(s) to left of the point origin
+</I>&gt;<i> &#160; &#160; &#160; ii) &#160; &#160; middle -&gt; has all text line(s) centered on the the point
+</I>&gt;<i> origin
+</I>&gt;<i> &#160; &#160; &#160; iii) &#160; &#160;right -&gt; has all text line(s) to the right of the point origin
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; NOTE: &#160; dx, dy position adjustments are applied after alignments and
+</I>&gt;<i> before Justify.
+</I>&gt;<i>
+</I>&gt;<i> &#160; e) added new text_symbolizer attribute: 'justify_alignment', value range:
+</I>&gt;<i> left/middle/right, default == middle
+</I>&gt;<i> &#160; &#160; &#160; i) &#160; &#160; &#160;left -&gt; after alignments, has all text line(s) are left
+</I>&gt;<i> justified (left to right reading)
+</I>&gt;<i> &#160; &#160; &#160; ii) &#160; &#160; middle -&gt; after alignments, has all text line(s) center
+</I>&gt;<i> justified
+</I>&gt;<i> &#160; &#160; &#160; iii) &#160; &#160;right -&gt; after alignments, has all text line(s) right
+</I>&gt;<i> justified (right to left reading)
+</I>&gt;<i>
+</I>&gt;<i> &#160; f) added new text_symbolizer attribute: &#160;'opacity', value range: 0.0 thru
+</I>&gt;<i> 1.0; 1.0 == fully opaque
+</I>&gt;<i>
+</I>&gt;<i> &#160; g) modified positioning to compensate for both line_spacing and
+</I>&gt;<i> character_spacing, to ensure proper
+</I>&gt;<i> &#160; &#160; &#160;centering of the text envelope. &#160;Also ensure that centering occurs
+</I>&gt;<i> correctly even if no wrapping
+</I>&gt;<i> &#160; &#160; &#160;occurs. &#160;Line spacing is uniform and consistent and compensates for
+</I>&gt;<i> errors between text_size and
+</I>&gt;<i> &#160; &#160; &#160;the actual size (ci.height is inconsistent, depending on case and
+</I>&gt;<i> character); fixes issue with
+</I>&gt;<i> &#160; &#160; &#160;multi-line text where some lines have a slight gap and others are
+</I>&gt;<i> compressed together.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> 2. &#160;Modified shield_symbolizer
+</I>&gt;<i>
+</I>&gt;<i> &#160; a) added the attributes:
+</I>&gt;<i> &#160; &#160; &#160; i) &#160; &#160; &#160;allow_overlap
+</I>&gt;<i> &#160; &#160; &#160; ii) &#160; &#160; vertical_alignment
+</I>&gt;<i> &#160; &#160; &#160; iii) &#160; &#160;horizontal_alignment
+</I>&gt;<i> &#160; &#160; &#160; iv) &#160; &#160; justify_alignment
+</I>&gt;<i> &#160; &#160; &#160; v) &#160; &#160; &#160;wrap_width
+</I>&gt;<i> &#160; &#160; &#160; vi) &#160; &#160; wrap_character
+</I>&gt;<i> &#160; &#160; &#160; vii) &#160; &#160;wrap_before
+</I>&gt;<i> &#160; &#160; &#160; viii) &#160; text_convert
+</I>&gt;<i> &#160; &#160; &#160; ix) &#160; &#160; line_spacing
+</I>&gt;<i> &#160; &#160; &#160; x) &#160; &#160; &#160;character_spacing
+</I>&gt;<i> &#160; &#160; &#160; xi) &#160; &#160; opacity
+</I>&gt;<i>
+</I>&gt;<i> &#160; b) &#160;added new shield_symbolizer attribute: 'unlock_image', value range:
+</I>&gt;<i> true/false, default == false
+</I>&gt;<i> &#160; &#160; &#160; i) &#160;false == image and text placement behaviour same as before
+</I>&gt;<i> &#160; &#160; &#160; ii) true == image placement independant of text, image is always
+</I>&gt;<i> centered at geometry point, text placed per attributes,
+</I>&gt;<i> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; dx/dy only affect text.
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; Allows user to create point markers with text, but both the text and
+</I>&gt;<i> image rendering collision detection are done
+</I>&gt;<i> &#160; &#160; &#160; as a pair (they come and go together - solves problem if using
+</I>&gt;<i> point_symbolizer and text_symbolizers where one or the
+</I>&gt;<i> &#160; &#160; &#160; other are omitted due to overlaps, but not both)
+</I>&gt;<i>
+</I>&gt;<i> &#160; c) &#160;extended choices for the attribute 'placement' to include vertex;
+</I>&gt;<i> effect is limited to the shield_symbolizer
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; Allows an attempted placement at every vertex available, gives
+</I>&gt;<i> additional shield placement volume when using line geometry
+</I>&gt;<i>
+</I>&gt;<i> &#160; d) &#160;ensured that the text placement was not updating the detector unless a
+</I>&gt;<i> shield image was actually placed.
+</I>&gt;<i>
+</I>&gt;<i> &#160; e) &#160;added new shield_symbolizer attribute: 'no_text', value range:
+</I>&gt;<i> true/false, default = false
+</I>&gt;<i>
+</I>&gt;<i> &#160; &#160; &#160; When set true, the text for the feature is ignored ('space'
+</I>&gt;<i> subsituted) so that pure graphic symbols can be used
+</I>&gt;<i> &#160; &#160; &#160; and no text is rendered over top of them.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000966.html">[Mapnik-devel] Some patches for Shield and Text Symbolizers
+</A></li>
+	<LI>Next message: <A HREF="000968.html">[Mapnik-devel] No plugin found for type 'shape'
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#967">[ date ]</a>
+              <a href="thread.html#967">[ thread ]</a>
+              <a href="subject.html#967">[ subject ]</a>
+              <a href="author.html#967">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

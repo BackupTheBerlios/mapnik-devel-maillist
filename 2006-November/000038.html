@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Install problem
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Install%20problem&In-Reply-To=%3C20061107011313.9a636686.takubo%40saruga-tondara.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000037.html">
+   <LINK REL="Next"  HREF="000039.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Install problem</H1>
+    <B>Akio Takubo</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Install%20problem&In-Reply-To=%3C20061107011313.9a636686.takubo%40saruga-tondara.net%3E"
+       TITLE="[Mapnik-devel] Install problem">takubo at saruga-tondara.net
+       </A><BR>
+    <I>Mon Nov  6 17:13:13 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000037.html">[Mapnik-devel] Install problem
+</A></li>
+        <LI>Next message: <A HREF="000039.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#38">[ date ]</a>
+              <a href="thread.html#38">[ thread ]</a>
+              <a href="subject.html#38">[ subject ]</a>
+              <a href="author.html#38">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello NIck, 
+
+I'm also new to mapnik and uses it with ubuntu (or Debian) box. 
+So I also failed to build PostGIS support with same problem at first time.
+Scons with some option may solve your problem.  Try it! 
+ $ python scons/scons.py PGSQL_INCLUDES=/usr/includes/postgresql
+
+Best regards,
+
+   Akio Takubo @ OSGeo-Japan
+    <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">takubo at saruga-tondara.net</A>
+
+On Mon, 6 Nov 2006 15:47:30 +0000
+&quot;Nick Black&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">nickblack1 at gmail.com</A>&gt; wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i> 
+</I>&gt;<i> My name is Nick, and I've just started using Mapnik, which I'l
+</I>&gt;<i> hopefully be using for rendering map data to use in a web-based
+</I>&gt;<i> mapping project.
+</I>&gt;<i> 
+</I>&gt;<i> I'm having a couple of problems with compiling and installing Mapnik,
+</I>&gt;<i> onto Ubuntu Server 6.06, with Postgres 8.1.  I think my problems are
+</I>&gt;<i> to do with :
+</I>&gt;<i> 
+</I>&gt;<i>  Checking for main() in C library pq... no
+</I>&gt;<i> 
+</I>&gt;<i> I have installed variuos libpq packages using Aptitude, and libpq.so is at:
+</I>&gt;<i> 
+</I>&gt;<i> /usr/lib/libpq.so
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> After running scons.py and scons.py install , Mapnik appears to
+</I>&gt;<i> compile and install ok, but when I run:
+</I>&gt;<i> 
+</I>&gt;<i> &gt;&gt;&gt; from mapnik import *
+</I>&gt;<i> registered datasource : raster
+</I>&gt;<i> registered datasource : shape
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> So I am kind of figuring that bevause  libpq cant be found by Mapnik,
+</I>&gt;<i> I dont have any PostGIS support, but so far as I can tell, Postgres is
+</I>&gt;<i> installed in the directories that the scons.py looks in:
+</I>&gt;<i> 
+</I>&gt;<i> :/usr/src/mapnik/demo/python# ls -l /usr/include/postgresql/
+</I>&gt;<i> total 140
+</I>&gt;<i> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 8.1
+</I>&gt;<i> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 catalog
+</I>&gt;<i> -rw-r--r-- 1 root root 22552 2006-10-23 18:22 c.h
+</I>&gt;<i> drwxr-xr-x 3 root root  4096 2006-11-01 09:07 internal
+</I>&gt;<i> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 libpq
+</I>&gt;<i> -rw-r--r-- 1 root root 17499 2006-10-23 18:22 libpq-fe.h
+</I>&gt;<i> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 nodes
+</I>&gt;<i> -rw-r--r-- 1 root root 20116 2006-10-23 18:22 pg_config.h
+</I>&gt;<i> -rw-r--r-- 1 root root  8730 2006-10-23 18:22 pg_config_manual.h
+</I>&gt;<i> -rw-r--r-- 1 root root     1 2006-10-23 18:22 pg_config_os.h
+</I>&gt;<i> -rw-r--r-- 1 root root  9937 2006-10-23 18:22 port.h
+</I>&gt;<i> -rw-r--r-- 1 root root  2119 2006-10-23 18:22 postgres_ext.h
+</I>&gt;<i> -rw-r--r-- 1 root root   744 2006-10-23 18:22 postgres_fe.h
+</I>&gt;<i> -rw-r--r-- 1 root root 14253 2006-10-23 18:22 postgres.h
+</I>&gt;<i> drwxr-xr-x 2 root root  4096 2006-11-01 09:07 utils
+</I>&gt;<i> 
+</I>&gt;<i> So how can I tell mapnik how to find postgis/libpq (if this is the issue)?
+</I>&gt;<i> 
+</I>&gt;<i> Thanks in advance,
+</I>&gt;<i> 
+</I>&gt;<i> Nick
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i> 
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000037.html">[Mapnik-devel] Install problem
+</A></li>
+	<LI>Next message: <A HREF="000039.html">[Mapnik-devel] Install problem
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#38">[ date ]</a>
+              <a href="thread.html#38">[ thread ]</a>
+              <a href="subject.html#38">[ subject ]</a>
+              <a href="author.html#38">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

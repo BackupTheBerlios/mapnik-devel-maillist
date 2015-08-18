@@ -1,0 +1,562 @@
+From kleptog at gmail.com  Sat Nov 10 19:37:52 2007
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sat, 10 Nov 2007 19:37:52 +0100
+Subject: [Mapnik-devel] Making the config file more portable
+Message-ID: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+
+Hi,
+
+If any of you have followed the users list you may have noticed I made
+some comments about making it easier to share map files around. The
+problem being the need to include database connection details in
+multiple places, or hardcoding paths. This makes it difficult to share
+the file around as everybody needs to patch many places and so patches
+cannot easily be shared. Attached are a number of patches to simplify
+the situation.
+
+1. The first allows the user to add a <FileSource
+name="foo">/home/bar/baz/</FileSource> to the beginning of the file
+and then in any of the symbolisers you can say:
+
+<FooSymboliser base="foo" name="bridge">
+It it will refer to the file /home/bar/baz/bridge.
+
+2. The second allows you to create Datasource templates at the top
+level, which can be used later in the actual layers like so:
+<Map>
+  <Datasource name="db">
+   <Paramaeter name="host">/tmp</Parameter>
+  </Datasource>
+  <Layer name="lay">
+    <Datasource base="db">
+      <Parameter name="table">points</Parameter>
+    </Datasource>
+  </Layer>
+</Map>
+
+And the host parameter will be used in the layer.
+
+3. The third adds the "base" parameter to the raster and shape input
+plugins. All it does is specify a path to prefix to the filename prior
+to using it. Together with the above feature it allows things like:
+<Map>
+  <Datasource name="shapes">
+   <Paramaeter name="base">/home/foo/shapes</Parameter>
+  </Datasource>
+  <Layer name="lay">
+    <Datasource base="shapes">
+      <Parameter name="file">places</Parameter>
+    </Datasource>
+  </Layer>
+</Map>
+
+And it will use the shapefile /home/foo/shapes/places
+
+Please let me know what you think. Thanks in advance,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-filesource.patch
+Type: text/x-diff
+Size: 3803 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-template.patch
+Type: text/x-diff
+Size: 3040 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0001.patch>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-plugins.patch
+Type: text/x-diff
+Size: 1592 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071110/7fcc637f/attachment-0002.patch>
+
+From david at artcom.de  Mon Nov 12 10:20:20 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 12 Nov 2007 10:20:20 +0100
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+Message-ID: <48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+
+Hi Martijn,
+Hi everyone,
+
+On 10.11.2007, at 19:37, Martijn van Oosterhout wrote:
+
+> Hi,
+>
+> If any of you have followed the users list you may have noticed I made
+> some comments about making it easier to share map files around. The
+> problem being the need to include database connection details in
+> multiple places, or hardcoding paths. This makes it difficult to share
+> the file around as everybody needs to patch many places and so patches
+> cannot easily be shared.
+--- snip ---
+
+I had exact the same issues when starting to play with OSM/Mapnik but  
+I came up with a slightly different solution. I think what's needed  
+here is XML entities:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[
+     <!ENTITY icondir "/some/dir/">
+     <!ENTITY water_color "#b5d0d0">
+     <!ENTITY db_user "kleptog">
+]>
+<Map bgcolor="&water_color;">
+     <Style name="amenity">
+         <Rule>
+             <PointSymbolizer file="&icondir;/post_box.png" />
+         </Rule>
+     </Style>
+</Map>
+
+The second form of entities serves as a include mechanism:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[
+     <!ENTITY included_layers SYSTEM "./included_layers.ent">
+     <!ENTITY db_common SYSTEM "./db_connection.ent">
+]>
+<Map>
+     &included_layers;
+
+     <Layer>
+         <Datasource>
+             &db_common;
+             <Parameter name="table">planet_osm_point</Parameter>
+             <Parameter name="estimate_extent">true</Parameter>
+         </Datasource>
+     </Layer>
+</Map>
+
+The file included_layers.ent does not have to be a valid XML file on  
+its own. It can contain any number of nodes or text or both. Just the  
+resulting document has to valid. db_connection.ent could look like this:
+
+             <Parameter name="type">postgis</Parameter>
+             <Parameter name="host">localhost</Parameter>
+             <Parameter name="port">5433</Parameter>
+             <Parameter name="user">kleptog</Parameter>
+             <Parameter name="dbname">my_osm_db</Parameter>
+
+
+So, XML entities are both, variables and includes. Both flavors of  
+entities are supported if Mapnik is build with XMLPARSER=libxml2. I'm  
+still planning to rewrite the osm.xml file to use entities. But I  
+always get stuck in the complexities of the british road-naming/ 
+coloring scheme and Jon Burgess was busy doing other things. Anyway,  
+just to pull out the icon directories and DB connection stuff is easy.  
+I would be happy to do so but it requires a recompile of the main osm  
+mapnik installation.
+
+I took a quick glance on your patches. Just a comment on the use of  
+std::map. The array-style subscription operators (my_map[ key ]) are  
+very convinient but a little error prone. Like in perl they will  
+happily overwrite existing keys and create non-existing. Because we  
+are dealing with user input it would be better to use  
+my_map.find( key ) and my_map.insert( make_pair( key, value )).
+
+You mentioned that you are new to C++. If you ever happen to have a  
+question (Mapnik related, C++, C++ Books, etc) don't hesitate to drop  
+me an email. Nice to have you aboard.
+
+Cheers,
+	David (agnat)
+
+
+
+
+From artem at mapnik.org  Mon Nov 12 10:47:05 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 12 Nov 2007 09:47:05 +0000
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+Message-ID: <E2C278A9-B4DD-4ED8-A78D-058995BF8274@mapnik.org>
+
+Hi Martijn,
+
+On 10 Nov 2007, at 18:37, Martijn van Oosterhout wrote:
+
+> Hi,
+>
+> If any of you have followed the users list you may have noticed I made
+> some comments about making it easier to share map files around. The
+> problem being the need to include database connection details in
+> multiple places, or hardcoding paths. This makes it difficult to share
+> the file around as everybody needs to patch many places and so patches
+> cannot easily be shared.
+
+Agree.
+> Attached are a number of patches to simplify
+> the situation.
+>
+> 1. The first allows the user to add a <FileSource
+> name="foo">/home/bar/baz/</FileSource> to the beginning of the file
+> and then in any of the symbolisers you can say:
+>
+> <FooSymboliser base="foo" name="bridge">
+> It it will refer to the file /home/bar/baz/bridge.
+>
+> 2. The second allows you to create Datasource templates at the top
+> level, which can be used later in the actual layers like so:
+> <Map>
+>   <Datasource name="db">
+>    <Paramaeter name="host">/tmp</Parameter>
+>   </Datasource>
+>   <Layer name="lay">
+>     <Datasource base="db">
+>       <Parameter name="table">points</Parameter>
+>     </Datasource>
+>   </Layer>
+> </Map>
+>
+> And the host parameter will be used in the layer.
+>
+> 3. The third adds the "base" parameter to the raster and shape input
+> plugins. All it does is specify a path to prefix to the filename prior
+> to using it. Together with the above feature it allows things like:
+> <Map>
+>   <Datasource name="shapes">
+>    <Paramaeter name="base">/home/foo/shapes</Parameter>
+>   </Datasource>
+>   <Layer name="lay">
+>     <Datasource base="shapes">
+>       <Parameter name="file">places</Parameter>
+>     </Datasource>
+>   </Layer>
+> </Map>
+>
+> And it will use the shapefile /home/foo/shapes/places
+>
+> Please let me know what you think. Thanks in advance,
+
+Looks good. The question is : can we use xinclude for this ot not ?
+
+Would anyone else like to comment on this ? In principal I like this  
+idea and it shouldn't break existing setups.
+
+Thanks for your patches, I'll check them out.
+
+Cheers
+Artem
+
+
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/ 
+> <mapnik-filesource.patch><mapnik-template.patch><mapnik- 
+> plugins.patch>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From artem at mapnik.org  Mon Nov 12 10:54:00 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 12 Nov 2007 09:54:00 +0000
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+	<48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+Message-ID: <1A3B1B13-0CEC-44D7-BDC0-F06376E28528@mapnik.org>
+
+Hi David,
+
+Great stuff! If/when you have a spare moment, could you put together  
+a small example on how to use XML entities on trac.mapnik.org.
+I think I'll be very beneficial to a lot of users including myself.
+
+Artem
+
+On 12 Nov 2007, at 09:20, David Siegel wrote:
+
+> Hi Martijn,
+> Hi everyone,
+>
+> On 10.11.2007, at 19:37, Martijn van Oosterhout wrote:
+>
+>> Hi,
+>>
+>> If any of you have followed the users list you may have noticed I  
+>> made
+>> some comments about making it easier to share map files around. The
+>> problem being the need to include database connection details in
+>> multiple places, or hardcoding paths. This makes it difficult to  
+>> share
+>> the file around as everybody needs to patch many places and so  
+>> patches
+>> cannot easily be shared.
+> --- snip ---
+>
+> I had exact the same issues when starting to play with OSM/Mapnik but
+> I came up with a slightly different solution. I think what's needed
+> here is XML entities:
+>
+> <?xml version="1.0" encoding="utf-8"?>
+> <!DOCTYPE Map[
+>      <!ENTITY icondir "/some/dir/">
+>      <!ENTITY water_color "#b5d0d0">
+>      <!ENTITY db_user "kleptog">
+> ]>
+> <Map bgcolor="&water_color;">
+>      <Style name="amenity">
+>          <Rule>
+>              <PointSymbolizer file="&icondir;/post_box.png" />
+>          </Rule>
+>      </Style>
+> </Map>
+>
+> The second form of entities serves as a include mechanism:
+>
+> <?xml version="1.0" encoding="utf-8"?>
+> <!DOCTYPE Map[
+>      <!ENTITY included_layers SYSTEM "./included_layers.ent">
+>      <!ENTITY db_common SYSTEM "./db_connection.ent">
+> ]>
+> <Map>
+>      &included_layers;
+>
+>      <Layer>
+>          <Datasource>
+>              &db_common;
+>              <Parameter name="table">planet_osm_point</Parameter>
+>              <Parameter name="estimate_extent">true</Parameter>
+>          </Datasource>
+>      </Layer>
+> </Map>
+>
+> The file included_layers.ent does not have to be a valid XML file on
+> its own. It can contain any number of nodes or text or both. Just the
+> resulting document has to valid. db_connection.ent could look like  
+> this:
+>
+>              <Parameter name="type">postgis</Parameter>
+>              <Parameter name="host">localhost</Parameter>
+>              <Parameter name="port">5433</Parameter>
+>              <Parameter name="user">kleptog</Parameter>
+>              <Parameter name="dbname">my_osm_db</Parameter>
+>
+>
+> So, XML entities are both, variables and includes. Both flavors of
+> entities are supported if Mapnik is build with XMLPARSER=libxml2. I'm
+> still planning to rewrite the osm.xml file to use entities. But I
+> always get stuck in the complexities of the british road-naming/
+> coloring scheme and Jon Burgess was busy doing other things. Anyway,
+> just to pull out the icon directories and DB connection stuff is easy.
+> I would be happy to do so but it requires a recompile of the main osm
+> mapnik installation.
+>
+> I took a quick glance on your patches. Just a comment on the use of
+> std::map. The array-style subscription operators (my_map[ key ]) are
+> very convinient but a little error prone. Like in perl they will
+> happily overwrite existing keys and create non-existing. Because we
+> are dealing with user input it would be better to use
+> my_map.find( key ) and my_map.insert( make_pair( key, value )).
+>
+> You mentioned that you are new to C++. If you ever happen to have a
+> question (Mapnik related, C++, C++ Books, etc) don't hesitate to drop
+> me an email. Nice to have you aboard.
+>
+> Cheers,
+> 	David (agnat)
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From kleptog at gmail.com  Mon Nov 12 14:20:47 2007
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Mon, 12 Nov 2007 14:20:47 +0100
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+	<48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+Message-ID: <2fc2c5f10711120520y76419ccasd06f65814e052d7c@mail.gmail.com>
+
+On Nov 12, 2007 10:20 AM, David Siegel <david at artcom.de> wrote:
+> So, XML entities are both, variables and includes. Both flavors of
+> entities are supported if Mapnik is build with XMLPARSER=libxml2. I'm
+> still planning to rewrite the osm.xml file to use entities.
+
+Where is this setting documented? What's the default? I wanted to try
+a number of things with the XML parsing but there seemed be many
+parsers with no way to control them.
+
+And then, it seems silly to have something as useful as this
+restricted based on which XML parser you use...
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From artem at mapnik.org  Mon Nov 12 21:33:21 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 12 Nov 2007 20:33:21 +0000
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <2fc2c5f10711120520y76419ccasd06f65814e052d7c@mail.gmail.com>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+	<48C0F093-CBDF-4606-BA77-BB218AB11D59@artcom.de>
+	<2fc2c5f10711120520y76419ccasd06f65814e052d7c@mail.gmail.com>
+Message-ID: <76EEEDF7-1ABC-4A85-8D0A-DA9BFD60B3F9@mapnik.org>
+
+
+On 12 Nov 2007, at 13:20, Martijn van Oosterhout wrote:
+
+> On Nov 12, 2007 10:20 AM, David Siegel <david at artcom.de> wrote:
+>> So, XML entities are both, variables and includes. Both flavors of
+>> entities are supported if Mapnik is build with XMLPARSER=libxml2. I'm
+>> still planning to rewrite the osm.xml file to use entities.
+>
+> Where is this setting documented? What's the default? I wanted to try
+> a number of things with the XML parsing but there seemed be many
+> parsers with no way to control them.
+
+Well, there are three parsers you could choose at compilation time:
+
+1. boost::spirit
+2. tinyxml (default)
+3. libxml
+
+You can list them if you pass '-h' to scons. All have pros and cons.   
+Spirit is fast , tiny is tyny and libxml suppots advanced features  
+like xinclude and probably lots more.
+It should be fairly easy to choose parser at build time, just set  
+XMLPARSER to tinyxml,spirit or libxml2
+
+>
+> And then, it seems silly to have something as useful as this
+> restricted based on which XML parser you use...
+
+Libxml2 is quite new. If it works well  we can make it default  
+option. But I do think having a choice to choose parser is good to have.
+
+Cheers
+Artem
+>
+> Have a nice day,
+> -- 
+> Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From kleptog at gmail.com  Wed Nov 28 23:00:57 2007
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Wed, 28 Nov 2007 23:00:57 +0100
+Subject: [Mapnik-devel] Making the config file more portable
+In-Reply-To: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+References: <2fc2c5f10711101037x176be80fg87043372f1589dde@mail.gmail.com>
+Message-ID: <2fc2c5f10711281400r7d03223cv94e799b5278641e5@mail.gmail.com>
+
+On Nov 10, 2007 7:37 PM, Martijn van Oosterhout <kleptog at gmail.com> wrote:
+> Hi,
+>
+> If any of you have followed the users list you may have noticed I made
+> some comments about making it easier to share map files around. The
+> problem being the need to include database connection details in
+> multiple places, or hardcoding paths.
+<snip>
+
+Is there any progress on the ideas in this thread? If there is a
+consensus that people should use XML entities to handle this then
+that's cool. We can just document it and indicate that you need
+libxml2 and move on. I think explicit support is better, but that's a
+personal preference.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From artem at mapnik.org  Thu Nov 29 15:10:00 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 29 Nov 2007 14:10:00 +0000
+Subject: [Mapnik-devel] [Mapnik-users] Functionality exposed to python
+	bindings
+In-Reply-To: <1196338517.7830.33.camel@charon>
+References: <1196338517.7830.33.camel@charon>
+Message-ID: <668B4880-B89F-4765-8B87-92982BF58FE0@mapnik.org>
+
+Hi Graham,
+
+> Hi
+>
+> I've been happily using the python bindings of mapnik for creating  
+> a few
+> dynamically generated maps (some of the styling comes from a database
+> etc.)
+>
+> I also wanted to do some simple querying of the features in the shape
+> files I was using to generate the map. I initially thought mapnik  
+> would
+> have the functionality i needed in a nice python api. However it seems
+> the python bindings are limited to expose just the map styling  
+> parts of
+> the c++ code base.
+>
+
+Yes, you're right . Python bindings don't reflect all functionality,  
+yet.
+
+> For example I wanted to to find some particular countries in a shape
+> file and then get the bounds of their individual geometries. So i  
+> hoped
+> I could get a mapnik.FeatureSet from a mapnik.Datasource using a
+> mapnik.Filter and then get a mapnik.Envelope for each of the features.
+>
+> I couldn't see a way to do this with mapnik python but the code  
+> seems to
+> be there in the c++. Unfortunately as its c++ i couldn't get at it  
+> with
+> ctypes.
+
+> It seems a shame this sort of functionality isn't exposed in the  
+> mapnik
+> python bindings. Have I missed the way to do it? Is this
+> possible/desirable in the future?
+
+This is certainly something I'm planning to implement. The usual way  
+to speed things up is for companies to fund the development of  
+priority features. Please, contact me off list to discuss further.
+
+
+> Could anyone recommend another python
+> library for this sort of thing.
+>
+
+I'm not sure but try http://trac.gispython.org/projects/PCL/wiki/ 
+Shapely .
+
+Regards
+Artem
+
+> thanks,
+> Graham
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+
+

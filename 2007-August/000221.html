@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when	appropriate
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20Mapnik%20python%20bindings%20to%20use%20lib64%20when%0A%09appropriate&In-Reply-To=%3C1186930883.16188.62.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000223.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when	appropriate</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BPATCH%5D%20Mapnik%20python%20bindings%20to%20use%20lib64%20when%0A%09appropriate&In-Reply-To=%3C1186930883.16188.62.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when	appropriate">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Sun Aug 12 17:01:23 CEST 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000223.html">[Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when	appropriate
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#221">[ date ]</a>
+              <a href="thread.html#221">[ thread ]</a>
+              <a href="subject.html#221">[ subject ]</a>
+              <a href="author.html#221">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>According to the Fedora RPM packaging guidelines the 64 bit Python
+bindings and _mapnik.so file need to get installed under the lib64
+python tree. The attached patch modifies the SConscript to implement
+this. 
+
+	Jon
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik-python-lib64.patch
+Type: text/x-patch
+Size: 596 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070812/72574f85/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070812/72574f85/attachment.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000223.html">[Mapnik-devel] [PATCH] Mapnik python bindings to use lib64 when	appropriate
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#221">[ date ]</a>
+              <a href="thread.html#221">[ thread ]</a>
+              <a href="subject.html#221">[ subject ]</a>
+              <a href="author.html#221">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

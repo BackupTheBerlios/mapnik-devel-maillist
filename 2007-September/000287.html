@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] load_map() not thread-safe?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20load_map%28%29%20not%20thread-safe%3F&In-Reply-To=%3C51576B2C-5E87-4238-9ACB-F18DC3F0CEE6%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000286.html">
+   <LINK REL="Next"  HREF="000289.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] load_map() not thread-safe?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20load_map%28%29%20not%20thread-safe%3F&In-Reply-To=%3C51576B2C-5E87-4238-9ACB-F18DC3F0CEE6%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] load_map() not thread-safe?">artem at mapnik.org
+       </A><BR>
+    <I>Thu Sep 20 15:36:02 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000286.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+        <LI>Next message: <A HREF="000289.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, recompiling with -DBOOST_SPIRIT_THREADSAFE  works  for me. I get  
+nice 180% cpu usage and interleaved stderr :)
+Cheers,
+Artem
+
+
+On 20 Sep 2007, at 08:39, Artem Pavlenko wrote:
+
+&gt;<i>
+</I>&gt;<i> On 19 Sep 2007, at 21:37, Jon Burgess wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I've experienced some crashes in Mapnik when multiple threads call
+</I>&gt;&gt;<i> load_map() simultaneously. I can work around this by serialising the
+</I>&gt;&gt;<i> calls. Is there something wrong with this approach, a problem with my
+</I>&gt;&gt;<i> setup or a bug in Mapnik?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> With the attached source code using parallel or serialised calls to
+</I>&gt;&gt;<i> load_map():
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ g++ -Wall -O2 threading.cpp   -o threading -I/usr/include/agg2 - 
+</I>&gt;&gt;<i> I/usr/include/freetype2 -lmapnik
+</I>&gt;&gt;<i> $ ./threading
+</I>&gt;&gt;<i> registered datasource : gdal
+</I>&gt;&gt;<i> registered datasource : raster
+</I>&gt;&gt;<i> registered datasource : shape
+</I>&gt;&gt;<i> registered datasource : postgis
+</I>&gt;&gt;<i> bit_depth=8 color_type=6
+</I>&gt;&gt;<i> Segmentation fault
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> $ g++ -Wall -O2 threading.cpp -DSERIALIZE  -o threading -I/usr/ 
+</I>&gt;&gt;<i> include/agg2 -I/usr/include/freetype2 -lmapnik
+</I>&gt;&gt;<i> $ ./threading
+</I>&gt;&gt;<i> registered datasource : gdal
+</I>&gt;&gt;<i> registered datasource : raster
+</I>&gt;&gt;<i> registered datasource : shape
+</I>&gt;&gt;<i> registered datasource : postgis
+</I>&gt;&gt;<i> bit_depth=8 color_type=6
+</I>&gt;&gt;<i> bit_depth=8 color_type=6
+</I>&gt;&gt;<i> bit_depth=8 color_type=6
+</I>&gt;&gt;<i> ... lots more output and completes successfully.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The source is attached. You may need to tweak the location of the
+</I>&gt;&gt;<i> plugins, map xml file etc. The above test was run on a dual-core CPU
+</I>&gt;&gt;<i> (Intel Core 2 Duo).
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm running it here on Mac OS X (core 2 due) and I'm getting the  
+</I>&gt;<i> same problem. Errors are not very informative - threads :)
+</I>&gt;<i> Here is something to try : - build with  #define
+</I>
+&gt;<i> to make boost::spirit grammars multi-thread safe. I suspect  
+</I>&gt;<i> 'filter' parser spits out objects with incomplete state, causing  
+</I>&gt;<i> all sort of run-time errors. Sometime I get - 'attempt to call pure  
+</I>&gt;<i> vurtual method'.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> I'm off to Seattle and then to Victoria, I might not be able to  
+</I>&gt;<i> check emails for a while. But I'll have plenty of time to think  
+</I>&gt;<i> about it while on the plane :)
+</I>&gt;<i>
+</I>&gt;<i> Cheers
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> 	Jon
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> &lt;threading.cpp&gt;
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> Artem Pavlenko
+</I>&gt;<i> <A HREF="http://mapnik.org">http://mapnik.org</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070920/6e2e58d8/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070920/6e2e58d8/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000286.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+	<LI>Next message: <A HREF="000289.html">[Mapnik-devel] load_map() not thread-safe?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#287">[ date ]</a>
+              <a href="thread.html#287">[ thread ]</a>
+              <a href="subject.html#287">[ subject ]</a>
+              <a href="author.html#287">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

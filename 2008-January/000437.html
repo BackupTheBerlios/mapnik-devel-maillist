@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Blending error (With Patch)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3Cc4193f8c0801211135s70ebb736o26298b6ba1472515%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000410.html">
+   <LINK REL="Next"  HREF="000438.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Blending error (With Patch)</H1>
+    <B>Andy Allan</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Blending%20error%20%28With%20Patch%29&In-Reply-To=%3Cc4193f8c0801211135s70ebb736o26298b6ba1472515%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Blending error (With Patch)">gravitystorm at gmail.com
+       </A><BR>
+    <I>Mon Jan 21 20:35:23 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000410.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+        <LI>Next message: <A HREF="000438.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#437">[ date ]</a>
+              <a href="thread.html#437">[ thread ]</a>
+              <a href="subject.html#437">[ subject ]</a>
+              <a href="author.html#437">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Jan 10, 2008 1:20 AM, David Leaver &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dave at smartrak.co.nz</A>&gt; wrote:
+&gt;<i> One thing I've noticed is that if your map is rendered onto a fully
+</I>&gt;<i> transparent background (alpha=0), it will still be blended to the color
+</I>&gt;<i> components that are set in that layer.
+</I>&gt;<i> In comparison to any image editing software, this behavior is incorrect.
+</I>&gt;<i> Investigating AGG usage, it looks like the wrong blending is being used
+</I>&gt;<i> (pixfmt_rgba32 instead of pixfmt_rgba32_plain).
+</I>&gt;<i>
+</I>&gt;<i> The attached image portrays this behavior.
+</I>&gt;<i> Column 1: background(0,0,0,0), first row is bad
+</I>&gt;<i> Column 2: background(255,255,255,0), second row is bad
+</I>&gt;<i> Column 3: with patch applied, all are good, any background with alpha=0
+</I>&gt;<i> gives the same output.
+</I>
+The patch for this helped expose another blending bug which I'd
+previously reported to Artem (via an Openstreetmap conversation) to
+the point where we couldn't ignore it further, and we made a patch for
+the latest trunk today. I've raised a ticket with the patch attached
+at
+
+<A HREF="https://trac.mapnik.org/ticket/64">https://trac.mapnik.org/ticket/64</A>
+
+Cheers,
+Andy
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000410.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+	<LI>Next message: <A HREF="000438.html">[Mapnik-devel] Blending error (With Patch)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#437">[ date ]</a>
+              <a href="thread.html#437">[ thread ]</a>
+              <a href="subject.html#437">[ subject ]</a>
+              <a href="author.html#437">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Insight to structure
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Insight%20to%20structure&In-Reply-To=%3C4D516920.1050002%40gmx.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001329.html">
+   <LINK REL="Next"  HREF="001334.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Insight to structure</H1>
+    <B>Ralf Klammer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Insight%20to%20structure&In-Reply-To=%3C4D516920.1050002%40gmx.de%3E"
+       TITLE="[Mapnik-devel] Insight to structure">ralf_klammer at gmx.de
+       </A><BR>
+    <I>Tue Feb  8 17:02:40 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001329.html">[Mapnik-devel] Insight to structure
+</A></li>
+        <LI>Next message: <A HREF="001334.html">[Mapnik-devel] Mapnik 2.0 PREVIEW via new OS X installer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1330">[ date ]</a>
+              <a href="thread.html#1330">[ thread ]</a>
+              <a href="subject.html#1330">[ subject ]</a>
+              <a href="author.html#1330">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>That seems to be the part that I was looking for.
+
+My main concern is to find a point in the whole 
+mapnik-rendering-process, where it would be possible to implement some 
+generalization functions.
+So that I tap the data when it &quot;comes&quot; from the database, send it to a 
+WPS-Server &amp; (geometrical ) generalize them and finally go on with the 
+main rendering.
+
+Does anybody have an additional idea, where to add something like that?
+
+Ralf
+
+
+Am 08.02.2011 14:17, schrieb kRAkEn/gORe:
+&gt;<i>
+</I>&gt;<i> Mapnik itself does not know anuthing about the data. Take a look at 
+</I>&gt;<i> input plugins, they provide the data to the mapnik renderer chain.
+</I>&gt;<i>
+</I>&gt;<i> Lucio
+</I>&gt;<i>
+</I>&gt;<i> On Feb 8, 2011 11:39 AM, &quot;Ralf Klammer&quot; &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ralf_klammer at gmx.de</A> 
+</I>&gt;<i> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ralf_klammer at gmx.de</A>&gt;&gt; wrote:
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm relative new to mapnik.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I need to know if there exists something like a flowchart of the 
+</I>&gt;<i> whole mapnik structure?
+</I>&gt;<i> &gt; I want to get deeper into the whole structure but I'm struggling a bit.
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I'm especially interested in, which module(s)/class(es) handles the 
+</I>&gt;<i> communication with the database!?
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I would be grateful for any hint!
+</I>&gt;<i> &gt; Thanks!
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; Ralf
+</I>&gt;<i> &gt; --
+</I>&gt;<i> &gt; Empfehlen Sie GMX DSL Ihren Freunden und Bekannten und wir
+</I>&gt;<i> &gt; belohnen Sie mit bis zu 50,- Euro! <A HREF="https://freundschaftswerbung.gmx.de">https://freundschaftswerbung.gmx.de</A>
+</I>&gt;<i> &gt; _______________________________________________
+</I>&gt;<i> &gt; Mapnik-devel mailing list
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A> &lt;mailto:<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>&gt;
+</I>&gt;<i> &gt; <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110208/311a2e49/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110208/311a2e49/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001329.html">[Mapnik-devel] Insight to structure
+</A></li>
+	<LI>Next message: <A HREF="001334.html">[Mapnik-devel] Mapnik 2.0 PREVIEW via new OS X installer
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1330">[ date ]</a>
+              <a href="thread.html#1330">[ thread ]</a>
+              <a href="subject.html#1330">[ subject ]</a>
+              <a href="author.html#1330">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

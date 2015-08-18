@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re: Mapnik viewer and OSM rendering)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20wxPdfDoc%20pdf%20output%20experimental%20branch%20%28was%20Re%3A%0A%20Mapnik%20viewer%20and%20OSM%20rendering%29&In-Reply-To=%3C47F82968.9030008%40onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000589.html">
+   <LINK REL="Next"  HREF="000592.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re: Mapnik viewer and OSM rendering)</H1>
+    <B>Ben Moores</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20wxPdfDoc%20pdf%20output%20experimental%20branch%20%28was%20Re%3A%0A%20Mapnik%20viewer%20and%20OSM%20rendering%29&In-Reply-To=%3C47F82968.9030008%40onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re: Mapnik viewer and OSM rendering)">ben.moores at onetrackmind.co.nz
+       </A><BR>
+    <I>Sun Apr  6 03:37:44 CEST 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000589.html">[Mapnik-devel] GeoDjango Datasource for Mapnik
+</A></li>
+        <LI>Next message: <A HREF="000592.html">[Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re:	Mapnik viewer and OSM rendering)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#590">[ date ]</a>
+              <a href="thread.html#590">[ thread ]</a>
+              <a href="subject.html#590">[ subject ]</a>
+              <a href="author.html#590">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi, I've had time to commit the wxpdfdoc pdf output into an experimental 
+branch. You can find it in /branches/experimental-pdf/
+
+
+notes:
+  - I haven't updated scons, since I never could get it working on 
+windows. The new files are in /pdf/, /include/pdf/, /demo/pdf/, and 
+/bindings/python
+  - I have included my patches to wxpdfdoc in /thirdparty/wxpdfdoc-patch
+  - Build instructions are in /msvc/readme.txt
+  - A visual studio solution/projects for all of mapnik (agg, mapnik, 
+input plugins, python bindings, pdf demo) is included in /msvc/.
+  - A c++ demo is included in /demo/pdf
+
+
+Have a look and see what you think, I don't have much time for working 
+on this any more, but you might see some features you like:
+  - turning on/off map layers in the pdf
+  - laying out the map on a page (e.g. no full page output) so you can add
+	+ grids
+	+ overlay images (including pdfs)
+	+ scale bars
+	+ borders around the map
+
+
+
+
+Thanks
+
+Ben
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000589.html">[Mapnik-devel] GeoDjango Datasource for Mapnik
+</A></li>
+	<LI>Next message: <A HREF="000592.html">[Mapnik-devel] wxPdfDoc pdf output experimental branch (was Re:	Mapnik viewer and OSM rendering)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#590">[ date ]</a>
+              <a href="thread.html#590">[ thread ]</a>
+              <a href="subject.html#590">[ subject ]</a>
+              <a href="author.html#590">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

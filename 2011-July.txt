@@ -1,0 +1,1672 @@
+From stella at laurenzo.org  Tue Jul  5 21:56:37 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Tue, 5 Jul 2011 12:56:37 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+	shared library on linux
+In-Reply-To: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+Message-ID: <CAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw@mail.gmail.com>
+
+Hi all,
+I've got a fix for the issue I reported where input plugins were not being
+linked against their dependent libraries (except for on OSX).  I don't know
+how you are taking commits to SVN, but it is here and attached:
+
+https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4
+
+<https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4>I
+only had the dependencies to build the following plugins, so I can't verify
+the others (although I did make the exact same changes to each).  If others
+can verify plugin builds not on this list, that would be superb:
+
+
+   - gdal
+   - ogr
+   - postgis
+   - raster
+   - shape
+   - sqlite
+
+To verify, ensure that the plugin links against mapnik2 (ldd plugin.input)
+and that it loads/functions.
+
+I verified that everything builds and seems to function with my jni tests on
+Linux x86_64 (Ubuntu 10.10) and OSX Snow Leopard (32bit).
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik2-81f6e45b85b2ed3a38e8.diff
+Type: text/x-patch
+Size: 14126 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/1a45a4f5/attachment.bin>
+
+From dane at dbsgeo.com  Tue Jul  5 23:37:33 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 5 Jul 2011 14:37:33 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+	shared library on linux
+In-Reply-To: <CAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw@mail.gmail.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+	<CAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw@mail.gmail.com>
+Message-ID: <E23F503F-20AD-4D18-9B9C-EA7436040564@dbsgeo.com>
+
+Stella,
+
+Fantastic, thanks for following through on this, and confirming it works with your JNI tests.
+
+I will look for time to test this on linux with nodejs, and if it works will plan to apply to SVN.
+
+The git mirror should autoupdate (so you can keep your fork in sync), but at this point is just read only.
+
+Dane
+
+
+On Jul 5, 2011, at 12:56 PM, Stella Laurenzo wrote:
+
+> Hi all,
+> I've got a fix for the issue I reported where input plugins were not being linked against their dependent libraries (except for on OSX).  I don't know how you are taking commits to SVN, but it is here and attached:
+> 
+> https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4
+> 
+> I only had the dependencies to build the following plugins, so I can't verify the others (although I did make the exact same changes to each).  If others can verify plugin builds not on this list, that would be superb:
+> 
+> gdal
+> ogr
+> postgis
+> raster
+> shape
+> sqlite
+> To verify, ensure that the plugin links against mapnik2 (ldd plugin.input) and that it loads/functions.
+> 
+> I verified that everything builds and seems to function with my jni tests on Linux x86_64 (Ubuntu 10.10) and OSX Snow Leopard (32bit).
+> 
+> Thanks.
+> - stella
+> <mapnik2-81f6e45b85b2ed3a38e8.diff>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/2693a920/attachment.html>
+
+From stella at laurenzo.org  Wed Jul  6 00:59:16 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Tue, 5 Jul 2011 15:59:16 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+Message-ID: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+
+Hi all,
+I've got a sqlite database where some of the tables/indexes are in a
+separate database file.  In order to use this, I needed mapnik to run an
+"attach database" command at startup.  I generalized the solution slightly
+and implemented this in the attached patch, also referenced here on github:
+
+https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+
+There are three additions/changes to the sqlite plugin in this commit:
+
+   - Add an attachdb parameter with syntax
+"dbname at dbfile[,dbname2 at dbfile2...]".
+    If attached files are not absolute or ":memory:" then they are interpreted
+   relative to the original database file.
+   - Add an initdb parameter which allows arbitrary sql to be run when a
+   connection is established.  Any attachments are processed before
+   initialization sql.  This just seemed like a good idea to add since attachdb
+   is just a fancy way to populate the list of initialization sql that this
+   adds to as well.  It may be useful for people to load extensions or set
+   other environment level sqlite options.
+   - Fix the detection logic for finding a spatial index so that it works
+   across databases (sqlite_master checks are per database file -
+   select...limit 0 and pragma tableinfo checks are "global" to all attached
+   databases).  This allows the base table to be in one database file and the
+   index in another.
+
+I also wrote and committed a new python test that checks all of this out.
+
+Let me know what I need to do to get this functionality committed.
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff
+Type: text/x-patch
+Size: 9695 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/5162f1b3/attachment.bin>
+
+From dane at dbsgeo.com  Wed Jul  6 01:50:47 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 5 Jul 2011 16:50:47 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+	shared library on linux
+In-Reply-To: <E23F503F-20AD-4D18-9B9C-EA7436040564@dbsgeo.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+	<CAH8pnHZCbAvm1koA7n0JV9Daie4G-y8zKqJ_sc6PsuaMdXkYNw@mail.gmail.com>
+	<E23F503F-20AD-4D18-9B9C-EA7436040564@dbsgeo.com>
+Message-ID: <69785372-F087-4EB4-AC5D-9BFA0D2AF0CF@dbsgeo.com>
+
+Okay, tested with NodeJS and Python on Ubuntu Linux and worked perfectly - applied in r3004 and created/closed ticket to track this at http://trac.mapnik.org/ticket/790.
+
+Thanks Stella.
+
+Dane
+
+On Jul 5, 2011, at 2:37 PM, Dane Springmeyer wrote:
+
+> Stella,
+> 
+> Fantastic, thanks for following through on this, and confirming it works with your JNI tests.
+> 
+> I will look for time to test this on linux with nodejs, and if it works will plan to apply to SVN.
+> 
+> The git mirror should autoupdate (so you can keep your fork in sync), but at this point is just read only.
+> 
+> Dane
+> 
+> 
+> On Jul 5, 2011, at 12:56 PM, Stella Laurenzo wrote:
+> 
+>> Hi all,
+>> I've got a fix for the issue I reported where input plugins were not being linked against their dependent libraries (except for on OSX).  I don't know how you are taking commits to SVN, but it is here and attached:
+>> 
+>> https://github.com/stellaeof/mapnik2/commit/81f6e45b85b2ed3a38e8e674387ba9de371de7a4
+>> 
+>> I only had the dependencies to build the following plugins, so I can't verify the others (although I did make the exact same changes to each).  If others can verify plugin builds not on this list, that would be superb:
+>> 
+>> gdal
+>> ogr
+>> postgis
+>> raster
+>> shape
+>> sqlite
+>> To verify, ensure that the plugin links against mapnik2 (ldd plugin.input) and that it loads/functions.
+>> 
+>> I verified that everything builds and seems to function with my jni tests on Linux x86_64 (Ubuntu 10.10) and OSX Snow Leopard (32bit).
+>> 
+>> Thanks.
+>> - stella
+>> <mapnik2-81f6e45b85b2ed3a38e8.diff>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/729a0c05/attachment.html>
+
+From dane at dbsgeo.com  Wed Jul  6 02:24:05 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 5 Jul 2011 17:24:05 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+Message-ID: <6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+
+Stella,
+
+Looks good. Only comment is that hat `index_table_` could be leveraged in a few more places to avoid `"idx_" << geometry_table_ << "_" << geometry_field_`. Could you take a look at that?
+
+Also, could you pls create a ticket at mapnik trac on this issue, and provide just a bit more detail about the use case/design of attachdb.
+
+Also, I'm not super aware of the history of the metadata_ option. Its clear it is an alternate way for the user to provide an extent. But from my perspective its pretty ideal to have an RTREE index, and it might be cleaner to remove the metadata_ option and just throw if the user does not either provide a manual extent (for speedy creation of the datasource) or if it cannot be read from a spatial index. What do you think?
+
+/cc lucio (aka kunitoki) who it think added the metadata option early on.
+
+Dane
+
+On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+
+> Hi all,
+> I've got a sqlite database where some of the tables/indexes are in a separate database file.  In order to use this, I needed mapnik to run an "attach database" command at startup.  I generalized the solution slightly and implemented this in the attached patch, also referenced here on github:
+>    https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+> 
+> There are three additions/changes to the sqlite plugin in this commit:
+> Add an attachdb parameter with syntax "dbname at dbfile[,dbname2 at dbfile2...]".  If attached files are not absolute or ":memory:" then they are interpreted relative to the original database file.
+> Add an initdb parameter which allows arbitrary sql to be run when a connection is established.  Any attachments are processed before initialization sql.  This just seemed like a good idea to add since attachdb is just a fancy way to populate the list of initialization sql that this adds to as well.  It may be useful for people to load extensions or set other environment level sqlite options.
+> Fix the detection logic for finding a spatial index so that it works across databases (sqlite_master checks are per database file - select...limit 0 and pragma tableinfo checks are "global" to all attached databases).  This allows the base table to be in one database file and the index in another.
+> I also wrote and committed a new python test that checks all of this out.
+> 
+> Let me know what I need to do to get this functionality committed.
+> 
+> Thanks.
+> - stella
+> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/91c20df6/attachment.html>
+
+From stella at laurenzo.org  Wed Jul  6 02:27:54 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Tue, 5 Jul 2011 17:27:54 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+Message-ID: <CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+
+Dane,
+As soon as I sent that email, I thought "crap, I meant
+to propagate index_table_ through the rest of the file."  :)  It probably
+also makes sense to allow it to be set with a parameter instead of always
+auto calculated.
+
+I'll see if Lucio knows what's going on with the metadata bits.  I'm not at
+all familiar with them.
+
+I'll probably circle back around to this on Thursday.
+
+- stella
+
+On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+
+> Stella,
+>
+> Looks good. Only comment is that hat `index_table_` could be leveraged in a
+> few more places to avoid `"idx_" << geometry_table_ << "_" <<
+> geometry_field_`. Could you take a look at that?
+>
+> Also, could you pls create a ticket at mapnik trac on this issue, and
+> provide just a bit more detail about the use case/design of attachdb.
+>
+> Also, I'm not super aware of the history of the metadata_ option. Its clear
+> it is an alternate way for the user to provide an extent. But from my
+> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+> to remove the metadata_ option and just throw if the user does not either
+> provide a manual extent (for speedy creation of the datasource) or if it
+> cannot be read from a spatial index. What do you think?
+>
+> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+>
+> Dane
+>
+> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+>
+> Hi all,
+> I've got a sqlite database where some of the tables/indexes are in a
+> separate database file.  In order to use this, I needed mapnik to run an
+> "attach database" command at startup.  I generalized the solution slightly
+> and implemented this in the attached patch, also referenced here on github:
+>
+> https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+>
+> There are three additions/changes to the sqlite plugin in this commit:
+>
+>    - Add an attachdb parameter with syntax "dbname at dbfile
+>    [,dbname2 at dbfile2...]".  If attached files are not absolute or
+>    ":memory:" then they are interpreted relative to the original database file.
+>    - Add an initdb parameter which allows arbitrary sql to be run when a
+>    connection is established.  Any attachments are processed before
+>    initialization sql.  This just seemed like a good idea to add since attachdb
+>    is just a fancy way to populate the list of initialization sql that this
+>    adds to as well.  It may be useful for people to load extensions or set
+>    other environment level sqlite options.
+>    - Fix the detection logic for finding a spatial index so that it works
+>    across databases (sqlite_master checks are per database file -
+>    select...limit 0 and pragma tableinfo checks are "global" to all attached
+>    databases).  This allows the base table to be in one database file and the
+>    index in another.
+>
+> I also wrote and committed a new python test that checks all of this out.
+>
+> Let me know what I need to do to get this functionality committed.
+>
+> Thanks.
+> - stella
+> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110705/3824f7d1/attachment.html>
+
+From kunitoki at gmail.com  Wed Jul  6 11:55:35 2011
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Wed, 6 Jul 2011 09:55:35 +0000
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+Message-ID: <CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+
+Hi all,
+the metadata table is something present in spatialite databases (but
+is there also on oracle too) that allows to query for extent instead
+of manually specifying it or recalculating everytime.
+
+i find it pretty useful information, and automatize and speed up
+extent querying for my layers.
+
+Lucio
+
+
+On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org> wrote:
+> Dane,
+> As soon as I sent that email, I thought "crap, I meant
+> to?propagate?index_table_ through the rest of the file." ?:) ?It probably
+> also makes sense to allow it to be set with a parameter instead of always
+> auto calculated.
+> I'll see if Lucio knows what's going on with the metadata bits. ?I'm not at
+> all familiar with them.
+> I'll probably circle back around to this on Thursday.
+> - stella
+>
+> On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>
+>> Stella,
+>> Looks good. Only comment is that?hat `index_table_` could be leveraged in
+>> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+>> geometry_field_`. Could you take a look at that?
+>> Also, could you pls create a ticket at mapnik trac on this issue, and
+>> provide just a bit more detail about the use case/design of attachdb.
+>> Also, I'm not super aware of the history of the metadata_ option. Its
+>> clear it is an alternate way for the user to provide an extent. But from my
+>> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+>> to remove the metadata_ option and just throw if the user does not either
+>> provide a manual extent (for speedy creation of the datasource) or if it
+>> cannot be read from a spatial index. What do you think?
+>> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+>> Dane
+>> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+>>
+>> Hi all,
+>> I've got a sqlite database where some of the tables/indexes are in a
+>> separate database file. ?In order to use this, I needed mapnik to run an
+>> "attach database" command at startup. ?I generalized the solution slightly
+>> and implemented this in the attached patch, also referenced here on github:
+>>
+>> ???https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+>> There are three additions/changes to the sqlite plugin in this commit:
+>>
+>> Add an attachdb parameter with syntax
+>> "dbname at dbfile[,dbname2 at dbfile2...]". ?If attached files are not absolute or
+>> ":memory:" then they are interpreted relative to the original database file.
+>> Add an initdb parameter which allows arbitrary sql to be run when a
+>> connection is established. ?Any attachments are processed before
+>> initialization sql. ?This just seemed like a good idea to add since attachdb
+>> is just a fancy way to populate the list of initialization sql that this
+>> adds to as well. ?It may be useful for people to load extensions or set
+>> other environment level sqlite options.
+>> Fix the detection logic for finding a spatial index so that it works
+>> across databases (sqlite_master checks are per database file -
+>> select...limit 0 and pragma tableinfo checks are "global" to all attached
+>> databases). ?This allows the base table to be in one database file and the
+>> index in another.
+>>
+>> I also wrote and committed a new python test that checks all of this out.
+>> Let me know what I need to do to get this functionality committed.
+>> Thanks.
+>> - stella
+>>
+>> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>
+>
+
+
+From stella at laurenzo.org  Wed Jul  6 23:38:06 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Wed, 6 Jul 2011 14:38:06 -0700
+Subject: [Mapnik-devel] Two new Mapnik Java Projects
+Message-ID: <CAH8pnHZoN6tub1WSbRgGCeDCFPh46=vBNW5o8Stj0Tg-5ZYa0w@mail.gmail.com>
+
+Hi all,
+
+I've been working on some bits that others may be interested in and I just
+got them out to GitHub.  AFAIK, these are the first non-trivial Java/Mapnik
+integrations using the mapnik-jni bindings that I got out last week.
+
+   - https://github.com/stellaeof/nanomaps-server
+   - https://github.com/stellaeof/mapnik-distiller
+   - https://github.com/stellaeof/mapnik-jni
+
+
+It shouldn't be too hard to figure out where I was going with things, but to
+say it explicitly, this all came out of some work I have been playing with
+to do the following:
+
+   - Get OSM maps to render reliably and quickly on tiny hardware
+   - Produce tooling that lets me develop map styles against live
+   (unoptimized) databases and then compress it all down for optimized drawing
+   - Produce tooling that lets me arbitrarily and easily reproject OSM data
+   for maps in other projections (I have a client that needs the maps to line
+   up with imagery in a projection I had never even heard of before).
+   - Produce tooling that lets me take a map file and all of its data, strip
+   out unneeded data/layers, and systematically simplify the geometries based
+   on the use case (smaller geometries = much smaller data and faster rendering
+   if the detail is not needed)
+   - Just generally make it easier to get custom maps stood up and deployed
+   - Generally do all of the above without access to hundreds of gigabytes
+   of ram, SSDs in the servers or other such stuff that I just don't have
+
+There is nothing here that very careful and detailed work on map styles and
+data couldn't realize, but what I want is to be able to take the stuff that
+isn't optimized for rendering, hack a map together and then push a button
+labeled "Make it small and fast."  I think I have largely accomplished that
+with the mapnik-distiller project.
+
+Unfortunately, I rsync'd the wrong directory to my server, so its going to
+be a couple of days before there is a live demo.  But if there was a demo,
+all you would see would be some OSM maps, which I think you've all seen
+before.  :)
+
+Let me know if anyone is interested in any of this work or has ideas.
+
+Thanks.
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110706/71190e7f/attachment.html>
+
+From stella at laurenzo.org  Mon Jul 11 07:23:44 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Sun, 10 Jul 2011 22:23:44 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+	<CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+Message-ID: <CAH8pnHYmBTBm-zvB9TK13cTztaQ=FFsU9CGr2At6H4tvGQwF8A@mail.gmail.com>
+
+I have entered this as TRAC 793 (http://trac.mapnik.org/ticket/793)
+
+- stella
+
+On Wed, Jul 6, 2011 at 2:55 AM, kRAkEn/gORe <kunitoki at gmail.com> wrote:
+
+> Hi all,
+> the metadata table is something present in spatialite databases (but
+> is there also on oracle too) that allows to query for extent instead
+> of manually specifying it or recalculating everytime.
+>
+> i find it pretty useful information, and automatize and speed up
+> extent querying for my layers.
+>
+> Lucio
+>
+>
+> On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org>
+> wrote:
+> > Dane,
+> > As soon as I sent that email, I thought "crap, I meant
+> > to propagate index_table_ through the rest of the file."  :)  It probably
+> > also makes sense to allow it to be set with a parameter instead of always
+> > auto calculated.
+> > I'll see if Lucio knows what's going on with the metadata bits.  I'm not
+> at
+> > all familiar with them.
+> > I'll probably circle back around to this on Thursday.
+> > - stella
+> >
+> > On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com>
+> wrote:
+> >>
+> >> Stella,
+> >> Looks good. Only comment is that hat `index_table_` could be leveraged
+> in
+> >> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+> >> geometry_field_`. Could you take a look at that?
+> >> Also, could you pls create a ticket at mapnik trac on this issue, and
+> >> provide just a bit more detail about the use case/design of attachdb.
+> >> Also, I'm not super aware of the history of the metadata_ option. Its
+> >> clear it is an alternate way for the user to provide an extent. But from
+> my
+> >> perspective its pretty ideal to have an RTREE index, and it might be
+> cleaner
+> >> to remove the metadata_ option and just throw if the user does not
+> either
+> >> provide a manual extent (for speedy creation of the datasource) or if it
+> >> cannot be read from a spatial index. What do you think?
+> >> /cc lucio (aka kunitoki) who it think added the metadata option early
+> on.
+> >> Dane
+> >> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+> >>
+> >> Hi all,
+> >> I've got a sqlite database where some of the tables/indexes are in a
+> >> separate database file.  In order to use this, I needed mapnik to run an
+> >> "attach database" command at startup.  I generalized the solution
+> slightly
+> >> and implemented this in the attached patch, also referenced here on
+> github:
+> >>
+> >>
+> https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+> >> There are three additions/changes to the sqlite plugin in this commit:
+> >>
+> >> Add an attachdb parameter with syntax
+> >> "dbname at dbfile[,dbname2 at dbfile2...]".  If attached files are not
+> absolute or
+> >> ":memory:" then they are interpreted relative to the original database
+> file.
+> >> Add an initdb parameter which allows arbitrary sql to be run when a
+> >> connection is established.  Any attachments are processed before
+> >> initialization sql.  This just seemed like a good idea to add since
+> attachdb
+> >> is just a fancy way to populate the list of initialization sql that this
+> >> adds to as well.  It may be useful for people to load extensions or set
+> >> other environment level sqlite options.
+> >> Fix the detection logic for finding a spatial index so that it works
+> >> across databases (sqlite_master checks are per database file -
+> >> select...limit 0 and pragma tableinfo checks are "global" to all
+> attached
+> >> databases).  This allows the base table to be in one database file and
+> the
+> >> index in another.
+> >>
+> >> I also wrote and committed a new python test that checks all of this
+> out.
+> >> Let me know what I need to do to get this functionality committed.
+> >> Thanks.
+> >> - stella
+> >>
+> >>
+> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+> >> Mapnik-devel mailing list
+> >> Mapnik-devel at lists.berlios.de
+> >> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >>
+> >
+> >
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110710/c8f3d471/attachment.html>
+
+From simon.kammerer at web.de  Mon Jul 11 18:03:04 2011
+From: simon.kammerer at web.de (Simon Kammerer)
+Date: Mon, 11 Jul 2011 18:03:04 +0200
+Subject: [Mapnik-devel] placement-type and placements for shieldsymbolizer
+In-Reply-To: <E00B9C26-487D-4545-8953-F4F655C7CF4C@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DF75FD9.1000304@web.de>
+	<871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+	<B685751E-A6FE-49B0-8FBA-E94697499009@dbsgeo.com>
+	<4DF9B224.4040806@web.de>
+	<E00B9C26-487D-4545-8953-F4F655C7CF4C@dbsgeo.com>
+Message-ID: <4E1B1EB8.1090001@web.de>
+
+Hi list,
+
+are there any plans to integrate textsymbolizer's "placement-type" and 
+"placements" into shieldsymbolizer?
+
+Regards
+Simon
+
+
+From dane at dbsgeo.com  Mon Jul 11 20:00:22 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 11 Jul 2011 11:00:22 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+	<CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+Message-ID: <E5DDD008-F4DE-4A12-BBFF-FDA04EDD6F82@dbsgeo.com>
+
+
+On Jul 6, 2011, at 2:55 AM, kRAkEn/gORe wrote:
+
+> Hi all,
+> the metadata table is something present in spatialite databases (but
+> is there also on oracle too) that allows to query for extent instead
+> of manually specifying it or recalculating everytime.
+
+Ah, sorry did not realize this was a spatialite feature - great to know, we'll keep then :)
+
+Lucio - that raises another question I've had for you. My recent work on the sqlite driver has worked to slightly improve the support for using sqlite without spatiallite. Since sqlite supports RTREE indexes natively I allowed the extent to be automatically pulled from the index (if it exists): http://trac.mapnik.org/changeset/2689/trunk/plugins/input/sqlite. Also in that commit I changed the driver to use the native "rowid" for the default primary key instead of the Spatialite PK_UID.
+
+Do these seem acceptable to you from the perspective of keeping solid spatialite support?
+
+My general thought is that ideally we can support both, nearly automatically. The only thing preventing this is that the user must now manually supply wkb_format="spatialite" to trigger usage of the spatialite geometry (which otherwise fails silently). Ideally we could autodetect a spatialite db, and therefore autodetect the wkb format while throwing if it is not valid.
+
+Thoughts?
+
+Dane
+
+
+
+> 
+> i find it pretty useful information, and automatize and speed up
+> extent querying for my layers.
+> 
+> Lucio
+> 
+> 
+> On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org> wrote:
+>> Dane,
+>> As soon as I sent that email, I thought "crap, I meant
+>> to propagate index_table_ through the rest of the file."  :)  It probably
+>> also makes sense to allow it to be set with a parameter instead of always
+>> auto calculated.
+>> I'll see if Lucio knows what's going on with the metadata bits.  I'm not at
+>> all familiar with them.
+>> I'll probably circle back around to this on Thursday.
+>> - stella
+>> 
+>> On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>> 
+>>> Stella,
+>>> Looks good. Only comment is that hat `index_table_` could be leveraged in
+>>> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+>>> geometry_field_`. Could you take a look at that?
+>>> Also, could you pls create a ticket at mapnik trac on this issue, and
+>>> provide just a bit more detail about the use case/design of attachdb.
+>>> Also, I'm not super aware of the history of the metadata_ option. Its
+>>> clear it is an alternate way for the user to provide an extent. But from my
+>>> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+>>> to remove the metadata_ option and just throw if the user does not either
+>>> provide a manual extent (for speedy creation of the datasource) or if it
+>>> cannot be read from a spatial index. What do you think?
+>>> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+>>> Dane
+>>> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+>>> 
+>>> Hi all,
+>>> I've got a sqlite database where some of the tables/indexes are in a
+>>> separate database file.  In order to use this, I needed mapnik to run an
+>>> "attach database" command at startup.  I generalized the solution slightly
+>>> and implemented this in the attached patch, also referenced here on github:
+>>> 
+>>>    https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+>>> There are three additions/changes to the sqlite plugin in this commit:
+>>> 
+>>> Add an attachdb parameter with syntax
+>>> "dbname at dbfile[,dbname2 at dbfile2...]".  If attached files are not absolute or
+>>> ":memory:" then they are interpreted relative to the original database file.
+>>> Add an initdb parameter which allows arbitrary sql to be run when a
+>>> connection is established.  Any attachments are processed before
+>>> initialization sql.  This just seemed like a good idea to add since attachdb
+>>> is just a fancy way to populate the list of initialization sql that this
+>>> adds to as well.  It may be useful for people to load extensions or set
+>>> other environment level sqlite options.
+>>> Fix the detection logic for finding a spatial index so that it works
+>>> across databases (sqlite_master checks are per database file -
+>>> select...limit 0 and pragma tableinfo checks are "global" to all attached
+>>> databases).  This allows the base table to be in one database file and the
+>>> index in another.
+>>> 
+>>> I also wrote and committed a new python test that checks all of this out.
+>>> Let me know what I need to do to get this functionality committed.
+>>> Thanks.
+>>> - stella
+>>> 
+>>> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>> 
+>> 
+>> 
+
+
+
+From dane at dbsgeo.com  Mon Jul 11 20:00:48 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 11 Jul 2011 11:00:48 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAH8pnHYmBTBm-zvB9TK13cTztaQ=FFsU9CGr2At6H4tvGQwF8A@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+	<CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+	<CAH8pnHYmBTBm-zvB9TK13cTztaQ=FFsU9CGr2At6H4tvGQwF8A@mail.gmail.com>
+Message-ID: <AADB135B-6228-4F2E-AA70-A7153AAFCB0B@dbsgeo.com>
+
+applied http://trac.mapnik.org/changeset/3017
+
+On Jul 10, 2011, at 10:23 PM, Stella Laurenzo wrote:
+
+> I have entered this as TRAC 793 (http://trac.mapnik.org/ticket/793)
+> 
+> - stella
+> 
+> On Wed, Jul 6, 2011 at 2:55 AM, kRAkEn/gORe <kunitoki at gmail.com> wrote:
+> Hi all,
+> the metadata table is something present in spatialite databases (but
+> is there also on oracle too) that allows to query for extent instead
+> of manually specifying it or recalculating everytime.
+> 
+> i find it pretty useful information, and automatize and speed up
+> extent querying for my layers.
+> 
+> Lucio
+> 
+> 
+> On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org> wrote:
+> > Dane,
+> > As soon as I sent that email, I thought "crap, I meant
+> > to propagate index_table_ through the rest of the file."  :)  It probably
+> > also makes sense to allow it to be set with a parameter instead of always
+> > auto calculated.
+> > I'll see if Lucio knows what's going on with the metadata bits.  I'm not at
+> > all familiar with them.
+> > I'll probably circle back around to this on Thursday.
+> > - stella
+> >
+> > On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> >>
+> >> Stella,
+> >> Looks good. Only comment is that hat `index_table_` could be leveraged in
+> >> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+> >> geometry_field_`. Could you take a look at that?
+> >> Also, could you pls create a ticket at mapnik trac on this issue, and
+> >> provide just a bit more detail about the use case/design of attachdb.
+> >> Also, I'm not super aware of the history of the metadata_ option. Its
+> >> clear it is an alternate way for the user to provide an extent. But from my
+> >> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+> >> to remove the metadata_ option and just throw if the user does not either
+> >> provide a manual extent (for speedy creation of the datasource) or if it
+> >> cannot be read from a spatial index. What do you think?
+> >> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+> >> Dane
+> >> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+> >>
+> >> Hi all,
+> >> I've got a sqlite database where some of the tables/indexes are in a
+> >> separate database file.  In order to use this, I needed mapnik to run an
+> >> "attach database" command at startup.  I generalized the solution slightly
+> >> and implemented this in the attached patch, also referenced here on github:
+> >>
+> >>    https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+> >> There are three additions/changes to the sqlite plugin in this commit:
+> >>
+> >> Add an attachdb parameter with syntax
+> >> "dbname at dbfile[,dbname2 at dbfile2...]".  If attached files are not absolute or
+> >> ":memory:" then they are interpreted relative to the original database file.
+> >> Add an initdb parameter which allows arbitrary sql to be run when a
+> >> connection is established.  Any attachments are processed before
+> >> initialization sql.  This just seemed like a good idea to add since attachdb
+> >> is just a fancy way to populate the list of initialization sql that this
+> >> adds to as well.  It may be useful for people to load extensions or set
+> >> other environment level sqlite options.
+> >> Fix the detection logic for finding a spatial index so that it works
+> >> across databases (sqlite_master checks are per database file -
+> >> select...limit 0 and pragma tableinfo checks are "global" to all attached
+> >> databases).  This allows the base table to be in one database file and the
+> >> index in another.
+> >>
+> >> I also wrote and committed a new python test that checks all of this out.
+> >> Let me know what I need to do to get this functionality committed.
+> >> Thanks.
+> >> - stella
+> >>
+> >> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+> >> Mapnik-devel mailing list
+> >> Mapnik-devel at lists.berlios.de
+> >> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >>
+> >
+> >
+> 
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110711/9b1ecbf2/attachment.html>
+
+From kunitoki at gmail.com  Tue Jul 12 09:22:31 2011
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Tue, 12 Jul 2011 07:22:31 +0000
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <E5DDD008-F4DE-4A12-BBFF-FDA04EDD6F82@dbsgeo.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+	<CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+	<E5DDD008-F4DE-4A12-BBFF-FDA04EDD6F82@dbsgeo.com>
+Message-ID: <CAMODe1S2KU9OAd1=K-BCBo5b2=8QUZaAQnzpGNqMDJRhu6CzWA@mail.gmail.com>
+
+That's is perfectly fine for me. I wonder why i didn't use that already ?
+I think however we should support both, as differences are minimal.
+I'm just trying to find a way to automagically select the WKB format,
+so one doesn't need to specify the wkb_format every time.
+
+btw i'm using spatialite cause it offers also good tools and libraries
+to manipulate/interact with the features in databases.
+
+cheers
+
+Lucio
+
+
+On Mon, Jul 11, 2011 at 6:00 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>
+> On Jul 6, 2011, at 2:55 AM, kRAkEn/gORe wrote:
+>
+>> Hi all,
+>> the metadata table is something present in spatialite databases (but
+>> is there also on oracle too) that allows to query for extent instead
+>> of manually specifying it or recalculating everytime.
+>
+> Ah, sorry did not realize this was a spatialite feature - great to know, we'll keep then :)
+>
+> Lucio - that raises another question I've had for you. My recent work on the sqlite driver has worked to slightly improve the support for using sqlite without spatiallite. Since sqlite supports RTREE indexes natively I allowed the extent to be automatically pulled from the index (if it exists): http://trac.mapnik.org/changeset/2689/trunk/plugins/input/sqlite. Also in that commit I changed the driver to use the native "rowid" for the default primary key instead of the Spatialite PK_UID.
+>
+> Do these seem acceptable to you from the perspective of keeping solid spatialite support?
+>
+> My general thought is that ideally we can support both, nearly automatically. The only thing preventing this is that the user must now manually supply wkb_format="spatialite" to trigger usage of the spatialite geometry (which otherwise fails silently). Ideally we could autodetect a spatialite db, and therefore autodetect the wkb format while throwing if it is not valid.
+>
+> Thoughts?
+>
+> Dane
+>
+>
+>
+>>
+>> i find it pretty useful information, and automatize and speed up
+>> extent querying for my layers.
+>>
+>> Lucio
+>>
+>>
+>> On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org> wrote:
+>>> Dane,
+>>> As soon as I sent that email, I thought "crap, I meant
+>>> to propagate index_table_ through the rest of the file." ?:) ?It probably
+>>> also makes sense to allow it to be set with a parameter instead of always
+>>> auto calculated.
+>>> I'll see if Lucio knows what's going on with the metadata bits. ?I'm not at
+>>> all familiar with them.
+>>> I'll probably circle back around to this on Thursday.
+>>> - stella
+>>>
+>>> On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>>>
+>>>> Stella,
+>>>> Looks good. Only comment is that hat `index_table_` could be leveraged in
+>>>> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+>>>> geometry_field_`. Could you take a look at that?
+>>>> Also, could you pls create a ticket at mapnik trac on this issue, and
+>>>> provide just a bit more detail about the use case/design of attachdb.
+>>>> Also, I'm not super aware of the history of the metadata_ option. Its
+>>>> clear it is an alternate way for the user to provide an extent. But from my
+>>>> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+>>>> to remove the metadata_ option and just throw if the user does not either
+>>>> provide a manual extent (for speedy creation of the datasource) or if it
+>>>> cannot be read from a spatial index. What do you think?
+>>>> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+>>>> Dane
+>>>> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+>>>>
+>>>> Hi all,
+>>>> I've got a sqlite database where some of the tables/indexes are in a
+>>>> separate database file. ?In order to use this, I needed mapnik to run an
+>>>> "attach database" command at startup. ?I generalized the solution slightly
+>>>> and implemented this in the attached patch, also referenced here on github:
+>>>>
+>>>> ? ?https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+>>>> There are three additions/changes to the sqlite plugin in this commit:
+>>>>
+>>>> Add an attachdb parameter with syntax
+>>>> "dbname at dbfile[,dbname2 at dbfile2...]". ?If attached files are not absolute or
+>>>> ":memory:" then they are interpreted relative to the original database file.
+>>>> Add an initdb parameter which allows arbitrary sql to be run when a
+>>>> connection is established. ?Any attachments are processed before
+>>>> initialization sql. ?This just seemed like a good idea to add since attachdb
+>>>> is just a fancy way to populate the list of initialization sql that this
+>>>> adds to as well. ?It may be useful for people to load extensions or set
+>>>> other environment level sqlite options.
+>>>> Fix the detection logic for finding a spatial index so that it works
+>>>> across databases (sqlite_master checks are per database file -
+>>>> select...limit 0 and pragma tableinfo checks are "global" to all attached
+>>>> databases). ?This allows the base table to be in one database file and the
+>>>> index in another.
+>>>>
+>>>> I also wrote and committed a new python test that checks all of this out.
+>>>> Let me know what I need to do to get this functionality committed.
+>>>> Thanks.
+>>>> - stella
+>>>>
+>>>> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+>>>> Mapnik-devel mailing list
+>>>> Mapnik-devel at lists.berlios.de
+>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>
+>>>
+>>>
+>
+>
+
+
+From herm at scribus.info  Wed Jul 13 00:04:43 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Wed, 13 Jul 2011 00:04:43 +0200
+Subject: [Mapnik-devel] placement-type and placements for
+	shieldsymbolizer
+Message-ID: <op.vyi0x5d4i35s77@nx7400.uni-regensburg.de>
+
+Hello Simon,
+
+it should be possible to integrate the placement system into  
+ShieldSymbolizer, but I'm currently reworking the placement system. I will  
+first complete everything for TextSymbolizer and when that works as  
+expected I'll try to add it to ShieldSymbolizer.
+
+Hermann
+
+
+From dane at dbsgeo.com  Wed Jul 13 19:32:04 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 13 Jul 2011 10:32:04 -0700
+Subject: [Mapnik-devel] boost filesystem and base_path in load_map
+Message-ID: <893A6EC0-E6D1-4577-B2A8-79B69B1FE97F@dbsgeo.com>
+
+Herm,
+
+I see you had to comment a few things in your textplacement branch: http://trac.mapnik.org/changeset/3036
+
+I think this bug was fixed in trunk in http://trac.mapnik.org/changeset/2977, so syncing with trunk would be a good idea.
+
+Dane 
+
+From rakib114 at gmail.com  Thu Jul 14 13:16:56 2011
+From: rakib114 at gmail.com (Rakib Solaimani)
+Date: Thu, 14 Jul 2011 17:16:56 +0600
+Subject: [Mapnik-devel] Zooming is not working properly in map.
+Message-ID: <CAMkQhQihq_=9YWFnsaxuGjppZizcj_xwLVXqXdhOsZoX75eB+g@mail.gmail.com>
+
+Hi,
+
+I have a problem with zooming. I have a static control that shows the png
+image of map. I read the image boundary for my shape file by QGIS.
+But in png file there always a space left side of map and that creates the
+scaling problem when I zoom (basically I select a rectangle from screen and
+do scaling),
+mapnik shows inaccurate region.
+
+Can any one have an idea how to solve it? Can I save the map to png by left
+align?
+
+-Rakib.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110714/15df72c6/attachment.html>
+
+From herm at scribus.info  Thu Jul 14 16:56:59 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Thu, 14 Jul 2011 16:56:59 +0200
+Subject: [Mapnik-devel] GSoC status
+Message-ID: <op.vyl6g9w1i35s77@nx7400.uni-regensburg.de>
+
+Hello everybody!
+
+I posted an update about the status of my GSoC project here:  
+http://mapnik.org/news/2011/jul/13/new_text_placement_system/
+
+Hermann
+
+
+From dane at dbsgeo.com  Thu Jul 14 20:35:16 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 14 Jul 2011 11:35:16 -0700
+Subject: [Mapnik-devel] Zooming is not working properly in map.
+In-Reply-To: <CAMkQhQihq_=9YWFnsaxuGjppZizcj_xwLVXqXdhOsZoX75eB+g@mail.gmail.com>
+References: <CAMkQhQihq_=9YWFnsaxuGjppZizcj_xwLVXqXdhOsZoX75eB+g@mail.gmail.com>
+Message-ID: <57045992-E43E-44BE-90F8-192AF24E16F8@dbsgeo.com>
+
+Rakib,
+
+Are you sure that your bounds properly matches (e.g. is the same aspect ratio) your image rectangle?
+
+You may want to try testing the map level 'aspect_fix_ratio'. For some details on this see: http://gis.638310.n2.nabble.com/Generate-image-py-problems-with-bounding-box-td5133332.html
+
+Dane
+
+
+On Jul 14, 2011, at 4:16 AM, Rakib Solaimani wrote:
+
+> Hi,
+> 
+> I have a problem with zooming. I have a static control that shows the png image of map. I read the image boundary for my shape file by QGIS.
+> But in png file there always a space left side of map and that creates the scaling problem when I zoom (basically I select a rectangle from screen and do scaling),
+> mapnik shows inaccurate region.
+> 
+> Can any one have an idea how to solve it? Can I save the map to png by left align?
+> 
+> -Rakib.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Thu Jul 14 20:40:03 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 14 Jul 2011 11:40:03 -0700
+Subject: [Mapnik-devel] Support attachdb and initdb parameters in sqlite
+	plugin
+In-Reply-To: <CAMODe1S2KU9OAd1=K-BCBo5b2=8QUZaAQnzpGNqMDJRhu6CzWA@mail.gmail.com>
+References: <CAH8pnHbar0xTJa6FTHpvv_2HKsJyTEwCqUKxGHAZdj5KqQf=Ew@mail.gmail.com>
+	<6ED93104-BF4E-44F5-8F02-38B61453A434@dbsgeo.com>
+	<CAH8pnHZ4qSxrV+eDV6-XRrzcT6ZHtGVo5ASY0aHZFcTCCDGWMQ@mail.gmail.com>
+	<CAMODe1QRgCsF=jb7ZvD4NDMqnwAhndonGHXj5iVmmCWq7DkHTw@mail.gmail.com>
+	<E5DDD008-F4DE-4A12-BBFF-FDA04EDD6F82@dbsgeo.com>
+	<CAMODe1S2KU9OAd1=K-BCBo5b2=8QUZaAQnzpGNqMDJRhu6CzWA@mail.gmail.com>
+Message-ID: <ACBCDC6A-F1F0-40E4-B45C-3BAF937E9821@dbsgeo.com>
+
+Lucio,
+
+Great, thanks for confirming, I agree. I've created a new ticket to track this 'auto' spatialite detection/support:
+
+http://trac.mapnik.org/ticket/798
+
+Dane
+
+
+On Jul 12, 2011, at 12:22 AM, kRAkEn/gORe wrote:
+
+> That's is perfectly fine for me. I wonder why i didn't use that already ?
+> I think however we should support both, as differences are minimal.
+> I'm just trying to find a way to automagically select the WKB format,
+> so one doesn't need to specify the wkb_format every time.
+> 
+> btw i'm using spatialite cause it offers also good tools and libraries
+> to manipulate/interact with the features in databases.
+> 
+> cheers
+> 
+> Lucio
+> 
+> 
+> On Mon, Jul 11, 2011 at 6:00 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>> 
+>> On Jul 6, 2011, at 2:55 AM, kRAkEn/gORe wrote:
+>> 
+>>> Hi all,
+>>> the metadata table is something present in spatialite databases (but
+>>> is there also on oracle too) that allows to query for extent instead
+>>> of manually specifying it or recalculating everytime.
+>> 
+>> Ah, sorry did not realize this was a spatialite feature - great to know, we'll keep then :)
+>> 
+>> Lucio - that raises another question I've had for you. My recent work on the sqlite driver has worked to slightly improve the support for using sqlite without spatiallite. Since sqlite supports RTREE indexes natively I allowed the extent to be automatically pulled from the index (if it exists): http://trac.mapnik.org/changeset/2689/trunk/plugins/input/sqlite. Also in that commit I changed the driver to use the native "rowid" for the default primary key instead of the Spatialite PK_UID.
+>> 
+>> Do these seem acceptable to you from the perspective of keeping solid spatialite support?
+>> 
+>> My general thought is that ideally we can support both, nearly automatically. The only thing preventing this is that the user must now manually supply wkb_format="spatialite" to trigger usage of the spatialite geometry (which otherwise fails silently). Ideally we could autodetect a spatialite db, and therefore autodetect the wkb format while throwing if it is not valid.
+>> 
+>> Thoughts?
+>> 
+>> Dane
+>> 
+>> 
+>> 
+>>> 
+>>> i find it pretty useful information, and automatize and speed up
+>>> extent querying for my layers.
+>>> 
+>>> Lucio
+>>> 
+>>> 
+>>> On Wed, Jul 6, 2011 at 12:27 AM, Stella Laurenzo <stella at laurenzo.org> wrote:
+>>>> Dane,
+>>>> As soon as I sent that email, I thought "crap, I meant
+>>>> to propagate index_table_ through the rest of the file."  :)  It probably
+>>>> also makes sense to allow it to be set with a parameter instead of always
+>>>> auto calculated.
+>>>> I'll see if Lucio knows what's going on with the metadata bits.  I'm not at
+>>>> all familiar with them.
+>>>> I'll probably circle back around to this on Thursday.
+>>>> - stella
+>>>> 
+>>>> On Tue, Jul 5, 2011 at 5:24 PM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>>>>> 
+>>>>> Stella,
+>>>>> Looks good. Only comment is that hat `index_table_` could be leveraged in
+>>>>> a few more places to avoid `"idx_" << geometry_table_ << "_" <<
+>>>>> geometry_field_`. Could you take a look at that?
+>>>>> Also, could you pls create a ticket at mapnik trac on this issue, and
+>>>>> provide just a bit more detail about the use case/design of attachdb.
+>>>>> Also, I'm not super aware of the history of the metadata_ option. Its
+>>>>> clear it is an alternate way for the user to provide an extent. But from my
+>>>>> perspective its pretty ideal to have an RTREE index, and it might be cleaner
+>>>>> to remove the metadata_ option and just throw if the user does not either
+>>>>> provide a manual extent (for speedy creation of the datasource) or if it
+>>>>> cannot be read from a spatial index. What do you think?
+>>>>> /cc lucio (aka kunitoki) who it think added the metadata option early on.
+>>>>> Dane
+>>>>> On Jul 5, 2011, at 3:59 PM, Stella Laurenzo wrote:
+>>>>> 
+>>>>> Hi all,
+>>>>> I've got a sqlite database where some of the tables/indexes are in a
+>>>>> separate database file.  In order to use this, I needed mapnik to run an
+>>>>> "attach database" command at startup.  I generalized the solution slightly
+>>>>> and implemented this in the attached patch, also referenced here on github:
+>>>>> 
+>>>>>    https://github.com/stellaeof/mapnik2/commit/5654bc3ee7cf46657084890ce02bbbbe1c96b101
+>>>>> There are three additions/changes to the sqlite plugin in this commit:
+>>>>> 
+>>>>> Add an attachdb parameter with syntax
+>>>>> "dbname at dbfile[,dbname2 at dbfile2...]".  If attached files are not absolute or
+>>>>> ":memory:" then they are interpreted relative to the original database file.
+>>>>> Add an initdb parameter which allows arbitrary sql to be run when a
+>>>>> connection is established.  Any attachments are processed before
+>>>>> initialization sql.  This just seemed like a good idea to add since attachdb
+>>>>> is just a fancy way to populate the list of initialization sql that this
+>>>>> adds to as well.  It may be useful for people to load extensions or set
+>>>>> other environment level sqlite options.
+>>>>> Fix the detection logic for finding a spatial index so that it works
+>>>>> across databases (sqlite_master checks are per database file -
+>>>>> select...limit 0 and pragma tableinfo checks are "global" to all attached
+>>>>> databases).  This allows the base table to be in one database file and the
+>>>>> index in another.
+>>>>> 
+>>>>> I also wrote and committed a new python test that checks all of this out.
+>>>>> Let me know what I need to do to get this functionality committed.
+>>>>> Thanks.
+>>>>> - stella
+>>>>> 
+>>>>> <mapnik_sqlite_attachdb_5654bc3ee7cf46657084.diff>_______________________________________________
+>>>>> Mapnik-devel mailing list
+>>>>> Mapnik-devel at lists.berlios.de
+>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>>> 
+>>>> 
+>>>> 
+>> 
+>> 
+
+
+
+From dane at dbsgeo.com  Thu Jul 14 20:41:20 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 14 Jul 2011 11:41:20 -0700
+Subject: [Mapnik-devel] GSoC status
+In-Reply-To: <op.vyl6g9w1i35s77@nx7400.uni-regensburg.de>
+References: <op.vyl6g9w1i35s77@nx7400.uni-regensburg.de>
+Message-ID: <FBB311F0-7423-4331-ABA6-B7AA7DB64AE2@dbsgeo.com>
+
+Thanks Hermann!
+
+Have fun at SOTM (http://sotm-eu.org/talk?58) - wish I could be there!
+
+Dane
+
+On Jul 14, 2011, at 7:56 AM, Hermann Kraus wrote:
+
+> Hello everybody!
+> 
+> I posted an update about the status of my GSoC project here: http://mapnik.org/news/2011/jul/13/new_text_placement_system/
+> 
+> Hermann
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From ldp at xs4all.nl  Thu Jul 14 21:10:33 2011
+From: ldp at xs4all.nl (Lennard)
+Date: Thu, 14 Jul 2011 21:10:33 +0200
+Subject: [Mapnik-devel] GSoC status
+In-Reply-To: <op.vyl6g9w1i35s77@nx7400.uni-regensburg.de>
+References: <op.vyl6g9w1i35s77@nx7400.uni-regensburg.de>
+Message-ID: <4E1F3F29.1090803@xs4all.nl>
+
+On 14-7-2011 16:56, Hermann Kraus wrote:
+
+> I posted an update about the status of my GSoC project here:
+> http://mapnik.org/news/2011/jul/13/new_text_placement_system/
+
+Extremely interesting stuff there, Herm! Good job!
+
+
+-- 
+Lennard
+
+
+From roel.vanhout at gmail.com  Sun Jul 17 22:00:22 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Sun, 17 Jul 2011 22:00:22 +0200
+Subject: [Mapnik-devel] Posted status update on blog
+Message-ID: <CAPjiA7aJqdo5zXvWB5DiX_uxv9xAiyLCkvLpYur1eYFiZUjACw@mail.gmail.com>
+
+As part of the halfway review I've posted a description of what I've
+been working on on
+http://mapnik.org/news/2011/jul/17/gsoc_windows_build_system_halfway/
+.
+
+cheers,
+
+roel
+
+
+From rundel at gmail.com  Tue Jul 19 05:39:50 2011
+From: rundel at gmail.com (Colin Rundel)
+Date: Mon, 18 Jul 2011 23:39:50 -0400
+Subject: [Mapnik-devel] Carto blog update
+Message-ID: <7953BD64-5727-4F52-B22C-817993A9E694@gmail.com>
+
+For those interested I have just posted my halfway update for my GSOC project at http://mapnik.org/news/2011/jul/18/stylesheets_and_gsoc_halfway/. Comments, questions, criticism, etc are all greatly appreciated.
+
+-Colin
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110718/5e879270/attachment.html>
+
+From rakib114 at gmail.com  Tue Jul 19 14:31:08 2011
+From: rakib114 at gmail.com (Rakib Solaimani)
+Date: Tue, 19 Jul 2011 18:31:08 +0600
+Subject: [Mapnik-devel] How to detect a point in a polygon
+Message-ID: <CAMkQhQiWLAUMzxoCtC2scrxuni5nfbhnNx3zCm7s=79PuOUPsA@mail.gmail.com>
+
+Hi,
+
+I want to detect a point in polygon. Can anyone advise me how to do that?
+
+My ultimate goal is to return a polygon id (stored in shape file), if a
+point is in that polygon.
+
+Rakib
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110719/95e1c137/attachment.html>
+
+From dane at dbsgeo.com  Thu Jul 21 00:21:00 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 20 Jul 2011 15:21:00 -0700
+Subject: [Mapnik-devel] Midterm GSOC meeting notes
+Message-ID: <06A72B90-263B-4EED-B68F-05917D4931CD@dbsgeo.com>
+
+The GSOC midterm passed this week and each student did a great job of writing up progress at http://mapnik.org/news/.
+
+We also had a GSOC group meeting today including: Colin, Hermann, Roel, Artem, Rob, and I.
+
+I took notes on a few things that came up which might not be covered in each blog post.
+
+-- Hermann / Text Placement --
+
+* Herm had a great time at SOTM and met many people interesting in leveraging his work on MetaWriters (his GSOC project from last year), which he presented on.
+* The MetaWriters slides as PDF are at http://sotm-eu.org/slides/58_HermannKraus_vortrag.pdf and the video is at http://matterhorn.zserv.tuwien.ac.at/engage/ui/watch.html?id=Unscheduled-lecturetube-ei7-1310807022250
+* Andy Allen did a nice talk on advanced map design his slide on "Text Processing" can be solved with Hermann's current work on alternative text placement (http://sotm-eu.org/slides/51_AndyAllen_Carto2.pdf)
+* Herms next steps include adding some example XML and tests for his placement work and then starting to focus on text formatting: bold, italic, underline support.
+* Herm also mentioned that issues of Unicode support in Mapnik were raised at SOTM and he is going to look into whether he might be able to fix some of these issues (http://trac.mapnik.org/wiki/InternationalText)  if they are related to his text formatting work.
+
+-- Colin / Carto C++ --
+
+* Colin says the generator (mapnik xml -> carto css) is about 90% complete, so he does not plan more work
+* Focus now is on the parser (carto css -> mapnik map).
+* Currently nearly full parsing support is implemented, but not yet conversion to mapnik objects
+* An interesting discussion came up around maybe using boost multi-map or multi-index to store symbolizers instead of the current vector of variants, which might make conversion from css to mapnik easier and faster (followups will happen at Colin's github repo: https://github.com/rundel/carto-parser/issues
+
+-- Roel / Windows --
+
+* Roel took the blue sky approach of trying to fully automate the builds of all mapnik dependencies. He has mapnik2 compiles nearly working on Windows so has focused on python tools to automate the setup of all dependencies. The target audience is developers (but just users of mapnik) who will want/need to compile mapnik dependencies themselves to either write applications for windows or stay up to date.
+* Hopefully in 2 weeks a Mapnik2 binary may be available
+* Also, final tweaks to the build system will happen over the next couple weeks to make it possible for other people with a windows environment to help test the setup
+* The idea came up of Roel creating a Windows Virtual Machine with VirtualBox and then distributing that for others to test (to avoid full setup).
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110720/2acbf593/attachment.html>
+
+From mike at stamen.com  Thu Jul 21 07:55:01 2011
+From: mike at stamen.com (Michal Migurski)
+Date: Wed, 20 Jul 2011 22:55:01 -0700
+Subject: [Mapnik-devel] Midterm GSOC meeting notes
+In-Reply-To: <06A72B90-263B-4EED-B68F-05917D4931CD@dbsgeo.com>
+References: <06A72B90-263B-4EED-B68F-05917D4931CD@dbsgeo.com>
+Message-ID: <AE99536D-97AA-4D76-999E-797129EDED33@stamen.com>
+
+Thanks for writing and sending this!
+
+-mike.
+
+On Jul 20, 2011, at 3:21 PM, Dane Springmeyer wrote:
+
+> The GSOC midterm passed this week and each student did a great job of writing up progress at http://mapnik.org/news/.
+> 
+> We also had a GSOC group meeting today including: Colin, Hermann, Roel, Artem, Rob, and I.
+> 
+> I took notes on a few things that came up which might not be covered in each blog post.
+> 
+> -- Hermann / Text Placement --
+> 
+> * Herm had a great time at SOTM and met many people interesting in leveraging his work on MetaWriters (his GSOC project from last year), which he presented on.
+> * The MetaWriters slides as PDF are at http://sotm-eu.org/slides/58_HermannKraus_vortrag.pdf and the video is at http://matterhorn.zserv.tuwien.ac.at/engage/ui/watch.html?id=Unscheduled-lecturetube-ei7-1310807022250
+> * Andy Allen did a nice talk on advanced map design his slide on "Text Processing" can be solved with Hermann's current work on alternative text placement (http://sotm-eu.org/slides/51_AndyAllen_Carto2.pdf)
+> * Herms next steps include adding some example XML and tests for his placement work and then starting to focus on text formatting: bold, italic, underline support.
+> * Herm also mentioned that issues of Unicode support in Mapnik were raised at SOTM and he is going to look into whether he might be able to fix some of these issues (http://trac.mapnik.org/wiki/InternationalText)  if they are related to his text formatting work.
+> 
+> -- Colin / Carto C++ --
+> 
+> * Colin says the generator (mapnik xml -> carto css) is about 90% complete, so he does not plan more work
+> * Focus now is on the parser (carto css -> mapnik map).
+> * Currently nearly full parsing support is implemented, but not yet conversion to mapnik objects
+> * An interesting discussion came up around maybe using boost multi-map or multi-index to store symbolizers instead of the current vector of variants, which might make conversion from css to mapnik easier and faster (followups will happen at Colin's github repo: https://github.com/rundel/carto-parser/issues
+> 
+> -- Roel / Windows --
+> 
+> * Roel took the blue sky approach of trying to fully automate the builds of all mapnik dependencies. He has mapnik2 compiles nearly working on Windows so has focused on python tools to automate the setup of all dependencies. The target audience is developers (but just users of mapnik) who will want/need to compile mapnik dependencies themselves to either write applications for windows or stay up to date.
+> * Hopefully in 2 weeks a Mapnik2 binary may be available
+> * Also, final tweaks to the build system will happen over the next couple weeks to make it possible for other people with a windows environment to help test the setup
+> * The idea came up of Roel creating a Windows Virtual Machine with VirtualBox and then distributing that for others to test (to avoid full setup).
+> 
+> 
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+----------------------------------------------------------------
+michal migurski- mike at stamen.com
+                 415.558.1610
+
+
+
+
+
+From david.eastcott at shaw.ca  Wed Jul 27 06:31:22 2011
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Tue, 26 Jul 2011 22:31:22 -0600
+Subject: [Mapnik-devel] Metawriter questions?
+Message-ID: <4E2F949A.6030001@shaw.ca>
+
+Hi,
+
+I have just started working with the metawriter features and they work well for a single image or for 'tiles'.
+
+I've come across a couple a couple issues that I have to work around because I am creating large image sets
+(in excess of 500K px per axis).
+
+
+1.  Essential I load the map once then 'pan', render, save image, and repeat till all of map is saved.  Each time I
+pan/render/save, the metawriter creates the json file, but it over-writes the previous iterations file.
+
+Is there a way that the meta writer could append to an existing file so that a single file is created for all iterations?
+
+I have a simple work-around that creates a new file for each iteration by programmaticaly changing a replacement variable,
+then post-process the discrete files into a single one.
+
+
+2.  Is there a way to disable/inhibit the metawriters operation without having to modify/create a second set of xml file(s)?
+
+I tried using the clear() method on the returned value from map.metawriters(), but the metawriter generates and error message:
+Metawriter JSON: Failed to open file //_hospital_meta.json: Permission denied
+
+BTW, I am currently using 2984 of the trunk.
+
+Best regards
+Dave
+
+
+From herm at scribus.info  Fri Jul 29 01:00:17 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Fri, 29 Jul 2011 01:00:17 +0200
+Subject: [Mapnik-devel] Metawriter questions?
+Message-ID: <op.vzcp6rkdi35s77@nx7400.uni-regensburg.de>
+
+Hi David,
+
+On Wed, 27 Jul 2011 06:31:22 +0200, David Eastcott  
+<david.eastcott at shaw.ca> wrote:
+> Is there a way that the meta writer could append to an existing file so  
+> that a single file is created for all iterations?
+
+This is not possible so far, but it can be done by changing the  
+metawriter. As you have a workaround for this I'll fix it when I have some  
+time. http://trac.mapnik.org/ticket/803
+
+> 2.  Is there a way to disable/inhibit the metawriters operation without  
+> having to modify/create a second set of xml file(s)?
+>
+> I tried using the clear() method on the returned value from  
+> map.metawriters(), but the metawriter generates and error message:
+> Metawriter JSON: Failed to open file //_hospital_meta.json: Permission  
+> denied
+
+Did that work at all? You only get back an const &, which is intentional  
+as you are not supposed to modify this variable on your own. It just  
+stores information about all metawriters and their names defined in the  
+XML file, but these names are later resolved to pointers for each  
+symbolizer.
+So, no, it's not possible to disable a metawriter atm. I added a function  
+symbolizer_base::add_metawriter() with an pointer argument. You have to  
+pass a NULL pointer to remove a metawriter. And you have to iterate over  
+all symbolizers. (Available in r3054, however I didn't test it, so report  
+problems).
+
+Hermann
+
+
+From nathaniel.evatt.10 at ucl.ac.uk  Fri Jul 29 16:44:38 2011
+From: nathaniel.evatt.10 at ucl.ac.uk (Evatt, Nathaniel)
+Date: Fri, 29 Jul 2011 14:44:38 +0000
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+Message-ID: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+
+Hi there,
+
+I am trying to register some customized fonts with Mapnik using the web pages:
+
+http://weait.com/content/add-fonts-your-openstreetmap-server
+
+and
+
+http://trac.mapnik.org/wiki/UsingCustomFonts
+
+I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+
+I am using mapnik-0.7.1 if this matters.
+
+Thanks,
+Nat
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110729/961f6c2c/attachment.html>
+
+From dane at dbsgeo.com  Fri Jul 29 21:02:56 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 29 Jul 2011 12:02:56 -0700
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+In-Reply-To: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+References: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+Message-ID: <039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+
+Nat,
+
+Can you post the font files somewhere that are not working?
+
+Dane
+
+
+On Jul 29, 2011, at 7:44 AM, Evatt, Nathaniel wrote:
+
+> Hi there, 
+> 
+> I am trying to register some customized fonts with Mapnik using the web pages:
+> 
+> http://weait.com/content/add-fonts-your-openstreetmap-server
+> 
+> and
+> 
+> http://trac.mapnik.org/wiki/UsingCustomFonts
+> 
+> I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+> 
+> I am using mapnik-0.7.1 if this matters.  
+> 
+> Thanks, 
+> Nat
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From herm at scribus.info  Sat Jul 30 04:23:20 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Sat, 30 Jul 2011 04:23:20 +0200
+Subject: [Mapnik-devel] GSoC status report
+Message-ID: <op.vzet86u7i35s77@nx7400.uni-regensburg.de>
+
+Hello!
+
+Here's my report what I did the last weeks:
+- I prepared sample files to show my text placement work.
+- I noticed a problem with my text placement work while preparing  
+examples: Sometimes rendering fails. I tried to debug this, but I'm not  
+100% sure about the cause of this problem yet. I'll commit samples as soon  
+as this bug is fixed.
+- In parallel to the work on text placement I also started working on text  
+formating.
+- I defined data structures which I think will be simple to work with but  
+are also flexible enough for future extensions.
+Text will be parsed into a list of tokens, which can be formating tokens  
+or text tokens. Formats will be managed using a stack.
+Example:
+<TextSymbolizer ...>Name: <b>[name]\n<small>[de:name]</small></b>
+
+is parsed as
+
+Text("Name: ")
+Format(bold)
+Text("[name]\n")
+Format(small)
+Text("[de:name]")
+EndFormat
+EndFormat
+
+This format is easy to create from both XML and C++ and as it is a plain  
+list it avoids the complexity of having to maintain a tree which requires  
+recursive processing. This is at the moment the best format I can think  
+of, but it might evolve if I run into problems implementing it.
+
+- I tried to estimate how much code from the old text formating system I  
+can be reused, but the code is quite complex and I think rewriting it into  
+a cleaner system is required.
+
+Hermann
+
+
+From nathaniel.evatt.10 at ucl.ac.uk  Sat Jul 30 10:50:32 2011
+From: nathaniel.evatt.10 at ucl.ac.uk (Evatt, Nathaniel)
+Date: Sat, 30 Jul 2011 08:50:32 +0000
+Subject: [Mapnik-devel] Having Trouble Registering Fonts
+In-Reply-To: <039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+References: <2F19511F7CD4CA46BFCC94318F67336C17BECD71@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>,
+	<039BDD37-6AD1-47C6-8A12-B965559C8087@dbsgeo.com>
+Message-ID: <2F19511F7CD4CA46BFCC94318F67336C17BF0FAA@AMSPRD0104MB101.eurprd01.prod.exchangelabs.com>
+
+Hi there, 
+
+I figured it out.  In the process of trying find a way to post the font files I realized that the font files that Mapnik didn't register had a .TTF file extension instead of .ttf.  I was able to work around the problem by simply renaming the file to .ttf
+
+Thanks for the help
+
+-Nat
+________________________________________
+From: Dane Springmeyer [dane at dbsgeo.com]
+Sent: Friday, July 29, 2011 8:02 PM
+To: Evatt, Nathaniel
+Cc: mapnik-devel at lists.berlios.de
+Subject: Re: [Mapnik-devel] Having Trouble Registering Fonts
+
+Nat,
+
+Can you post the font files somewhere that are not working?
+
+Dane
+
+
+On Jul 29, 2011, at 7:44 AM, Evatt, Nathaniel wrote:
+
+> Hi there,
+>
+> I am trying to register some customized fonts with Mapnik using the web pages:
+>
+> http://weait.com/content/add-fonts-your-openstreetmap-server
+>
+> and
+>
+> http://trac.mapnik.org/wiki/UsingCustomFonts
+>
+> I have been able successfully add some fonts, but the fonts that i was hoping to use.  Does anyone know why some fonts would register some but not all from the added custom location method?  All fonts are .ttf files.
+>
+> I am using mapnik-0.7.1 if this matters.
+>
+> Thanks,
+> Nat
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From herm at scribus.info  Sun Jul 31 21:31:37 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Sun, 31 Jul 2011 21:31:37 +0200
+Subject: [Mapnik-devel] Renaming opacity to text-opacity/shield-opacity
+Message-ID: <op.vzh0iz0ai35s77@nx7400.uni-regensburg.de>
+
+Hi!
+
+In ShieldSymbolizer there are two options
+opacity	(Default 1.0) - opacity of the image used for the shield
+text-opacity	(Default 1.0) - opacity of the text placed on top of the  
+shield
+and in TextSymbolizer there is
+opacity
+
+So we have two symbolizers which share 99% of their options, but one  
+option has a different meaning but the same name.
+
+I therefore propose to change "opacity" to "shield-opacity" in  
+ShieldSymbolizer and to "text-opactity" in TextSymbolizer. We already have  
+done large changes to the XML format in mapnik2 so it should be no big  
+deal to add this change, too.
+
+I also noticed that the option "force_odd_labels" is neither parsed nor  
+saved in mapnik2. Is that intentional?
+
+vertical-alignment and orientation were not saved by save_map(), but I  
+fixed that one in my branch.
+
+
+Hermann
+
+

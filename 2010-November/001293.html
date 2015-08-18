@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Database datasources
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Database%20datasources&In-Reply-To=%3C005807DE-571F-45AE-AF69-676236CEE4C0%40dbsgeo.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001292.html">
+   <LINK REL="Next"  HREF="001297.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Database datasources</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Database%20datasources&In-Reply-To=%3C005807DE-571F-45AE-AF69-676236CEE4C0%40dbsgeo.com%3E"
+       TITLE="[Mapnik-devel] Database datasources">dane at dbsgeo.com
+       </A><BR>
+    <I>Thu Nov 11 17:38:19 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001292.html">[Mapnik-devel] Database datasources
+</A></li>
+        <LI>Next message: <A HREF="001297.html">[Mapnik-devel] Database datasources
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1293">[ date ]</a>
+              <a href="thread.html#1293">[ thread ]</a>
+              <a href="subject.html#1293">[ subject ]</a>
+              <a href="author.html#1293">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Jeff,
+
+On Nov 11, 2010, at 10:14 AM, Jeff Scott wrote:
+
+&gt;<i> I see that mapnik currently supports postgres as a datasource.
+</I>
+Yes, three examples exist currently for SQL-based plugins, with the &quot;postgres/postgis&quot; one being the most advanced/well tested. The others are Oracle (the 'occi' plugin) and SQLite (which can read from either a spatialite db or normal sqlite).
+
+&gt;<i>  I was wondering 
+</I>&gt;<i> if there's been any work on implementing support for other databases: sql 
+</I>&gt;<i> server, oracle and mysql all have spatial libraries now.
+</I>
+Right we don't yet have a sql server plugin, but it certainly should be doable.
+
+Oracle is in place (<A HREF="http://trac.mapnik.org/wiki/OCCI">http://trac.mapnik.org/wiki/OCCI</A>)
+
+MySQL would be doable as well. The shortcut is to read mysql through OGR using the OGR plugin: 
+
+<A HREF="http://kueda.net/blog/2009/05/04/mysql-as-mapnik-datasource/">http://kueda.net/blog/2009/05/04/mysql-as-mapnik-datasource/</A>
+
+&gt;<i>  We use sql server so 
+</I>&gt;<i> that's the most useful to me, but I'd be interested in knowing about the others.
+</I>
+Great, would be a great addition.
+
+One thing we need to do better is refactor some of the functions used in the postgis plugin into utility functions any sql-based plugins can leverage.
+
+I've started on this:
+
+<A HREF="http://trac.mapnik.org/changeset/2337">http://trac.mapnik.org/changeset/2337</A>
+
+&gt;<i> 
+</I>&gt;<i> If not I'll probably have to take a look at implementing it at some point.  Does 
+</I>&gt;<i> anyone have any pointers or starting points to look into?  
+</I>
+Take a look at the existing SQL plugin code. Make sure to look either in trunk or the 0.7.2 branch if you start coding because the recent late binding patch changed things a bit (<A HREF="http://trac.mapnik.org/ticket/622">http://trac.mapnik.org/ticket/622</A>).
+
+Also, I recently posted an ultra simple hello world plugin to trunk:
+
+<A HREF="http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/">http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/</A>
+
+See the README: 
+
+<A HREF="http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/README">http://trac.mapnik.org/browser/trunk/plugins/input/templates/helloworld/README</A>
+
+&gt;<i> 
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Jeff
+</I>&gt;<i> 
+</I>
+Thank you. Can I ask that as you learn you keep your notes here?
+
+<A HREF="http://trac.mapnik.org/wiki/DevelopingPlugins">http://trac.mapnik.org/wiki/DevelopingPlugins</A>
+
+That page has a lot of potential but needs filled in, and I can help if you have specific questions.
+
+Dane
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001292.html">[Mapnik-devel] Database datasources
+</A></li>
+	<LI>Next message: <A HREF="001297.html">[Mapnik-devel] Database datasources
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1293">[ date ]</a>
+              <a href="thread.html#1293">[ thread ]</a>
+              <a href="subject.html#1293">[ subject ]</a>
+              <a href="author.html#1293">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

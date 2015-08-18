@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] OSM plugin
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20OSM%20plugin&In-Reply-To=%3C200803011153.23709.nick%40hogweed.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000532.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] OSM plugin</H1>
+    <B>Nick Whitelegg</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20OSM%20plugin&In-Reply-To=%3C200803011153.23709.nick%40hogweed.org%3E"
+       TITLE="[Mapnik-devel] OSM plugin">nick at hogweed.org
+       </A><BR>
+    <I>Sat Mar  1 12:53:23 CET 2008</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000532.html">[Mapnik-devel] OSM plugin update - now using libxml2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#531">[ date ]</a>
+              <a href="thread.html#531">[ thread ]</a>
+              <a href="subject.html#531">[ subject ]</a>
+              <a href="author.html#531">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+
+Hello Artem (and everyone),
+
+The OSM plugin is now in SVN. It successfully renders various types of OSM way 
+(motorway, primary, tertiary, footway, bridleway) in a test .osm file. Note I 
+haven't tested images or text rendering yet.
+
+The libxml2 problem remains unresolved at present, so it's using expat 2.0.1 
+to parse the OSM XML. You can control the parser through the Mapnik XML file; 
+use the &quot;parser&quot; attribute (see test.xml) for an example. Allowed values are 
+libxml2 or expat.
+
+The test data and programs are there as well. The makefiles are a bit messy at 
+present.
+
+Nick
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000532.html">[Mapnik-devel] OSM plugin update - now using libxml2
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#531">[ date ]</a>
+              <a href="thread.html#531">[ thread ]</a>
+              <a href="subject.html#531">[ subject ]</a>
+              <a href="author.html#531">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

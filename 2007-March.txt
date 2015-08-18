@@ -1,0 +1,388 @@
+From artem at mapnik.org  Mon Mar 12 14:45:27 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 12 Mar 2007 13:45:27 +0000
+Subject: [Mapnik-devel] Mapnik Debian Packages
+Message-ID: <0405ADD3-FE66-4E81-ADF2-E9C658AB8086@mapnik.org>
+
+Hello all,
+
+Dominic Hargreaves just updated Mapnik Debian packages to the latest  
+version 0.4.0.
+Great news! Installing mapnik was never so easy:
+
+sudo apt-get install python-mapnik
+
+Have fun!
+
+
+From artem at mapnik.org  Thu Mar 15 14:16:20 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 15 Mar 2007 13:16:20 +0000
+Subject: [Mapnik-devel] mapnik plug-ins ext
+Message-ID: <4B8DFD4D-FE37-4270-B54A-98F710A6E60B@mapnik.org>
+
+Hello,
+
+I'm working on improving cross-platform support in Mapnik  
+(concentrating on darwin at the moment) and I'd like to change data- 
+source loader to expect _one_ file extension for input plug-ins on  
+*nix,mac and win32.
+
+So here some ideas:
+
+1. *.plugin
+2. *.input
+3. *.plug
+
+Any more?
+
+Cheers,
+Artem
+
+
+From jdunck at gmail.com  Thu Mar 15 20:04:41 2007
+From: jdunck at gmail.com (Jeremy Dunck)
+Date: Thu, 15 Mar 2007 14:04:41 -0500
+Subject: [Mapnik-devel] Caching in ogcserver.*
+Message-ID: <2545a92c0703151204t63f1ba1aw24ab1ff210456df1@mail.gmail.com>
+
+If I'm reading the code [1] correctly,
+mapnik.ogcserver.WMSBaseServiceHandler re-renders an image on each
+request.
+
+I'd like to add optional caching (modeled after django.core.cache) to
+the WMSBaseServiceHandler.GetMap function.
+
+Would such a patch be accepted?
+
+
+From artem at mapnik.org  Thu Mar 15 20:37:39 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 15 Mar 2007 19:37:39 +0000
+Subject: [Mapnik-devel] Caching in ogcserver.*
+In-Reply-To: <2545a92c0703151204t63f1ba1aw24ab1ff210456df1@mail.gmail.com>
+References: <2545a92c0703151204t63f1ba1aw24ab1ff210456df1@mail.gmail.com>
+Message-ID: <2ACD68E8-F274-459E-88C3-0CCA2B527D6B@mapnik.org>
+
+
+On 15 Mar 2007, at 19:04, Jeremy Dunck wrote:
+
+> If I'm reading the code [1] correctly,
+> mapnik.ogcserver.WMSBaseServiceHandler re-renders an image on each
+> request.
+>
+
+Yep, sounds right.  Jean-Francois written WMS stuff but I'm pretty  
+sure that is the case.
+
+> I'd like to add optional caching (modeled after django.core.cache) to
+> the WMSBaseServiceHandler.GetMap function.
+
+Cool!  But I wonder if caching pure WMS GetMap requests would be  
+efficient.
+They (requests) can be any bounding box so you might end up caching  
+too much.
+I think implementing caching of tiles at predefined scales make more  
+sense.
+Have you looked at metacarta's TileCache?  It uses filesystem which  
+gets populated with tiles.
+
+>
+> Would such a patch be accepted?
+
+Yes, please! Sounds like you have something already. Django is using  
+memcache or db for caching, right?
+Anyway, 'caching'  would be great feature to have.
+
+Cheers,
+Artem
+
+
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From jdunck at gmail.com  Thu Mar 15 21:10:39 2007
+From: jdunck at gmail.com (Jeremy Dunck)
+Date: Thu, 15 Mar 2007 15:10:39 -0500
+Subject: [Mapnik-devel] Caching in ogcserver.*
+In-Reply-To: <2ACD68E8-F274-459E-88C3-0CCA2B527D6B@mapnik.org>
+References: <2545a92c0703151204t63f1ba1aw24ab1ff210456df1@mail.gmail.com>
+	<2ACD68E8-F274-459E-88C3-0CCA2B527D6B@mapnik.org>
+Message-ID: <2545a92c0703151310g2b5e6bfco890a878910e13233@mail.gmail.com>
+
+On 3/15/07, Artem Pavlenko <artem at mapnik.org> wrote:
+>
+> > I'd like to add optional caching (modeled after django.core.cache) to
+> > the WMSBaseServiceHandler.GetMap function.
+>
+> Cool!  But I wonder if caching pure WMS GetMap requests would be
+> efficient.
+> They (requests) can be any bounding box so you might end up caching
+> too much.
+
+Ah, I suppose I should read a bit.  :)  I'm actually ignorant of WMS's
+protocol, but I see WMS-C is a subset to help tiling caching.  My
+eventual goal is to serve custom layers to GMaps via GTileLayer.
+
+I'd already found this which deals with the GTileLayer -> WMS translation:
+http://johndeck.blogspot.com/2006/02/layerwing-wms-services-with-googlemaps.html
+http://chignik.berkeley.edu/google/wms236.js
+
+I'll read up to see if that conforms to WMS-C.
+
+> I think implementing caching of tiles at predefined scales make more
+> sense.
+> Have you looked at metacarta's TileCache?  It uses filesystem which
+> gets populated with tiles.
+
+I hadn't, but that seems to do exactly what I want, except it sits in
+front of the eventual WMS.  I guess that's no hardship.  I think you
+may have talked me out of doing it for Mapnik.  I should have realized
+the common request protocol would allow for such coordination.
+
+...
+> Yes, please! Sounds like you have something already. Django is using
+> memcache or db for caching, right?
+
+Django supports many cache backends: memcached, in-process, local (but
+out-of-process), db, and filesystem.
+
+They already did the hard work of making all those things act the same.  :)
+
+> Anyway, 'caching'  would be great feature to have.
+
+Hmm, it seems TileCache may solve my immediate need.  Thanks for the
+pointer.  I hope to give back to Mapnik the next time I have an itch.
+:)
+
+
+From artem at mapnik.org  Thu Mar 15 21:22:15 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 15 Mar 2007 20:22:15 +0000
+Subject: [Mapnik-devel] Caching in ogcserver.*
+In-Reply-To: <2545a92c0703151310g2b5e6bfco890a878910e13233@mail.gmail.com>
+References: <2545a92c0703151204t63f1ba1aw24ab1ff210456df1@mail.gmail.com>
+	<2ACD68E8-F274-459E-88C3-0CCA2B527D6B@mapnik.org>
+	<2545a92c0703151310g2b5e6bfco890a878910e13233@mail.gmail.com>
+Message-ID: <92DAA5C9-4EE9-4071-B953-B9D23C3D6C32@mapnik.org>
+
+>
+> Hmm, it seems TileCache may solve my immediate need.  Thanks for the
+> pointer.  I hope to give back to Mapnik the next time I have an itch.
+> :)
+
+No probs. TileCache has got support for Mapnik btw.
+Here are tiles rendered by Mapnik, cached in MySQL and displayed as a  
+custom layers in GMap:
+http://media.mapnik.org/oxford-osm.html
+
+Cheers,
+Artem
+
+
+
+
+
+
+
+From artem at mapnik.org  Fri Mar 16 13:26:56 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 16 Mar 2007 12:26:56 +0000
+Subject: [Mapnik-devel] Darwin support
+Message-ID: <91878F51-AF7F-4631-92CF-BD07C7C0A4F8@mapnik.org>
+
+Hello all,
+
+Latest svn trunk  supports  building Mapnik on Mac (Intel).
+I'm using gcc 4.0.1 from Xcode 2.4.1 and I'm building all  
+dependencies from source ( not from Fink).
+Thanks to Tom Carden for getting me interested in supporting Mac OS X  
+and bambang for the initial patch.
+
+Have fun,
+Artem
+  
+
+
+From artem at mapnik.org  Sat Mar 24 12:08:06 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 24 Mar 2007 11:08:06 +0000
+Subject: [Mapnik-devel] (no subject)
+Message-ID: <F35278AB-204C-4B2B-A06B-AAEFA213BC01@mapnik.org>
+
+Dear all,
+
+Keith Sharp have packaged Mapnik for Fedora core 6 and RPMs are  
+available at :
+
+http://www.passback.org.uk/maps/rpms/
+
+More about it in this thread:
+http://lists.openstreetmap.org/pipermail/dev/2007-March/003722.html
+
+Have fun!
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070324/9707ed03/attachment.html>
+
+From artem at mapnik.org  Sat Mar 24 12:02:59 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 24 Mar 2007 11:02:59 +0000
+Subject: [Mapnik-devel] mapnik on win32
+Message-ID: <3A4A6D32-B87A-4F75-99FB-7E47B5F4CB63@mapnik.org>
+
+
+Hello list,
+
+Bart van den Eijnden from OSGIS kindly sponsored a copy of Vista for  
+Mapnik. And as a result I'm planning to start distributing win32  
+binaries for Mapnik.  This will include SDK (headers/libs) and also  
+Python bindings. I'm building Mapnik and all its dependencies with MS  
+native compiler (VC++ Express aka vc-8_0).
+
+I understand that win32 binaries would benefit from having some kind  
+of installer and after some googling I found: NSIS (http:// 
+www.nullsoft.com). It's script based, Open Source installer for  
+windows and it's used by many famous FOSS projects (including  
+Debian). Unfortunately I'm lacking experience packaging win32  
+software and I wonder if anyone on this list could help.
+
+The binaries are ready to go and just waiting for a bit of installer  
+magic.
+
+Thanks in advance.
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070324/c5200d1d/attachment.html>
+
+From amitti at 10east.com  Sun Mar 25 22:08:29 2007
+From: amitti at 10east.com (Aaron Mitti)
+Date: Sun, 25 Mar 2007 16:08:29 -0400 (EDT)
+Subject: [Mapnik-devel] [Mapnik-users] mapnik on win32
+In-Reply-To: <3A4A6D32-B87A-4F75-99FB-7E47B5F4CB63@mapnik.org>
+References: <3A4A6D32-B87A-4F75-99FB-7E47B5F4CB63@mapnik.org>
+Message-ID: <Pine.LNX.4.64.0703251556410.31989@amitti1.10east.com>
+
+Artem,
+
+> I understand that win32 binaries would benefit from having some kind of 
+> installer and after some googling I found: NSIS (http://www.nullsoft.com). 
+> It's script based, Open Source installer for windows and it's used by many 
+> famous FOSS projects (including Debian). Unfortunately I'm lacking experience 
+> packaging win32 software and I wonder if anyone on this list could help.
+
+I have some experience using the Nullsoft installer, we use it to package 
+our Windows installs. The documentation is pretty good but if you need to 
+do things more complex than copying files and writing to the registry 
+then they depend on you using various plugins.
+
+-Aaron
+
+--
+Aaron Mitti
+10 East Corp.
+
+On Sat, 24 Mar 2007, Artem Pavlenko wrote:
+
+>
+> Hello list,
+>
+> Bart van den Eijnden from OSGIS kindly sponsored a copy of Vista for Mapnik. 
+> And as a result I'm planning to start distributing win32 binaries for Mapnik. 
+> This will include SDK (headers/libs) and also Python bindings. I'm building 
+> Mapnik and all its dependencies with MS native compiler (VC++ Express aka 
+> vc-8_0).
+>
+> I understand that win32 binaries would benefit from having some kind of 
+> installer and after some googling I found: NSIS (http://www.nullsoft.com). 
+> It's script based, Open Source installer for windows and it's used by many 
+> famous FOSS projects (including Debian). Unfortunately I'm lacking experience 
+> packaging win32 software and I wonder if anyone on this list could help.
+>
+> The binaries are ready to go and just waiting for a bit of installer magic.
+>
+> Thanks in advance.
+>
+> Artem Pavlenko
+> http://mapnik.org
+>
+>
+>
+
+
+From reid at umn.edu  Mon Mar 26 20:49:51 2007
+From: reid at umn.edu (Reid Priedhorsky)
+Date: Mon, 26 Mar 2007 13:49:51 -0500
+Subject: [Mapnik-devel] mapnik-svn stopped working?
+Message-ID: <460815CF.4020700@umn.edu>
+
+Hi folks,
+
+Is the mapnik-svn mailing list still working? The last message in the 
+archive is for r445 on Feb. 10, but I just updated to r469.
+
+Take care,
+Reid
+
+
+From artem at mapnik.org  Mon Mar 26 21:53:57 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 26 Mar 2007 20:53:57 +0100
+Subject: [Mapnik-devel] mapnik-svn stopped working?
+In-Reply-To: <460815CF.4020700@umn.edu>
+References: <460815CF.4020700@umn.edu>
+Message-ID: <E8D31355-E972-4CB5-921D-9FDE19E43830@mapnik.org>
+
+Reid,
+
+On 26 Mar 2007, at 19:49, Reid Priedhorsky wrote:
+
+> Hi folks,
+>
+> Is the mapnik-svn mailing list still working? The last message in the
+> archive is for r445 on Feb. 10, but I just updated to r469.
+
+Yes, since repository has moved mapnik-svn is no more. I'll need to  
+check but I think you can subscribe to the feed on trac.mapnik.org to  
+receive source updates.
+
+
+Cheers,
+Artem
+
+
+>
+> Take care,
+> Reid
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070326/1e7a6510/attachment.html>
+

@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Optimizations around Mapnik's projection code
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3C4C4785DD.3060102%40compton.nu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001203.html">
+   <LINK REL="Next"  HREF="001205.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Optimizations around Mapnik's projection code</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Optimizations%20around%20Mapnik%27s%20projection%20code&In-Reply-To=%3C4C4785DD.3060102%40compton.nu%3E"
+       TITLE="[Mapnik-devel] Optimizations around Mapnik's projection code">tom at compton.nu
+       </A><BR>
+    <I>Thu Jul 22 01:42:21 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001203.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+        <LI>Next message: <A HREF="001205.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1204">[ date ]</a>
+              <a href="thread.html#1204">[ thread ]</a>
+              <a href="subject.html#1204">[ subject ]</a>
+              <a href="author.html#1204">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 22/07/10 00:27, Dane Springmeyer wrote:
+
+&gt;<i> Recently I noticed the large number of:
+</I>&gt;<i>
+</I>&gt;<i> #ifdef MAPNIK_THREADSAFE
+</I>&gt;<i>      mutex::scoped_lock lock(mutex_);
+</I>&gt;<i> #endif
+</I>&gt;<i>
+</I>&gt;<i> wrapping the proj4 code in proj_transform.cpp and projections.cpp.
+</I>&gt;<i>
+</I>&gt;<i> Proj4 has thread safety issues so this makes sense:
+</I>&gt;<i>
+</I>&gt;<i> 1) Projection initialization in not thread safe (when creating from epsg code)
+</I>&gt;<i> 2) Usage of prj_errno is not thread safe (error code pointer)
+</I>&gt;<i> 3) in rarer cases pj_transform is also not threadsafe (when transforming coordinates)
+</I>
+I believe the locks were put in by me after Jon made mod_tile's renderd 
+multi-threaded and found it was unstable.
+
+All the proj4 doco I could find at the time just said it wasn't 
+threadsafe so I wrapped everything in that mutex to make sure we
+didn't reenter it at all.
+
+If the issues are better understood now and we can improve things then 
+that sounds good to me.
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://compton.nu/">http://compton.nu/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001203.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+	<LI>Next message: <A HREF="001205.html">[Mapnik-devel] Optimizations around Mapnik's projection code
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1204">[ date ]</a>
+              <a href="thread.html#1204">[ thread ]</a>
+              <a href="subject.html#1204">[ subject ]</a>
+              <a href="author.html#1204">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

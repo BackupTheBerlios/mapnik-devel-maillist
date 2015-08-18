@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 inWindows XP pro
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%0A%09%3D%3Futf-8%3Fq%3FSolution_to_problems_Installing_Mapnik_0%3F%3D%0A%09%3D%3Futf-8%3Fq%3F%3D2E6%3D2E0_inWindows_XP_pro%3F%3D&In-Reply-To=%3C200905241221233307985%40gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000911.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 inWindows XP pro</H1>
+    <B>&#38816;&#20255;&#24179;(Joseph)</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%0A%09%3D%3Futf-8%3Fq%3FSolution_to_problems_Installing_Mapnik_0%3F%3D%0A%09%3D%3Futf-8%3Fq%3F%3D2E6%3D2E0_inWindows_XP_pro%3F%3D&In-Reply-To=%3C200905241221233307985%40gmail.com%3E"
+       TITLE="[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 inWindows XP pro">juweiping at gmail.com
+       </A><BR>
+    <I>Sun May 24 06:21:26 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000911.html">[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in	Windows XP pro
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#912">[ date ]</a>
+              <a href="thread.html#912">[ thread ]</a>
+              <a href="subject.html#912">[ subject ]</a>
+              <a href="author.html#912">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+Please see the attachment jpg picture.
+
+At runtime,the mapnik depend on some dll.if all dependent is ok,follow:
+
+set env:
+
+PATH: add %mapnik_0_6_0_root%\lib 
+
+to use python binding,set PYTHONPATH to %mapnik_0_6_0_root%\site-packages 
+
+and modify the site-packages\mapnik\paths.py,set &quot;mapniklibpath&quot; to right path.
+
+
+
+
+
+
+
+
+&#21457;&#20214;&#20154;&#65306; Harry Gomez 
+&#21457;&#36865;&#26102;&#38388;&#65306; 2009-05-24  12:01:01 
+&#25910;&#20214;&#20154;&#65306; mapnik-devel 
+&#25220;&#36865;&#65306; 
+&#20027;&#39064;&#65306; [Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 inWindows XP pro 
+ 
+Hello,
+I was having problems installing mapnik on my PC. I had followed the wiki instructions to a T(atleast I thought). I had downloaded Mapnik 0.6.0 and Python 2.5. I installed Python and Mapnik 0.6.0 and set up the system variables but I didnt get it to work. I later installed Visual Studio 6 to but mapnik still did not work.
+&#180;
+How did I get this to work, I did the following:
+-I uninstalled everthing(Python2.5, Visaul Studio 6 and Mapnik)
+-Got rid of all the system and user variables I had set up.
+I installed the following programs in order:
+-Visual C++ 9
+-Python 2.5 and set up the Pythonpath
+-unzipped Mapnik to the correct folder nad set up both the system and user variables.
+
+
+After I did this I followed the trac wiki guide to install Mapnik and everything worked. I am not quite sure what was wrong but I guess that the system variables were being pointing to the wrong files and installing the programs in the order I did and set up the system variables as I installed the programs helped solve this.(I probably had a typo at first, who know I just know that now it works!!!)
+Take care and keep up the good work.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.html</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik moudles.jpg
+Type: image/jpeg
+Size: 51219 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.jpg">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090524/786c4e8d/attachment.jpg</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000911.html">[Mapnik-devel] Solution to problems Installing Mapnik 0.6.0 in	Windows XP pro
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#912">[ date ]</a>
+              <a href="thread.html#912">[ thread ]</a>
+              <a href="subject.html#912">[ subject ]</a>
+              <a href="author.html#912">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

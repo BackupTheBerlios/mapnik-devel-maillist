@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C7e70f38d1003110827x4743f075se723f1dbd86a3299%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001088.html">
+   <LINK REL="Next"  HREF="001090.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C7e70f38d1003110827x4743f075se723f1dbd86a3299%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 11 17:27:18 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001088.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+        <LI>Next message: <A HREF="001090.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1089">[ date ]</a>
+              <a href="thread.html#1089">[ thread ]</a>
+              <a href="subject.html#1089">[ subject ]</a>
+              <a href="author.html#1089">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>OK, dynamic arrays on stack are in C99, hence fine with gcc , but vc++
+doesn't support C99.
+Artem
+
+On 11 March 2010 16:19, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+&gt;<i> Hi Marcin,
+</I>&gt;<i>
+</I>&gt;<i> I'm getting a few errors compiling 0.7.1 + your hex-tree patch on
+</I>&gt;<i> windows. &#160;Basically, vc++ doesn't allow declarations like:
+</I>&gt;<i>
+</I>&gt;<i> unsigned limits[TRANSPARENCY_LEVELS+1];
+</I>&gt;<i>
+</I>&gt;<i> where TRANSPARENCY_LEVELS is not static. I'm not sure what size for
+</I>&gt;<i> the array gcc pick ups in this case but it's seems reasonable
+</I>&gt;<i> constraint. It can be fixed by using std::vector&lt;&gt; or make the whole
+</I>&gt;<i> method templated on number of transparency levels etc.
+</I>&gt;<i> Do you have time to fix this for 0.7.1 release?
+</I>&gt;<i>
+</I>&gt;<i> re: naming - I'm fine with your proposed schema for the current
+</I>&gt;<i> release, we can always look into this later on.
+</I>&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> Artem
+</I>&gt;<i>
+</I>&gt;<i> On 11 March 2010 11:18, Marcin Rudowski &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mrudowski1 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;<i> 2010/3/11 Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt;:
+</I>&gt;&gt;&gt;<i> On 11 March 2010 00:38, Marcin Rudowski &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mrudowski1 at gmail.com</A>&gt; wrote:
+</I>&gt;&gt;&gt;&gt;<i> Hi,
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> In <A HREF="http://trac.mapnik.org/ticket/477">http://trac.mapnik.org/ticket/477</A> few months ago I presented fixes
+</I>&gt;&gt;&gt;&gt;<i> adding basic semi alpha support, that are already included in 0.7.0.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Today I attached patch adding full support using hextree instead of
+</I>&gt;&gt;&gt;&gt;<i> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+</I>&gt;&gt;&gt;&gt;<i> I used some new approaches with tree reduction and color quantization,
+</I>&gt;&gt;&gt;&gt;<i> to limit negative effects: time and file size increase.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> As proposed in mentioned ticket, I also added support for user control
+</I>&gt;&gt;&gt;&gt;<i> over some parameters of quantization algorithm using image type string.
+</I>&gt;&gt;&gt;&gt;<i> Parsed options are separated with ':' and based on existing discussion I
+</I>&gt;&gt;&gt;&gt;<i> added support for those in png256:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - c=256 - limit number of colors (default 256), works with octree and
+</I>&gt;&gt;&gt;&gt;<i> hextree
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+</I>&gt;&gt;&gt;&gt;<i> 2-full alfa range, default is 2, works with octree and hextree
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - m=o - choose quantization method, available options: o-existing
+</I>&gt;&gt;&gt;&gt;<i> octree, h-new hextree with optimizations, default is octree
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+</I>&gt;&gt;&gt;&gt;<i> method, default value 2.0 worked best with most of my test images, value
+</I>&gt;&gt;&gt;&gt;<i> 1.0 means no gamma correction.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> So tu use new format i.e. in python:
+</I>&gt;&gt;&gt;&gt;<i> &#160;view.save(&quot;test.png&quot;,'png256:m=h')
+</I>&gt;&gt;&gt;&gt;<i> or other example in c++:
+</I>&gt;&gt;&gt;&gt;<i> &#160;save_to_file(vw, &quot;test.png&quot;, &quot;png256:t=1:c=128&quot;);
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> What I'm asking now is what do You thing about such parameters and what
+</I>&gt;&gt;&gt;&gt;<i> about names: full or one letter like above? I have also some doubts
+</I>&gt;&gt;&gt;&gt;<i> about name of m parameter(method?) but q as for quantization could be
+</I>&gt;&gt;&gt;&gt;<i> mistaken for quality.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> As for hextree, new method should give more smooth images in case of
+</I>&gt;&gt;&gt;&gt;<i> transparent maps i.e. hybrid like overlayed on some satellite images.
+</I>&gt;&gt;&gt;&gt;<i> Also used optimization should help with maps using hillshading or any
+</I>&gt;&gt;&gt;&gt;<i> form of rasters with gradients. Actually was my biggest motivation for
+</I>&gt;&gt;&gt;&gt;<i> changes: to improve tiles like that:
+</I>&gt;&gt;&gt;&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png">http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png</A>
+</I>&gt;&gt;&gt;&gt;<i> and now it looks:
+</I>&gt;&gt;&gt;&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png">http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png</A>
+</I>&gt;&gt;&gt;&gt;<i> Difference in transparency support is less noticeable in common maps
+</I>&gt;&gt;&gt;&gt;<i> (look at edge of red line):
+</I>&gt;&gt;&gt;&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png">http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png</A>
+</I>&gt;&gt;&gt;&gt;<i> after changes:
+</I>&gt;&gt;&gt;&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png">http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Time and file size increase or decrease depends on content and image
+</I>&gt;&gt;&gt;&gt;<i> size, but shouldn't be much in common situation. However I decided to
+</I>&gt;&gt;&gt;&gt;<i> make old behaviour default, because for most maps without transparent
+</I>&gt;&gt;&gt;&gt;<i> background or elevation colored/shaded rasters, existing method should
+</I>&gt;&gt;&gt;&gt;<i> give acceptable and little bit smaller files.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Using less than 64-94 colors is not recommended, because returned
+</I>&gt;&gt;&gt;&gt;<i> palette isn't optimal then. Using 96-128 should give acceptable quality
+</I>&gt;&gt;&gt;&gt;<i> with some file size reduction, but probably not more then 10%-20%.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> If mentioned changes are acceptable, especially proposed parameters, I
+</I>&gt;&gt;&gt;&gt;<i> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+</I>&gt;&gt;&gt;&gt;<i> and feedback would be nice. I did my test with different cases, but they
+</I>&gt;&gt;&gt;&gt;<i> were rather corner cases.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+</I>&gt;&gt;&gt;<i> should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Great to hear.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I'm using 0.7.1 for development, because it is easier for me (no need
+</I>&gt;&gt;<i> to compile separate boost for mapnik).
+</I>&gt;&gt;<i> Except for eventual naming conventions it is quite ready to commit to
+</I>&gt;&gt;<i> 0.7.1 and also it doesn't change anything with default values. To use
+</I>&gt;&gt;<i> new features one must change format parameters in his application, so
+</I>&gt;&gt;<i> nothing should be broken.
+</I>&gt;&gt;<i> Dane, what do You think? (CC in case of list lags).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Porting to trunk (png_io.h and image_util.cpp) is straight forward, as
+</I>&gt;&gt;<i> code doesn't differ much, mostly changes in types names.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I like extra parameters for image writers, not sure what's the best approach :
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> png256:t=1:c=128 &#160;( similar to proj4 syntax, compact but cryptic)
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> or perhaps longer but more user friendly (separate named parameters,
+</I>&gt;&gt;&gt;<i> more typing but clearer meaning):
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> type='png' colors=128 &#160;transparency_mode=1
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Not sure myself ???
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I considered passing parameters with format/type parameter in two ways:
+</I>&gt;&gt;<i> - short: &quot;png256:c=128:t=1&quot; or &quot;jpeg:q=85&quot; (alternative to current jpeg85)
+</I>&gt;&gt;<i> - long: &quot;png256:colors=128:transparency=1&quot; or &quot;jpeg:quality=85&quot;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I implemented first one, because I imagined situation of passing
+</I>&gt;&gt;<i> format to rendering service in url (wms?) and first one is more
+</I>&gt;&gt;<i> compact. But = could be problem in urls, maybe just omit it (ie:
+</I>&gt;&gt;<i> &quot;png256:c128:t1:o&quot;, &quot;png256:c96:h&quot;, &quot;png256:colors128:hextree&quot;)?
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> As I think about it now, best of two is two use both :) so short and
+</I>&gt;&gt;<i> long names could be accepted. About '=' I'm not sure.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Also, png256 seems wrong name generally.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> My proposition is png8 for indexed png format. With 16 colors or less
+</I>&gt;&gt;<i> it can be saved as 4bit/pixel, but generally 8 stands for indexed 8bpp
+</I>&gt;&gt;<i> image with max 256 colors.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> For compatibility, png256 should be also recognized, i.e. it would be
+</I>&gt;&gt;<i> synonym of png8:c=256 and could accept other parameters, except number
+</I>&gt;&gt;<i> of colors (or not).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> --
+</I>&gt;&gt;<i> Marcin Rudowski
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001088.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+	<LI>Next message: <A HREF="001090.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1089">[ date ]</a>
+              <a href="thread.html#1089">[ thread ]</a>
+              <a href="subject.html#1089">[ subject ]</a>
+              <a href="author.html#1089">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

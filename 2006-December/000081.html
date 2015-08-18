@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python bindings failing, revision 405
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C4575F144.9090405%40smartrak.biz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000080.html">
+   <LINK REL="Next"  HREF="000084.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python bindings failing, revision 405</H1>
+    <B>David Leaver</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20bindings%20failing%2C%20revision%20405&In-Reply-To=%3C4575F144.9090405%40smartrak.biz%3E"
+       TITLE="[Mapnik-devel] Python bindings failing, revision 405">dave at smartrak.biz
+       </A><BR>
+    <I>Tue Dec  5 23:23:00 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000080.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+        <LI>Next message: <A HREF="000084.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>That error file seems to show that your mapnik compile isn't compiled right.
+
+try clean and rebuild your mapnik dir:
+  cd mapnik
+  svn up
+  python scons/scons.py -c
+  python scons/scons.py install
+
+Other than that I'm not sure.
+
+Dave.
+
+Matthew Perry wrote:
+&gt;<i> On 12/5/06, David Leaver &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dave at smartrak.biz</A>&gt; wrote:
+</I>&gt;&gt;<i> That looks fine.
+</I>&gt;&gt;<i> What is the output of:
+</I>&gt;&gt;<i> ldd /usr/local/lib/libmapnik.so
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Looks OK to me ...
+</I>&gt;<i>
+</I>&gt;<i> $ ldd /usr/local/lib/libmapnik.so
+</I>&gt;<i>        libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0x00002aaaaac1b000)
+</I>&gt;<i>        libz.so.1 =&gt; /usr/local/lib/libz.so.1 (0x00002aaaaad97000)
+</I>&gt;<i>        libltdl.so.3 =&gt; /usr/lib/libltdl.so.3 (0x00002aaaaaead000)
+</I>&gt;<i>        libpng12.so.0 =&gt; /usr/lib/libpng12.so.0 (0x00002aaaaafb4000)
+</I>&gt;<i>        libtiff.so.4 =&gt; /usr/lib/libtiff.so.4 (0x00002aaaab0d9000)
+</I>&gt;<i>        libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0x00002aaaab231000)
+</I>&gt;<i>        libboost_thread-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/local/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
+</I>&gt;<i> (0x00002aaaab353000)
+</I>&gt;<i>        libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/local/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+</I>&gt;<i> (0x00002aaaab460000)
+</I>&gt;<i>        libboost_serialization-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/local/lib/libboost_serialization-gcc-mt-1_33_1.so.1.33.1
+</I>&gt;<i> (0x00002aaaab570000)
+</I>&gt;<i>        libboost_regex-gcc-mt-1_33_1.so.1.33.1 =&gt;
+</I>&gt;<i> /usr/local/lib/libboost_regex-gcc-mt-1_33_1.so.1.33.1
+</I>&gt;<i> (0x00002aaaab6e0000)
+</I>&gt;<i>        libstdc++.so.6 =&gt; /usr/lib/libstdc++.so.6 (0x00002aaaab876000)
+</I>&gt;<i>        libm.so.6 =&gt; /lib/libm.so.6 (0x00002aaaaba73000)
+</I>&gt;<i>        libgcc_s.so.1 =&gt; /lib/libgcc_s.so.1 (0x00002aaaabbf8000)
+</I>&gt;<i>        libc.so.6 =&gt; /lib/libc.so.6 (0x00002aaaabd06000)
+</I>&gt;<i>        libdl.so.2 =&gt; /lib/libdl.so.2 (0x00002aaaabf3f000)
+</I>&gt;<i>        librt.so.1 =&gt; /lib/librt.so.1 (0x00002aaaac041000)
+</I>&gt;<i>        libpthread.so.0 =&gt; /lib/libpthread.so.0 (0x00002aaaac14a000)
+</I>&gt;<i>        /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> Are you trying to run the included python demo?
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> At this point I'm just trying to &quot;import mapnik&quot; !
+</I>&gt;<i>
+</I>&gt;&gt;<i> Want to try run the c++ demo? Check the readme.txt for build 
+</I>&gt;&gt;<i> instructions.
+</I>&gt;&gt;<i> You'll need to comment out line 240-241 of rundemo.cpp before building
+</I>&gt;&gt;<i> as they don't exist atm.
+</I>&gt;&gt;<i> Then run it with:
+</I>&gt;&gt;<i> ./rundemo /usr/local/lib/mapnik/input/
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Even commenting out those two lines, rundemo.cpp does not compile.
+</I>&gt;<i> There are a bunch of linking errors which I've posted to
+</I>&gt;<i> <A HREF="http://ebm.nceas.ucsb.edu/mapping/mapnik_errors.txt">http://ebm.nceas.ucsb.edu/mapping/mapnik_errors.txt</A>
+</I>&gt;<i>
+</I>&gt;<i> Looks like a boost problem... ?
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000080.html">[Mapnik-devel] Python bindings failing, revision 405
+</A></li>
+	<LI>Next message: <A HREF="000084.html">[Mapnik-devel] PATCH for BIDI labels support
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

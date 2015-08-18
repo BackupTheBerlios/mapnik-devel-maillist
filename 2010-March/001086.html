@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C7e70f38d1003110227j125cbc22vac6804085f2dbaf3%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001085.html">
+   <LINK REL="Next"  HREF="001087.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C7e70f38d1003110227j125cbc22vac6804085f2dbaf3%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 11 11:27:34 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001085.html">[Mapnik-devel] png256: transparency support + passing user options
+</A></li>
+        <LI>Next message: <A HREF="001087.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1086">[ date ]</a>
+              <a href="thread.html#1086">[ thread ]</a>
+              <a href="subject.html#1086">[ subject ]</a>
+              <a href="author.html#1086">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On 11 March 2010 00:38, Marcin Rudowski &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mrudowski1 at gmail.com</A>&gt; wrote:
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> In <A HREF="http://trac.mapnik.org/ticket/477">http://trac.mapnik.org/ticket/477</A> few months ago I presented fixes
+</I>&gt;<i> adding basic semi alpha support, that are already included in 0.7.0.
+</I>&gt;<i>
+</I>&gt;<i> Today I attached patch adding full support using hextree instead of
+</I>&gt;<i> octree (same idea as with RGB, but extended to 4 dimensions: RGBA). Also
+</I>&gt;<i> I used some new approaches with tree reduction and color quantization,
+</I>&gt;<i> to limit negative effects: time and file size increase.
+</I>&gt;<i>
+</I>&gt;<i> As proposed in mentioned ticket, I also added support for user control
+</I>&gt;<i> over some parameters of quantization algorithm using image type string.
+</I>&gt;<i> Parsed options are separated with ':' and based on existing discussion I
+</I>&gt;<i> added support for those in png256:
+</I>&gt;<i>
+</I>&gt;<i> - c=256 - limit number of colors (default 256), works with octree and
+</I>&gt;<i> hextree
+</I>&gt;<i>
+</I>&gt;<i> - t=2 - select transparency mode: 0-no alfa, 1-binary alfa(0 or 255),
+</I>&gt;<i> 2-full alfa range, default is 2, works with octree and hextree
+</I>&gt;<i>
+</I>&gt;<i> - m=o - choose quantization method, available options: o-existing
+</I>&gt;<i> octree, h-new hextree with optimizations, default is octree
+</I>&gt;<i>
+</I>&gt;<i> - g=2.0 - kind of gamma correction for pixel arithmetic in hextree
+</I>&gt;<i> method, default value 2.0 worked best with most of my test images, value
+</I>&gt;<i> 1.0 means no gamma correction.
+</I>&gt;<i>
+</I>&gt;<i> So tu use new format i.e. in python:
+</I>&gt;<i> &#160;view.save(&quot;test.png&quot;,'png256:m=h')
+</I>&gt;<i> or other example in c++:
+</I>&gt;<i> &#160;save_to_file(vw, &quot;test.png&quot;, &quot;png256:t=1:c=128&quot;);
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> What I'm asking now is what do You thing about such parameters and what
+</I>&gt;<i> about names: full or one letter like above? I have also some doubts
+</I>&gt;<i> about name of m parameter(method?) but q as for quantization could be
+</I>&gt;<i> mistaken for quality.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> As for hextree, new method should give more smooth images in case of
+</I>&gt;<i> transparent maps i.e. hybrid like overlayed on some satellite images.
+</I>&gt;<i> Also used optimization should help with maps using hillshading or any
+</I>&gt;<i> form of rasters with gradients. Actually was my biggest motivation for
+</I>&gt;<i> changes: to improve tiles like that:
+</I>&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png">http://marcom.homeip.net/ump-www/mapnik/png256/5605_o.png</A>
+</I>&gt;<i> and now it looks:
+</I>&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png">http://marcom.homeip.net/ump-www/mapnik/png256/5605_h.png</A>
+</I>&gt;<i> Difference in transparency support is less noticeable in common maps
+</I>&gt;<i> (look at edge of red line):
+</I>&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png">http://marcom.homeip.net/ump-www/mapnik/png256/smooth_o.png</A>
+</I>&gt;<i> after changes:
+</I>&gt;<i> &#160;<A HREF="http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png">http://marcom.homeip.net/ump-www/mapnik/png256/smooth_h.png</A>
+</I>&gt;<i>
+</I>&gt;<i> Time and file size increase or decrease depends on content and image
+</I>&gt;<i> size, but shouldn't be much in common situation. However I decided to
+</I>&gt;<i> make old behaviour default, because for most maps without transparent
+</I>&gt;<i> background or elevation colored/shaded rasters, existing method should
+</I>&gt;<i> give acceptable and little bit smaller files.
+</I>&gt;<i>
+</I>&gt;<i> Using less than 64-94 colors is not recommended, because returned
+</I>&gt;<i> palette isn't optimal then. Using 96-128 should give acceptable quality
+</I>&gt;<i> with some file size reduction, but probably not more then 10%-20%.
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> If mentioned changes are acceptable, especially proposed parameters, I
+</I>&gt;<i> will apply it to 0.7.1 and soon port to trunk code. Also some testing
+</I>&gt;<i> and feedback would be nice. I did my test with different cases, but they
+</I>&gt;<i> were rather corner cases.
+</I>&gt;<i>
+</I>
+Great stuff! I'm testing 0.7.1 + your patch and it works well. It
+should go into trunk no doubts, as for 0.7.1 - should we ask Dane?
+
+I like extra parameters for image writers, not sure what's the best approach :
+
+png256:t=1:c=128  ( similar to proj4 syntax, compact but cryptic)
+
+or perhaps longer but more user friendly (separate named parameters,
+more typing but clearer meaning):
+
+type='png' colors=128  transparency_mode=1
+
+Not sure myself ???
+
+Also, png256 seems wrong name generally.
+
+Artem
+
+&gt;<i> Marcin Rudowski
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001085.html">[Mapnik-devel] png256: transparency support + passing user options
+</A></li>
+	<LI>Next message: <A HREF="001087.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1086">[ date ]</a>
+              <a href="thread.html#1086">[ thread ]</a>
+              <a href="subject.html#1086">[ subject ]</a>
+              <a href="author.html#1086">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

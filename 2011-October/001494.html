@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] three patches
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3CCAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001492.html">
+   <LINK REL="Next"  HREF="001495.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] three patches</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3CCAOoUnzmQnUEqL_b1XEoqS3KCJuPxhSmHzDitYttZ6CZj-ViS9g%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] three patches">artem at mapnik.org
+       </A><BR>
+    <I>Wed Oct 12 10:55:07 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001492.html">[Mapnik-devel] three patches
+</A></li>
+        <LI>Next message: <A HREF="001495.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1494">[ date ]</a>
+              <a href="thread.html#1494">[ thread ]</a>
+              <a href="subject.html#1494">[ subject ]</a>
+              <a href="author.html#1494">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Great, thanks, Matt!
+Will merge into master asap.
+Artem
+
+On 12 October 2011 00:44, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+&gt;<i> Matt,
+</I>&gt;<i>
+</I>&gt;<i> Looks like some awesome work. I'm excited to say (since we're now live at
+</I>&gt;<i> <A HREF="https://github.com/mapnik/mapnik/">https://github.com/mapnik/mapnik/</A>) that I'd love to see each of these as pull requests :)
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i> On Oct 11, 2011, at 5:02 AM, Matt Amos wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> for your delectation*, three patches for fixes/enhancements we've
+</I>&gt;&gt;<i> developed at MapQuest:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+</I>&gt;&gt;<i> placement along a line. it seems what was happening previously was
+</I>&gt;&gt;<i> that the label box was being expanded to the size of the shield and
+</I>&gt;&gt;<i> being used to place text. however, this was not giving the right
+</I>&gt;&gt;<i> answer where dx/dy were being used. the patch expands line placement
+</I>&gt;&gt;<i> to include &quot;additional boxes&quot;, i.e: when searching for a line
+</I>&gt;&gt;<i> placement it checks that some boxes offset from the position can be
+</I>&gt;&gt;<i> placed.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> mapnik_expose-label-collision-detector.patch: this exposes the label
+</I>&gt;&gt;<i> collision detector (4!?) via python and adds a new
+</I>&gt;&gt;<i> render_with_detector function to allow the detector to be passed into
+</I>&gt;&gt;<i> the rendering process which means you can keep the detector between
+</I>&gt;&gt;<i> render invocations. possible uses include clearing out areas of the
+</I>&gt;&gt;<i> map you know you'll want to render something in later (e.g: key /
+</I>&gt;&gt;<i> label / compass rose) or to get some layers as a separate image to be
+</I>&gt;&gt;<i> composited later. this patch only does this for the agg renderer,
+</I>&gt;&gt;<i> although it should be pretty simple to extend to the other renderers.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+</I>&gt;&gt;<i> plugin which can pull raster data from a constant-stride tile grid on
+</I>&gt;&gt;<i> disk. this may be of use to anyone with very large background images
+</I>&gt;&gt;<i> to composite in. the motivation was that it be more compact and faster
+</I>&gt;&gt;<i> than including all the rasters, each with its own entry, when they're
+</I>&gt;&gt;<i> in a rectangular grid anyway.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> enjoy!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> matt
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> *: and in this transitional period, probably not worth attempting to
+</I>&gt;&gt;<i> put into SVN - i'm happy to submit these as pull requests once
+</I>&gt;&gt;<i> Mapnik's in github.
+</I>&gt;&gt;<i> &lt;mapnik_add-multi-tile-policy.patch&gt;&lt;mapnik_expose-label-collision-detector.patch&gt;&lt;mapnik_shield-placement-bug.patch&gt;_______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001492.html">[Mapnik-devel] three patches
+</A></li>
+	<LI>Next message: <A HREF="001495.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1494">[ date ]</a>
+              <a href="thread.html#1494">[ thread ]</a>
+              <a href="subject.html#1494">[ subject ]</a>
+              <a href="author.html#1494">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

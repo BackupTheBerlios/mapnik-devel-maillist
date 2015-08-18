@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20OSM%20plugin%20-%20crash%20in%20libxml%20parsing&In-Reply-To=%3COF4F9A8C76.15A6DF6C-ON802573FE.00394AAC-802573FE.003A04CF%40solent-university.ac.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000529.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing</H1>
+    <B>Nick Whitelegg</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20OSM%20plugin%20-%20crash%20in%20libxml%20parsing&In-Reply-To=%3COF4F9A8C76.15A6DF6C-ON802573FE.00394AAC-802573FE.003A04CF%40solent-university.ac.uk%3E"
+       TITLE="[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing">Nick.Whitelegg at solent.ac.uk
+       </A><BR>
+    <I>Fri Feb 29 11:33:43 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000529.html">[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#530">[ date ]</a>
+              <a href="thread.html#530">[ thread ]</a>
+              <a href="subject.html#530">[ subject ]</a>
+              <a href="author.html#530">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello everyone,
+
+An update on the Mapnik OSM plugin. I reimplemented the XML parsing using 
+expat 2.0.1, rather than libxml2, (actually re-used old code from osm2shp) 
+and I no longer get the crash. There are some issues with rendering (i.e. 
+not all ways are rendered correctly) but I suspect that can be sorted 
+fairly easily.
+Expat isn't a long term fix though, as I don't think it's utf-8 compliant. 
+
+
+So it looks like it's a libxml2 issue of some sort. I'll check again but I 
+think my code is OK. In case there are any libxml experts here the code is 
+at
+
+<A HREF="http://www.nickw.uklinux.net/mapnik/mapnik_osm_3.tar.bz2">http://www.nickw.uklinux.net/mapnik/mapnik_osm_3.tar.bz2</A>
+
+
+What might be good is for anyone else with a Linux system (I say Linux as 
+it seems to work in Jim's Windows environment) could test it out and see 
+if you get a crash too. You'll need to make the following changes (as the 
+version in the archive is set up to use expat for parsing):
+
+In osm_dataset::load() in osm.cpp, comment out the block within the &quot;if&quot; 
+which relates to expat, and uncomment the block relating to libxml2.
+In the Makefile, change the make instructions for &quot;render&quot; to use 
+LDFLAGS4, not LDFLAGS3.
+In the makefile for the library (libMakefile), change the list of object 
+files to include Parser.o, rather than xmlparse.o.
+
+Thanks,
+Nick
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000529.html">[Mapnik-devel] Mapnik OSM plugin - crash in libxml parsing
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#530">[ date ]</a>
+              <a href="thread.html#530">[ thread ]</a>
+              <a href="subject.html#530">[ subject ]</a>
+              <a href="author.html#530">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] [Mapnik-users] Summer of Code: Support for	outputting hit-areas
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Summer%20of%20Code%3A%20Support%20for%0A%09outputting%20hit-areas&In-Reply-To=%3CC872A50D-82E2-4137-9FA2-4EDE0967C17A%40stamen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001165.html">
+   <LINK REL="Next"  HREF="001169.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] [Mapnik-users] Summer of Code: Support for	outputting hit-areas</H1>
+    <B>Michal Migurski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20%5BMapnik-users%5D%20Summer%20of%20Code%3A%20Support%20for%0A%09outputting%20hit-areas&In-Reply-To=%3CC872A50D-82E2-4137-9FA2-4EDE0967C17A%40stamen.com%3E"
+       TITLE="[Mapnik-devel] [Mapnik-users] Summer of Code: Support for	outputting hit-areas">mike at stamen.com
+       </A><BR>
+    <I>Sun May  9 21:17:27 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001165.html">[Mapnik-devel] [Mapnik-users] Summer of Code: Support for	outputting hit-areas
+</A></li>
+        <LI>Next message: <A HREF="001169.html">[Mapnik-devel] rule template
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1166">[ date ]</a>
+              <a href="thread.html#1166">[ thread ]</a>
+              <a href="subject.html#1166">[ subject ]</a>
+              <a href="author.html#1166">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On May 9, 2010, at 5:10 AM, Robert Coup wrote:
+
+&gt;<i> Hey folks,
+</I>&gt;<i> 
+</I>&gt;<i> On Sun, May 9, 2010 at 12:16 PM, Hermann Kraus &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">herm at scribus.info</A>&gt; wrote:
+</I>&gt;&gt;<i> 
+</I>&gt;&gt;<i> As far as I've investigated it so far every click on the map sends a
+</I>&gt;&gt;<i> request to Google's servers which contains the point the user clicked at
+</I>&gt;&gt;<i> and returns information about the feature at this position (if any).
+</I>&gt;<i> 
+</I>&gt;<i> Last time i looked at how the Wikipedia layer worked: when the user
+</I>&gt;<i> hovers the mouse over a map-tile, a request is sent to load the &quot;hit
+</I>&gt;<i> areas&quot; for that map tile. That allows the mouse-cursor to change when
+</I>&gt;<i> it's over a hit-area, and for a &quot;hit&quot; to be detected when the map is
+</I>&gt;<i> clicked (kicking off the request).
+</I>
+Something I've also observed with Google's &quot;measles maps&quot; (e.g. <A HREF="http://teczno.com/s/hr9">http://teczno.com/s/hr9</A>) is the use of client-side image maps. Each of those tiny spots is a hit area, but the spots are not delivered and positioned as separate images.
+
+
+&gt;&gt;<i> I think file based output would be the easiest solution because it can
+</I>&gt;&gt;<i> be read by any text editor. (This helps debugging). When this works more
+</I>&gt;&gt;<i> formats can be added.
+</I>&gt;&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> My votes would be for a DB table populated with the data
+</I>&gt;<i> (sqlite/postgis) and a json text file for each map/map-tile. (ideally
+</I>&gt;<i> a JSONP-style file with a pre-specified callback so it can be used
+</I>&gt;<i> cross-domain, but we can sort out those details later). Once you have
+</I>&gt;<i> the json files and rendered map tiles then the client has everything
+</I>&gt;<i> it needs.
+</I>
+
+There should be a variety of output possibilities here. JSONP for example would be hard for a normal JSON library to parse, but useful for a browser-based consumer. I recommend shapefile output (every geographic software knows what do with them), comma-or-tab-separated values (easy to view any text editor). WKT for the area would make sense for the text-based output. I could live without XML entirely.
+
+There probably should be two channels of output geometry: image-based output where the point coordinates are relative to the top-left corner of the rendered image, and geographic output where the point coordinates are given in the SRS of the mapnik map.
+
+The interaction between rendered images and tiles is going to be an issue. Mapnik does not have any internal concept of tiles, so generally when it's used with tilecache or mod_tile, a very large metatile is rendered in one go and then sliced up into smaller 256x256 images.
+
+I've not yet really &quot;launched&quot; my Tilestache project (<A HREF="http://tilestache.org">http://tilestache.org</A>) but it might be an excellent test bed for the rendering and delivery of non-image-based tiles in JSON, JSONP, and other forms. I can commit to providing a tile-based output for hit areas to support this GSOC project.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mike at stamen.com</A>
+                 415.558.1610
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001165.html">[Mapnik-devel] [Mapnik-users] Summer of Code: Support for	outputting hit-areas
+</A></li>
+	<LI>Next message: <A HREF="001169.html">[Mapnik-devel] rule template
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1166">[ date ]</a>
+              <a href="thread.html#1166">[ thread ]</a>
+              <a href="subject.html#1166">[ subject ]</a>
+              <a href="author.html#1166">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

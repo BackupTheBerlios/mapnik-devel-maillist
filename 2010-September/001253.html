@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Layer compositing and erasing
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Layer%20compositing%20and%20erasing&In-Reply-To=%3C4C91725B.8020501%40ahlzen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001250.html">
+   <LINK REL="Next"  HREF="001254.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Layer compositing and erasing</H1>
+    <B>Lars Ahlzen</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Layer%20compositing%20and%20erasing&In-Reply-To=%3C4C91725B.8020501%40ahlzen.com%3E"
+       TITLE="[Mapnik-devel] Layer compositing and erasing">lars at ahlzen.com
+       </A><BR>
+    <I>Thu Sep 16 03:26:51 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001250.html">[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+</A></li>
+        <LI>Next message: <A HREF="001254.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1253">[ date ]</a>
+              <a href="thread.html#1253">[ thread ]</a>
+              <a href="subject.html#1253">[ subject ]</a>
+              <a href="author.html#1253">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Mapnik devs!
+
+I'm using primarily Mapnik to render TopOSM (<A HREF="http://toposm.com">http://toposm.com</A>). It's
+working really well, except that the rendering process is still complex
+and slow (preprocessing, rendering nine tiles, masking and compositing
+with ImageMagick etc). I believe a few (possibly minor) features in
+Mapnik could simplify the process tremendously.
+
+The first thing is basic rendering to layers (in the GIMP/Photoshop
+sense) and compositing. Similar things have been discussed before, for
+example in:
+
+<A HREF="http://trac.mapnik.org/ticket/314">http://trac.mapnik.org/ticket/314</A>
+
+though I'm not sure that simply one &quot;canvas&quot; per mapnik-layer would
+quite cut it in my case. For what I do, I'd need to render an arbitrary
+set of mapnik-layers to each canvas and overlay/composite each such
+&quot;temporary&quot; canvas onto the final result.
+
+The other feature that is very important to me (and that I emulate with
+multiple renderings and ImageMagick) is supporting &quot;erasing&quot;, i.e.
+setting the destination alpha (rather than the source/ink alpha) when
+painting, to cut or mask things. This is mentioned in:
+
+<A HREF="http://trac.mapnik.org/ticket/335">http://trac.mapnik.org/ticket/335</A>
+
+I'd love this feature not only for lines (as in the ticket) but for
+other things such as polygon fills and text halos. Combined with layers
+and compositing, TopOSM style label halos could be achieved directly
+with Mapnik:
+
+<A HREF="http://wiki.openstreetmap.org/wiki/TopOSM#Labels">http://wiki.openstreetmap.org/wiki/TopOSM#Labels</A>
+
+I can add some details to some of these tickets, if it helps.
+
+Either way, do these things seem realistic to those of you who know more
+about Mapnik internals?
+
+- Lars
+
+-- 
+Lars Ahlzen
+<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">lars at ahlzen.com</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001250.html">[Mapnik-devel] mapnik win32 solution files for kosmosnimki.ru
+</A></li>
+	<LI>Next message: <A HREF="001254.html">[Mapnik-devel] Layer compositing and erasing
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1253">[ date ]</a>
+              <a href="thread.html#1253">[ thread ]</a>
+              <a href="subject.html#1253">[ subject ]</a>
+              <a href="author.html#1253">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

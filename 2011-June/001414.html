@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] GSoC: Windows build system, week 2
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBANLkTim7VLsv1%3DJi1Ce_HUUy2Tig6HOGRg%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001413.html">
+   <LINK REL="Next"  HREF="001417.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] GSoC: Windows build system, week 2</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20GSoC%3A%20Windows%20build%20system%2C%20week%202&In-Reply-To=%3CBANLkTim7VLsv1%3DJi1Ce_HUUy2Tig6HOGRg%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] GSoC: Windows build system, week 2">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Mon Jun 13 13:07:15 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001413.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+        <LI>Next message: <A HREF="001417.html">[Mapnik-devel] GSoC: Windows build system, week 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1414">[ date ]</a>
+              <a href="thread.html#1414">[ thread ]</a>
+              <a href="subject.html#1414">[ subject ]</a>
+              <a href="author.html#1414">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thanks for your feedback! Yes the plan is to offer precompiled
+binaries too, but there are some issues that prevent this from being a
+one-stop solution:
+
+- It's only feasible for dll's that export a C interface. C++
+libraries cannot be offered (realistically) pre-compiled, because one
+would have to offer it for each compiler version and with each
+combination of preprocessor flags (_BIND_TO_CURRENT_CRT_VERSION,
+__CRT_SECURE_NO_WARNINGS, SECURE_SCL, iterator debugging, ...)
+- It only works for dll's, not static libraries (for the same reason)
+- Depending on one's environment setup, it may be easier to build
+everything from one solution.
+- Source patching: not all packages build out of the box on Windows,
+some assume that the autotools generate certain files (like config.h).
+To not have to require developers to install Cygwin just to get those
+files generated, one would have to either provide a fully working
+source tree for the dependencies, or offer patches to get the
+libraries to work. The former approach isn't very good imo because it
+requires a lot of duplication of effort and undermines the 'single
+source' principle, where people can trust one single source for
+getting their code. So I'm taking the second approach, which also is
+easier from a division of labor point of view (less communication and
+commits just for Windows support required). As a side note, I'm quite
+frustrated by the FSF's juvenile approach to distribution - it seems
+like they're purposely making it harder than necessary to use VS to
+build their libraries. Now it's possible to side step it but still, a
+more pragmatic approach would help a lot of people. Alternatively, I
+hope the community can move away from their libraries as soon as
+replacements are sufficiently wide spread - for example a Boost
+version of libdl and ICU instead of iconv.
+
+Regarde SideBySide, frankly I'm ignoring that for now. I'm assuming
+(from what I've seen in the wild) that people will use an App-Local
+deployment model anyway.Of course the approach I'm following would
+allow for the automatic generation of MSI fragments which could lead
+to more sharing of binaries between applications in the future, but
+I'm not implementing that for now, as I think it's out of the scope of
+this GSoC project. Getting that right requires all developers to have
+a quite detailed understanding of Windows deployment issues anyway,
+and considering that even something as primitive as NSIS is still
+widely used throughout the Windows OSS world, I think it's fair to say
+that that knowledge isn't widely spread. But again the automatic
+vsproject generation I'm working on could provide a framework to
+abstract all of that away for developers, and could enable a very
+small amount of people to provide high-quality installers for a large
+amount of applications with very little work.
+
+cheers,
+
+roel
+
+
+On Sat, Jun 11, 2011 at 4:33 PM, feverzsj &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">feverzsj at hotmail.com</A>&gt; wrote:
+&gt;<i> It's great to hear some one working on the windows build system. Although,
+</I>&gt;<i> it's a real pain to make such automation on windows, especially for projects
+</I>&gt;<i> with lots of third party dependencies like mapnik.
+</I>&gt;<i> AFAIK, the most practicable and convenient solution to handle these
+</I>&gt;<i> dependencies is precompile and pack them all in one place. But still, making
+</I>&gt;<i> a debug lib could be tricky on windows. Also note the SideBySide Assembly
+</I>&gt;<i> problem.
+</I>&gt;<i>
+</I>&gt;<i> regards , zsj
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001413.html">[Mapnik-devel] GSoC: Windows build system, week 2
+</A></li>
+	<LI>Next message: <A HREF="001417.html">[Mapnik-devel] GSoC: Windows build system, week 3
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1414">[ date ]</a>
+              <a href="thread.html#1414">[ thread ]</a>
+              <a href="subject.html#1414">[ subject ]</a>
+              <a href="author.html#1414">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

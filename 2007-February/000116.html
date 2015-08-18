@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik feedback
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C45C24FDA.8090506%40umn.edu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000117.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik feedback</H1>
+    <B>Reid Priedhorsky</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C45C24FDA.8090506%40umn.edu%3E"
+       TITLE="[Mapnik-devel] Mapnik feedback">reid at umn.edu
+       </A><BR>
+    <I>Thu Feb  1 21:38:50 CET 2007</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000117.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#116">[ date ]</a>
+              <a href="thread.html#116">[ thread ]</a>
+              <a href="subject.html#116">[ subject ]</a>
+              <a href="author.html#116">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Artem,
+
+Artem Pavlenko wrote:
+&gt;<i> 
+</I>&gt;<i> On Monday 29 January 2007 18:51, Reid Priedhorsky wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> 1. mapnik is underdocumented. While I was able to muddle through, some
+</I>&gt;&gt;<i> user-oriented documentation would be very helpful.
+</I>&gt;<i> 
+</I>&gt;<i> Agreed. Lets improve this. Would you like to help to populate wiki? 
+</I>
+Unfortunately I don't think I am able to offer the time to write 
+documentation. I would, however, be happy to offer my Python script as 
+an example.
+
+&gt;&gt;<i> 3. render_to_tile() prints to standard output. I'd like to be able to
+</I>&gt;&gt;<i> supress this.
+</I>&gt;&gt;<i>
+</I>&gt;<i> Please, enter bug into trac.
+</I>
+#9, I believe. I also entered a few others.
+
+&gt;&gt;<i> 4. Installing to a nonstandard path without root access was quite a
+</I>&gt;&gt;<i> pain; I wanted to install everything under /foo/bar, but the closest I
+</I>&gt;&gt;<i> could get was some stuff under /foo/bar/usr and some stuff under
+</I>&gt;&gt;<i> /foo/bar/foo/bar. I ended up writing a shell script (below) to create
+</I>&gt;&gt;<i> symlinks to make things reasonable. 
+</I>&gt;<i> 
+</I>&gt;<i> Hmm....Is  PREFIX=/your/path/ not working for you? Maybe I'm missing something 
+</I>&gt;<i> here, could you provide more info?
+</I>
+Sure. I put it into trac #10.
+
+&gt;<i> 
+</I>&gt;<i> I'm quite happy to start discussion about better building system for mapnik.
+</I>&gt;<i> I have some experience with the following :
+</I>&gt;<i> 1. autotools
+</I>&gt;<i> 2. scons
+</I>&gt;<i> 3. cmake
+</I>&gt;<i> 4. Boost.Build.v2 
+</I>&gt;<i> 
+</I>&gt;<i> but it is not clear to me which one is the best fit. Mapnik was using autotool 
+</I>&gt;<i> at the very begining but I got fed up with writing m4 macros very quickly. 
+</I>
+I don't know a whole lot about programming to any of those build 
+systems. I did use autotools some years ago and found it pretty 
+straightforward, so I'm surprised that autotools required writing 
+significant numbers of M4 macros, but I never used it for Python or C++ 
+projects.
+
+Given that, speaking as an end-user, these are the things that I found 
+difficult about scons:
+
+1. It's unfamiliar. ./configure, make, make install is pretty great IMO.
+
+2. Difficult to install into non-standard locations.
+
+3. It seems to redo all the library checks before each operation, even 
+an invalidly-specified one; e.g. try &quot;python scons/scons.py build&quot; -- 
+for me it chugs away detecting libraries for 7 seconds before telling me 
+that &quot;build&quot; is an invalid operation.
+
+Python modules seem to be moving increasingly to &quot;distutils&quot; 
+&lt;<A HREF="http://www.python.org/doc/2.4.4/lib/module-distutils.html">http://www.python.org/doc/2.4.4/lib/module-distutils.html</A>&gt;, which I 
+have not used except as an installer. I don't know how suitable this 
+would be for people who just want to use the C++ interface.
+
+Take care,
+
+Reid
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000117.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#116">[ date ]</a>
+              <a href="thread.html#116">[ thread ]</a>
+              <a href="subject.html#116">[ subject ]</a>
+              <a href="author.html#116">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

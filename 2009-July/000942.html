@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Raster Symbolizer and GDAL work
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Symbolizer%20and%20GDAL%20work&In-Reply-To=%3C7e70f38d0907221335k1a8ef632ha3d8e7b3610c505a%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000941.html">
+   <LINK REL="Next"  HREF="000943.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Raster Symbolizer and GDAL work</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Raster%20Symbolizer%20and%20GDAL%20work&In-Reply-To=%3C7e70f38d0907221335k1a8ef632ha3d8e7b3610c505a%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Raster Symbolizer and GDAL work">artem at mapnik-consulting.com
+       </A><BR>
+    <I>Wed Jul 22 22:35:59 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000941.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+        <LI>Next message: <A HREF="000943.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#942">[ date ]</a>
+              <a href="thread.html#942">[ thread ]</a>
+              <a href="subject.html#942">[ subject ]</a>
+              <a href="author.html#942">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Great! Alberto, could you ,please, send me your username and ssh-rsa
+(or ssh-dss) public key (off list!).
+
+Regards,
+Artem
+
+2009/7/22 Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;:
+&gt;<i> I've been reviewing and corresponding with Albert Valverde about his
+</I>&gt;<i> excellent patches to the Gdal driver (getting overviews working) and
+</I>&gt;<i> RasterSymbolizer (adding support for colorizing, working with individual
+</I>&gt;<i> bands, and nodata values, among other advancements).
+</I>&gt;<i>
+</I>&gt;<i> I'd like to propose Alberto commit access to start a branch for his work. It
+</I>&gt;<i> looks feasible to begin pulling some of his changes into trunk soon
+</I>&gt;<i> (particularly the support for GDAL overviews which is working nicely, built
+</I>&gt;<i> upon Lucio's nice start), while review of best practices and approaches for
+</I>&gt;<i> colorization would be great from all of you.
+</I>&gt;<i>
+</I>&gt;<i> Artem can you be in touch with Alberto about commit access?
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Jul 20, 2009, at 4:35 AM, Alberto Valverde wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Dane Springmeyer wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi Chris,
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I recommend installing a recent copy of GDAL and trying out the
+</I>&gt;&gt;&gt;<i> 'gdaldem' tool:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> <A HREF="http://www.gdal.org/gdaldem.html">http://www.gdal.org/gdaldem.html</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> The idea would be to assign a color table to your data before
+</I>&gt;&gt;&gt;<i> rendering with Mapnik. Built in support is surely desirable but not
+</I>&gt;&gt;&gt;<i> implemented.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Just a quick FYI. I'm using a patched version of mapnik (trunk) with
+</I>&gt;&gt;<i> heavily modified gdal datasource and rastersymbolizer which support
+</I>&gt;&gt;<i> coloring raster data (among other improvements to handle &gt;1Gb gtiff
+</I>&gt;&gt;<i> files with embedded overviews).
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> I was planning to submit these patches upstream some day when I clean
+</I>&gt;&gt;<i> them up (it is the first c++ code I've ever written!) but this would be
+</I>&gt;&gt;<i> in a couple of weeks since I'm swamped with other work at the moment.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> However, since it seems there's enough interest for this functionality
+</I>&gt;&gt;<i> perhaps I could push them to a separate branch (for the vc goodness) as
+</I>&gt;&gt;<i> they are right now to get more eyeballs on them and, hopefully, get some
+</I>&gt;&gt;<i> help with the mentioned cleanup. Send me an email off-list if you'd like
+</I>&gt;&gt;<i> to see the diffs, or perhaps I should post them to a ticket? (with a big
+</I>&gt;&gt;<i> &quot;unfinished &amp; experimental&quot; warning sign)
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Cheers,
+</I>&gt;&gt;<i> Alberto
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-users mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-users at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-users">https://lists.berlios.de/mailman/listinfo/mapnik-users</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000941.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+	<LI>Next message: <A HREF="000943.html">[Mapnik-devel] Raster Symbolizer and GDAL work
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#942">[ date ]</a>
+              <a href="thread.html#942">[ thread ]</a>
+              <a href="subject.html#942">[ subject ]</a>
+              <a href="author.html#942">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

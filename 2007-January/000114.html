@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik feedback
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C45BE422A.2050406%40umn.edu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000113.html">
+   <LINK REL="Next"  HREF="000115.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik feedback</H1>
+    <B>Reid Priedhorsky</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20feedback&In-Reply-To=%3C45BE422A.2050406%40umn.edu%3E"
+       TITLE="[Mapnik-devel] Mapnik feedback">reid at umn.edu
+       </A><BR>
+    <I>Mon Jan 29 19:51:22 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000113.html">[Mapnik-devel] ruby bindings
+</A></li>
+        <LI>Next message: <A HREF="000115.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#114">[ date ]</a>
+              <a href="thread.html#114">[ thread ]</a>
+              <a href="subject.html#114">[ subject ]</a>
+              <a href="author.html#114">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi folks,
+
+As I noted in a previous post, I'm just getting into mapnik. The 
+following are some suggestions I have for improving the software. This 
+is based on Subversion r432.
+
+I am more than happy to enter these into the Trac bug database, but my 
+initial foray there revealed only two bugs, so I don't want to do that 
+if that resource is unused.
+
+1. mapnik is underdocumented. While I was able to muddle through, some 
+user-oriented documentation would be very helpful.
+
+2. The tutorials on the website (on &lt;<A HREF="http://mapnik.org/documentation/">http://mapnik.org/documentation/</A>&gt;) 
+are broken.
+
+3. render_to_tile() prints to standard output. I'd like to be able to 
+supress this.
+
+4. Installing to a nonstandard path without root access was quite a 
+pain; I wanted to install everything under /foo/bar, but the closest I 
+could get was some stuff under /foo/bar/usr and some stuff under 
+/foo/bar/foo/bar. I ended up writing a shell script (below) to create 
+symlinks to make things reasonable. To be honest, I'd suggest dumping 
+the current build system in favor of autoconf or setup.py, which are 
+more familiar to people and which do the right thing in my situation.
+
+Thoughts?
+
+Thanks for some great software.
+
+Reid
+
+
+-- workaround shell script follows --
+
+#!/bin/sh
+
+prefix=/export/scratch/reid/python
+site_packages=/lib/python2.4/site-packages
+
+set -e
+
+python scons/scons.py PGSQL_INCLUDES=/usr/include/postgresql 
+PREFIX=$prefix DEST
+DIR=$prefix install
+rm -fv $prefix/$site_packages/mapnik
+ln -v -s $prefix/usr/$site_packages/mapnik $prefix/$site_packages
+rm -fv $prefix/lib/libmapnik.so
+ln -v -s $prefix/$prefix/lib/libmapnik.so $prefix/lib
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000113.html">[Mapnik-devel] ruby bindings
+</A></li>
+	<LI>Next message: <A HREF="000115.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#114">[ date ]</a>
+              <a href="thread.html#114">[ thread ]</a>
+              <a href="subject.html#114">[ subject ]</a>
+              <a href="author.html#114">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

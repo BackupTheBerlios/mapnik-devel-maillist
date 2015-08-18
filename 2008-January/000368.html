@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] curves
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-January/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20curves&In-Reply-To=%3C2fc2c5f10801030724l778f47c5m48023cc232936443%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000367.html">
+   <LINK REL="Next"  HREF="000369.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] curves</H1>
+    <B>Martijn van Oosterhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20curves&In-Reply-To=%3C2fc2c5f10801030724l778f47c5m48023cc232936443%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] curves">kleptog at gmail.com
+       </A><BR>
+    <I>Thu Jan  3 16:24:00 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000367.html">[Mapnik-devel] curves
+</A></li>
+        <LI>Next message: <A HREF="000369.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#368">[ date ]</a>
+              <a href="thread.html#368">[ thread ]</a>
+              <a href="subject.html#368">[ subject ]</a>
+              <a href="author.html#368">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Jan 3, 2008 4:16 PM, Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem.mapnik at googlemail.com</A>&gt; wrote:
+&gt;<i> P.S. Are there some hints (tags) in OSM that can be used for to
+</I>&gt;<i> smooth or not?
+</I>&gt;<i> Also, are there are examples where it does work well and where it
+</I>&gt;<i> doesn't?
+</I>
+AFAIK there are no explicit hints, but there is code in osmarender to
+do bezier curves. There there is a lot of fudging to make it look
+good, but it's there. The main problem being that angles of 90 degrees
+or greater should possibly not be rounded. I think we can pretty
+safely turn it on for roads and river boundaries/coastlines. Though
+the parts that represent piers need to be exempted somehow.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">kleptog at gmail.com</A>&gt; <A HREF="http://svana.org/kleptog/">http://svana.org/kleptog/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000367.html">[Mapnik-devel] curves
+</A></li>
+	<LI>Next message: <A HREF="000369.html">[Mapnik-devel] [OSM-dev] curves
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#368">[ date ]</a>
+              <a href="thread.html#368">[ thread ]</a>
+              <a href="subject.html#368">[ subject ]</a>
+              <a href="author.html#368">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

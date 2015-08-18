@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Input plugins question
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Input%20plugins%20question&In-Reply-To=%3C7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000809.html">
+   <LINK REL="Next"  HREF="000812.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Input plugins question</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Input%20plugins%20question&In-Reply-To=%3C7e70f38d0903050700i36e967e9wa84cb0ef5b0637b3%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Input plugins question">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar  5 16:00:26 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000809.html">[Mapnik-devel] Input plugins question
+</A></li>
+        <LI>Next message: <A HREF="000812.html">[Mapnik-devel] Input plugins question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Edward,
+
+Great to hear you're making a progress!
+
+(inline)
+
+2009/3/5 Braithwaite, Edward F. &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ebraithwaite at nrlssc.navy.mil</A>&gt;:
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Hi, I'd mentioned before that I was going to be working on a plugin for some
+</I>&gt;<i> of our custom datatypes. I've been able to write a basic plugin that will read
+</I>&gt;<i> a text file containing the various point, lines, polygons that I want to plot
+</I>&gt;<i> on a map. &#160;What I have not been able to figure out is how to apply filtering to
+</I>&gt;<i> the text dataset (or any new dataset I have) like I have been doing with the
+</I>&gt;<i> shapefiles -- rule1.set_filter(create_filter()). Does the filtering get applied
+</I>&gt;<i> using the boost libraries filter template or is it somewhere else?
+</I>
+Yes, all filtering is implementing in code library. For this to work
+properly you need to ensure that features you return in  featureset
+next() method have all relevant properties set. You should use
+mapnik::query object to get a list of required properties.
+
+&gt;<i>
+</I>&gt;<i> Also, I haven't yet figured out how to put text on the maps that I produce
+</I>&gt;<i> using my input plugin. Can someone just point me in the direction I should
+</I>&gt;<i> look for that?
+</I>
+This is directly related to how you create features (see above).
+&gt;<i>
+</I>&gt;<i> Is there any sort of data flow description for the mapnik toolkit that might be
+</I>&gt;<i> of help to me??? For some of this, I've been able to make it work, but I don't
+</I>&gt;<i> totally understand why it works.
+</I>
+I'm afraid we don't have a detailed data flow,yet. I think the best is
+to study the source and post here. Also, there is a #mapnik IRC
+channel where someone might be able to help.
+&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i> Edward Braithwaite
+</I>&gt;<i>
+</I>&gt;<i>
+</I>Regards,
+Artem
+&gt;<i> --
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _________________________________
+</I>&gt;<i> Edward F. Braithwaite III
+</I>&gt;<i> Naval Research Lab
+</I>&gt;<i> Code 7430-Seafloor Sciences
+</I>&gt;<i> Building 1005, B-24
+</I>&gt;<i> Stennis Space Center, MS 39529
+</I>&gt;<i> 228-688-4828 phone
+</I>&gt;<i> 228-688-5752 fax
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ebraithwaite at nrlssc.navy.mil</A>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000809.html">[Mapnik-devel] Input plugins question
+</A></li>
+	<LI>Next message: <A HREF="000812.html">[Mapnik-devel] Input plugins question
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#810">[ date ]</a>
+              <a href="thread.html#810">[ thread ]</a>
+              <a href="subject.html#810">[ subject ]</a>
+              <a href="author.html#810">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

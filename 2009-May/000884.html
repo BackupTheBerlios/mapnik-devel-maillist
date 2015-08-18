@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Shapefile input and open files on Windows
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20input%20and%20open%20files%20on%20Windows&In-Reply-To=%3C4A768654-9BFE-4D77-A34E-258A0773BA0D%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000883.html">
+   <LINK REL="Next"  HREF="000885.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Shapefile input and open files on Windows</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Shapefile%20input%20and%20open%20files%20on%20Windows&In-Reply-To=%3C4A768654-9BFE-4D77-A34E-258A0773BA0D%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Shapefile input and open files on Windows">blake at hailmail.net
+       </A><BR>
+    <I>Tue May 12 07:47:44 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000883.html">[Mapnik-devel] Rendering curved paths
+</A></li>
+        <LI>Next message: <A HREF="000885.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#884">[ date ]</a>
+              <a href="thread.html#884">[ thread ]</a>
+              <a href="subject.html#884">[ subject ]</a>
+              <a href="author.html#884">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>So I'm trying to debug a strange thing on windows where a shapefile  
+opened in another application cannot be opened by Mapnik.
+
+I say strange because the problem does not occur on mac and linux -  
+only on windows. But it does make logical sense that opening the same  
+file in two running Python processes may create problems.
+
+Essentially, I've written a Python plugin to QGIS that loops through  
+all active datasources open in QGIS, builds up a Mapnik map, and  
+allows export to XML or rendering in the QGIS canvas.
+
+It works great on mac and linux, but on Windows I get an error like:
+
+ &gt;&gt; shp = Shapefile(file='c:/temp_files/world_borders.shp')
+  got exception ...
+Traceback (most recent call last):
+   File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+   File &quot;C:\mapnik_0_6_0\site-packages\mapnik\__init__.py&quot;, line 132,  
+in Shapefile
+     return CreateDatasource(keywords)
+RuntimeError: failed opening file: The handle is invalid.
+
+QGIS uses the OGR C++ api to open the shapefile in read/write mode. I  
+assume that the mapnik shapefile input opens read-only.
+
+Anyone have any ideas of potential workarounds?
+
+- Dane
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000883.html">[Mapnik-devel] Rendering curved paths
+</A></li>
+	<LI>Next message: <A HREF="000885.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#884">[ date ]</a>
+              <a href="thread.html#884">[ thread ]</a>
+              <a href="subject.html#884">[ subject ]</a>
+              <a href="author.html#884">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

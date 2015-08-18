@@ -1,0 +1,1677 @@
+From vladshikhov at gmail.com  Tue Dec  1 08:17:22 2009
+From: vladshikhov at gmail.com (Vladislav Shikhov)
+Date: Tue, 1 Dec 2009 10:17:22 +0300
+Subject: [Mapnik-devel] Osm input plugin
+Message-ID: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+
+Hello all,
+
+Is mapnik osm input plugin works well or it's still experimental? Is
+there any limitations for input .osm file?
+The problem is that I can't render a .svg from .osm file with python.
+(got "Not a map file. Node 'Map' not found" error) with mapnik
+installed from ubuntu 9.10 deb repository (it seems it have osm input
+plugin.)
+
+Can anybody give me an example of working python code for render an .osm file?
+
+Thanx.
+
+
+From blake at hailmail.net  Tue Dec  1 17:22:59 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 1 Dec 2009 08:22:59 -0800
+Subject: [Mapnik-devel] Osm input plugin
+In-Reply-To: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+References: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+Message-ID: <06170888-5303-4A7A-8FFD-4280895AC4F1@hailmail.net>
+
+On Nov 30, 2009, at 11:17 PM, Vladislav Shikhov wrote:
+
+> Hello all,
+>
+> Is mapnik osm input plugin works well or it's still experimental?
+
+It is certainly experimental, but would be great to have you testing it.
+
+> Is
+> there any limitations for input .osm file?
+
+Not that I know of, other than you will want to try first with small  
+files.
+
+> The problem is that I can't render a .svg from .osm file with python.
+> (got "Not a map file. Node 'Map' not found" error) with mapnik
+> installed from ubuntu 9.10 deb repository (it seems it have osm input
+> plugin.)
+>
+
+Sounds like you are not using Mapnik correctly. That error means that  
+you are trying to read in invalid XML for the map styles.
+
+Perhaps you are confusing the .osm file with the separate, needed, map  
+styles (which are also XML)?
+
+Please paste the script you are trying to run.
+
+Dane
+
+
+
+From blake at hailmail.net  Tue Dec  1 17:42:42 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 1 Dec 2009 08:42:42 -0800
+Subject: [Mapnik-devel] Osm input plugin
+In-Reply-To: <06170888-5303-4A7A-8FFD-4280895AC4F1@hailmail.net>
+References: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+	<06170888-5303-4A7A-8FFD-4280895AC4F1@hailmail.net>
+Message-ID: <57C36D18-FF3A-443D-B703-972CC313114F@hailmail.net>
+
+Vlad,
+
+I noticed there are a few sample map styles inside the osm plugin  
+source directory that work with the sample .osm files there.
+
+Try this:
+
+First, install nik2img
+
+Then do:
+
+svn co http://svn.mapnik.org/trunk/plugins/input/osm/ osm_plugin_code
+cd osm_plugin_code
+nik2img.py test.xml test.png
+
+
+If you have the proper Cairo support built into Mapnik then you can  
+also do:
+
+nik2img.py test.xml test.svg # or .pdf...
+
+Dane
+
+
+
+On Dec 1, 2009, at 8:22 AM, Dane Springmeyer wrote:
+
+> On Nov 30, 2009, at 11:17 PM, Vladislav Shikhov wrote:
+>
+>> Hello all,
+>>
+>> Is mapnik osm input plugin works well or it's still experimental?
+>
+> It is certainly experimental, but would be great to have you testing  
+> it.
+>
+>> Is
+>> there any limitations for input .osm file?
+>
+> Not that I know of, other than you will want to try first with small
+> files.
+>
+>> The problem is that I can't render a .svg from .osm file with python.
+>> (got "Not a map file. Node 'Map' not found" error) with mapnik
+>> installed from ubuntu 9.10 deb repository (it seems it have osm input
+>> plugin.)
+>>
+>
+> Sounds like you are not using Mapnik correctly. That error means that
+> you are trying to read in invalid XML for the map styles.
+>
+> Perhaps you are confusing the .osm file with the separate, needed, map
+> styles (which are also XML)?
+>
+> Please paste the script you are trying to run.
+>
+> Dane
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From nick_whitelegg at yahoo.co.uk  Wed Dec  2 19:45:29 2009
+From: nick_whitelegg at yahoo.co.uk (Nick Whitelegg)
+Date: Wed, 2 Dec 2009 18:45:29 +0000 (GMT)
+Subject: [Mapnik-devel] Osm input plugin
+In-Reply-To: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+References: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+Message-ID: <7168.81521.qm@web26605.mail.ukl.yahoo.com>
+
+Hi,
+
+As far as I'm aware it should work - I developed it originally though haven't looked at it for a while. I'll try and get round to writing some documentation for it in the next week or two - other things (work and otherwise) keep coming up!
+
+The Map error looks like a general Mapnik issue, not an issue with the osm plugin.
+
+I don't have any python code but there should be some sample C++ code with the plugin.
+
+Nick
+
+
+
+
+________________________________
+From: Vladislav Shikhov <vladshikhov at gmail.com>
+To: mapnik-devel at lists.berlios.de
+Sent: Tue, 1 December, 2009 7:17:22
+Subject: [Mapnik-devel] Osm input plugin
+
+Hello all,
+
+Is mapnik osm input plugin works well or it's still experimental? Is
+there any limitations for input .osm file?
+The problem is that I can't render a .svg from .osm file with python.
+(got "Not a map file. Node 'Map' not found" error) with mapnik
+installed from ubuntu 9.10 deb repository (it seems it have osm input
+plugin.)
+
+Can anybody give me an example of working python code for render an .osm file?
+
+Thanx.
+_______________________________________________
+Mapnik-devel mailing list
+Mapnik-devel at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091202/3601bb29/attachment.html>
+
+From vladshikhov at gmail.com  Wed Dec  2 20:06:27 2009
+From: vladshikhov at gmail.com (Vladislav Shikhov)
+Date: Wed, 2 Dec 2009 22:06:27 +0300
+Subject: [Mapnik-devel] Osm input plugin
+In-Reply-To: <7168.81521.qm@web26605.mail.ukl.yahoo.com>
+References: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+	<7168.81521.qm@web26605.mail.ukl.yahoo.com>
+Message-ID: <f5781a700912021106s5249cfd5i6186cc0e1e4104e1@mail.gmail.com>
+
+Hello all.
+
+Thanx for you replays, i've got working code.
+
+On Wed, Dec 2, 2009 at 9:45 PM, Nick Whitelegg
+<nick_whitelegg at yahoo.co.uk> wrote:
+> Hi,
+>
+> As far as I'm aware it should work - I developed it originally though
+> haven't looked at it for a while. I'll try and get round to writing some
+> documentation for it in the next week or two - other things (work and
+> otherwise) keep coming up!
+>
+> The Map error looks like a general Mapnik issue, not an issue with the osm
+> plugin.
+>
+> I don't have any python code but there should be some sample C++ code with
+> the plugin.
+>
+> Nick
+>
+> ________________________________
+> From: Vladislav Shikhov <vladshikhov at gmail.com>
+> To: mapnik-devel at lists.berlios.de
+> Sent: Tue, 1 December, 2009 7:17:22
+> Subject: [Mapnik-devel] Osm input plugin
+>
+> Hello all,
+>
+> Is mapnik osm input plugin works well or it's still experimental? Is
+> there any limitations for input .osm file?
+> The problem is that I can't render a .svg from .osm file with python.
+> (got "Not a map file. Node 'Map' not found" error) with mapnik
+> installed from ubuntu 9.10 deb repository (it seems it have osm input
+> plugin.)
+>
+> Can anybody give me an example of working python code for render an .osm
+> file?
+>
+> Thanx.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+
+From blake at hailmail.net  Wed Dec  2 23:26:26 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 2 Dec 2009 14:26:26 -0800
+Subject: [Mapnik-devel] Scons configure and build speeds
+Message-ID: <918CF445-AE26-4B9E-A8BD-BC7E8C0F1B15@hailmail.net>
+
+Many new coders to Mapnik have noticed that Scons takes quite a bit of  
+time to start building targets if you re-run the build or install  
+step. The reason for this is that Scons by default is very aware and  
+smart about finding any dependencies that might have changed in order  
+to figure out what targets to rebuild. This takes startup time.
+
+But if you are hacking on Mapnik code and frequently re-compiling this  
+slowness is a hindrance. So, a while back I added a FAST boolean  
+option that you can pass to the Scons configure stage that turns down  
+a number of the fancy dependency checking mechanisms (as advised by  
+the Scons docs):
+
+$ python scons/scons.py FAST=True
+
+Problem is, due to a bug (that I've just fixed in trunk - http://trac.mapnik.org/changeset/1440) 
+  this option was not being recognized by the build scripts in the  
+right place. As well the JOBS=N option that allow parallel compiling  
+was also not being honored.
+
+You can either pass --jobs N or JOBS=N now (the latter will be cached  
+in your 'config.py' and pickled settings and read for reuse) for  
+parallel compiling.
+
+So, sorry about this. If you svn up and re-configure by passing the  
+above flags things should really now, actually quite faster.
+
+Happy Mapnik coding,
+
+Dane
+
+
+
+From blake at hailmail.net  Wed Dec  2 23:36:23 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Wed, 2 Dec 2009 14:36:23 -0800
+Subject: [Mapnik-devel] Osm input plugin
+In-Reply-To: <7168.81521.qm@web26605.mail.ukl.yahoo.com>
+References: <f5781a700911302317v72d7149ci7cdd56268933ff43@mail.gmail.com>
+	<7168.81521.qm@web26605.mail.ukl.yahoo.com>
+Message-ID: <01C30FEE-9116-422C-9966-DC89B66B7E3E@hailmail.net>
+
+Nick, that's great.
+
+I think there is huge potential with the OSM plugin for making  
+rendering easier for new users. I also think there is great potential  
+for using the OSM plugin centrally to develop a better rendering test  
+suite based on various examples of OSM data.
+
+Have you seen the tests we've started in mapnik_src/tests/ ?
+
+Would be good to share ideas as a group of ways to get a C++ testing  
+suite going too.
+
+Dane
+
+
+On Dec 2, 2009, at 10:45 AM, Nick Whitelegg wrote:
+
+> Hi,
+>
+> As far as I'm aware it should work - I developed it originally  
+> though haven't looked at it for a while. I'll try and get round to  
+> writing some documentation for it in the next week or two - other  
+> things (work and otherwise) keep coming up!
+>
+> The Map error looks like a general Mapnik issue, not an issue with  
+> the osm plugin.
+>
+> I don't have any python code but there should be some sample C++  
+> code with the plugin.
+>
+> Nick
+>
+> From: Vladislav Shikhov <vladshikhov at gmail.com>
+> To: mapnik-devel at lists.berlios.de
+> Sent: Tue, 1 December, 2009 7:17:22
+> Subject: [Mapnik-devel] Osm input plugin
+>
+> Hello all,
+>
+> Is mapnik osm input plugin works well or it's still experimental? Is
+> there any limitations for input .osm file?
+> The problem is that I can't render a .svg from .osm file with python.
+> (got "Not a map file. Node 'Map' not found" error) with mapnik
+> installed from ubuntu 9.10 deb repository (it seems it have osm input
+> plugin.)
+>
+> Can anybody give me an example of working python code for render  
+> an .osm file?
+>
+> Thanx.
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091202/76db7084/attachment.html>
+
+From jay at farrimond.com  Thu Dec  3 19:24:14 2009
+From: jay at farrimond.com (Jay Farrimond)
+Date: Thu, 3 Dec 2009 12:24:14 -0600
+Subject: [Mapnik-devel] Osm input plugin
+Message-ID: <fb9584770912031024p4a8496acoe213e2600dec3086@mail.gmail.com>
+
+Hi Nick!
+
+As an FYI, I've noticed some strange behavior when using the OSM plugin.  It
+has problems with nodes that are single entities, such as : <node id="1"
+lat="30.0" lon="-98.0" />
+
+It only works correctly when all the nodes are presented as such (notice
+separate opening and closing entities):
+<node id="1" lat="30.0" lon="-98.0">
+</node>
+
+Delving into the code for that module, it's because in osmparser.cpp nodes
+only get added (as cur_item) when an ending element is encountered (via
+osmparser::endElement).  Therefore, a string of single-entity nodes will all
+be ignored.
+
+I'm using the OSM plugin to render data that I don't keep in a database.
+It's easy to convert it from my own format into the OSM format, so I've been
+doing that.  It's very handy for that.
+
+BTW, I'm submitting this to the list instead of opening a ticket in Mapnik's
+trac system because I'm not sure of your group's do's and don'ts surrounding
+ticket creation.  I'll be happy to create a ticket and provide better sample
+data if that's appropriate.
+
+Thanks!
+Jay Farrimond
+www.sabikerides.com
+
+-----------------------------------------------------
+Message: 1
+Date: Wed, 2 Dec 2009 18:45:29 +0000 (GMT)
+From: Nick Whitelegg <nick_whitelegg at yahoo.co.uk>
+Subject: Re: [Mapnik-devel] Osm input plugin
+To: Vladislav Shikhov <vladshikhov at gmail.com>
+Cc: mapnik-devel at lists.berlios.de
+Message-ID: <7168.81521.qm at web26605.mail.ukl.yahoo.com>
+Content-Type: text/plain; charset="utf-8"
+
+Hi,
+
+As far as I'm aware it should work - I developed it originally though
+haven't looked at it for a while. I'll try and get round to writing some
+documentation for it in the next week or two - other things (work and
+otherwise) keep coming up!
+
+The Map error looks like a general Mapnik issue, not an issue with the osm
+plugin.
+
+I don't have any python code but there should be some sample C++ code with
+the plugin.
+
+Nick
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091203/db587a72/attachment.html>
+
+From waddell at uanalytics.com  Sat Dec  5 02:58:26 2009
+From: waddell at uanalytics.com (Paul Waddell)
+Date: Fri, 4 Dec 2009 17:58:26 -0800
+Subject: [Mapnik-devel] Mapnik build on Python 2.6 for Windows
+Message-ID: <3fa5b4090912041758v2c643061p5cdf7ca6e380a16@mail.gmail.com>
+
+Hi
+
+We're really pleased with our initial use of Mapnik and are hoping to bring
+it in to the next stable release of UrbanSim (www.urbansim.org), but we're
+moving to Python 2.6 on all platforms, and Mapnik does not seem to have a
+Python 2.6 build for Windows.
+
+Is there any prospect of building Mapnik for Python 2.6 on Windows in the
+next couple of weeks? It works so well that I really want to include it in
+the upcoming stable release.
+
+I could offer to help, but we don't really have anyone who is a windows
+developer, and are relying on pre-built packages on that platform.
+
+Thanks.  If I can help in some way, let me know.  Maybe I could fund a few
+hours for someone to generate the build?
+
+Best,
+
+Paul
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091204/adc39247/attachment.html>
+
+From artem at mapnik.org  Sat Dec  5 11:03:13 2009
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 5 Dec 2009 10:03:13 +0000
+Subject: [Mapnik-devel] Mapnik build on Python 2.6 for Windows
+In-Reply-To: <3fa5b4090912041758v2c643061p5cdf7ca6e380a16@mail.gmail.com>
+References: <3fa5b4090912041758v2c643061p5cdf7ca6e380a16@mail.gmail.com>
+Message-ID: <7e70f38d0912050203l526ceb3bjee5e1e6a884b96a5@mail.gmail.com>
+
+Hi Paul,
+
+I can help you with windows + py26 build, please contact me off list.
+
+Regards,
+Artem
+
+
+2009/12/5 Paul Waddell <waddell at uanalytics.com>
+
+> Hi
+>
+> We're really pleased with our initial use of Mapnik and are hoping to bring
+> it in to the next stable release of UrbanSim (www.urbansim.org), but we're
+> moving to Python 2.6 on all platforms, and Mapnik does not seem to have a
+> Python 2.6 build for Windows.
+>
+> Is there any prospect of building Mapnik for Python 2.6 on Windows in the
+> next couple of weeks? It works so well that I really want to include it in
+> the upcoming stable release.
+>
+> I could offer to help, but we don't really have anyone who is a windows
+> developer, and are relying on pre-built packages on that platform.
+>
+> Thanks.  If I can help in some way, let me know.  Maybe I could fund a few
+> hours for someone to generate the build?
+>
+> Best,
+>
+> Paul
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091205/6ee9c118/attachment.html>
+
+From blake at hailmail.net  Fri Dec 11 09:11:12 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 11 Dec 2009 00:11:12 -0800
+Subject: [Mapnik-devel] Upcoming 0.7.0 release
+Message-ID: <B024EB9B-1EB2-4EA8-B1B8-AB1180B727A3@hailmail.net>
+
+Mapnik-Dev,
+
+Couple important things:
+
+1) Fairly large changeset against the PostGIS plugin:  http://trac.mapnik.org/changeset/1473
+
+2) We are shooting to release 0.7.0 next week and to merge the mapnik2  
+branch into trunk:
+
+Details at users list: https://lists.berlios.de/pipermail/mapnik-users/2009-December/002605.html
+
+Feel free to follow up with any questions here.
+
+Cheers,
+
+Dane
+
+
+
+
+
+From ekkehart at gmx.de  Sat Dec 12 19:35:15 2009
+From: ekkehart at gmx.de (Nop)
+Date: Sat, 12 Dec 2009 19:35:15 +0100
+Subject: [Mapnik-devel] Fwd: Re: [Mapnik-users] mapnik.render causing
+	segmentation fault
+Message-ID: <4B23E263.2030600@gmx.de>
+
+
+Crossposting to dev as requested by Dane.
+
+-------- Original-Nachricht --------
+Betreff: Re: [Mapnik-users] mapnik.render causing segmentation fault
+Datum: Sat, 12 Dec 2009 19:00:04 +0100
+Von: Nop <ekkehart at gmx.de>
+An: mapnik-users at lists.berlios.de
+CC: Sven Geggus <sven-osm at geggus.net>
+
+
+Hi!
+
+
+It seems that I have run into the same problem that was reported earlier
+by Philip.
+
+I have a freshly installed python mapnik and the first attempt at
+running generate_image.py causes a Segmentation fault in
+mapnik.render(). When I change the script to use render_to_file(), there
+is no error and a valid image is created that looks just like it should.
+
+I would need to solve this problem as I'm trying to build up a major
+rendering chain on the server.
+
+Operating system is Ubuntu Karmic
+
+> $ apt-cache show python-mapnik
+
+Package: python-mapnik
+Priority: optional
+Section: universe/python
+Installed-Size: 5740
+Maintainer: Ubuntu MOTU Developers <ubuntu-motu at lists.ubuntu.com>
+Original-Maintainer: Dominic Hargreaves <dom at earth.li>
+Architecture: amd64
+Source: mapnik
+Version: 0.6.1-0ubuntu4
+Provides: python2.5-mapnik, python2.6-mapnik
+Depends: libboost-python1.38.0 (>= 1.38.0-1), libc6 (>= 2.4), libgcc1
+(>= 1:4.1.1), libjpeg62, libmapnik0.6, libpng12-0
+(>= 1.2.13-4), libstdc++6 (>= 4.4.0), python (<< 2.7), python (>= 2.5),
+python-central (>= 0.6.11)
+Filename: pool/universe/m/mapnik/python-mapnik_0.6.1-0ubuntu4_amd64.deb
+Size: 1250930
+MD5sum: 44622c39f5d514270f9ef67e4d909f3a
+SHA1: e9ac4c3aab1ef3ecb9abba6f8b49a89b19a774bb
+SHA256: 12f99c3dca6c4556350e3e577a5c346a4c83d9796bf7a2ff1183f0f1c2b76567
+Description: C++/Python toolkit for developing GIS applications (Python)
+   Mapnik is an OpenSource C++/Python toolkit for developing GIS
+   (Geographic Information Systems) applications. At the core is a C++
+   shared library providing algorithms/patterns for spatial data access and
+   visualization.
+   .
+   Essentially a collection of geographic objects (map, layer, datasource,
+   feature, geometry), the library doesn't rely on "windowing systems" and
+   is intended to work in multi-threaded environments
+   .
+   High-level Python bindings (boost.python) facilitate rapid application
+   development, targeting zope3, django, etc.
+   .
+   This package contains the Python bindings.
+Homepage: http://www.mapnik.org/
+Python-Version: 2.5, 2.6
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Origin: Ubuntu
+
+
+
+> On Nov 1, 2009, at 1:13 PM, Philip Stubbs wrote:
+>
+>> 2009/11/1 Philip Stubbs<philip at stuphi.co.uk>:
+>>> Hi all,
+>>>
+>>> I am new hear but I don't know where else to look. I have installed
+>>> mapnik and am trying to get the generate_tiles script to work. It is
+>>> causing a segmentation fault when mapnik.render is called. I have
+>>> tried the 'hello world' example and that works, but I notice that
+>>> uses
+>>> mapnik.render_to_file. Therefore I tried to adjust that script to use
+>>> the mapnik.render method, and it also then seg faulted.
+>>>
+>>> I am not a programmer, and what little I do know is not in Python :-(
+>>> My Google foo is also weak today. Any help would be appreciated.
+>>
+>> Ops! Should have said that I am running Ubuntu 9.10, I installed
+>> python-mapnik and Postgres from the Ubuntu repositories, and followed
+>> the set-up guide from the openstreetmap wiki.
+>>
+>> Now I have made a copy of the generate_image.py script and changed it
+>> to use mapnik.render_to_file, and it has just successfully rendered an
+>> image of the UK. This is going to be of more use to me than the tiles,
+>> so I think I am sorted. Still, it would be good to know why the one
+>> method works when the other does not. I may in the future want a local
+>> tile server.
+>>
+>>
+>> --
+>> Philip Stubbs
+>> _______________________________________________
+>> Mapnik-users mailing list
+>> Mapnik-users at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+> _______________________________________________
+> Mapnik-users mailing list
+> Mapnik-users at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-users
+>
+
+_______________________________________________
+Mapnik-users mailing list
+Mapnik-users at lists.berlios.de
+https://lists.berlios.de/mailman/listinfo/mapnik-users
+
+
+
+From david.eastcott at shaw.ca  Sun Dec 13 17:50:13 2009
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sun, 13 Dec 2009 09:50:13 -0700
+Subject: [Mapnik-devel] Couple build issues with trunk 1481
+Message-ID: <4B251B45.5040801@shaw.ca>
+
+I came across these yesterday and thought I should let you know
+
+1. Noticed this Warning message when compiling on 64bit os
+
+g++ -o plugins/input/ogr/ogr_datasource.os -c -DHAVE_LIBXML2 
+-DHAVE_CAIRO -DHAVE_PYCAIRO -ansi -Wall -pthread -ftemplate-depth-100 
+-DLINUX -DBOOST_SPIRIT_THREADSAFE -DMAPNIK_THREADSAFE 
+-DSVN_REVISION=1481 -O2 -finline-functions -Wno-inline -DNDEBUG 
+-DSHAPE_MEMORY_MAPPED_FILE -fPIC -DNone -Iagg/include -Iinclude -I. 
+-I/usr/include -I/usr/local/include -I/usr/include/freetype2 
+-I/usr/include/libxml2 -I/usr/include/cairomm-1.0 -I/usr/include/cairo 
+-I/usr/include/libpng12 -I/usr/include/pixman-1 -I/usr/include/gdal 
+-I/usr/include/pycairo plugins/input/ogr/ogr_datasource.cpp
+plugins/input/ogr/ogr_datasource.cpp: In constructor 
+?ogr_datasource::ogr_datasource(const mapnik::parameters&)?:
+plugins/input/ogr/ogr_datasource.cpp:123: warning: comparison is always 
+false due to limited range of data type
+
+is:
+// scan for index file
+unsigned breakpoint = dataset_name_.find_last_of (".");
+if (breakpoint == std::string::npos) breakpoint = dataset_name_.length();
+index_name_ = dataset_name_.substr(0, breakpoint) + ".index";
+
+should be:
+// scan for index file
+size_t breakpoint = dataset_name_.find_last_of (".");
+if (breakpoint == std::string::npos) breakpoint = dataset_name_.length();
+index_name_ = dataset_name_.substr(0, breakpoint) + ".index";
+
+
+2. When compiling with DEBUG option, there is a Error message: 
+gettimeofday is not defined in this scope.
+
+The file include/mapnik/wall_clock_timer.hpp appears to be missing an 
+include:
+
+should be:
+#define MAPNIK_WALL_CLOCK_TIMER_INCLUDED
+#include <sys/time.h>
+namespace mapnik {
+
+Best regards,
+Dave
+
+
+
+From david.eastcott at shaw.ca  Sun Dec 13 18:15:23 2009
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Sun, 13 Dec 2009 10:15:23 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of comparing
+ map and layer bounds to support..'
+Message-ID: <4B25212B.5080601@shaw.ca>
+
+While upgrading to 1481 from 1347, I came across a problem with my 
+google tile generator producing renderings with missing features (Canada 
+was missing) at the highest levels (0-4).  Essentially I was building a 
+level 0 tile, 256x256px, with a 128px buffer with the 'world' map.  The 
+change introduced in trunk version 1348 was causing the projection of 
+the buffer extents to the layer extents to produce bad values 
+(pr_transform was returning a good return code) and as a result, some of 
+the polygons were being omitted from the rendering.
+
+The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 
++x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+
+and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 
++ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+There are a number of ways this can be solved outside of mapnik, which I 
+have done, but I thought I should pass this on in case others have come 
+across it. 
+
+This may be an issue for anyone who is using buffered rendering near or 
+on the edges of proj4 ability to transform correctly since the values 
+used for the buffer extents may be well outside reasonable values.
+
+Best regards,
+Dave
+
+
+From blake at hailmail.net  Mon Dec 14 00:24:34 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 13 Dec 2009 15:24:34 -0800
+Subject: [Mapnik-devel] [Mapnik-users] mapnik.render causing
+	segmentation fault
+In-Reply-To: <4B25746C.1020605@gmx.de>
+References: <bc9fce50911011252q114836bfudca509d336893d21@mail.gmail.com>	<bc9fce50911011313x1de2dbe1s1fc63e98594ebf4a@mail.gmail.com>
+	<17EE07BB-CBAA-498C-B76B-F620E4BA22DC@hailmail.net>
+	<4B23DA24.5070904@gmx.de>
+	<794690D3-8875-4B40-B1C2-9BB29A541352@hailmail.net>
+	<4B2566AF.3060806@gmx.de>
+	<62721149-5999-439B-8B0A-B939EB8E6A7D@hailmail.net>
+	<4B25746C.1020605@gmx.de>
+Message-ID: <D407586E-3067-44F8-83FC-6BF1CE3890C7@hailmail.net>
+
+On Dec 13, 2009, at 3:10 PM, Nop wrote:
+
+>
+> Hi!
+>
+> Am 13.12.2009 23:25, schrieb Dane Springmeyer:
+>> install cairo's python bindings like:
+>>
+>> sudo apt-get install python-cairo
+>>
+>> and I think the problem will be fixed.
+>
+> Before I ask my admin, two questions:
+>
+> - Does this explain why it crashes on render(), but it does work  
+> with render_to_file() ?
+>
+
+Yes, render_to_file() does not have a function that uses cairo  
+directly like render() does.
+
+> - Would this be fixed in 0.7?
+>
+
+Yes, I made a change in trunk 5 months ago to ensure this will not  
+crash when the dependency is missing.
+
+http://trac.mapnik.org/changeset/1278/trunk/bindings/python/python_cairo.cpp
+
+But, this problem is something that is only likely to happen with pre- 
+built packages because to prompt the crash you must have compiled  
+mapnik against the python-cairo headers and then removed the module.
+
+Just to illustrate this subtle bug, here is a fresh karmic machine  
+(server edition which does not have python-cairo installed by default,  
+unlike desktop versions which do):
+
+root at localhost:~# python
+Python 2.6.4rc2 (r264rc2:75497, Oct 20 2009, 02:54:09)
+[GCC 4.4.1] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+ >>> import mapnik
+ >>> m = mapnik.Map(1,1)
+ >>> im = mapnik.Image(1,1)
+ >>> mapnik.render_to_file(m,'test.png')
+ >>> mapnik.render(m,im)
+Segmentation fault
+
+root at localhost:~# sudo apt-get install python-cairo
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following NEW packages will be installed:
+   python-cairo
+0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
+Need to get 0B/105kB of archives.
+After this operation, 410kB of additional disk space will be used.
+Selecting previously deselected package python-cairo.
+(Reading database ... 15015 files and directories currently installed.)
+Unpacking python-cairo (from .../python- 
+cairo_1.8.6-1ubuntu1_amd64.deb) ...
+Setting up python-cairo (1.8.6-1ubuntu1) ...
+
+Processing triggers for python-support ...
+root at localhost:~# python
+Python 2.6.4rc2 (r264rc2:75497, Oct 20 2009, 02:54:09)
+[GCC 4.4.1] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+ >>> import mapnik
+ >>> m = mapnik.Map(1,1)
+ >>> im = mapnik.Image(1,1)
+ >>> mapnik.render_to_file(m,'test.png')
+ >>> mapnik.render(m,im)
+ >>> exit()
+
+
+From blake at hailmail.net  Mon Dec 14 00:37:57 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 13 Dec 2009 15:37:57 -0800
+Subject: [Mapnik-devel] Couple build issues with trunk 1481
+In-Reply-To: <4B251B45.5040801@shaw.ca>
+References: <4B251B45.5040801@shaw.ca>
+Message-ID: <A9DFF980-846A-41C7-96D2-746663F69B04@hailmail.net>
+
+Great,
+
+Thanks very much David, I've applied those fixes to trunk, the new 0.7  
+branch, and the mapnik2 branch.
+
+Cheers,
+
+Dane
+
+
+On Dec 13, 2009, at 8:50 AM, David Eastcott wrote:
+
+> I came across these yesterday and thought I should let you know
+>
+> 1. Noticed this Warning message when compiling on 64bit os
+>
+> g++ -o plugins/input/ogr/ogr_datasource.os -c -DHAVE_LIBXML2
+> -DHAVE_CAIRO -DHAVE_PYCAIRO -ansi -Wall -pthread -ftemplate-depth-100
+> -DLINUX -DBOOST_SPIRIT_THREADSAFE -DMAPNIK_THREADSAFE
+> -DSVN_REVISION=1481 -O2 -finline-functions -Wno-inline -DNDEBUG
+> -DSHAPE_MEMORY_MAPPED_FILE -fPIC -DNone -Iagg/include -Iinclude -I.
+> -I/usr/include -I/usr/local/include -I/usr/include/freetype2
+> -I/usr/include/libxml2 -I/usr/include/cairomm-1.0 -I/usr/include/cairo
+> -I/usr/include/libpng12 -I/usr/include/pixman-1 -I/usr/include/gdal
+> -I/usr/include/pycairo plugins/input/ogr/ogr_datasource.cpp
+> plugins/input/ogr/ogr_datasource.cpp: In constructor
+> ?ogr_datasource::ogr_datasource(const mapnik::parameters&)?:
+> plugins/input/ogr/ogr_datasource.cpp:123: warning: comparison is  
+> always
+> false due to limited range of data type
+>
+> is:
+> // scan for index file
+> unsigned breakpoint = dataset_name_.find_last_of (".");
+> if (breakpoint == std::string::npos) breakpoint =  
+> dataset_name_.length();
+> index_name_ = dataset_name_.substr(0, breakpoint) + ".index";
+>
+> should be:
+> // scan for index file
+> size_t breakpoint = dataset_name_.find_last_of (".");
+> if (breakpoint == std::string::npos) breakpoint =  
+> dataset_name_.length();
+> index_name_ = dataset_name_.substr(0, breakpoint) + ".index";
+>
+>
+> 2. When compiling with DEBUG option, there is a Error message:
+> gettimeofday is not defined in this scope.
+>
+> The file include/mapnik/wall_clock_timer.hpp appears to be missing an
+> include:
+>
+> should be:
+> #define MAPNIK_WALL_CLOCK_TIMER_INCLUDED
+> #include <sys/time.h>
+> namespace mapnik {
+>
+> Best regards,
+> Dave
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From blake at hailmail.net  Tue Dec 15 19:54:24 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Tue, 15 Dec 2009 10:54:24 -0800
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+	comparing map and layer bounds to support..'
+In-Reply-To: <4B25212B.5080601@shaw.ca>
+References: <4B25212B.5080601@shaw.ca>
+Message-ID: <8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+
+David,
+
+Thanks for this report.  We may need to revert the previous change as  
+it was only to benefit the experimental PointDatasource implementation.
+
+Could you give a bit more detail on this?  How do you think bad values  
+are being returned while proj is still issuing a good return code?
+
+Also, have you seen?
+
+http://trac.mapnik.org/ticket/308
+
+Dane
+
+
+On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+
+> While upgrading to 1481 from 1347, I came across a problem with my
+> google tile generator producing renderings with missing features  
+> (Canada
+> was missing) at the highest levels (0-4).  Essentially I was  
+> building a
+> level 0 tile, 256x256px, with a 128px buffer with the 'world' map.   
+> The
+> change introduced in trunk version 1348 was causing the projection of
+> the buffer extents to the layer extents to produce bad values
+> (pr_transform was returning a good return code) and as a result,  
+> some of
+> the polygons were being omitted from the rendering.
+>
+> The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0  
+> +lon_0=0.0
+> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+>
+> and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+> +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+>
+> There are a number of ways this can be solved outside of mapnik,  
+> which I
+> have done, but I thought I should pass this on in case others have  
+> come
+> across it.
+>
+> This may be an issue for anyone who is using buffered rendering near  
+> or
+> on the edges of proj4 ability to transform correctly since the values
+> used for the buffer extents may be well outside reasonable values.
+>
+> Best regards,
+> Dave
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From tobias.wendorff at uni-dortmund.de  Mon Dec 14 00:56:59 2009
+From: tobias.wendorff at uni-dortmund.de (Tobias Wendorff)
+Date: Mon, 14 Dec 2009 00:56:59 +0100
+Subject: [Mapnik-devel] [Mapnik-users] mapnik.render causing
+	segmentation fault
+In-Reply-To: <D407586E-3067-44F8-83FC-6BF1CE3890C7@hailmail.net>
+References: <bc9fce50911011252q114836bfudca509d336893d21@mail.gmail.com>
+	<bc9fce50911011313x1de2dbe1s1fc63e98594ebf4a@mail.gmail.com>
+	<17EE07BB-CBAA-498C-B76B-F620E4BA22DC@hailmail.net>
+	<4B23DA24.5070904@gmx.de>
+	<794690D3-8875-4B40-B1C2-9BB29A541352@hailmail.net>
+	<4B2566AF.3060806@gmx.de>
+	<62721149-5999-439B-8B0A-B939EB8E6A7D@hailmail.net>
+	<4B25746C.1020605@gmx.de>
+	<D407586E-3067-44F8-83FC-6BF1CE3890C7@hailmail.net>
+Message-ID: <641fb1900c5f426d6cd32d018b3fcc2d.squirrel@unimail.uni-dortmund.de>
+
+Am Mo, 14.12.2009, 00:24 schrieb Dane Springmeyer:
+
+> But, this problem is something that is only likely to happen with pre-
+> built packages because to prompt the crash you must have compiled
+> mapnik against the python-cairo headers and then removed the module.
+
+Would a simple check for the library inside render() solve this problem?
+
+
+
+From pramsey at cleverelephant.ca  Wed Dec 16 22:59:16 2009
+From: pramsey at cleverelephant.ca (Paul Ramsey)
+Date: Wed, 16 Dec 2009 13:59:16 -0800
+Subject: [Mapnik-devel] New York Code Sprint
+Message-ID: <30fe546d0912161359w45e6a014qca7d4886aba3249a@mail.gmail.com>
+
+Fellow members of the C tribe! I hope the holidays find you in good
+spirits, and that you'll consider joining your other tribe members at
+the New York Code Sprint early next year:
+
+http://wiki.osgeo.org/wiki/New_York_Code_Sprint_2010
+
+All details and planning on the wiki page. If you want to join in
+discussions and get all updates, please subscribe to
+
+http://lists.osgeo.org/mailman/listinfo/tosprint
+
+Time is of the essence! We are filling our hotel block quickly and
+have a limited number of spaces in the meeting area.
+
+Thanks!
+
+Paul
+
+
+From david.eastcott at shaw.ca  Thu Dec 17 07:11:07 2009
+From: david.eastcott at shaw.ca (David Eastcott)
+Date: Wed, 16 Dec 2009 23:11:07 -0700
+Subject: [Mapnik-devel] Problems with 'apply alternative method of
+ comparing map and layer bounds to support..'
+In-Reply-To: <8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+References: <4B25212B.5080601@shaw.ca>
+	<8382DA5F-D4F9-4047-9DD7-C3055BBD47FC@hailmail.net>
+Message-ID: <4B29CB7B.8050005@shaw.ca>
+
+Hi Dane,
+
+Attached is a file containing an image with the buffer set for 128px, 
+one for 0px.  I modified the the feature_style_processor.hpp to produce 
+the following: notice for the 128px set, the buffer extents are well 
+outside the 'world' and that the mx0 and mx1 values are not correct even 
+though the return code from prj_trans.forward says they are valid (which 
+is derived from the return code of proj4's pj_transform).  Not sure why 
+this would be the case but it is affecting the algorithm that is being used.
+
+buffer 128 pixels
+
+Level 0 tile:
+buffer ext> minx: -4.0075e+07, miny: -4.0075e+07, maxx: 4.0075e+07, 
+maxy: 4.0075e+07
+trans valid0: yes, mx0: 0, my0: -4.00322e+07, valid1: yes, mx1: 0, my1: 
+4.00322e+07
+layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e+07, 
+maxy: 1.83759e+07
+
+
+buffer 0 pixels
+
+Level 0 tile:
+buffer ext> minx: -2.00375e+07, miny: -2.00375e+07, maxx: 2.00375e+07, 
+maxy: 2.00375e+07
+trans valid0: yes, mx0: -2.00375e+07, my0: -1.99949e+07, valid1: yes, 
+mx1: 2.00375e+07, my1: 1.99949e+07
+layer  ext> minx: -2.00374e+07, miny: -1.99292e+07, maxx: 2.00374e+07, 
+maxy: 1.83759e+07
+
+Best regards,
+Dave
+
+Dane Springmeyer wrote:
+> David,
+>
+> Thanks for this report.  We may need to revert the previous change as 
+> it was only to benefit the experimental PointDatasource implementation.
+>
+> Could you give a bit more detail on this?  How do you think bad values 
+> are being returned while proj is still issuing a good return code?
+>
+> Also, have you seen?
+>
+> http://trac.mapnik.org/ticket/308
+>
+> Dane
+>
+>
+> On Dec 13, 2009, at 9:15 AM, David Eastcott wrote:
+>
+>> While upgrading to 1481 from 1347, I came across a problem with my
+>> google tile generator producing renderings with missing features (Canada
+>> was missing) at the highest levels (0-4).  Essentially I was building a
+>> level 0 tile, 256x256px, with a 128px buffer with the 'world' map.  The
+>> change introduced in trunk version 1348 was causing the projection of
+>> the buffer extents to the layer extents to produce bad values
+>> (pr_transform was returning a good return code) and as a result, some of
+>> the polygons were being omitted from the rendering.
+>>
+>> The map srs was "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0
+>> +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+>>
+>> and the layer srs was "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0
+>> +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+>>
+>> There are a number of ways this can be solved outside of mapnik, which I
+>> have done, but I thought I should pass this on in case others have come
+>> across it.
+>>
+>> This may be an issue for anyone who is using buffered rendering near or
+>> on the edges of proj4 ability to transform correctly since the values
+>> used for the buffer extents may be well outside reasonable values.
+>>
+>> Best regards,
+>> Dave
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+>
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: Archive.tar.gz
+Type: application/x-gzip
+Size: 49390 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091216/664c5d27/attachment.bin>
+
+From ekkehart at gmx.de  Fri Dec 18 22:04:41 2009
+From: ekkehart at gmx.de (Nop)
+Date: Fri, 18 Dec 2009 22:04:41 +0100
+Subject: [Mapnik-devel] Semi-transparent background?
+Message-ID: <4B2BEE69.2070006@gmx.de>
+
+
+
+Hi!
+
+I am creating my tiles with a semi-transparent background and polygons
+(but with solid streets and pois) in order to superimpose them on a
+hillshading layer. Currently I am achieving this by rendering with
+bgcolor="transparent" and compositing the result on a semi-transparent
+gray image in python PIL.
+
+Now I am trying to switch to on-demand rendering on the server with
+renderd, where the mapnik calls are hardcoded in renderd and only the
+style file is easily changed.
+
+Is there a way to get a semi-transparent background directly from mapnik?
+
+Or is there a way to render with a transparent background but define a
+layer that draws a semi-transparent object over everything without
+having geometry for that in the DB?
+
+thanks
+	Nop
+
+
+
+
+From jburgess777 at googlemail.com  Fri Dec 18 22:56:20 2009
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Fri, 18 Dec 2009 21:56:20 +0000
+Subject: [Mapnik-devel] Semi-transparent background?
+In-Reply-To: <4B2BEE69.2070006@gmx.de>
+References: <4B2BEE69.2070006@gmx.de>
+Message-ID: <1261173380.3316.128.camel@localhost.localdomain>
+
+On Fri, 2009-12-18 at 22:04 +0100, Nop wrote:
+> Is there a way to get a semi-transparent background directly from
+> mapnik?
+
+Try setting: bgcolor="rgba(255,255,255,0.5)"
+
+The last field should set the alpha of the background in the 
+range 0.0 - 1.0
+
+	Jon
+
+
+
+
+From ekkehart at gmx.de  Sat Dec 19 00:04:01 2009
+From: ekkehart at gmx.de (Nop)
+Date: Sat, 19 Dec 2009 00:04:01 +0100
+Subject: [Mapnik-devel] Semi-transparent background?
+In-Reply-To: <1261173380.3316.128.camel@localhost.localdomain>
+References: <4B2BEE69.2070006@gmx.de>
+	<1261173380.3316.128.camel@localhost.localdomain>
+Message-ID: <4B2C0A61.9040509@gmx.de>
+
+
+Hi!
+
+Am 18.12.2009 22:56, schrieb Jon Burgess:
+> Try setting: bgcolor="rgba(255,255,255,0.5)"
+
+Thank you, that did work.
+
+bye
+	Nop
+
+
+From ekkehart at gmx.de  Sat Dec 19 23:48:55 2009
+From: ekkehart at gmx.de (Nop)
+Date: Sat, 19 Dec 2009 23:48:55 +0100
+Subject: [Mapnik-devel] Different rendering using python and rendered
+Message-ID: <4B2D5857.4040400@gmx.de>
+
+
+Hi!
+
+
+We have gotten renderd to produce some tiles. But to my surprise, the 
+tiles look different.
+
+In the style file, there are semi-transparent images used in 
+PolygonPatternSymbolizers. When I render with generate_image oder 
+generate_tiles, those areas are rendered semi-transparent (as intended).
+When rendered with renderd, all those areas are drawn solid, only the 
+semi-transparent background is rendered properly.
+
+Any ideas why this does happen and what to do about it?
+
+bye
+	Nop
+
+
+
+From ldp at xs4all.nl  Sun Dec 20 00:14:30 2009
+From: ldp at xs4all.nl (Ldp)
+Date: Sun, 20 Dec 2009 00:14:30 +0100
+Subject: [Mapnik-devel] Different rendering using python and rendered
+In-Reply-To: <4B2D5857.4040400@gmx.de>
+References: <4B2D5857.4040400@gmx.de>
+Message-ID: <4B2D5E56.9050700@xs4all.nl>
+
+Nop wrote:
+
+> In the style file, there are semi-transparent images used in 
+> PolygonPatternSymbolizers. When I render with generate_image oder 
+> generate_tiles, those areas are rendered semi-transparent (as intended).
+> When rendered with renderd, all those areas are drawn solid, only the 
+> semi-transparent background is rendered properly.
+
+Replace the two occurences of 'png256' in the renderd code with 'png'.
+
+In an ideal case, I'd like to be able to set the output format per 
+stylesheet, not globally.
+
+-- 
+Lennard
+
+
+From jburgess777 at googlemail.com  Sun Dec 20 00:37:38 2009
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 19 Dec 2009 23:37:38 +0000
+Subject: [Mapnik-devel] Different rendering using python and rendered
+In-Reply-To: <4B2D5E56.9050700@xs4all.nl>
+References: <4B2D5857.4040400@gmx.de>  <4B2D5E56.9050700@xs4all.nl>
+Message-ID: <1261265858.3316.142.camel@localhost.localdomain>
+
+On Sun, 2009-12-20 at 00:14 +0100, Ldp wrote:
+> Nop wrote:
+> 
+> > In the style file, there are semi-transparent images used in 
+> > PolygonPatternSymbolizers. When I render with generate_image oder 
+> > generate_tiles, those areas are rendered semi-transparent (as intended).
+> > When rendered with renderd, all those areas are drawn solid, only the 
+> > semi-transparent background is rendered properly.
+> 
+> Replace the two occurences of 'png256' in the renderd code with 'png'.
+> 
+> In an ideal case, I'd like to be able to set the output format per 
+> stylesheet, not globally.
+
+I have it on my TODO list. Along with being able to specify the
+mime-type so that you can serve other formats like jpeg too.
+
+	Jon
+
+
+
+
+From blake at hailmail.net  Mon Dec 21 07:34:16 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Sun, 20 Dec 2009 22:34:16 -0800
+Subject: [Mapnik-devel] Update on Trunk and 0.7.0 release
+Message-ID: <1C49AEA9-9AFD-454C-9EB2-194EF8EE0838@hailmail.net>
+
+Mapnik Users/Dev,
+
+As of http://trac.mapnik.org/changeset/1495 Artem has merged the  
+Mapnik2 branch intro trunk. This is really excited, but we warned that  
+now current trunk requires Boost 1.41 (latest release) and introduces  
+a few subtle backward incompatible changes (they are needed) to  
+support Expressions, and we've just barely started documenting here: http://trac.mapnik.org/wiki/Mapnik2 
+.
+
+Users that were previously running trunk and wish to stay on that  
+codebase it is easy to switch to the new 0.7 branch:
+
+$ cd mapnik-trunk-checkout
+$ svn switch http://svn.mapnik.org/branches/0.7/ .  #note the 'dot'
+
+Also, we're going to shift the 0.7.0 release date forward to just  
+after the New Year to give a bit more time for testing and attention  
+to the last issues.
+
+If you have a few moments over the holidays I encourage you to pull  
+freshly from the 0.7 branch and test building mapnik and running in  
+your existing applications.
+
+http://trac.mapnik.org/milestone/0.7.0
+
+Please report any problems or issues to Trac tickets.
+
+Thanks!
+
+Dane
+
+
+
+From tom at compton.nu  Mon Dec 21 09:37:25 2009
+From: tom at compton.nu (Tom Hughes)
+Date: Mon, 21 Dec 2009 08:37:25 +0000
+Subject: [Mapnik-devel] Update on Trunk and 0.7.0 release
+In-Reply-To: <1C49AEA9-9AFD-454C-9EB2-194EF8EE0838@hailmail.net>
+References: <1C49AEA9-9AFD-454C-9EB2-194EF8EE0838@hailmail.net>
+Message-ID: <4B2F33C5.1020608@compton.nu>
+
+On 21/12/09 06:34, Dane Springmeyer wrote:
+
+> As of http://trac.mapnik.org/changeset/1495 Artem has merged the
+> Mapnik2 branch intro trunk. This is really excited, but we warned that
+> now current trunk requires Boost 1.41 (latest release) and introduces
+> a few subtle backward incompatible changes (they are needed) to
+> support Expressions, and we've just barely started documenting here: http://trac.mapnik.org/wiki/Mapnik2
+
+The problem with going all bleeding edge like that is that it makes it 
+very hard for people to work with the code. I'm running a full up to 
+date F12, an operating system released only a few weeks ago, and yet I 
+only have version 1.39.0 of boost so I'm unlikely to be able to do any 
+work on mapnik now for at least six months.
+
+Not that I've done much of late anyway, but I just thought I'd point out 
+that you limit the community you can involve when you require bleeding 
+edge dependencies.
+
+Tom
+
+-- 
+Tom Hughes (tom at compton.nu)
+http://www.compton.nu/
+
+
+From kunitoki at gmail.com  Mon Dec 21 12:28:28 2009
+From: kunitoki at gmail.com (kRAkEn/gORe)
+Date: Mon, 21 Dec 2009 12:28:28 +0100
+Subject: [Mapnik-devel] Update on Trunk and 0.7.0 release
+In-Reply-To: <4B2F33C5.1020608@compton.nu>
+References: <1C49AEA9-9AFD-454C-9EB2-194EF8EE0838@hailmail.net> 
+	<4B2F33C5.1020608@compton.nu>
+Message-ID: <93db2faf0912210328h4b49f838n914fce7045dabc3f@mail.gmail.com>
+
+You can always link yourself to the 0.7.0 branch and continue working with that.
+
+Lucio
+
+
+
+On Mon, Dec 21, 2009 at 9:37 AM, Tom Hughes <tom at compton.nu> wrote:
+> On 21/12/09 06:34, Dane Springmeyer wrote:
+>
+>> As of http://trac.mapnik.org/changeset/1495 Artem has merged the
+>> Mapnik2 branch intro trunk. This is really excited, but we warned that
+>> now current trunk requires Boost 1.41 (latest release) and introduces
+>> a few subtle backward incompatible changes (they are needed) to
+>> support Expressions, and we've just barely started documenting here: http://trac.mapnik.org/wiki/Mapnik2
+>
+> The problem with going all bleeding edge like that is that it makes it
+> very hard for people to work with the code. I'm running a full up to
+> date F12, an operating system released only a few weeks ago, and yet I
+> only have version 1.39.0 of boost so I'm unlikely to be able to do any
+> work on mapnik now for at least six months.
+>
+> Not that I've done much of late anyway, but I just thought I'd point out
+> that you limit the community you can involve when you require bleeding
+> edge dependencies.
+>
+> Tom
+>
+> --
+> Tom Hughes (tom at compton.nu)
+> http://www.compton.nu/
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From ekkehart at gmx.de  Mon Dec 21 21:20:23 2009
+From: ekkehart at gmx.de (Nop)
+Date: Mon, 21 Dec 2009 21:20:23 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+Message-ID: <4B2FD887.8090803@gmx.de>
+
+
+Hi!
+
+
+I am building a map with several layers containing OSM geometry and 
+hillshading+contours. The hillshading roughly follows the instructions 
+on http://wiki.openstreetmap.org/wiki/HikingBikingMaps, but is 
+eventually rendered with a RasterSymbolizer in mapnik.
+
+Now I have the problem that the hillshading and the geometry do not 
+quite match. It seems the hillshading is offset some constant distance 
+to the north and west. I have attached a picture that illustrates the 
+problem. Obviously, the stream is at the lowest point of the valley and 
+not on the south slope. The red ways on the north side end on the top of 
+the slope.
+
+Now I am looking for a way to correct this offset. Do you have any idea 
+on how to do this? Maybe by some preprocessing step/gdal tool? Or is 
+there a way to adjust the projection so mapnik puts it on the right place?
+
+thank you
+
+	Nop
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: offset.png
+Type: image/png
+Size: 41071 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091221/be678ab8/attachment.png>
+
+From ekkehart at gmx.de  Mon Dec 21 21:45:18 2009
+From: ekkehart at gmx.de (Nop)
+Date: Mon, 21 Dec 2009 21:45:18 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+Message-ID: <4B2FDE5E.6090205@gmx.de>
+
+
+Hi!
+
+
+I am building a map with several layers containing OSM geometry and
+hillshading+contours. The hillshading roughly follows the instructions
+on http://wiki.openstreetmap.org/wiki/HikingBikingMaps, but is
+eventually rendered with a RasterSymbolizer in mapnik.
+
+Now I have the problem that the hillshading and the geometry do not
+quite match. It seems the hillshading is offset some constant distance
+to the north and west. I have attached a picture that illustrates the
+problem. Obviously, the stream is at the lowest point of the valley and
+not on the south slope. The red ways on the north side end on the top of 
+the slope.
+
+Now I am looking for a way to correct this offset. Do you have any idea
+on how to do this? Maybe by some preprocessing step/gdal tool? Or is
+there a way to adjust the projection so mapnik puts it in the right place?
+
+thank you
+
+	Nop
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: offset.png
+Type: image/png
+Size: 41071 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20091221/b944e7e9/attachment.png>
+
+From mrudowski1 at gmail.com  Mon Dec 21 22:53:29 2009
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Mon, 21 Dec 2009 22:53:29 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+In-Reply-To: <4B2FDE5E.6090205@gmx.de>
+References: <4B2FDE5E.6090205@gmx.de>
+Message-ID: <aa4b7a0d0912211353t23db8a9apea861bd321ec94ef@mail.gmail.com>
+
+2009/12/21 Nop <ekkehart at gmx.de>:
+>
+> Hi!
+>
+>
+> I am building a map with several layers containing OSM geometry and
+> hillshading+contours. The hillshading roughly follows the instructions
+> on http://wiki.openstreetmap.org/wiki/HikingBikingMaps, but is
+> eventually rendered with a RasterSymbolizer in mapnik.
+>
+> Now I have the problem that the hillshading and the geometry do not
+> quite match. It seems the hillshading is offset some constant distance
+> to the north and west. I have attached a picture that illustrates the
+> problem. Obviously, the stream is at the lowest point of the valley and
+> not on the south slope. The red ways on the north side end on the top of the
+> slope.
+>
+> Now I am looking for a way to correct this offset. Do you have any idea
+> on how to do this? Maybe by some preprocessing step/gdal tool? Or is
+> there a way to adjust the projection so mapnik puts it in the right place?
+>
+> thank you
+>
+
+
+I don't remember specifics, but I had problem with quite big (20km?)
+offset north or south because of wrong ellipsoid reprojection and
+needed to specify correct proj4 parameters to gdal to override ones
+quest from hgt file format.
+
+In short I used (notice added -s_srs):
+ gdal_merge.py -v -o ../srtm.tif *.hgt
+ gdalwarp -of GTiff -srcnodata 32767 -dstnodata 32767 -s_srs \
+  "+proj=latlong +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 \
+  +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over" \
+  -t_srs "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 \
+  +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over" \
+  -rcs -order 3 -tr 76.4370282852 76.4370282852  -wt Float32 -ot Float32 \
+  srtm.tif warped.tif
+ ./hillshade warped.tif hill_8.tif -z 2
+
+But if You have also west offset, I don't know what is wrong.
+
+Also I have still problems with tiff's adjustment on different levels.
+Because of rounding errors  when zooming(position of active rendering
+window is rounded to raster pixels and after that it is scaled to
+output resolution) In effect mountains aren't in one place on
+different zooms, but it is distans of 0.5-1px between neighbour zooms:
+http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&lat=49.21244&lon=19.9654&layers=B00000FT
+Only when switching more than 2 levels at once it is little disturbing
+(moving mountains).
+
+I tried to match exactly -tr parameter to resolution of OpenLayers
+zooms (6378137*2*pi/2^19 = 76.4370282852), and also tried cutting
+geotiff on same computed virtual grid points (power of 2 of this tr),
+but without definite success. But for me it isn't noticeable much any
+more when comparing with google terrain layer:
+http://mapa.ump.waw.pl/ump-www/index_en.html?zoom=11&lat=49.21244&lon=19.9654&layers=00000BFT
+
+Maybe try my -tr value in place of suggested 30 from wiki.
+
+My some old notes about hillshading (and other mails of this thread):
+http://www.mail-archive.com/mapnik-users at lists.berlios.de/msg01120.html
+I also started from mentioned wiki when doing hillshading almost Year ago :)
+
+-- 
+Marcin Rudowski
+
+
+From ekkehart at gmx.de  Tue Dec 22 02:36:01 2009
+From: ekkehart at gmx.de (Nop)
+Date: Tue, 22 Dec 2009 02:36:01 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+In-Reply-To: <aa4b7a0d0912211353t23db8a9apea861bd321ec94ef@mail.gmail.com>
+References: <4B2FDE5E.6090205@gmx.de>
+	<aa4b7a0d0912211353t23db8a9apea861bd321ec94ef@mail.gmail.com>
+Message-ID: <4B302281.9060708@gmx.de>
+
+
+Hi!
+
+Am 21.12.2009 22:53, schrieb Marcin Rudowski:
+> I don't remember specifics, but I had problem with quite big (20km?)
+> offset north or south because of wrong ellipsoid reprojection and
+> needed to specify correct proj4 parameters to gdal to override ones
+> quest from hgt file format.
+
+I have tried different modifications in the projection from working 
+examples, but they all produced the same output, I guess it was just 
+different ways of describing the same projection.
+
+The difference is just about 50-100m. I believe it may be a result of 
+the sample size of the SRTM data and the hillshading method.
+
+> Maybe try my -tr value in place of suggested 30 from wiki.
+
+I am already using a -tr of 76.437 as recommended in other pages.
+
+Moving everything south by 70? meters would solve the problem, but how 
+could I do that? In the previous implementation, I used gdal2tiles to 
+create the tiles and could add a pixel offset in python to compensate.
+
+But now it is a rendering chain with a series of geotiff images and 
+mapnik to render them, so I don't know where and how I could introduce 
+an additional offset of a few meters to compensate for the mismatch.
+
+Is there a way to tell mapnik to move everything a little?
+
+bye
+	Nop
+
+
+From ekkehart at gmx.de  Tue Dec 22 17:16:20 2009
+From: ekkehart at gmx.de (Nop)
+Date: Tue, 22 Dec 2009 17:16:20 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+In-Reply-To: <4B302281.9060708@gmx.de>
+References: <4B2FDE5E.6090205@gmx.de>	<aa4b7a0d0912211353t23db8a9apea861bd321ec94ef@mail.gmail.com>
+	<4B302281.9060708@gmx.de>
+Message-ID: <4B30F0D4.9030504@gmx.de>
+
+
+Hi!
+
+
+In my attempts to get the data moved, I made some partial progress. I 
+found that by introducing some false northing parameter in the 
+projection of the contour line layers, I can actually move the contour 
+lines into the proper position.
+
+Unfortunately, this does not work for the Raster layer. According to the 
+example I am working from and to the documentation, it does not 
+have/need a projection that I could modify. Is this correct? Is there a 
+way to move the raster layer, too?
+
+thanks
+	Nop
+
+
+
+From mrudowski1 at gmail.com  Tue Dec 22 17:33:02 2009
+From: mrudowski1 at gmail.com (Marcin Rudowski)
+Date: Tue, 22 Dec 2009 17:33:02 +0100
+Subject: [Mapnik-devel] Correcting an offset in a layer
+In-Reply-To: <4B30F0D4.9030504@gmx.de>
+References: <4B2FDE5E.6090205@gmx.de>
+	<aa4b7a0d0912211353t23db8a9apea861bd321ec94ef@mail.gmail.com>
+	<4B302281.9060708@gmx.de> <4B30F0D4.9030504@gmx.de>
+Message-ID: <aa4b7a0d0912220833x3481d893t1a5d8a0642a51628@mail.gmail.com>
+
+2009/12/22 Nop <ekkehart at gmx.de>:
+>
+> Hi!
+>
+>
+> In my attempts to get the data moved, I made some partial progress. I
+> found that by introducing some false northing parameter in the
+> projection of the contour line layers, I can actually move the contour
+> lines into the proper position.
+>
+> Unfortunately, this does not work for the Raster layer. According to the
+> example I am working from and to the documentation, it does not
+> have/need a projection that I could modify. Is this correct? Is there a
+> way to move the raster layer, too?
+>
+
+I would try
+http://www.gdal.org/gdal_translate.html
+and pass only -a_ullr  to override position of source geotiff.
+Use gdalinfo to get current ulx uly lrx lry and shift it a little with
+same step (ulx+dx uly+dy ulrx+dx ulry+dy) as needed.
+
+Anyway, strange that You have such problem in the first place.
+
+
+-- 
+Marcin Rudowski
+
+
+From blake at hailmail.net  Thu Dec 31 22:02:08 2009
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 31 Dec 2009 16:02:08 -0500
+Subject: [Mapnik-devel] Giving thanks
+Message-ID: <4E695B38-9245-418F-B8E5-3F46B7707CED@hailmail.net>
+
+As 2009 closes I'd like to send thanks to everyone involved in the  
+Mapnik project - it's a great community of smart, creative, and fun  
+people and organizations.
+
+I greatly enjoyed a 2009 filled with lots of challenging coding and  
+gorgous maps. Here's to more of the same and pushing the boundaries of  
+cartography in 2010.
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+

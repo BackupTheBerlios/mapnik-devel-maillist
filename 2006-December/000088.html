@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] tiff rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20tiff%20rendering&In-Reply-To=%3C457F8906.1000806%40crmeng.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000087.html">
+   <LINK REL="Next"  HREF="000089.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] tiff rendering</H1>
+    <B>Charles R. McCreary</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20tiff%20rendering&In-Reply-To=%3C457F8906.1000806%40crmeng.com%3E"
+       TITLE="[Mapnik-devel] tiff rendering">charles.mccreary at crmeng.com
+       </A><BR>
+    <I>Wed Dec 13 06:00:54 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000087.html">[Mapnik-devel] tiff rendering
+</A></li>
+        <LI>Next message: <A HREF="000089.html">[Mapnik-devel] tiff rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#88">[ date ]</a>
+              <a href="thread.html#88">[ thread ]</a>
+              <a href="subject.html#88">[ subject ]</a>
+              <a href="author.html#88">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>The now obvious error is appending the layer as a style:
+I had:
+landsat7_lyr.styles.append('landsat7_lyr') !Doh
+I should have had:
+landsat7_lyr.styles.append('landsat7 style')
+
+Mapnik swallowed it silently! I'll need to trace that and see what was 
+happening when I applied a layer object as a style.
+
+I notice that in your correction to my code, it did not matter that I 
+later appended the layer as a style, nor does it seem to matter when you 
+append the style. I guess you can build the object in any order and it 
+is processed later. I haven't crawled through the code yet, so my 
+observations are probably obvious.
+
+Artem Pavlenko wrote:
+&gt;<i> Charles,
+</I>&gt;<i>
+</I>&gt;<i> You need to specify style name for the layer to use e.g.
+</I>&gt;<i> landsat7_lyr.styles.append('landsat7 style')
+</I>&gt;<i>
+</I>&gt;<i> The tiff is quite large and it takes ~30sec to render and save to png 
+</I>&gt;<i> the whole image.  For better performance I'd suggest you create scaled 
+</I>&gt;<i> down versions of the same image and use rule/scale denominators to 
+</I>&gt;<i> render appropriate version. Together with 'tiling' (tiffcp) this will 
+</I>&gt;<i> provide 'pyramid' effect.
+</I>&gt;<i>
+</I>&gt;<i> Here is modified source that works for me:
+</I>&gt;<i>
+</I>&gt;<i> from mapnik import *
+</I>&gt;<i>
+</I>&gt;<i> # The projection info is taken from the output of listgeo -proj4
+</I>&gt;<i>
+</I>&gt;<i> m = Map(800,600,&quot;+proj=utm +zone=12 +ellips=GRS80 +units=m&quot;)
+</I>&gt;<i>
+</I>&gt;<i> m.background = Color('white')
+</I>&gt;<i>
+</I>&gt;<i> landsat7_lyr = Layer('LandSat7',&quot;+proj=utm +zone=12 +ellips=GRS80 
+</I>&gt;<i> +units=m&quot;)
+</I>&gt;<i>
+</I>&gt;<i> landsat7_lyr.styles.append('landsat7 style')
+</I>&gt;<i>
+</I>&gt;<i> ds = Raster(format='tiff',
+</I>&gt;<i>
+</I>&gt;<i>             lox = '485831.0',
+</I>&gt;<i>
+</I>&gt;<i>             loy = '5931526.0',
+</I>&gt;<i>
+</I>&gt;<i>             hix = '714791.0',
+</I>&gt;<i>
+</I>&gt;<i>             hiy = '6150226.0',
+</I>&gt;<i>
+</I>&gt;<i>             file='/data/raster/raster.tiff')
+</I>&gt;<i>
+</I>&gt;<i> landsat7_lyr.datasource = ds
+</I>&gt;<i>
+</I>&gt;<i> landsat7_style = Style()
+</I>&gt;<i>
+</I>&gt;<i> landsat7_rule = Rule()
+</I>&gt;<i>
+</I>&gt;<i> sym = RasterSymbolizer()
+</I>&gt;<i>
+</I>&gt;<i> landsat7_rule.symbols.append(sym)
+</I>&gt;<i>
+</I>&gt;<i> landsat7_style.rules.append(landsat7_rule)
+</I>&gt;<i>
+</I>&gt;<i> m.append_style('landsat7 style', landsat7_style)
+</I>&gt;<i>
+</I>&gt;<i> landsat7_lyr.styles.append('landsat7_lyr')
+</I>&gt;<i>
+</I>&gt;<i> m.layers.append(landsat7_lyr)
+</I>&gt;<i>
+</I>&gt;<i> m.zoom_to_box(landsat7_lyr.envelope())
+</I>&gt;<i>
+</I>&gt;<i> #m.zoom_to_box(Envelope(537051.7450197876,6041155.107914236,544365.0045170359,6044713.534336278)) 
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> render_to_file(m, 'map_test2.png', 'png')
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;&gt;<i> I cropped a small rectangle out of the large image, ran it through 
+</I>&gt;&gt;<i> tiffcp, and tried it. No luck.  Attached is the tiff I tried.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Artem Pavlenko wrote:
+</I>&gt;&gt;&gt;<i> At the moment only 'tiled' or  'striped' tiffs are supported. Also, 
+</I>&gt;&gt;&gt;<i> mapnik doesn't read projection information from geotilffs.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> 1. tiffcp -c none -w 256 -l 256 input.tiff output.tiff
+</I>&gt;&gt;&gt;<i> 2.
+</I>&gt;&gt;&gt;<i> .........
+</I>&gt;&gt;&gt;<i> landsat7_lyr = Layer('LandSat7', srs='+proj=utm +zone=12 
+</I>&gt;&gt;&gt;<i> +ellips=GRS80 +units=m')
+</I>&gt;&gt;&gt;<i> ........
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> If you can put this tiff on ftp server somewhere I'll be able to 
+</I>&gt;&gt;&gt;<i> have a look further.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Regards,
+</I>&gt;&gt;&gt;<i> Artem
+</I>&gt;&gt;&gt;&gt;<i> I'm trying to render a large LandSat7 tiff image using the svn trunk.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> My ultimate objective is to write a wxPython simple map viewer in 
+</I>&gt;&gt;&gt;&gt;<i> which various vector layers are overlayed on the satellite image.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> My immediate problem is that I cannot render a tiff image. Does 
+</I>&gt;&gt;&gt;&gt;<i> anyone have a tiff image and sample code to accomplish this? I 
+</I>&gt;&gt;&gt;&gt;<i> understand that I must tile the tiff image as well. What parameters 
+</I>&gt;&gt;&gt;&gt;<i> for tiffcp should be used?
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Code that does not work (renders just the white background):
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> from mapnik import *
+</I>&gt;&gt;&gt;&gt;<i> # The projection info is taken from the output of listgeo -proj4
+</I>&gt;&gt;&gt;&gt;<i> m = Map(800,600,&quot;+proj=utm +zone=12 +ellips=GRS80 +units=m&quot;)
+</I>&gt;&gt;&gt;&gt;<i> m.background = Color('white')
+</I>&gt;&gt;&gt;&gt;<i> landsat7_lyr = Layer('LandSat7')
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> ds = Raster(format='tiff',
+</I>&gt;&gt;&gt;&gt;<i>              lox = '485831.0',
+</I>&gt;&gt;&gt;&gt;<i>              loy = '5931526.0',
+</I>&gt;&gt;&gt;&gt;<i>              hix = '714791.0',
+</I>&gt;&gt;&gt;&gt;<i>              hiy = '6150226.0',
+</I>&gt;&gt;&gt;&gt;<i>              file='test.tif')
+</I>&gt;&gt;&gt;&gt;<i> landsat7_lyr.datasource = ds
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> landsat7_style = Style()
+</I>&gt;&gt;&gt;&gt;<i> landsat7_rule = Rule()
+</I>&gt;&gt;&gt;&gt;<i> sym = RasterSymbolizer()
+</I>&gt;&gt;&gt;&gt;<i> landsat7_rule.symbols.append(sym)
+</I>&gt;&gt;&gt;&gt;<i> landsat7_style.rules.append(landsat7_rule)
+</I>&gt;&gt;&gt;&gt;<i> m.append_style('landsat7 style', landsat7_style)
+</I>&gt;&gt;&gt;&gt;<i> landsat7_lyr.styles.append('landsat7_lyr')
+</I>&gt;&gt;&gt;&gt;<i> m.layers.append(landsat7_lyr)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> m.zoom_to_box(landsat7_lyr.envelope())
+</I>&gt;&gt;&gt;&gt;<i> render_to_file(m, 'map_test2.png', 'png')
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>   
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000087.html">[Mapnik-devel] tiff rendering
+</A></li>
+	<LI>Next message: <A HREF="000089.html">[Mapnik-devel] tiff rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#88">[ date ]</a>
+              <a href="thread.html#88">[ thread ]</a>
+              <a href="subject.html#88">[ subject ]</a>
+              <a href="author.html#88">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

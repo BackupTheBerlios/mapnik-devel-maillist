@@ -1,0 +1,475 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Python example
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20example&In-Reply-To=%3C08B69964-7637-41FB-B2DC-DA9BBCA88A8D%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000167.html">
+   <LINK REL="Next"  HREF="000169.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Python example</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Python%20example&In-Reply-To=%3C08B69964-7637-41FB-B2DC-DA9BBCA88A8D%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Python example">artem at mapnik.org
+       </A><BR>
+    <I>Fri Jun 15 15:00:16 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000167.html">[Mapnik-devel] Python example
+</A></li>
+        <LI>Next message: <A HREF="000169.html">[Mapnik-devel] loading of fonts in python binding?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#168">[ date ]</a>
+              <a href="thread.html#168">[ thread ]</a>
+              <a href="subject.html#168">[ subject ]</a>
+              <a href="author.html#168">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Reid,
+
+Looks good. Could you provide:
+
+import pyserver_glue
+import conf
+import db_glue
+
+to make it into working example. Are you using Tiger/Line dataset or  
+anything else free ? Would be great to have sample data and perhaps  
+some screenshots?
+
+Thanks for contributing
+Artem
+
+On 14 Jun 2007, at 22:39, Reid Priedhorsky wrote:
+
+&gt;<i> Hi,
+</I>&gt;<i>
+</I>&gt;<i> As promised some months ago, attached is the script we use to drive  
+</I>&gt;<i> Python. I hope that it will be of some use as an example. It is BSD- 
+</I>&gt;<i> licensed, so anyone should be able to use it.
+</I>&gt;<i>
+</I>&gt;<i> It works with r484 on the SVN trunk.
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Reid
+</I>&gt;<i> #!/usr/bin/python
+</I>&gt;<i> #
+</I>&gt;<i> # Copyright (c) 2007 Regents of the University of Minnesota.
+</I>&gt;<i> # All rights reserved.
+</I>&gt;<i> #
+</I>&gt;<i> # NOTE: This particular file is licensed differently, as follows.
+</I>&gt;<i> #
+</I>&gt;<i> # Redistribution and use in source and binary forms, with or without
+</I>&gt;<i> # modification, are permitted provided that the following  
+</I>&gt;<i> conditions are met:
+</I>&gt;<i> #
+</I>&gt;<i> #    * Redistributions of source code must retain the above  
+</I>&gt;<i> copyright notice,
+</I>&gt;<i> #      this list of conditions and the following disclaimer.
+</I>&gt;<i> #
+</I>&gt;<i> #    * Redistributions in binary form must reproduce the above  
+</I>&gt;<i> copyright
+</I>&gt;<i> #      notice, this list of conditions and the following disclaimer  
+</I>&gt;<i> in the
+</I>&gt;<i> #      documentation and/or other materials provided with the  
+</I>&gt;<i> distribution.
+</I>&gt;<i> #
+</I>&gt;<i> #     * Neither the name of the University of Minnesota nor the  
+</I>&gt;<i> names of its
+</I>&gt;<i> #       contributors may be used to endorse or promote products  
+</I>&gt;<i> derived from
+</I>&gt;<i> #       this software without specific prior written permission.
+</I>&gt;<i> #
+</I>&gt;<i> # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND  
+</I>&gt;<i> CONTRIBUTORS &quot;AS IS&quot;
+</I>&gt;<i> # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED  
+</I>&gt;<i> TO, THE
+</I>&gt;<i> # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A  
+</I>&gt;<i> PARTICULAR PURPOSE
+</I>&gt;<i> # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR  
+</I>&gt;<i> CONTRIBUTORS BE
+</I>&gt;<i> # LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+</I>&gt;<i> # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+</I>&gt;<i> # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR  
+</I>&gt;<i> BUSINESS
+</I>&gt;<i> # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,  
+</I>&gt;<i> WHETHER IN
+</I>&gt;<i> # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR  
+</I>&gt;<i> OTHERWISE)
+</I>&gt;<i> # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF  
+</I>&gt;<i> ADVISED OF THE
+</I>&gt;<i> # POSSIBILITY OF SUCH DAMAGE.
+</I>&gt;<i>
+</I>&gt;<i> usage = '''
+</I>&gt;<i> Basic usage:
+</I>&gt;<i>
+</I>&gt;<i>   $ export LD_LIBRARY_PATH=/export/scratch/reid/python/lib: 
+</I>&gt;<i> $LD_LIBRARY_PATH
+</I>&gt;<i>   $ export PYSERVER_HOME=/export/scratch/reid/cyclingproject/pyserver
+</I>&gt;<i>   $ ./tilecache_update.py ZOOM_MIN ZOOM_MAX [XMIN YMIN XMAX YMAX]
+</I>&gt;<i>
+</I>&gt;<i>   If extents are omitted, use the extents of data present in database.
+</I>&gt;<i>
+</I>&gt;<i> To rebuild a particular tile (useful for debugging):
+</I>&gt;<i>
+</I>&gt;<i>   $ ./tilecache_update.py --tile ZOOM/TILENAME
+</I>&gt;<i>
+</I>&gt;<i>   e.g. &quot;--tile 13/229_2429.png&quot;.
+</I>&gt;<i>
+</I>&gt;<i> '''
+</I>&gt;<i>
+</I>&gt;<i> import re
+</I>&gt;<i> import os
+</I>&gt;<i> import sys
+</I>&gt;<i>
+</I>&gt;<i> import pyserver_glue
+</I>&gt;<i> import conf
+</I>&gt;<i> import db_glue
+</I>&gt;<i>
+</I>&gt;<i> from mapnik import *
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> # Supress chatter
+</I>&gt;<i> quiet = False
+</I>&gt;<i>
+</I>&gt;<i> # Data sources
+</I>&gt;<i>
+</I>&gt;<i> datasource_bmpolygons = PostGIS(host=conf.db_host,
+</I>&gt;<i>                                 dbname=conf.db_name,
+</I>&gt;<i>                                 user=conf.db_user,
+</I>&gt;<i>                                 password=conf.db_password,
+</I>&gt;<i>                                 table='bmpolygon_joined_current')
+</I>&gt;<i> datasource_byways = PostGIS(host=conf.db_host,
+</I>&gt;<i>                             dbname=conf.db_name,
+</I>&gt;<i>                             user=conf.db_user,
+</I>&gt;<i>                             password=conf.db_password,
+</I>&gt;<i>                             table='byway_joined_current')
+</I>&gt;<i>
+</I>&gt;<i> # Draw params (from database)
+</I>&gt;<i> draw_param = dict()
+</I>&gt;<i>
+</I>&gt;<i> # Number the layers in order to give them unique names
+</I>&gt;<i> layer_num = 1
+</I>&gt;<i>
+</I>&gt;<i> # Some constants
+</I>&gt;<i> LABEL_FONT = 'DejaVu Sans Book'
+</I>&gt;<i> DRAW_CLASS_SMALL = 11
+</I>&gt;<i> DRAW_CLASS_MEDIUM = 21
+</I>&gt;<i> DRAW_CLASS_LARGE = 31
+</I>&gt;<i> DRAW_CLASS_SUPER = 41
+</I>&gt;<i> DRAW_CLASS_OPENSPACE = 2
+</I>&gt;<i> DRAW_CLASS_WATER = 3
+</I>&gt;<i> DRAW_CLASS_SHADOW = 1
+</I>&gt;<i> DRAW_CLASS_BACKGROUND = 4
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def main():
+</I>&gt;<i>
+</I>&gt;<i>    db = db_glue.new()
+</I>&gt;<i>
+</I>&gt;<i>    # Parse args (ugly!)
+</I>&gt;<i>    try:
+</I>&gt;<i>       if (sys.argv[1] == '--tile'):
+</I>&gt;<i>          m = re.match(r'^(\d+)/(\d+)_(\d+)(.png)?$', sys.argv[2])
+</I>&gt;<i>          zoom_min = zoom_max = int(m.group(1))
+</I>&gt;<i>          xi = int(m.group(2))
+</I>&gt;<i>          yi = int(m.group(3))
+</I>&gt;<i>          p_info('Rebulding tile: zoom %d, (%d, %d)' % (zoom_min,  
+</I>&gt;<i> xi, yi))
+</I>&gt;<i>          xmin = xmax = tileindex_to_coord(zoom_min, xi) + 0.000001
+</I>&gt;<i>          ymin = ymax = tileindex_to_coord(zoom_min, yi) + 0.000001
+</I>&gt;<i>       else:
+</I>&gt;<i>          zoom_min = int(sys.argv[1])
+</I>&gt;<i>          zoom_max = int(sys.argv[2])
+</I>&gt;<i>          try:
+</I>&gt;<i>             xmin = float(sys.argv[3])
+</I>&gt;<i>             ymin = float(sys.argv[4])
+</I>&gt;<i>             xmax = float(sys.argv[5])
+</I>&gt;<i>             ymax = float(sys.argv[6])
+</I>&gt;<i>          except IndexError, x:
+</I>&gt;<i>             # Use data in database
+</I>&gt;<i>             result = db.sql('''
+</I>&gt;<i> SELECT
+</I>&gt;<i>   xmin(extent(geometry)),
+</I>&gt;<i>   ymin(extent(geometry)),
+</I>&gt;<i>   xmax(extent(geometry)),
+</I>&gt;<i>   ymax(extent(geometry))
+</I>&gt;<i> FROM byway_joined_current
+</I>&gt;<i>       ''')[0]
+</I>&gt;<i>             xmin = result['xmin']
+</I>&gt;<i>             ymin = result['ymin']
+</I>&gt;<i>             xmax = result['xmax']
+</I>&gt;<i>             ymax = result['ymax']
+</I>&gt;<i>    except Exception, x:
+</I>&gt;<i>       print 'Usage error: %s' % (x)
+</I>&gt;<i>       print usage
+</I>&gt;<i>       sys.exit(1)
+</I>&gt;<i>
+</I>&gt;<i>    # Build draw parameter table
+</I>&gt;<i>    result = db.sql('SELECT * FROM draw_param_joined');
+</I>&gt;<i>    for row in result:
+</I>&gt;<i>       dc_code = row['draw_class_code']
+</I>&gt;<i>       if (not draw_param.has_key(dc_code)):
+</I>&gt;<i>          draw_param[dc_code] = dict()
+</I>&gt;<i>
+</I>&gt;<i>       draw_param[dc_code]['color'] = '#%x' % (row['color'])
+</I>&gt;<i>
+</I>&gt;<i>       zoom = row['zoom']
+</I>&gt;<i>       if (zoom is not None):
+</I>&gt;<i>          if (not draw_param[dc_code].has_key(zoom)):
+</I>&gt;<i>             draw_param[dc_code][zoom] = dict()
+</I>&gt;<i>          draw_param[dc_code][zoom]['width'] = float(row['width'])
+</I>&gt;<i>          draw_param[dc_code][zoom]['label'] = bool(row['label'])
+</I>&gt;<i>
+</I>&gt;<i>    p_info('Updating cache from (%8f, %8f) to (%8f, %8f)'
+</I>&gt;<i>           % (xmin, ymin, xmax, ymax))
+</I>&gt;<i>
+</I>&gt;<i>    for zoom in xrange(zoom_min, zoom_max + 1):
+</I>&gt;<i>       xmin_i = coord_to_tileindex(zoom, xmin)
+</I>&gt;<i>       ymin_i = coord_to_tileindex(zoom, ymin)
+</I>&gt;<i>       xmax_i = coord_to_tileindex(zoom, xmax)
+</I>&gt;<i>       ymax_i = coord_to_tileindex(zoom, ymax)
+</I>&gt;<i>       p_info('Working on zoom level %d, tiles (%d, %d) through (%d,  
+</I>&gt;<i> %d)'
+</I>&gt;<i>              % (zoom, xmin_i, ymin_i, xmax_i, ymax_i))
+</I>&gt;<i>       for xi in xrange(xmin_i, xmax_i + 1):
+</I>&gt;<i>          for yi in xrange(ymin_i, ymax_i + 1):
+</I>&gt;<i>             dirname = '%s/main/%d' % (conf.tile_dir, zoom)
+</I>&gt;<i>             filename = '%d_%d.png' % (xi, yi)
+</I>&gt;<i>             tile_xmin = tileindex_to_coord(zoom, xi)
+</I>&gt;<i>             tile_ymin = tileindex_to_coord(zoom, yi)
+</I>&gt;<i>             tile_xmax = tileindex_to_coord(zoom, xi + 1)
+</I>&gt;<i>             tile_ymax = tileindex_to_coord(zoom, yi + 1)
+</I>&gt;<i>             p_info('Creating tile %s: (%.2f, %.2f), (%.2f, %.2f)'
+</I>&gt;<i>                    % (filename, tile_xmin, tile_ymin, tile_xmax,  
+</I>&gt;<i> tile_ymax))
+</I>&gt;<i>
+</I>&gt;<i>             # Main map
+</I>&gt;<i>
+</I>&gt;<i>             m = Map(conf.tile_size, conf.tile_size)
+</I>&gt;<i>             m.background = Color(draw_param[DRAW_CLASS_BACKGROUND] 
+</I>&gt;<i> ['color'])
+</I>&gt;<i>
+</I>&gt;<i>             add_bmpolygons(m, zoom, DRAW_CLASS_OPENSPACE)
+</I>&gt;<i>             add_bmpolygons(m, zoom, DRAW_CLASS_WATER)
+</I>&gt;<i>
+</I>&gt;<i>             add_shadows(m, zoom, DRAW_CLASS_SMALL)
+</I>&gt;<i>             add_shadows(m, zoom, DRAW_CLASS_MEDIUM)
+</I>&gt;<i>             add_shadows(m, zoom, DRAW_CLASS_LARGE)
+</I>&gt;<i>             add_byways(m, zoom, DRAW_CLASS_SMALL)
+</I>&gt;<i>             add_byways(m, zoom, DRAW_CLASS_MEDIUM)
+</I>&gt;<i>             add_byways(m, zoom, DRAW_CLASS_LARGE)
+</I>&gt;<i>             add_shadows(m, zoom, DRAW_CLASS_SUPER)
+</I>&gt;<i>             add_byways(m, zoom, DRAW_CLASS_SUPER)
+</I>&gt;<i>
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_OPENSPACE,
+</I>&gt;<i>                        datasource_bmpolygons,  
+</I>&gt;<i> label_placement.POINT_PLACEMENT)
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_WATER,
+</I>&gt;<i>                        datasource_bmpolygons,  
+</I>&gt;<i> label_placement.POINT_PLACEMENT)
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_SMALL,
+</I>&gt;<i>                        datasource_byways,  
+</I>&gt;<i> label_placement.LINE_PLACEMENT)
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_MEDIUM,
+</I>&gt;<i>                        datasource_byways,  
+</I>&gt;<i> label_placement.LINE_PLACEMENT)
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_LARGE,
+</I>&gt;<i>                        datasource_byways,  
+</I>&gt;<i> label_placement.LINE_PLACEMENT)
+</I>&gt;<i>             add_labels(m, zoom, DRAW_CLASS_SUPER,
+</I>&gt;<i>                        datasource_byways,  
+</I>&gt;<i> label_placement.LINE_PLACEMENT)
+</I>&gt;<i>
+</I>&gt;<i>             m.zoom_to_box(Envelope(tile_xmin, tile_ymin, tile_xmax,  
+</I>&gt;<i> tile_ymax))
+</I>&gt;<i>             render_tile(m, dirname, filename)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_bmpolygons(m, zoom, dc_code):
+</I>&gt;<i>    add_bmpolygon_layer(m, dc_code, draw_param[dc_code]['color'])
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_byways(m, zoom, dc_code):
+</I>&gt;<i>    if (draw_param[dc_code].has_key(zoom)
+</I>&gt;<i>        and draw_param[dc_code][zoom]['width'] &gt; 0):
+</I>&gt;<i>       add_line_layer(m, dc_code, draw_param[dc_code]['color'],
+</I>&gt;<i>                      draw_param[dc_code][zoom]['width'])
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_shadows(m, zoom, dc_code):
+</I>&gt;<i>    if (draw_param[dc_code].has_key(zoom)
+</I>&gt;<i>        and draw_param[dc_code][zoom]['width'] &gt;= 0):
+</I>&gt;<i>       width = draw_param[dc_code][zoom]['width']
+</I>&gt;<i>       if (width == 0):
+</I>&gt;<i>          width = 1
+</I>&gt;<i>       else:
+</I>&gt;<i>          width += 2
+</I>&gt;<i>       add_line_layer(m, dc_code, draw_param[DRAW_CLASS_SHADOW] 
+</I>&gt;<i> ['color'], width)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_labels(m, zoom, dc_code, datasource, placement_rule):
+</I>&gt;<i>    if (draw_param[dc_code].has_key(zoom)
+</I>&gt;<i>        and draw_param[dc_code][zoom]['label']):
+</I>&gt;<i>       font_size = max(conf.tile_min_font, draw_param[dc_code][zoom] 
+</I>&gt;<i> ['width'])
+</I>&gt;<i>       add_label_layer(m, dc_code, font_size, datasource,  
+</I>&gt;<i> placement_rule)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_bmpolygon_layer(m, dc_code, color):
+</I>&gt;<i>
+</I>&gt;<i>    rul = Rule()
+</I>&gt;<i>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+</I>&gt;<i>    rul.symbols.append(PolygonSymbolizer(Color(color)))
+</I>&gt;<i>
+</I>&gt;<i>    sty = Style()
+</I>&gt;<i>    sty.rules.append(rul)
+</I>&gt;<i>
+</I>&gt;<i>    name = get_layer_name()
+</I>&gt;<i>    lay = Layer(name)
+</I>&gt;<i>    lay.datasource = datasource_bmpolygons
+</I>&gt;<i>
+</I>&gt;<i>    m.append_style(name, sty)
+</I>&gt;<i>    lay.styles.append(name)
+</I>&gt;<i>    m.layers.append(lay)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_label_layer(m, dc_code, point_size, datasource,  
+</I>&gt;<i> placement_rule):
+</I>&gt;<i>    sym = TextSymbolizer('name', LABEL_FONT, int(point_size), Color 
+</I>&gt;<i> ('black'))
+</I>&gt;<i>    sym.label_placement = placement_rule
+</I>&gt;<i>    sym.halo_fill = Color(draw_param[dc_code]['color'])
+</I>&gt;<i>    sym.halo_radius = 1
+</I>&gt;<i>
+</I>&gt;<i>    rul = Rule()
+</I>&gt;<i>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+</I>&gt;<i>    rul.symbols.append(sym)
+</I>&gt;<i>
+</I>&gt;<i>    sty = Style()
+</I>&gt;<i>    sty.rules.append(rul)
+</I>&gt;<i>
+</I>&gt;<i>    name = get_layer_name()
+</I>&gt;<i>    lay = Layer(name)
+</I>&gt;<i>    lay.datasource = datasource
+</I>&gt;<i>
+</I>&gt;<i>    m.append_style(name, sty)
+</I>&gt;<i>    lay.styles.append(name)
+</I>&gt;<i>    m.layers.append(lay)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def add_line_layer(m, dc_code, color, width):
+</I>&gt;<i>
+</I>&gt;<i>    stk = Stroke()
+</I>&gt;<i>    stk.color = Color(color)
+</I>&gt;<i>    stk.width = width
+</I>&gt;<i>    stk.line_cap = line_cap.ROUND_CAP
+</I>&gt;<i>    stk.line_join = line_join.ROUND_JOIN
+</I>&gt;<i>
+</I>&gt;<i>    rul = Rule()
+</I>&gt;<i>    rul.filter = Filter('[draw_class_code] = %d' % (dc_code))
+</I>&gt;<i>    rul.symbols.append(LineSymbolizer(stk))
+</I>&gt;<i>
+</I>&gt;<i>    sty = Style()
+</I>&gt;<i>    sty.rules.append(rul)
+</I>&gt;<i>
+</I>&gt;<i>    name = get_layer_name()
+</I>&gt;<i>    lay = Layer(name)
+</I>&gt;<i>    lay.datasource = datasource_byways
+</I>&gt;<i>
+</I>&gt;<i>    m.append_style(name, sty)
+</I>&gt;<i>    lay.styles.append(name)
+</I>&gt;<i>    m.layers.append(lay)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def coord_to_tileindex(zoom, c):
+</I>&gt;<i>    '''Return the tile index containing coordinate c at zoom level  
+</I>&gt;<i> zoom. See
+</I>&gt;<i>    the technical documentation for more information.'''
+</I>&gt;<i>    return int(c / meters_per_tile(zoom))
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def get_layer_name():
+</I>&gt;<i>    global layer_num
+</I>&gt;<i>    name = 'layer_%d' % (layer_num)
+</I>&gt;<i>    layer_num += 1
+</I>&gt;<i>    return name
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def meters_per_tile(zoom):
+</I>&gt;<i>    return 1.0 * conf.tile_size / 2**(zoom-16)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def render_tile(map_, dirname, filename):
+</I>&gt;<i>    '''Render the map map_ into the given filename, replacing  
+</I>&gt;<i> atomically any
+</I>&gt;<i>    existing file with that filename.'''
+</I>&gt;<i>    render_to_file(map_, dirname + '/temp.png', 'png')
+</I>&gt;<i>    os.system('convert %s -colors 256 -quality 100 png:%s'
+</I>&gt;<i>              % (dirname + '/temp.png', dirname + '/temp2.png'))
+</I>&gt;<i>    os.chmod(dirname + '/temp2.png', 0664)
+</I>&gt;<i>    os.rename(dirname + '/temp2.png', dirname + '/' + filename)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def tileindex_to_coord(zoom, i):
+</I>&gt;<i>    '''Return the coordinate of the smaller edge of tile with index  
+</I>&gt;<i> i.'''
+</I>&gt;<i>    return (i * meters_per_tile(zoom))
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> def p_info(s):
+</I>&gt;<i>    if (not quiet):
+</I>&gt;<i>       print s
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> if (__name__ == '__main__'):
+</I>&gt;<i>    main()
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070615/196a6eee/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070615/196a6eee/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000167.html">[Mapnik-devel] Python example
+</A></li>
+	<LI>Next message: <A HREF="000169.html">[Mapnik-devel] loading of fonts in python binding?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#168">[ date ]</a>
+              <a href="thread.html#168">[ thread ]</a>
+              <a href="subject.html#168">[ subject ]</a>
+              <a href="author.html#168">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

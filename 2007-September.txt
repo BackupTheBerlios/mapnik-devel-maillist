@@ -1,0 +1,4340 @@
+From lists at brachttal.net  Sat Sep  8 01:32:09 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 8 Sep 2007 01:32:09 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+Message-ID: <20070908013209.340fa0e3@frodo.mittelerde>
+
+Hello,
+
+I did a update of my Mapnik system. I updated to the recent Mapnik SVN
+source. I didn't update for at least some weeks. Then I imported OSM
+data with a recent osm2pgsql tool. I used latlong (-l) as import
+option. Now Mapnik crash at start. Here is a gdb backtrace:
+
+registered datasource : postgis
+registered datasource : raster
+registered datasource : shape
+[New Thread -1243878512 (LWP 8910)]
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/station_small.png exception
+caught... bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image file /home/andreas/src/osm/mapnik/symbols/hospital.png
+exception caught...
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/rail_preserved.png exception
+caught... bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/motorway_shield3.png
+exception caught... cannot open image
+file /home/andreas/src/osm/mapnik/symbols/arrow.png exception caught...
+cannot open image
+file /home/andreas/src/osm/mapnik/symbols/arrow_back.png exception
+caught...
+Envelope(-20037508.34278925,-19929239.11337915,20037508.34278925,18375854.70964293)
+file_length=3335312 shape_type=5
+datasource=0x80ff270 type=1
+Envelope(-20037497.21084017,-19929239.11337915,20037497.21084017,18379686.99645032)
+file_length=24247658
+shape_type=5
+datasource=0x80b8cf8 type=1
+Envelope(-20100000,-7700000,20000000,15000000)
+file_length=3859622
+shape_type=5
+datasource=0x8103600 type=1
+Envelope(-20037508.3348,-7628011.72404,20000000,14994535.6307)
+file_length=437199658
+shape_type=3
+datasource=0x8103428 type=1
+Envelope(-19940616.76573496,-6979803.136120869,19864212.01086172,11359336.05685957)
+file_length=6689146
+shape_type=5
+datasource=0x80b0f80 type=1
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1242564912 (LWP 8907)]
+0xb7777edf in std::basic_string<char, std::char_traits<char>,
+std::allocator<char> >::basic_string () from /usr/lib/libstdc++.so.6
+(gdb) bt #0  0xb7777edf in std::basic_string<char,
+std::char_traits<char>, std::allocator<char> >::basic_string ()
+from /usr/lib/libstdc++.so.6 #1  0xb5ebc8a1 in
+std::_Rb_tree<std::string const, std::pair<std::string const,
+std::string>, std::_Select1st<std::pair<std::string const, std::string>
+>, std::less<std::string const>, std::allocator<std::pair<std::string
+>const, std::string> > >::_M_copy ()
+>from /usr/local/lib/mapnik/input/postgis.input #2  0xb5eb5a0b in
+>postgis_datasource::postgis_datasource ()
+>from /usr/local/lib/mapnik/input/postgis.input #3  0xb5eb8457 in
+>create () from /usr/local/lib/mapnik/input/postgis.input #4
+>0xb7a29a9c in mapnik::datasource_cache::create (params=@0xbfa30970) at
+>src/datasource_cache.cpp:81
+#5  0xb7a86714 in mapnik::load_map (map=@0x808a570,
+filename=@0xbfa31288) at src/load_map.cpp:508 #6  0x08052b08 in
+Navigation::initMapnik (this=0xbfa319ac) at Navigation.cpp:49 #7
+0x08053cb0 in Navigation (this=0xbfa319ac, width=800, height=600) at
+Navigation.cpp:19 #8  0x0804ff9e in main (argc=0, argv=0xbfa33174) at
+enigator.cpp:42
+
+Here are the XML files that I load (both crash):
+
+The XML file from OSM SVN (modified).
+http://tux-style.de/osm/tmp/osm.xml
+
+An old XML file I got from mapnik_viewer:
+http://tux-style.de/osm/tmp/postgresql.xml
+
+regards
+Andreas
+
+
+From jburgess at uklinux.net  Sat Sep  8 12:34:22 2007
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Sat, 08 Sep 2007 11:34:22 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070908013209.340fa0e3@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+Message-ID: <1189247662.20310.58.camel@localhost.localdomain>
+
+I've seen similar looking crashes when I've failed to recompile the
+postgis plugin, so that you end up with a mismatch between the plugin
+and the main code. Try comparing the timestamps of the files
+in /usr/local/lib/mapnik/input/ and with /usr/local/lib/libmapnik.so
+
+There is evidence in the bactrace that the mapnik.so has debug symbols
+whereas the postgis.input has none:
+
+#3 0xb5eb8457 in create () from /usr/local/lib/mapnik/input/postgis.input
+#4 0xb7a29a9c in mapnik::datasource_cache::create (params=@0xbfa30970) at src/datasource_cache.cpp:81
+
+
+	Jon
+
+
+
+
+From lists at brachttal.net  Sat Sep  8 12:51:18 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 8 Sep 2007 12:51:18 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <1189247662.20310.58.camel@localhost.localdomain>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+Message-ID: <20070908125118.4ee52967@frodo.mittelerde>
+
+Am Sat, 08 Sep 2007 11:34:22 +0100 schrieb Jon Burgess:
+
+> I've seen similar looking crashes when I've failed to recompile the
+> postgis plugin, so that you end up with a mismatch between the plugin
+> and the main code. Try comparing the timestamps of the files
+> in /usr/local/lib/mapnik/input/ and with /usr/local/lib/libmapnik.so
+> 
+> There is evidence in the bactrace that the mapnik.so has debug symbols
+> whereas the postgis.input has none:
+> 
+> #3 0xb5eb8457 in create ()
+> from /usr/local/lib/mapnik/input/postgis.input #4 0xb7a29a9c in
+> mapnik::datasource_cache::create (params=@0xbfa30970) at
+> src/datasource_cache.cpp:81
+
+You're right. The postgis.input is from may and the libmapnik.so from
+yesterday. Seems postgis.input didn't recompile for some time. Any
+ideas why this happens? Should I start scons in this subdirectories by
+hand?
+
+BTW: Why not using GNU autotools? I like and know them much more. :-)
+
+I thought about porting it to autotools...
+
+regards
+Andreas
+
+
+From jburgess at uklinux.net  Sat Sep  8 18:23:23 2007
+From: jburgess at uklinux.net (Jon Burgess)
+Date: Sat, 08 Sep 2007 17:23:23 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070908125118.4ee52967@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+Message-ID: <1189268603.20310.63.camel@localhost.localdomain>
+
+On Sat, 2007-09-08 at 12:51 +0200, Andreas Volz wrote:
+
+> You're right. The postgis.input is from may and the libmapnik.so from
+> yesterday. Seems postgis.input didn't recompile for some time. Any
+> ideas why this happens? Should I start scons in this subdirectories by
+> hand?
+
+The same thing happened to me. I can't remember exactly why, maybe I
+missed the PGSQL_INCLUDES during the compile. If you're not watching
+carefully it is easy to miss that it won't compile and install a new
+postgis plugin. Then the code tries to load the old incompatible one and
+goes boom.
+
+	Jon
+
+
+
+From jburgess777 at googlemail.com  Sun Sep  9 19:56:16 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 09 Sep 2007 18:56:16 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+Message-ID: <1189360576.20310.110.camel@localhost.localdomain>
+
+Hi,
+	I've been trying to tidy up the projections used by the OSM google-like
+tiles and I've run into a rendering problem with one of the world
+shapefiles. It looks like the issue occurs when part of the shapefile
+crosses the antimeridian: 
+
+http://www.jburgess.uklinux.net/wrap.png
+
+This only seems to occur if the map has a different projection to the
+shapefile. Is this a problem with the style, Mapnik or the shapefile?
+
+The shapefiles I'm using are the ones from
+http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+
+I switch to using the "world_boundaries/world_bnd_m" file the I don't
+see this problem but the map takes much longer to render.
+
+The python script and style I used are attached.
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: wrap.xml
+Type: application/xml
+Size: 747 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070909/ed3ab528/attachment.xml>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: wrap.py
+Type: text/x-python
+Size: 370 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070909/ed3ab528/attachment.py>
+
+From jburgess777 at googlemail.com  Sun Sep  9 21:25:00 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sun, 09 Sep 2007 20:25:00 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <1189360576.20310.110.camel@localhost.localdomain>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+Message-ID: <1189365900.9954.4.camel@localhost.localdomain>
+
+On Sun, 2007-09-09 at 18:56 +0100, Jon Burgess wrote:
+> Hi,
+> 	I've been trying to tidy up the projections used by the OSM google-like
+> tiles and I've run into a rendering problem with one of the world
+> shapefiles. It looks like the issue occurs when part of the shapefile
+> crosses the antimeridian: 
+> 
+> http://www.jburgess.uklinux.net/wrap.png
+> 
+> This only seems to occur if the map has a different projection to the
+> shapefile. Is this a problem with the style, Mapnik or the shapefile?
+> 
+> The shapefiles I'm using are the ones from
+> http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+> 
+> I switch to using the "world_boundaries/world_bnd_m" file the I don't
+> see this problem but the map takes much longer to render.
+> 
+> The python script and style I used are attached.
+> 
+
+I think I've found a solution to this. I noticed that the boundary of
+the problem shapefile was less than 1cm from the extent of the globe
+(+-20037508.34m). The shapefile which worked OK had a boundary 11m
+smaller. 
+
+I loaded the problem shapefile into JUMP and clipped the edges to match
+the other shapefile and now it seems to render OK. I guess that some of
+the points previously got pushed over the antimeridian during the
+reprojection.
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Mon Sep 10 09:53:55 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 10 Sep 2007 08:53:55 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070908125118.4ee52967@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+Message-ID: <342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+
+
+On 8 Sep 2007, at 11:51, Andreas Volz wrote:
+
+> Am Sat, 08 Sep 2007 11:34:22 +0100 schrieb Jon Burgess:
+>
+>> I've seen similar looking crashes when I've failed to recompile the
+>> postgis plugin, so that you end up with a mismatch between the plugin
+>> and the main code. Try comparing the timestamps of the files
+>> in /usr/local/lib/mapnik/input/ and with /usr/local/lib/libmapnik.so
+>>
+>> There is evidence in the bactrace that the mapnik.so has debug  
+>> symbols
+>> whereas the postgis.input has none:
+>>
+>> #3 0xb5eb8457 in create ()
+>> from /usr/local/lib/mapnik/input/postgis.input #4 0xb7a29a9c in
+>> mapnik::datasource_cache::create (params=@0xbfa30970) at
+>> src/datasource_cache.cpp:81
+>
+> You're right. The postgis.input is from may and the libmapnik.so from
+> yesterday. Seems postgis.input didn't recompile for some time. Any
+> ideas why this happens? Should I start scons in this subdirectories by
+> hand?
+Maybe you didn't specify PGSQL_{INCLUDES,LIBS} ?
+>
+> BTW: Why not using GNU autotools? I like and know them much more. :-)
+>
+
+Mapnik used to use Autotools ;-)
+> I thought about porting it to autotools...
+If you're building on Linux/Unix , using Autotools might be a good  
+solution. But about native toolchain on win32?
+There are also other building systems  :  CMake, Boost.Build.v2
+>
+> regards
+> Andreas
+
+Cheers
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070910/49b5ff8f/attachment.html>
+
+From lists at brachttal.net  Mon Sep 10 10:29:44 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 10 Sep 2007 10:29:44 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+Message-ID: <20070910102944.43540eac@frodo.mittelerde>
+
+Am Mon, 10 Sep 2007 08:53:55 +0100 schrieb Artem Pavlenko:
+
+> 
+> On 8 Sep 2007, at 11:51, Andreas Volz wrote:
+> 
+> > Am Sat, 08 Sep 2007 11:34:22 +0100 schrieb Jon Burgess:
+> >
+> >> I've seen similar looking crashes when I've failed to recompile the
+> >> postgis plugin, so that you end up with a mismatch between the
+> >> plugin and the main code. Try comparing the timestamps of the files
+> >> in /usr/local/lib/mapnik/input/ and
+> >> with /usr/local/lib/libmapnik.so
+> >>
+> >> There is evidence in the bactrace that the mapnik.so has debug  
+> >> symbols
+> >> whereas the postgis.input has none:
+> >>
+> >> #3 0xb5eb8457 in create ()
+> >> from /usr/local/lib/mapnik/input/postgis.input #4 0xb7a29a9c in
+> >> mapnik::datasource_cache::create (params=@0xbfa30970) at
+> >> src/datasource_cache.cpp:81
+> >
+> > You're right. The postgis.input is from may and the libmapnik.so
+> > from yesterday. Seems postgis.input didn't recompile for some time.
+> > Any ideas why this happens? Should I start scons in this
+> > subdirectories by hand?
+> Maybe you didn't specify PGSQL_{INCLUDES,LIBS} ?
+> >
+> > BTW: Why not using GNU autotools? I like and know them much
+> > more. :-)
+> >
+> 
+> Mapnik used to use Autotools ;-)
+
+Ok, I finished my port to autotools and it does at least compile. I
+didn't test it yet. But I'll continue and then show you the result.
+Perhaps it's an option to support both or maintain it in another branch
+with only autotools project files included and merging both each time.
+I'm not sure...
+
+I'll remove (at least with configure option) the fonts and libagg
+build and installation. It's hard to get packages into distributions
+(e.g. Gentoo) with subpackages included. There're packages for libagg
+and dejavu fonts on Gentoo and Ubuntu.
+
+> > I thought about porting it to autotools...
+> If you're building on Linux/Unix , using Autotools might be a good  
+> solution. But about native toolchain on win32?
+> There are also other building systems  :  CMake, Boost.Build.v2
+
+I like autotools because the Linux integration is very good and clean. 
+
+I created a win32 library in the past and used autotools without
+problems. Ok, it's not "native", but what is "native". :-)
+
+Simply installing mingw and msys on win32 did it. See here the
+mingw installation instruction for another library that I maintain:
+
+http://makewiki.aleppax.it/pmwiki/pmwiki.php/Windows/MinGW
+
+Sounds easy not? :-)
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Mon Sep 10 10:51:47 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 10 Sep 2007 09:51:47 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070910102944.43540eac@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+Message-ID: <391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+
+
+On 10 Sep 2007, at 09:29, Andreas Volz wrote:
+
+> Am Mon, 10 Sep 2007 08:53:55 +0100 schrieb Artem Pavlenko:
+>
+>>
+>> On 8 Sep 2007, at 11:51, Andreas Volz wrote:
+>>
+>>> Am Sat, 08 Sep 2007 11:34:22 +0100 schrieb Jon Burgess:
+>>>
+>>>> I've seen similar looking crashes when I've failed to recompile the
+>>>> postgis plugin, so that you end up with a mismatch between the
+>>>> plugin and the main code. Try comparing the timestamps of the files
+>>>> in /usr/local/lib/mapnik/input/ and
+>>>> with /usr/local/lib/libmapnik.so
+>>>>
+>>>> There is evidence in the bactrace that the mapnik.so has debug
+>>>> symbols
+>>>> whereas the postgis.input has none:
+>>>>
+>>>> #3 0xb5eb8457 in create ()
+>>>> from /usr/local/lib/mapnik/input/postgis.input #4 0xb7a29a9c in
+>>>> mapnik::datasource_cache::create (params=@0xbfa30970) at
+>>>> src/datasource_cache.cpp:81
+>>>
+>>> You're right. The postgis.input is from may and the libmapnik.so
+>>> from yesterday. Seems postgis.input didn't recompile for some time.
+>>> Any ideas why this happens? Should I start scons in this
+>>> subdirectories by hand?
+>> Maybe you didn't specify PGSQL_{INCLUDES,LIBS} ?
+>>>
+>>> BTW: Why not using GNU autotools? I like and know them much
+>>> more. :-)
+>>>
+>>
+>> Mapnik used to use Autotools ;-)
+>
+> Ok, I finished my port to autotools and it does at least compile. I
+> didn't test it yet. But I'll continue and then show you the result.
+> Perhaps it's an option to support both or maintain it in another  
+> branch
+> with only autotools project files included and merging both each time.
+> I'm not sure...
+
+Sure, we can have autotools based build system (in main trunk) along  
+with SCons or anything else.
+It just needs to be maintained.
+>
+> I'll remove (at least with configure option) the fonts and libagg
+> build and installation. It's hard to get packages into distributions
+> (e.g. Gentoo) with subpackages included. There're packages for libagg
+> and dejavu fonts on Gentoo and Ubuntu.
+>
+Yep.
+
+>>> I thought about porting it to autotools...
+>> If you're building on Linux/Unix , using Autotools might be a good
+>> solution. But about native toolchain on win32?
+>> There are also other building systems  :  CMake, Boost.Build.v2
+>
+> I like autotools because the Linux integration is very good and clean.
+>
+> I created a win32 library in the past and used autotools without
+> problems. Ok, it's not "native", but what is "native". :-)
+
+Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+build win32 binaries.
+>
+> Simply installing mingw and msys on win32 did it. See here the
+> mingw installation instruction for another library that I maintain:
+>
+> http://makewiki.aleppax.it/pmwiki/pmwiki.php/Windows/MinGW
+>
+> Sounds easy not? :-)
+
+I'm know about MinGW and it can be another option.
+Cheers
+
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070910/beeac479/attachment.html>
+
+From david at artcom.de  Mon Sep 10 11:13:17 2007
+From: david at artcom.de (David Siegel)
+Date: Mon, 10 Sep 2007 11:13:17 +0200
+Subject: [Mapnik-devel] proposal: better XML support
+Message-ID: <94912C08-1B29-45DF-AA64-536EDB834FCB@artcom.de>
+
+Hi,
+I would like to implement a libxml2 based version of load_map(). This  
+would give us XML entities and entity references in the map  
+description. They can be used as
+	- variables
+	- a simple include mechanism both from disk and from network
+
+A very brief example:
+
+<?xml version="1.0" ?>
+<!DOCTYPE Map [
+	<!ENTITY imgdir "/some/path/that/was/copied/all/over/the/place/before">
+	<!ENTITY baselayer SYSTEM "file:///some/external/layer.xml">
+]>
+<Map ... >
+	<!---  snip --->
+
+	<PointSymbolizer file="&imgdir;/pub.png" ...  />
+
+	<!--- snip --->
+
+	&baselayer;
+
+</Map>
+
+If you agree that this would be nice to have here is my current plan:
+	1. refactor the current load_map() into smaller functions. (partly  
+done)
+	2. refactor current load_map() to print warnings on unrecognized  
+nodes/values. (partly done)
+	3. add the necessary bits and pieces to <build-system-of-the-week>  
+to choose ptree or libxml2. (partly done)
+	4. implement the new parser.
+
+If that's OK with you I'd be grateful if nobody else would change  
+load_map.cpp while I'm at it. Specially (1) is likely to produce huge  
+ugly conflicts. ;-)
+
+cheers,
+	david (agnat)
+
+
+From jburgess777 at googlemail.com  Mon Sep 10 21:54:32 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 10 Sep 2007 20:54:32 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <1189365900.9954.4.camel@localhost.localdomain>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+Message-ID: <1189454072.9954.23.camel@localhost.localdomain>
+
+On Sun, 2007-09-09 at 20:25 +0100, Jon Burgess wrote:
+> On Sun, 2007-09-09 at 18:56 +0100, Jon Burgess wrote:
+> > Hi,
+> > 	I've been trying to tidy up the projections used by the OSM google-like
+> > tiles and I've run into a rendering problem with one of the world
+> > shapefiles. It looks like the issue occurs when part of the shapefile
+> > crosses the antimeridian: 
+> > 
+> > http://www.jburgess.uklinux.net/wrap.png
+> > 
+> > This only seems to occur if the map has a different projection to the
+> > shapefile. Is this a problem with the style, Mapnik or the shapefile?
+> > 
+> > The shapefiles I'm using are the ones from
+> > http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+> > 
+> > I switch to using the "world_boundaries/world_bnd_m" file the I don't
+> > see this problem but the map takes much longer to render.
+> > 
+> > The python script and style I used are attached.
+> > 
+> 
+> I think I've found a solution to this. I noticed that the boundary of
+> the problem shapefile was less than 1cm from the extent of the globe
+> (+-20037508.34m). The shapefile which worked OK had a boundary 11m
+> smaller. 
+> 
+> I loaded the problem shapefile into JUMP and clipped the edges to match
+> the other shapefile and now it seems to render OK. I guess that some of
+> the points previously got pushed over the antimeridian during the
+> reprojection.
+
+I'm still having some difficulties getting Mapnik to produce reliable
+output when reprojecting shapefiles. Attached is script which produce
+one set of bad output (using the osm.xml I posted before). A screenshot
+is at http://www.jburgess.uklinux.net/wrap2.png
+
+Although the attached example is a little contrived I'm getting similar
+results trying to render tiles using tilecache (it is much harder to use
+the tilecache setup as a reproducible example).
+
+The debug from Mapnik is below. I think what happens is as follows:-
+- Due to the 2:1 ratio bounding box, the map.zoom_all() results in a
+bounding box way beyond the width of the map (+-38,000km). 
+- When this gets reprojected on to the shapefile the bounding box width
+is corrupted (aliased) to +-1,500km, hence only the few polygons which
+are close to the meridian pass the bounding box filter.
+
+registered datasource : gdal
+registered datasource : raster
+registered datasource : shape
+registered datasource : postgis
+Envelope(-20037400,-19971868.87702835,20037400,18418382.13706818)
+file_length=3335256
+shape_type=5
+datasource=0x6ef930 type=1
+ layer1 - > Envelope(-20037400,-19971868.87702835,20037400,18418382.13706818)
+ layer2 - > Envelope(-20037400,-20014500.81197941,20037400,18460913.07633008)
+scale=76950.8
+start map processing bbox=Envelope(-38475413.88830949,-20014500.81197941,38475413.88830949,18460913.07633008)
+scale denominator = 2.74824e+08
+start layer processing : world-1
+datasource = 0x6ef930
+Envelope(-1599602.797268995,-19971868.87702838,1599602.797268997,18418382.13706815)
+ENCODING = utf-8
+end layer processing
+end map processing
+0.29 s
+
+	Jon
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: wrap.py
+Type: text/x-python
+Size: 371 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070910/bf3811a6/attachment.py>
+
+From artem at mapnik.org  Tue Sep 11 13:11:16 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 11 Sep 2007 12:11:16 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <1189454072.9954.23.camel@localhost.localdomain>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+Message-ID: <3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+
+
+On 10 Sep 2007, at 20:54, Jon Burgess wrote:
+
+> On Sun, 2007-09-09 at 20:25 +0100, Jon Burgess wrote:
+>> On Sun, 2007-09-09 at 18:56 +0100, Jon Burgess wrote:
+>>> Hi,
+>>> 	I've been trying to tidy up the projections used by the OSM  
+>>> google-like
+>>> tiles and I've run into a rendering problem with one of the world
+>>> shapefiles. It looks like the issue occurs when part of the  
+>>> shapefile
+>>> crosses the antimeridian:
+>>>
+>>> http://www.jburgess.uklinux.net/wrap.png
+>>>
+>>> This only seems to occur if the map has a different projection to  
+>>> the
+>>> shapefile. Is this a problem with the style, Mapnik or the  
+>>> shapefile?
+>>>
+>>> The shapefiles I'm using are the ones from
+>>> http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2
+>>>
+>>> I switch to using the "world_boundaries/world_bnd_m" file the I  
+>>> don't
+>>> see this problem but the map takes much longer to render.
+>>>
+>>> The python script and style I used are attached.
+>>>
+>>
+>> I think I've found a solution to this. I noticed that the boundary of
+>> the problem shapefile was less than 1cm from the extent of the globe
+>> (+-20037508.34m). The shapefile which worked OK had a boundary 11m
+>> smaller.
+>>
+>> I loaded the problem shapefile into JUMP and clipped the edges to  
+>> match
+>> the other shapefile and now it seems to render OK. I guess that  
+>> some of
+>> the points previously got pushed over the antimeridian during the
+>> reprojection.
+>
+> I'm still having some difficulties getting Mapnik to produce reliable
+> output when reprojecting shapefiles. Attached is script which produce
+> one set of bad output (using the osm.xml I posted before). A  
+> screenshot
+> is at http://www.jburgess.uklinux.net/wrap2.png
+>
+> Although the attached example is a little contrived I'm getting  
+> similar
+> results trying to render tiles using tilecache (it is much harder  
+> to use
+> the tilecache setup as a reproducible example).
+>
+> The debug from Mapnik is below. I think what happens is as follows:-
+> - Due to the 2:1 ratio bounding box, the map.zoom_all() results in a
+> bounding box way beyond the width of the map (+-38,000km).
+> - When this gets reprojected on to the shapefile the bounding box  
+> width
+> is corrupted (aliased) to +-1,500km, hence only the few polygons which
+> are close to the meridian pass the bounding box filter.
+>
+> registered datasource : gdal
+> registered datasource : raster
+> registered datasource : shape
+> registered datasource : postgis
+> Envelope(-20037400,-19971868.87702835,20037400,18418382.13706818)
+> file_length=3335256
+> shape_type=5
+> datasource=0x6ef930 type=1
+>  layer1 - > Envelope 
+> (-20037400,-19971868.87702835,20037400,18418382.13706818)
+>  layer2 - > Envelope 
+> (-20037400,-20014500.81197941,20037400,18460913.07633008)
+> scale=76950.8
+> start map processing bbox=Envelope 
+> (-38475413.88830949,-20014500.81197941,38475413.88830949,18460913.0763 
+> 3008)
+> scale denominator = 2.74824e+08
+> start layer processing : world-1
+> datasource = 0x6ef930
+> Envelope 
+> (-1599602.797268995,-19971868.87702838,1599602.797268997,18418382.1370 
+> 6815)
+> ENCODING = utf-8
+> end layer processing
+> end map processing
+> 0.29 s
+>
+> 	Jon
+
+
+Jon,
+
+Thanks a lot for reporting this. I modified feature_style_processor  
+to always clip query's bbox to the layer's extent. This seemed to  
+fixes this issue :
+
+1. Before processing layer, backproject layer's extent into main  
+(map) projection.
+2. Clip query's bbox by this projected extent.
+
+Could you try r522 and let me know if this works for you.
+
+Cheers
+Artem
+
+>
+> <wrap.py>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070911/e7e9e1b3/attachment.html>
+
+From jburgess777 at googlemail.com  Tue Sep 11 21:26:51 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 11 Sep 2007 20:26:51 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+Message-ID: <1189538811.30404.13.camel@localhost.localdomain>
+
+On Tue, 2007-09-11 at 12:11 +0100, Artem Pavlenko wrote:
+
+
+> 
+> Thanks a lot for reporting this. I modified feature_style_processor to
+> always clip query's bbox to the layer's extent. This seemed to fixes
+> this issue :
+> 
+> 
+> 1. Before processing layer, backproject layer's extent into main (map)
+> projection.
+> 2. Clip query's bbox by this projected extent.
+> 
+> 
+> Could you try r522 and let me know if this works for you.
+> 
+This seems to fix the world boundaries polygons but now I'm running into
+issues with the shoreline_a. The problem seems to be the minimum
+longitude which is less than -20037508.34
+
+Envelope(-20100000,-7700000,20000000,15000000)
+
+Whenever this layer bounding box gets re-projected it ends up wrong:
+
+ layer1 - > Envelope(-20100000,-7700000,20000000,15000000)
+ layer2 - > Envelope(19975016.68557849,-7735817.004185823,20000000,15042031.30007673)
+
+Maybe all the layer bounds should get clipped with the projection of
+(-180,-90,+180,+90)?
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Wed Sep 12 10:01:05 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Sep 2007 09:01:05 +0100
+Subject: [Mapnik-devel] proposal: better XML support
+In-Reply-To: <94912C08-1B29-45DF-AA64-536EDB834FCB@artcom.de>
+References: <94912C08-1B29-45DF-AA64-536EDB834FCB@artcom.de>
+Message-ID: <5F9DC5EE-5CB1-47FB-80B7-A0D840446857@mapnik.org>
+
+Hi David,
+
+Sounds good to me! I like the idea of  keeping both ptree and libxml  
+implementations. I can see  'include' mechanism could be a winner in  
+some cases. Have you done any benchmarking on performance : ptree vs  
+libxml ? There is a flag XMLPARSER={spirit,tinyxml} to build ptree  
+with different impl. We can add libxml to the list?  Also,  how  
+difficult to build libxml on win32?
+
+see below
+
+On 10 Sep 2007, at 10:13, David Siegel wrote:
+
+> Hi,
+> I would like to implement a libxml2 based version of load_map(). This
+> would give us XML entities and entity references in the map
+> description. They can be used as
+> 	- variables
+> 	- a simple include mechanism both from disk and from network
+>
+> A very brief example:
+>
+> <?xml version="1.0" ?>
+> <!DOCTYPE Map [
+> 	<!ENTITY imgdir "/some/path/that/was/copied/all/over/the/place/ 
+> before">
+> 	<!ENTITY baselayer SYSTEM "file:///some/external/layer.xml">
+> ]>
+> <Map ... >
+> 	<!---  snip --->
+>
+> 	<PointSymbolizer file="&imgdir;/pub.png" ...  />
+>
+> 	<!--- snip --->
+>
+> 	&baselayer;
+>
+> </Map>
+>
+> If you agree that this would be nice to have here is my current plan:
+> 	1. refactor the current load_map() into smaller functions. (partly
+> done)
+> 	2. refactor current load_map() to print warnings on unrecognized
+> nodes/values. (partly done)
+> 	3. add the necessary bits and pieces to <build-system-of-the-week>
+> to choose ptree or libxml2. (partly done)
+> 	4. implement the new parser.
+>
+
+Great.
+> If that's OK with you I'd be grateful if nobody else would change
+> load_map.cpp while I'm at it. Specially (1) is likely to produce huge
+> ugly conflicts. ;-)
+>
+
+There is a small possibility I might have to tweak load_map a little  
+bit (add new entities)  , but we can merge changes back ? Another   
+option would be to create a branch for libxml stuff and merge it into  
+the main trunk when it's ready ? I can give you svn write access just  
+let me know.
+
+Cheers
+Artem
+> cheers,
+> 	david (agnat)
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/5721a28f/attachment.html>
+
+From artem at mapnik.org  Wed Sep 12 10:47:16 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Sep 2007 09:47:16 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <1189538811.30404.13.camel@localhost.localdomain>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+Message-ID: <7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+
+
+On 11 Sep 2007, at 20:26, Jon Burgess wrote:
+
+> On Tue, 2007-09-11 at 12:11 +0100, Artem Pavlenko wrote:
+>
+>
+>>
+>> Thanks a lot for reporting this. I modified  
+>> feature_style_processor to
+>> always clip query's bbox to the layer's extent. This seemed to fixes
+>> this issue :
+>>
+>>
+>> 1. Before processing layer, backproject layer's extent into main  
+>> (map)
+>> projection.
+>> 2. Clip query's bbox by this projected extent.
+>>
+>>
+>> Could you try r522 and let me know if this works for you.
+>>
+> This seems to fix the world boundaries polygons but now I'm running  
+> into
+> issues with the shoreline_a. The problem seems to be the minimum
+> longitude which is less than -20037508.34
+
+>
+> Envelope(-20100000,-7700000,20000000,15000000)
+
+Yes, I created this shapefile and it has invalid (for Mercator  
+projection) bounds. hmm...
+
+>
+> Whenever this layer bounding box gets re-projected it ends up wrong:
+>
+>  layer1 - > Envelope(-20100000,-7700000,20000000,15000000)
+>  layer2 - > Envelope 
+> (19975016.68557849,-7735817.004185823,20000000,15042031.30007673)
+>
+> Maybe all the layer bounds should get clipped with the projection of
+> (-180,-90,+180,+90)?
+
+No, we cannot use world extent , many projections only work on a  
+small region i.e Transverse  Mercator (NatGrid, UTM). In fact  
+Mercator will choke on longitudes -90,90 .
+
+To solve this properly we need some way of querying every projection  
+for valid bounds. I couldn't see anything helpful in proj4. I might  
+be missing something.
+
+As a temporary workaround could you  :
+
+/opt/gdal/bin/ogr2ogr -spat -19999999 -19999999 20000000 20000000  
+shoreline_a_new.shp  ~/world_boundaries/shoreline_a.shp
+
+This would just get rid of few extreme positioned 100x100km square  
+tiles ( around far east of Russia (Kamchatka) and Alaska). There is  
+no proper coastline polygons out there, yet.
+
+Then:
+
+ >>> prj0 = Projection("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0  
++lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +over  
++no_defs")
+ >>> prj1 = Projection("+proj=merc +datum=WGS84 +over +no_defs")
+ >>> ds = Shapefile(file="/Users/artem/shoreline_a_new")
+ >>> ds.envelope()
+Envelope(-20000000.0,-7700000.0,20000000.0,15000000.0)
+ >>> prj0.inverse(e)
+Envelope(-180.0,-85.0511287798,180.0,85.0511287798)
+ >>> prj1.inverse(e)
+Envelope(-180.0,-85.0840590501,180.0,85.0840590501)
+ >>>
+
+Looks OK to me.
+Cheers
+Artem
+
+
+>
+> 	Jon
+>
+>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/39eddd9f/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Sep 12 13:11:13 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 12 Sep 2007 12:11:13 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+Message-ID: <b215ec5f0709120411s44fbcd9r471f96d38c57a649@mail.gmail.com>
+
+On 12/09/2007, Artem Pavlenko <artem at mapnik.org> wrote:
+> No, we cannot use world extent , many projections only work on a small
+> region i.e Transverse  Mercator (NatGrid, UTM). In fact Mercator will choke
+> on longitudes -90,90 .
+>
+> To solve this properly we need some way of querying every projection for
+> valid bounds. I couldn't see anything helpful in proj4. I might be missing
+> something.
+>
+
+I'm not convinced that projecting the extent is necessarily valid for
+some projections, i.e. the code assumes:
+
+extent(Project(shape)).minx == Project(extent(shape).minx)
+extent(Project(shape)).miny == Project(extent(shape).miny)
+etc.
+
+This may be true for some simple projections like latlong & mercator
+where NS/EW are always at right angles but I imagine this rapid falls
+down when a rectangle bounding box becomes some curved shape in the
+other projection.
+
+-- 
+    Jon
+
+
+From artem at mapnik.org  Wed Sep 12 13:25:47 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Sep 2007 12:25:47 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <b215ec5f0709120411s44fbcd9r471f96d38c57a649@mail.gmail.com>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+	<b215ec5f0709120411s44fbcd9r471f96d38c57a649@mail.gmail.com>
+Message-ID: <7254D22E-4223-4F35-9B41-5AC4C023BA27@mapnik.org>
+
+
+On 12 Sep 2007, at 12:11, Jon Burgess wrote:
+
+> On 12/09/2007, Artem Pavlenko <artem at mapnik.org> wrote:
+>> No, we cannot use world extent , many projections only work on a  
+>> small
+>> region i.e Transverse  Mercator (NatGrid, UTM). In fact Mercator  
+>> will choke
+>> on longitudes -90,90 .
+
+
+I meant to say latitudes :D
+
+>>
+>> To solve this properly we need some way of querying every  
+>> projection for
+>> valid bounds. I couldn't see anything helpful in proj4. I might be  
+>> missing
+>> something.
+>>
+>
+> I'm not convinced that projecting the extent is necessarily valid for
+> some projections, i.e. the code assumes:
+>
+> extent(Project(shape)).minx == Project(extent(shape).minx)
+> extent(Project(shape)).miny == Project(extent(shape).miny)
+> etc.
+>
+> This may be true for some simple projections like latlong & mercator
+> where NS/EW are always at right angles but I imagine this rapid falls
+> down when a rectangle bounding box becomes some curved shape in the
+> other projection.
+
+Yes, you're right.  Then the only reliable way would be to define  
+valid bounds in geographic (latlong) projection with WGS84 ellipsoid.
+This is a kind of master projection. All projection and datum  
+transforms go to/from WGS84.
+
+The problem is where to get this info ? I didn't see anything in  
+proj4. I'll look again. Or we can ask user to specify these bounds  
+with default  Envelope(-180,-90,180,90)  Thoughts?
+
+Artem
+
+
+>
+> -- 
+>     Jon
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/f59ce471/attachment.html>
+
+From crschmidt at metacarta.com  Wed Sep 12 13:28:42 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Wed, 12 Sep 2007 07:28:42 -0400
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+Message-ID: <20070912112842.GA16989@metacarta.com>
+
+On Wed, Sep 12, 2007 at 09:47:16AM +0100, Artem Pavlenko wrote:
+> 
+> On 11 Sep 2007, at 20:26, Jon Burgess wrote:
+> 
+> >On Tue, 2007-09-11 at 12:11 +0100, Artem Pavlenko wrote:
+> >
+> >
+> >>
+> >>Thanks a lot for reporting this. I modified  
+> >>feature_style_processor to
+> >>always clip query's bbox to the layer's extent. This seemed to fixes
+> >>this issue :
+> >>
+> >>
+> >>1. Before processing layer, backproject layer's extent into main  
+> >>(map)
+> >>projection.
+> >>2. Clip query's bbox by this projected extent.
+> >>
+> >>
+> >>Could you try r522 and let me know if this works for you.
+> >>
+> >This seems to fix the world boundaries polygons but now I'm running  
+> >into
+> >issues with the shoreline_a. The problem seems to be the minimum
+> >longitude which is less than -20037508.34
+> 
+> >
+> >Envelope(-20100000,-7700000,20000000,15000000)
+> 
+> Yes, I created this shapefile and it has invalid (for Mercator  
+> projection) bounds. hmm...
+> 
+> >
+> >Whenever this layer bounding box gets re-projected it ends up wrong:
+> >
+> > layer1 - > Envelope(-20100000,-7700000,20000000,15000000)
+> > layer2 - > Envelope 
+> >(19975016.68557849,-7735817.004185823,20000000,15042031.30007673)
+> >
+> >Maybe all the layer bounds should get clipped with the projection of
+> >(-180,-90,+180,+90)?
+> 
+> No, we cannot use world extent , many projections only work on a  
+> small region i.e Transverse  Mercator (NatGrid, UTM). In fact  
+> Mercator will choke on longitudes -90,90 .
+> 
+> To solve this properly we need some way of querying every projection  
+> for valid bounds. I couldn't see anything helpful in proj4. I might  
+> be missing something.
+
+It doesn't exist. http://spatialreference.org/ref/epsg/2001/ will tell
+you -- but you can still have useful data *outside* that region, it's
+just a suggestion -- and only works for EPSG codes. 
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Wed Sep 12 13:44:39 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Sep 2007 12:44:39 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <20070912112842.GA16989@metacarta.com>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+	<20070912112842.GA16989@metacarta.com>
+Message-ID: <BAF4A447-D7A2-4051-AA2A-88467EC09E27@mapnik.org>
+
+
+On 12 Sep 2007, at 12:28, Christopher Schmidt wrote:
+
+> On Wed, Sep 12, 2007 at 09:47:16AM +0100, Artem Pavlenko wrote:
+>>
+>> On 11 Sep 2007, at 20:26, Jon Burgess wrote:
+>>
+>>> On Tue, 2007-09-11 at 12:11 +0100, Artem Pavlenko wrote:
+>>>
+>>>
+>>>>
+>>>> Thanks a lot for reporting this. I modified
+>>>> feature_style_processor to
+>>>> always clip query's bbox to the layer's extent. This seemed to  
+>>>> fixes
+>>>> this issue :
+>>>>
+>>>>
+>>>> 1. Before processing layer, backproject layer's extent into main
+>>>> (map)
+>>>> projection.
+>>>> 2. Clip query's bbox by this projected extent.
+>>>>
+>>>>
+>>>> Could you try r522 and let me know if this works for you.
+>>>>
+>>> This seems to fix the world boundaries polygons but now I'm running
+>>> into
+>>> issues with the shoreline_a. The problem seems to be the minimum
+>>> longitude which is less than -20037508.34
+>>
+>>>
+>>> Envelope(-20100000,-7700000,20000000,15000000)
+>>
+>> Yes, I created this shapefile and it has invalid (for Mercator
+>> projection) bounds. hmm...
+>>
+>>>
+>>> Whenever this layer bounding box gets re-projected it ends up wrong:
+>>>
+>>> layer1 - > Envelope(-20100000,-7700000,20000000,15000000)
+>>> layer2 - > Envelope
+>>> (19975016.68557849,-7735817.004185823,20000000,15042031.30007673)
+>>>
+>>> Maybe all the layer bounds should get clipped with the projection of
+>>> (-180,-90,+180,+90)?
+>>
+>> No, we cannot use world extent , many projections only work on a
+>> small region i.e Transverse  Mercator (NatGrid, UTM). In fact
+>> Mercator will choke on longitudes -90,90 .
+>>
+>> To solve this properly we need some way of querying every projection
+>> for valid bounds. I couldn't see anything helpful in proj4. I might
+>> be missing something.
+>
+> It doesn't exist. http://spatialreference.org/ref/epsg/2001/ will tell
+> you -- but you can still have useful data *outside* that region, it's
+> just a suggestion -- and only works for EPSG codes.
+
+OK, great. How did you come with these numbers ? Should this be  
+implemented in proj4? Each projection could return valid (commonly  
+used)  bounding box in wgs84.  Then projects using proj4 can use/ 
+ignore this metadata.
+
+I was trying to re-project world boundaries from latlong to UTM zone  
+31 in latest qgis and guess what I got.
+Cheers,
+Artem
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/4d8678d2/attachment.html>
+
+From crschmidt at metacarta.com  Wed Sep 12 15:16:45 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Wed, 12 Sep 2007 09:16:45 -0400
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <BAF4A447-D7A2-4051-AA2A-88467EC09E27@mapnik.org>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+	<20070912112842.GA16989@metacarta.com>
+	<BAF4A447-D7A2-4051-AA2A-88467EC09E27@mapnik.org>
+Message-ID: <20070912131645.GA28806@metacarta.com>
+
+On Wed, Sep 12, 2007 at 12:44:39PM +0100, Artem Pavlenko wrote:
+> >It doesn't exist. http://spatialreference.org/ref/epsg/2001/ will tell
+> >you -- but you can still have useful data *outside* that region, it's
+> >just a suggestion -- and only works for EPSG codes.
+> 
+> OK, great. How did you come with these numbers ? 
+
+Downloaded a 30MB MS Access file and converted it to a usable database. 
+
+> Should this be  
+> implemented in proj4? 
+
+proj.4 can't be distributed with this data -- it's copyrighted to EPSG,
+and not freely redistributable. (Spatialreference.org violates the ToS
+to do what it does.)
+
+> I was trying to re-project world boundaries from latlong to UTM zone  
+> 31 in latest qgis and guess what I got.
+
+A mess. "You know what the doctor says: If it hurts when you do that,
+don't do it!"  
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Wed Sep 12 16:29:06 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Wed, 12 Sep 2007 15:29:06 +0100
+Subject: [Mapnik-devel] Mapnik and reprojection of shapefiles
+In-Reply-To: <20070912131645.GA28806@metacarta.com>
+References: <1189360576.20310.110.camel@localhost.localdomain>
+	<1189365900.9954.4.camel@localhost.localdomain>
+	<1189454072.9954.23.camel@localhost.localdomain>
+	<3A429442-9A0F-40A1-85DF-958737F6C05E@mapnik.org>
+	<1189538811.30404.13.camel@localhost.localdomain>
+	<7BEA85CC-1F40-420E-A31F-FCB6120CD6F5@mapnik.org>
+	<20070912112842.GA16989@metacarta.com>
+	<BAF4A447-D7A2-4051-AA2A-88467EC09E27@mapnik.org>
+	<20070912131645.GA28806@metacarta.com>
+Message-ID: <40A45B11-FFE2-422D-981D-F4CB2039F83D@mapnik.org>
+
+
+On 12 Sep 2007, at 14:16, Christopher Schmidt wrote:
+
+> On Wed, Sep 12, 2007 at 12:44:39PM +0100, Artem Pavlenko wrote:
+>>> It doesn't exist. http://spatialreference.org/ref/epsg/2001/ will  
+>>> tell
+>>> you -- but you can still have useful data *outside* that region,  
+>>> it's
+>>> just a suggestion -- and only works for EPSG codes.
+>>
+>> OK, great. How did you come with these numbers ?
+>
+> Downloaded a 30MB MS Access file and converted it to a usable  
+> database.
+>
+>> Should this be
+>> implemented in proj4?
+>
+> proj.4 can't be distributed with this data -- it's copyrighted to  
+> EPSG,
+> and not freely redistributable. (Spatialreference.org violates the ToS
+> to do what it does.)
+
+Hmm.. What about collection this data from users, through  
+spatialreference.org ? Wiki based spatial reference, sounds good to me.
+
+>
+>> I was trying to re-project world boundaries from latlong to UTM zone
+>> 31 in latest qgis and guess what I got.
+>
+> A mess. "You know what the doctor says: If it hurts when you do that,
+> don't do it!"
+
+he he , I'm not going to do this again.
+Cheers
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070912/d7ccd956/attachment.html>
+
+From david at artcom.de  Wed Sep 12 22:53:01 2007
+From: david at artcom.de (David Siegel)
+Date: Wed, 12 Sep 2007 22:53:01 +0200
+Subject: [Mapnik-devel] proposal: better XML support
+In-Reply-To: <5F9DC5EE-5CB1-47FB-80B7-A0D840446857@mapnik.org>
+References: <94912C08-1B29-45DF-AA64-536EDB834FCB@artcom.de>
+	<5F9DC5EE-5CB1-47FB-80B7-A0D840446857@mapnik.org>
+Message-ID: <36C14EC0-E81B-4AD5-9B42-00172B4F347D@artcom.de>
+
+Hi Artem,
+Hi list,
+
+On Sep 12, 2007, at 10:01 AM, Artem Pavlenko wrote:
+
+
+> Hi David,
+>
+> Sounds good to me! I like the idea of  keeping both ptree and  
+> libxml implementations. I can see  'include' mechanism could be a  
+> winner in some cases. Have you done any benchmarking on  
+> performance : ptree vs libxml ?
+>
+
+No, I haven't done any benchmarking yet. I just got it working  
+yesterday night :-) . My current implementation loads the XML file  
+into a DOM and then populates a boost ptree with the result. The  
+ptree is then processed by the existing load_map(). This keeps the  
+whole parsing logic in one place, but costs a bit performance because  
+the DOM is copied to a ptree. BTW, I think the tinyxml parser does  
+something similar. So this should not be worse. I'd also guess that  
+libxml2 is a bit slower than tinyxml (more overhead). But I think it  
+will be difficult to measure any difference because lots of other  
+stuff happens during load_map(), like loading icon files from disk,  
+establish DB connections, &c.
+But if you insist I'll try to do some benchmarks ...
+
+
+> There is a flag XMLPARSER={spirit,tinyxml} to build ptree with  
+> different impl. We can add libxml to the list?
+>
+
+The current behaviour is as follows: If the (new) XML2_CONFIG build  
+option is set to the xml2-config executable libxml2 is used and  
+HAVE_LIBXML2 is defined. Otherwise it uses the flags currently  
+specified in the toplevel SConstruct script (- 
+DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML that is). I don't want to  
+make changes to the boost code. Future releases of boost will contain  
+the property_tree lib and we might want to drop the local copy.
+
+
+> Also,  how difficult to build libxml on win32?
+>
+
+Good point! I haven't checked that yet, but a quick glance at the  
+google results indicates that it is possible to build it using MSVC.  
+This page has the "official" win32 binaries:
+
+http://www.zlatkovic.com/libxml.en.html
+
+Although this guy seems to use a different (MS) compiler. See 'Notes'  
+on his website...
+
+see below
+
+>
+> On 10 Sep 2007, at 10:13, David Siegel wrote:
+>
+>
+>> Hi,
+>> I would like to implement a libxml2 based version of load_map(). This
+>> would give us XML entities and entity references in the map
+>> description. They can be used as
+>> 	- variables
+>> 	- a simple include mechanism both from disk and from network
+>>
+
+--- snip ---
+
+>>
+>> If you agree that this would be nice to have here is my current plan:
+>> 	1. refactor the current load_map() into smaller functions. (partly
+>> done)
+>> 	2. refactor current load_map() to print warnings on unrecognized
+>> nodes/values. (partly done)
+>> 	3. add the necessary bits and pieces to <build-system-of-the-week>
+>> to choose ptree or libxml2. (partly done)
+>> 	4. implement the new parser.
+>>
+>>
+>
+> Great.
+>
+>> If that's OK with you I'd be grateful if nobody else would change
+>> load_map.cpp while I'm at it. Specially (1) is likely to produce huge
+>> ugly conflicts. ;-)
+>>
+>>
+>
+> There is a small possibility I might have to tweak load_map a  
+> little bit (add new entities)  , but we can merge changes back ?
+>
+
+Ok, if you have to tweak it just go ahead. Surely it can be merged  
+later. It just ain't fun. I think the only lines that I haven't  
+touched are the include guards ;-)
+
+
+> Another  option would be to create a branch for libxml stuff and  
+> merge it into the main trunk when it's ready ? I can give you svn  
+> write access just let me know.
+>
+
+That would be great! Thanks a lot.
+
+One more question:
+Currently mapnik ignores unknown elements/attributes in the XML file.  
+This is very XMLish but as a consequence typos are not detected.  
+Other things, like parse errors in filter expressions only print an
+obscure warning. This is fine for the developers, but it's a little  
+bit frustrating for API users that are not familiar with the sources  
+and/or the syntax (like me :-) ).
+
+I personally would prefer a very strict API behaviour:
+Throw exceptions on severe errors like:
+	- XML is not well formed (of course)
+	- unknown elements/attributes in the XML file
+	- syntax errors in filter expressions, colors, &c
+	- failed DB connections
+
+GUI applications could bring up dialogs containing the error  
+description. python scripts could terminate with non zero exit codes  
+instead of writing an empty png.
+For other configuration errors, like missing icons, a warning should  
+suffice. Although GUI applications might want to redirect these  
+warnings to some form of message sink. But this can wait ...
+
+If you agree I'd be happy to help to get at least some of this stuff  
+done.
+
+Another one:
+I noticed that all your files use the following include order:
+#include <std_headers>
+#include <3rd_party.h>
+#include <local_header.hpp>
+
+I'm used to include local headers first. Why do you include them  
+last? Just curious ...
+
+cheers,
+	david
+
+>
+> Cheers
+> Artem
+>
+>> cheers,
+>> 	david (agnat)
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+>>
+>
+> Artem Pavlenko
+> http://mapnik.org
+>
+>
+>
+>
+
+
+From lists at brachttal.net  Thu Sep 13 00:27:02 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Thu, 13 Sep 2007 00:27:02 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+Message-ID: <20070913002702.2ac97e56@frodo.mittelerde>
+
+Am Mon, 10 Sep 2007 09:51:47 +0100 schrieb Artem Pavlenko:
+
+> > Ok, I finished my port to autotools and it does at least compile. I
+> > didn't test it yet. But I'll continue and then show you the result.
+> > Perhaps it's an option to support both or maintain it in another  
+> > branch
+> > with only autotools project files included and merging both each
+> > time. I'm not sure...
+> 
+> Sure, we can have autotools based build system (in main trunk) along  
+> with SCons or anything else.
+> It just needs to be maintained.
+
+Sure, I'll maintain it. Now I had some time to test it. I got the shape
+plugin working and rundemo.cpp is working. The only problem is that in
+mapnik plugins have names "*.input". But libtool likes *.so names. Do
+you've problems changing the plugin name schema or should I rename the
+plugin while the install process.
+
+> >>> I thought about porting it to autotools...
+> >> If you're building on Linux/Unix , using Autotools might be a good
+> >> solution. But about native toolchain on win32?
+> >> There are also other building systems  :  CMake, Boost.Build.v2
+> >
+> > I like autotools because the Linux integration is very good and
+> > clean.
+> >
+> > I created a win32 library in the past and used autotools without
+> > problems. Ok, it's not "native", but what is "native". :-)
+> 
+> Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+> build win32 binaries.
+
+In theory it could be possible to use other compilers than gcc with
+autotools. But i'm not sure if the work worth it.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Fri Sep 14 21:43:48 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 14 Sep 2007 21:43:48 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070913002702.2ac97e56@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+Message-ID: <20070914214348.5ce7a219@frodo.mittelerde>
+
+Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+
+Ok, a first version of the autotools environment is finished. It builds
+and installs fine. Sure a lot could be improved. But people will
+hopefully try to build it and report problems.
+
+Am I allowed to commit the files in SVN?
+
+And what do you think about the *_input vs *_input.so problem?
+
+regards
+Andreas
+
+> Am Mon, 10 Sep 2007 09:51:47 +0100 schrieb Artem Pavlenko:
+> 
+> > > Ok, I finished my port to autotools and it does at least compile.
+> > > I didn't test it yet. But I'll continue and then show you the
+> > > result. Perhaps it's an option to support both or maintain it in
+> > > another branch
+> > > with only autotools project files included and merging both each
+> > > time. I'm not sure...
+> > 
+> > Sure, we can have autotools based build system (in main trunk)
+> > along with SCons or anything else.
+> > It just needs to be maintained.
+> 
+> Sure, I'll maintain it. Now I had some time to test it. I got the
+> shape plugin working and rundemo.cpp is working. The only problem is
+> that in mapnik plugins have names "*.input". But libtool likes *.so
+> names. Do you've problems changing the plugin name schema or should I
+> rename the plugin while the install process.
+>
+> > >>> I thought about porting it to autotools...
+> > >> If you're building on Linux/Unix , using Autotools might be a
+> > >> good solution. But about native toolchain on win32?
+> > >> There are also other building systems  :  CMake, Boost.Build.v2
+> > >
+> > > I like autotools because the Linux integration is very good and
+> > > clean.
+> > >
+> > > I created a win32 library in the past and used autotools without
+> > > problems. Ok, it's not "native", but what is "native". :-)
+> > 
+> > Using MS  compiler and linker, not gcc. I'm using vc++ express to  
+> > build win32 binaries.
+> 
+> In theory it could be possible to use other compilers than gcc with
+> autotools. But i'm not sure if the work worth it.
+> 
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From artem at mapnik.org  Fri Sep 14 22:36:56 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Sep 2007 21:36:56 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070914214348.5ce7a219@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+Message-ID: <7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+
+
+On 14 Sep 2007, at 20:43, Andreas Volz wrote:
+
+> Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+>
+> Ok, a first version of the autotools environment is finished. It  
+> builds
+> and installs fine. Sure a lot could be improved. But people will
+> hopefully try to build it and report problems.
+
+Cool!
+>
+> Am I allowed to commit the files in SVN?
+
+Sure, autotools can co-exist happily with scons.
+>
+> And what do you think about the *_input vs *_input.so problem?
+
+It should be possible to build a shared object with *.input  
+extension? Sorry, what is the problem?
+
+Cheers
+Artem
+
+>
+> regards
+> Andreas
+>
+>> Am Mon, 10 Sep 2007 09:51:47 +0100 schrieb Artem Pavlenko:
+>>
+>>>> Ok, I finished my port to autotools and it does at least compile.
+>>>> I didn't test it yet. But I'll continue and then show you the
+>>>> result. Perhaps it's an option to support both or maintain it in
+>>>> another branch
+>>>> with only autotools project files included and merging both each
+>>>> time. I'm not sure...
+>>>
+>>> Sure, we can have autotools based build system (in main trunk)
+>>> along with SCons or anything else.
+>>> It just needs to be maintained.
+>>
+>> Sure, I'll maintain it. Now I had some time to test it. I got the
+>> shape plugin working and rundemo.cpp is working. The only problem is
+>> that in mapnik plugins have names "*.input". But libtool likes *.so
+>> names. Do you've problems changing the plugin name schema or should I
+>> rename the plugin while the install process.
+>>
+>>>>>> I thought about porting it to autotools...
+>>>>> If you're building on Linux/Unix , using Autotools might be a
+>>>>> good solution. But about native toolchain on win32?
+>>>>> There are also other building systems  :  CMake, Boost.Build.v2
+>>>>
+>>>> I like autotools because the Linux integration is very good and
+>>>> clean.
+>>>>
+>>>> I created a win32 library in the past and used autotools without
+>>>> problems. Ok, it's not "native", but what is "native". :-)
+>>>
+>>> Using MS  compiler and linker, not gcc. I'm using vc++ express to
+>>> build win32 binaries.
+>>
+>> In theory it could be possible to use other compilers than gcc with
+>> autotools. But i'm not sure if the work worth it.
+>>
+>> regards
+>> Andreas
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070914/83db8b0d/attachment.html>
+
+From lists at brachttal.net  Fri Sep 14 23:56:20 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 14 Sep 2007 23:56:20 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+Message-ID: <20070914235620.1836bede@frodo.mittelerde>
+
+Am Fri, 14 Sep 2007 21:36:56 +0100 schrieb Artem Pavlenko:
+
+> 
+> On 14 Sep 2007, at 20:43, Andreas Volz wrote:
+> 
+> > Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+> >
+> > Ok, a first version of the autotools environment is finished. It  
+> > builds
+> > and installs fine. Sure a lot could be improved. But people will
+> > hopefully try to build it and report problems.
+> 
+> Cool!
+> >
+> > Am I allowed to commit the files in SVN?
+> 
+> Sure, autotools can co-exist happily with scons.
+> >
+> > And what do you think about the *_input vs *_input.so problem?
+> 
+> It should be possible to build a shared object with *.input  
+> extension? Sorry, what is the problem?
+
+There is the warning while bootstrapping the source:
+
+plugins/input/postgis/Makefile.am:2: `postgis.input' is not a standard
+libtool module name
+plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+
+If I ignore this warning, there're some linker problems.
+
+The only solution I see is to rename it without .so after building it.
+But why not using .so? What does scons build in win32 for the plugins?
+A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+someone will try to change plugins between win32 and Linux.
+
+regards
+Andreas
+
+
+From jfdoyon at gmail.com  Sat Sep 15 00:28:55 2007
+From: jfdoyon at gmail.com (Jean-Francois Doyon)
+Date: Fri, 14 Sep 2007 18:28:55 -0400
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070914235620.1836bede@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+Message-ID: <465A031A-33B3-4B37-81E8-CCD75DF730CE@gmail.com>
+
+Oooh, awsome ... good news on Autoconf (And I worked on the scons  
+stuff :)
+
++1 for the .so/dll extensions, and using libtool.
+
+J.F.
+
+On 14-Sep-07, at 5:56 PM, Andreas Volz wrote:
+
+> Am Fri, 14 Sep 2007 21:36:56 +0100 schrieb Artem Pavlenko:
+>
+>>
+>> On 14 Sep 2007, at 20:43, Andreas Volz wrote:
+>>
+>>> Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+>>>
+>>> Ok, a first version of the autotools environment is finished. It
+>>> builds
+>>> and installs fine. Sure a lot could be improved. But people will
+>>> hopefully try to build it and report problems.
+>>
+>> Cool!
+>>>
+>>> Am I allowed to commit the files in SVN?
+>>
+>> Sure, autotools can co-exist happily with scons.
+>>>
+>>> And what do you think about the *_input vs *_input.so problem?
+>>
+>> It should be possible to build a shared object with *.input
+>> extension? Sorry, what is the problem?
+>
+> There is the warning while bootstrapping the source:
+>
+> plugins/input/postgis/Makefile.am:2: `postgis.input' is not a standard
+> libtool module name
+> plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+>
+> If I ignore this warning, there're some linker problems.
+>
+> The only solution I see is to rename it without .so after building it.
+> But why not using .so? What does scons build in win32 for the plugins?
+> A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+> someone will try to change plugins between win32 and Linux.
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From lists at brachttal.net  Sat Sep 15 01:09:48 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 15 Sep 2007 01:09:48 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <465A031A-33B3-4B37-81E8-CCD75DF730CE@gmail.com>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+	<465A031A-33B3-4B37-81E8-CCD75DF730CE@gmail.com>
+Message-ID: <20070915010948.06ef62be@frodo.mittelerde>
+
+Am Fri, 14 Sep 2007 18:28:55 -0400 schrieb Jean-Francois Doyon:
+
+> Oooh, awsome ... good news on Autoconf (And I worked on the scons  
+> stuff :)
+> 
+> +1 for the .so/dll extensions, and using libtool.
+
+I added the autoconf stuff to SVN. See commit log:
+
++ added GNU autotools build environment
++ raster and gdal input isn't tested. Not working currently...
++ *-input.so plugins created. Change loader in source or link plugin to
+correct place
++ use pkg-config uninstalled feature
+  -> define project root to PKG_CONFIG_PATH to use mapnik without
+installation
++ added various library checks
++ don't install fonts
++ don't use included AGG
+  -> check for a installed libagg
++ Added Makefile for c++ demo
++ don't build any python wrapper stuff
+  -> this follows if all other building works
++ added Anjuta file
+  -> not needed to build anything, but helps much if you use Anjuta
+
+Please try it and report all problems. Remember it's a first start and
+may not compile on your system.
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Sat Sep 15 10:41:56 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 15 Sep 2007 09:41:56 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070914235620.1836bede@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+Message-ID: <488F0FD3-5DD8-4418-BA0C-F8EC82454AAC@mapnik.org>
+
+
+On 14 Sep 2007, at 22:56, Andreas Volz wrote:
+
+> Am Fri, 14 Sep 2007 21:36:56 +0100 schrieb Artem Pavlenko:
+>
+>>
+>> On 14 Sep 2007, at 20:43, Andreas Volz wrote:
+>>
+>>> Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+>>>
+>>> Ok, a first version of the autotools environment is finished. It
+>>> builds
+>>> and installs fine. Sure a lot could be improved. But people will
+>>> hopefully try to build it and report problems.
+>>
+>> Cool!
+>>>
+>>> Am I allowed to commit the files in SVN?
+>>
+>> Sure, autotools can co-exist happily with scons.
+>>>
+>>> And what do you think about the *_input vs *_input.so problem?
+>>
+>> It should be possible to build a shared object with *.input
+>> extension? Sorry, what is the problem?
+>
+> There is the warning while bootstrapping the source:
+>
+> plugins/input/postgis/Makefile.am:2: `postgis.input' is not a standard
+> libtool module name
+> plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+>
+> If I ignore this warning, there're some linker problems.
+
+
+Are you passing -module to the linker ?
+
+>
+> The only solution I see is to rename it without .so after building it.
+> But why not using .so? What does scons build in win32 for the plugins?
+
+I actually use Boost.Build.v2 to build Mapnik in win32.
+> A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+> someone will try to change plugins between win32 and Linux.
+
+No, we use *.input on all plarforms!!! This is the whole point. While  
+libmapnik is a shared library and should follow each platform naming  
+conventions:
+Linux,BSD  - *.so
+Mac OS X   - *.dylib
+Win32         - *.dll
+
+plug-ins are *not*. They are not intended to be used outside of  
+Mapnik,  they are loaded dynamically by custom loader based on libltdl (
+see Libtool docs for reasoning).
+
+Hmm.. I'm not convinced.
+Cheers,
+Artem
+
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070915/fbf73e41/attachment.html>
+
+From artem at mapnik.org  Sat Sep 15 10:54:54 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 15 Sep 2007 09:54:54 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <465A031A-33B3-4B37-81E8-CCD75DF730CE@gmail.com>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+	<465A031A-33B3-4B37-81E8-CCD75DF730CE@gmail.com>
+Message-ID: <983D406C-93B6-4BB3-8B29-33E2665B07BD@mapnik.org>
+
+Hi JF,
+
+Great to see you back :) !
+
+>
+> +1 for the .so/dll extensions, and using libtool.
+
+But why ? At the moment plug-ins use the same naming convention on  
+all platforms  - {name}.input
+They are only intended to be used by Mapnik and having .so,*.dylib  
+and *.dll can be confusing. For portability it make sense to use  
+custom loader based on libltdl.
+
+-2  (to even up this debate;)
+
+Seriously, I'd be happy for this change if there is a strong case. So  
+far I failed to see the benefits. Maybe I'm missing something.
+Can someone elaborate, please?
+
+Cheers,
+Artem
+
+>
+> J.F.
+>
+> On 14-Sep-07, at 5:56 PM, Andreas Volz wrote:
+>
+>> Am Fri, 14 Sep 2007 21:36:56 +0100 schrieb Artem Pavlenko:
+>>
+>>>
+>>> On 14 Sep 2007, at 20:43, Andreas Volz wrote:
+>>>
+>>>> Am Thu, 13 Sep 2007 00:27:02 +0200 schrieb Andreas Volz:
+>>>>
+>>>> Ok, a first version of the autotools environment is finished. It
+>>>> builds
+>>>> and installs fine. Sure a lot could be improved. But people will
+>>>> hopefully try to build it and report problems.
+>>>
+>>> Cool!
+>>>>
+>>>> Am I allowed to commit the files in SVN?
+>>>
+>>> Sure, autotools can co-exist happily with scons.
+>>>>
+>>>> And what do you think about the *_input vs *_input.so problem?
+>>>
+>>> It should be possible to build a shared object with *.input
+>>> extension? Sorry, what is the problem?
+>>
+>> There is the warning while bootstrapping the source:
+>>
+>> plugins/input/postgis/Makefile.am:2: `postgis.input' is not a  
+>> standard
+>> libtool module name
+>> plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+>>
+>> If I ignore this warning, there're some linker problems.
+>>
+>> The only solution I see is to rename it without .so after building  
+>> it.
+>> But why not using .so? What does scons build in win32 for the  
+>> plugins?
+>> A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+>> someone will try to change plugins between win32 and Linux.
+>>
+>> regards
+>> Andreas
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070915/64b3b806/attachment.html>
+
+From artem at mapnik.org  Sat Sep 15 11:21:50 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sat, 15 Sep 2007 10:21:50 +0100
+Subject: [Mapnik-devel] proposal: better XML support
+In-Reply-To: <36C14EC0-E81B-4AD5-9B42-00172B4F347D@artcom.de>
+References: <94912C08-1B29-45DF-AA64-536EDB834FCB@artcom.de>
+	<5F9DC5EE-5CB1-47FB-80B7-A0D840446857@mapnik.org>
+	<36C14EC0-E81B-4AD5-9B42-00172B4F347D@artcom.de>
+Message-ID: <8F5DF3D0-EDAD-4092-9CBA-DFED4355503F@mapnik.org>
+
+Hi David,
+
+On 12 Sep 2007, at 21:53, David Siegel wrote:
+
+> Hi Artem,
+> Hi list,
+>
+> On Sep 12, 2007, at 10:01 AM, Artem Pavlenko wrote:
+>
+>
+>> Hi David,
+>>
+>> Sounds good to me! I like the idea of  keeping both ptree and  
+>> libxml implementations. I can see  'include' mechanism could be a  
+>> winner in some cases. Have you done any benchmarking on  
+>> performance : ptree vs libxml ?
+>>
+>
+> No, I haven't done any benchmarking yet. I just got it working  
+> yesterday night :-) . My current implementation loads the XML file  
+> into a DOM and then populates a boost ptree with the result.
+
+Why not using SAX?
+
+> The ptree is then processed by the existing load_map(). This keeps  
+> the whole parsing logic in one place, but costs a bit performance  
+> because the DOM is copied to a ptree. BTW, I think the tinyxml  
+> parser does something similar. So this should not be worse. I'd  
+> also guess that libxml2 is a bit slower than tinyxml (more  
+> overhead). But I think it will be difficult to measure any  
+> difference because lots of other stuff happens during load_map(),  
+> like loading icon files from disk, establish DB connections, &c.
+> But if you insist I'll try to do some benchmarks ...
+
+I was just wondering (about benchmarks ..). For fast *.xml loading  
+I'd use spirit based parser, but you're right other things ..
+>
+>
+>> There is a flag XMLPARSER={spirit,tinyxml} to build ptree with  
+>> different impl. We can add libxml to the list?
+>>
+>
+> The current behaviour is as follows: If the (new) XML2_CONFIG build  
+> option is set to the xml2-config executable libxml2 is used and  
+> HAVE_LIBXML2 is defined. Otherwise it uses the flags currently  
+> specified in the toplevel SConstruct script (- 
+> DBOOST_PROPERTY_TREE_XML_PARSER_TINYXML that is). I don't want to  
+> make changes to the boost code. Future releases of boost will  
+> contain the property_tree lib and we might want to drop the local  
+> copy.
+
+Yep.
+>
+>
+>> Also,  how difficult to build libxml on win32?
+>>
+>
+> Good point! I haven't checked that yet, but a quick glance at the  
+> google results indicates that it is possible to build it using  
+> MSVC. This page has the "official" win32 binaries:
+>
+> http://www.zlatkovic.com/libxml.en.html
+>
+> Although this guy seems to use a different (MS) compiler. See  
+> 'Notes' on his website...
+>
+
+Thanks, I'll have a look.
+> see below
+>
+>>
+>> On 10 Sep 2007, at 10:13, David Siegel wrote:
+>>
+>>
+>>> Hi,
+>>> I would like to implement a libxml2 based version of load_map().  
+>>> This
+>>> would give us XML entities and entity references in the map
+>>> description. They can be used as
+>>> 	- variables
+>>> 	- a simple include mechanism both from disk and from network
+>>>
+>
+> --- snip ---
+>
+>>>
+>>> If you agree that this would be nice to have here is my current  
+>>> plan:
+>>> 	1. refactor the current load_map() into smaller functions. (partly
+>>> done)
+>>> 	2. refactor current load_map() to print warnings on unrecognized
+>>> nodes/values. (partly done)
+>>> 	3. add the necessary bits and pieces to <build-system-of-the-week>
+>>> to choose ptree or libxml2. (partly done)
+>>> 	4. implement the new parser.
+>>>
+>>>
+>>
+>> Great.
+>>
+>>> If that's OK with you I'd be grateful if nobody else would change
+>>> load_map.cpp while I'm at it. Specially (1) is likely to produce  
+>>> huge
+>>> ugly conflicts. ;-)
+>>>
+>>>
+>>
+>> There is a small possibility I might have to tweak load_map a  
+>> little bit (add new entities)  , but we can merge changes back ?
+>>
+>
+> Ok, if you have to tweak it just go ahead. Surely it can be merged  
+> later. It just ain't fun. I think the only lines that I haven't  
+> touched are the include guards ;-)
+>
+>
+>> Another  option would be to create a branch for libxml stuff and  
+>> merge it into the main trunk when it's ready ? I can give you svn  
+>> write access just let me know.
+>>
+>
+> That would be great! Thanks a lot.
+
+Great. Could you send me your : username and hash (generated with  
+htdigest) off list and I'll create an account. Also, consider signing  
+up to trac.mapnik.org.
+
+>
+> One more question:
+> Currently mapnik ignores unknown elements/attributes in the XML  
+> file. This is very XMLish but as a consequence typos are not  
+> detected. Other things, like parse errors in filter expressions  
+> only print an
+> obscure warning. This is fine for the developers, but it's a little  
+> bit frustrating for API users that are not familiar with the  
+> sources and/or the syntax (like me :-) ).
+>
+> I personally would prefer a very strict API behaviour:
+> Throw exceptions on severe errors like:
+> 	- XML is not well formed (of course)
+> 	- unknown elements/attributes in the XML file
+> 	- syntax errors in filter expressions, colors, &c
+> 	- failed DB connections
+>
+
+
+Good point. Ideally, it'll be great to have a way to switch between  
+fast but not verbose, 'never fail'  behavior  to more strict,  
+validating one.
+
+> GUI applications could bring up dialogs containing the error  
+> description. python scripts could terminate with non zero exit  
+> codes instead of writing an empty png.
+> For other configuration errors, like missing icons, a warning  
+> should suffice. Although GUI applications might want to redirect  
+> these warnings to some form of message sink. But this can wait ...
+>
+> If you agree I'd be happy to help to get at least some of this  
+> stuff done.
+>
+
+Yes, please.
+> Another one:
+> I noticed that all your files use the following include order:
+> #include <std_headers>
+> #include <3rd_party.h>
+> #include <local_header.hpp>
+>
+> I'm used to include local headers first. Why do you include them  
+> last? Just curious ...
+
+No particular reasons, just a self-imposed convention. Do you see any  
+problems with this? We can change the order.
+Cheers,
+Artem
+
+>
+> cheers,
+> 	david
+>
+>>
+>> Cheers
+>> Artem
+>>
+>>> cheers,
+>>> 	david (agnat)
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>
+>>>
+>>
+>> Artem Pavlenko
+>> http://mapnik.org
+>>
+>>
+>>
+>>
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070915/5f62229c/attachment.html>
+
+From jburgess777 at googlemail.com  Sat Sep 15 23:20:43 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Sat, 15 Sep 2007 22:20:43 +0100
+Subject: [Mapnik-devel] Problem rendering interlaced PNG?
+Message-ID: <1189891243.27050.101.camel@localhost.localdomain>
+
+Someone just updated one of the OSM map symbols with an interlaced PNG
+file and this was not rendering properly on the map. I opened the file
+in Gimp and saved it as a non-interlaced image and it now renders fine.
+Could Mapnik have an issue with interlaced PNG images?
+
+This one was broken:
+$ file symbols/peak.png
+symbols/peak.png: PNG image data, 8 x 8, 8-bit/color RGBA, interlaced
+
+
+These two both work OK:
+symbols/peak2.png: PNG image data, 8 x 8, 8-bit/color RGBA, non-interlaced
+symbols/peak3.png: PNG image data, 8 x 8, 1-bit colormap, non-interlaced
+
+
+	Jon
+
+
+
+
+From artem at mapnik.org  Sun Sep 16 11:06:26 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 16 Sep 2007 10:06:26 +0100
+Subject: [Mapnik-devel] Problem rendering interlaced PNG?
+In-Reply-To: <1189891243.27050.101.camel@localhost.localdomain>
+References: <1189891243.27050.101.camel@localhost.localdomain>
+Message-ID: <01274B96-C660-428C-BE87-A3EEA7AD0252@mapnik.org>
+
+
+On 15 Sep 2007, at 22:20, Jon Burgess wrote:
+
+> Someone just updated one of the OSM map symbols with an interlaced PNG
+> file and this was not rendering properly on the map. I opened the file
+> in Gimp and saved it as a non-interlaced image and it now renders  
+> fine.
+> Could Mapnik have an issue with interlaced PNG images?
+>
+> This one was broken:
+> $ file symbols/peak.png
+> symbols/peak.png: PNG image data, 8 x 8, 8-bit/color RGBA, interlaced
+>
+>
+> These two both work OK:
+> symbols/peak2.png: PNG image data, 8 x 8, 8-bit/color RGBA, non- 
+> interlaced
+> symbols/peak3.png: PNG image data, 8 x 8, 1-bit colormap, non- 
+> interlaced
+>
+>
+
+Sounds like PNG reader doesn't like interlaced images. I created -  
+https://trac.mapnik.org/ticket/43
+Cheers
+Artem
+> 	Jon
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070916/6df4a5b5/attachment.html>
+
+From lists at brachttal.net  Sat Sep 15 08:45:14 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 15 Sep 2007 08:45:14 +0200
+Subject: [Mapnik-devel] Wrong date?
+Message-ID: <20070915084514.04a313a0@frodo.mittelerde>
+
+Hello Artem,
+
+seems the date is wrong:
+
+> No presentations this time, phew. But I'll be demoing Mapnik on 24th
+> at 14:40. I'll see you there!
+
+On the website I see you on the 25th.
+
+regards
+Andreas
+
+
+From artem at mapnik.org  Mon Sep 17 19:06:55 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Mon, 17 Sep 2007 18:06:55 +0100
+Subject: [Mapnik-devel] Wrong date?
+In-Reply-To: <20070915084514.04a313a0@frodo.mittelerde>
+References: <20070915084514.04a313a0@frodo.mittelerde>
+Message-ID: <DDD010FA-504D-44FF-A413-9D4324E3AFDE@mapnik.org>
+
+
+On 15 Sep 2007, at 07:45, Andreas Volz wrote:
+
+> Hello Artem,
+>
+> seems the date is wrong:
+>
+>> No presentations this time, phew. But I'll be demoing Mapnik on 24th
+>> at 14:40. I'll see you there!
+>
+> On the website I see you on the 25th.
+
+Oopps :) 25th then. Thanks for letting me know. Fixed.
+Sorry, I didn't have a chance to try autotools build yet. I'm hoping  
+to get some time while in Canada, though.
+Cheers
+Artem
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070917/3dd16e02/attachment.html>
+
+From jburgess777 at googlemail.com  Mon Sep 17 20:24:26 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Mon, 17 Sep 2007 19:24:26 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+Message-ID: <1190053466.15029.94.camel@localhost.localdomain>
+
+I've put together a C implementation of the scripts used to render and
+serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+run into a scalability issue with Mapnik PostgreSQL connections. 
+
+I have Apache running with multiple processes and each of these has an
+instance of the Mapnik renderer. Each Mapnik instance wants to open
+about 10 connections to the PostgreSQL database. Postgres complains when
+I get above 100 connections so this puts a serious limit on the number
+of Apache processes I can run. In addition Mapnik keeps a pool of idle
+connections open so even when one httpd is not doing any rendering it
+can prevent another from getting a new connection.
+
+There are a few different ways I can think of to solve this. I wonder if
+anyone has any other suggestions on the best way to proceed:-
+
+- Increase the number of allowed PostgreSQL connections.
+- Use a threaded model in Apache.
+- Spawn a small number of rendering processes and share these between
+app the Apache processes.
+- Use some higher level pooling of PostgreSQL connections (pgpool).
+- Reduce or eliminate the pooling in Mapnik (e.g. close connections
+which are idle after a timeout)
+
+At the moment I'm favouring the option of spawning off a shared
+rendering task. Any thoughts?
+
+	Jon
+
+
+
+
+
+
+From crschmidt at metacarta.com  Mon Sep 17 20:46:17 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Mon, 17 Sep 2007 14:46:17 -0400
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <1190053466.15029.94.camel@localhost.localdomain>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+Message-ID: <20070917184617.GA27563@metacarta.com>
+
+On Mon, Sep 17, 2007 at 07:24:26PM +0100, Jon Burgess wrote:
+> I've put together a C implementation of the scripts used to render and
+> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+> run into a scalability issue with Mapnik PostgreSQL connections. 
+> 
+> I have Apache running with multiple processes and each of these has an
+> instance of the Mapnik renderer. Each Mapnik instance wants to open
+> about 10 connections to the PostgreSQL database. Postgres complains when
+> I get above 100 connections so this puts a serious limit on the number
+> of Apache processes I can run. In addition Mapnik keeps a pool of idle
+> connections open so even when one httpd is not doing any rendering it
+> can prevent another from getting a new connection.
+> 
+> There are a few different ways I can think of to solve this. I wonder if
+> anyone has any other suggestions on the best way to proceed:-
+> 
+> - Increase the number of allowed PostgreSQL connections.
+
+I've used this route when I had the same problem with
+mod_python/TileCache. 
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From lists at brachttal.net  Mon Sep 17 21:27:39 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 17 Sep 2007 21:27:39 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <488F0FD3-5DD8-4418-BA0C-F8EC82454AAC@mapnik.org>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+	<488F0FD3-5DD8-4418-BA0C-F8EC82454AAC@mapnik.org>
+Message-ID: <20070917212739.1dc56ac8@frodo.mittelerde>
+
+Am Sat, 15 Sep 2007 09:41:56 +0100 schrieb Artem Pavlenko:
+
+> > There is the warning while bootstrapping the source:
+> >
+> > plugins/input/postgis/Makefile.am:2: `postgis.input' is not a
+> > standard libtool module name
+> > plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+> >
+> > If I ignore this warning, there're some linker problems.
+> 
+> 
+> Are you passing -module to the linker ?
+
+Yes.
+
+> > The only solution I see is to rename it without .so after building
+> > it. But why not using .so? What does scons build in win32 for the
+> > plugins?
+> 
+> I actually use Boost.Build.v2 to build Mapnik in win32.
+> > A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+> > someone will try to change plugins between win32 and Linux.
+> 
+> No, we use *.input on all plarforms!!! This is the whole point.
+> While libmapnik is a shared library and should follow each platform
+> naming conventions:
+> Linux,BSD  - *.so
+> Mac OS X   - *.dylib
+> Win32         - *.dll
+> 
+> plug-ins are *not*. They are not intended to be used outside of  
+> Mapnik,  they are loaded dynamically by custom loader based on
+> libltdl ( see Libtool docs for reasoning).
+
+Ok, I'll respect that naming scheme. I'm sure there's a way to let
+libtool name the plugin that way. But I'm away for one week. I'll try a
+solution next week.
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Mon Sep 17 21:59:00 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 17 Sep 2007 21:59:00 +0200
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070917212739.1dc56ac8@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+	<488F0FD3-5DD8-4418-BA0C-F8EC82454AAC@mapnik.org>
+	<20070917212739.1dc56ac8@frodo.mittelerde>
+Message-ID: <20070917215900.6b095669@frodo.mittelerde>
+
+Am Mon, 17 Sep 2007 21:27:39 +0200 schrieb Andreas Volz:
+
+> Am Sat, 15 Sep 2007 09:41:56 +0100 schrieb Artem Pavlenko:
+> 
+> > > There is the warning while bootstrapping the source:
+> > >
+> > > plugins/input/postgis/Makefile.am:2: `postgis.input' is not a
+> > > standard libtool module name
+> > > plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+> > >
+> > > If I ignore this warning, there're some linker problems.
+> > 
+> > 
+> > Are you passing -module to the linker ?
+> 
+> Yes.
+> 
+> > > The only solution I see is to rename it without .so after building
+> > > it. But why not using .so? What does scons build in win32 for the
+> > > plugins?
+> > 
+> > I actually use Boost.Build.v2 to build Mapnik in win32.
+> > > A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+> > > someone will try to change plugins between win32 and Linux.
+> > 
+> > No, we use *.input on all plarforms!!! This is the whole point.
+> > While libmapnik is a shared library and should follow each platform
+> > naming conventions:
+> > Linux,BSD  - *.so
+> > Mac OS X   - *.dylib
+> > Win32         - *.dll
+> > 
+> > plug-ins are *not*. They are not intended to be used outside of  
+> > Mapnik,  they are loaded dynamically by custom loader based on
+> > libltdl ( see Libtool docs for reasoning).
+> 
+> Ok, I'll respect that naming scheme. I'm sure there's a way to let
+> libtool name the plugin that way. But I'm away for one week. I'll try
+> a solution next week.
+
+Faster than I thought. I found a solution: "-shrext" does it. :-)
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Mon Sep 17 23:17:16 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Mon, 17 Sep 2007 23:17:16 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+Message-ID: <20070917231716.52e5a38f@frodo.mittelerde>
+
+Hello,
+
+some days ago I compiled mapnik with autotools. I used the libagg from
+my distribution. But today after a SVN update i got this compiler error:
+
+agg_renderer.cpp: In constructor
+'mapnik::agg_renderer<T>::agg_renderer(const mapnik::Map&, T&, unsigned
+int, unsigned int) [with T = mapnik::Image32]': agg_renderer.cpp:626:
+instantiated from here agg_renderer.cpp:104: error: no matching
+function for call to
+'agg::pixfmt_alpha_blend_rgba<agg::blender_rgba<agg::rgba8,
+agg::order_rgba>, agg::row_accessor<unsigned char>, unsigned
+int>::pixfmt_alpha_blend_rgba(agg::row_ptr_cache<unsigned
+int>char>&)' /usr/include/agg2/agg_pixfmt_rgba.h:1784: note: candidates
+int>char>are: agg::pixfmt_alpha_blend_rgba<Blender, RenBuf,
+int>char>PixelT>::pixfmt_alpha_blend_rgba(RenBuf&) [with Blender =
+int>char>PixelT>agg::blender_rgba<agg::rgba8, agg::order_rgba>, RenBuf
+int>char>PixelT>= agg::row_accessor<unsigned char>, PixelT = unsigned
+int>char>PixelT>int] /usr/include/agg2/agg_pixfmt_rgba.h:1783:
+int>char>PixelT>note:
+int>char>PixelT>agg::pixfmt_alpha_blend_rgba<Blender, RenBuf,
+int>char>PixelT>PixelT>::pixfmt_alpha_blend_rgba() [with Blender =
+int>char>PixelT>PixelT>agg::blender_rgba<agg::rgba8, agg::order_rgba>,
+int>char>PixelT>PixelT>RenBuf = agg::row_accessor<unsigned char>,
+int>char>PixelT>PixelT>PixelT = unsigned
+int>char>PixelT>PixelT>int] /usr/include/agg2/agg_pixfmt_rgba.h:1763:
+int>char>PixelT>PixelT>note:
+int>char>PixelT>PixelT>agg::pixfmt_alpha_blend_rgba<agg::blender_rgba<agg::rgba8,
+int>char>PixelT>PixelT>agg::order_rgba>, agg::row_accessor<unsigned
+int>char>PixelT>PixelT>char>, unsigned
+int>char>PixelT>PixelT>char>int>::pixfmt_alpha_blend_rgba(const
+int>char>PixelT>PixelT>char>int>agg::pixfmt_alpha_blend_rgba<agg::blender_rgba<agg::rgba8,
+int>char>PixelT>PixelT>char>int>agg::order_rgba>,
+int>char>PixelT>PixelT>char>int>agg::row_accessor<unsigned char>,
+int>char>PixelT>PixelT>char>int>unsigned int>&) make[2]: ***
+int>char>PixelT>PixelT>char>int>[libmapnik_la-agg_renderer.lo] Fehler 1
+
+Are there some latest changes that forces Mapnik to use the included
+libagg source? Or where is the problem?
+
+regards
+Andreas
+
+
+From perrygeo at gmail.com  Tue Sep 18 09:22:42 2007
+From: perrygeo at gmail.com (Matthew Perry)
+Date: Tue, 18 Sep 2007 00:22:42 -0700
+Subject: [Mapnik-devel] Problems building r526 on ubuntu
+Message-ID: <5383fa5e0709180022g68daf020we96e17dd85e42961@mail.gmail.com>
+
+Hi folks,
+
+ Running ubuntu feisty, I've checked out the latest svn trunk and have
+hit a number of snags:
+
+1)
+python scons/scons.py PYTHON=/usr/bin/python
+PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+
+python: can't open file 'scons/scons.py': [Errno 2] No such file or directory
+
+FIX: Either scons/scons needs to be renamed to scons/scons.py or the
+INSTALL needs to be updated
+
+
+2)
+python scons/scons PYTHON=/usr/bin/python
+PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+scons: Reading SConscript files ...
+Building on Linux ...
+...
+Could not find header or shared library for boost thread, exiting!
+
+This one has me stumped. I have the ubuntu packages installed:
+
+sudo dpkg -l | grep libboost-thread
+ii  libboost-thread-dev                        1.33.1-9ubuntu3
+                   portable C++ multi-threading
+ii  libboost-thread1.33.1                      1.33.1-9ubuntu3
+                   portable C++ multi-threading
+
+This command worked a few months ago. Why is scons now having troubles
+finding libboost-thread?? Any ideas?
+
+-- 
+Matthew T. Perry
+http://www.perrygeo.net
+
+"You never change things by fighting the existing reality.
+To change something, build a new model that makes
+the existing model obsolete" - R. Buckminster Fuller
+
+
+From artem at mapnik.org  Tue Sep 18 12:42:44 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 11:42:44 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <1190053466.15029.94.camel@localhost.localdomain>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+Message-ID: <0B5AC0E4-E790-47C1-A312-7979140DDEB5@mapnik.org>
+
+
+On 17 Sep 2007, at 19:24, Jon Burgess wrote:
+
+> I've put together a C implementation of the scripts used to render and
+> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+> run into a scalability issue with Mapnik PostgreSQL connections.
+>
+> I have Apache running with multiple processes and each of these has an
+> instance of the Mapnik renderer. Each Mapnik instance wants to open
+> about 10 connections to the PostgreSQL database. Postgres complains  
+> when
+> I get above 100 connections so this puts a serious limit on the number
+> of Apache processes I can run. In addition Mapnik keeps a pool of idle
+> connections open so even when one httpd is not doing any rendering it
+> can prevent another from getting a new connection.
+>
+> There are a few different ways I can think of to solve this. I  
+> wonder if
+> anyone has any other suggestions on the best way to proceed:-
+>
+> - Increase the number of allowed PostgreSQL connections.
+
+This would help, but this is not a real solution. I suspect that some  
+logic behind connection pooling is not working correctly.
+1-2 connections (the same database) per map object should be enough.  
+Have you tried setting "max_size" (I must change this name to  
+something more informative i.e dbpool_max_size)  to something less  
+then 10?
+
+> - Use a threaded model in Apache.
+
+I would always encourage using threaded model in Apache :). I had  
+best results with multiple map objects (sharing the same DB  
+connections pool) +   apache2 with worker MPM.
+
+> - Spawn a small number of rendering processes and share these between
+> app the Apache processes.
+Sounds like another level of indirection that can be avoided.
+
+> - Use some higher level pooling of PostgreSQL connections (pgpool).
+> - Reduce or eliminate the pooling in Mapnik (e.g. close connections
+> which are idle after a timeout)
+>
+> At the moment I'm favouring the option of spawning off a shared
+> rendering task. Any thoughts?
+
+If my assumption about 'only 1-2 connections per map object are  
+needed' is correct, there is no need for sharing rendering tasks. We  
+should be able to create as many as 50-100 with current  
+postgresql.conf .
+
+But, yes, idle connections needs to be addressed as well :)
+
+Cheers,
+
+Artem
+
+>
+> 	Jon
+>
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/fadd8f55/attachment.html>
+
+From artem at mapnik.org  Tue Sep 18 12:44:20 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 11:44:20 +0100
+Subject: [Mapnik-devel] Mapnik crash with current SVN source
+In-Reply-To: <20070917215900.6b095669@frodo.mittelerde>
+References: <20070908013209.340fa0e3@frodo.mittelerde>
+	<1189247662.20310.58.camel@localhost.localdomain>
+	<20070908125118.4ee52967@frodo.mittelerde>
+	<342C1B58-3846-44FC-AAE0-12D689A4FA7A@mapnik.org>
+	<20070910102944.43540eac@frodo.mittelerde>
+	<391E4F39-4D90-4192-B57C-8A5944B63180@mapnik.org>
+	<20070913002702.2ac97e56@frodo.mittelerde>
+	<20070914214348.5ce7a219@frodo.mittelerde>
+	<7C5EA044-78EF-48A5-AB31-7652D6FAB0DC@mapnik.org>
+	<20070914235620.1836bede@frodo.mittelerde>
+	<488F0FD3-5DD8-4418-BA0C-F8EC82454AAC@mapnik.org>
+	<20070917212739.1dc56ac8@frodo.mittelerde>
+	<20070917215900.6b095669@frodo.mittelerde>
+Message-ID: <998D774D-B35C-4EAC-85C2-651019A35087@mapnik.org>
+
+
+On 17 Sep 2007, at 20:59, Andreas Volz wrote:
+
+> Am Mon, 17 Sep 2007 21:27:39 +0200 schrieb Andreas Volz:
+>
+>> Am Sat, 15 Sep 2007 09:41:56 +0100 schrieb Artem Pavlenko:
+>>
+>>>> There is the warning while bootstrapping the source:
+>>>>
+>>>> plugins/input/postgis/Makefile.am:2: `postgis.input' is not a
+>>>> standard libtool module name
+>>>> plugins/input/postgis/Makefile.am:2: did you mean `postgis.la'?
+>>>>
+>>>> If I ignore this warning, there're some linker problems.
+>>>
+>>>
+>>> Are you passing -module to the linker ?
+>>
+>> Yes.
+>>
+>>>> The only solution I see is to rename it without .so after building
+>>>> it. But why not using .so? What does scons build in win32 for the
+>>>> plugins?
+>>>
+>>> I actually use Boost.Build.v2 to build Mapnik in win32.
+>>>> A DLL? Then we should suffix it with .so and .dll. If not, perhaps
+>>>> someone will try to change plugins between win32 and Linux.
+>>>
+>>> No, we use *.input on all plarforms!!! This is the whole point.
+>>> While libmapnik is a shared library and should follow each platform
+>>> naming conventions:
+>>> Linux,BSD  - *.so
+>>> Mac OS X   - *.dylib
+>>> Win32         - *.dll
+>>>
+>>> plug-ins are *not*. They are not intended to be used outside of
+>>> Mapnik,  they are loaded dynamically by custom loader based on
+>>> libltdl ( see Libtool docs for reasoning).
+>>
+>> Ok, I'll respect that naming scheme. I'm sure there's a way to let
+>> libtool name the plugin that way. But I'm away for one week. I'll try
+>> a solution next week.
+>
+> Faster than I thought. I found a solution: "-shrext" does it. :-)
+
+Aha, I thought there'll be some option.
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/6bd6ddb6/attachment.html>
+
+From artem at mapnik.org  Tue Sep 18 12:47:29 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 11:47:29 +0100
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <20070917231716.52e5a38f@frodo.mittelerde>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+Message-ID: <A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+
+
+On 17 Sep 2007, at 22:17, Andreas Volz wrote:
+
+> Hello,
+>
+> some days ago I compiled mapnik with autotools. I used the libagg from
+> my distribution. But today after a SVN update i got this compiler  
+> error:
+>
+> agg_renderer.cpp: In constructor
+> 'mapnik::agg_renderer<T>::agg_renderer(const mapnik::Map&, T&,  
+> unsigned
+> int, unsigned int) [with T = mapnik::Image32]': agg_renderer.cpp:626:
+> instantiated from here agg_renderer.cpp:104: error: no matching
+> function for call to
+> 'agg::pixfmt_alpha_blend_rgba<agg::blender_rgba<agg::rgba8,
+> agg::order_rgba>, agg::row_accessor<unsigned char>, unsigned
+> int>::pixfmt_alpha_blend_rgba(agg::row_ptr_cache<unsigned
+> int>char>&)' /usr/include/agg2/agg_pixfmt_rgba.h:1784: note:  
+> candidates
+> int>char>are: agg::pixfmt_alpha_blend_rgba<Blender, RenBuf,
+> int>char>PixelT>::pixfmt_alpha_blend_rgba(RenBuf&) [with Blender =
+> int>char>PixelT>agg::blender_rgba<agg::rgba8, agg::order_rgba>, RenBuf
+> int>char>PixelT>= agg::row_accessor<unsigned char>, PixelT = unsigned
+> int>char>PixelT>int] /usr/include/agg2/agg_pixfmt_rgba.h:1783:
+> int>char>PixelT>note:
+> int>char>PixelT>agg::pixfmt_alpha_blend_rgba<Blender, RenBuf,
+> int>char>PixelT>PixelT>::pixfmt_alpha_blend_rgba() [with Blender =
+> int>char>PixelT>PixelT>agg::blender_rgba<agg::rgba8, agg::order_rgba>,
+> int>char>PixelT>PixelT>RenBuf = agg::row_accessor<unsigned char>,
+> int>char>PixelT>PixelT>PixelT = unsigned
+> int>char>PixelT>PixelT>int] /usr/include/agg2/agg_pixfmt_rgba.h:1763:
+> int>char>PixelT>PixelT>note:
+> int>char>PixelT>PixelT>agg::pixfmt_alpha_blend_rgba<agg::blender_rgba< 
+> agg::rgba8,
+> int>char>PixelT>PixelT>agg::order_rgba>, agg::row_accessor<unsigned
+> int>char>PixelT>PixelT>char>, unsigned
+> int>char>PixelT>PixelT>char>int>::pixfmt_alpha_blend_rgba(const
+> int>char>PixelT>PixelT>char>int>agg::pixfmt_alpha_blend_rgba<agg::blen 
+> der_rgba<agg::rgba8,
+> int>char>PixelT>PixelT>char>int>agg::order_rgba>,
+> int>char>PixelT>PixelT>char>int>agg::row_accessor<unsigned char>,
+> int>char>PixelT>PixelT>char>int>unsigned int>&) make[2]: ***
+> int>char>PixelT>PixelT>char>int>[libmapnik_la-agg_renderer.lo]  
+> Fehler 1
+>
+> Are there some latest changes that forces Mapnik to use the included
+> libagg source? Or where is the problem?
+
+
+Could you build with included agg ? It looks like your agg library is  
+configured differently.
+I suggest you run diff on agg/include directories.
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/b2e55073/attachment.html>
+
+From artem at mapnik.org  Tue Sep 18 12:57:05 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 11:57:05 +0100
+Subject: [Mapnik-devel] Problems building r526 on ubuntu
+In-Reply-To: <5383fa5e0709180022g68daf020we96e17dd85e42961@mail.gmail.com>
+References: <5383fa5e0709180022g68daf020we96e17dd85e42961@mail.gmail.com>
+Message-ID: <FC9B268B-6144-41EC-9207-79E024A1C42F@mapnik.org>
+
+Hi Matt,
+
+> Hi folks,
+>
+>  Running ubuntu feisty, I've checked out the latest svn trunk and have
+> hit a number of snags:
+>
+> 1)
+> python scons/scons.py PYTHON=/usr/bin/python
+> PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+> BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+> GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+>
+> python: can't open file 'scons/scons.py': [Errno 2] No such file or  
+> directory
+>
+> FIX: Either scons/scons needs to be renamed to scons/scons.py or the
+> INSTALL needs to be updated
+
+Yes, thanks, NSTALL needs updating.
+>
+>
+> 2)
+> python scons/scons PYTHON=/usr/bin/python
+> PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql
+> BOOST_INCLUDES=/usr/include/boost BOOST_LIBS=/usr/lib/
+> GDAL_INCLUDES=/usr/local/include GDAL_LIBS=/usr/local/lib
+> scons: Reading SConscript files ...
+> Building on Linux ...
+> ...
+> Could not find header or shared library for boost thread, exiting!
+>
+> This one has me stumped. I have the ubuntu packages installed:
+>
+> sudo dpkg -l | grep libboost-thread
+> ii  libboost-thread-dev                        1.33.1-9ubuntu3
+>                    portable C++ multi-threading
+> ii  libboost-thread1.33.1                      1.33.1-9ubuntu3
+>                    portable C++ multi-threading
+>
+> This command worked a few months ago. Why is scons now having troubles
+> finding libboost-thread?? Any ideas?
+
+
+Yes, I have some ideas. boost libraries on ubuntu don't follow  
+official boost naming convention i.e multi-treading libs should have - 
+mt .
+You can solve this by passing THREADING=single to scons.  Also, I  
+left checking for boost_system uncommented in SConstruct - only  
+required if you're using boost-1_35. Fixed in r527.
+
+Cheers
+Artem
+
+>
+> -- 
+> Matthew T. Perry
+> http://www.perrygeo.net
+>
+> "You never change things by fighting the existing reality.
+> To change something, build a new model that makes
+> the existing model obsolete" - R. Buckminster Fuller
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/3cd4daa0/attachment.html>
+
+From artem at mapnik.org  Tue Sep 18 16:08:26 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 15:08:26 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <1190053466.15029.94.camel@localhost.localdomain>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+Message-ID: <E09BC1FB-FB04-4C0E-AD0E-6358E6989A06@mapnik.org>
+
+
+On 17 Sep 2007, at 19:24, Jon Burgess wrote:
+
+> I've put together a C implementation of the scripts used to render and
+> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+> run into a scalability issue with Mapnik PostgreSQL connections.
+>
+> I have Apache running with multiple processes and each of these has an
+> instance of the Mapnik renderer. Each Mapnik instance wants to open
+> about 10 connections to the PostgreSQL database. Postgres complains  
+> when
+> I get above 100 connections so this puts a serious limit on the number
+> of Apache processes I can run. In addition Mapnik keeps a pool of idle
+> connections open so even when one httpd is not doing any rendering it
+> can prevent another from getting a new connection.
+>
+> There are a few different ways I can think of to solve this. I  
+> wonder if
+> anyone has any other suggestions on the best way to proceed:-
+>
+> - Increase the number of allowed PostgreSQL connections.
+> - Use a threaded model in Apache.
+> - Spawn a small number of rendering processes and share these between
+> app the Apache processes.
+> - Use some higher level pooling of PostgreSQL connections (pgpool).
+> - Reduce or eliminate the pooling in Mapnik (e.g. close connections
+> which are idle after a timeout)
+>
+> At the moment I'm favouring the option of spawning off a shared
+> rendering task. Any thoughts?
+>
+> 	Jon
+
+Ok, there was a bug in postgis.cpp.
+envelope() method wasn't using PoolGuard, hence grabbing all  
+connections and never returning them ;)
+
+I fixed that in r529.
+
+To guarantee db connection is always returned to the pool, wrap it in  
+PoolGuard object :
+
+PoolGuard<shared_ptr<Connection>,shared_ptr<Pool<Connection,ConnectionCr 
+eator> > > guard(conn,pool);
+
+// use connection, it will be returned when guard goes out of scope
+
+Could you check if this solves the problem?
+
+Cheers
+Artem
+
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/de9cf45d/attachment.html>
+
+From artem at mapnik.org  Tue Sep 18 16:10:42 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 15:10:42 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <20070917184617.GA27563@metacarta.com>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<20070917184617.GA27563@metacarta.com>
+Message-ID: <8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+
+
+On 17 Sep 2007, at 19:46, Christopher Schmidt wrote:
+
+> On Mon, Sep 17, 2007 at 07:24:26PM +0100, Jon Burgess wrote:
+>> I've put together a C implementation of the scripts used to render  
+>> and
+>> serve the OSM Mapnik tiles. It seems to work more or less OK but I've
+>> run into a scalability issue with Mapnik PostgreSQL connections.
+>>
+>> I have Apache running with multiple processes and each of these  
+>> has an
+>> instance of the Mapnik renderer. Each Mapnik instance wants to open
+>> about 10 connections to the PostgreSQL database. Postgres  
+>> complains when
+>> I get above 100 connections so this puts a serious limit on the  
+>> number
+>> of Apache processes I can run. In addition Mapnik keeps a pool of  
+>> idle
+>> connections open so even when one httpd is not doing any rendering it
+>> can prevent another from getting a new connection.
+>>
+>> There are a few different ways I can think of to solve this. I  
+>> wonder if
+>> anyone has any other suggestions on the best way to proceed:-
+>>
+>> - Increase the number of allowed PostgreSQL connections.
+>
+> I've used this route when I had the same problem with
+> mod_python/TileCache.
+
+Sounds a bit too hack-ish :) . There was bug in postgis plug-in,  
+fixed in r529.
+Cheers
+Artem
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/c8ad9cf7/attachment.html>
+
+From crschmidt at metacarta.com  Tue Sep 18 16:55:23 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Tue, 18 Sep 2007 10:55:23 -0400
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<20070917184617.GA27563@metacarta.com>
+	<8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+Message-ID: <20070918145523.GA1838@metacarta.com>
+
+On Tue, Sep 18, 2007 at 03:10:42PM +0100, Artem Pavlenko wrote:
+> >I've used this route when I had the same problem with
+> >mod_python/TileCache.
+> 
+> Sounds a bit too hack-ish :) . There was bug in postgis plug-in,  
+> fixed in r529.
+
+That's good to know :) Has this existed as far back as ~420? 
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Tue Sep 18 17:07:00 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 16:07:00 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <20070918145523.GA1838@metacarta.com>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<20070917184617.GA27563@metacarta.com>
+	<8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+	<20070918145523.GA1838@metacarta.com>
+Message-ID: <44ACA219-8119-4676-9431-384ED3F25E30@mapnik.org>
+
+
+On 18 Sep 2007, at 15:55, Christopher Schmidt wrote:
+
+> On Tue, Sep 18, 2007 at 03:10:42PM +0100, Artem Pavlenko wrote:
+>>> I've used this route when I had the same problem with
+>>> mod_python/TileCache.
+>>
+>> Sounds a bit too hack-ish :) . There was bug in postgis plug-in,
+>> fixed in r529.
+>
+> That's good to know :) Has this existed as far back as ~420?
+
+Yep, I introduced this bug in r390 :D
+A.
+>
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/a30068e3/attachment.html>
+
+From crschmidt at metacarta.com  Tue Sep 18 17:15:45 2007
+From: crschmidt at metacarta.com (Christopher Schmidt)
+Date: Tue, 18 Sep 2007 11:15:45 -0400
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <44ACA219-8119-4676-9431-384ED3F25E30@mapnik.org>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<20070917184617.GA27563@metacarta.com>
+	<8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+	<20070918145523.GA1838@metacarta.com>
+	<44ACA219-8119-4676-9431-384ED3F25E30@mapnik.org>
+Message-ID: <20070918151545.GB1838@metacarta.com>
+
+On Tue, Sep 18, 2007 at 04:07:00PM +0100, Artem Pavlenko wrote:
+> 
+> On 18 Sep 2007, at 15:55, Christopher Schmidt wrote:
+> 
+> >On Tue, Sep 18, 2007 at 03:10:42PM +0100, Artem Pavlenko wrote:
+> >>>I've used this route when I had the same problem with
+> >>>mod_python/TileCache.
+> >>
+> >>Sounds a bit too hack-ish :) . There was bug in postgis plug-in,
+> >>fixed in r529.
+> >
+> >That's good to know :) Has this existed as far back as ~420?
+> 
+> Yep, I introduced this bug in r390 :D
+
+Excellent. So, about 8 months ago when I was reporting PostGIS
+connections being more than they should be, and you said "That's just a
+problem with your apache config"... it probably wasn't. :p
+
+Good to know it's fixed, I'm sorry I apparently didn't report my bug in
+a succinct enough manner to track it down then.
+
+Regards,
+-- 
+Christopher Schmidt
+MetaCarta
+
+
+From artem at mapnik.org  Tue Sep 18 17:32:04 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Tue, 18 Sep 2007 16:32:04 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <20070918151545.GB1838@metacarta.com>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<20070917184617.GA27563@metacarta.com>
+	<8CD5FEEC-E42F-48FD-8D37-E7FCF33D3FEA@mapnik.org>
+	<20070918145523.GA1838@metacarta.com>
+	<44ACA219-8119-4676-9431-384ED3F25E30@mapnik.org>
+	<20070918151545.GB1838@metacarta.com>
+Message-ID: <3DC89AF5-4118-47C7-8354-2CEF31DD4AA4@mapnik.org>
+
+
+On 18 Sep 2007, at 16:15, Christopher Schmidt wrote:
+
+> On Tue, Sep 18, 2007 at 04:07:00PM +0100, Artem Pavlenko wrote:
+>>
+>> On 18 Sep 2007, at 15:55, Christopher Schmidt wrote:
+>>
+>>> On Tue, Sep 18, 2007 at 03:10:42PM +0100, Artem Pavlenko wrote:
+>>>>> I've used this route when I had the same problem with
+>>>>> mod_python/TileCache.
+>>>>
+>>>> Sounds a bit too hack-ish :) . There was bug in postgis plug-in,
+>>>> fixed in r529.
+>>>
+>>> That's good to know :) Has this existed as far back as ~420?
+>>
+>> Yep, I introduced this bug in r390 :D
+>
+> Excellent. So, about 8 months ago when I was reporting PostGIS
+> connections being more than they should be, and you said "That's  
+> just a
+> problem with your apache config"... it probably wasn't. :p
+
+Correct.
+
+>
+> Good to know it's fixed, I'm sorry I apparently didn't report my  
+> bug in
+> a succinct enough manner to track it down then.
+>
+
+No probs, I should've taken on this anyway.
+
+Artem.
+> Regards,
+> -- 
+> Christopher Schmidt
+> MetaCarta
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070918/07279f5e/attachment.html>
+
+From jburgess777 at googlemail.com  Wed Sep 19 00:38:07 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Tue, 18 Sep 2007 23:38:07 +0100
+Subject: [Mapnik-devel] Mapnik rendering inside an Apache module
+In-Reply-To: <E09BC1FB-FB04-4C0E-AD0E-6358E6989A06@mapnik.org>
+References: <1190053466.15029.94.camel@localhost.localdomain>
+	<E09BC1FB-FB04-4C0E-AD0E-6358E6989A06@mapnik.org>
+Message-ID: <1190155087.4459.5.camel@localhost.localdomain>
+
+On Tue, 2007-09-18 at 15:08 +0100, Artem Pavlenko wrote:
+> 
+
+> Ok, there was a bug in postgis.cpp. 
+> envelope() method wasn't using PoolGuard, hence grabbing all
+> connections and never returning them ;)
+> 
+> 
+> I fixed that in r529.
+> 
+> 
+> To guarantee db connection is always returned to the pool, wrap it in
+> PoolGuard object :
+> 
+> 
+> PoolGuard<shared_ptr<Connection>,shared_ptr<Pool<Connection,ConnectionCreator> > > guard(conn,pool);
+> 
+> 
+> // use connection, it will be returned when guard goes out of scope
+> 
+> 
+> Could you check if this solves the problem?
+
+Yes this seems to solve the problem, I see just 1 connection for each
+instance.
+
+	Jon
+
+
+> 
+> Cheers
+> Artem
+> 
+> > 
+> > 
+
+
+
+
+
+From jburgess777 at googlemail.com  Wed Sep 19 22:37:25 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 19 Sep 2007 21:37:25 +0100
+Subject: [Mapnik-devel] load_map() not thread-safe?
+Message-ID: <1190234245.4459.18.camel@localhost.localdomain>
+
+I've experienced some crashes in Mapnik when multiple threads call
+load_map() simultaneously. I can work around this by serialising the
+calls. Is there something wrong with this approach, a problem with my
+setup or a bug in Mapnik?
+
+With the attached source code using parallel or serialised calls to
+load_map():
+
+$ g++ -Wall -O2 threading.cpp   -o threading -I/usr/include/agg2 -I/usr/include/freetype2 -lmapnik
+$ ./threading
+registered datasource : gdal
+registered datasource : raster
+registered datasource : shape
+registered datasource : postgis
+bit_depth=8 color_type=6
+Segmentation fault
+
+$ g++ -Wall -O2 threading.cpp -DSERIALIZE  -o threading -I/usr/include/agg2 -I/usr/include/freetype2 -lmapnik
+$ ./threading
+registered datasource : gdal
+registered datasource : raster
+registered datasource : shape
+registered datasource : postgis
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+bit_depth=8 color_type=6
+... lots more output and completes successfully.
+
+The source is attached. You may need to tweak the location of the
+plugins, map xml file etc. The above test was run on a dual-core CPU
+(Intel Core 2 Duo).
+
+	Jon
+
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: threading.cpp
+Type: text/x-c++src
+Size: 1330 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070919/7189f7d9/attachment.cpp>
+
+From jburgess777 at googlemail.com  Thu Sep 20 00:23:13 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Wed, 19 Sep 2007 23:23:13 +0100
+Subject: [Mapnik-devel] Minor patch to improve EOF detectin in shapefile
+	plugin
+Message-ID: <1190240593.4459.26.camel@localhost.localdomain>
+
+While running mapnik with valgrind I found that it was using
+uninitialised data when it reached the end of reading a shapefile. 
+
+The code needs to check for an EOF condition after the reads to verify
+that they were successful.
+
+	Jon
+
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shapefile-eof.patch
+Type: text/x-patch
+Size: 540 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070919/5422921e/attachment.bin>
+
+From artem at mapnik.org  Thu Sep 20 09:39:26 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 20 Sep 2007 08:39:26 +0100
+Subject: [Mapnik-devel] load_map() not thread-safe?
+In-Reply-To: <1190234245.4459.18.camel@localhost.localdomain>
+References: <1190234245.4459.18.camel@localhost.localdomain>
+Message-ID: <E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+
+
+On 19 Sep 2007, at 21:37, Jon Burgess wrote:
+
+> I've experienced some crashes in Mapnik when multiple threads call
+> load_map() simultaneously. I can work around this by serialising the
+> calls. Is there something wrong with this approach, a problem with my
+> setup or a bug in Mapnik?
+>
+> With the attached source code using parallel or serialised calls to
+> load_map():
+>
+> $ g++ -Wall -O2 threading.cpp   -o threading -I/usr/include/agg2 -I/ 
+> usr/include/freetype2 -lmapnik
+> $ ./threading
+> registered datasource : gdal
+> registered datasource : raster
+> registered datasource : shape
+> registered datasource : postgis
+> bit_depth=8 color_type=6
+> Segmentation fault
+>
+> $ g++ -Wall -O2 threading.cpp -DSERIALIZE  -o threading -I/usr/ 
+> include/agg2 -I/usr/include/freetype2 -lmapnik
+> $ ./threading
+> registered datasource : gdal
+> registered datasource : raster
+> registered datasource : shape
+> registered datasource : postgis
+> bit_depth=8 color_type=6
+> bit_depth=8 color_type=6
+> bit_depth=8 color_type=6
+> ... lots more output and completes successfully.
+>
+> The source is attached. You may need to tweak the location of the
+> plugins, map xml file etc. The above test was run on a dual-core CPU
+> (Intel Core 2 Duo).
+>
+
+I'm running it here on Mac OS X (core 2 due) and I'm getting the same  
+problem. Errors are not very informative - threads :)
+Here is something to try : - build with  #define  
+BOOST_SPIRIT_THREADSAFE to make boost::spirit grammars multi-thread  
+safe. I suspect 'filter' parser spits out objects with incomplete  
+state, causing all sort of run-time errors. Sometime I get - 'attempt  
+to call pure vurtual method'.
+
+
+I'm off to Seattle and then to Victoria, I might not be able to check  
+emails for a while. But I'll have plenty of time to think about it  
+while on the plane :)
+
+Cheers
+Artem
+
+
+> 	Jon
+>
+>
+>
+>
+> <threading.cpp>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070920/b45ba69f/attachment.html>
+
+From artem at mapnik.org  Thu Sep 20 15:36:02 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Thu, 20 Sep 2007 14:36:02 +0100
+Subject: [Mapnik-devel] load_map() not thread-safe?
+In-Reply-To: <E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+References: <1190234245.4459.18.camel@localhost.localdomain>
+	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+Message-ID: <51576B2C-5E87-4238-9ACB-F18DC3F0CEE6@mapnik.org>
+
+OK, recompiling with -DBOOST_SPIRIT_THREADSAFE  works  for me. I get  
+nice 180% cpu usage and interleaved stderr :)
+Cheers,
+Artem
+
+
+On 20 Sep 2007, at 08:39, Artem Pavlenko wrote:
+
+>
+> On 19 Sep 2007, at 21:37, Jon Burgess wrote:
+>
+>> I've experienced some crashes in Mapnik when multiple threads call
+>> load_map() simultaneously. I can work around this by serialising the
+>> calls. Is there something wrong with this approach, a problem with my
+>> setup or a bug in Mapnik?
+>>
+>> With the attached source code using parallel or serialised calls to
+>> load_map():
+>>
+>> $ g++ -Wall -O2 threading.cpp   -o threading -I/usr/include/agg2 - 
+>> I/usr/include/freetype2 -lmapnik
+>> $ ./threading
+>> registered datasource : gdal
+>> registered datasource : raster
+>> registered datasource : shape
+>> registered datasource : postgis
+>> bit_depth=8 color_type=6
+>> Segmentation fault
+>>
+>> $ g++ -Wall -O2 threading.cpp -DSERIALIZE  -o threading -I/usr/ 
+>> include/agg2 -I/usr/include/freetype2 -lmapnik
+>> $ ./threading
+>> registered datasource : gdal
+>> registered datasource : raster
+>> registered datasource : shape
+>> registered datasource : postgis
+>> bit_depth=8 color_type=6
+>> bit_depth=8 color_type=6
+>> bit_depth=8 color_type=6
+>> ... lots more output and completes successfully.
+>>
+>> The source is attached. You may need to tweak the location of the
+>> plugins, map xml file etc. The above test was run on a dual-core CPU
+>> (Intel Core 2 Duo).
+>>
+>
+> I'm running it here on Mac OS X (core 2 due) and I'm getting the  
+> same problem. Errors are not very informative - threads :)
+> Here is something to try : - build with  #define
+
+> to make boost::spirit grammars multi-thread safe. I suspect  
+> 'filter' parser spits out objects with incomplete state, causing  
+> all sort of run-time errors. Sometime I get - 'attempt to call pure  
+> vurtual method'.
+>
+>
+> I'm off to Seattle and then to Victoria, I might not be able to  
+> check emails for a while. But I'll have plenty of time to think  
+> about it while on the plane :)
+>
+> Cheers
+> Artem
+>
+>
+>> 	Jon
+>>
+>>
+>>
+>>
+>> <threading.cpp>
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> Artem Pavlenko
+> http://mapnik.org
+>
+>
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070920/6e2e58d8/attachment.html>
+
+From jburgess777 at googlemail.com  Fri Sep 21 01:02:35 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Fri, 21 Sep 2007 00:02:35 +0100
+Subject: [Mapnik-devel] freetype thread safety
+Message-ID: <1190329355.4459.57.camel@localhost.localdomain>
+
+My tests with multi-threaded rendering in Mapnik are now crashing within
+freetype. I believe this is because Mapnik has a single freetype library
+instance in the static freetype_engine whereas the docs say...
+
+'For multi-threading applications each thread should have its own
+FT_Library object.'
+
+http://freetype.sourceforge.net/freetype2/docs/reference/ft2-base_interface.html#FT_Library
+
+The attached test program crashes reliably for me. You need a valid map
+and imported OSM planet data for it to work (it uses text at the hard
+coded tile locations, it should equally work with other data as long as
+it causes text to be rendered.).
+
+$ g++ -g -Wall threading2.cpp -o threading2 -I/usr/include/agg2 -I/usr/include/freetype2  -lmapnik
+$ ./threading2 2> /dev/null
+Segmentation fault
+
+
+	Jon
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: threading2.cpp
+Type: text/x-c++src
+Size: 4378 bytes
+Desc: not available
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070921/d3c03384/attachment.cpp>
+
+From artem at mapnik.org  Fri Sep 21 16:48:16 2007
+From: artem at mapnik.org (artem at mapnik.org)
+Date: Fri, 21 Sep 2007 15:48:16 +0100
+Subject: [Mapnik-devel] load_map() not thread-safe?
+In-Reply-To: <E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+References: <1190234245.4459.18.camel@localhost.localdomain>
+	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+Message-ID: <1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+
+
+Hi Jon,
+
+Recompiling Mapnik with -DBOOST_SPIRIT_THREADSAFE seems solved the problem.
+Cheers,
+Artem
+
+
+Quoting Artem Pavlenko <artem at mapnik.org>:
+
+>
+> On 19 Sep 2007, at 21:37, Jon Burgess wrote:
+>
+> > I've experienced some crashes in Mapnik when multiple threads call
+> > load_map() simultaneously. I can work around this by serialising the
+> > calls. Is there something wrong with this approach, a problem with my
+> > setup or a bug in Mapnik?
+> >
+> > With the attached source code using parallel or serialised calls to
+> > load_map():
+> >
+> > $ g++ -Wall -O2 threading.cpp   -o threading -I/usr/include/agg2 -I/
+> > usr/include/freetype2 -lmapnik
+> > $ ./threading
+> > registered datasource : gdal
+> > registered datasource : raster
+> > registered datasource : shape
+> > registered datasource : postgis
+> > bit_depth=8 color_type=6
+> > Segmentation fault
+> >
+> > $ g++ -Wall -O2 threading.cpp -DSERIALIZE  -o threading -I/usr/
+> > include/agg2 -I/usr/include/freetype2 -lmapnik
+> > $ ./threading
+> > registered datasource : gdal
+> > registered datasource : raster
+> > registered datasource : shape
+> > registered datasource : postgis
+> > bit_depth=8 color_type=6
+> > bit_depth=8 color_type=6
+> > bit_depth=8 color_type=6
+> > ... lots more output and completes successfully.
+> >
+> > The source is attached. You may need to tweak the location of the
+> > plugins, map xml file etc. The above test was run on a dual-core CPU
+> > (Intel Core 2 Duo).
+> >
+>
+> I'm running it here on Mac OS X (core 2 due) and I'm getting the same
+> problem. Errors are not very informative - threads :)
+> Here is something to try : - build with  #define
+> BOOST_SPIRIT_THREADSAFE to make boost::spirit grammars multi-thread
+> safe. I suspect 'filter' parser spits out objects with incomplete
+> state, causing all sort of run-time errors. Sometime I get - 'attempt
+> to call pure vurtual method'.
+>
+>
+> I'm off to Seattle and then to Victoria, I might not be able to check
+> emails for a while. But I'll have plenty of time to think about it
+> while on the plane :)
+>
+> Cheers
+> Artem
+>
+>
+> > 	Jon
+> >
+> >
+> >
+> >
+> > <threading.cpp>
+> > _______________________________________________
+> > Mapnik-devel mailing list
+> > Mapnik-devel at lists.berlios.de
+> > https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+> Artem Pavlenko
+> http://mapnik.org
+>
+>
+>
+>
+
+
+
+
+
+
+From lists at brachttal.net  Fri Sep 21 19:21:44 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 21 Sep 2007 19:21:44 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+Message-ID: <20070921192144.03f416d6@frodo.mittelerde>
+
+Am Tue, 18 Sep 2007 11:47:29 +0100 schrieb Artem Pavlenko:
+
+> > Are there some latest changes that forces Mapnik to use the included
+> > libagg source? Or where is the problem?
+> 
+> 
+> Could you build with included agg ? It looks like your agg library
+> is configured differently.
+> I suggest you run diff on agg/include directories.
+
+Not only configured differently:
+
+Mapnik included libagg:
+
+// Anti-Grain Geometry - Version 2.4
+
+Gentoo included libagg:
+
+// Anti-Grain Geometry (AGG) - Version 2.5
+
+There's no older libagg in Gentoo. Any plans to support a recent
+libagg?
+
+regards
+Andreas
+
+
+From jburgess777 at googlemail.com  Fri Sep 21 19:59:16 2007
+From: jburgess777 at googlemail.com (Jon Burgess)
+Date: Fri, 21 Sep 2007 18:59:16 +0100
+Subject: [Mapnik-devel] load_map() not thread-safe?
+In-Reply-To: <1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+References: <1190234245.4459.18.camel@localhost.localdomain>
+	<E27BD1A5-CB9C-434C-AAAE-DB1F22F5AAD2@mapnik.org>
+	<1190386096.46f3d9b0e4636@webmail.freedom2surf.net>
+Message-ID: <1190397556.4459.63.camel@localhost.localdomain>
+
+On Fri, 2007-09-21 at 15:48 +0100, artem at mapnik.org wrote:
+> Hi Jon,
+> 
+> Recompiling Mapnik with -DBOOST_SPIRIT_THREADSAFE seems solved the problem.
+> Cheers,
+> Artem
+> 
+
+Works for me too.
+
+	Jon
+
+
+
+
+From david at artcom.de  Tue Sep 25 23:24:16 2007
+From: david at artcom.de (David Siegel)
+Date: Tue, 25 Sep 2007 23:24:16 +0200
+Subject: [Mapnik-devel] strict XML branch merged
+Message-ID: <2DE06909-1779-498F-A776-EB037B7C1901@artcom.de>
+
+Hi everyone,
+I just merged the strict-xml-branch back to the trunk.
+
+Changes:
+Mapnik now raises exceptions on syntax errors in the map file, failed  
+db connections and other configuration errors. So if your setup  
+suddenly stops working, please double check the syntax of the map  
+file. In c++ mapnik::config_error is thrown. It is currently mapped  
+to a python UserWarning. It can be trapped like this:
+
+m = Map(512, 512)
+try:
+     load_map(m, file)
+except UserWarning, what:
+     print "Configuration error:"
+     print what
+except RuntimeError, what:
+     print "Runtime error:"
+     print what
+
+I'd like to map the c++ config_error to a custom python exception,  
+like mapnik.ConfigError. Just got to find out how to do it. So this  
+might change again in a future update.
+
+load_map() now takes a third, optional argument. It's a flag  
+indicating how strict you want the loader to be. If set to true  
+(strict mode) mapnik aborts on missing assets, like icons, etc.  
+Otherwise it just prints a warning. The parameter currently defaults  
+to false (non-strict).
+
+The error handling is not complete yet, but i think it's a good  
+start. Let me know what you think.
+Ah, and if you happen to find a file that is broken but succedes to  
+parse or worse a file that is OK but fails just send me the file plus  
+some info and I'll take a look at it.
+
+Another minor change is the behaviour of the srs attribute. If a  
+layer does not specify a srs attribute it inherits the srs of the  
+map. Somehow this behaviour feels more natural to me and it avoids a  
+duplicate default value.
+
+Mapnik now supports libxml2. This allows the use of XML entities to  
+define color-sets, db parameters or icon directories. It even can be  
+used to split a single map file into multiple parts.
+
+save_map() is implemented now.
+
+I also added some very basic tests.
+
+cheers,
+	david (agnat)
+
+
+
+From lists at brachttal.net  Wed Sep 26 21:30:57 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 26 Sep 2007 21:30:57 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+	<20070921192144.03f416d6@frodo.mittelerde>
+	<C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+Message-ID: <20070926213057.219b0f67@frodo.mittelerde>
+
+Am Wed, 26 Sep 2007 10:31:48 +0200 schrieb David Siegel:
+
+> Hi Andreas,
+> 
+> I just wanted to take a look at the mapnik agg-2.5 build issues but
+> I noticed that agg-2.5 is masked (~x86) in the current portage tree.  
+> Any idea why?
+
+No idea. Simply open a bug that request a move to x86. As I found out
+~x86 packages don't move into x86 if nobody request or do it.
+
+> The changes I checked in last night probably broke the autoconf  
+> build. Could you take a look at it and add the necessary bits and  
+> pieces to support libxml2?
+
+I'll look into it. Is libxml2 optional or a minimum requirement?
+
+regards
+Andreas
+
+
+From lists at brachttal.net  Wed Sep 26 21:33:00 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Wed, 26 Sep 2007 21:33:00 +0200
+Subject: [Mapnik-devel] Request for a SVN commit list
+Message-ID: <20070926213300.7be93aa7@frodo.mittelerde>
+
+Hello,
+
+is there a SVN request list or could you create such a list? I think
+it's really helpful to coordinate development.
+
+regards
+Andreas
+
+
+From paulsmith at pobox.com  Wed Sep 26 21:44:20 2007
+From: paulsmith at pobox.com (Paul Smith)
+Date: Wed, 26 Sep 2007 14:44:20 -0500
+Subject: [Mapnik-devel] MacPort of Mapnik
+Message-ID: <8c58fcec0709261244g3be69227rf97c6867bfb93605@mail.gmail.com>
+
+I submitted a new port to MacPorts of Mapnik:
+
+http://trac.macports.org/projects/macports/ticket/12784
+
+Hopefully this will make it a little easier for OS X users to get up and
+running with Mapnik.
+
+Feedback welcome. I'm interested in others' success/failure because I've had
+difficulty building the port. _mapnik.so winds up being linked against the
+OS X Framework Python (as reported by `otool -L`), instead of the Python
+binary and libs installed under /opt/local. I'm not sure how the port build will
+react to various Python environments.
+
+I also built the port against an arbitrary snapshot of the SVN repo (r526),
+because that's what I was working against at the time, and it seemed better
+than 0.4.0, which I couldn't get to build on my machine.
+
+-Paul
+
+-- 
+Paul Smith
+http://www.pauladamsmith.com/
+
+
+From david at artcom.de  Wed Sep 26 23:07:36 2007
+From: david at artcom.de (David Siegel)
+Date: Wed, 26 Sep 2007 23:07:36 +0200
+Subject: [Mapnik-devel] Compile problem with AGG
+In-Reply-To: <20070926213057.219b0f67@frodo.mittelerde>
+References: <20070917231716.52e5a38f@frodo.mittelerde>
+	<A7800BDD-9BCA-490C-8615-09CCB4170081@mapnik.org>
+	<20070921192144.03f416d6@frodo.mittelerde>
+	<C85C0B58-8B52-4C27-B218-CD3B88A98754@artcom.de>
+	<20070926213057.219b0f67@frodo.mittelerde>
+Message-ID: <9FEE945F-D64C-46EA-97E5-3CD2C891A699@artcom.de>
+
+Hi,
+
+On 26.09.2007, at 21:30, Andreas Volz wrote:
+
+--- snip ---
+
+>> The changes I checked in last night probably broke the autoconf
+>> build. Could you take a look at it and add the necessary bits and
+>> pieces to support libxml2?
+>
+> I'll look into it. Is libxml2 optional or a minimum requirement?
+
+It's optional. If libxml2 is used define HAVE_LIBXML2 (at least for  
+load_map.cpp). If it's not used don't build libxml2_loader.cpp.
+
+cheers,
+	david
+
+
+From artem at mapnik.org  Sun Sep 30 01:38:46 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 30 Sep 2007 00:38:46 +0100
+Subject: [Mapnik-devel] strict XML branch merged
+In-Reply-To: <2DE06909-1779-498F-A776-EB037B7C1901@artcom.de>
+References: <2DE06909-1779-498F-A776-EB037B7C1901@artcom.de>
+Message-ID: <67E795E4-C630-45D1-A273-AC8861BF5EEC@mapnik.org>
+
+
+On 25 Sep 2007, at 22:24, David Siegel wrote:
+
+> Hi everyone,
+> I just merged the strict-xml-branch back to the trunk.
+>
+> Changes:
+> Mapnik now raises exceptions on syntax errors in the map file, failed
+> db connections and other configuration errors. So if your setup
+> suddenly stops working, please double check the syntax of the map
+> file. In c++ mapnik::config_error is thrown. It is currently mapped
+> to a python UserWarning. It can be trapped like this:
+>
+> m = Map(512, 512)
+> try:
+>      load_map(m, file)
+> except UserWarning, what:
+>      print "Configuration error:"
+>      print what
+> except RuntimeError, what:
+>      print "Runtime error:"
+>      print what
+>
+> I'd like to map the c++ config_error to a custom python exception,
+> like mapnik.ConfigError. Just got to find out how to do it. So this
+> might change again in a future update.
+>
+> load_map() now takes a third, optional argument. It's a flag
+> indicating how strict you want the loader to be. If set to true
+> (strict mode) mapnik aborts on missing assets, like icons, etc.
+> Otherwise it just prints a warning. The parameter currently defaults
+> to false (non-strict).
+>
+> The error handling is not complete yet, but i think it's a good
+> start. Let me know what you think.
+> Ah, and if you happen to find a file that is broken but succedes to
+> parse or worse a file that is OK but fails just send me the file plus
+> some info and I'll take a look at it.
+>
+> Another minor change is the behaviour of the srs attribute. If a
+> layer does not specify a srs attribute it inherits the srs of the
+> map. Somehow this behaviour feels more natural to me and it avoids a
+> duplicate default value.
+>
+> Mapnik now supports libxml2. This allows the use of XML entities to
+> define color-sets, db parameters or icon directories. It even can be
+> used to split a single map file into multiple parts.
+>
+> save_map() is implemented now.
+>
+> I also added some very basic tests.
+>
+> cheers,
+> 	david (agnat)
+>
+
+Cool. I'm yet to try it out.
+Also I'm thinking about modifying XML to be more like svg (??) I  
+realized SLD spec which was the basis for current syntax has  
+limitations.
+I'll post some ideas when I'm back home (I'm still getting back from  
+foss4g)
+Artem
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070930/56ce5642/attachment.html>
+
+From artem at mapnik.org  Sun Sep 30 01:40:55 2007
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Sun, 30 Sep 2007 00:40:55 +0100
+Subject: [Mapnik-devel] Request for a SVN commit list
+In-Reply-To: <20070926213300.7be93aa7@frodo.mittelerde>
+References: <20070926213300.7be93aa7@frodo.mittelerde>
+Message-ID: <AE05E05E-122F-4097-B238-AA47AF59CE02@mapnik.org>
+
+
+On 26 Sep 2007, at 20:33, Andreas Volz wrote:
+
+> Hello,
+>
+> is there a SVN request list or could you create such a list? I think
+> it's really helpful to coordinate development.
+
+Do you mean SVN commits list ?
+There is one but it hasn't been updating for a while. I'll look into  
+fixing this when I'm back in Oxford.
+A.
+>
+> regards
+> Andreas
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+Artem Pavlenko
+http://mapnik.org
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070930/2df4442f/attachment.html>
+
+From lists at brachttal.net  Fri Sep 28 15:27:03 2007
+From: lists at brachttal.net (Andreas Volz)
+Date: Fri, 28 Sep 2007 15:27:03 +0200
+Subject: [Mapnik-devel] Request for a SVN commit list
+In-Reply-To: <AE05E05E-122F-4097-B238-AA47AF59CE02@mapnik.org>
+References: <20070926213300.7be93aa7@frodo.mittelerde>
+	<AE05E05E-122F-4097-B238-AA47AF59CE02@mapnik.org>
+Message-ID: <20070928152703.07ab68ba@frodo.mittelerde>
+
+Am Sun, 30 Sep 2007 00:40:55 +0100 schrieb Artem Pavlenko:
+
+> 
+> On 26 Sep 2007, at 20:33, Andreas Volz wrote:
+> 
+> > Hello,
+> >
+> > is there a SVN request list or could you create such a list? I think
+> > it's really helpful to coordinate development.
+> 
+> Do you mean SVN commits list ?
+> There is one but it hasn't been updating for a while. I'll look into  
+> fixing this when I'm back in Oxford.
+
+Yes, the SVN commit list. Ok, could you inform this list if the SVN
+list is back?
+
+regards
+Andreas
+
+

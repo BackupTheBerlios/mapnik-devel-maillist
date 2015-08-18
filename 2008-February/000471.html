@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] updating the dejavu fonts?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20updating%20the%20dejavu%20fonts%3F&In-Reply-To=%3C1D295975-6EA1-49DF-9171-7FC151675C95%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000470.html">
+   <LINK REL="Next"  HREF="000473.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] updating the dejavu fonts?</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20updating%20the%20dejavu%20fonts%3F&In-Reply-To=%3C1D295975-6EA1-49DF-9171-7FC151675C95%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] updating the dejavu fonts?">artem at mapnik.org
+       </A><BR>
+    <I>Mon Feb 11 23:11:17 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000470.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+        <LI>Next message: <A HREF="000473.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#471">[ date ]</a>
+              <a href="thread.html#471">[ thread ]</a>
+              <a href="subject.html#471">[ subject ]</a>
+              <a href="author.html#471">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 11 Feb 2008, at 22:00, Jon Burgess wrote:
+
+&gt;<i> After some prompting on IRC I updated the DejaVu fonts being used  
+</I>&gt;<i> by the
+</I>&gt;<i> OSM Mapnik renderer to the latest 2.23 release[1]. Mapnik ships with
+</I>&gt;<i> version 2.14.
+</I>&gt;<i>
+</I>&gt;<i> More names now seem to be rendering correctly on the map[2].
+</I>
+Wow, Armenian script looks cool.
+&gt;<i>
+</I>&gt;<i> Should the Mapnik fonts be updated?
+</I>&gt;<i>
+</I>
+Yes.
+
+
+&gt;<i> 	Jon
+</I>&gt;<i>
+</I>
+
+I was playing with ICU library today and it looks very promising. It  
+can do proper BIDI in mixed strings, for example - english name  
+followed by arabic and 'shaping' .  My plan is to use UnicodeString  
+instead of std::wstring internally and stop relying on iconv and  
+fribidi.
+Artem
+
+&gt;<i>
+</I>&gt;<i> [1] <A HREF="http://dejavu.sourceforge.net/wiki/index.php/Download">http://dejavu.sourceforge.net/wiki/index.php/Download</A>
+</I>&gt;<i> [2] <A HREF="http://www.openstreetmap.org/?">http://www.openstreetmap.org/?</A> 
+</I>&gt;<i> lat=41.78&amp;lon=44.925&amp;zoom=9&amp;layers=B0FT
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000470.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+	<LI>Next message: <A HREF="000473.html">[Mapnik-devel] updating the dejavu fonts?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#471">[ date ]</a>
+              <a href="thread.html#471">[ thread ]</a>
+              <a href="subject.html#471">[ subject ]</a>
+              <a href="author.html#471">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

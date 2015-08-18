@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Area center calculation
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Area%20center%20calculation&In-Reply-To=%3CAANLkTin4PbvaP6UHmR7n-%3DP_tGpDRW6wVqysuvtdh4pM%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001277.html">
+   <LINK REL="Next"  HREF="001278.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Area center calculation</H1>
+    <B>Csongor Nemes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Area%20center%20calculation&In-Reply-To=%3CAANLkTin4PbvaP6UHmR7n-%3DP_tGpDRW6wVqysuvtdh4pM%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Area center calculation">csongor.nemes at gmail.com
+       </A><BR>
+    <I>Mon Oct 18 20:48:00 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001277.html">[Mapnik-devel] Area center calculation
+</A></li>
+        <LI>Next message: <A HREF="001278.html">[Mapnik-devel] [Mapnik-users] Code Sprints: Wrap one up and	start another
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1279">[ date ]</a>
+              <a href="thread.html#1279">[ thread ]</a>
+              <a href="subject.html#1279">[ subject ]</a>
+              <a href="author.html#1279">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Thank you for your reply.
+
+We use this algorithm:
+<A HREF="http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon">http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon</A> .
+We get the actual coordinates through the OSM XAPI, we request the way's
+tags and the nodes forming the way.
+
+I didn't reply sooner, because I wanted to test the new algorithm and OSM
+had some problems for a few days. It works perfectly. For now it is a good
+enough solution, thank you for the help again.
+
+On Tue, Oct 12, 2010 at 11:47 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+
+&gt;<i>
+</I>&gt;<i> On Oct 12, 2010, at 3:25 AM, Csongor Nemes wrote:
+</I>&gt;<i>
+</I>&gt;<i> &gt; Hi,
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; I am contacting you regarding the calculation of centers of areas in OSM.
+</I>&gt;<i> &gt;
+</I>&gt;<i>
+</I>&gt;<i> Hello Csongor,
+</I>&gt;<i>
+</I>&gt;<i> Yes, I am aware of your application. I've yet to try it because it requires
+</I>&gt;<i> 4.0 I'm resisting upgrading to the 4.0 iOS as I have heard it is quite
+</I>&gt;<i> unstable of older iphones, but someday...
+</I>&gt;<i>
+</I>&gt;<i> &gt; Our product, OpenMaps (currently available on the iPhone and the iPod
+</I>&gt;<i> touch), is the only one which lets you tap on POIs on the map. We use the
+</I>&gt;<i> default OSM map as the default map type in our app, but the user can change
+</I>&gt;<i> to OpenCycleMap and OpenPisteMap as well; also the user can add custom map
+</I>&gt;<i> types (e.g. OSM Osmarender). We need to know the exact location of the
+</I>&gt;<i> symbol inside an area (currently we use an algorithm which doesn't always
+</I>&gt;<i> match the rendered symbol's location).
+</I>&gt;<i>
+</I>&gt;<i> What algorithm do you use? Can you post an example?
+</I>&gt;<i>
+</I>&gt;<i> How are you getting the actual coordinates of the area in the first place?
+</I>&gt;<i>
+</I>&gt;<i> &gt; The best solution (from our perspective) would be to request the
+</I>&gt;<i> calculated center from OSM, but I'm not sure that it's possible.
+</I>&gt;<i>
+</I>&gt;<i> This seems like a good route - to ask the same server which rendered the
+</I>&gt;<i> tiles to tell you where the exact features are that were rendered.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Otherwise we will implement the algorithm. If I'm not mistaken slightly
+</I>&gt;<i> different algorithms are implemented in different renderers.
+</I>&gt;<i>
+</I>&gt;<i> I would also presume so. And each different stylesheet used for a given
+</I>&gt;<i> renderer is potentially going to show different POI's with different symbols
+</I>&gt;<i> of potentially different sizes - all of which impact which ones are placed
+</I>&gt;<i> and where.
+</I>&gt;<i>
+</I>&gt;<i> &gt; We are interested in the Mapnik version for now.
+</I>&gt;<i>
+</I>&gt;<i> Well, as I allude to above I don't think this issue is as simple as the
+</I>&gt;<i> algorithm, but certainly click-ability of features is important and the
+</I>&gt;<i> algorithm will make a difference.
+</I>&gt;<i>
+</I>&gt;<i> &gt; Point me in the right direction, please; where can I find a description
+</I>&gt;<i> of the algorithm and which source files contain the implementation?
+</I>&gt;<i>
+</I>&gt;<i> Mapnik uses a centroid calculation that can be viewed here:
+</I>&gt;<i>
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/browser/trunk/include/mapnik/geometry.hpp#L218">http://trac.mapnik.org/browser/trunk/include/mapnik/geometry.hpp#L218</A>
+</I>&gt;<i>
+</I>&gt;<i> &gt;
+</I>&gt;<i> &gt; We don't plan to maintain our own tile server in the near future. Also, I
+</I>&gt;<i> learned that there was some discussion about making the centering more
+</I>&gt;<i> intelligent, and it is possible that at some point the icon will be moved a
+</I>&gt;<i> bit additionally to find free space;
+</I>&gt;<i>
+</I>&gt;<i> yes, this is certainly a possibility longer term.
+</I>&gt;<i>
+</I>&gt;<i> &gt; hence we would like to have a general solution in the long term.
+</I>&gt;<i>
+</I>&gt;<i> I think the general or long term solution is to ask the server the for the
+</I>&gt;<i> exact x,y or bbox of rendered POIs. Hermann Kraus is the Mapnik developer
+</I>&gt;<i> that has given this quite a bit of thought, and in Mapnik trunk there is
+</I>&gt;<i> support he has added for outputting GeoJSON from Mapnik that will provide
+</I>&gt;<i> this information to be served along with tiles.
+</I>&gt;<i>
+</I>&gt;<i> Cheers,
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101018/637276ea/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20101018/637276ea/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001277.html">[Mapnik-devel] Area center calculation
+</A></li>
+	<LI>Next message: <A HREF="001278.html">[Mapnik-devel] [Mapnik-users] Code Sprints: Wrap one up and	start another
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1279">[ date ]</a>
+              <a href="thread.html#1279">[ thread ]</a>
+              <a href="subject.html#1279">[ subject ]</a>
+              <a href="author.html#1279">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

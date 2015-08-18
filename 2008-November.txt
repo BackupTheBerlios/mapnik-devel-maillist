@@ -1,0 +1,517 @@
+From lists at brachttal.net  Sat Nov  8 09:59:06 2008
+From: lists at brachttal.net (Andreas Volz)
+Date: Sat, 8 Nov 2008 09:59:06 +0100
+Subject: [Mapnik-devel] Mapnik 64bit on Mac 10.5
+In-Reply-To: <6E056DB3-343F-4EA4-A4CB-D692B5AF3C9C@hailmail.net>
+References: <97203978-E2C9-4D90-B17B-9F47382EB5F0@hailmail.net>
+	<c95f07a90810281705p7eed0130nc431ad32cb31598e@mail.gmail.com>
+	<37A2EB3E-9EA6-4551-AAD7-4A122CFACFFE@hailmail.net>
+	<c95f07a90810281826u9cbee48vd30b34a097077373@mail.gmail.com>
+	<6E056DB3-343F-4EA4-A4CB-D692B5AF3C9C@hailmail.net>
+Message-ID: <20081108095906.7c5d34df@frodo.mittelerde>
+
+Am Tue, 28 Oct 2008 18:41:08 -0700 schrieb Dane Springmeyer:
+
+Hello Dane,
+
+have you tried the autotools build environment available in SVN?
+
+> ./autogen.sh && make && make install
+
+Maybe the environment detects your system by itself. It worth a try. If
+you run into trouble contact me. I maintain this build environment.
+
+regards
+Andreas
+
+> I'm attempting to do so in scons with something like:
+> 
+> env.Append(CPPFLAGS="-Os -arch ppc -arch i386 -arch ppc64 -arch
+> x86_64") env.Append(LINKFLAGS="-arch ppc -arch i386 -arch ppc64 -arch
+> x86_64")
+> 
+> ..but that's far from correct yet.
+> 
+> Dane
+> 
+> 
+> On Oct 28, 2008, at 6:26 PM, Joseph Gentle wrote:
+> 
+> > Yeah that description is pretty accurate. You need to tell GCC and
+> > LD to make a 64 bit version of mapnik. To do that, it'll be some
+> > obscure gcc flags:
+> >
+> > From the link you posted:
+> >
+> > Modify the generated 'Makefile' in mod_wsgi source code and change
+> > the CFLAGS variable to:
+> >   CFLAGS = -Wc,"-arch ppc7400" -Wc,"-arch ppc64" -Wc,"-arch i386"
+> > -Wc,"-arch x86_64"
+> > Also, insert into LFDLAGS similar options but not escaped by '-Wc,'.
+> >   LDFLAGS = -arch ppc7400 -arch ppc64 -arch i386 -arch x86_64 ...
+> >
+> > I've never understood scons. Anyone know how you add cflags and
+> > ldflags using scons?
+> >
+> > -J
+> >
+> >
+> > On Wed, Oct 29, 2008 at 12:08 PM, Dane Springmeyer  
+> > <blake at hailmail.net> wrote:
+> >> Hi Joseph,
+> >>
+> >> The issue is that libraries loading into an apache 64 bit proces
+> >> on mac os
+> >> have to be compiled with the 'arch x86_64' flag.
+> >>
+> >> So, currentlyI get:
+> >>
+> >> springmeyer:~ spring$ file /usr/local/lib/libmapnik.dylib
+> >> /usr/local/lib/libmapnik.dylib: Mach-O dynamically linked shared  
+> >> library
+> >> i386
+> >>
+> >> but I need to get something more like:
+> >>
+> >> /usr/local/lib/libmapnik.dylib: Mach-O universal binary with 4  
+> >> architectures
+> >>
+> >> Otherwise in the apache logs I get:
+> >>
+> >> [Tue Oct 28 18:02:23 2008] [info] [client ::1] mod_wsgi (pid=18266,
+> >> process='', application='springmeyer.local|/wsgiwms'): Loading
+> >> WSGI script
+> >> '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+> >> wms.wsgi'.
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1] mod_wsgi
+> >> (pid=18266): Exception occurred processing WSGI script
+> >> '/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+> >> wms.wsgi'.
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1] Traceback (most  
+> >> recent call
+> >> last):
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+> >> "/Users/spring/projects/mapnik-utils/trunk/serverside/wsgimap/ 
+> >> wms.wsgi",
+> >> line 45, in application
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1]     import mapnik
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1]   File
+> >> "/Library/Python/2.5/site-packages/mapnik/__init__.py", line 31,
+> >> in <module>
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1]     from _mapnik  
+> >> import *
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1] ImportError:
+> >> dlopen(/Library/Python/2.5/site-packages/mapnik/_mapnik.so, 10):
+> >> no suitable
+> >> image found.  Did find:
+> >> [Tue Oct 28 18:02:23 2008] [error] [client ::1]
+> >> \t/Library/Python/2.5/site-packages/mapnik/_mapnik.so: mach-o,
+> >> but wrong
+> >> architecture
+> >>
+> >>
+> >> Mod wsgi has got some nice background on this:
+> >> http://code.google.com/p/modwsgi/wiki/InstallationOnMacOSX
+> >>
+> >> So, i doubt you have to deal with these issues on linux, but have  
+> >> you seen
+> >> anything like this?
+> >>
+> >> Dane
+> >>
+> >>
+> >>
+> >>
+> >> On Oct 28, 2008, at 5:05 PM, Joseph Gentle wrote:
+> >>
+> >>> I have mapnik working fine on 64bit linux.
+> >>>
+> >>> What error(s) are you getting?
+> >>>
+> >>> -J
+> >>>
+> >>>
+> >>> On Wed, Oct 29, 2008 at 6:10 AM, Dane Springmeyer
+> >>> <blake at hailmail.net 
+> >>> >
+> >>> wrote:
+> >>>>
+> >>>> Anyone done it?
+> >>>>
+> >>>> I've been developing a mapnik wsgi app and have been restricted  
+> >>>> to my
+> >>>> linux box because the system Apache on mac 10.5 runs 64 bit.
+> >>>>
+> >>>> It would be great to be able to run mapnik inside a 64bit apache
+> >>>> process.
+> >>>>
+> >>>> Ideas?
+> >>>>
+> >>>> Dane
+> >>>>
+> >>>>
+> >>>> _______________________________________________
+> >>>> Mapnik-devel mailing list
+> >>>> Mapnik-devel at lists.berlios.de
+> >>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >>>>
+> >>
+> >>
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+From blake at hailmail.net  Fri Nov 14 01:22:09 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 13 Nov 2008 16:22:09 -0800
+Subject: [Mapnik-devel] Fix/Finished needed to value.hpp for Official
+	run_demo.py
+Message-ID: <1358ED13-F9B2-4F16-8854-29A224119556@hailmail.net>
+
+I recently noticed that the save_map() call was added to the official  
+Mapnik run_demo.py tutorial: http://trac.mapnik.org/browser/trunk/demo/python/rundemo.py#L344
+
+However, it appears that because of unfinished unicode work (http://trac.mapnik.org/ticket/144 
+) the xml that is produced actually has "TODO" output into the Filter  
+expression.
+
+I'm hoping that someone with an understanding of Mapnik's Unicode to  
+string handling can tackle this.
+
+Dane
+
+
+
+
+From artem at mapnik.org  Fri Nov 14 10:18:59 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 14 Nov 2008 09:18:59 +0000
+Subject: [Mapnik-devel] Fix/Finished needed to value.hpp for Official
+	run_demo.py
+In-Reply-To: <1358ED13-F9B2-4F16-8854-29A224119556@hailmail.net>
+References: <1358ED13-F9B2-4F16-8854-29A224119556@hailmail.net>
+Message-ID: <BBA7EAA2-CB95-4B8A-B5E1-351D86CAEBCB@mapnik.org>
+
+Hi Dane,
+
+> I recently noticed that the save_map() call was added to the official
+> Mapnik run_demo.py tutorial: http://trac.mapnik.org/browser/trunk/demo/python/rundemo.py#L344
+>
+
+It was me :)
+> However, it appears that because of unfinished unicode work (http://trac.mapnik.org/ticket/144
+> ) the xml that is produced actually has "TODO" output into the Filter
+> expression.
+>
+> I'm hoping that someone with an understanding of Mapnik's Unicode to
+> string handling can tackle this.
+>
+
+It is on my TODO list. I'll look into fixing this asap.
+
+> Dane
+>
+Cheers
+Artem
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From blake at hailmail.net  Fri Nov 14 21:29:02 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 14 Nov 2008 12:29:02 -0800
+Subject: [Mapnik-devel] Fix/Finished needed to value.hpp for Official
+	run_demo.py
+In-Reply-To: <BBA7EAA2-CB95-4B8A-B5E1-351D86CAEBCB@mapnik.org>
+References: <1358ED13-F9B2-4F16-8854-29A224119556@hailmail.net>
+	<BBA7EAA2-CB95-4B8A-B5E1-351D86CAEBCB@mapnik.org>
+Message-ID: <9B999FD9-A68D-458B-9014-03B5E45242D0@hailmail.net>
+
+Artem,
+
+
+On Nov 14, 2008, at 1:18 AM, Artem Pavlenko wrote:
+
+> Hi Dane,
+>
+>> I recently noticed that the save_map() call was added to the official
+>> Mapnik run_demo.py tutorial: http://trac.mapnik.org/browser/trunk/demo/python/rundemo.py#L344
+>>
+>
+> It was me :)
+
+Cool, I think showing how to save the xml is an excellent thing for  
+new users.
+
+The run_demo.py in trunk also has gotten its bbox a bit messed up.  
+I'll try to fix in trunk as well.
+
+It is such an _impressive_ map for new users, getting it working  
+smoothly will be great for the next release....
+
+
+>
+>> However, it appears that because of unfinished unicode work (http://trac.mapnik.org/ticket/144
+>> ) the xml that is produced actually has "TODO" output into the Filter
+>> expression.
+>>
+>> I'm hoping that someone with an understanding of Mapnik's Unicode to
+>> string handling can tackle this.
+>>
+>
+> It is on my TODO list. I'll look into fixing this asap.
+>
+
+Right on. Thanks so much for responding.
+
+Cheers,
+Dane
+
+
+
+From blake at hailmail.net  Fri Nov 14 21:42:01 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 14 Nov 2008 12:42:01 -0800
+Subject: [Mapnik-devel] Overwriting outputs (save_map() vs render_to_file())
+Message-ID: <0AB318D4-47B9-40EB-83A4-B89B926AAAB3@hailmail.net>
+
+Mapnik's render_to_file() (and I assume render_to_tile() as well) is  
+able to overwrite files of the same name, allowing for rerunning basic  
+graphics generation scripts without first deleting previous image  
+output.
+
+It seems as if the save_map() method can't overwrite previous xml  
+output. Should it or is there a reason it can't or should not be  
+allowed to do so?
+
+Dane
+
+  
+
+
+From georgy.potapov at gmail.com  Mon Nov 17 09:05:51 2008
+From: georgy.potapov at gmail.com (Georgy Potapov)
+Date: Mon, 17 Nov 2008 11:05:51 +0300
+Subject: [Mapnik-devel] Mapnik viewer
+Message-ID: <c327c5210811170005mffeb807m1ffc387dc2339a30@mail.gmail.com>
+
+Hi there!
+Does anyone have windows binaries for Mapnik Viewer (
+http://trac.mapnik.org/wiki/MapnikViewer) by chance?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081117/4acb7d5d/attachment.html>
+
+From blake at hailmail.net  Thu Nov 20 19:37:46 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Thu, 20 Nov 2008 10:37:46 -0800
+Subject: [Mapnik-devel] Mapnik Trac notification setup
+Message-ID: <90F5EDBC-0ED0-4EB0-8B96-4EE49798064A@hailmail.net>
+
+Mapnik Users,
+
+At at the Mapnik Trac site we should now have Ticket notification  
+working.
+
+This means that if you've reported, own, assigned, or are cc'ed on a  
+ticket then you will get an email when it is updated.
+
+Here a good ticket view to check on tickets you've created: http://trac.mapnik.org/report/11
+
+I've also added a Wiki Page notification feature so on each page there  
+is now a link you can use to "Watch" a page for updates.
+
+Dane
+
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081120/3f04f8d0/attachment.html>
+
+From dodobas at geoinfo.geof.hr  Fri Nov 21 10:04:54 2008
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Fri, 21 Nov 2008 10:04:54 +0100
+Subject: [Mapnik-devel] Postgis, table not in public schema
+In-Reply-To: <49082C75.7030903@geoinfo.geof.hr>
+References: <49082C75.7030903@geoinfo.geof.hr>
+Message-ID: <492679B6.4000906@geoinfo.geof.hr>
+
+Updated patch due to some changes in r769. Please test...
+
+
+From artem at mapnik.org  Fri Nov 21 14:22:58 2008
+From: artem at mapnik.org (Artem Pavlenko)
+Date: Fri, 21 Nov 2008 13:22:58 +0000
+Subject: [Mapnik-devel] Postgis, table not in public schema
+In-Reply-To: <492679B6.4000906@geoinfo.geof.hr>
+References: <49082C75.7030903@geoinfo.geof.hr>
+	<492679B6.4000906@geoinfo.geof.hr>
+Message-ID: <14DBD9BA-E737-409F-A3BA-790D5CF10300@mapnik.org>
+
+Hi Dra?en,
+Thanks for your patch, appled in r773.
+Artem
+On 21 Nov 2008, at 09:04, Dra?en Odoba?i? wrote:
+
+> Updated patch due to some changes in r769. Please test...
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+From blake at hailmail.net  Sat Nov 22 04:55:31 2008
+From: blake at hailmail.net (Dane Springmeyer)
+Date: Fri, 21 Nov 2008 19:55:31 -0800
+Subject: [Mapnik-devel] Filter by geometry type
+Message-ID: <2C431DEF-10E9-41D3-8A64-A23AB3B573CB@hailmail.net>
+
+Is it possible to filter features based on the geometry type using  
+shapefile or postgis datasources?
+
+I noticed this syntax in the osm-template.xml which makes me wonder if  
+this is already implemented:
+
+http://trac.openstreetmap.org/browser/applications/rendering/mapnik/osm-template.xml#L6
+
+Anyone know?
+
+Thanks,
+Dane
+
+
+
+From kleptog at gmail.com  Sat Nov 22 20:46:54 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sat, 22 Nov 2008 20:46:54 +0100
+Subject: [Mapnik-devel] Possible bug clipping layers and extents
+Message-ID: <2fc2c5f10811221146x6206809difad8bdb2a6d8c169@mail.gmail.com>
+
+While playing with a stereographic projection today I ran into a
+problem relating to this code:
+
+http://trac.mapnik.org/browser/trunk/include/mapnik/feature_style_processor.hpp#L112
+
+Basically, my original data is in spherical mercator (that's proj1)
+while I had a stereographic projection for proj0. In stereographic
+projections there is no break at +/- 180 degrees. So, the bbox for the
+layer (-2e6 -2e6, 2e6 2e6) got mapped to a line in the stere
+projection, clipped and converted back to something terrible, because
+one of the corners of the layer is completely impossible in my
+projection.
+
+Is there a reason why the back-conversions? I replaced the code with
+the simpler code:
+
+Envelope<double> bbox = prj_trans.forward( ext ).intersect( lay.envelope() );
+
+after adding the relevent support to proj_trans. Apart from actually
+working it also seems a lot clearer. And more robust, since we make
+don't any assumptions about where the layers appear in the map
+coordinate system.
+
+However, before submitting a patch I was wondering whether maybe there
+was a reason for the back transform. I don't see it, but maybe someone
+else does?
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+
+From robert.coup at onetrackmind.co.nz  Sun Nov 23 20:31:16 2008
+From: robert.coup at onetrackmind.co.nz (Robert Coup)
+Date: Mon, 24 Nov 2008 08:31:16 +1300
+Subject: [Mapnik-devel] Possible bug clipping layers and extents
+In-Reply-To: <2fc2c5f10811221146x6206809difad8bdb2a6d8c169@mail.gmail.com>
+References: <2fc2c5f10811221146x6206809difad8bdb2a6d8c169@mail.gmail.com>
+Message-ID: <c5097ac40811231131y51dc0c1cr84091c3ef6fbc175@mail.gmail.com>
+
+Hi Martin,
+
+On Sun, Nov 23, 2008 at 8:46 AM, Martijn van Oosterhout
+<kleptog at gmail.com>wrote:
+
+> Basically, my original data is in spherical mercator (that's proj1)
+> while I had a stereographic projection for proj0. In stereographic
+> projections there is no break at +/- 180 degrees. So, the bbox for the
+> layer (-2e6 -2e6, 2e6 2e6) got mapped to a line in the stere
+> projection, clipped and converted back to something terrible, because
+> one of the corners of the layer is completely impossible in my
+> projection.
+>
+> Is there a reason why the back-conversions?
+
+
+The layer projection might be one that can't represent the area of the map
+(eg. a regional data source on a world map). So when mapnik later projects
+the map extent into the layer projection to filter the data, it explodes.
+
+Rob :)
+-- 
+Koordinates Ltd. (formerly One Track Mind)
+PO Box 1604, Shortland St, Auckland 1140, New Zealand
+Phone +64-9-966 0433 Fax +64-9-969 0045
+Web http://koordinates.com/
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20081124/b4a4a0f2/attachment.html>
+
+From kleptog at gmail.com  Sun Nov 23 22:44:42 2008
+From: kleptog at gmail.com (Martijn van Oosterhout)
+Date: Sun, 23 Nov 2008 22:44:42 +0100
+Subject: [Mapnik-devel] Possible bug clipping layers and extents
+In-Reply-To: <c5097ac40811231131y51dc0c1cr84091c3ef6fbc175@mail.gmail.com>
+References: <2fc2c5f10811221146x6206809difad8bdb2a6d8c169@mail.gmail.com>
+	<c5097ac40811231131y51dc0c1cr84091c3ef6fbc175@mail.gmail.com>
+Message-ID: <2fc2c5f10811231344g28eef0a9p470499116d0603ff@mail.gmail.com>
+
+On Sun, Nov 23, 2008 at 8:31 PM, Robert Coup
+<robert.coup at onetrackmind.co.nz> wrote:
+> Hi Martin,
+>
+> On Sun, Nov 23, 2008 at 8:46 AM, Martijn van Oosterhout <kleptog at gmail.com>
+> wrote:
+>>
+>> Basically, my original data is in spherical mercator (that's proj1)
+>> while I had a stereographic projection for proj0. In stereographic
+>> projections there is no break at +/- 180 degrees. So, the bbox for the
+>> layer (-2e6 -2e6, 2e6 2e6) got mapped to a line in the stere
+>> projection, clipped and converted back to something terrible, because
+>> one of the corners of the layer is completely impossible in my
+>> projection.
+>>
+>> Is there a reason why the back-conversions?
+>
+> The layer projection might be one that can't represent the area of the map
+> (eg. a regional data source on a world map). So when mapnik later projects
+> the map extent into the layer projection to filter the data, it explodes.
+
+I think I get what you mean, but I can't see how it's a problem. You
+take your map extent and project it to the layer projection. It'll get
+some really big bounding box, sure, but then you intersect with the
+layer extent and all is fine.
+
+Do you have any examples of where you think it might break, because
+the simple examples I come up with work.
+
+Have a nice day,
+-- 
+Martijn van Oosterhout <kleptog at gmail.com> http://svana.org/kleptog/
+
+

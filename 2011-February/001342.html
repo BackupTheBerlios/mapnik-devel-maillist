@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Query object
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Query%20object&In-Reply-To=%3CAANLkTikxt%2BUKm%2BeJnOrOA7YBfTyjinA6DAtjM3d00MEZ%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001341.html">
+   <LINK REL="Next"  HREF="001343.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Query object</H1>
+    <B>Roel Vanhout</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Query%20object&In-Reply-To=%3CAANLkTikxt%2BUKm%2BeJnOrOA7YBfTyjinA6DAtjM3d00MEZ%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Query object">roel.vanhout at gmail.com
+       </A><BR>
+    <I>Fri Feb 11 19:52:17 CET 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001341.html">[Mapnik-devel] Query object
+</A></li>
+        <LI>Next message: <A HREF="001343.html">[Mapnik-devel] mapnik.render
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1342">[ date ]</a>
+              <a href="thread.html#1342">[ thread ]</a>
+              <a href="subject.html#1342">[ subject ]</a>
+              <a href="author.html#1342">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Oh I see, thanks Dane. I'll check the data source plugin code for
+details. Come to think of it, I used the same for a GIS-like software
+package I wrote some years ago, I didn't recognize the terminology
+though.
+
+cheers,
+
+roel
+
+
+On Fri, Feb 11, 2011 at 7:45 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">dane at dbsgeo.com</A>&gt; wrote:
+&gt;<i> Datasources are generic plugins, right, and the mapnik renderers (agg_renderer, svg_renderer, and cairo_renderer) use the mapnik::query object to pass down the information needed to fetch features from an arbitrary datasource. For vector datasources all that is needed is the bbox and attribute names, but raster datasources need resolution. In addition we pass down things like scale_denominator so that fancy datasources like postgis can do variable substitution and be able to construct queries that use the scale_denominator value.
+</I>&gt;<i>
+</I>&gt;<i> So, mapnik::query has tended to evolve to better support the demands of datasource plugins as they are created and we find more things they need.
+</I>&gt;<i>
+</I>&gt;<i> For more info on scale see: <A HREF="https://trac.mapnik.org/wiki/ScaleAndPpi">https://trac.mapnik.org/wiki/ScaleAndPpi</A>
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Feb 11, 2011, at 7:52 AM, Roel Vanhout wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> I'm documenting my php extension as I'm going along. What is the Query
+</I>&gt;&gt;<i> object used for? Why does it have a resolution and 'scale denominator'
+</I>&gt;&gt;<i> and what is that last one? Thanks.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> cheers,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> roel
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001341.html">[Mapnik-devel] Query object
+</A></li>
+	<LI>Next message: <A HREF="001343.html">[Mapnik-devel] mapnik.render
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1342">[ date ]</a>
+              <a href="thread.html#1342">[ thread ]</a>
+              <a href="subject.html#1342">[ subject ]</a>
+              <a href="author.html#1342">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Comments from Mapnik Fedora RPM review
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3C54DC219E-9E51-4FAB-8316-12FFBCFF543A%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000210.html">
+   <LINK REL="Next"  HREF="000213.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Comments from Mapnik Fedora RPM review</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Comments%20from%20Mapnik%20Fedora%20RPM%20review&In-Reply-To=%3C54DC219E-9E51-4FAB-8316-12FFBCFF543A%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Comments from Mapnik Fedora RPM review">artem at mapnik.org
+       </A><BR>
+    <I>Wed Jul 25 11:19:56 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000210.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+        <LI>Next message: <A HREF="000213.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#212">[ date ]</a>
+              <a href="thread.html#212">[ thread ]</a>
+              <a href="subject.html#212">[ subject ]</a>
+              <a href="author.html#212">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Keith,
+
+Thanks for pushing this forward.
+On 25 Jul 2007, at 09:44, Keith Sharp wrote:
+
+&gt;<i> Hello,
+</I>&gt;<i>
+</I>&gt;<i> I've been in the process of submitting a Mapnik RPM to Fedora for a  
+</I>&gt;<i> few
+</I>&gt;<i> months now and I have had some feedback on my RPM.  A number of the
+</I>&gt;<i> comments were more related to Mapnik itself:
+</I>&gt;<i>
+</I>&gt;<i> 1) Some of the files in the demo application have Windows-style line
+</I>&gt;<i> endings:
+</I>&gt;<i>
+</I>&gt;<i> 	demo/data/boundaries_l.shp.xml
+</I>&gt;<i> 	demo/data/boundaries.shp.xml
+</I>&gt;<i> 	demo/data/qcdrainage.shp.xml
+</I>&gt;<i> 	demo/data/ontdrainage.shp.xml
+</I>&gt;<i> 	demo/data/popplaces.shp.xml
+</I>&gt;<i> 	demo/data/COPYRIGHT.txt
+</I>&gt;<i> 	demo/data/roads.shp.xml
+</I>&gt;<i>
+</I>&gt;<i> Can these be converted to Unix-style?
+</I>
+Sure, no problem. I just never had a chance to open these files in  
+Emacs  :)
+Actually, I don't think we need *.xml files at all , I'll remove them  
+and fix COPYRIGHT.txt
+&gt;<i>
+</I>&gt;<i> 2) Mapnik compiles with -O3, Fedora forbids this because of the extra
+</I>&gt;<i> complexity this adds to debugging.  Can this be changed/removed?
+</I>&gt;<i>
+</I>
+Mapnik is using similar compilation flags to boost.  Some boost  
+libraries _do_ benefit from -O3.
+I guess you can change this while building rpms, it shouldn't be  
+difficult.
+
+&gt;<i> 3) Mapnik does not have a soversion which will cause problems in the
+</I>&gt;<i> future when the ABI changes and dynamically linked applications will
+</I>&gt;<i> start to fail.  Can  soversion support be added?
+</I>
+Yes, it can be. But ABI will change frequently!
+Dominic Hargreaves had the same challenge while building deb  
+packages. We should ask him.
+
+&gt;<i>
+</I>&gt;<i> 4) Fedora already contains the Dejavu fonts so there is no need to
+</I>&gt;<i> bundle them with Mapnik.  I can probably cut these out during the RPM
+</I>&gt;<i> build process but it would be easier if they were removed  
+</I>&gt;<i> upstream.  Is
+</I>&gt;<i> there any reason that they need to be bundled in the core package?
+</I>&gt;<i>
+</I>The main reason to allow users to run 'rundemo.py' and create maps  
+with text without configuring anything.
+We can remove fonts and rely on standard fonts paths on Linux, I  
+guess. But what about Mac osx, win32 users?
+
+&gt;<i> The Fedora bug review is:
+</I>&gt;<i>
+</I>&gt;<i> 	<A HREF="https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581">https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=234581</A>
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Keith.
+</I>&gt;<i>
+</I>
+Cheers,
+Artem
+&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070725/3297bef9/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20070725/3297bef9/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000210.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+	<LI>Next message: <A HREF="000213.html">[Mapnik-devel] Comments from Mapnik Fedora RPM review
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#212">[ date ]</a>
+              <a href="thread.html#212">[ thread ]</a>
+              <a href="subject.html#212">[ subject ]</a>
+              <a href="author.html#212">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

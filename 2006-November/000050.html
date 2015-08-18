@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] problem with save_map
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2006-November/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20problem%20with%20save_map&In-Reply-To=%3C45565AEC.1010309%40methane.ca%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000049.html">
+   <LINK REL="Next"  HREF="000051.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] problem with save_map</H1>
+    <B>Jean-Fran&#231;ois Doyon</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20problem%20with%20save_map&In-Reply-To=%3C45565AEC.1010309%40methane.ca%3E"
+       TITLE="[Mapnik-devel] problem with save_map">jfdoyon at methane.ca
+       </A><BR>
+    <I>Sun Nov 12 00:21:16 CET 2006</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000049.html">[Mapnik-devel] Mapnik and OpenLayers Tiles
+</A></li>
+        <LI>Next message: <A HREF="000051.html">[Mapnik-devel] problem with save_map
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello,
+
+Trying to use save_map from python, without any luck.
+
+Noted some mistakes in the bindings:
+
++    def(&quot;load_map&quot;,&amp;load_map,&quot;load Map object from XML&quot;);
++    def(&quot;save_map&quot;,&amp;load_map,&quot;sace Map object to XML&quot;);
+
+Which I corrected to say:
+
+     def(&quot;load_map&quot;,&amp;load_map,&quot;Load Map object from XML&quot;);
+     def(&quot;save_map&quot;,&amp;save_map,&quot;Save Map object to XML&quot;);
+
+But I get a symbol undefined at runtime:
+
+[<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">root at pcjflinux</A> python]# python rundemo.py
+
+
+The mapnik library and python bindings must have been compiled and 
+installed successfully before running this script.
+
+
+Traceback (most recent call last):
+   File &quot;rundemo.py&quot;, line 24, in ?
+     from mapnik import *
+   File &quot;/usr/lib/python2.3/site-packages/mapnik/__init__.py&quot;, line 33, in ?
+     from _mapnik import *
+ImportError: /usr/lib/python2.3/site-packages/mapnik/_mapnik.so: 
+undefined symbol: _ZN6mapnik8save_mapERKNS_3MapERKSs
+
+Any ideas?
+
+Thx
+J.F.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000049.html">[Mapnik-devel] Mapnik and OpenLayers Tiles
+</A></li>
+	<LI>Next message: <A HREF="000051.html">[Mapnik-devel] problem with save_map
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#50">[ date ]</a>
+              <a href="thread.html#50">[ thread ]</a>
+              <a href="subject.html#50">[ subject ]</a>
+              <a href="author.html#50">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Problem with polygon rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20polygon%20rendering&In-Reply-To=%3C7BE369B1-8208-439E-A391-E5C60A50086C%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000312.html">
+   <LINK REL="Next"  HREF="000313.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Problem with polygon rendering</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Problem%20with%20polygon%20rendering&In-Reply-To=%3C7BE369B1-8208-439E-A391-E5C60A50086C%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Problem with polygon rendering">artem at mapnik.org
+       </A><BR>
+    <I>Fri Oct 19 12:14:10 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000312.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+        <LI>Next message: <A HREF="000313.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#314">[ date ]</a>
+              <a href="thread.html#314">[ thread ]</a>
+              <a href="subject.html#314">[ subject ]</a>
+              <a href="author.html#314">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 19 Oct 2007, at 01:47, Christopher Schmidt wrote:
+
+&gt;<i> On Thu, Oct 18, 2007 at 11:26:38PM +0100, Jon Burgess wrote:
+</I>&gt;&gt;<i> It seems that the layer bounding box projection change which was  
+</I>&gt;&gt;<i> added
+</I>&gt;&gt;<i> in r522 breaks the rendering of some polygons, e.g. tile
+</I>&gt;&gt;<i> 15/5256/11433.png in the OSM data set.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> This currently looks fine on the OSM slippy map but this is only  
+</I>&gt;&gt;<i> because
+</I>&gt;&gt;<i> the renderer is still using the r519 code. Locally I have the current
+</I>&gt;&gt;<i> SVN Mapnik and the green park is not rendered. Chris Schmidt also  
+</I>&gt;&gt;<i> sees
+</I>&gt;&gt;<i> this on the labs.metacarta.com map.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> The attached patch fixes this for me by backing out the rev 522  
+</I>&gt;&gt;<i> change.
+</I>&gt;<i>
+</I>&gt;<i> I have applied Jon's patch to the Mapnik running on Hypercube, and can
+</I>&gt;<i> confirm that it fixes the problem that I saw after updating to SVN.
+</I>&gt;<i> (Thanks Jon!)
+</I>
+
+Are you using old world_boundaries? If so, the problem is with proj4  
+not be able to project 'out-of-valid-extent' polygons (fair enough).
+I don't think logic (in Mapnik) is wrong , everything should work  
+fine is  data is valid. When I created shorelne_{a,l}.shp I didn't  
+clip outer tiles(polygons) to valid mercator extent, hence proj4 is  
+returning wrong results.
+
+Cheers
+Artem
+
+
+&gt;<i>
+</I>&gt;<i> Regards,
+</I>&gt;<i> -- 
+</I>&gt;<i> Christopher Schmidt
+</I>&gt;<i> MetaCarta
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+Artem Pavlenko
+<A HREF="http://mapnik.org">http://mapnik.org</A>
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/b871a9f6/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20071019/b871a9f6/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000312.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+	<LI>Next message: <A HREF="000313.html">[Mapnik-devel] Problem with polygon rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#314">[ date ]</a>
+              <a href="thread.html#314">[ thread ]</a>
+              <a href="subject.html#314">[ subject ]</a>
+              <a href="author.html#314">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

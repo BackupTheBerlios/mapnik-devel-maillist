@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik viewer and OSM rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C47DAD41C.1060709%40onetrackmind.co.nz%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000557.html">
+   <LINK REL="Next"  HREF="000550.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik viewer and OSM rendering</H1>
+    <B>Ben Moores</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3C47DAD41C.1060709%40onetrackmind.co.nz%3E"
+       TITLE="[Mapnik-devel] Mapnik viewer and OSM rendering">ben.moores at onetrackmind.co.nz
+       </A><BR>
+    <I>Fri Mar 14 20:38:04 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000557.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+        <LI>Next message: <A HREF="000550.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#553">[ date ]</a>
+              <a href="thread.html#553">[ thread ]</a>
+              <a href="subject.html#553">[ subject ]</a>
+              <a href="author.html#553">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Tom Hughes wrote:
+&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">47D8A4D4.9010909 at onetrackmind.co.nz</A>&gt;
+</I>&gt;<i>         Ben Moores &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">ben.moores at onetrackmind.co.nz</A>&gt; wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> Hi, I've been doing some work adding PDF output to mapnik. It's still a 
+</I>&gt;&gt;<i> work in progress, around 90% done and was going to be released when 
+</I>&gt;&gt;<i> finished.
+</I>&gt;<i> 
+</I>&gt;<i> You do know that I committed support for PDF rendering using cairo
+</I>&gt;<i> a few weeks ago I assume?
+</I>
+cool, the stuff i've been working on has been a bit on and off for 
+months (maybe 6). I did look for all the pdf rendering libraries I could 
+find before I started, and looking back now, Cairo wasn't in the list. 
+Not sure how I missed that.
+
+wxPdfDoc still says its in beta (and not updated since Dec 2006), but 
+had far more supported features than the other libraries I found at the 
+time. Ulrich, the maintainer, is still working on it, and hoped to have 
+another release with more features and bug fixes.
+
+It should not be too much work to use whatever library you want.
+
+&gt;<i> 
+</I>&gt;&gt;<i> - I've used a patched wxPdfDoc for the pdf rendering.
+</I>&gt;&gt;<i> - Most symbolizers are implemented.
+</I>&gt;<i> 
+</I>&gt;<i> I'm guessing not LinePatternSymbolizer ;-)
+</I>
+Only partly :), I can use a pdf pattern to render a line, but since the 
+people I wrote this for didn't need it, I didn't spend the time to 
+rotate the pattern for each line segment.
+
+<A HREF="http://upload2.net/page/download/SeATQAEf9aw4LWz/linepatternsymboltest.pdf.html">http://upload2.net/page/download/SeATQAEf9aw4LWz/linepatternsymboltest.pdf.html</A>
+
+The only other symbolizer I haven't done is the marker symbolizer. But 
+the point_symbolizer with images worked well enough for me.
+
+&gt;<i> 
+</I>&gt;&gt;<i> - Tried to make it as a separate library to mapnik, but had to subclass 
+</I>&gt;&gt;<i> some of the symbolizers. Mostly this was adding output sizes to images, 
+</I>&gt;&gt;<i> since pixels don't correspond to page measurements.
+</I>&gt;<i> 
+</I>&gt;<i> I have (currently) just treated cairo units (which are points
+</I>&gt;<i> for PDF surfaces) as equivalent to pixels. I think that isn't
+</I>&gt;<i> quite right as cairo is using points (72dpi) and mapnik assumes
+</I>&gt;<i> a value of about 90dpi IIRC.
+</I>
+The way i've done scaling is:
+  - specify the units to be used in the pdf, e.g. mm, inch, point
+  - then each pixel in mapnik is equated to a pdf-unit.
+  - e.g. with mm units in the pdf doc, a 5-pixel wide line corresponds 
+to a 5mm wide line. This worked quite well.
+
+It would be nice if you could specify an output size of images and get 
+mapnik to scale them. At the moment its a bit of a pain that the 
+symbolizer_with_image requires the size of the image before it loads it, 
+it'd be nice if it figured it out itself. This would let me remove the 
+subclasses; looking back now, this was probably the way I should have 
+done it.
+
+&gt;<i> 
+</I>&gt;&gt;<i> - Implemented PDF layers, so you can turn things on and off.
+</I>&gt;<i> 
+</I>&gt;<i> I haven't done that, but if cairo offers a way to declare layers
+</I>&gt;<i> it should be easy enough - it's the first I've heard of it to be
+</I>&gt;<i> honest.
+</I>
+It's quite easy, just some marked content in the page stream, and a 
+couple of dictionaries. I had to hack support for it into wxpdfdoc 
+myself, although it might be in the next release. If you want more 
+information, its called 'Optional Content' in pdfs, and been available 
+since PDF 1.5. The PDF Reference version 1.7 has it in section 4.10.
+
+I'm not sure what viewers other than acrobat support it. But the 
+fall-back for a viewer with no support is to just render everything.
+
+I'll try to get a bit more work done on it this weekend, I haven't 
+updated to svn head for a while.
+
+
+Ben
+
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000557.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+	<LI>Next message: <A HREF="000550.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#553">[ date ]</a>
+              <a href="thread.html#553">[ thread ]</a>
+              <a href="subject.html#553">[ subject ]</a>
+              <a href="author.html#553">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

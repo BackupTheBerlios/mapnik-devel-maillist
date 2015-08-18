@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] support for allow_overlap missing from load_map?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-June/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20support%20for%20allow_overlap%20missing%20from%20load_map%3F&In-Reply-To=%3C1182374458.15207.42.camel%40localhost.localdomain%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000172.html">
+   <LINK REL="Next"  HREF="000174.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] support for allow_overlap missing from load_map?</H1>
+    <B>Jon Burgess</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20support%20for%20allow_overlap%20missing%20from%20load_map%3F&In-Reply-To=%3C1182374458.15207.42.camel%40localhost.localdomain%3E"
+       TITLE="[Mapnik-devel] support for allow_overlap missing from load_map?">jburgess777 at googlemail.com
+       </A><BR>
+    <I>Wed Jun 20 23:20:58 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000172.html">[Mapnik-devel] support for allow_overlap missing from load_map?
+</A></li>
+        <LI>Next message: <A HREF="000174.html">[Mapnik-devel] support for allow_overlap missing from load_map?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#175">[ date ]</a>
+              <a href="thread.html#175">[ thread ]</a>
+              <a href="subject.html#175">[ subject ]</a>
+              <a href="author.html#175">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Wed, 2007-06-20 at 21:42 +0100, Artem Pavlenko wrote:
+&gt;<i> 
+</I>&gt;<i> On 20 Jun 2007, at 21:21, Jon Burgess wrote:
+</I>&gt;<i> 
+</I>&gt;<i> &gt; Looking at load_map.cpp there doesn't appear to be any handling of
+</I>&gt;<i> &gt; the
+</I>&gt;<i> &gt; allow_overlap XML attribute?
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; Jon
+</I>&gt;<i> &gt; 
+</I>&gt;<i> &gt; 
+</I>&gt;<i> 
+</I>&gt;<i> 
+</I>&gt;<i> Ok, it didn't make it to load_map.cpp , yet. If set to 'true' labels
+</I>&gt;<i> don't ask label_cache for a placement and there's no record in
+</I>&gt;<i> label_cache. I guess you're trying to improve labeling for the case
+</I>&gt;<i> when tube symbol wins over city name ? This flag might be to
+</I>&gt;<i> inflexible. 
+</I>&gt;<i> 
+</I>I was not really trying to implement anything yet. I noticed that there
+were allow_overlap lines in the osm.xml file and wondered what this flag
+would do. Then I found that the code seemed to be missing :-)
+&gt;<i> 
+</I>&gt;<i> I'll add allow_overlap to both point and text_symbolizer. Let see if
+</I>&gt;<i> it'll improve labeling. Other things to try : 
+</I>&gt;<i> 1. z_ordering text labels,
+</I>&gt;<i>    2. try a set of allowed text positions 
+</I>&gt;<i>         3.  more comprehensive label_cache where you can intersect
+</I>&gt;<i> labels from different layers. Perhaps each data node can have extra
+</I>&gt;<i> data identifying layer index ...?
+</I>&gt;<i> 
+</I>Using the z_order might be an easy way to do it. 
+
+Another thought was to have a tolerance attribute which allowed a label
+to be placed anywhere within a given radius. If this was specified in
+metres then we could probably assume that any city label can be moved by
+1km, town 100m, village 20m. For unusually large or small populated
+areas we could override this with a special key/value pair in the OSM
+DB. 
+
+  Jon
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000172.html">[Mapnik-devel] support for allow_overlap missing from load_map?
+</A></li>
+	<LI>Next message: <A HREF="000174.html">[Mapnik-devel] support for allow_overlap missing from load_map?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#175">[ date ]</a>
+              <a href="thread.html#175">[ thread ]</a>
+              <a href="subject.html#175">[ subject ]</a>
+              <a href="author.html#175">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

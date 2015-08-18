@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] png256: transparency support + passing user	options
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C521D9B00-EFC3-40C6-9D71-09A399134FB8%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001095.html">
+   <LINK REL="Next"  HREF="001097.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] png256: transparency support + passing user	options</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20png256%3A%20transparency%20support%20%2B%20passing%20user%0A%09options&In-Reply-To=%3C521D9B00-EFC3-40C6-9D71-09A399134FB8%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] png256: transparency support + passing user	options">blake at hailmail.net
+       </A><BR>
+    <I>Mon Mar 15 19:22:52 CET 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001095.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+        <LI>Next message: <A HREF="001097.html">[Mapnik-devel] png256: transparency support + passing	user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1099">[ date ]</a>
+              <a href="thread.html#1099">[ thread ]</a>
+              <a href="subject.html#1099">[ subject ]</a>
+              <a href="author.html#1099">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Marcin,
+
+Thanks for the fix. I can confirm that current 0.7.1-dev with your  
+change works just fine on Ubuntu 8.10 with boost 1.34 from packages.
+
+Fredrik, nice catch!
+
+Dane
+
+
+On Mar 15, 2010, at 2:21 AM, Marcin Rudowski wrote:
+
+&gt;<i> W dniu 15.03.2010 10:01, Artem Pavlenko pisze:
+</I>&gt;&gt;<i> Yes, it did. On trunk I get:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> grep -rn 'boost/unordered_map.hpp' --include=*.{cpp,hpp} .
+</I>&gt;&gt;<i> ./include/mapnik/hextree.hpp:32:#include &lt;boost/unordered_map.hpp&gt;
+</I>&gt;&gt;<i> ./include/mapnik/image_cache.hpp:35:#include &lt;boost/ 
+</I>&gt;&gt;<i> unordered_map.hpp&gt;
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> You should be able to use std::tr1::unordered_map (GCC) as a  
+</I>&gt;&gt;<i> replacement.
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> Not sure if using tr1 won't break builds in some enviroments.
+</I>&gt;<i>
+</I>&gt;<i> I just committed fix to 0.7.1-dev branch, using simple stl:map in case
+</I>&gt;<i> of boost&lt;1.36, so that it works, just few % slower (not including  
+</I>&gt;<i> mapnik
+</I>&gt;<i> rendering, just png saving).
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/changeset/1694">http://trac.mapnik.org/changeset/1694</A>
+</I>&gt;<i>
+</I>&gt;<i> Trunk already needs higher version of boost, so it doesn't need it.
+</I>&gt;<i>
+</I>&gt;<i> -- 
+</I>&gt;<i> Marcin Rudowski
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001095.html">[Mapnik-devel] png256: transparency support + passing user	options
+</A></li>
+	<LI>Next message: <A HREF="001097.html">[Mapnik-devel] png256: transparency support + passing	user	options
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1099">[ date ]</a>
+              <a href="thread.html#1099">[ thread ]</a>
+              <a href="subject.html#1099">[ subject ]</a>
+              <a href="author.html#1099">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

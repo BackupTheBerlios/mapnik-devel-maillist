@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik viewer and OSM rendering
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3CA0E76703-65CE-4956-9291-A1F5A4905535%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000554.html">
+   <LINK REL="Next"  HREF="000549.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik viewer and OSM rendering</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20viewer%20and%20OSM%20rendering&In-Reply-To=%3CA0E76703-65CE-4956-9291-A1F5A4905535%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Mapnik viewer and OSM rendering">artem at mapnik.org
+       </A><BR>
+    <I>Sat Mar 15 00:10:07 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000554.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+        <LI>Next message: <A HREF="000549.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#555">[ date ]</a>
+              <a href="thread.html#555">[ thread ]</a>
+              <a href="subject.html#555">[ subject ]</a>
+              <a href="author.html#555">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 14 Mar 2008, at 19:43, Ben Moores wrote:
+
+&gt;<i> Artem Pavlenko wrote:
+</I>&gt;&gt;<i> Hi Ben,
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Hi, I've been doing some work adding PDF output to mapnik. It's  
+</I>&gt;&gt;&gt;<i> still a
+</I>&gt;&gt;&gt;<i> work in progress, around 90% done and was going to be released when
+</I>&gt;&gt;&gt;<i> finished.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> - I've used a patched wxPdfDoc for the pdf rendering.
+</I>&gt;&gt;&gt;<i> - Most symbolizers are implemented.
+</I>&gt;&gt;&gt;<i> - Tried to make it as a separate library to mapnik, but had to  
+</I>&gt;&gt;&gt;<i> subclass
+</I>&gt;&gt;&gt;<i> some of the symbolizers. Mostly this was adding output sizes to  
+</I>&gt;&gt;&gt;<i> images,
+</I>&gt;&gt;&gt;<i> since pixels don't correspond to page measurements.
+</I>&gt;&gt;&gt;<i> - Implemented PDF layers, so you can turn things on and off.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I've uploaded a test file using the example data set:
+</I>&gt;&gt;&gt;<i> <A HREF="http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html">http://upload2.net/page/download/mv02dzEzlxozBuV/maptest.pdf.html</A>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Great stuff. Are you aware of Tom Hughes cairo_renderer (svn trunk)
+</I>&gt;&gt;<i> which can output vector PDF, PS and SVG amongst other things?
+</I>&gt;<i>
+</I>&gt;<i> I hadn't found that renderer when I started, but I'll have a look at
+</I>&gt;<i> what it can do.
+</I>&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Please ignore the funky colours and overlays, that was just for  
+</I>&gt;&gt;&gt;<i> testing
+</I>&gt;&gt;&gt;<i> to make sure everything was lining up right.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> Let me know if you're interested in this in its unfinished state.
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> It looks like great area to swap notes.  I tested cairo_renderer and
+</I>&gt;&gt;<i> results are good. I don't know much about wxPdfDoc and what it uses
+</I>&gt;&gt;<i> underneath. In general, having as many  rendering back-ends as  
+</I>&gt;&gt;<i> possible
+</I>&gt;&gt;<i> is great and using wxPdfDoc might be good choice for you particular
+</I>&gt;&gt;<i> application, but please have a look at cairo implementation.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> If you could publish even unfinished code somewhere I'd like to  
+</I>&gt;&gt;<i> have a
+</I>&gt;&gt;<i> look. Perhaps, 'experimental' branch in SVN ? Let me know if you  
+</I>&gt;&gt;<i> would
+</I>&gt;&gt;<i> like write access.
+</I>&gt;<i>
+</I>&gt;<i> Thanks, I could do that. I'm currently using an unpublished patched
+</I>&gt;<i> version of wxpdfdoc, but I can make that available as well.
+</I>
+Great, send me (off list) your preferable username and ssh public  
+key, please
+&gt;<i>
+</I>&gt;<i>
+</I>
+&gt;<i> Ben
+</I>&gt;<i>
+</I>
+Artem
+&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000554.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+	<LI>Next message: <A HREF="000549.html">[Mapnik-devel] Mapnik viewer and OSM rendering
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#555">[ date ]</a>
+              <a href="thread.html#555">[ thread ]</a>
+              <a href="subject.html#555">[ subject ]</a>
+              <a href="author.html#555">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

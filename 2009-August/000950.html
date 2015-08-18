@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Strange behavior with filters
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-August/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Strange%20behavior%20with%20filters&In-Reply-To=%3C200908311901.35707.andreas%40theosys.at%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000948.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Strange behavior with filters</H1>
+    <B>Andreas Theofilu</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Strange%20behavior%20with%20filters&In-Reply-To=%3C200908311901.35707.andreas%40theosys.at%3E"
+       TITLE="[Mapnik-devel] Strange behavior with filters">andreas at theosys.at
+       </A><BR>
+    <I>Mon Aug 31 19:01:35 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000948.html">[Mapnik-devel] Ticket #363 Postgres error reporting
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#950">[ date ]</a>
+              <a href="thread.html#950">[ thread ]</a>
+              <a href="subject.html#950">[ subject ]</a>
+              <a href="author.html#950">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi,
+
+I currently try to support shape files in my application. To make it for the 
+user as easy as possible, I want to create a default map file, containing all 
+information's to render a beautiful map. Because my application is a KDE 
+program, I want to use the internal paths KDE uses. Therefore I don't use the 
+function &quot;load_map()&quot; to read the map file, but wrote my own parser to read 
+the map files. this allows me, to set the path of a polygon pattern 
+symbolizer, for example, to the place where the picture is really saved.
+
+The parser works now and I can use the shape files. I've played around with 
+various rules in the map file and found out, that every rule containing a 
+&quot;Filter&quot;- condition, doesn't work. So I wrote a small program to just test 
+this, and it works. So there seems no problem with Mapnik itself.
+
+I used the function &quot;save_map()&quot; to see what my applications sets. If I 
+compare the result of &quot;save_map()&quot; with the map file, I can't see any 
+difference. The filter conditions are there as expected. Now I don't 
+understand, why rules with filter conditions in my application are ignored by 
+Mapnik, while they are not in my test application.
+
+I've attached the test application to this mail. There is also the PNG file 
+attached, that is produced by the test application and a small map file I use 
+to test my real application. I use the shape files from 
+<A HREF="http://download.geofabrik.de/osm/europe.">http://download.geofabrik.de/osm/europe.</A>
+
+The following link points to the source of my self written interpreter:
+
+   <A HREF="http://www.theosys.at/websvn/filedetails.php?repname=repos+1&amp;path=%2Fsportwatcher%2Ftrunk%2Fsrc%2Frender.cpp">http://www.theosys.at/websvn/filedetails.php?repname=repos+1&amp;path=%2Fsportwatcher%2Ftrunk%2Fsrc%2Frender.cpp</A>
+
+To download the whole application type:
+
+   svn co <A HREF="svn://www.theosys.at/sportwatcher/trunk">svn://www.theosys.at/sportwatcher/trunk</A> sportwatcher
+
+I know this question sounds like: &quot;Would you please find the error for me&quot;. 
+But after several days of debugging I'm at a point where I can't find any 
+explanation for the behavior of my code.
+-- 
+Andreas Theofilu
+TheoSys - Software Systems and Solutions
+<A HREF="http://www.theosys.at">http://www.theosys.at</A>
+Tel.: +43 676 / 786 53 89
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: maptest.cpp
+Type: text/x-c++src
+Size: 6950 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.cpp">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.cpp</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: demo.png
+Type: image/png
+Size: 362997 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.png">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.png</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: shape.xml
+Type: application/xml
+Size: 1117 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.xml">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090831/26d69118/attachment.xml</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000948.html">[Mapnik-devel] Ticket #363 Postgres error reporting
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#950">[ date ]</a>
+              <a href="thread.html#950">[ thread ]</a>
+              <a href="subject.html#950">[ subject ]</a>
+              <a href="author.html#950">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

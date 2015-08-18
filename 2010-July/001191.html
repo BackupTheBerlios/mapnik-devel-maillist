@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Better Print Support project - Scaling of bitmaps
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-July/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Scaling%20of%20bitmaps&In-Reply-To=%3C4C3648AD.4030007%40tom-carden.co.uk%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001188.html">
+   <LINK REL="Next"  HREF="001192.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Better Print Support project - Scaling of bitmaps</H1>
+    <B>Tom Carden</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Better%20Print%20Support%20project%20-%20Scaling%20of%20bitmaps&In-Reply-To=%3C4C3648AD.4030007%40tom-carden.co.uk%3E"
+       TITLE="[Mapnik-devel] Better Print Support project - Scaling of bitmaps">tom at tom-carden.co.uk
+       </A><BR>
+    <I>Thu Jul  8 23:52:45 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001188.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+        <LI>Next message: <A HREF="001192.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1191">[ date ]</a>
+              <a href="thread.html#1191">[ thread ]</a>
+              <a href="subject.html#1191">[ subject ]</a>
+              <a href="author.html#1191">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hi Carlos,
+
+I'm not sure what the best library approach is but I imagine it would be 
+better to have the chosen library (AGG, Cairo, etc) handle image scaling 
+internally rather than separately resizing the images. I defer to Artem 
+and others for what the &quot;correct&quot; approach is for mapnik though.
+
+For the scaling itself I can imagine it would be useful to specify a few 
+different options:
+ * don't scale images at all (because they would look bad scaled up)
+ * provide a way to choose the &quot;best&quot; image for a given scale
+ * scale up images using nearest neighbor (for pixel graphics)
+ * scale up images using the best quality algorithm available
+
+There are already CSS properties for the last two options in SVG, 
+image-rendering: optimizeQuality and image-rendering: optimizeSpeed. 
+Firefox will support an additional hint to force nearest neighbor 
+scaling: <A HREF="https://developer.mozilla.org/en/css/image-rendering">https://developer.mozilla.org/en/css/image-rendering</A>
+
+Choosing the &quot;best&quot; size is obviously hardest because it's subjective. 
+When putting together the print proposal we also talked about precedents 
+like multi-size images (e.g. icon formats), mipmaps and scale-9 or 
+9-slice scaling:
+
+ * A multi-size image format could be as simple as making icons at 
+different sizes, e.g. 16x16, 32x32, etc. and having a heuristic for 
+choosing the &quot;best&quot; one for a given scale factor. Icon sets for the web 
+commonly provide many different sizes. Mac OS icons also work this way: 
+<A HREF="http://tutorialdog.com/how-to-create-icons-for-mac-os-x/">http://tutorialdog.com/how-to-create-icons-for-mac-os-x/</A>
+
+ * A mipmap image uses a single texture file to store multiple 
+resolutions: <A HREF="http://en.wikipedia.org/wiki/Mipmap">http://en.wikipedia.org/wiki/Mipmap</A> - again, the problem is 
+choosing the &quot;best&quot; resolution to use given the author's intent in the 
+unscaled stylesheet and a scaling factor.
+
+ * 9 slice or scale 9 is most useful for things like highway shields 
+where you have variable sized content that you want to wrap with a 
+border or a shadow. You define a rectangle inside an image such that the 
+corners do not scale, the top/bottom borders scale horizontally only and 
+the left/right borders scale vertically only. 
+<A HREF="http://www.mordy.com/pics/symbol_guides.jpg">http://www.mordy.com/pics/symbol_guides.jpg</A> and 
+<A HREF="http://rwillustrator.blogspot.com/2007/04/understanding-9-slice-scaling.html">http://rwillustrator.blogspot.com/2007/04/understanding-9-slice-scaling.html</A> 
+explain more. I have also seen a variation that defines two rectangles: 
+<A HREF="http://www.bytearray.org/?p=1206">http://www.bytearray.org/?p=1206</A>
+
+Hope these references are useful! We're looking forward to trying the 
+new functionality soon.
+
+Best,
+
+Tom.
+
+
+Carlos Enrique L&#243;pez Garc&#233;s wrote:
+&gt;<i> Good morning/evening everybody,
+</I>&gt;<i>
+</I>&gt;<i> The mapnik_resolution branch 
+</I>&gt;<i> (<A HREF="http://svn.mapnik.org/branches/mapnik_resolution/">http://svn.mapnik.org/branches/mapnik_resolution/</A>) currently supports 
+</I>&gt;<i> the scaling of line widths, dashes and fonts through a scale factor 
+</I>&gt;<i> that lets the user adjust the size of these elements. As you may know, 
+</I>&gt;<i> the problem that is addressed with the scale factor is that when a map 
+</I>&gt;<i> is rendered at higher resolution (a bigger image), the size of lines 
+</I>&gt;<i> and fonts remains at a smaller scale. For example, if you have a 
+</I>&gt;<i> stylesheet with widths and sizes that will look good in a 600x400 
+</I>&gt;<i> pixels image, it will no longer look good in an image of twice that 
+</I>&gt;<i> size (1200x800), because the lines will be thinner and the labels and 
+</I>&gt;<i> icons will be smaller. To correct this problem, one can pass a scale 
+</I>&gt;<i> factor of 2.0, that will double the size of lines and fonts.
+</I>&gt;<i>
+</I>&gt;<i> The interface exposed to the user is currently the same as in trunk, 
+</I>&gt;<i> which is passing the scale factor to the render method in python.
+</I>&gt;<i>
+</I>&gt;<i> Now, I'm beginning work with scaling symbols or bitmap icons. Trunk 
+</I>&gt;<i> already does so for svg icons and the mapnik_resolution branch too (as 
+</I>&gt;<i> it is merged with the former). And this is the reason why I write you, 
+</I>&gt;<i> to ask for ideas on how this should be done. I've found two 
+</I>&gt;<i> alternatives so far:
+</I>&gt;<i>
+</I>&gt;<i>     * Make use of the CImg library (<A HREF="http://cimg.sourceforge.net/">http://cimg.sourceforge.net/</A>)
+</I>&gt;<i>       which is a very lightweight code that doesn't require linking as
+</I>&gt;<i>       it is all contained in one single header file, but that has some
+</I>&gt;<i>       dependencies on system libraries.
+</I>&gt;<i>     * Make use of the mechanism that agg provides. This might be a
+</I>&gt;<i>       good option since it is already a core component of mapnik. I
+</I>&gt;<i>       don't have much experience with the library, but the code sample
+</I>&gt;<i>       in <A HREF="http://www.antigrain.com/demo/image_transforms.cpp.html">http://www.antigrain.com/demo/image_transforms.cpp.html</A> shows
+</I>&gt;<i>       that it is possible.
+</I>&gt;<i>
+</I>&gt;<i> Any ideas are welcome.
+</I>&gt;<i>
+</I>&gt;<i> Thanks
+</I>&gt;<i>
+</I>&gt;<i> Carlos L&#243;pez
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001188.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+	<LI>Next message: <A HREF="001192.html">[Mapnik-devel] Better Print Support project - Scaling of bitmaps
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1191">[ date ]</a>
+              <a href="thread.html#1191">[ thread ]</a>
+              <a href="subject.html#1191">[ subject ]</a>
+              <a href="author.html#1191">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

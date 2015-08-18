@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Caching in ogcserver.*
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-March/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Caching%20in%20ogcserver.%2A&In-Reply-To=%3C2ACD68E8-F274-459E-88C3-0CCA2B527D6B%40mapnik.org%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000135.html">
+   <LINK REL="Next"  HREF="000137.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Caching in ogcserver.*</H1>
+    <B>Artem Pavlenko</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Caching%20in%20ogcserver.%2A&In-Reply-To=%3C2ACD68E8-F274-459E-88C3-0CCA2B527D6B%40mapnik.org%3E"
+       TITLE="[Mapnik-devel] Caching in ogcserver.*">artem at mapnik.org
+       </A><BR>
+    <I>Thu Mar 15 20:37:39 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000135.html">[Mapnik-devel] Caching in ogcserver.*
+</A></li>
+        <LI>Next message: <A HREF="000137.html">[Mapnik-devel] Caching in ogcserver.*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#136">[ date ]</a>
+              <a href="thread.html#136">[ thread ]</a>
+              <a href="subject.html#136">[ subject ]</a>
+              <a href="author.html#136">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>
+On 15 Mar 2007, at 19:04, Jeremy Dunck wrote:
+
+&gt;<i> If I'm reading the code [1] correctly,
+</I>&gt;<i> mapnik.ogcserver.WMSBaseServiceHandler re-renders an image on each
+</I>&gt;<i> request.
+</I>&gt;<i>
+</I>
+Yep, sounds right.  Jean-Francois written WMS stuff but I'm pretty  
+sure that is the case.
+
+&gt;<i> I'd like to add optional caching (modeled after django.core.cache) to
+</I>&gt;<i> the WMSBaseServiceHandler.GetMap function.
+</I>
+Cool!  But I wonder if caching pure WMS GetMap requests would be  
+efficient.
+They (requests) can be any bounding box so you might end up caching  
+too much.
+I think implementing caching of tiles at predefined scales make more  
+sense.
+Have you looked at metacarta's TileCache?  It uses filesystem which  
+gets populated with tiles.
+
+&gt;<i>
+</I>&gt;<i> Would such a patch be accepted?
+</I>
+Yes, please! Sounds like you have something already. Django is using  
+memcache or db for caching, right?
+Anyway, 'caching'  would be great feature to have.
+
+Cheers,
+Artem
+
+
+&gt;<i> _______________________________________________
+</I>&gt;<i> Mapnik-devel mailing list
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;<i>
+</I>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000135.html">[Mapnik-devel] Caching in ogcserver.*
+</A></li>
+	<LI>Next message: <A HREF="000137.html">[Mapnik-devel] Caching in ogcserver.*
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#136">[ date ]</a>
+              <a href="thread.html#136">[ thread ]</a>
+              <a href="subject.html#136">[ subject ]</a>
+              <a href="author.html#136">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

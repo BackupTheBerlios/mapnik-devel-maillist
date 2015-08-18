@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Scons configure and build speeds
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-December/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Scons%20configure%20and%20build%20speeds&In-Reply-To=%3C918CF445-AE26-4B9E-A8BD-BC7E8C0F1B15%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000995.html">
+   <LINK REL="Next"  HREF="000996.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Scons configure and build speeds</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Scons%20configure%20and%20build%20speeds&In-Reply-To=%3C918CF445-AE26-4B9E-A8BD-BC7E8C0F1B15%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Scons configure and build speeds">blake at hailmail.net
+       </A><BR>
+    <I>Wed Dec  2 23:26:26 CET 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000995.html">[Mapnik-devel] Osm input plugin
+</A></li>
+        <LI>Next message: <A HREF="000996.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#994">[ date ]</a>
+              <a href="thread.html#994">[ thread ]</a>
+              <a href="subject.html#994">[ subject ]</a>
+              <a href="author.html#994">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Many new coders to Mapnik have noticed that Scons takes quite a bit of  
+time to start building targets if you re-run the build or install  
+step. The reason for this is that Scons by default is very aware and  
+smart about finding any dependencies that might have changed in order  
+to figure out what targets to rebuild. This takes startup time.
+
+But if you are hacking on Mapnik code and frequently re-compiling this  
+slowness is a hindrance. So, a while back I added a FAST boolean  
+option that you can pass to the Scons configure stage that turns down  
+a number of the fancy dependency checking mechanisms (as advised by  
+the Scons docs):
+
+$ python scons/scons.py FAST=True
+
+Problem is, due to a bug (that I've just fixed in trunk - <A HREF="http://trac.mapnik.org/changeset/1440">http://trac.mapnik.org/changeset/1440</A>) 
+  this option was not being recognized by the build scripts in the  
+right place. As well the JOBS=N option that allow parallel compiling  
+was also not being honored.
+
+You can either pass --jobs N or JOBS=N now (the latter will be cached  
+in your 'config.py' and pickled settings and read for reuse) for  
+parallel compiling.
+
+So, sorry about this. If you svn up and re-configure by passing the  
+above flags things should really now, actually quite faster.
+
+Happy Mapnik coding,
+
+Dane
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000995.html">[Mapnik-devel] Osm input plugin
+</A></li>
+	<LI>Next message: <A HREF="000996.html">[Mapnik-devel] Osm input plugin
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#994">[ date ]</a>
+              <a href="thread.html#994">[ thread ]</a>
+              <a href="subject.html#994">[ subject ]</a>
+              <a href="author.html#994">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

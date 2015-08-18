@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Steve Chilton's presentation from Day 1 of	Mapnik code sprint
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2010-September/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Steve%20Chilton%27s%20presentation%20from%20Day%201%20of%0A%09Mapnik%20code%20sprint&In-Reply-To=%3CC74058E5-19FD-40ED-8483-249E2231F349%40stamen.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001272.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Steve Chilton's presentation from Day 1 of	Mapnik code sprint</H1>
+    <B>Michal Migurski</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Steve%20Chilton%27s%20presentation%20from%20Day%201%20of%0A%09Mapnik%20code%20sprint&In-Reply-To=%3CC74058E5-19FD-40ED-8483-249E2231F349%40stamen.com%3E"
+       TITLE="[Mapnik-devel] Steve Chilton's presentation from Day 1 of	Mapnik code sprint">mike at stamen.com
+       </A><BR>
+    <I>Mon Sep 27 17:44:44 CEST 2010</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001272.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1274">[ date ]</a>
+              <a href="thread.html#1274">[ thread ]</a>
+              <a href="subject.html#1274">[ subject ]</a>
+              <a href="author.html#1274">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>On Sep 25, 2010, at 1:23 PM, Lennard wrote:
+
+&gt;<i> On 25-9-2010 21:53, Michal Migurski wrote:
+</I>&gt;<i> 
+</I>&gt;&gt;<i> I'm not sure I see a way to address this without some serious changes to a few of mapnik's core assumptions about drawing order. Cascadenik is one response to this problem, a total overhaul of Mapnik's layering would be another.
+</I>&gt;<i> 
+</I>&gt;<i> Cascadenik can also only address it by creating dozens of layers, for each possible layer=*. I'd like to see variables and loops become a possibility in the stylesheet, so I can iterate over the layer=* tags, by calling the same styles but with different layer=* values in the datasource.
+</I>
+I'm not sure how comfortable I am mucking with the layers and data sources - Cascadenik *could* create dozens of layers but if I understand correctly, that would cause the same geometry to be pulled out of the data source numerous times.
+
+At this point, it'd probably be better to stop leaning on the XML and introduce the idea of rendering callbacks or something, to prevent a situation where we're creating an entirely new programming language in XML. I can imagine, for example, a CallbackSymbolizer which uses something like the BSD-licensed embedded JS engine V8:
+
+	&lt;Map&gt;
+		&lt;Script&gt;
+			function variableRivers(geom, attrs)
+			{
+				return [LineSymbolizer(&quot;#000&quot;, attrs.width),
+					     TextSymbolizer(&quot;DejaVu&quot;, attrs.name)];
+			}
+		&lt;/Script&gt;
+		&lt;Style name=&quot;rivers&quot;&gt;
+			&lt;Rule&gt;
+				&lt;CallbackSymbolizer name=&quot;variableRivers&quot;/&gt;
+			&lt;/Rule&gt;
+		&lt;/Style&gt;
+		&lt;Layer&gt;
+			&lt;StyleName&gt;rivers&lt;/StyleName&gt;
+			&lt;Datasource/&gt;
+		&lt;/Layer&gt;
+	&lt;/Map&gt;
+
+Just a sketch, not to be taken over-seriously.
+
+
+&gt;&gt;<i> Ah, yeah. Okay I have another idea for this as well, based on nodes and their location within street networks. Most mapnik stylesheets use round caps and joins because it's the only reliable way to prevent jags and notches in rendered streets, but square caps and joins have the potential to be much better-looking. If we could see how a line bumps into other lines, it'd be possible to make street networks that don't these problems:
+</I>&gt;<i> 
+</I>&gt;<i> The other example is where differently classed roads meet in a T, and the fill of the rising bar protrudes into the top bar. If you understand what I mean there.
+</I>
+
+Definitely.
+
+-mike.
+
+----------------------------------------------------------------
+michal migurski- <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">mike at stamen.com</A>
+                 415.558.1610
+
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001272.html">[Mapnik-devel] [Mapnik-users] Steve Chilton's presentation from Day 1 of Mapnik code sprint
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1274">[ date ]</a>
+              <a href="thread.html#1274">[ thread ]</a>
+              <a href="subject.html#1274">[ subject ]</a>
+              <a href="author.html#1274">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

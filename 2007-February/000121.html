@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] compiling on Mac OS?
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2007-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C16e8cf860702241304q2c4c43abi19fb0acfa07ec2db%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000120.html">
+   <LINK REL="Next"  HREF="000122.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] compiling on Mac OS?</H1>
+    <B>Tom Carden</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20compiling%20on%20Mac%20OS%3F&In-Reply-To=%3C16e8cf860702241304q2c4c43abi19fb0acfa07ec2db%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] compiling on Mac OS?">web at tom-carden.co.uk
+       </A><BR>
+    <I>Sat Feb 24 22:04:42 CET 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000120.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+        <LI>Next message: <A HREF="000122.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hello list,
+
+Just wondering if anyone has had more success than me in installing
+mapnik (trunk from svn) on Mac OS X?  We're up and running on Ubuntu,
+so it's not urgent, but here's how far I got:
+
+I used darwin/macports to grab the dependencies, so far so good.
+
+A few paths needed setting for Scons:
+python scons/scons.py FREETYPE_CONFIG=/opt/local/bin/freetype-config
+PROJ_INCLUDES=/opt/local/include PROJ_LIBS=/opt/local/lib
+PREF=/opt/local
+
+-pthread needed removing from the compiler flags in SConstruct lines
+168 and 170.
+
+An extra 'const' needed adding to unicode.hpp line 173...
+            const char * in  = const_cast&lt;char*&gt;(input.data());
+
+After that, most things seemed to build until I got lost in libtool
+hell with errors about -rpath and more.  Here's the step that breaks,
+fwiw:
+
+----
+
+g++ -Wl,-rpath-link,. -Wl,-soname,libmapnik.so -dynamiclib -o
+src/libmapnik.dylib src/agg_renderer.os src/datasource_cache.os
+src/envelope.os src/filter_factory.os src/font_engine_freetype.os
+src/graphics.os src/image_reader.os src/image_util.os src/layer.os
+src/line_pattern_symbolizer.os src/load_map.os src/map.os
+src/memory.os src/params.os src/placement_finder.os src/plugin.os
+src/png_reader.os src/point_symbolizer.os
+src/polygon_pattern_symbolizer.os src/save_map.os
+src/shield_symbolizer.os src/text_symbolizer.os src/tiff_reader.os
+src/wkb.os src/projection.os src/proj_transform.os src/distance.os
+src/scale_denominator.os src/memory_datasource.os tinyxml/tinystr.os
+tinyxml/tinyxml.os tinyxml/tinyxmlerror.os tinyxml/tinyxmlparser.os
+-Lagg -Lsrc -L/usr/lib -L/opt/local/lib -L/opt/local/lib -lagg
+-lfreetype -lz -lm -lltdl -lpng -ltiff -lz -ljpeg -lproj
+-lboost_thread -lboost_filesystem -lboost_regex
+/usr/bin/libtool: unknown option character `r' in: -rpath-link
+Usage: /usr/bin/libtool -static [-] file [...] [-filelist
+listfile[,dirname]] [-arch_only arch] [-sacLT]
+Usage: /usr/bin/libtool -dynamic [-] file [...] [-filelist
+listfile[,dirname]] [-arch_only arch] [-o output] [-install_name name]
+[-compatibility_version #] [-current_version #] [-seg1addr 0x#]
+[-segs_read_only_addr 0x#] [-segs_read_write_addr 0x#]
+[-seg_addr_table &lt;filename&gt;] [-seg_addr_table_filename
+&lt;file_system_path&gt;] [-all_load] [-noall_load]
+scons: *** [src/libmapnik.dylib] Error 1
+scons: building terminated because of errors.
+
+----
+
+Any suggestions for what to try next would be appreciated,
+
+Best,
+
+Tom.
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000120.html">[Mapnik-devel] Mapnik feedback
+</A></li>
+	<LI>Next message: <A HREF="000122.html">[Mapnik-devel] compiling on Mac OS?
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

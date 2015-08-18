@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Segmentation fault when running rundemo.py
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2008-February/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C28a24e754f.tom%40loxley.compton.nu%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000494.html">
+   <LINK REL="Next"  HREF="000497.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Segmentation fault when running rundemo.py</H1>
+    <B>Tom Hughes</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segmentation%20fault%20when%20running%20rundemo.py&In-Reply-To=%3C28a24e754f.tom%40loxley.compton.nu%3E"
+       TITLE="[Mapnik-devel] Segmentation fault when running rundemo.py">tom at compton.nu
+       </A><BR>
+    <I>Fri Feb 22 22:37:19 CET 2008</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000494.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+        <LI>Next message: <A HREF="000497.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">20504c754f.tom at loxley.compton.nu</A>&gt;
+          Tom Hughes &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>&gt; wrote:
+
+&gt;<i> In message &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">74F5E71A-F596-40BD-9EA2-1EFA80BFFE88 at mapnik.org</A>&gt;
+</I>&gt;<i>           Artem Pavlenko &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">artem at mapnik.org</A>&gt; wrote:
+</I>&gt;<i> &gt; Thanks for the patch. I think the problem is a little bit more subtle
+</I>&gt;<i> &gt; and related to how UnicodeString is constructed in filter_parser.
+</I>&gt;<i> &gt; When compiled with DEBUG flags, often compiler fills un-initialized
+</I>&gt;<i> &gt; memory with zeros, also it might use different data alignment which
+</I>&gt;<i> &gt; would explain why it 'magically' worked. I don't think we should be
+</I>&gt;<i> &gt; using data() method (which is not guaranteed to return zero-
+</I>&gt;<i> &gt; terminated string) or const cast, though.
+</I>&gt;<i> 
+</I>&gt;<i> If it is down to uninitialised memory then it's probably worth
+</I>&gt;<i> running it under valgrind to see what it says.
+</I>
+I just ran a test under valgrind with OSM data and all I found was
+this:
+
+==17947== Conditional jump or move depends on uninitialised value(s)
+==17947==    at 0x4F5663C: mapnik::logical_and&lt;mapnik::feature&lt;mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt;, boost::shared_ptr&lt;mapnik::raster&gt; &gt; &gt;::pass(mapnik::feature&lt;mapnik::geometry&lt;mapnik::vertex&lt;double, 2&gt; &gt;, boost::shared_ptr&lt;mapnik::raster&gt; &gt; const&amp;) const (logical.hpp:48)
+==17947==    by 0x40DE29: mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32&gt; &gt;::apply_to_layer(mapnik::Layer const&amp;, mapnik::agg_renderer&lt;mapnik::Image32&gt;&amp;, mapnik::projection const&amp;, double) (feature_style_processor.hpp:193)
+==17947==    by 0x40E45C: mapnik::feature_style_processor&lt;mapnik::agg_renderer&lt;mapnik::Image32&gt; &gt;::apply() (feature_style_processor.hpp:92)
+==17947==    by 0x408448: main (mapnik_test.cpp:105)
+
+Tom
+
+-- 
+Tom Hughes (<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">tom at compton.nu</A>)
+<A HREF="http://www.compton.nu/">http://www.compton.nu/</A>
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000494.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+	<LI>Next message: <A HREF="000497.html">[Mapnik-devel] Segmentation fault when running rundemo.py
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#495">[ date ]</a>
+              <a href="thread.html#495">[ thread ]</a>
+              <a href="subject.html#495">[ subject ]</a>
+              <a href="author.html#495">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

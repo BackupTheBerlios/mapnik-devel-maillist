@@ -1,0 +1,2172 @@
+From lars at ahlzen.com  Wed Jun  1 19:33:57 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Wed, 01 Jun 2011 13:33:57 -0400
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+Message-ID: <4DE67805.1040004@ahlzen.com>
+
+On 5/31/2011 3:59 PM, Dane Springmeyer wrote:
+>> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+> Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+
+Yeah, after seeing more random errors I had the same thought, so I ran 
+some tests the other day - this time with a single thread. Indeed, it 
+appears to be stable.
+
+The cairo renderer is supposed to support multiple threads (one Map per 
+thread), right? If so, what's the most useful information I can provide 
+at this point to track it down? More trace output?
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+
+From dane at dbsgeo.com  Fri Jun  3 20:06:31 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 3 Jun 2011 11:06:31 -0700
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <4DE67805.1040004@ahlzen.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DE67805.1040004@ahlzen.com>
+Message-ID: <E37C82DB-D8B2-42AB-BD20-A3483BAC535E@dbsgeo.com>
+
+Lars,
+
+Yes, I think a race condition here is to blame. As the crash happens in libpixman I've started trying to research if that could be the culprit and found this:
+
+http://lists.freedesktop.org/archives/cairo/2010-December/021268.html
+
+That seems pretty conclusive to me, which is disturbing (see the reply from Otte). So, I guess this means that until pixman becomes thread safe that cairo PNG rendering needs to be called only from one thread, or tile seeding needs to be done multiprocess.
+
+Or, since AGG is thread safe (without mutexes) we could get your font tricks working with Mapnik's AGG backend :)
+
+Dane
+
+On Jun 1, 2011, at 10:33 AM, Lars Ahlzen wrote:
+
+> On 5/31/2011 3:59 PM, Dane Springmeyer wrote:
+>>> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+>> Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+> 
+> Yeah, after seeing more random errors I had the same thought, so I ran some tests the other day - this time with a single thread. Indeed, it appears to be stable.
+> 
+> The cairo renderer is supposed to support multiple threads (one Map per thread), right? If so, what's the most useful information I can provide at this point to track it down? More trace output?
+> 
+> - Lars
+> 
+> -- 
+> Lars Ahlzen
+> lars at ahlzen.com
+> 
+
+
+
+From dane at dbsgeo.com  Fri Jun  3 20:18:35 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 3 Jun 2011 11:18:35 -0700
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <E37C82DB-D8B2-42AB-BD20-A3483BAC535E@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DE67805.1040004@ahlzen.com>
+	<E37C82DB-D8B2-42AB-BD20-A3483BAC535E@dbsgeo.com>
+Message-ID: <B8EFB65D-49B0-4F24-87FB-CC0E6CD37CCE@dbsgeo.com>
+
+an more details here that the issue appears to be that even though pixman is known not to be threadsafe, cairo's usage fails to respect this:
+
+http://lists.freedesktop.org/archives/cairo/2010-December/021288.html
+
+On Jun 3, 2011, at 11:06 AM, Dane Springmeyer wrote:
+
+> Lars,
+> 
+> Yes, I think a race condition here is to blame. As the crash happens in libpixman I've started trying to research if that could be the culprit and found this:
+> 
+> http://lists.freedesktop.org/archives/cairo/2010-December/021268.html
+> 
+> That seems pretty conclusive to me, which is disturbing (see the reply from Otte). So, I guess this means that until pixman becomes thread safe that cairo PNG rendering needs to be called only from one thread, or tile seeding needs to be done multiprocess.
+> 
+> Or, since AGG is thread safe (without mutexes) we could get your font tricks working with Mapnik's AGG backend :)
+> 
+> Dane
+> 
+> On Jun 1, 2011, at 10:33 AM, Lars Ahlzen wrote:
+> 
+>> On 5/31/2011 3:59 PM, Dane Springmeyer wrote:
+>>>> Worth noting is that it's not predictable: I can start rendering a set of tiles, have it crash half way through, then start the exact same job again and it completes just fine.
+>>> Good info. Could you try to get a few more backtraces out then? So we can see if the actual crash is happening in a different place each time? Unpredictability in crashes, if not due to build problems, usually indicates a race condition. So, when you are pre-rendering tiles or using tilestache are you rendering in multiple threads or processes?
+>> 
+>> Yeah, after seeing more random errors I had the same thought, so I ran some tests the other day - this time with a single thread. Indeed, it appears to be stable.
+>> 
+>> The cairo renderer is supposed to support multiple threads (one Map per thread), right? If so, what's the most useful information I can provide at this point to track it down? More trace output?
+>> 
+>> - Lars
+>> 
+>> -- 
+>> Lars Ahlzen
+>> lars at ahlzen.com
+>> 
+> 
+
+
+
+From lars at ahlzen.com  Sat Jun  4 23:26:32 2011
+From: lars at ahlzen.com (Lars Ahlzen)
+Date: Sat, 04 Jun 2011 17:26:32 -0400
+Subject: [Mapnik-devel] Cairo backend - Unstable?
+In-Reply-To: <E37C82DB-D8B2-42AB-BD20-A3483BAC535E@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>
+	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>
+	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DE67805.1040004@ahlzen.com>
+	<E37C82DB-D8B2-42AB-BD20-A3483BAC535E@dbsgeo.com>
+Message-ID: <4DEAA308.5000307@ahlzen.com>
+
+On 06/03/2011 02:06 PM, Dane Springmeyer wrote:
+> Lars,
+>
+> Yes, I think a race condition here is to blame. As the crash happens in libpixman I've started trying to research if that could be the culprit and found this:
+>
+> http://lists.freedesktop.org/archives/cairo/2010-December/021268.html
+>
+> That seems pretty conclusive to me, which is disturbing (see the reply from Otte). So, I guess this means that until pixman becomes thread safe that cairo PNG rendering needs to be called only from one thread, or tile seeding needs to be done multiprocess.
+
+That seems to be it indeed. Bummer. Guess it's back to single-threaded 
+for now...
+
+Anyway, thanks for taking the time to look into it!
+
+> Or, since AGG is thread safe (without mutexes) we could get your font tricks working with Mapnik's AGG backend :)
+
+That would be nice, since the AGG renderer is usually faster anyway. In 
+fact, I started working on a patch, but (as you mentioned earlier) it's 
+a little less trivial than with Cairo.
+
+- Lars
+
+-- 
+Lars Ahlzen
+lars at ahlzen.com
+
+
+
+From dane at dbsgeo.com  Sun Jun  5 23:56:47 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sun, 5 Jun 2011 14:56:47 -0700
+Subject: [Mapnik-devel] GSoC - TextSymbolizers
+In-Reply-To: <op.vvmmt7yki35s77@nx7400.uni-regensburg.de>
+References: <op.vvmmt7yki35s77@nx7400.uni-regensburg.de>
+Message-ID: <DC350B18-24C0-4404-AF14-CE425D6D272F@dbsgeo.com>
+
+Hermann,
+
+This looks great - apologies for missing responding to this earlier.
+
+As far as a matching CSS syntax, it would be helpful to see what you are thinking for the XML representation, then we can exchange ideas/check that against what it might look like in CSS.
+
+Dane
+
+
+On May 17, 2011, at 6:09 AM, Hermann Kraus wrote:
+
+> Hi!
+> 
+> I'm working on improving TextSymoblizer output as my summer of code project this year. As one subproject I will add formating capabilities. One important question was how to make it stylable using CSS. While I'm not sure about the exact syntax to use I think the following internal representation will be useful:
+> 
+> - Parse the text into a list of tokens which are processed one by one.
+> - Token types:
+> o Text token (plain text)
+> o Value token (access db fields)
+> o Format token (change font, etc.)
+> o End token (undo last format token)
+> - Format tokens return the new format. They can either contain direct formating instructions ("make this text bold") or references to styles (which in turn contain formating instructions). During processing the current feature is also passed to the token, so formating can depend on fields in the data set.
+> 
+> I think this idea is both very flexible and also easy to implement and extend.
+> 
+> 
+> Does this sound good or does anybody have ideas for improvement?
+> 
+> Regards,
+> 
+> Hermann
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Mon Jun  6 00:07:00 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sun, 5 Jun 2011 15:07:00 -0700
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+	<64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+Message-ID: <810202CF-E86F-47E5-A815-F53D3E9794CB@dbsgeo.com>
+
+Manel,
+
+This is fantastic work. Nice job. And thanks for sending an update via mapnik-devel.
+
+Two questions:
+
+* Are there tests for these new features / is it feasible to write them?
+
+* Have you looked into how projection matching works in the OGCServer at all? I assume the server does nothing special to handle this (or warn the user), but maybe it should. The issue is that since WMS requires EPSG code based SRS/CRS parameters, but more commonly mapnik XML srs values use the proj4 literal string, that a common performance problem is uneeded reprojection happening when the map srs is "+init=EPSG:4326"  but the layer srs is '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'. In the case of spherical mercator to spherical mercator reprojection (which can get triggered even with a slight difference in the proj4 string), this transformation is *very* expensive when it should, of course, cost nothing and never require proj4 to be used. Any thoughts?
+
+Dane
+
+On May 9, 2011, at 5:00 AM, <manel.clos at ajgirona.cat> <manel.clos at ajgirona.cat> wrote:
+
+> Hi all,
+> 
+> In order to solve some OGCServer bugs[1][2], I've added some new configuration into ogcserver.conf:
+> 
+> [map]
+> wms_srs = EPSG:23031
+> wms_name = __all__
+> wms_title = Top Layer Title
+> wms_abstract = Top Layer Abstract
+> 
+> [layer_countries]
+> wms_srs = EPSG:23031
+> 
+> In this example the layer "countries" is assigned a specific epsg code so you can use a custom projection (one using +nadgrids for example) in the srs attribute. It is really not needed here, because all layers will inherit the map's wms_srs which has the same value.
+> 
+> I think this fits the approach Dane suggested (info in config file instead of modifying Mapnik's XML). The drawback of this method is that it only works for named layers.
+> 
+> 
+> I'll be doing something like this to support layer groups:
+> 
+> [map]
+> wms_groups = streets, buildings
+> 
+> [group_streets]
+> wms_title = Streets
+> wms_layers = streets_layer1, streets_layer1_labels
+> wms_name = streets
+> 
+> 
+> [1] Incorrect SRS in layer: https://github.com/mapnik/OGCServer/issues/11
+> [2] Top Layer "__all__" name: https://github.com/mapnik/OGCServer/issues/14
+> 
+> 
+>> -----Mensaje original-----
+>> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+>> Enviado el: s?bado, 22 de enero de 2011 0:02
+>> Para: Clos Crespo, Manel
+>> CC: <mapnik-devel at lists.berlios.de>
+>> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>> 
+>> Hi manel. Yes, great, a ticket to discuss sounds good. I'm not
+>> convinced all these features can/should be added to the existing map
+>> XML format. What about an XML or json document that ogcserver could
+>> load that points to one or more maps and describes how to group maps
+>> or the layers within them?
+>> 
+>> --- \o/ ---
+>> Sent from my phone
+>> 
+>> On Jan 15, 2011, at 3:58 PM, <manel.clos at ajgirona.cat> wrote:
+>> 
+>>> Hi all,
+>>> 
+>>> Here are some ideas about improving Mapnik XML to better
+>> support WMS
+>>> functionality.
+>>> 
+>>> Support Layers within Layers (Layer Group)
+>>> - Properties are inherited
+>>> - You can draw / request a Layer Group that has a name
+>>> - title: used in GetCapabilities to better describe layers in the
+>>> group
+>>> 
+>>> Toplevel Map element in mapfile should have some more
+>> Layer's proper
+>>> ties.
+>>> - name: request top level layer (Map) to draw / request all layers
+>>> (get rid of the __all__ trick in OGCServer in the long term, but
+>>> support it for compatibility)
+>>> - title: use it in GetCapabilities
+>>> 
+>>> If this is ok I'll create a ticket and hopefully have it ready for
+>>> Mapnik 2.0.
+>>> _______________________________________________
+>>> Mapnik-devel mailing list
+>>> Mapnik-devel at lists.berlios.de
+>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>> 
+
+
+
+From dane at dbsgeo.com  Mon Jun  6 00:14:45 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Sun, 5 Jun 2011 15:14:45 -0700
+Subject: [Mapnik-devel] GSoC: Windows build system, week 1
+In-Reply-To: <BANLkTinnEbTij7+eNHg86nv0M+ntPKJpnw@mail.gmail.com>
+References: <BANLkTinnEbTij7+eNHg86nv0M+ntPKJpnw@mail.gmail.com>
+Message-ID: <DAC16E32-D062-4B76-8D39-FD285E3CF63D@dbsgeo.com>
+
+
+On May 29, 2011, at 1:40 PM, Roel Vanhout wrote:
+
+> Hi all,
+> 
+> 
+> With the first week of GSoC already over, here's my first status
+> report. I'm planning to do one each Sunday evening, I'm curious myself
+> though how punctual I'm going to be on that point ;)
+> 
+> - The past week (well the past 4 or 5 weeks actually) I've spend on
+> the VS project file generator. It's shaping up now - I've started over
+> a couple of times and finally settled on the most simple design, the
+> one that I started out with the first time. Specs of project- and
+> solution files are done in simple yaml files, processed by the 'vs4os'
+> Python program and using the Jinja2 template library rendered into
+> their output formats.
+
+Is vs2os something you have written? How well does it look like it can be integrated into SCons?
+
+How does it compare to existing VS support in SCons?
+
+> For now I focus on VS9, other versions could be
+> added at some point. The most basic functionality works and I can
+> build a couple of the simpler mapnik dependencies (zlib, jpeg,
+> libtiff).
+
+Nice.
+
+> Although I still think that choosing Python is the right
+> choice in the given context, my relative lack of experience with it is
+> proving a rather painful stumbling block; for example, I spend the
+> whole day today on figuring out how unicode support works in Python in
+> general, in Visual Studio and in the template library I use; and how
+> to make them work together. Not fun but at least it works now :)
+
+Jump on IRC and ask questions! Also of course unicode is a narly thing in python, hence python 3k.
+
+> 
+> For the coming week I have planned:
+> - Clean my source tree / directory layout up and check everything into
+> a branch in svn. I haven't made one yet because I need to get my ssh
+> key to work and that's a royal pain with putty etc so I've been
+> putting it off;
+
+I've heard this is totally doable with putty, hrm...
+
+When you get it working, please document on the wiki.
+
+> I'm also working in an old checkout of the 0.7 branch
+> I had laying around so I'm going to need to decide first how that
+> should work.
+
+Let me know how we can help.
+
+> - Do some communications things: blog post (Dane, how do I log on to
+> the Mapnik 'news' section?
+> Can I post to the blog myself somehow?),
+
+Yes, I created a login for you. Get in touch by private email with questions.
+
+> finally upload the minutes from the Skype meeting.
+> - Get the other dependencies working - Cairo, and maybe if I'm feeling
+> masochistic ICU.
+
+ICU should come first since it is not optional to Mapnik.
+
+> 
+> Some other things:
+> - About the buildbot, is there a machine somewhere that can serve for
+> this?
+
+Not yet, let's talk about this in the Meeting on Tuesday. I was thinking about trying to leverage Amazon + Windows.
+
+> To have a Windows buildbot I'd need a Windows machine - shall I
+> just start on a bunch of virtual machines and we'll sort it out later
+> or is there something in place for that already?
+
+Yep, I was thinking virtual machines somehow, but let me know what you think is best.
+
+> - I've been getting some mails / im's from people who are interested
+> in using Mapnik on Windows, and php_mapnik, and are starting to find
+> my wiki page on it. So that's encouraging :) I'm hoping to attract
+> more users with some introduction articles for various websites.
+
+Nice!
+
+
+> So I
+> was wondering, does anyone have a simple but nice map that is rendered
+> with Mapnik, with a small and free data set, that I can use for
+> demonstration purposes? The examples on the Mapnik website are OK but
+> either complicated or very specialized, I'd like to find an example
+> that needs only a few layers and appeals to a wide audience.
+
+I would recommend re-sending an email *just* about this request so people are more likely to see it than down here :)
+
+> 
+> 
+> cheers,
+> 
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From manel.clos at ajgirona.cat  Mon Jun  6 09:10:01 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Mon, 6 Jun 2011 09:10:01 +0200
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <810202CF-E86F-47E5-A815-F53D3E9794CB@dbsgeo.com>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+	<64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+	<810202CF-E86F-47E5-A815-F53D3E9794CB@dbsgeo.com>
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20014CFA5C@mbx.ajgirona.org>
+
+Hi Dane,
+
+No tests for these. It is simply loading configuration and applying to XML tree. There are already tests for testing that the GetCapabilities response is successful. I tested the response with various clients, which is the big part of the changes, and some of them can now "zoom to layer extent", others work as expected, allowing to request top layer, and showing top layer name/title/abstract. Compatibility list[1] keeps growing ;)
+
+About reprojection, I don't think OGCServer handles this. It is using Projection class only to do Envelope coordinates reprojection. So I think reprojection, if done, happens in the Mapnik library without OGCServer ever noticing.
+
+A general mecanism for performance debugging would be great. Say debug_render=1 in ogcserver.conf will call Mapnik.debug_render(True), and some "requests" later we can Mapnik.get_debug_info(), which should provide:
+- time spent fetching features, sql queries if any
+- time spent reprojecting ;)
+- time spent rendering
+
+These statistics could then be written to a log or presented to the user.
+
+Any ideas about how to start working in that direction would be great! ;)
+
+Manel.
+
+[1] https://github.com/mapnik/OGCServer/wiki/Supported-clients
+
+
+> -----Mensaje original-----
+> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+> Enviado el: lunes, 06 de junio de 2011 0:07
+> Para: Clos Crespo, Manel
+> CC: mapnik-devel at lists.berlios.de
+> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>
+> Manel,
+>
+> This is fantastic work. Nice job. And thanks for sending an
+> update via mapnik-devel.
+>
+> Two questions:
+>
+> * Are there tests for these new features / is it feasible to
+> write them?
+>
+> * Have you looked into how projection matching works in the
+> OGCServer at all? I assume the server does nothing special to
+> handle this (or warn the user), but maybe it should. The
+> issue is that since WMS requires EPSG code based SRS/CRS
+> parameters, but more commonly mapnik XML srs values use the
+> proj4 literal string, that a common performance problem is
+> uneeded reprojection happening when the map srs is
+> "+init=EPSG:4326"  but the layer srs is '+proj=longlat
+> +ellps=WGS84 +datum=WGS84 +no_defs'. In the case of spherical
+> mercator to spherical mercator reprojection (which can get
+> triggered even with a slight difference in the proj4 string),
+> this transformation is *very* expensive when it should, of
+> course, cost nothing and never require proj4 to be used. Any thoughts?
+>
+> Dane
+>
+> On May 9, 2011, at 5:00 AM, <manel.clos at ajgirona.cat>
+> <manel.clos at ajgirona.cat> wrote:
+>
+> > Hi all,
+> >
+> > In order to solve some OGCServer bugs[1][2], I've added
+> some new configuration into ogcserver.conf:
+> >
+> > [map]
+> > wms_srs = EPSG:23031
+> > wms_name = __all__
+> > wms_title = Top Layer Title
+> > wms_abstract = Top Layer Abstract
+> >
+> > [layer_countries]
+> > wms_srs = EPSG:23031
+> >
+> > In this example the layer "countries" is assigned a
+> specific epsg code so you can use a custom projection (one
+> using +nadgrids for example) in the srs attribute. It is
+> really not needed here, because all layers will inherit the
+> map's wms_srs which has the same value.
+> >
+> > I think this fits the approach Dane suggested (info in
+> config file instead of modifying Mapnik's XML). The drawback
+> of this method is that it only works for named layers.
+> >
+> >
+> > I'll be doing something like this to support layer groups:
+> >
+> > [map]
+> > wms_groups = streets, buildings
+> >
+> > [group_streets]
+> > wms_title = Streets
+> > wms_layers = streets_layer1, streets_layer1_labels
+> > wms_name = streets
+> >
+> >
+> > [1] Incorrect SRS in layer:
+> https://github.com/mapnik/OGCServer/issues/11
+> > [2] Top Layer "__all__" name:
+> https://github.com/mapnik/OGCServer/issues/14
+> >
+> >
+> >> -----Mensaje original-----
+> >> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+> >> Enviado el: s?bado, 22 de enero de 2011 0:02
+> >> Para: Clos Crespo, Manel
+> >> CC: <mapnik-devel at lists.berlios.de>
+> >> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+> >>
+> >> Hi manel. Yes, great, a ticket to discuss sounds good. I'm not
+> >> convinced all these features can/should be added to the
+> existing map
+> >> XML format. What about an XML or json document that ogcserver could
+> >> load that points to one or more maps and describes how to
+> group maps
+> >> or the layers within them?
+> >>
+> >> --- \o/ ---
+> >> Sent from my phone
+> >>
+> >> On Jan 15, 2011, at 3:58 PM, <manel.clos at ajgirona.cat> wrote:
+> >>
+> >>> Hi all,
+> >>>
+> >>> Here are some ideas about improving Mapnik XML to better
+> >> support WMS
+> >>> functionality.
+> >>>
+> >>> Support Layers within Layers (Layer Group)
+> >>> - Properties are inherited
+> >>> - You can draw / request a Layer Group that has a name
+> >>> - title: used in GetCapabilities to better describe layers in the
+> >>> group
+> >>>
+> >>> Toplevel Map element in mapfile should have some more
+> >> Layer's proper
+> >>> ties.
+> >>> - name: request top level layer (Map) to draw / request all layers
+> >>> (get rid of the __all__ trick in OGCServer in the long term, but
+> >>> support it for compatibility)
+> >>> - title: use it in GetCapabilities
+> >>>
+> >>> If this is ok I'll create a ticket and hopefully have it ready for
+> >>> Mapnik 2.0.
+> >>> _______________________________________________
+> >>> Mapnik-devel mailing list
+> >>> Mapnik-devel at lists.berlios.de
+> >>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> >>
+>
+>
+
+
+From manel.clos at ajgirona.cat  Tue Jun  7 11:24:59 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Tue, 7 Jun 2011 11:24:59 +0200
+Subject: [Mapnik-devel] Map buffer_size
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20014CFA6D@mbx.ajgirona.org>
+
+Hi all,
+
+I've come to a problem related to buffer_size. The Map, with a buffer_size of 128 pixels shows perfect labels and graphics (PointSymbolizer), but it takes some time to draw each tile. Setting buffer_size to 0 almost doubles perceived rendering speed, but with labels not appering correctly (cut).
+
+With buffer_size=128 I'm getting a blank tile which spends 400ms in the database query and 120ms cpu time (mean) in the render. With buffer_size=0 no SQL queries are fired, so the tile is almost 0-cost.
+
+Buffer size needed is predictable, it can be aproximated for LineSymbolizer, ShieldSymbolizer, PointSymbolizer... For Layers with only that symbolizers a buffer size of 10, 20, 30... can be more than enough. The problem is usually the TextSymbolizer, which will require setting a higher value for the buffer_size in the layer.
+
+So, does it make sense to add the buffer_size parameter to layers? If it is defined layer.get_buffered_extent() could be used instead of map.get_buffered_extent(). It looks like a small change that can help a lot optimizing the map rendering.
+
+
+Manel Clos
+
+
+From ajithvijayan22 at gmail.com  Tue Jun  7 11:06:06 2011
+From: ajithvijayan22 at gmail.com (AjithTv)
+Date: Tue, 7 Jun 2011 02:06:06 -0700 (PDT)
+Subject: [Mapnik-devel] Mapnik rendering blank image
+Message-ID: <31790183.post@talk.nabble.com>
+
+
+Hi there,
+           I am a newbie in Mapnik.I am using Ubuntu 9.10.I have installed
+mapnik from 'Synaptic Package Manager'.After successful installation i
+tested its working.First I tested as given in the link below and image was
+created.
+
+http://trac.mapnik.org/wiki/GettingStarted
+
+Then I tried using the mapfile to create the image as given in the link
+below:
+
+http://trac.mapnik.org/wiki/XMLGettingStarted
+
+The image is created but is blank image.The shape file is the one i got from
+my co-worker.
+
+Please help me.Thanks in advance
+-- 
+View this message in context: http://old.nabble.com/Mapnik-rendering-blank-image-tp31790183p31790183.html
+Sent from the Mapnik - Devel mailing list archive at Nabble.com.
+
+
+
+From roel.vanhout at gmail.com  Thu Jun  9 16:43:13 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Thu, 9 Jun 2011 16:43:13 +0200
+Subject: [Mapnik-devel] GSoC: Windows build system, week 2
+Message-ID: <BANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg@mail.gmail.com>
+
+A bit delayed because of personal reasons, but here's what's been done
+the last week.
+
+I've worked on getting both static and dynamic builds working from the
+generated Visual Studio files (until now I only tried static builds).
+Dependency libraries use different sometimes rather obscure ways to
+get symbols exported from dll's so it took some tedious sifting
+through makefiles etc. to get things working.
+
+I added more libraries; main missing one is ICU, which is next on the
+list. I've included more elaborate builds of the various components as
+when compared to my earlier builds that I use for php_mapnik; for
+example I'm building libxml2 with all optional components.
+
+To get some variation I also started on an MSI (WiX-based) installer
+and scripts to automate the whole build, from getting a checkout to
+making the installer package. This way the whole process can be tested
+on the build bot.
+
+Overall progress is satisfactory, if a bit tedious at times. My Python
+is getting better but I'm still tripped up sometimes either by the
+language or the libraries I'm using; but that comes with the territory
+I guess :)
+
+cheers,
+
+roel
+
+
+From feverzsj at hotmail.com  Sat Jun 11 16:33:55 2011
+From: feverzsj at hotmail.com (feverzsj)
+Date: Sat, 11 Jun 2011 22:33:55 +0800
+Subject: [Mapnik-devel] GSoC: Windows build system, week 2
+In-Reply-To: <BANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg@mail.gmail.com>
+References: <BANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg@mail.gmail.com>
+Message-ID: <BLU0-SMTP83C2B1B94266C3F609A27BCE670@phx.gbl>
+
+2011/6/9 22:43, Roel Vanhout wrote:
+> A bit delayed because of personal reasons, but here's what's been done
+> the last week.
+>
+> I've worked on getting both static and dynamic builds working from the
+> generated Visual Studio files (until now I only tried static builds).
+> Dependency libraries use different sometimes rather obscure ways to
+> get symbols exported from dll's so it took some tedious sifting
+> through makefiles etc. to get things working.
+>
+> I added more libraries; main missing one is ICU, which is next on the
+> list. I've included more elaborate builds of the various components as
+> when compared to my earlier builds that I use for php_mapnik; for
+> example I'm building libxml2 with all optional components.
+>
+> To get some variation I also started on an MSI (WiX-based) installer
+> and scripts to automate the whole build, from getting a checkout to
+> making the installer package. This way the whole process can be tested
+> on the build bot.
+>
+> Overall progress is satisfactory, if a bit tedious at times. My Python
+> is getting better but I'm still tripped up sometimes either by the
+> language or the libraries I'm using; but that comes with the territory
+> I guess :)
+>
+> cheers,
+>
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+hi Roel
+It's great to hear some one working on the windows build system. 
+Although, it's a real pain to make such automation on windows, 
+especially for projects with lots of third party dependencies like mapnik.
+AFAIK, the most practicable and convenient solution to handle these 
+dependencies is precompile and pack them all in one place. But still, 
+making a debug lib could be tricky on windows. Also note the SideBySide 
+Assembly problem.
+
+regards , zsj
+
+
+
+From roel.vanhout at gmail.com  Mon Jun 13 13:07:15 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 13 Jun 2011 13:07:15 +0200
+Subject: [Mapnik-devel] GSoC: Windows build system, week 2
+In-Reply-To: <BLU0-SMTP83C2B1B94266C3F609A27BCE670@phx.gbl>
+References: <BANLkTinpTcUgdAEP07TZeXWb-TO-80VvRg@mail.gmail.com>
+	<BLU0-SMTP83C2B1B94266C3F609A27BCE670@phx.gbl>
+Message-ID: <BANLkTim7VLsv1=Ji1Ce_HUUy2Tig6HOGRg@mail.gmail.com>
+
+Thanks for your feedback! Yes the plan is to offer precompiled
+binaries too, but there are some issues that prevent this from being a
+one-stop solution:
+
+- It's only feasible for dll's that export a C interface. C++
+libraries cannot be offered (realistically) pre-compiled, because one
+would have to offer it for each compiler version and with each
+combination of preprocessor flags (_BIND_TO_CURRENT_CRT_VERSION,
+__CRT_SECURE_NO_WARNINGS, SECURE_SCL, iterator debugging, ...)
+- It only works for dll's, not static libraries (for the same reason)
+- Depending on one's environment setup, it may be easier to build
+everything from one solution.
+- Source patching: not all packages build out of the box on Windows,
+some assume that the autotools generate certain files (like config.h).
+To not have to require developers to install Cygwin just to get those
+files generated, one would have to either provide a fully working
+source tree for the dependencies, or offer patches to get the
+libraries to work. The former approach isn't very good imo because it
+requires a lot of duplication of effort and undermines the 'single
+source' principle, where people can trust one single source for
+getting their code. So I'm taking the second approach, which also is
+easier from a division of labor point of view (less communication and
+commits just for Windows support required). As a side note, I'm quite
+frustrated by the FSF's juvenile approach to distribution - it seems
+like they're purposely making it harder than necessary to use VS to
+build their libraries. Now it's possible to side step it but still, a
+more pragmatic approach would help a lot of people. Alternatively, I
+hope the community can move away from their libraries as soon as
+replacements are sufficiently wide spread - for example a Boost
+version of libdl and ICU instead of iconv.
+
+Regarde SideBySide, frankly I'm ignoring that for now. I'm assuming
+(from what I've seen in the wild) that people will use an App-Local
+deployment model anyway.Of course the approach I'm following would
+allow for the automatic generation of MSI fragments which could lead
+to more sharing of binaries between applications in the future, but
+I'm not implementing that for now, as I think it's out of the scope of
+this GSoC project. Getting that right requires all developers to have
+a quite detailed understanding of Windows deployment issues anyway,
+and considering that even something as primitive as NSIS is still
+widely used throughout the Windows OSS world, I think it's fair to say
+that that knowledge isn't widely spread. But again the automatic
+vsproject generation I'm working on could provide a framework to
+abstract all of that away for developers, and could enable a very
+small amount of people to provide high-quality installers for a large
+amount of applications with very little work.
+
+cheers,
+
+roel
+
+
+On Sat, Jun 11, 2011 at 4:33 PM, feverzsj <feverzsj at hotmail.com> wrote:
+> It's great to hear some one working on the windows build system. Although,
+> it's a real pain to make such automation on windows, especially for projects
+> with lots of third party dependencies like mapnik.
+> AFAIK, the most practicable and convenient solution to handle these
+> dependencies is precompile and pack them all in one place. But still, making
+> a debug lib could be tricky on windows. Also note the SideBySide Assembly
+> problem.
+>
+> regards , zsj
+>
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+From dane at dbsgeo.com  Mon Jun 13 18:31:44 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 13 Jun 2011 12:31:44 -0400
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <64FEFB3BDAC1414F80EBF758194587DA20014CFA5C@mbx.ajgirona.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+	<64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+	<810202CF-E86F-47E5-A815-F53D3E9794CB@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA20014CFA5C@mbx.ajgirona.org>
+Message-ID: <6A940007-5C28-400E-84CA-E27B78649653@dbsgeo.com>
+
+
+On Jun 6, 2011, at 3:10 AM, <manel.clos at ajgirona.cat> <manel.clos at ajgirona.cat> wrote:
+
+> Hi Dane,
+> 
+> No tests for these. It is simply loading configuration and applying to XML tree. There are already tests for testing that the GetCapabilities response is successful. I tested the response with various clients, which is the big part of the changes, and some of them can now "zoom to layer extent", others work as expected, allowing to request top layer, and showing top layer name/title/abstract. Compatibility list[1] keeps growing ;)
+
+Fantastic - impressive list!
+
+> 
+> About reprojection, I don't think OGCServer handles this. It is using Projection class only to do Envelope coordinates reprojection. So I think reprojection, if done, happens in the Mapnik library without OGCServer ever noticing.
+
+Yep, okay, thanks for confirming. We'll need a way to provide feedback to the user when projections don't match. I like your ideas below...
+
+> 
+> A general mecanism for performance debugging would be great. Say debug_render=1 in ogcserver.conf will call Mapnik.debug_render(True), and some "requests" later we can Mapnik.get_debug_info(), which should provide:
+> - time spent fetching features, sql queries if any
+> - time spent reprojecting ;)
+> - time spent rendering
+> 
+
+Yep, # of features fetched / vs. filtered / vs. rendered
+
+> These statistics could then be written to a log or presented to the user.
+> 
+> Any ideas about how to start working in that direction would be great! ;)
+
+Yes, we need this - I think the best route would be to parallel version of feature_style_processor.hpp and experiment with what types of map statistics can be collected there. Then it would just be a question of how to trigger its usage. This sounds like something that would be great to be in an svn branch.
+
+> 
+> Manel.
+> 
+> [1] https://github.com/mapnik/OGCServer/wiki/Supported-clients
+> 
+> 
+>> -----Mensaje original-----
+>> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+>> Enviado el: lunes, 06 de junio de 2011 0:07
+>> Para: Clos Crespo, Manel
+>> CC: mapnik-devel at lists.berlios.de
+>> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>> 
+>> Manel,
+>> 
+>> This is fantastic work. Nice job. And thanks for sending an
+>> update via mapnik-devel.
+>> 
+>> Two questions:
+>> 
+>> * Are there tests for these new features / is it feasible to
+>> write them?
+>> 
+>> * Have you looked into how projection matching works in the
+>> OGCServer at all? I assume the server does nothing special to
+>> handle this (or warn the user), but maybe it should. The
+>> issue is that since WMS requires EPSG code based SRS/CRS
+>> parameters, but more commonly mapnik XML srs values use the
+>> proj4 literal string, that a common performance problem is
+>> uneeded reprojection happening when the map srs is
+>> "+init=EPSG:4326"  but the layer srs is '+proj=longlat
+>> +ellps=WGS84 +datum=WGS84 +no_defs'. In the case of spherical
+>> mercator to spherical mercator reprojection (which can get
+>> triggered even with a slight difference in the proj4 string),
+>> this transformation is *very* expensive when it should, of
+>> course, cost nothing and never require proj4 to be used. Any thoughts?
+>> 
+>> Dane
+>> 
+>> On May 9, 2011, at 5:00 AM, <manel.clos at ajgirona.cat>
+>> <manel.clos at ajgirona.cat> wrote:
+>> 
+>>> Hi all,
+>>> 
+>>> In order to solve some OGCServer bugs[1][2], I've added
+>> some new configuration into ogcserver.conf:
+>>> 
+>>> [map]
+>>> wms_srs = EPSG:23031
+>>> wms_name = __all__
+>>> wms_title = Top Layer Title
+>>> wms_abstract = Top Layer Abstract
+>>> 
+>>> [layer_countries]
+>>> wms_srs = EPSG:23031
+>>> 
+>>> In this example the layer "countries" is assigned a
+>> specific epsg code so you can use a custom projection (one
+>> using +nadgrids for example) in the srs attribute. It is
+>> really not needed here, because all layers will inherit the
+>> map's wms_srs which has the same value.
+>>> 
+>>> I think this fits the approach Dane suggested (info in
+>> config file instead of modifying Mapnik's XML). The drawback
+>> of this method is that it only works for named layers.
+>>> 
+>>> 
+>>> I'll be doing something like this to support layer groups:
+>>> 
+>>> [map]
+>>> wms_groups = streets, buildings
+>>> 
+>>> [group_streets]
+>>> wms_title = Streets
+>>> wms_layers = streets_layer1, streets_layer1_labels
+>>> wms_name = streets
+>>> 
+>>> 
+>>> [1] Incorrect SRS in layer:
+>> https://github.com/mapnik/OGCServer/issues/11
+>>> [2] Top Layer "__all__" name:
+>> https://github.com/mapnik/OGCServer/issues/14
+>>> 
+>>> 
+>>>> -----Mensaje original-----
+>>>> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+>>>> Enviado el: s?bado, 22 de enero de 2011 0:02
+>>>> Para: Clos Crespo, Manel
+>>>> CC: <mapnik-devel at lists.berlios.de>
+>>>> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>>>> 
+>>>> Hi manel. Yes, great, a ticket to discuss sounds good. I'm not
+>>>> convinced all these features can/should be added to the
+>> existing map
+>>>> XML format. What about an XML or json document that ogcserver could
+>>>> load that points to one or more maps and describes how to
+>> group maps
+>>>> or the layers within them?
+>>>> 
+>>>> --- \o/ ---
+>>>> Sent from my phone
+>>>> 
+>>>> On Jan 15, 2011, at 3:58 PM, <manel.clos at ajgirona.cat> wrote:
+>>>> 
+>>>>> Hi all,
+>>>>> 
+>>>>> Here are some ideas about improving Mapnik XML to better
+>>>> support WMS
+>>>>> functionality.
+>>>>> 
+>>>>> Support Layers within Layers (Layer Group)
+>>>>> - Properties are inherited
+>>>>> - You can draw / request a Layer Group that has a name
+>>>>> - title: used in GetCapabilities to better describe layers in the
+>>>>> group
+>>>>> 
+>>>>> Toplevel Map element in mapfile should have some more
+>>>> Layer's proper
+>>>>> ties.
+>>>>> - name: request top level layer (Map) to draw / request all layers
+>>>>> (get rid of the __all__ trick in OGCServer in the long term, but
+>>>>> support it for compatibility)
+>>>>> - title: use it in GetCapabilities
+>>>>> 
+>>>>> If this is ok I'll create a ticket and hopefully have it ready for
+>>>>> Mapnik 2.0.
+>>>>> _______________________________________________
+>>>>> Mapnik-devel mailing list
+>>>>> Mapnik-devel at lists.berlios.de
+>>>>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>>>> 
+>> 
+>> 
+
+
+
+From dane at dbsgeo.com  Mon Jun 13 18:41:47 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 13 Jun 2011 12:41:47 -0400
+Subject: [Mapnik-devel] Map buffer_size
+In-Reply-To: <64FEFB3BDAC1414F80EBF758194587DA20014CFA6D@mbx.ajgirona.org>
+References: <64FEFB3BDAC1414F80EBF758194587DA20014CFA6D@mbx.ajgirona.org>
+Message-ID: <E21537F1-E224-495B-9FE2-90E52F89512F@dbsgeo.com>
+
+
+On Jun 7, 2011, at 5:24 AM, <manel.clos at ajgirona.cat> <manel.clos at ajgirona.cat> wrote:
+
+> Hi all,
+> 
+> I've come to a problem related to buffer_size. The Map, with a buffer_size of 128 pixels shows perfect labels and graphics (PointSymbolizer), but it takes some time to draw each tile. Setting buffer_size to 0 almost doubles perceived rendering speed, but with labels not appering correctly (cut).
+
+Yes, a map buffer results in more data being fetched so it can be quite expensive (especially a low zoom levels when buffered tiles overlap more data). So, I've been thinking about trying to optimize by finding early return situations were mapnik can internally skip using it (or using its full size), even if set. This is not an easy task and I've not started coding on it yet. But, some situations are easily avoidable, like where only line/polygon symbolizers are used and a buffer it set - in this case it could likely be completely ignored (which would help applications like TileMill which always assume a map buffer and do not let expect the user to know/set it themselves).
+
+> 
+> With buffer_size=128 I'm getting a blank tile which spends 400ms in the database query and 120ms cpu time (mean) in the render. With buffer_size=0 no SQL queries are fired, so the tile is almost 0-cost.
+
+So, this tile must be being pushed outside of the extent of the layer when a buffer it set?
+
+> 
+> Buffer size needed is predictable, it can be aproximated for LineSymbolizer, ShieldSymbolizer, PointSymbolizer... For Layers with only that symbolizers a buffer size of 10, 20, 30... can be more than enough. The problem is usually the TextSymbolizer, which will require setting a higher value for the buffer_size in the layer.
+> 
+> So, does it make sense to add the buffer_size parameter to layers? If it is defined layer.get_buffered_extent() could be used instead of map.get_buffered_extent(). It looks like a small change that can help a lot optimizing the map rendering.
+
+This is an interesting idea. Last time I looked at feature_style_processor, based on the way that we need to clip and project the map extent (up front) pulling the buffer value from the layer would not be an obviously easy tweak. I'll need to look again. Either way I think this warrants a ticket where we can discuss more. Would you be please create one?
+
+> 
+> 
+> Manel Clos
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From roel.vanhout at gmail.com  Mon Jun 13 21:54:17 2011
+From: roel.vanhout at gmail.com (Roel Vanhout)
+Date: Mon, 13 Jun 2011 21:54:17 +0200
+Subject: [Mapnik-devel] GSoC: Windows build system, week 3
+Message-ID: <BANLkTikpTfddHLi9Ne=u3r+0DAyNnLqVgw@mail.gmail.com>
+
+Because of circumstances a short week for me.
+
+I've branched mapnik trunk and have started to organize the Windows
+build system in the source tree. Will need to discuss
+implications/approach to it so haven't checked it in yet, to avoid
+having to redo it all. Have gotten to the point of building mapnik
+itself and started applying my patches from earlier this year. Heavily
+refactored the vs4os project file generation tool to allow more
+flexibility in the layout of the source tree. Where for the dependent
+libraries I simply disabled warnings, for mapnik proper I will try to
+investigate their cause and bring the issues to the list to be decided
+whether to change the code or ignore the warning.
+
+Some progress on the installer. Also remembered that I wrote a
+comparison of various documentation systems in the days after our
+first Skype call - will post that to the trac and follow up on -devel
+later this week.
+
+cheers,
+
+roel
+
+
+From dane at dbsgeo.com  Mon Jun 13 22:10:31 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 13 Jun 2011 16:10:31 -0400
+Subject: [Mapnik-devel] GSoC: Windows build system, week 3
+In-Reply-To: <BANLkTikpTfddHLi9Ne=u3r+0DAyNnLqVgw@mail.gmail.com>
+References: <BANLkTikpTfddHLi9Ne=u3r+0DAyNnLqVgw@mail.gmail.com>
+Message-ID: <6591FCCD-1B25-4FC0-B5F5-2775F474AD1C@dbsgeo.com>
+
+Roel,
+
+Great, thanks for the frequent updates!
+
+Dane
+
+
+On Jun 13, 2011, at 3:54 PM, Roel Vanhout wrote:
+
+> Because of circumstances a short week for me.
+> 
+> I've branched mapnik trunk and have started to organize the Windows
+> build system in the source tree. Will need to discuss
+> implications/approach to it so haven't checked it in yet, to avoid
+> having to redo it all. Have gotten to the point of building mapnik
+> itself and started applying my patches from earlier this year. Heavily
+> refactored the vs4os project file generation tool to allow more
+> flexibility in the layout of the source tree. Where for the dependent
+> libraries I simply disabled warnings, for mapnik proper I will try to
+> investigate their cause and bring the issues to the list to be decided
+> whether to change the code or ignore the warning.
+> 
+> Some progress on the installer. Also remembered that I wrote a
+> comparison of various documentation systems in the days after our
+> first Skype call - will post that to the trac and follow up on -devel
+> later this week.
+> 
+> cheers,
+> 
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From simon.kammerer at web.de  Tue Jun 14 15:19:21 2011
+From: simon.kammerer at web.de (Simon Kammerer)
+Date: Tue, 14 Jun 2011 15:19:21 +0200
+Subject: [Mapnik-devel] Strange results with grid renderer and images where
+	width != height
+In-Reply-To: <C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+Message-ID: <4DF75FD9.1000304@web.de>
+
+Hi List,
+
+While playing with the grid_renderer to produce html imagemaps, I see 
+some strange results with images where width != height:
+
+With width = height, everything works fine.
+
+But with width != height, the grid renderer seems to expand the 
+rendering area by itself?!
+
+Example:
+http://188.138.24.13/grid_renderer.png
+
+The dashed blue lines are the html image maps build from grid renderer 
+output.
+
+First, I thought my tracing algorithm must be buggy. But since the 
+regularly rendered image does not contain Italy (see example), it seems 
+to me that the grid renderer expands the rendering area by itself?
+
+I'm going to make myself familiar with the grid renderer source, but 
+since my c++ knowledge is kind of outdated, it would be nice to hear 
+comments from someone with deeper knowledge of mapnik + grid renderer.
+
+
+Regards
+Simon
+
+
+
+
+
+
+
+
+
+
+From manel.clos at ajgirona.cat  Wed Jun 15 14:48:47 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Wed, 15 Jun 2011 14:48:47 +0200
+Subject: [Mapnik-devel] WMS with Mapnik
+In-Reply-To: <6A940007-5C28-400E-84CA-E27B78649653@dbsgeo.com>
+References: <64FEFB3BDAC1414F80EBF758194587DA1AE26D7F77@mbx.ajgirona.org>
+	<64F670B5-2DE3-4118-978A-B9345136C3B2@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA1B214CCFF5@mbx.ajgirona.org>
+	<810202CF-E86F-47E5-A815-F53D3E9794CB@dbsgeo.com>
+	<64FEFB3BDAC1414F80EBF758194587DA20014CFA5C@mbx.ajgirona.org>
+	<6A940007-5C28-400E-84CA-E27B78649653@dbsgeo.com>
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20014CFABD@mbx.ajgirona.org>
+
+Ticket created for further discussion:
+
+http://trac.mapnik.org/ticket/780
+
+
+> -----Mensaje original-----
+> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+> Enviado el: lunes, 13 de junio de 2011 18:32
+> Para: Clos Crespo, Manel
+> CC: mapnik-devel at lists.berlios.de
+> Asunto: Re: [Mapnik-devel] WMS with Mapnik
+>
+> > About reprojection, I don't think OGCServer handles this.
+> It is using Projection class only to do Envelope coordinates
+> reprojection. So I think reprojection, if done, happens in
+> the Mapnik library without OGCServer ever noticing.
+>
+> Yep, okay, thanks for confirming. We'll need a way to provide
+> feedback to the user when projections don't match. I like
+> your ideas below...
+>
+> > A general mecanism for performance debugging would be
+> great. Say debug_render=1 in ogcserver.conf will call
+> Mapnik.debug_render(True), and some "requests" later we can
+> Mapnik.get_debug_info(), which should provide:
+> > - time spent fetching features, sql queries if any
+> > - time spent reprojecting ;)
+> > - time spent rendering
+> >
+>
+> Yep, # of features fetched / vs. filtered / vs. rendered
+>
+> > These statistics could then be written to a log or
+> presented to the user.
+> >
+> > Any ideas about how to start working in that direction
+> would be great! ;)
+>
+> Yes, we need this - I think the best route would be to
+> parallel version of feature_style_processor.hpp and
+> experiment with what types of map statistics can be collected
+> there. Then it would just be a question of how to trigger its
+> usage. This sounds like something that would be great to be
+> in an svn branch.
+
+
+
+
+From manel.clos at ajgirona.cat  Wed Jun 15 15:01:50 2011
+From: manel.clos at ajgirona.cat (manel.clos at ajgirona.cat)
+Date: Wed, 15 Jun 2011 15:01:50 +0200
+Subject: [Mapnik-devel] Map buffer_size
+In-Reply-To: <E21537F1-E224-495B-9FE2-90E52F89512F@dbsgeo.com>
+References: <64FEFB3BDAC1414F80EBF758194587DA20014CFA6D@mbx.ajgirona.org>
+	<E21537F1-E224-495B-9FE2-90E52F89512F@dbsgeo.com>
+Message-ID: <64FEFB3BDAC1414F80EBF758194587DA20014CFABE@mbx.ajgirona.org>
+
+Ticket created for further discussion:
+
+http://trac.mapnik.org/ticket/781
+
+
+> -----Mensaje original-----
+> De: Dane Springmeyer [mailto:dane at dbsgeo.com]
+> Enviado el: lunes, 13 de junio de 2011 18:42
+> Para: Clos Crespo, Manel
+> CC: mapnik-devel at lists.berlios.de
+> Asunto: Re: [Mapnik-devel] Map buffer_size
+>
+> Yes, a map buffer results in more data being fetched so it
+> can be quite expensive (especially a low zoom levels when
+> buffered tiles overlap more data). So, I've been thinking
+> about trying to optimize by finding early return situations
+> were mapnik can internally skip using it (or using its full
+> size), even if set. This is not an easy task and I've not
+> started coding on it yet. But, some situations are easily
+> avoidable, like where only line/polygon symbolizers are used
+> and a buffer it set - in this case it could likely be
+> completely ignored (which would help applications like
+> TileMill which always assume a map buffer and do not let
+> expect the user to know/set it themselves).
+>
+> >
+> > With buffer_size=128 I'm getting a blank tile which spends
+> 400ms in the database query and 120ms cpu time (mean) in the
+> render. With buffer_size=0 no SQL queries are fired, so the
+> tile is almost 0-cost.
+>
+> So, this tile must be being pushed outside of the extent of
+> the layer when a buffer it set?
+
+The tile should contain nothing, still when the buffer is used, features next to the tile are fetched, rendered and finally discarded. All that cpu time is wasted.
+
+> > Buffer size needed is predictable, it can be aproximated
+> for LineSymbolizer, ShieldSymbolizer, PointSymbolizer... For
+> Layers with only that symbolizers a buffer size of 10, 20,
+> 30... can be more than enough. The problem is usually the
+> TextSymbolizer, which will require setting a higher value for
+> the buffer_size in the layer.
+> >
+> > So, does it make sense to add the buffer_size parameter to
+> layers? If it is defined layer.get_buffered_extent() could be
+> used instead of map.get_buffered_extent(). It looks like a
+> small change that can help a lot optimizing the map rendering.
+>
+> This is an interesting idea. Last time I looked at
+> feature_style_processor, based on the way that we need to
+> clip and project the map extent (up front) pulling the buffer
+> value from the layer would not be an obviously easy tweak.
+> I'll need to look again. Either way I think this warrants a
+> ticket where we can discuss more. Would you be please create one?
+>
+
+
+From dane at dbsgeo.com  Wed Jun 15 18:50:44 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 15 Jun 2011 12:50:44 -0400
+Subject: [Mapnik-devel] Strange results with grid renderer and images
+	where width != height
+In-Reply-To: <4DF75FD9.1000304@web.de>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DF75FD9.1000304@web.de>
+Message-ID: <871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+
+On Jun 14, 2011, at 9:19 AM, Simon Kammerer wrote:
+
+> Hi List,
+> 
+
+Hi Simon!
+
+> While playing with the grid_renderer to produce html imagemaps, I see some strange results with images where width != height:
+> 
+> With width = height, everything works fine.
+> 
+> But with width != height, the grid renderer seems to expand the rendering area by itself?!
+> 
+> Example:
+> http://188.138.24.13/grid_renderer.png
+> 
+
+Hmm, yes, I've only tested so far with width == height. Looks like a bug, nice catch. I'll see what I can do.
+
+> The dashed blue lines are the html image maps build from grid renderer output.
+> 
+> First, I thought my tracing algorithm must be buggy. But since the regularly rendered image does not contain Italy (see example), it seems to me that the grid renderer expands the rendering area by itself?
+> 
+> I'm going to make myself familiar with the grid renderer source, but since my c++ knowledge is kind of outdated, it would be nice to hear comments from someone with deeper knowledge of mapnik + grid renderer.
+> 
+> 
+> Regards
+> Simon
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Wed Jun 15 19:25:18 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 15 Jun 2011 13:25:18 -0400
+Subject: [Mapnik-devel] Strange results with grid renderer and images
+	where width != height
+In-Reply-To: <871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DF75FD9.1000304@web.de>
+	<871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+Message-ID: <B685751E-A6FE-49B0-8FBA-E94697499009@dbsgeo.com>
+
+>> Example:
+>> http://188.138.24.13/grid_renderer.png
+>> 
+> 
+> Hmm, yes, I've only tested so far with width == height. Looks like a bug, nice catch. I'll see what I can do.
+> 
+
+Actually, I can't replicate this problem. Different width/height values see to work fine in my tests.
+
+Can you describe a bit more about what your code is doing?
+
+Dane
+
+
+>> The dashed blue lines are the html image maps build from grid renderer output.
+>> 
+>> First, I thought my tracing algorithm must be buggy. But since the regularly rendered image does not contain Italy (see example), it seems to me that the grid renderer expands the rendering area by itself?
+>> 
+>> I'm going to make myself familiar with the grid renderer source, but since my c++ knowledge is kind of outdated, it would be nice to hear comments from someone with deeper knowledge of mapnik + grid renderer.
+>> 
+>> 
+>> Regards
+>> Simon
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+> 
+
+
+
+From simon.kammerer at web.de  Thu Jun 16 09:35:00 2011
+From: simon.kammerer at web.de (Simon Kammerer)
+Date: Thu, 16 Jun 2011 09:35:00 +0200
+Subject: [Mapnik-devel] Strange results with grid renderer and images
+ where width != height
+In-Reply-To: <B685751E-A6FE-49B0-8FBA-E94697499009@dbsgeo.com>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DF75FD9.1000304@web.de>
+	<871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+	<B685751E-A6FE-49B0-8FBA-E94697499009@dbsgeo.com>
+Message-ID: <4DF9B224.4040806@web.de>
+
+
+
+On 06/15/2011 07:25 PM, Dane Springmeyer wrote:
+>>> Example:
+>>> http://188.138.24.13/grid_renderer.png
+>>>
+>>
+>> Hmm, yes, I've only tested so far with width == height. Looks like a bug, nice catch. I'll see what I can do.
+>>
+>
+> Actually, I can't replicate this problem. Different width/height values see to work fine in my tests.
+>
+> Can you describe a bit more about what your code is doing?
+>
+
+Isolate features from grid_utf = grid.encode(resolution=1), then do some 
+simple border tracing. My isolation and tracing code is ugly and 
+complicated for now, so I've made a simple demo to show my problem.
+
+The following code works with the gridsforkids example data and rebuilds 
+the map from grid_utf = grid.encode(resolution=1).
+
+With width == height, both images look the same, with width != height, 
+the rebuild image is kind of stretched.
+
+trunk revision is 2974.
+
+
+
+import mapnik2
+import Image
+import ImageDraw
+
+m = mapnik2.Map(200,400)
+mapnik2.load_map(m,'stylesheet.xml')
+
+# go to italy
+tile = mapnik2.Box2d(1113194.91, 4838471.40, 2226389.82, 6413524.59)
+m.zoom_to_box(tile)
+
+# render image
+im = mapnik2.Image(m.width, m.height)
+mapnik2.render(m,im)
+im.save("/tmp/grid.png")
+
+# render grid
+grid = mapnik2.Grid(m.width, m.height)
+mapnik2.render_layer(m,grid,layer=0,fields=['POP2005','NAME'])
+grid_utf = grid.encode(resolution=1)
+
+#build image from grid
+testimage = Image.new("RGB",(m.width, m.height))
+draw = ImageDraw.Draw(testimage)
+
+for row in range(0, len(grid_utf['grid'])):
+
+     line = grid_utf['grid'][row]
+
+     for col in range(0, len(line)):
+
+         v = ord(line[col])
+         draw.point((col,row), fill="rgb(%s,%s,%s)" % (v,v,v))
+
+
+testimage.save('/tmp/gridtest.png')
+
+
+
+
+
+
+
+
+Simon
+
+
+
+From dane at dbsgeo.com  Thu Jun 16 18:49:32 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 16 Jun 2011 12:49:32 -0400
+Subject: [Mapnik-devel] Strange results with grid renderer and images
+	where width != height
+In-Reply-To: <4DF9B224.4040806@web.de>
+References: <4DDC3666.9070806@ahlzen.com>	<47ADB2BF-CA9C-4E0D-975D-93B744EEC8B0@dbsgeo.com>	<4DDF0138.3040301@ahlzen.com>
+	<C2BB04F6-EB2C-410D-8120-4F140F6BBAE6@dbsgeo.com>
+	<4DF75FD9.1000304@web.de>
+	<871603F4-D986-49BA-931D-2ADE5543F8D8@dbsgeo.com>
+	<B685751E-A6FE-49B0-8FBA-E94697499009@dbsgeo.com>
+	<4DF9B224.4040806@web.de>
+Message-ID: <E00B9C26-487D-4545-8953-F4F655C7CF4C@dbsgeo.com>
+
+Simon,
+
+Thanks for the test script. Should be fixed in latest svn (r2980)
+
+Thanks,
+
+Dane
+
+
+On Jun 16, 2011, at 3:35 AM, Simon Kammerer wrote:
+
+> 
+> 
+> On 06/15/2011 07:25 PM, Dane Springmeyer wrote:
+>>>> Example:
+>>>> http://188.138.24.13/grid_renderer.png
+>>>> 
+>>> 
+>>> Hmm, yes, I've only tested so far with width == height. Looks like a bug, nice catch. I'll see what I can do.
+>>> 
+>> 
+>> Actually, I can't replicate this problem. Different width/height values see to work fine in my tests.
+>> 
+>> Can you describe a bit more about what your code is doing?
+>> 
+> 
+> Isolate features from grid_utf = grid.encode(resolution=1), then do some simple border tracing. My isolation and tracing code is ugly and complicated for now, so I've made a simple demo to show my problem.
+> 
+> The following code works with the gridsforkids example data and rebuilds the map from grid_utf = grid.encode(resolution=1).
+> 
+> With width == height, both images look the same, with width != height, the rebuild image is kind of stretched.
+> 
+> trunk revision is 2974.
+> 
+> 
+> 
+> import mapnik2
+> import Image
+> import ImageDraw
+> 
+> m = mapnik2.Map(200,400)
+> mapnik2.load_map(m,'stylesheet.xml')
+> 
+> # go to italy
+> tile = mapnik2.Box2d(1113194.91, 4838471.40, 2226389.82, 6413524.59)
+> m.zoom_to_box(tile)
+> 
+> # render image
+> im = mapnik2.Image(m.width, m.height)
+> mapnik2.render(m,im)
+> im.save("/tmp/grid.png")
+> 
+> # render grid
+> grid = mapnik2.Grid(m.width, m.height)
+> mapnik2.render_layer(m,grid,layer=0,fields=['POP2005','NAME'])
+> grid_utf = grid.encode(resolution=1)
+> 
+> #build image from grid
+> testimage = Image.new("RGB",(m.width, m.height))
+> draw = ImageDraw.Draw(testimage)
+> 
+> for row in range(0, len(grid_utf['grid'])):
+> 
+>    line = grid_utf['grid'][row]
+> 
+>    for col in range(0, len(line)):
+> 
+>        v = ord(line[col])
+>        draw.point((col,row), fill="rgb(%s,%s,%s)" % (v,v,v))
+> 
+> 
+> testimage.save('/tmp/gridtest.png')
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> Simon
+> 
+
+
+
+From herm at scribus.info  Fri Jun 24 20:28:12 2011
+From: herm at scribus.info (Hermann Kraus)
+Date: Fri, 24 Jun 2011 20:28:12 +0200
+Subject: [Mapnik-devel] GSoC: Text placement status report
+Message-ID: <op.vxlexatri35s77@nx7400.uni-regensburg.de>
+
+Hi!
+
+I finally moved all text symbolizer attributes to the new class  
+text_placement_info, which allows to implement arbitrary placement  
+strategies.
+
+I tried different ways of implementing this and settled for one which  
+should have minimal impact on existing code.
+
+The code is available in branch  
+http://trac.mapnik.org/browser/branches/textplacement.
+
+My next steps will be to add code make each option individually  
+configurable without having to implement an own placement class.
+
+
+Hermann
+
+
+From stella at laurenzo.org  Tue Jun 28 08:52:13 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Mon, 27 Jun 2011 23:52:13 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+	shared library on linux
+Message-ID: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+
+Hi Mapnik developers,
+In conjunction with a project I'm working on, I've been building out some
+JNI bindings for mapnik.  They are here:
+https://github.com/stellaeof/mapnik-jni
+
+At some point, I'd like to discuss merging this into the core mapnik project
+where I think such things belong, but for now, I've stumbled across a minor
+mystery.  The bindings work perfectly on OSX and fail miserably on Linux.
+ I'm so used to shared library weirdness on OSX, that I was a little bit
+surprised by this since Linux is usually the well behaved citizen in this
+regard.
+
+After an evening of digging I ran across several related threads.  The most
+pertinent is here:
+http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html
+but
+it was never resolved.
+
+The issue specifically is that I have a shared library libmapnik-jni.so that
+contains the JNI exports and depends on libmapnik2.so.  Everything works
+fine until attempting to load an input plugin.  Upon calling
+datasource_cache::register_datasources(...), the following type of message
+is written to stderr:
+
+Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input
+(dlopen failed - plugin likely has an unsatisfied dependency or incompatible
+ABI)
+
+Then, when calling datasource_cache::create with parameters referencing a
+postgis plugin, the following is written and the process crashes:
+
+/usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error:
+/usr/local/lib/mapnik2/input/postgis.input: undefined symbol:
+_ZN6mapnik5box2dIdEC1Ev
+
+
+Depending on the load order and such different messages and failures can
+occur but these are the gist of it.
+
+While tracking this down, the first thing I noticed was that if I defined
+LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process
+that does all of this, everything works.  This led me to look at the plugins
+themselves and I noticed that the input plugins do not have a library
+dependency on libmapnik2.so.  On OSX they do because things can't be left
+partially linked on that platform, but on Linux mapnik must be assuming that
+in order for a plugin to load, the libmapnik2.so library must already be
+loaded globally.  To test this, I ran the script here in the plugin
+directory:
+https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh
+
+This just renames each .input file and links a new one that depends on the
+original and libmapnik2.so.  With this done, everything works as it should
+and no warnings are printed when the plugins are loaded.
+
+I believe that the issue is that on the JVM, when a library is loaded (via
+System.load or its cousin System.loadLibrary), dlopen is being called on the
+library without the RTLD_GLOBAL flag.  This is probably a good thing as it
+keeps name collisions to a minimum in JNI libraries.  However, it means that
+when libmapnik2.so goes to dlopen() its input plugins, it results in
+undefined symbols because even though the libmapnik2.so library is resident
+in the process, its symbols have not been exported for all to use.
+
+If I were to file a bug against mapnik, it would be titled "Input plugins
+fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL
+flag".  There are several solutions:
+   - Include libmapnik2.so as a dependency in mapnik input plugins, similar
+to how my script fixes things up to be after the fact.  This would mirror
+OSX behavior and I do not believe it would have any deleterious effects.
+   - Declare that libmapnik2.so can only be used when explicitly linked to
+or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work
+when loaded directly or indirectly by standard JVMs.
+   - Leave it to someone else (me).  In this case, I suppose I could dlopen
+the JNI library again with the RTLD_GLOBAL flag prior to loading any
+plugins.  The man page says this should work.  Of course, I'd have to find
+the full path to the shared library, which I don't necessarily know, and
+this introduces more failure paths and is a little bit crazy.
+
+Unless if anyone is aware of some issue that I don't know about, I think the
+first option is the best.  It would mean that mapnik would always be able to
+load its input plugins regardless of how itself was loaded.  I'm not at all
+familiar with the mapnik build process to know where to make this change,
+however.
+
+- stella
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110627/20b97b5c/attachment.html>
+
+From feverzsj at hotmail.com  Tue Jun 28 10:39:02 2011
+From: feverzsj at hotmail.com (zzsj)
+Date: Tue, 28 Jun 2011 16:39:02 +0800
+Subject: [Mapnik-devel] GSoC: Windows build system, week 3
+In-Reply-To: <BANLkTikpTfddHLi9Ne=u3r+0DAyNnLqVgw@mail.gmail.com>
+References: <BANLkTikpTfddHLi9Ne=u3r+0DAyNnLqVgw@mail.gmail.com>
+Message-ID: <SNT143-ds91E7E45B96C041F945A58CE560@phx.gbl>
+
+hi, Roel
+I also tried compiling latest mapnik2 under vc8/9, but had some problems:
+1. vc8 was very likely to give "run out heap space" error with 2gb ram;
+2. large pdb file, while reaching about 120MB, msvc compiler could give the classic "cannot update pdb file" error; 
+3. having problem with unqualified name look up, e.g. value, attribute
+4. no posix support, e.g. round(workaround: using boost::math::round)
+5. no cpp0x support, e.g. std::map::at(workaround: write at() in place)
+
+
+using vc10 may solve some of them, but the large ram consumption and pdb error could still be problems.
+
+
+> Because of circumstances a short week for me.
+> 
+> I've branched mapnik trunk and have started to organize the Windows
+> build system in the source tree. Will need to discuss
+> implications/approach to it so haven't checked it in yet, to avoid
+> having to redo it all. Have gotten to the point of building mapnik
+> itself and started applying my patches from earlier this year. Heavily
+> refactored the vs4os project file generation tool to allow more
+> flexibility in the layout of the source tree. Where for the dependent
+> libraries I simply disabled warnings, for mapnik proper I will try to
+> investigate their cause and bring the issues to the list to be decided
+> whether to change the code or ignore the warning.
+> 
+> Some progress on the installer. Also remembered that I wrote a
+> comparison of various documentation systems in the days after our
+> first Skype call - will post that to the trac and follow up on -devel
+> later this week.
+> 
+> cheers,
+> 
+> roel
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+regards, zsj 
+
+From dane at dbsgeo.com  Tue Jun 28 18:56:56 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 28 Jun 2011 09:56:56 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+	shared library on linux
+In-Reply-To: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+Message-ID: <C6CA181F-2F4E-403A-A08E-7761B344446B@dbsgeo.com>
+
+Hi Stella,
+
+Great to hear from you. Comments below...
+
+On Jun 27, 2011, at 11:52 PM, Stella Laurenzo wrote:
+
+> Hi Mapnik developers,
+> In conjunction with a project I'm working on, I've been building out some JNI bindings for mapnik.  They are here: https://github.com/stellaeof/mapnik-jni
+> 
+> At some point, I'd like to discuss merging this into the core mapnik project where I think such things belong, but for now, I've stumbled across a minor mystery.  The bindings work perfectly on OSX and fail miserably on Linux.  I'm so used to shared library weirdness on OSX, that I was a little bit surprised by this since Linux is usually the well behaved citizen in this regard.
+> 
+> After an evening of digging I ran across several related threads.  The most pertinent is here: http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html but it was never resolved.
+> 
+> The issue specifically is that I have a shared library libmapnik-jni.so that contains the JNI exports and depends on libmapnik2.so.  Everything works fine until attempting to load an input plugin.  Upon calling datasource_cache::register_datasources(...), the following type of message is written to stderr:
+> Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input (dlopen failed - plugin likely has an unsatisfied dependency or incompatible ABI)
+> Then, when calling datasource_cache::create with parameters referencing a postgis plugin, the following is written and the process crashes:
+> /usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error: /usr/local/lib/mapnik2/input/postgis.input: undefined symbol: _ZN6mapnik5box2dIdEC1Ev
+> 
+> Depending on the load order and such different messages and failures can occur but these are the gist of it.
+> 
+> While tracking this down, the first thing I noticed was that if I defined LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process that does all of this, everything works.  This led me to look at the plugins themselves and I noticed that the input plugins do not have a library dependency on libmapnik2.so.  On OSX they do because things can't be left partially linked on that platform, but on Linux mapnik must be assuming that in order for a plugin to load, the libmapnik2.so library must already be loaded globally.  To test this, I ran the script here in the plugin directory: https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh
+> 
+> This just renames each .input file and links a new one that depends on the original and libmapnik2.so.  With this done, everything works as it should and no warnings are printed when the plugins are loaded.
+> 
+> I believe that the issue is that on the JVM, when a library is loaded (via System.load or its cousin System.loadLibrary), dlopen is being called on the library without the RTLD_GLOBAL flag.  This is probably a good thing as it keeps name collisions to a minimum in JNI libraries.  However, it means that when libmapnik2.so goes to dlopen() its input plugins, it results in undefined symbols because even though the libmapnik2.so library is resident in the process, its symbols have not been exported for all to use.
+> 
+> If I were to file a bug against mapnik, it would be titled "Input plugins fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL flag".  There are several solutions:
+>    - Include libmapnik2.so as a dependency in mapnik input plugins, similar to how my script fixes things up to be after the fact.  This would mirror OSX behavior and I do not believe it would have any deleterious effects.
+>    - Declare that libmapnik2.so can only be used when explicitly linked to or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work when loaded directly or indirectly by standard JVMs.
+>    - Leave it to someone else (me).  In this case, I suppose I could dlopen the JNI library again with the RTLD_GLOBAL flag prior to loading any plugins.  The man page says this should work.  Of course, I'd have to find the full path to the shared library, which I don't necessarily know, and this introduces more failure paths and is a little bit crazy.
+> 
+> Unless if anyone is aware of some issue that I don't know about, I think the first option is the best.  It would mean that mapnik would always be able to load its input plugins regardless of how itself was loaded.  I'm not at all familiar with the mapnik build process to know where to make this change, however.
+> 
+> - stella
+
+
+RE: JNI bindings in general - wow. As little as a year ago the Mapnik project just had Python bindings. Now we have emerging bindings for PHP [1], NodeJS [2], Ruby [3], and Java. So, its a good time to re-assess and discuss both how development of bindings can be optimal (inside/outside core, release cycle, etc), and any changes we need to make in core to make life good for various bindings.
+
+RE: plugin linking, your analysis is spot on. Of your three solutions, I also agree that we should likely move to #1 - actually linking any required dependencies such that plugins can be loaded without having to monkey with dlopen flags. The reason we have resisted doing this so far is that Python has an easy mechanism to control dlopen flags [4]. But, I noticed the same problem as you hit with NodeJS recently [5]. My workaround on linux is to dlopen libmapnik.so first [6], which of course is an ugly hack. But it works well enough I've forgotten to circle back on this issue, till now.
+
+So, if we go with solution #1, to make Linux linking like OSX, the solution is pretty easy. We just need to find all the linking lines in each plugin build file that are specific to Darwin and make them apply no matter platform (we only currently support linux, freebsd, solaris, and osx with the SCons scripts).
+
+An example of that would be here:
+
+http://trac.mapnik.org/browser/trunk/plugins/input/shape/SConscript#L42
+
+Artem, others hav comments/drawbacks of this on Linux? I know Fedora recently changed their policy to be more like OSX. I can't see any drawbacks of this approach. It just needs a bit of testing I think.
+
+Dane
+
+[1] https://github.com/roel-v/php_mapnik
+[2] https://github.com/mapnik/node-mapnik
+[3] https://github.com/elliotlaster/Pika 
+[4] http://trac.mapnik.org/browser/trunk/bindings/python/mapnik/__init__.py#L55
+[5] https://github.com/joyent/node/issues/436
+[6] https://github.com/mapnik/node-mapnik/blob/master/lib/mapnik.js#L31-44
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110628/152066b6/attachment.html>
+
+From stella at laurenzo.org  Tue Jun 28 20:16:19 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Tue, 28 Jun 2011 11:16:19 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+ shared library on linux
+In-Reply-To: <C6CA181F-2F4E-403A-A08E-7761B344446B@dbsgeo.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+	<C6CA181F-2F4E-403A-A08E-7761B344446B@dbsgeo.com>
+Message-ID: <BANLkTimD=-QxkjTOaf8Qt62JqSGyDSUhpA@mail.gmail.com>
+
+Hi Dane,
+Thanks for the feedback.  If there are no other objections and if no one
+else gets to it first, I can look through the build scripts to try to find
+this.  I've never used scons before, but its just Python, right :)
+
+I may not get to it right away though because I am trying to land the work I
+was doing prior to stumbling on this.
+
+Mapnik has come a long way in a short period of time.  The third party
+evolution of language bindings is a testament to that.  I am interested in
+the opinion of whether these eventually go into the core mapnik distro or
+not.  Purely from the perspective of conserving size, baking the JNI
+bindings into the core would save a fair chunk of compiled size.  Currently
+the Linux x86_64 JNI library is about 650KB and isn't fully implemented.  I
+think this is due to the fact that all of the inline code and templates get
+instantiated in each shared library as weak symbols, just to be ignored
+later.  The actual unique code that goes into the binding is pretty small.
+ It's also pretty straightforward to build: Just one CPP file and a handful
+of compiler flags that are determined by java-config.  It would be pretty
+easy to drop into the core distribution as an optional component to be built
+if Java headers are present, but I'm going back and forth on my own opinion
+as to whether it should be in core or separate.
+
+- stella
+
+On Tue, Jun 28, 2011 at 9:56 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+
+> Hi Stella,
+>
+> Great to hear from you. Comments below...
+>
+> On Jun 27, 2011, at 11:52 PM, Stella Laurenzo wrote:
+>
+> Hi Mapnik developers,
+> In conjunction with a project I'm working on, I've been building out some
+> JNI bindings for mapnik.  They are here:
+> https://github.com/stellaeof/mapnik-jni
+>
+> At some point, I'd like to discuss merging this into the core mapnik
+> project where I think such things belong, but for now, I've stumbled across
+> a minor mystery.  The bindings work perfectly on OSX and fail miserably on
+> Linux.  I'm so used to shared library weirdness on OSX, that I was a little
+> bit surprised by this since Linux is usually the well behaved citizen in
+> this regard.
+>
+> After an evening of digging I ran across several related threads.  The most
+> pertinent is here:
+> http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html but
+> it was never resolved.
+>
+> The issue specifically is that I have a shared library libmapnik-jni.so
+> that contains the JNI exports and depends on libmapnik2.so.  Everything
+> works fine until attempting to load an input plugin.  Upon calling
+> datasource_cache::register_datasources(...), the following type of message
+> is written to stderr:
+>
+> Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input
+> (dlopen failed - plugin likely has an unsatisfied dependency or incompatible
+> ABI)
+>
+> Then, when calling datasource_cache::create with parameters referencing a
+> postgis plugin, the following is written and the process crashes:
+>
+> /usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error:
+> /usr/local/lib/mapnik2/input/postgis.input: undefined symbol:
+> _ZN6mapnik5box2dIdEC1Ev
+>
+>
+> Depending on the load order and such different messages and failures can
+> occur but these are the gist of it.
+>
+> While tracking this down, the first thing I noticed was that if I defined
+> LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process
+> that does all of this, everything works.  This led me to look at the plugins
+> themselves and I noticed that the input plugins do not have a library
+> dependency on libmapnik2.so.  On OSX they do because things can't be left
+> partially linked on that platform, but on Linux mapnik must be assuming that
+> in order for a plugin to load, the libmapnik2.so library must already be
+> loaded globally.  To test this, I ran the script here in the plugin
+> directory:
+> https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh
+>
+> This just renames each .input file and links a new one that depends on the
+> original and libmapnik2.so.  With this done, everything works as it should
+> and no warnings are printed when the plugins are loaded.
+>
+> I believe that the issue is that on the JVM, when a library is loaded (via
+> System.load or its cousin System.loadLibrary), dlopen is being called on the
+> library without the RTLD_GLOBAL flag.  This is probably a good thing as it
+> keeps name collisions to a minimum in JNI libraries.  However, it means that
+> when libmapnik2.so goes to dlopen() its input plugins, it results in
+> undefined symbols because even though the libmapnik2.so library is resident
+> in the process, its symbols have not been exported for all to use.
+>
+> If I were to file a bug against mapnik, it would be titled "Input plugins
+> fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL
+> flag".  There are several solutions:
+>    - Include libmapnik2.so as a dependency in mapnik input plugins, similar
+> to how my script fixes things up to be after the fact.  This would mirror
+> OSX behavior and I do not believe it would have any deleterious effects.
+>    - Declare that libmapnik2.so can only be used when explicitly linked to
+> or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work
+> when loaded directly or indirectly by standard JVMs.
+>    - Leave it to someone else (me).  In this case, I suppose I could dlopen
+> the JNI library again with the RTLD_GLOBAL flag prior to loading any
+> plugins.  The man page says this should work.  Of course, I'd have to find
+> the full path to the shared library, which I don't necessarily know, and
+> this introduces more failure paths and is a little bit crazy.
+>
+> Unless if anyone is aware of some issue that I don't know about, I think
+> the first option is the best.  It would mean that mapnik would always be
+> able to load its input plugins regardless of how itself was loaded.  I'm not
+> at all familiar with the mapnik build process to know where to make this
+> change, however.
+>
+> - stella
+>
+>
+>
+> RE: JNI bindings in general - wow. As little as a year ago the Mapnik
+> project just had Python bindings. Now we have emerging bindings for PHP [1],
+> NodeJS [2], Ruby [3], and Java. So, its a good time to re-assess and discuss
+> both how development of bindings can be optimal (inside/outside core,
+> release cycle, etc), and any changes we need to make in core to make life
+> good for various bindings.
+>
+> RE: plugin linking, your analysis is spot on. Of your three solutions, I
+> also agree that we should likely move to #1 - actually linking any required
+> dependencies such that plugins can be loaded without having to monkey with
+> dlopen flags. The reason we have resisted doing this so far is that Python
+> has an easy mechanism to control dlopen flags [4]. But, I noticed the same
+> problem as you hit with NodeJS recently [5]. My workaround on linux is to
+> dlopen libmapnik.so first [6], which of course is an ugly hack. But it works
+> well enough I've forgotten to circle back on this issue, till now.
+>
+> So, if we go with solution #1, to make Linux linking like OSX, the solution
+> is pretty easy. We just need to find all the linking lines in each plugin
+> build file that are specific to Darwin and make them apply no matter
+> platform (we only currently support linux, freebsd, solaris, and osx with
+> the SCons scripts).
+>
+> An example of that would be here:
+>
+> http://trac.mapnik.org/browser/trunk/plugins/input/shape/SConscript#L42
+>
+> Artem, others hav comments/drawbacks of this on Linux? I know Fedora
+> recently changed their policy to be more like OSX. I can't see any drawbacks
+> of this approach. It just needs a bit of testing I think.
+>
+> Dane
+>
+> [1] https://github.com/roel-v/php_mapnik
+> [2] https://github.com/mapnik/node-mapnik
+> [3] https://github.com/elliotlaster/Pika
+> [4]
+> http://trac.mapnik.org/browser/trunk/bindings/python/mapnik/__init__.py#L55
+> [5] https://github.com/joyent/node/issues/436
+> [6] https://github.com/mapnik/node-mapnik/blob/master/lib/mapnik.js#L31-44
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110628/1323adb3/attachment.html>
+
+From stella at laurenzo.org  Tue Jun 28 20:28:41 2011
+From: stella at laurenzo.org (Stella Laurenzo)
+Date: Tue, 28 Jun 2011 11:28:41 -0700
+Subject: [Mapnik-devel] Undefined symbols when loading plugins from JNI
+ shared library on linux
+In-Reply-To: <BANLkTimD=-QxkjTOaf8Qt62JqSGyDSUhpA@mail.gmail.com>
+References: <BANLkTikHMNu8H_kj+nX8q9xbu54C0qMeyA@mail.gmail.com>
+	<C6CA181F-2F4E-403A-A08E-7761B344446B@dbsgeo.com>
+	<BANLkTimD=-QxkjTOaf8Qt62JqSGyDSUhpA@mail.gmail.com>
+Message-ID: <BANLkTi=ZSxg8vhGAe-kOiTExEU8rGoc3Ag@mail.gmail.com>
+
+Quick correction to my previous mail:
+The Linux x86_64 library is now about 261KB.  Something I did last night
+must have changed that dramatically... not quite sure what.
+
+- stella
+
+On Tue, Jun 28, 2011 at 11:16 AM, Stella Laurenzo <stella at laurenzo.org>wrote:
+
+> Hi Dane,
+> Thanks for the feedback.  If there are no other objections and if no one
+> else gets to it first, I can look through the build scripts to try to find
+> this.  I've never used scons before, but its just Python, right :)
+>
+> I may not get to it right away though because I am trying to land the work
+> I was doing prior to stumbling on this.
+>
+> Mapnik has come a long way in a short period of time.  The third party
+> evolution of language bindings is a testament to that.  I am interested in
+> the opinion of whether these eventually go into the core mapnik distro or
+> not.  Purely from the perspective of conserving size, baking the JNI
+> bindings into the core would save a fair chunk of compiled size.  Currently
+> the Linux x86_64 JNI library is about 650KB and isn't fully implemented.  I
+> think this is due to the fact that all of the inline code and templates get
+> instantiated in each shared library as weak symbols, just to be ignored
+> later.  The actual unique code that goes into the binding is pretty small.
+>  It's also pretty straightforward to build: Just one CPP file and a handful
+> of compiler flags that are determined by java-config.  It would be pretty
+> easy to drop into the core distribution as an optional component to be built
+> if Java headers are present, but I'm going back and forth on my own opinion
+> as to whether it should be in core or separate.
+>
+> - stella
+>
+>
+> On Tue, Jun 28, 2011 at 9:56 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+>
+>> Hi Stella,
+>>
+>> Great to hear from you. Comments below...
+>>
+>> On Jun 27, 2011, at 11:52 PM, Stella Laurenzo wrote:
+>>
+>> Hi Mapnik developers,
+>> In conjunction with a project I'm working on, I've been building out some
+>> JNI bindings for mapnik.  They are here:
+>> https://github.com/stellaeof/mapnik-jni
+>>
+>> At some point, I'd like to discuss merging this into the core mapnik
+>> project where I think such things belong, but for now, I've stumbled across
+>> a minor mystery.  The bindings work perfectly on OSX and fail miserably on
+>> Linux.  I'm so used to shared library weirdness on OSX, that I was a little
+>> bit surprised by this since Linux is usually the well behaved citizen in
+>> this regard.
+>>
+>> After an evening of digging I ran across several related threads.  The
+>> most pertinent is here:
+>> http://gis.638310.n2.nabble.com/libtool-Error-when-loading-input-plugins-from-shared-library-td5176657.html but
+>> it was never resolved.
+>>
+>> The issue specifically is that I have a shared library libmapnik-jni.so
+>> that contains the JNI exports and depends on libmapnik2.so.  Everything
+>> works fine until attempting to load an input plugin.  Upon calling
+>> datasource_cache::register_datasources(...), the following type of message
+>> is written to stderr:
+>>
+>> Problem loading plugin library: /usr/local/lib/mapnik2/input/sqlite.input
+>> (dlopen failed - plugin likely has an unsatisfied dependency or incompatible
+>> ABI)
+>>
+>> Then, when calling datasource_cache::create with parameters referencing a
+>> postgis plugin, the following is written and the process crashes:
+>>
+>> /usr/lib/jvm/java-6-openjdk/bin/java: symbol lookup error:
+>> /usr/local/lib/mapnik2/input/postgis.input: undefined symbol:
+>> _ZN6mapnik5box2dIdEC1Ev
+>>
+>>
+>> Depending on the load order and such different messages and failures can
+>> occur but these are the gist of it.
+>>
+>> While tracking this down, the first thing I noticed was that if I defined
+>> LD_PRELOAD=/usr/local/lib/libmapnik2.so prior to running the Java process
+>> that does all of this, everything works.  This led me to look at the plugins
+>> themselves and I noticed that the input plugins do not have a library
+>> dependency on libmapnik2.so.  On OSX they do because things can't be left
+>> partially linked on that platform, but on Linux mapnik must be assuming that
+>> in order for a plugin to load, the libmapnik2.so library must already be
+>> loaded globally.  To test this, I ran the script here in the plugin
+>> directory:
+>> https://github.com/stellaeof/mapnik-jni/blob/master/fixup-input-plugins.sh
+>>
+>> This just renames each .input file and links a new one that depends on the
+>> original and libmapnik2.so.  With this done, everything works as it should
+>> and no warnings are printed when the plugins are loaded.
+>>
+>> I believe that the issue is that on the JVM, when a library is loaded (via
+>> System.load or its cousin System.loadLibrary), dlopen is being called on the
+>> library without the RTLD_GLOBAL flag.  This is probably a good thing as it
+>> keeps name collisions to a minimum in JNI libraries.  However, it means that
+>> when libmapnik2.so goes to dlopen() its input plugins, it results in
+>> undefined symbols because even though the libmapnik2.so library is resident
+>> in the process, its symbols have not been exported for all to use.
+>>
+>> If I were to file a bug against mapnik, it would be titled "Input plugins
+>> fail to load when libmapnik2.so loaded via dlopen call without RTLD_GLOBAL
+>> flag".  There are several solutions:
+>>    - Include libmapnik2.so as a dependency in mapnik input plugins,
+>> similar to how my script fixes things up to be after the fact.  This would
+>> mirror OSX behavior and I do not believe it would have
+>> any deleterious effects.
+>>    - Declare that libmapnik2.so can only be used when explicitly linked to
+>> or via a dlopen(RTLD_GLOBAL) call.  This would mean that it will never work
+>> when loaded directly or indirectly by standard JVMs.
+>>    - Leave it to someone else (me).  In this case, I suppose I could
+>> dlopen the JNI library again with the RTLD_GLOBAL flag prior to loading any
+>> plugins.  The man page says this should work.  Of course, I'd have to find
+>> the full path to the shared library, which I don't necessarily know, and
+>> this introduces more failure paths and is a little bit crazy.
+>>
+>> Unless if anyone is aware of some issue that I don't know about, I think
+>> the first option is the best.  It would mean that mapnik would always be
+>> able to load its input plugins regardless of how itself was loaded.  I'm not
+>> at all familiar with the mapnik build process to know where to make this
+>> change, however.
+>>
+>> - stella
+>>
+>>
+>>
+>> RE: JNI bindings in general - wow. As little as a year ago the Mapnik
+>> project just had Python bindings. Now we have emerging bindings for PHP [1],
+>> NodeJS [2], Ruby [3], and Java. So, its a good time to re-assess and discuss
+>> both how development of bindings can be optimal (inside/outside core,
+>> release cycle, etc), and any changes we need to make in core to make life
+>> good for various bindings.
+>>
+>> RE: plugin linking, your analysis is spot on. Of your three solutions, I
+>> also agree that we should likely move to #1 - actually linking any required
+>> dependencies such that plugins can be loaded without having to monkey with
+>> dlopen flags. The reason we have resisted doing this so far is that Python
+>> has an easy mechanism to control dlopen flags [4]. But, I noticed the same
+>> problem as you hit with NodeJS recently [5]. My workaround on linux is to
+>> dlopen libmapnik.so first [6], which of course is an ugly hack. But it works
+>> well enough I've forgotten to circle back on this issue, till now.
+>>
+>> So, if we go with solution #1, to make Linux linking like OSX, the
+>> solution is pretty easy. We just need to find all the linking lines in each
+>> plugin build file that are specific to Darwin and make them apply no matter
+>> platform (we only currently support linux, freebsd, solaris, and osx with
+>> the SCons scripts).
+>>
+>> An example of that would be here:
+>>
+>> http://trac.mapnik.org/browser/trunk/plugins/input/shape/SConscript#L42
+>>
+>> Artem, others hav comments/drawbacks of this on Linux? I know Fedora
+>> recently changed their policy to be more like OSX. I can't see any drawbacks
+>> of this approach. It just needs a bit of testing I think.
+>>
+>> Dane
+>>
+>> [1] https://github.com/roel-v/php_mapnik
+>> [2] https://github.com/mapnik/node-mapnik
+>> [3] https://github.com/elliotlaster/Pika
+>> [4]
+>> http://trac.mapnik.org/browser/trunk/bindings/python/mapnik/__init__.py#L55
+>> [5] https://github.com/joyent/node/issues/436
+>> [6]
+>> https://github.com/mapnik/node-mapnik/blob/master/lib/mapnik.js#L31-44
+>>
+>>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <https://lists.berlios.de/pipermail/mapnik-devel/attachments/20110628/ce03ce8b/attachment.html>
+

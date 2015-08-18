@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] three patches
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2011-October/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3CCAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X%2Bgr1nMEoUw%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="001491.html">
+   <LINK REL="Next"  HREF="001492.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] three patches</H1>
+    <B>Matt Amos</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20three%20patches&In-Reply-To=%3CCAMaOB6GfbfLcKZHzDmZ9trQp2zbh8BVDUY0WhH9X%2Bgr1nMEoUw%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] three patches">zerebubuth at gmail.com
+       </A><BR>
+    <I>Tue Oct 11 14:02:33 CEST 2011</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="001491.html">[Mapnik-devel] Mapnik moving to git/github
+</A></li>
+        <LI>Next message: <A HREF="001492.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1490">[ date ]</a>
+              <a href="thread.html#1490">[ thread ]</a>
+              <a href="subject.html#1490">[ subject ]</a>
+              <a href="author.html#1490">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>for your delectation*, three patches for fixes/enhancements we've
+developed at MapQuest:
+
+mapnik_shield-placement-bug.patch: this fixes a bug with shield+text
+placement along a line. it seems what was happening previously was
+that the label box was being expanded to the size of the shield and
+being used to place text. however, this was not giving the right
+answer where dx/dy were being used. the patch expands line placement
+to include &quot;additional boxes&quot;, i.e: when searching for a line
+placement it checks that some boxes offset from the position can be
+placed.
+
+mapnik_expose-label-collision-detector.patch: this exposes the label
+collision detector (4!?) via python and adds a new
+render_with_detector function to allow the detector to be passed into
+the rendering process which means you can keep the detector between
+render invocations. possible uses include clearing out areas of the
+map you know you'll want to render something in later (e.g: key /
+label / compass rose) or to get some layers as a separate image to be
+composited later. this patch only does this for the agg renderer,
+although it should be pretty simple to extend to the other renderers.
+
+mapnik_add-multi-tile-policy.patch: adds another policy to the raster
+plugin which can pull raster data from a constant-stride tile grid on
+disk. this may be of use to anyone with very large background images
+to composite in. the motivation was that it be more compact and faster
+than including all the rasters, each with its own entry, when they're
+in a rectangular grid anyway.
+
+enjoy!
+
+cheers,
+
+matt
+
+*: and in this transitional period, probably not worth attempting to
+put into SVN - i'm happy to submit these as pull requests once
+Mapnik's in github.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_add-multi-tile-policy.patch
+Type: text/x-patch
+Size: 12278 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment.bin</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_expose-label-collision-detector.patch
+Type: text/x-patch
+Size: 19036 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0001.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0001.bin</A>&gt;
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mapnik_shield-placement-bug.patch
+Type: text/x-patch
+Size: 4513 bytes
+Desc: not available
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0002.bin">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20111011/c9e5cb38/attachment-0002.bin</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="001491.html">[Mapnik-devel] Mapnik moving to git/github
+</A></li>
+	<LI>Next message: <A HREF="001492.html">[Mapnik-devel] three patches
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1490">[ date ]</a>
+              <a href="thread.html#1490">[ thread ]</a>
+              <a href="subject.html#1490">[ subject ]</a>
+              <a href="author.html#1490">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

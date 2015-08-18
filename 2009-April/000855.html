@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-April/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20Buildbot%20%28was%3A%20Re%3A%20Mapnik%200.6.0%20released%29&In-Reply-To=%3Cd6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2%40mail.gmail.com%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000854.html">
+   <LINK REL="Next"  HREF="000856.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)</H1>
+    <B>Beau Gunderson</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Mapnik%20Buildbot%20%28was%3A%20Re%3A%20Mapnik%200.6.0%20released%29&In-Reply-To=%3Cd6cb3ab10904081333i29c9a42ew44c8ac5e46f75ea2%40mail.gmail.com%3E"
+       TITLE="[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)">beau at beaugunderson.com
+       </A><BR>
+    <I>Wed Apr  8 22:33:23 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000854.html">[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+</A></li>
+        <LI>Next message: <A HREF="000856.html">[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#855">[ date ]</a>
+              <a href="thread.html#855">[ thread ]</a>
+              <a href="subject.html#855">[ subject ]</a>
+              <a href="author.html#855">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Hmm, that build still fails (though I did get it working by arbitrarily
+picking r1070 and trying that)
+
+I'm using Boost 1.34.1 as evidenced by:
+
+# ldd /usr/lib/python2.5/site-packages/mapnik/_mapnik.so | grep boost
+  libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1 =&gt;
+/usr/lib/libboost_python-gcc42-mt-1_34_1-py25.so.1.34.1 (0xb7b6f000)
+  libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1 =&gt;
+/usr/lib/libboost_filesystem-gcc42-mt-1_34_1.so.1.34.1 (0xb69fa000)
+  libboost_regex-gcc42-mt-1_34_1.so.1.34.1 =&gt;
+/usr/lib/libboost_regex-gcc42-mt-1_34_1.so.1.34.1 (0xb6954000)
+  libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1 =&gt;
+/usr/lib/libboost_iostreams-gcc42-mt-1_34_1.so.1.34.1 (0xb694a000)
+  libboost_program_options-gcc42-mt-1_34_1.so.1.34.1 =&gt;
+/usr/lib/libboost_program_options-gcc42-mt-1_34_1.so.1.34.1 (0xb6914000)
+  libboost_thread-gcc42-mt-1_34_1.so.1.34.1 =&gt;
+/usr/lib/libboost_thread-gcc42-mt-1_34_1.so.1.34.1 (0xb6907000)
+
+(This is what you get if you use apt-get install libboost-dev from Ubuntu
+8.10, &quot;1.34.1-11ubuntu1&quot;)
+
+
+- Beau
+
+On Wed, Apr 8, 2009 at 1:13 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt; wrote:
+
+&gt;<i> Hey Beau,
+</I>&gt;<i> Yes, it will be useful :)
+</I>&gt;<i>
+</I>&gt;<i> I'd like to say I was just testing your buildbot, but actually I carelessly
+</I>&gt;<i> added a docstring feature in trunk to the python bindings at
+</I>&gt;<i> 'bindings/python/mapnik_map.cpp:161:' which is only supported in boost
+</I>&gt;<i> 1.34.0 and above I now realize.
+</I>&gt;<i>
+</I>&gt;<i> So, I bet you are running 1.33.1 and this commit is breaking things:
+</I>&gt;<i> <A HREF="http://trac.mapnik.org/changeset/1080">http://trac.mapnik.org/changeset/1080</A>
+</I>&gt;<i>
+</I>&gt;<i> Can you test latest trunk now? (<A HREF="http://trac.mapnik.org/changeset/1083">http://trac.mapnik.org/changeset/1083</A>)&lt;<A HREF="http://trac.mapnik.org/changeset/1083%29">http://trac.mapnik.org/changeset/1083%29</A>&gt;
+</I>&gt;<i>
+</I>&gt;<i> Thanks,
+</I>&gt;<i>
+</I>&gt;<i> Dane
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> On Apr 8, 2009, at 10:52 AM, Beau Gunderson wrote:
+</I>&gt;<i>
+</I>&gt;<i> Is trunk currently broken, buildwise? I've tried on Linux and FreeBSD and I
+</I>&gt;<i> can't get it to build with scons (the one included with Mapnik) or the
+</I>&gt;<i> bootstrap file, the error is the same in both cases:
+</I>&gt;<i>
+</I>&gt;<i> /usr/local/include/boost/python/init.hpp: In instantiation of
+</I>&gt;<i> `boost::python::detail::error::more_keywords_than_init_arguments&lt;4, 3&gt;':
+</I>&gt;<i> /usr/local/include/boost/python/init.hpp:258:   instantiated from
+</I>&gt;<i> `boost::python::init&lt;T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+</I>&gt;<i> T13, T14&gt;::init(const boost::python::detail::keywords&lt;N&gt;&amp;, const char*)
+</I>&gt;<i> [with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+</I>&gt;<i> boost::python::optional&lt;const std::string&amp;, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_&gt;, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+</I>&gt;<i> mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+</I>&gt;<i> mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+</I>&gt;<i> mpl_::void_, T14 = mpl_::void_]'
+</I>&gt;<i> bindings/python/mapnik_map.cpp:161:   instantiated from here
+</I>&gt;<i> /usr/local/include/boost/python/init.hpp:71: error: creating array with
+</I>&gt;<i> size zero (`-0x00000000000000001')
+</I>&gt;<i> /usr/local/include/boost/python/init.hpp: In constructor
+</I>&gt;<i> `boost::python::init&lt;T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,
+</I>&gt;<i> T13, T14&gt;::init(const boost::python::detail::keywords&lt;N&gt;&amp;, const char*)
+</I>&gt;<i> [with unsigned int N = 4u, T0 = int, T1 = int, T2 =
+</I>&gt;<i> boost::python::optional&lt;const std::string&amp;, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_, mpl_::void_,
+</I>&gt;<i> mpl_::void_, mpl_::void_&gt;, T3 = mpl_::void_, T4 = mpl_::void_, T5 =
+</I>&gt;<i> mpl_::void_, T6 = mpl_::void_, T7 = mpl_::void_, T8 = mpl_::void_, T9 =
+</I>&gt;<i> mpl_::void_, T10 = mpl_::void_, T11 = mpl_::void_, T12 = mpl_::void_, T13 =
+</I>&gt;<i> mpl_::void_, T14 = mpl_::void_]':
+</I>&gt;<i> bindings/python/mapnik_map.cpp:161:   instantiated from here
+</I>&gt;<i> /usr/local/include/boost/python/init.hpp:258: error: no type named
+</I>&gt;<i> `too_many_keywords' in `struct
+</I>&gt;<i> boost::python::detail::error::more_keywords_than_init_arguments&lt;4, 3&gt;'
+</I>&gt;<i>
+</I>&gt;<i> Mapnik definitely used to build on the FreeBSD machine and it doesn't seem
+</I>&gt;<i> like the requirements have changed... On the Linux machine I followed the
+</I>&gt;<i> installation guide for Ubuntu 8.10 and it sees all the dependencies but I
+</I>&gt;<i> get the same error from the FreeBSD machine.
+</I>&gt;<i>
+</I>&gt;<i> I think the buildbot will prove useful. :)
+</I>&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i> - Beau
+</I>&gt;<i>
+</I>&gt;<i> On Tue, Apr 7, 2009 at 4:35 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;wrote:
+</I>&gt;<i>
+</I>&gt;&gt;<i> Beau,
+</I>&gt;&gt;<i> That's great news!
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Dane
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Apr 7, 2009, at 4:30 PM, Beau Gunderson wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> Ah, apparently BuildBot (Python/Twisted) is the gold standard. It seems
+</I>&gt;&gt;<i> like it might be easy to setup and apply to the Mapnik build process--and it
+</I>&gt;&gt;<i> would be easy to add more slaves on other architectures too. I will try
+</I>&gt;&gt;<i> implementing this tonight.
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> - Beau
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i> On Tue, Apr 7, 2009 at 3:34 PM, Beau Gunderson &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">beau at beaugunderson.com</A>&gt;wrote:
+</I>&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> I have a FreeBSD server that could be used as a buildbot/smoketest
+</I>&gt;&gt;&gt;<i> server; is there a widely-used, lightweight system (Python-based preferred)
+</I>&gt;&gt;&gt;<i> that someone could recommend for setting that up?
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> - Beau
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i> On Tue, Apr 7, 2009 at 2:20 PM, Dane Springmeyer &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">blake at hailmail.net</A>&gt;wrote:
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> On Apr 7, 2009, at 1:54 PM, Andreas Volz wrote:
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; I did the initial port to Autotools because more as one year ago
+</I>&gt;&gt;&gt;&gt;<i> &gt; mapnik didn't build with Debian out of the box. I had to create many
+</I>&gt;&gt;&gt;&gt;<i> &gt; boost symlinks by hand.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Yes, :)
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; Maybe that was because I was doing something
+</I>&gt;&gt;&gt;&gt;<i> &gt; wrong.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Yes, boost library names are pretty complex and our SCons
+</I>&gt;&gt;&gt;&gt;<i> implementation for finding them (needed and) has improved quite a bit.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> However, autodetection of boost library names when boost has been
+</I>&gt;&gt;&gt;&gt;<i> installed from source (and the install process did not create any
+</I>&gt;&gt;&gt;&gt;<i> symlinks) still could benefit from improvement and I plan to work on
+</I>&gt;&gt;&gt;&gt;<i> this in trunk before 0.7.0.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; Another reason was the support for pkg-config that the rest of
+</I>&gt;&gt;&gt;&gt;<i> &gt; my builds use.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>  BTW, we are now commonly using built in pkg-config support with Scons
+</I>&gt;&gt;&gt;&gt;<i> to locate a number of dependencies.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; Also the pkg-config --uninstalled function that allows
+</I>&gt;&gt;&gt;&gt;<i> &gt; to link again libraries in place without installing them. This saves a
+</I>&gt;&gt;&gt;&gt;<i> &gt; lot of time.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Hm, I'm unfamiliar with this.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; Now as I did the port to Autotools I don't like to throw
+</I>&gt;&gt;&gt;&gt;<i> &gt; it away. Many distributions use the ./configure &amp;&amp; make &amp;&amp; make
+</I>&gt;&gt;&gt;&gt;<i> &gt; install
+</I>&gt;&gt;&gt;&gt;<i> &gt; way to easy create packages (e.g. gentoo).
+</I>&gt;&gt;&gt;&gt;<i> &gt;
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> I agree, and I'm glad you've started documenting it.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> &gt; But I don't like to vote against scons. If you don't like to switch
+</I>&gt;&gt;&gt;&gt;<i> &gt; I'll be happy if you simply let the autotools files in SVN for me.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Cool.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> So I guess we just need to remove the Autotools stuff when we package
+</I>&gt;&gt;&gt;&gt;<i> releases.
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> Dane
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;&gt;<i>
+</I>&gt;&gt;<i> _______________________________________________
+</I>&gt;&gt;<i> Mapnik-devel mailing list
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">Mapnik-devel at lists.berlios.de</A>
+</I>&gt;&gt;<i> <A HREF="https://lists.berlios.de/mailman/listinfo/mapnik-devel">https://lists.berlios.de/mailman/listinfo/mapnik-devel</A>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;&gt;<i>
+</I>&gt;<i>
+</I>&gt;<i>
+</I>-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: &lt;<A HREF="https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/1f272f1e/attachment.html">https://lists.berlios.de/pipermail/mapnik-devel/attachments/20090408/1f272f1e/attachment.html</A>&gt;
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000854.html">[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+</A></li>
+	<LI>Next message: <A HREF="000856.html">[Mapnik-devel] Mapnik Buildbot (was: Re: Mapnik 0.6.0 released)
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#855">[ date ]</a>
+              <a href="thread.html#855">[ thread ]</a>
+              <a href="subject.html#855">[ subject ]</a>
+              <a href="author.html#855">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

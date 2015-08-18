@@ -1,0 +1,362 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Mapnik-devel] Segfault in gdal.input when opening shared file
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/mapnik-devel/2009-May/index.html" >
+   <LINK REL="made" HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segfault%20in%20gdal.input%20when%20opening%20shared%20file&In-Reply-To=%3C677A8310-0676-479F-BF46-C0375B1896BD%40hailmail.net%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000887.html">
+   <LINK REL="Next"  HREF="000889.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Mapnik-devel] Segfault in gdal.input when opening shared file</H1>
+    <B>Dane Springmeyer</B> 
+    <A HREF="mailto:mapnik-devel%40lists.berlios.de?Subject=Re%3A%20%5BMapnik-devel%5D%20Segfault%20in%20gdal.input%20when%20opening%20shared%20file&In-Reply-To=%3C677A8310-0676-479F-BF46-C0375B1896BD%40hailmail.net%3E"
+       TITLE="[Mapnik-devel] Segfault in gdal.input when opening shared file">blake at hailmail.net
+       </A><BR>
+    <I>Wed May 13 17:59:16 CEST 2009</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000887.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+        <LI>Next message: <A HREF="000889.html">[Mapnik-devel] Segfault in gdal.input when opening shared file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#888">[ date ]</a>
+              <a href="thread.html#888">[ thread ]</a>
+              <a href="subject.html#888">[ subject ]</a>
+              <a href="author.html#888">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Dev,
+
+Another issue in the same realm as the shapefile one on windows,  
+whereby Mapnik fails to open for read access a raster when already  
+open in QGIS.
+
+But, this is on Mac OSX rather than windows and prompts a crash rather  
+than just the inability to handle the file.
+
+So in a python interpreter I can do:
+
+ &gt;&gt;&gt; Gdal(file='raster.png')
+size = 2
+file=raster.png
+type=gdal
+datasource=0x344b30 type=1
+&lt;mapnik.Datasource object at 0x2347b0&gt;
+
+without a problem.... But then I open that same raster in QGIS and try  
+to open again in Mapnik via Python and I get a segfault:
+
+ &gt;&gt;&gt; g = Gdal(file='raster.png')
+size = 2
+file=raster.png
+type=gdal
+datasource=0x344920 type=1
+Segmentation fault
+
+Backtrace below...
+
+Dane
+
+
+
+Process:         Python [2722]
+Path:            /System/Library/Frameworks/Python.framework/Versions/ 
+2.5/Resources/Python.app/Contents/MacOS/Python
+Identifier:      Python
+Version:         ??? (???)
+Code Type:       X86 (Native)
+Parent Process:  bash [2711]
+
+Date/Time:       2009-05-13 08:45:14.110 -0700
+OS Version:      Mac OS X 10.5.6 (9G55)
+Report Version:  6
+
+Exception Type:  EXC_BAD_ACCESS (SIGSEGV)
+Exception Codes: KERN_INVALID_ADDRESS at 0x00000000702e796f
+Crashed Thread:  0
+
+Thread 0 Crashed:
+0   ???                           	0x702e796f 0 + 1882093935
+1   gdal.input                    	0x0450dece  
+boost::detail::sp_counted_impl_p&lt;GDALDataset&gt;::dispose() + 20  
+(sp_counted_impl.hpp:78)
+2   _mapnik.so                    	0x0100ea94  
+boost::detail::sp_counted_base::release() + 56  
+(sp_counted_base_gcc_x86.hpp:146)
+3   _mapnik.so                    	0x0100ead4  
+boost::detail::shared_count::~shared_count() + 28 (shared_count.hpp:221)
+4   _mapnik.so                    	0x010241d5  
+boost::detail::shared_count::~shared_count() + 17 (shared_count.hpp:221)
+5   gdal.input                    	0x04508c60  
+boost::shared_ptr&lt;GDALDataset&gt;::~shared_ptr() + 20 (shared_ptr.hpp:160)
+6   gdal.input                    	0x04508c73  
+boost::shared_ptr&lt;GDALDataset&gt;::~shared_ptr() + 17 (shared_ptr.hpp:160)
+7   gdal.input                    	0x04509664  
+boost::shared_ptr&lt;GDALDataset&gt;::reset() + 46 (shared_ptr.hpp:377)
+8   gdal.input                    	0x04507844  
+gdal_datasource::~gdal_datasource() + 64 (gdal_datasource.cpp:72)
+9   libmapnik.dylib               	0x01d933ee  
+mapnik::datasource_deleter::operator()(mapnik::datasource*) + 30  
+(datasource.hpp:116)
+10  libmapnik.dylib               	0x01d994c8  
+boost::detail::sp_counted_impl_pd&lt;mapnik::datasource*,  
+mapnik::datasource_deleter&gt;::dispose() + 30 (sp_counted_impl.hpp:144)
+11  _mapnik.so                    	0x0100ea94  
+boost::detail::sp_counted_base::release() + 56  
+(sp_counted_base_gcc_x86.hpp:146)
+12  _mapnik.so                    	0x0100ead4  
+boost::detail::shared_count::~shared_count() + 28 (shared_count.hpp:221)
+13  _mapnik.so                    	0x010241d5  
+boost::detail::shared_count::~shared_count() + 17 (shared_count.hpp:221)
+14  _mapnik.so                    	0x0100f25c  
+boost::shared_ptr&lt;mapnik::datasource&gt;::~shared_ptr() + 20  
+(shared_ptr.hpp:160)
+15  _mapnik.so                    	0x01027889  
+boost::shared_ptr&lt;mapnik::datasource&gt;::~shared_ptr() + 17  
+(shared_ptr.hpp:160)
+16  _mapnik.so                    	0x0101df66  
+boost 
+::<i>python 
+</I>::<i>objects::pointer_holder&lt;boost::shared_ptr&lt;mapnik::datasource&gt;,  
+</I>mapnik::datasource&gt;::~pointer_holder() + 44 (pointer_holder.hpp:55)
+17  _mapnik.so                    	0x0101dfcb  
+boost 
+::<i>python 
+</I>::<i>objects::pointer_holder&lt;boost::shared_ptr&lt;mapnik::datasource&gt;,  
+</I>mapnik::datasource&gt;::~pointer_holder() + 17 (pointer_holder.hpp:55)
+18  ...python-xgcc40-mt-1_39.dylib	0x005f7190 instance_dealloc + 48
+19  org.python.python             	0x0015ebfd PyType_GenericNew + 1365
+20  org.python.python             	0x0014870f PyDict_New + 1286
+21  org.python.python             	0x00148c94 PyDict_SetItem + 255
+22  org.python.python             	0x0018dd52 PyEval_EvalFrameEx + 11024
+23  org.python.python             	0x00191173 PyEval_EvalCodeEx + 1638
+24  org.python.python             	0x00191260 PyEval_EvalCode + 87
+25  org.python.python             	0x001a883c PyErr_Display + 1896
+26  org.python.python             	0x001aa4ab  
+PyRun_InteractiveOneFlags + 523
+27  org.python.python             	0x001aa5f9  
+PyRun_InteractiveLoopFlags + 216
+28  org.python.python             	0x001aaa2b PyRun_AnyFileExFlags + 85
+29  org.python.python             	0x001b5a57 Py_Main + 3095
+30  org.python.pythonapp          	0x00001fca 0x1000 + 4042
+
+Thread 0 crashed with X86 Thread State (32-bit):
+   eax: 0x00344c00  ebx: 0x04507811  ecx: 0x0033db74  edx: 0x702e796f
+   edi: 0x002347b0  esi: 0x002347c8  ebp: 0xbfffe158  esp: 0xbfffe13c
+    ss: 0x0000001f  efl: 0x00010202  eip: 0x702e796f   cs: 0x00000017
+    ds: 0x0000001f   es: 0x0000001f   fs: 0x00000000   gs: 0x00000037
+   cr2: 0x702e796f
+
+Binary Images:
+     0x1000 -     0x1ffe  org.python.pythonapp 2.5.0 (2.5.0a0)  
+&lt;b18c2cacaea2bb935507a96c4f9f5ac9&gt; /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/Resources/Python.app/Contents/MacOS/Python
+    0xbb000 -    0xbbffe  dl.so ??? (???)  
+&lt;0230ae2a8e1b986c9915b929d796bf8b&gt; /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/lib/python2.5/lib-dynload/dl.so
+   0x119000 -   0x1e5feb  org.python.python 2.5 (2.5)  
+&lt;e3e29c285d1e5e1b56aa4a9db6f11348&gt; /System/Library/Frameworks/ 
+Python.framework/Versions/2.5/Python
+   0x272000 -   0x299ffc +readline.so ??? (???)  
+&lt;c2d7fbb9908185b4c732cf74991b00bd&gt; /Library/Python/2.5/site-packages/ 
+readline-2.5.1-py2.5-macosx-10.5-i386.egg/readline.so
+   0x2ac000 -   0x2b6fff +libboost_thread-xgcc40-mt-1_39.dylib ???  
+(???) &lt;f44b48b19bd03af5454904c084abe3d1&gt; /usr/local/lib/ 
+libboost_thread-xgcc40-mt-1_39.dylib
+   0x2cb000 -   0x2d5ff2 +libcairomm-1.0.1.dylib ??? (???) /opt/local/ 
+lib/libcairomm-1.0.1.dylib
+   0x2e2000 -   0x2e7fe7 +libltdl.7.dylib ??? (???) /opt/local/lib/ 
+libltdl.7.dylib
+   0x2ec000 -   0x2eeffb +libboost_system-xgcc40-mt-1_39.dylib ???  
+(???) &lt;a62a476e8875db8030bf223339a3ecac&gt; /usr/local/lib/ 
+libboost_system-xgcc40-mt-1_39.dylib
+   0x2f4000 -   0x2f4ff1 +libXau.6.dylib ??? (???)  
+&lt;afb29c74c7922980363d41d64bf0e75d&gt; /usr/X11/lib/libXau.6.dylib
+   0x2f9000 -   0x2fbfef +libXdmcp.6.dylib ??? (???)  
+&lt;d74e4318e331e2dfc669982ea5364b89&gt; /usr/X11/lib/libXdmcp.6.dylib
+   0x500000 -   0x5c0ffb +com.kyngchaos.UnixImageIO 1.0.29  
+(UnixImageIO 1.0.29) &lt;2bb05fd563367f1447de07c18af2e489&gt; /Library/ 
+Frameworks/UnixImageIO.framework/Versions/B/UnixImageIO
+   0x5e6000 -   0x618ff3 +libboost_python-xgcc40-mt-1_39.dylib ???  
+(???) &lt;92abc5200bb0738a5c79c7246bf80b92&gt; /usr/local/lib/ 
+libboost_python-xgcc40-mt-1_39.dylib
+   0x65d000 -   0x73ffff +libicuuc.38.dylib ??? (???) /opt/local/lib/ 
+libicuuc.38.dylib
+   0x781000 -   0x7e5feb +libcairo.2.dylib ??? (???) /opt/local/lib/ 
+libcairo.2.dylib
+  0x1000000 -  0x126ffff +_mapnik.so ??? (???)  
+&lt;78e03941f327a45bfe7179616df2552e&gt; /Library/Python/2.5/site-packages/ 
+mapnik/_mapnik.so
+  0x1d6f000 -  0x1f87fff +libmapnik.dylib ??? (???)  
+&lt;c4baf669dd79f9929e72bfc4ebb9f114&gt; /usr/local/lib/libmapnik.dylib
+  0x2707000 -  0x31dcfff +libicudata.38.dylib ??? (???) /opt/local/lib/ 
+libicudata.38.dylib
+  0x31df000 -  0x3263ff2 +libboost_regex-xgcc40-mt-1_39.dylib ???  
+(???) &lt;ecfea55bf42803fded699b58b89e59c6&gt; /usr/local/lib/libboost_regex- 
+xgcc40-mt-1_39.dylib
+  0x32d2000 -  0x32d9fed +libgcc_s.1.dylib ??? (???) /usr/local/lib/ 
+libgcc_s.1.dylib
+  0x32fc000 -  0x336cfe9 +libfreetype.6.dylib ??? (???) /opt/local/lib/ 
+libfreetype.6.dylib
+  0x3380000 -  0x3482fef +libxml2.2.dylib ??? (???) /opt/local/lib/ 
+libxml2.2.dylib
+  0x34b4000 -  0x35abff0 +libiconv.2.dylib ??? (???) /opt/local/lib/ 
+libiconv.2.dylib
+  0x35b8000 -  0x35c8ffd +libz.1.dylib ??? (???) /opt/local/lib/libz. 
+1.dylib
+  0x35cd000 -  0x35fdfff +libproj.0.dylib ??? (???)  
+&lt;ad70ca6819111eff0093d167037b4dc4&gt; /usr/local/lib/libproj.0.dylib
+  0x3617000 -  0x3622ffb +libboost_filesystem-xgcc40-mt-1_39.dylib ???  
+(???) &lt;6a67f6fc06e4000fbc120a636a4509cf&gt; /usr/local/lib/ 
+libboost_filesystem-xgcc40-mt-1_39.dylib
+  0x3635000 -  0x363bff3 +libboost_iostreams-xgcc40-mt-1_39.dylib ???  
+(???) &lt;e87129289f838cf7640b8724e74c5d5a&gt; /usr/local/lib/ 
+libboost_iostreams-xgcc40-mt-1_39.dylib
+  0x3645000 -  0x366affb +libboost_program_options-xgcc40- 
+mt-1_39.dylib ??? (???) &lt;3c3b825cbb9500e720fc244086a17a43&gt; /usr/local/ 
+lib/libboost_program_options-xgcc40-mt-1_39.dylib
+  0x36a0000 -  0x3b94fe2 +libgdal.1.dylib ??? (???)  
+&lt;40b751a835b41090532c96c1c6959755&gt; /usr/local/lib/libgdal.1.dylib
+  0x3e70000 -  0x3e8bff3 +libpq.5.dylib ??? (???)  
+&lt;563eacc00f16bb2bef2b2d1fe0d1a814&gt; /usr/local/pgsql/lib/libpq.5.dylib
+  0x3e95000 -  0x3f60ffb +libsqlite3.0.dylib ??? (???)  
+&lt;b97181bd2a7a27961742d4b025577286&gt; /usr/local/lib/libsqlite3.0.dylib
+  0x3f79000 -  0x4065fe7 +libX11.6.dylib ??? (???)  
+&lt;5bf24ae81d33440feafffaffc3e676bf&gt; /usr/X11/lib/libX11.6.dylib
+  0x4087000 -  0x40bafef +libpixman-1.0.dylib ??? (???) /opt/local/lib/ 
+libpixman-1.0.dylib
+  0x40c4000 -  0x40e9fff +libfontconfig.1.dylib ??? (???) /opt/local/ 
+lib/libfontconfig.1.dylib
+  0x40f3000 -  0x410ffe3 +libexpat.1.dylib ??? (???) /opt/local/lib/ 
+libexpat.1.dylib
+  0x4117000 -  0x4136feb +libpng12.0.dylib ??? (???) /opt/local/lib/ 
+libpng12.0.dylib
+  0x413d000 -  0x4142fff +libXrender.1.dylib ??? (???) /opt/local/lib/ 
+libXrender.1.dylib
+  0x4146000 -  0x424cfef +libX11.6.dylib ??? (???) /opt/local/lib/ 
+libX11.6.dylib
+  0x426c000 -  0x426cffe +libXau.6.dylib ??? (???) /opt/local/lib/ 
+libXau.6.dylib
+  0x4270000 -  0x4272fef +libXdmcp.6.dylib ??? (???) /opt/local/lib/ 
+libXdmcp.6.dylib
+  0x4276000 -  0x4282ff7 +libgeos_c.1.dylib ??? (???)  
+&lt;fa40607f2cc0b8e0f227948d3a7ff859&gt; /usr/local/lib/libgeos_c.1.dylib
+  0x4292000 -  0x4355ffb +libgeos-3.1.0.dylib ??? (???)  
+&lt;208535908320f5423e0ed4f27bb962b3&gt; /usr/local/lib/libgeos-3.1.0.dylib
+  0x4464000 -  0x4480fe3 +libexpat.1.dylib ??? (???)  
+&lt;dfe35dc54c2e45adefbdab90ae282eaa&gt; /usr/local/lib/libexpat.1.dylib
+  0x448e000 -  0x44bbfff +libcurl.4.dylib ??? (???) /opt/local/lib/ 
+libcurl.4.dylib
+  0x44ca000 -  0x44d3fff +_cairo.so ??? (???)  
+&lt;ab1fe7f1b9912ab3759ee988643ff5a5&gt; /Library/Python/2.5/site-packages/ 
+cairo/_cairo.so
+  0x44e1000 -  0x44e6ffc +libSM.6.dylib ??? (???)  
+&lt;a8695f5f928d13828139ccade3112049&gt; /usr/X11/lib/libSM.6.dylib
+  0x44ec000 -  0x44fdfff +libICE.6.dylib ??? (???)  
+&lt;a63895d54cb639921ba635fccdda1834&gt; /usr/X11/lib/libICE.6.dylib
+  0x4506000 -  0x4526fff +gdal.input ??? (???)  
+&lt;2e6c36f89e2d278456a2ee9cc66f562c&gt; /usr/local/lib/mapnik/input/ 
+gdal.input
+  0x4576000 -  0x4593ffb +kismet.input ??? (???)  
+&lt;e1f1bb0ed57f29bfc4d398a678aaeac3&gt; /usr/local/lib/mapnik/input/ 
+kismet.input
+  0x45ed000 -  0x4616ffb +ogr.input ??? (???)  
+&lt;1c17ecd3629234d5ace3fe91fff4815e&gt; /usr/local/lib/mapnik/input/ogr.input
+  0x468a000 -  0x46b6fff +osm.input ??? (???)  
+&lt;4d9560a14a47ba21438763f519874643&gt; /usr/local/lib/mapnik/input/osm.input
+  0x4729000 -  0x475afff +postgis.input ??? (???)  
+&lt;b3c58e96e87b98b60e707392fa4cd4d0&gt; /usr/local/lib/mapnik/input/ 
+postgis.input
+  0x47da000 -  0x47f3ffb +raster.input ??? (???)  
+&lt;c88bed07a1ba4a74c20d266ff6996cce&gt; /usr/local/lib/mapnik/input/ 
+raster.input
+  0x483a000 -  0x486efff +shape.input ??? (???)  
+&lt;5f65048e62138e7fa36cb4a545d48f87&gt; /usr/local/lib/mapnik/input/ 
+shape.input
+  0x48f6000 -  0x4920ffb +sqlite.input ??? (???)  
+&lt;6b8c14d7bbc9b34a70e9b403bc4d165c&gt; /usr/local/lib/mapnik/input/ 
+sqlite.input
+0x8fe00000 - 0x8fe2db43  dyld 97.1 (???)  
+&lt;100d362e03410f181a34e04e94189ae5&gt; /usr/lib/dyld
+0x905f1000 - 0x90758ff3  libSystem.B.dylib ??? (???)  
+&lt;d68880dfb1f8becdbdac6928db1510fb&gt; /usr/lib/libSystem.B.dylib
+0x90913000 - 0x909c5ffb  libcrypto.0.9.7.dylib ??? (???)  
+&lt;69bc2457aa23f12fa7d052601d48fa29&gt; /usr/lib/libcrypto.0.9.7.dylib
+0x90a37000 - 0x90b6fff7  libicucore.A.dylib ??? (???)  
+&lt;18098dcf431603fe47ee027a60006c85&gt; /usr/lib/libicucore.A.dylib
+0x90bfb000 - 0x90c2aff7  libncurses.5.4.dylib ??? (???)  
+&lt;3b2ac2ca8190942b6b81d2a7012ea859&gt; /usr/lib/libncurses.5.4.dylib
+0x9156e000 - 0x91592feb  libssl.0.9.7.dylib ??? (???)  
+&lt;c7359b7ab32b5f8574520746e10a41cc&gt; /usr/lib/libssl.0.9.7.dylib
+0x9166c000 - 0x9167affd  libz.1.dylib ??? (???)  
+&lt;5ddd8539ae2ebfd8e7cc1c57525385c7&gt; /usr/lib/libz.1.dylib
+0x91e38000 - 0x91f18fff  libobjc.A.dylib ??? (???)  
+&lt;7b92613fdf804fd9a0a3733a0674c30b&gt; /usr/lib/libobjc.A.dylib
+0x91f36000 - 0x91f42fff  libbz2.1.0.dylib ??? (???)  
+&lt;9ea4fe135c9e52bd0590eec12c738e82&gt; /usr/lib/libbz2.1.0.dylib
+0x91f8a000 - 0x91f8efff  libmathCommon.A.dylib ??? (???) /usr/lib/ 
+system/libmathCommon.A.dylib
+0x91f9d000 - 0x91fa4fe9  libgcc_s.1.dylib ??? (???)  
+&lt;f53c808e87d1184c0f9df63aef53ce0b&gt; /usr/lib/libgcc_s.1.dylib
+0x922ad000 - 0x923a1ff4  libiconv.2.dylib ??? (???)  
+&lt;c508c60fafca17824c0017b2e4369802&gt; /usr/lib/libiconv.2.dylib
+0x93422000 - 0x93431fff  libsasl2.2.dylib ??? (???)  
+&lt;bb7971ca2f609c070f87786a93d1041e&gt; /usr/lib/libsasl2.2.dylib
+0x93c9b000 - 0x93cc6fe7  libauto.dylib ??? (???)  
+&lt;42d8422dc23a18071869fdf7b5d8fab5&gt; /usr/lib/libauto.dylib
+0x93d8e000 - 0x93f5cff3  com.apple.security 5.0.4 (34102)  
+&lt;55dda7486df4e8e1d61505be16f83a1c&gt; /System/Library/Frameworks/ 
+Security.framework/Versions/A/Security
+0x94313000 - 0x94446fff  com.apple.CoreFoundation 6.5.5 (476.17)  
+&lt;4a70c8dbb582118e31412c53dc1f407f&gt; /System/Library/Frameworks/ 
+CoreFoundation.framework/Versions/A/CoreFoundation
+0x95a50000 - 0x95b00fff  edu.mit.Kerberos 6.0.12 (6.0.12)  
+&lt;685cc018c133668d0d3ac6a1cb63cff9&gt; /System/Library/Frameworks/ 
+Kerberos.framework/Versions/A/Kerberos
+0x963db000 - 0x9640dfff  com.apple.LDAPFramework 1.4.5 (110)  
+&lt;cc04500cf7b6edccc75bb3fe2973f72c&gt; /System/Library/Frameworks/ 
+LDAP.framework/Versions/A/LDAP
+0x9640e000 - 0x9646bffb  libstdc++.6.dylib ??? (???)  
+&lt;04b812dcec670daa8b7d2852ab14be60&gt; /usr/lib/libstdc++.6.dylib
+0x9682b000 - 0x96849fff  libresolv.9.dylib ??? (???)  
+&lt;a8018c42930596593ddf27f7c20fe7af&gt; /usr/lib/libresolv.9.dylib
+0xfffe8000 - 0xfffebfff  libobjc.A.dylib ??? (???) /usr/lib/ 
+libobjc.A.dylib
+0xffff0000 - 0xffff1780  libSystem.B.dylib ??? (???) /usr/lib/ 
+libSystem.B.dylib
+
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000887.html">[Mapnik-devel] Shapefile input and open files on Windows
+</A></li>
+	<LI>Next message: <A HREF="000889.html">[Mapnik-devel] Segfault in gdal.input when opening shared file
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#888">[ date ]</a>
+              <a href="thread.html#888">[ thread ]</a>
+              <a href="subject.html#888">[ subject ]</a>
+              <a href="author.html#888">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/mapnik-devel">More information about the Mapnik-devel
+mailing list</a><br>
+</body></html>

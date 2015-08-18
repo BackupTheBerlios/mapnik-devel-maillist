@@ -1,0 +1,328 @@
+From dodobas at geoinfo.geof.hr  Tue Mar  1 08:29:01 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Tue, 01 Mar 2011 08:29:01 +0100
+Subject: [Mapnik-devel] Trac status
+Message-ID: <4D6CA03D.7080907@geoinfo.geof.hr>
+
+Hi,
+
+i've been deleting SPAM tickets and users as they appear. I would also 
+like to propose deletion of user accounts. In the first run i'm going to 
+delete users that never logged in, and after that prune users that have 
+suspicious usernames like '1sensuouslady' and have no activity recorded 
+on Trac.
+
+Do you have any objections?
+
+Dra?en
+
+
+From dane at dbsgeo.com  Tue Mar  1 16:03:10 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 1 Mar 2011 10:03:10 -0500
+Subject: [Mapnik-devel] Trac status
+In-Reply-To: <4D6CA03D.7080907@geoinfo.geof.hr>
+References: <4D6CA03D.7080907@geoinfo.geof.hr>
+Message-ID: <CD34E142-80C1-4789-8FAB-D22A3A67A30C@dbsgeo.com>
+
+Hi Dra?en,
+
+Thanks for helping! Yes, no objections to deleting spam accounts. I've done this in the past but its hard to keep up :)
+
+Dane
+
+On Mar 1, 2011, at 2:29 AM, Dra?en Odoba?i? wrote:
+
+> Hi,
+> 
+> i've been deleting SPAM tickets and users as they appear. I would also like to propose deletion of user accounts. In the first run i'm going to delete users that never logged in, and after that prune users that have suspicious usernames like '1sensuouslady' and have no activity recorded on Trac.
+> 
+> Do you have any objections?
+> 
+> Dra?en
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+
+From dane at dbsgeo.com  Fri Mar  4 16:57:35 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Fri, 4 Mar 2011 10:57:35 -0500
+Subject: [Mapnik-devel] Git mirroring status
+In-Reply-To: <DA24BF0F-420D-4C2D-BCD9-5A3DA44B7F36@dbsgeo.com>
+References: <DA24BF0F-420D-4C2D-BCD9-5A3DA44B7F36@dbsgeo.com>
+Message-ID: <B9CD7075-A64A-4058-9A21-57E9F59A20A4@dbsgeo.com>
+
+Okay, new location for git mirror what is actually auto-updating and working is now at:
+
+https://github.com/mapnik/mapnik2
+
+Previous one has been removed to avoid confusion.
+
+If you have a checkout of the old location you should be able to reset your origin like:
+
+git rm remote origin
+git add remote origin git://github.com/mapnik/mapnik2.git
+
+Dane
+
+
+On Feb 19, 2011, at 1:27 PM, Dane Springmeyer wrote:
+
+> Fyi: The github mirror or mapnik trunk is currently not auto-updating. I've hit this error on my syncing server and have not been able to find a solution yet:
+> 
+> $ git svn rebase
+> Index mismatch: 3fd365e196a44bd7bbf49d23337be99a5664c003 != 00d84ecdce264f4228230a3216768c9e33ac8b16
+> rereading 2341382f6fb9c8a25984a810cf7f4d9fc5220a4c
+> 	M	include/mapnik/geometry.hpp
+> 	M	include/mapnik/geometry_iterator.hpp
+> 	M	include/mapnik/feature_style_processor.hpp
+> 	M	include/mapnik/svg/svg_output_grammars.hpp
+> Checksum mismatch: SConstruct 5624b9f1c1bed508fdaeae4cc98bc7bb73237410
+> expected: 60ce1f420e772d596ac833560cab4cf0
+>     got: 2df7d0deb0695c12c1e08effd1b2973c
+> 
+> I'll update if I am able to get it working again.
+> 
+> Dane
+
+
+
+From dieterdreist at gmail.com  Tue Mar 15 21:21:51 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Tue, 15 Mar 2011 21:21:51 +0100
+Subject: [Mapnik-devel] offsets and text alignment working the wrong way
+Message-ID: <AANLkTimemSwJSEcayarcOjSjbPpk8J4xQErYAKM3ozAZ@mail.gmail.com>
+
+I found that actually (at least for the shieldsymbolizer, point
+placement in v0.7) the default text alignment is working the wrong
+way: if you specify a positive offset (down in y) the alignment gets
+set to bottom. This is according to the specs, but it is not a good
+way to do it. Depending on the number of lines your text is occupying
+it will either cover the icon or not. If the default alignment would
+be top, the text would never cover the icon (and the same inverted for
+negative y-values).
+
+cheers,
+Martin
+
+
+From dieterdreist at gmail.com  Tue Mar 15 21:33:20 2011
+From: dieterdreist at gmail.com (=?UTF-8?Q?M=E2=88=A1rtin_Koppenhoefer?=)
+Date: Tue, 15 Mar 2011 21:33:20 +0100
+Subject: [Mapnik-devel] offsets and text alignment working the wrong way
+In-Reply-To: <AANLkTimemSwJSEcayarcOjSjbPpk8J4xQErYAKM3ozAZ@mail.gmail.com>
+References: <AANLkTimemSwJSEcayarcOjSjbPpk8J4xQErYAKM3ozAZ@mail.gmail.com>
+Message-ID: <AANLkTi=YomY8JwK_+AmJCcF5mhrNGdH_QOsNEPKuHLSE@mail.gmail.com>
+
+2011/3/15 M?rtin Koppenhoefer <dieterdreist at gmail.com>:
+
+excuse me, this was not entirely correct, actually the
+shieldsymbolizer moves on dy the whole shield (including text and
+icon).
+
+Cheers,
+Martin
+
+
+From dane at dbsgeo.com  Wed Mar 23 05:51:31 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Tue, 22 Mar 2011 21:51:31 -0700
+Subject: [Mapnik-devel] mapnik.org status
+Message-ID: <8C3CFC38-638A-403F-93C4-008ED72ABD14@dbsgeo.com>
+
+mapnik.org/trac.mapnik.org are down for the moment. Should be back up by morning in the US.
+
+Dane
+
+From dane at dbsgeo.com  Wed Mar 23 18:08:29 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Wed, 23 Mar 2011 10:08:29 -0700
+Subject: [Mapnik-devel] mapnik.org status
+In-Reply-To: <8C3CFC38-638A-403F-93C4-008ED72ABD14@dbsgeo.com>
+References: <8C3CFC38-638A-403F-93C4-008ED72ABD14@dbsgeo.com>
+Message-ID: <F32C76C1-C4A2-4F4B-882B-34BC67BDC106@dbsgeo.com>
+
+Okay, things are back up now with new reCapcha support for the trac registration stage, and spam filtering for tickets/comments.
+
+Dane
+
+
+On Mar 22, 2011, at 9:51 PM, Dane Springmeyer wrote:
+
+> mapnik.org/trac.mapnik.org are down for the moment. Should be back up by morning in the US.
+> 
+> Dane
+
+
+
+From dodobas at geoinfo.geof.hr  Thu Mar 24 15:55:40 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Thu, 24 Mar 2011 15:55:40 +0100
+Subject: [Mapnik-devel] mapnik.org status
+In-Reply-To: <F32C76C1-C4A2-4F4B-882B-34BC67BDC106@dbsgeo.com>
+References: <8C3CFC38-638A-403F-93C4-008ED72ABD14@dbsgeo.com>
+	<F32C76C1-C4A2-4F4B-882B-34BC67BDC106@dbsgeo.com>
+Message-ID: <4D8B5B6C.6050306@geoinfo.geof.hr>
+
+On 23.03.2011 18:08, Dane Springmeyer wrote:
+> Okay, things are back up now with new reCapcha support for the trac registration stage, and spam filtering for tickets/comments.
+>
+> Dane
+
+Unfortunately spammers still get through..., but we do have smaller 
+number of new user account creation, but ones that do register, spam 
+freely :)
+
+
+From dodobas at geoinfo.geof.hr  Thu Mar 24 17:27:05 2011
+From: dodobas at geoinfo.geof.hr (=?UTF-8?B?RHJhxb5lbiBPZG9iYcWhacSH?=)
+Date: Thu, 24 Mar 2011 17:27:05 +0100
+Subject: [Mapnik-devel] mapnik.org status
+In-Reply-To: <4D8B5B6C.6050306@geoinfo.geof.hr>
+References: <8C3CFC38-638A-403F-93C4-008ED72ABD14@dbsgeo.com>	<F32C76C1-C4A2-4F4B-882B-34BC67BDC106@dbsgeo.com>
+	<4D8B5B6C.6050306@geoinfo.geof.hr>
+Message-ID: <4D8B70D9.3090607@geoinfo.geof.hr>
+
+On 24.03.2011 15:55, Dra?en Odoba?i? wrote:
+>
+> Unfortunately spammers still get through..., but we do have smaller
+> number of new user account creation, but ones that do register, spam
+> freely :)
+
+Short notice:
+
+I've updated Akismet filtering karma from 0 to 10...
+
+
+From dane at dbsgeo.com  Thu Mar 24 20:15:01 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Thu, 24 Mar 2011 12:15:01 -0700
+Subject: [Mapnik-devel] Trac spam
+Message-ID: <378389D4-FC69-4454-98BF-60D4C41AB0BF@dbsgeo.com>
+
+It appears that the new recapha + askismet are either not working or not good enough for fending off spam from Mapnik trac. 
+
+I'm traveling today through next Wednesday so it's going to be tough for me to debug this further. 
+
+Drazen and Lennard, in the meantime feel free to turn off registration if it gets too bad. You can do this by unchecking the 'registration' checkbox in the TracAccountManagerPlugin. 
+
+Dane 
+
+--- \o/ ---
+Sent from my phone
+
+From vladshikhov at gmail.com  Sat Mar 26 11:51:49 2011
+From: vladshikhov at gmail.com (Vladislav Shikhov)
+Date: Sat, 26 Mar 2011 13:51:49 +0300
+Subject: [Mapnik-devel] Mapnik crashes with segfault in osm_way::get_bounds
+Message-ID: <AANLkTik1zs+MKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc@mail.gmail.com>
+
+Hi Mapnik devs!
+
+I've been trying mapnik for render tiles from osm source and got some
+crashes with segfaults.
+
+After adding additional debug output I found what
+osm_way::get_bounds() called for osm_node item from
+osm_featureset.cpp:75
+
+I'm going to continue debug, but if you have any idea you are welcome.
+
+-- 
+Vladislav Shikhov
+vladshikhov at gmail.com
+
+
+From dane at dbsgeo.com  Tue Mar 29 07:24:57 2011
+From: dane at dbsgeo.com (Dane Springmeyer)
+Date: Mon, 28 Mar 2011 23:24:57 -0600
+Subject: [Mapnik-devel] Mapnik crashes with segfault in
+	osm_way::get_bounds
+In-Reply-To: <AANLkTik1zs+MKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc@mail.gmail.com>
+References: <AANLkTik1zs+MKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc@mail.gmail.com>
+Message-ID: <4AC5BB01-6565-4F53-B6EC-750DC4C51121@dbsgeo.com>
+
+Vlad, yes I think I've noticed this crash in the past. Just be aware that the OSM plugin does not get a lot of use compared to the osm2pgsql/PostGIS plugin approach. So you may be better off with using PostGIS. Anyway please file a trac ticket about this issue if you want to see it fixed. 
+
+Dane
+
+--- \o/ ---
+Sent from my phone
+
+On Mar 26, 2011, at 4:51 AM, Vladislav Shikhov <vladshikhov at gmail.com> wrote:
+
+> Hi Mapnik devs!
+> 
+> I've been trying mapnik for render tiles from osm source and got some
+> crashes with segfaults.
+> 
+> After adding additional debug output I found what
+> osm_way::get_bounds() called for osm_node item from
+> osm_featureset.cpp:75
+> 
+> I'm going to continue debug, but if you have any idea you are welcome.
+> 
+> -- 
+> Vladislav Shikhov
+> vladshikhov at gmail.com
+> _______________________________________________
+> Mapnik-devel mailing list
+> Mapnik-devel at lists.berlios.de
+> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+
+
+From vladshikhov at gmail.com  Thu Mar 31 20:13:01 2011
+From: vladshikhov at gmail.com (Vladislav Shikhov)
+Date: Thu, 31 Mar 2011 22:13:01 +0400
+Subject: [Mapnik-devel] Mapnik crashes with segfault in
+	osm_way::get_bounds
+In-Reply-To: <4AC5BB01-6565-4F53-B6EC-750DC4C51121@dbsgeo.com>
+References: <AANLkTik1zs+MKHF5EhbwSpi0TJBCK1r0U57S3qcRsrjc@mail.gmail.com>
+	<4AC5BB01-6565-4F53-B6EC-750DC4C51121@dbsgeo.com>
+Message-ID: <AANLkTi=3OEOZd32gdF6ccJWhnWdXyMfs6Jnf7=TsmVKq@mail.gmail.com>
+
+Dane, in short, OSM plugin is not thread-safe. It works fine in
+single-threaded environment, but crashes with segfaults if called from
+parallel threads, compiled with THREADING=multi or THREADING=single
+doesn't matter.
+
+On Tue, Mar 29, 2011 at 9:24 AM, Dane Springmeyer <dane at dbsgeo.com> wrote:
+> Vlad, yes I think I've noticed this crash in the past. Just be aware that the OSM plugin does not get a lot of use compared to the osm2pgsql/PostGIS plugin approach. So you may be better off with using PostGIS. Anyway please file a trac ticket about this issue if you want to see it fixed.
+>
+> Dane
+>
+> --- \o/ ---
+> Sent from my phone
+>
+> On Mar 26, 2011, at 4:51 AM, Vladislav Shikhov <vladshikhov at gmail.com> wrote:
+>
+>> Hi Mapnik devs!
+>>
+>> I've been trying mapnik for render tiles from osm source and got some
+>> crashes with segfaults.
+>>
+>> After adding additional debug output I found what
+>> osm_way::get_bounds() called for osm_node item from
+>> osm_featureset.cpp:75
+>>
+>> I'm going to continue debug, but if you have any idea you are welcome.
+>>
+>> --
+>> Vladislav Shikhov
+>> vladshikhov at gmail.com
+>> _______________________________________________
+>> Mapnik-devel mailing list
+>> Mapnik-devel at lists.berlios.de
+>> https://lists.berlios.de/mailman/listinfo/mapnik-devel
+>
+
+
+
+-- 
+Vladislav Shikhov
+vladshikhov at gmail.com
+
+
